@@ -21,7 +21,7 @@
 - [x] 2.R: Student review cycle
 
 ### Phase 3: Admin Pages
-- [ ] 3.1: AdminLogin
+- [x] 3.1: AdminLogin
 - [ ] 3.2: AdminPage layout
 - [ ] 3.3: QuestionManager
 - [ ] 3.4: Sidebar panels
@@ -96,3 +96,4 @@
 | 9 | 2026-03-19 | 2.5 BottomBar+modals | Hand+MessageCircle icons, Modal component, Button component, slate-900 toast |
 | 10 | 2026-03-19 | 2.6 VoteConfirm | Animated checkmark, 2.5s delay → waiting text transition, Clock icon, emerald-100 |
 | 11 | 2026-03-19 | 2.R Student review | All checklist items pass. Zero gray/blue/emoji remnants. Desktop+mobile verified. |
+| 12 | 2026-03-19 | 3.1 AdminLogin | Sparkles icon, Card+Button components, error state with AlertCircle, indigo palette |
