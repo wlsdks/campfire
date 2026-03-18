@@ -1,11 +1,12 @@
 import { useVotes } from '@/hooks/useVotes';
 import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Cloud } from 'lucide-react';
 
+// Restrained palette: indigo shades + slate for variety without rainbow
 const COLORS = [
-  '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6',
-  '#F43F5E', '#06B6D4', '#EC4899', '#84CC16',
-  '#6366F1', '#14B8A6', '#F97316', '#0EA5E9',
+  '#4F46E5', '#6366F1', '#818CF8', '#3730A3',
+  '#475569', '#334155', '#06B6D4', '#0891B2',
 ];
 
 export default function WordCloud({ sessionId, questionId }) {
@@ -21,26 +22,26 @@ export default function WordCloud({ sessionId, questionId }) {
   const maxCount = Math.max(...words.map(w => w.count), 1);
 
   function getFontSize(count) {
-    const min = 18, max = 80;
+    const min = 18, max = 72;
     return min + ((count / maxCount) * (max - min));
   }
 
   return (
     <div className="w-full max-w-3xl mx-auto">
-      <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3 p-8 min-h-[320px]">
+      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2.5 p-6 min-h-[300px]">
         <AnimatePresence>
           {words.map((word, i) => (
             <motion.span
               key={word.text}
-              initial={{ opacity: 0, scale: 0, rotate: -10 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              exit={{ opacity: 0, scale: 0 }}
-              transition={{ type: 'spring', stiffness: 200, damping: 15, delay: i * 0.03 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ type: 'spring', stiffness: 250, damping: 18, delay: i * 0.03 }}
               style={{
                 fontSize: getFontSize(word.count),
                 color: COLORS[i % COLORS.length],
               }}
-              className="font-extrabold whitespace-nowrap transition-transform hover:scale-110 cursor-default"
+              className="font-bold whitespace-nowrap transition-transform hover:scale-105 cursor-default"
               title={`${word.text}: ${word.count}회`}
             >
               {word.text}
@@ -48,14 +49,16 @@ export default function WordCloud({ sessionId, questionId }) {
           ))}
         </AnimatePresence>
         {words.length === 0 && (
-          <div className="text-center space-y-3">
-            <div className="text-4xl opacity-30">💬</div>
-            <p className="text-gray-300 text-lg">아직 입력이 없습니다...</p>
+          <div className="text-center space-y-2">
+            <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mx-auto">
+              <Cloud size={24} className="text-slate-300" />
+            </div>
+            <p className="text-slate-300 text-base">아직 입력이 없습니다</p>
           </div>
         )}
       </div>
       {totalVotes > 0 && (
-        <div className="text-center text-gray-400 text-sm mt-2">
+        <div className="text-center text-slate-400 text-sm mt-2">
           총 {totalVotes}개 응답
         </div>
       )}
