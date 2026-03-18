@@ -41,8 +41,8 @@
 - [x] 5.R: Games review cycle
 
 ### Phase 6: Timer Feature
-- [ ] 6.1: Timer component
-- [ ] 6.2: Firebase timer + hook
+- [x] 6.1: Timer component
+- [x] 6.2: Firebase timer + hook
 - [ ] 6.3: Admin controls
 - [ ] 6.4: Student display
 - [ ] 6.R: Timer review cycle
@@ -107,3 +107,4 @@
 | 20 | 2026-03-19 | 4.3+4.4 WordCloud+QACards | Indigo/slate word palette, Cloud/MessageSquare empty states, slate tokens |
 | 21 | 2026-03-19 | 4.R+5.1 VizReview+Roulette | Viz review passed. Roulette: indigo mono segments, Target icon, Button component |
 | 22 | 2026-03-19 | 5.2+5.R Lottery+GamesReview | Indigo/slate cards, Trophy icon, Button comp. ENTIRE codebase: 0 gray/blue/emoji! |
+| 23 | 2026-03-19 | 6.1+6.2 Timer component+hook | TimerRing (SVG ring, color transition, pulse), TimerControls, useTimer Firebase hook |
