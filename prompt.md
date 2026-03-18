@@ -24,6 +24,12 @@ git status                    # Check for uncommitted changes from crashed cycle
 - Read source files BEFORE editing
 - Follow design system from CLAUDE.md strictly — all colors from tokens, all icons from lucide-react
 - Think: spacing, alignment, hierarchy, whitespace, consistency
+- **Use sub-agents for parallel work** when beneficial:
+  - Research agent: 디자인 레퍼런스 조사, 라이브러리 문서 확인, UX 패턴 검색
+  - Explore agent: 코드베이스에서 패턴 찾기, 영향받는 파일 파악, 의존성 추적
+  - Code review agent: 큰 변경 후 품질 검토
+  - 예시: 디자인 작업 중 → 서브에이전트로 "Toss 앱의 투표 UI 패턴 조사" 병렬 실행
+  - 예시: Review 사이클 → 서브에이전트들로 여러 페이지 동시 스크린샷+분석
 
 ### 3. Verify
 ```bash
