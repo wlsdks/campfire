@@ -7,7 +7,19 @@ const MAX_STORED = 50;
 
 export function useReactions(sessionId) {
   const [reactions, setReactions] = useState([]);
-  const lastSentRef = useRef(0);
+  const [canSend, setCanSend] = useState(true);
+  const canSendRef = useRef(true);
+  const cooldownTimer = useRef(null);
+
+  useEffect(() => {
+    canSendRef.current = canSend;
+  }, [canSend]);
+
+  useEffect(() => {
+    return () => {
+      if (cooldownTimer.current) clearTimeout(cooldownTimer.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -22,18 +34,19 @@ export function useReactions(sessionId) {
   }, [sessionId]);
 
   const sendReaction = useCallback(async (type) => {
-    if (!sessionId) return false;
-    const now = Date.now();
-    if (now - lastSentRef.current < COOLDOWN_MS) return false;
-    lastSentRef.current = now;
-    await push(ref(db, `sessions/${sessionId}/reactions`), {
-      type,
-      timestamp: serverTimestamp(),
-    });
-    return true;
+    if (!sessionId || !canSendRef.current) return false;
+    setCanSend(false);
+    cooldownTimer.current = setTimeout(() => setCanSend(true), COOLDOWN_MS);
+    try {
+      await push(ref(db, `sessions/${sessionId}/reactions`), {
+        type,
+        timestamp: serverTimestamp(),
+      });
+      return true;
+    } catch {
+      return false;
+    }
   }, [sessionId]);
-
-  const canSend = Date.now() - lastSentRef.current >= COOLDOWN_MS;
 
   return { reactions, sendReaction, canSend };
 }

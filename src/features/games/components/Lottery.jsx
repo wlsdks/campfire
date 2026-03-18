@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Ticket, Loader2, Minus, Plus, Trophy } from 'lucide-react';
 import Button from '@/components/ui/Button';
@@ -12,6 +12,15 @@ export default function Lottery({ participants, onResult }) {
   const [count, setCount] = useState(1);
   const [winners, setWinners] = useState([]);
   const [revealing, setRevealing] = useState(false);
+  const mountedRef = useRef(true);
+  const timersRef = useRef([]);
+
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+      timersRef.current.forEach(clearTimeout);
+    };
+  }, []);
 
   function draw() {
     if (revealing || participants.length === 0) return;
@@ -19,14 +28,18 @@ export default function Lottery({ participants, onResult }) {
     setWinners([]);
     const shuffled = [...participants].sort(() => Math.random() - 0.5);
     const picked = shuffled.slice(0, Math.min(count, participants.length));
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
     picked.forEach((p, i) => {
-      setTimeout(() => {
+      const timer = setTimeout(() => {
+        if (!mountedRef.current) return;
         setWinners(prev => [...prev, p.nickname]);
         if (i === picked.length - 1) {
           setRevealing(false);
           onResult?.(picked.map(p => p.nickname));
         }
       }, (i + 1) * 800);
+      timersRef.current.push(timer);
     });
   }
 

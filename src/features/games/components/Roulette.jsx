@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Target, Loader2 } from 'lucide-react';
 import Button from '@/components/ui/Button';
@@ -12,6 +12,15 @@ export default function Roulette({ participants, onResult }) {
   const [spinning, setSpinning] = useState(false);
   const [winner, setWinner] = useState(null);
   const [rotation, setRotation] = useState(0);
+  const mountedRef = useRef(true);
+  const timerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const names = participants.map(p => p.nickname);
   const segmentAngle = 360 / (names.length || 1);
@@ -24,7 +33,8 @@ export default function Roulette({ participants, onResult }) {
     const extraRotations = (5 + Math.random() * 3) * 360;
     const targetAngle = extraRotations + (360 - winnerIndex * segmentAngle - segmentAngle / 2);
     setRotation(prev => prev + targetAngle);
-    setTimeout(() => {
+    timerRef.current = setTimeout(() => {
+      if (!mountedRef.current) return;
       setSpinning(false);
       setWinner(names[winnerIndex]);
       onResult?.(names[winnerIndex]);
@@ -47,7 +57,7 @@ export default function Roulette({ participants, onResult }) {
 
   return (
     <div className="flex flex-col items-center gap-6">
-      <div className="relative w-80 h-80">
+      <div className="relative w-full max-w-[320px] aspect-square mx-auto">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-0.5 z-10 text-3xl text-indigo-600 drop-shadow">
           ▼
         </div>

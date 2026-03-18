@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ThumbsUp, Flame, Heart, Laugh, HandMetal } from 'lucide-react';
 import { useReactions } from '@/features/reactions/api/useReactions';
@@ -14,6 +14,11 @@ const ICON_MAP = {
 export default function ReactionOverlay({ sessionId }) {
   const { reactions } = useReactions(sessionId);
   const [bubbles, setBubbles] = useState([]);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    return () => { mountedRef.current = false; };
+  }, []);
 
   useEffect(() => {
     if (reactions.length === 0) return;
@@ -24,9 +29,13 @@ export default function ReactionOverlay({ sessionId }) {
       type: latest.type,
       x: 20 + Math.random() * 60,
     };
-    setBubbles(prev => [...prev.slice(-15), bubble]);
+    if (mountedRef.current) {
+      setBubbles(prev => [...prev.slice(-14), bubble]);
+    }
     const timer = setTimeout(() => {
-      setBubbles(prev => prev.filter(b => b.id !== bubble.id));
+      if (mountedRef.current) {
+        setBubbles(prev => prev.filter(b => b.id !== bubble.id));
+      }
     }, 2000);
     return () => clearTimeout(timer);
   }, [reactions.length]);
