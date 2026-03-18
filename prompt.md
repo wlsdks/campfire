@@ -24,6 +24,10 @@ git status                    # Check for uncommitted changes from crashed cycle
 - Read source files BEFORE editing
 - Follow design system from CLAUDE.md strictly — all colors from tokens, all icons from lucide-react
 - Think: spacing, alignment, hierarchy, whitespace, consistency
+- **Apply the right persona** (CLAUDE.md 참고):
+  - Student pages → "나는 수업 중 한 손으로 폰 잡고 있는 학생" 관점
+  - Admin pages → "나는 학생들 앞에서 수업 진행 중인 강사" 관점
+  - Presentation mode → "나는 강의실 뒷자리에서 프로젝터 보는 학생" 관점
 - **Use sub-agents for parallel work** when beneficial:
   - Research agent: 디자인 레퍼런스 조사, 라이브러리 문서 확인, UX 패턴 검색
   - Explore agent: 코드베이스에서 패턴 찾기, 영향받는 파일 파악, 의존성 추적
