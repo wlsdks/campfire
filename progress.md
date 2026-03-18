@@ -36,7 +36,7 @@
 - [x] 4.R: Viz review cycle
 
 ### Phase 5: Games
-- [ ] 5.1: Roulette
+- [x] 5.1: Roulette
 - [ ] 5.2: Lottery
 - [ ] 5.R: Games review cycle
 
@@ -105,3 +105,4 @@
 | 18 | 2026-03-19 | 4.1 BarChart+VizRenderer | Indigo bars, colored tracks, Sparkles empty state, type Badge, slate tokens |
 | 19 | 2026-03-19 | 4.2 OXBattle | Indigo/slate split, dynamic winner emphasis, 2-color progress bar |
 | 20 | 2026-03-19 | 4.3+4.4 WordCloud+QACards | Indigo/slate word palette, Cloud/MessageSquare empty states, slate tokens |
+| 21 | 2026-03-19 | 4.R+5.1 VizReview+Roulette | Viz review passed. Roulette: indigo mono segments, Target icon, Button component |
