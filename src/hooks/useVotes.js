@@ -1,6 +1,6 @@
 import { ref, onValue } from 'firebase/database';
 import { useState, useEffect } from 'react';
-import { db } from '../lib/firebase';
+import { db } from '@/lib/firebase';
 
 export function useVotes(sessionId, questionId) {
   const [votes, setVotes] = useState({});

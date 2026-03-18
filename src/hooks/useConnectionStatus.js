@@ -1,6 +1,6 @@
 import { ref, onValue } from 'firebase/database';
 import { useState, useEffect } from 'react';
-import { db } from '../lib/firebase';
+import { db } from '@/lib/firebase';
 
 export function useConnectionStatus() {
   const [connected, setConnected] = useState(true);

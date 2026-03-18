@@ -1,0 +1,87 @@
+# Pinggo UI/UX Improvement Progress
+
+> Auto-updated each cycle. [x] = done, [ ] = pending, [~] = in progress
+> Last updated: 2026-03-19
+
+## Current: Phase 1 - Foundation
+
+### Phase 1: Foundation
+- [ ] 1.0: Architecture migration → Bulletproof React structure + @ path alias
+- [ ] 1.1: Install deps + fonts + design tokens
+- [ ] 1.2: Shared UI components
+- [ ] 1.3: Global styles + shotshot → pinggo cleanup
+
+### Phase 2: Student Pages
+- [ ] 2.1: JoinPage
+- [ ] 2.2: VotePage
+- [ ] 2.3: Voters (Choice/OX/Text)
+- [ ] 2.4: WaitingPage
+- [ ] 2.5: BottomBar + modals
+- [ ] 2.6: VoteConfirm
+- [ ] 2.R: Student review cycle
+
+### Phase 3: Admin Pages
+- [ ] 3.1: AdminLogin
+- [ ] 3.2: AdminPage layout
+- [ ] 3.3: QuestionManager
+- [ ] 3.4: Sidebar panels
+- [ ] 3.5: Presentation mode
+- [ ] 3.R: Admin review cycle
+
+### Phase 4: Visualizations
+- [ ] 4.1: BarChart
+- [ ] 4.2: OXBattle
+- [ ] 4.3: WordCloud
+- [ ] 4.4: QACards
+- [ ] 4.R: Viz review cycle
+
+### Phase 5: Games
+- [ ] 5.1: Roulette
+- [ ] 5.2: Lottery
+- [ ] 5.R: Games review cycle
+
+### Phase 6: Timer Feature
+- [ ] 6.1: Timer component
+- [ ] 6.2: Firebase timer + hook
+- [ ] 6.3: Admin controls
+- [ ] 6.4: Student display
+- [ ] 6.R: Timer review cycle
+
+### Phase 7: Reactions
+- [ ] 7.1: Data model + hook
+- [ ] 7.2: ReactionBar (student)
+- [ ] 7.3: ReactionOverlay (admin)
+- [ ] 7.4: Integration
+- [ ] 7.R: Reactions review cycle
+
+### Phase 8: Quiz Mode
+- [ ] 8.1: Data model
+- [ ] 8.2: Admin quiz UI
+- [ ] 8.3: Student quiz result
+- [ ] 8.4: Leaderboard
+- [ ] 8.5: Quiz flow polish
+- [ ] 8.R: Quiz review cycle
+
+### Phase 9: Global Polish
+- [ ] 9.1: Loading states
+- [ ] 9.2: Error + empty states
+- [ ] 9.3: Micro-interactions audit
+- [ ] 9.4: Responsive audit
+- [ ] 9.5: Animation performance
+- [ ] 9.6: Presenter mode polish
+- [ ] 9.7: Connection status
+- [ ] 9.R: Final review
+
+---
+
+## Feature Ideas (Proposals - Not Yet Approved)
+> Add ideas here during cycles. Only build if genuinely high-impact.
+
+| Idea | Rationale | Priority |
+|------|-----------|----------|
+
+---
+
+## Cycle Log
+| # | Time | Task | Notes |
+|---|------|------|-------|

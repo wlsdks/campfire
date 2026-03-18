@@ -1,8 +1,8 @@
 import { BrowserRouter, Routes, Route, useSearchParams } from 'react-router-dom';
 import { useState } from 'react';
-import JoinPage from './pages/student/JoinPage';
-import VotePage from './pages/student/VotePage';
-import AdminPage from './pages/admin/AdminPage';
+import JoinPage from '@/app/routes/student/JoinPage';
+import VotePage from '@/app/routes/student/VotePage';
+import AdminPage from '@/app/routes/admin/AdminPage';
 
 function StudentRouter() {
   const [searchParams] = useSearchParams();

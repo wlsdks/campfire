@@ -1,4 +1,4 @@
-import { useConnectionStatus } from '../../hooks/useConnectionStatus';
+import { useConnectionStatus } from '@/hooks/useConnectionStatus';
 
 export default function ConnectionDot() {
   const connected = useConnectionStatus();
