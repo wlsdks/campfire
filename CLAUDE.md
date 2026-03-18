@@ -7,6 +7,8 @@ Real-time classroom engagement platform. Instructors create sessions, students j
 - React 19 + Vite 7 + Tailwind CSS v4 + Firebase Realtime DB + Framer Motion
 - Icons: lucide-react (NO emoji icons)
 - Animations: lottie-react + Framer Motion (sparingly, high-impact only)
+  - Lottie JSON: create inline (simple shapes/motions) or fetch from LottieFiles CDN
+  - If download fails: use Framer Motion CSS animation as fallback, never block on missing Lottie
 - Fonts: Pretendard (Korean) + Inter (Latin/numbers)
 
 ## Architecture: Bulletproof React (MIT, open-source pattern)

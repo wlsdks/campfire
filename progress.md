@@ -6,7 +6,7 @@
 ## Current: Phase 1 - Foundation
 
 ### Phase 1: Foundation
-- [ ] 1.0: Architecture migration → Bulletproof React structure + @ path alias
+- [x] 1.0: Architecture migration → Bulletproof React structure + @ path alias
 - [ ] 1.1: Install deps + fonts + design tokens
 - [ ] 1.2: Shared UI components
 - [ ] 1.3: Global styles + shotshot → pinggo cleanup
@@ -85,3 +85,4 @@
 ## Cycle Log
 | # | Time | Task | Notes |
 |---|------|------|-------|
+| 1 | 2026-03-19 | 1.0 Architecture migration | Bulletproof React structure, @ alias, all imports updated, build passing |

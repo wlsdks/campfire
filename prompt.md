@@ -5,9 +5,19 @@
 
 ## Cycle Workflow
 
+### 0. Safety Check (FIRST)
+```bash
+cd /Users/jinan/ai/Pinggo
+git status                    # Check for uncommitted changes from crashed cycle
+```
+- If dirty state exists: review changes → if they look intentional, commit them. If broken, `git checkout .` to restore.
+- Ensure `npm run build` passes BEFORE starting new work. If not, fix first.
+
 ### 1. Read State
 - Read `CLAUDE.md` (design system, architecture, anti-AI rules)
 - Read `progress.md` → find next `[ ]` task
+- Run `git log --oneline -10` → understand what was done in recent cycles (avoid duplication, maintain continuity)
+- If the last cycle left WIP notes in progress.md, continue that work first
 
 ### 2. Execute
 - Read source files BEFORE editing
@@ -30,7 +40,14 @@ git add -A && git commit -m "style/feat/refactor: description"
 - Update `progress.md`: mark `[x]`, add cycle log entry
 - Spot inconsistency in existing code? Fix it (same cycle or note for next)
 
-### 5. Self-Improve (Optional, max 3 additions/cycle)
+### 5. Error Recovery
+If something goes wrong during the cycle:
+- **Build fails and can't fix in 3 attempts** → revert changes (`git checkout .`), add note in progress.md, move to next task
+- **Playwright can't connect** → skip visual verification for this cycle, note in log, but still do build check
+- **Stuck on a task** → mark as `[~] WIP:` with notes, move on. Don't waste the whole cycle.
+- **Dev server won't start** → `kill $(lsof -ti:5173) 2>/dev/null; rm -rf node_modules/.vite; npm run dev &`
+
+### 6. Self-Improve (Optional, max 3 additions/cycle)
 - Add learnings to `## Learnings` section below
 - NEVER change baselines (colors, typography, architecture) in CLAUDE.md
 
