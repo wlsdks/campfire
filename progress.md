@@ -14,7 +14,7 @@
 ### Phase 2: Student Pages
 - [x] 2.1: JoinPage
 - [x] 2.2: VotePage
-- [ ] 2.3: Voters (Choice/OX/Text)
+- [x] 2.3: Voters (Choice/OX/Text)
 - [ ] 2.4: WaitingPage
 - [ ] 2.5: BottomBar + modals
 - [ ] 2.6: VoteConfirm
@@ -91,3 +91,4 @@
 | 4 | 2026-03-19 | 1.3 Rename + global styles | shotshot→pinggo in all files, no-session screen: dark→light + emoji→lucide icon |
 | 5 | 2026-03-19 | 2.1 JoinPage redesign | Card+Badge+Avatar+Button components, Sparkles icon, avatar preview, indigo palette |
 | 6 | 2026-03-19 | 2.2 VotePage redesign | Skeleton loading, question Card+Badge, ConnectionDot top-right, slate tokens |
+| 7 | 2026-03-19 | 2.3 Voters redesign | Light tint buttons, selection ring, OX=indigo/slate, TextInput w/ Send icon+Button |
