@@ -9,8 +9,9 @@ export default function VizRenderer({ sessionId, session }) {
 
   if (currentMode !== 'poll' || !currentQId) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <p className="text-white/30 text-2xl">질문을 활성화하세요</p>
+      <div className="flex flex-col items-center justify-center h-full gap-4">
+        <div className="text-5xl opacity-20">🏓</div>
+        <p className="text-white/20 text-xl font-medium">질문을 활성화하세요</p>
       </div>
     );
   }
@@ -19,8 +20,11 @@ export default function VizRenderer({ sessionId, session }) {
   if (!question) return null;
 
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-6">
-      <h2 className="text-3xl font-bold text-white text-center">{question.title}</h2>
+    <div className="flex flex-col items-center justify-center h-full gap-8 w-full">
+      <div className="text-center space-y-2">
+        <h2 className="text-3xl font-extrabold text-white">{question.title}</h2>
+        <div className="w-16 h-0.5 bg-gradient-to-r from-violet-500 to-indigo-500 mx-auto rounded-full" />
+      </div>
       {question.type === 'choice' && <BarChart sessionId={sessionId} questionId={currentQId} options={question.options || []} />}
       {question.type === 'ox' && <OXBattle sessionId={sessionId} questionId={currentQId} />}
       {question.type === 'wordcloud' && <WordCloud sessionId={sessionId} questionId={currentQId} />}

@@ -11,8 +11,11 @@ function StudentRouter() {
 
   if (!sessionId) {
     return (
-      <div className="min-h-dvh bg-gray-950 flex items-center justify-center text-white/50 text-lg">
-        세션 링크를 통해 접속해주세요
+      <div className="min-h-dvh bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="text-5xl">🏓</div>
+          <p className="text-white/50 text-lg">세션 링크를 통해 접속해주세요</p>
+        </div>
       </div>
     );
   }

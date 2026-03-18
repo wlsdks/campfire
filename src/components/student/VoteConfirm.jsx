@@ -3,19 +3,43 @@ import { motion } from 'framer-motion';
 export default function VoteConfirm() {
   return (
     <motion.div
-      initial={{ scale: 0 }}
-      animate={{ scale: 1 }}
-      className="flex flex-col items-center gap-3 py-8"
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+      className="flex flex-col items-center gap-4 py-12"
     >
       <motion.div
-        initial={{ rotate: 0 }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 0.5 }}
-        className="text-5xl"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 10 }}
+        className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center shadow-2xl shadow-emerald-500/30"
       >
-        ✅
+        <motion.svg
+          initial={{ pathLength: 0 }}
+          animate={{ pathLength: 1 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-10 h-10 text-white"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={3}
+        >
+          <motion.path
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M5 13l4 4L19 7"
+          />
+        </motion.svg>
       </motion.div>
-      <p className="text-white text-lg font-medium">제출 완료!</p>
+
+      <div className="text-center space-y-1">
+        <p className="text-white text-xl font-bold">제출 완료!</p>
+        <p className="text-white/40 text-sm">응답이 기록되었어요</p>
+      </div>
     </motion.div>
   );
 }

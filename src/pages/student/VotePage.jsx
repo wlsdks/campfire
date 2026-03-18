@@ -9,7 +9,16 @@ import StudentBottomBar from '../../components/student/StudentBottomBar';
 export default function VotePage({ sessionId }) {
   const { session, loading } = useSession(sessionId);
 
-  if (loading) return <div className="min-h-dvh bg-gray-950 flex items-center justify-center text-white">로딩 중...</div>;
+  if (loading) {
+    return (
+      <div className="min-h-dvh bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
+        <div className="text-center space-y-3">
+          <div className="text-4xl animate-shimmer">🏓</div>
+          <p className="text-white/40">로딩 중...</p>
+        </div>
+      </div>
+    );
+  }
 
   const currentQId = session?.currentQuestion;
   const currentMode = session?.currentMode;
@@ -20,10 +29,11 @@ export default function VotePage({ sessionId }) {
   if (!question) return <WaitingPage sessionId={sessionId} />;
 
   return (
-    <div className="min-h-dvh bg-gray-950 flex flex-col items-center p-4 pb-20">
-      <div className="w-full max-w-sm space-y-6 mt-8">
-        <div className="text-center">
-          <h2 className="text-xl font-bold text-white">{question.title}</h2>
+    <div className="min-h-dvh bg-gradient-to-br from-slate-950 via-indigo-950/30 to-slate-950 flex flex-col items-center p-4 pb-24">
+      <div className="w-full max-w-sm space-y-8 mt-8">
+        <div className="text-center space-y-2">
+          <h2 className="text-2xl font-extrabold text-white leading-tight">{question.title}</h2>
+          <div className="w-12 h-0.5 bg-gradient-to-r from-violet-500 to-indigo-500 mx-auto rounded-full" />
         </div>
 
         {question.type === 'choice' && (
@@ -39,7 +49,7 @@ export default function VotePage({ sessionId }) {
           <TextInput key={currentQId} sessionId={sessionId} questionId={currentQId} placeholder="질문을 입력하세요" maxLength={200} />
         )}
       </div>
-      <div className="fixed bottom-4">
+      <div className="fixed bottom-16 left-1/2 -translate-x-1/2">
         <ConnectionDot />
       </div>
       <StudentBottomBar sessionId={sessionId} />

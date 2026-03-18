@@ -10,13 +10,16 @@ export default function ParticipantList({ participants }) {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="flex items-center gap-2 text-sm text-white/70 py-1"
+            className="flex items-center gap-2.5 text-sm text-white/60 py-1.5 px-2 rounded-lg hover:bg-white/5 transition-colors"
           >
-            <div className="w-2 h-2 rounded-full bg-green-400" />
-            {p.nickname}
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+            <span className="truncate">{p.nickname}</span>
           </motion.div>
         ))}
       </AnimatePresence>
+      {participants.length === 0 && (
+        <p className="text-white/15 text-xs text-center py-4">아직 참여자가 없습니다</p>
+      )}
     </div>
   );
 }

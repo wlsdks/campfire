@@ -17,9 +17,12 @@ export default function UrgentQuestionList({ sessionId }) {
   if (questionList.length === 0) return null;
 
   return (
-    <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 space-y-2">
-      <span className="text-red-400 font-semibold text-sm">
-        ❓ 긴급 질문 {unreadCount > 0 && `(${unreadCount} 새 질문)`}
+    <div className="glass rounded-2xl p-3.5 space-y-2.5 border-rose-500/20">
+      <span className="text-rose-400 font-semibold text-sm flex items-center gap-1.5">
+        ❓ 긴급 질문
+        {unreadCount > 0 && (
+          <span className="bg-rose-500/20 text-rose-400 text-xs px-1.5 py-0.5 rounded-full animate-pulse">{unreadCount} 새 질문</span>
+        )}
       </span>
       <AnimatePresence>
         {questionList.map((q) => (
@@ -28,13 +31,15 @@ export default function UrgentQuestionList({ sessionId }) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className={`p-2 rounded-lg text-sm ${q.read ? 'bg-gray-800/50' : 'bg-red-500/20'}`}
+            className={`p-2.5 rounded-xl text-sm transition-colors cursor-pointer ${
+              q.read ? 'bg-white/5' : 'bg-rose-500/10 hover:bg-rose-500/15'
+            }`}
             onClick={() => !q.read && markRead(q.id)}
           >
-            <p className="text-white">{q.text}</p>
-            <div className="flex justify-between items-center mt-1">
-              <span className="text-white/30 text-xs">익명</span>
-              <button onClick={() => dismissOne(q.id)} className="text-white/30 hover:text-white text-xs">삭제</button>
+            <p className="text-white leading-relaxed">{q.text}</p>
+            <div className="flex justify-between items-center mt-1.5">
+              <span className="text-white/20 text-xs">익명</span>
+              <button onClick={(e) => { e.stopPropagation(); dismissOne(q.id); }} className="text-white/20 hover:text-white/50 text-xs transition-colors">삭제</button>
             </div>
           </motion.div>
         ))}

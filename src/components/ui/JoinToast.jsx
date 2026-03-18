@@ -32,11 +32,12 @@ export default function JoinToast({ sessionId }) {
         {toasts.map((toast) => (
           <motion.div
             key={toast.id}
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 100 }}
-            className="bg-blue-600 text-white px-4 py-2 rounded-xl shadow-lg text-sm font-medium"
+            initial={{ opacity: 0, x: 100, scale: 0.9 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: 100, scale: 0.9 }}
+            className="glass-strong px-4 py-2.5 rounded-2xl shadow-lg text-sm font-medium text-white flex items-center gap-2"
           >
+            <span className="w-2 h-2 rounded-full bg-emerald-400" />
             {toast.nickname}님 입장!
           </motion.div>
         ))}
