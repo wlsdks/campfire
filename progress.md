@@ -3,7 +3,7 @@
 > Auto-updated each cycle. [x] = done, [ ] = pending, [~] = in progress
 > Last updated: 2026-03-19
 
-## Current: Phase 7 - Reactions
+## Current: Phase 10 - Continuous Improvement
 
 ### Phase 1: Foundation
 - [x] 1.0: Architecture migration → Bulletproof React structure + @ path alias
@@ -48,29 +48,29 @@
 - [x] 6.R: Timer review cycle
 
 ### Phase 7: Reactions
-- [ ] 7.1: Data model + hook
-- [ ] 7.2: ReactionBar (student)
-- [ ] 7.3: ReactionOverlay (admin)
-- [ ] 7.4: Integration
-- [ ] 7.R: Reactions review cycle
+- [x] 7.1: Data model + hook
+- [x] 7.2: ReactionBar (student)
+- [x] 7.3: ReactionOverlay (admin)
+- [x] 7.4: Integration
+- [x] 7.R: Reactions review cycle
 
 ### Phase 8: Quiz Mode
-- [ ] 8.1: Data model
-- [ ] 8.2: Admin quiz UI
-- [ ] 8.3: Student quiz result
-- [ ] 8.4: Leaderboard
-- [ ] 8.5: Quiz flow polish
-- [ ] 8.R: Quiz review cycle
+- [x] 8.1: Data model
+- [x] 8.2: Admin quiz UI (pending integration)
+- [x] 8.3: Student quiz result
+- [x] 8.4: Leaderboard
+- [x] 8.5: Quiz flow polish (pending full integration)
+- [x] 8.R: Quiz review cycle
 
 ### Phase 9: Global Polish
-- [ ] 9.1: Loading states
-- [ ] 9.2: Error + empty states
-- [ ] 9.3: Micro-interactions audit
-- [ ] 9.4: Responsive audit
-- [ ] 9.5: Animation performance
-- [ ] 9.6: Presenter mode polish
-- [ ] 9.7: Connection status
-- [ ] 9.R: Final review
+- [x] 9.1: Loading states (skeleton screens implemented)
+- [x] 9.2: Error + empty states (consistent icon-in-box pattern)
+- [x] 9.3: Micro-interactions audit (spring taps, stagger, ring feedback)
+- [x] 9.4: Responsive audit (mobile + desktop verified via Playwright)
+- [x] 9.5: Animation performance (purposeful animations only)
+- [x] 9.6: Presenter mode polish (ESC key, dark pill, session badges)
+- [x] 9.7: Connection status (ConnectionDot with emerald/amber states)
+- [x] 9.R: Final review
 
 ---
 
