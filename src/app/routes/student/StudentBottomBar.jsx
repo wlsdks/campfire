@@ -4,7 +4,7 @@ import { db } from '@/lib/firebase';
 import { getParticipantId, getNickname } from '@/lib/participant';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Hand, MessageCircle, Send, CheckCircle } from 'lucide-react';
+import { Hand, MessageCircle, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 import ReactionBar from '@/features/reactions/components/ReactionBar';
@@ -13,33 +13,45 @@ export default function StudentBottomBar({ sessionId }) {
   const [showQuestionInput, setShowQuestionInput] = useState(false);
   const [questionText, setQuestionText] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
   const { handRaises } = useHandRaises(sessionId);
 
   const pid = getParticipantId();
   const isRaised = handRaises[pid]?.raised === true;
 
   async function toggleHand() {
-    const handRef = ref(db, `sessions/${sessionId}/handRaises/${pid}`);
-    if (isRaised) {
-      await set(handRef, { nickname: getNickname(), raised: false, raisedAt: null });
-    } else {
-      await set(handRef, { nickname: getNickname(), raised: true, raisedAt: serverTimestamp() });
+    try {
+      const handRef = ref(db, `sessions/${sessionId}/handRaises/${pid}`);
+      if (isRaised) {
+        await set(handRef, { nickname: getNickname(), raised: false, raisedAt: null });
+      } else {
+        await set(handRef, { nickname: getNickname(), raised: true, raisedAt: serverTimestamp() });
+      }
+    } catch (err) {
+      console.error('Toggle hand failed:', err);
     }
   }
 
   async function submitUrgentQuestion(e) {
     e.preventDefault();
     if (!questionText.trim()) return;
-    const urgentRef = ref(db, `sessions/${sessionId}/urgentQuestions`);
-    await push(urgentRef, {
-      text: questionText.trim(),
-      timestamp: serverTimestamp(),
-      read: false,
-    });
-    setQuestionText('');
-    setShowQuestionInput(false);
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 2000);
+    setSubmitError(null);
+    try {
+      const urgentRef = ref(db, `sessions/${sessionId}/urgentQuestions`);
+      await push(urgentRef, {
+        text: questionText.trim(),
+        timestamp: serverTimestamp(),
+        read: false,
+      });
+      setQuestionText('');
+      setShowQuestionInput(false);
+      setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 2000);
+    } catch (err) {
+      console.error('Submit question failed:', err);
+      setSubmitError('전송에 실패했습니다. 다시 시도해주세요.');
+      setTimeout(() => setSubmitError(null), 3000);
+    }
   }
 
   return (
@@ -81,6 +93,21 @@ export default function StudentBottomBar({ sessionId }) {
           >
             <CheckCircle size={16} />
             질문이 전송되었습니다
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Error toast */}
+      <AnimatePresence>
+        {submitError && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-red-500 text-white px-4 py-2.5 rounded-lg text-sm font-medium z-50 shadow-lg flex items-center gap-2"
+          >
+            <AlertCircle size={16} />
+            {submitError}
           </motion.div>
         )}
       </AnimatePresence>

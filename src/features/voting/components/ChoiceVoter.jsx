@@ -19,12 +19,17 @@ export default function ChoiceVoter({ sessionId, questionId, options }) {
 
   async function handleVote(option) {
     setSelected(option);
-    const pid = getParticipantId();
-    await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${pid}`), {
-      value: option,
-      timestamp: serverTimestamp(),
-    });
-    setVoted(true);
+    try {
+      const pid = getParticipantId();
+      await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${pid}`), {
+        value: option,
+        timestamp: serverTimestamp(),
+      });
+      setVoted(true);
+    } catch (err) {
+      console.error('Vote failed:', err);
+      setSelected(null);
+    }
   }
 
   if (voted) return <VoteConfirm />;
@@ -43,7 +48,7 @@ export default function ChoiceVoter({ sessionId, questionId, options }) {
             whileTap={{ scale: 0.97 }}
             onClick={() => handleVote(option)}
             disabled={selected !== null}
-            className={`w-full py-3.5 px-4 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${isSelected ? 'ring-2 ring-indigo-500 border-indigo-300' : 'border-transparent'} transition-all flex items-center gap-3`}
+            className={`w-full py-3.5 px-4 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${isSelected ? 'ring-2 ring-indigo-500 border-indigo-300' : 'border-transparent'} ${selected !== null && !isSelected ? 'opacity-40 cursor-not-allowed' : ''} transition-all flex items-center gap-3`}
           >
             <span className={`w-8 h-8 rounded-lg ${style.badge} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
               {style.letter}
