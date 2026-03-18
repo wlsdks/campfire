@@ -7,7 +7,7 @@
 
 ### Phase 1: Foundation
 - [x] 1.0: Architecture migration → Bulletproof React structure + @ path alias
-- [ ] 1.1: Install deps + fonts + design tokens
+- [x] 1.1: Install deps + fonts + design tokens
 - [ ] 1.2: Shared UI components
 - [ ] 1.3: Global styles + shotshot → pinggo cleanup
 
@@ -86,3 +86,4 @@
 | # | Time | Task | Notes |
 |---|------|------|-------|
 | 1 | 2026-03-19 | 1.0 Architecture migration | Bulletproof React structure, @ alias, all imports updated, build passing |
+| 2 | 2026-03-19 | 1.1 Deps + fonts + tokens | lucide-react, lottie-react, Pretendard+Inter CDN, design-tokens.js, global CSS |
