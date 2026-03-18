@@ -9,6 +9,8 @@ import Badge from '@/components/ui/Badge';
 import { SkeletonCard } from '@/components/ui/Skeleton';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
+import { useTimer } from '@/features/timer/api/useTimer';
+import TimerRing from '@/features/timer/components/TimerRing';
 
 const TYPE_LABELS = {
   choice: '객관식',
@@ -19,6 +21,7 @@ const TYPE_LABELS = {
 
 export default function VotePage({ sessionId }) {
   const { session, loading } = useSession(sessionId);
+  const { isRunning: timerRunning, endTime, duration } = useTimer(sessionId);
 
   if (loading) {
     return (
@@ -63,7 +66,10 @@ export default function VotePage({ sessionId }) {
             <h2 className="text-xl font-bold text-slate-900 leading-snug flex-1">
               {question.title}
             </h2>
-            <Badge variant="primary">{TYPE_LABELS[question.type] || question.type}</Badge>
+            <div className="flex items-center gap-2 shrink-0">
+              {timerRunning && <TimerRing endTime={endTime} duration={duration} size="sm" />}
+              <Badge variant="primary">{TYPE_LABELS[question.type] || question.type}</Badge>
+            </div>
           </div>
         </motion.div>
 

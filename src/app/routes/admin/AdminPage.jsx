@@ -17,6 +17,9 @@ import UrgentQuestionList from '@/features/questions/components/UrgentQuestionLi
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import { Sparkles, Loader2, Monitor, Target, Ticket, X, Users, Plus } from 'lucide-react';
+import { useTimer } from '@/features/timer/api/useTimer';
+import TimerControls from '@/features/timer/components/TimerControls';
+import TimerRing from '@/features/timer/components/TimerRing';
 
 const STORED_SESSION_KEY = 'pinggo_admin_session';
 
@@ -26,6 +29,7 @@ export default function AdminPage() {
   const { session, loading } = useSession(sessionId);
   const { onlineList, count } = useParticipants(sessionId);
   const [presentMode, setPresentMode] = useState(false);
+  const { isRunning: timerRunning, endTime, duration, startTimer, stopTimer } = useTimer(sessionId);
 
   const exitPresent = useCallback(() => setPresentMode(false), []);
 
@@ -129,6 +133,7 @@ export default function AdminPage() {
           <Badge variant="neutral">{sessionId}</Badge>
         </div>
         <div className="flex items-center gap-3">
+          {timerRunning && <TimerRing endTime={endTime} duration={duration} onExpire={stopTimer} size="sm" />}
           <Badge variant="success">
             <Users size={12} className="mr-1" />
             {count}명
@@ -146,7 +151,11 @@ export default function AdminPage() {
         <div className="w-80 border-r border-slate-200 bg-white p-5 overflow-y-auto flex flex-col shrink-0">
           <QuestionManager sessionId={sessionId} questions={session?.questions || {}} currentQuestion={session?.currentQuestion} />
 
-          <div className="mt-6 pt-6 border-t border-slate-100 space-y-2">
+          <div className="mt-4 pt-4 border-t border-slate-100">
+            <TimerControls isRunning={timerRunning} onStart={startTimer} onStop={stopTimer} />
+          </div>
+
+          <div className="mt-4 pt-4 border-t border-slate-100 space-y-2">
             <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3">모드 전환</p>
             {[
               { mode: 'roulette', label: '돌림판', icon: Target },
