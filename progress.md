@@ -30,7 +30,7 @@
 
 ### Phase 4: Visualizations
 - [x] 4.1: BarChart
-- [ ] 4.2: OXBattle
+- [x] 4.2: OXBattle
 - [ ] 4.3: WordCloud
 - [ ] 4.4: QACards
 - [ ] 4.R: Viz review cycle
@@ -103,3 +103,4 @@
 | 16 | 2026-03-19 | 3.5 Presentation mode | ESC key exit, dark pill hint, session info badges, p-12 projector padding, text-lg |
 | 17 | 2026-03-19 | 3.R Admin review | All checks pass. Fixed JoinToast+ConnectionDot. Zero remnants in admin scope. |
 | 18 | 2026-03-19 | 4.1 BarChart+VizRenderer | Indigo bars, colored tracks, Sparkles empty state, type Badge, slate tokens |
+| 19 | 2026-03-19 | 4.2 OXBattle | Indigo/slate split, dynamic winner emphasis, 2-color progress bar |
