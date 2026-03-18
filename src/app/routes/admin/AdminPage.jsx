@@ -27,6 +27,15 @@ export default function AdminPage() {
   const { onlineList, count } = useParticipants(sessionId);
   const [presentMode, setPresentMode] = useState(false);
 
+  const exitPresent = useCallback(() => setPresentMode(false), []);
+
+  useEffect(() => {
+    if (!presentMode) return;
+    const handler = (e) => { if (e.key === 'Escape') exitPresent(); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [presentMode, exitPresent]);
+
   async function createSession() {
     const newId = generateSessionId();
     await set(ref(db, `sessions/${newId}`), {
@@ -75,15 +84,6 @@ export default function AdminPage() {
     if (currentMode === 'lottery') return <Lottery participants={onlineList} />;
     return <VizRenderer sessionId={sessionId} session={session} />;
   }
-
-  const exitPresent = useCallback(() => setPresentMode(false), []);
-
-  useEffect(() => {
-    if (!presentMode) return;
-    const handler = (e) => { if (e.key === 'Escape') exitPresent(); };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [presentMode, exitPresent]);
 
   if (presentMode) {
     return (
