@@ -82,3 +82,22 @@ export const tw = {
 
   skeleton: 'animate-pulse bg-slate-200 rounded-lg',
 };
+
+export const timing = {
+  toastDuration: 3000,
+  toastGracePeriod: 2000,
+  successToastDuration: 2000,
+  voteConfirmDelay: 2500,
+  rouletteSpinDuration: 4000,
+  lotteryRevealInterval: 800,
+  reactionBubbleLifetime: 2000,
+  reactionCooldown: 3000,
+  timerTickInterval: 200,
+};
+
+export const limits = {
+  maxReactionBubbles: 15,
+  maxStoredReactions: 50,
+  nicknameMaxLength: 10,
+  urgentQuestionMaxLength: 300,
+};
