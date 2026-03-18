@@ -22,7 +22,7 @@
 
 ### Phase 3: Admin Pages
 - [x] 3.1: AdminLogin
-- [ ] 3.2: AdminPage layout
+- [x] 3.2: AdminPage layout
 - [ ] 3.3: QuestionManager
 - [ ] 3.4: Sidebar panels
 - [ ] 3.5: Presentation mode
@@ -97,3 +97,4 @@
 | 10 | 2026-03-19 | 2.6 VoteConfirm | Animated checkmark, 2.5s delay → waiting text transition, Clock icon, emerald-100 |
 | 11 | 2026-03-19 | 2.R Student review | All checklist items pass. Zero gray/blue/emoji remnants. Desktop+mobile verified. |
 | 12 | 2026-03-19 | 3.1 AdminLogin | Sparkles icon, Card+Button components, error state with AlertCircle, indigo palette |
+| 13 | 2026-03-19 | 3.2 AdminPage layout | Header bar, lucide icons, mode buttons, no-session/loading screens, slate/indigo tokens |
