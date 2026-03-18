@@ -3,7 +3,7 @@ import { ref, set, remove, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { generateQuestionId } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BarChart3, Circle, Cloud, MessageSquare, Plus, Trash2, Play, Square } from 'lucide-react';
+import { BarChart3, Circle, Cloud, MessageSquare, Plus, Trash2, Play, Square, AlertCircle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
 
@@ -19,27 +19,45 @@ export default function QuestionManager({ sessionId, questions, currentQuestion 
   const [type, setType] = useState('choice');
   const [title, setTitle] = useState('');
   const [options, setOptions] = useState(['', '']);
+  const [error, setError] = useState(null);
 
   async function handleAdd() {
     if (!title.trim()) return;
-    const qId = generateQuestionId();
-    const questionData = { type, title: title.trim(), order: Object.keys(questions).length + 1 };
-    if (type === 'choice') questionData.options = options.filter(o => o.trim());
-    await set(ref(db, `sessions/${sessionId}/questions/${qId}`), questionData);
-    setTitle(''); setOptions(['', '']); setShowForm(false);
+    try {
+      setError(null);
+      const qId = generateQuestionId();
+      const questionData = { type, title: title.trim(), order: Object.keys(questions).length + 1 };
+      if (type === 'choice') questionData.options = options.filter(o => o.trim());
+      await set(ref(db, `sessions/${sessionId}/questions/${qId}`), questionData);
+      setTitle(''); setOptions(['', '']); setShowForm(false);
+    } catch {
+      setError('질문 추가에 실패했습니다. 다시 시도해주세요.');
+    }
   }
 
   async function activateQuestion(qId) {
-    await update(ref(db, `sessions/${sessionId}`), { currentQuestion: qId, currentMode: 'poll' });
+    try {
+      await update(ref(db, `sessions/${sessionId}`), { currentQuestion: qId, currentMode: 'poll' });
+    } catch {
+      // Silently fail — Firebase will retry
+    }
   }
 
   async function clearActive() {
-    await update(ref(db, `sessions/${sessionId}`), { currentQuestion: null, currentMode: 'waiting' });
+    try {
+      await update(ref(db, `sessions/${sessionId}`), { currentQuestion: null, currentMode: 'waiting' });
+    } catch {
+      // Silently fail — Firebase will retry
+    }
   }
 
   async function deleteQuestion(qId) {
-    await remove(ref(db, `sessions/${sessionId}/questions/${qId}`));
-    if (currentQuestion === qId) await clearActive();
+    try {
+      await remove(ref(db, `sessions/${sessionId}/questions/${qId}`));
+      if (currentQuestion === qId) await clearActive();
+    } catch {
+      // Silently fail — Firebase will retry
+    }
   }
 
   const questionList = Object.entries(questions || {}).sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
@@ -65,6 +83,7 @@ export default function QuestionManager({ sessionId, questions, currentQuestion 
                     <button
                       key={t.value}
                       onClick={() => setType(t.value)}
+                      aria-label={`${t.label} 유형 선택`}
                       className={`py-2 px-3 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
                         type === t.value
                           ? 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200'
@@ -86,12 +105,18 @@ export default function QuestionManager({ sessionId, questions, currentQuestion 
                     className={`flex-1 ${inputClass}`}
                   />
                   {i === options.length - 1 && options.length < 5 && (
-                    <button onClick={() => setOptions([...options, ''])} className="px-3 py-2 rounded-lg bg-slate-50 text-slate-500 hover:bg-slate-100 transition-all text-sm">
+                    <button onClick={() => setOptions([...options, ''])} className="px-3 py-2 rounded-lg bg-slate-50 text-slate-500 hover:bg-slate-100 transition-all text-sm" aria-label="선택지 추가">
                       <Plus size={14} />
                     </button>
                   )}
                 </div>
               ))}
+              {error && (
+                <p className="text-red-500 text-sm flex items-center gap-1.5">
+                  <AlertCircle size={14} />
+                  {error}
+                </p>
+              )}
               <Button onClick={handleAdd} variant="primary" size="md" className="w-full">추가하기</Button>
             </div>
           </motion.div>
@@ -122,15 +147,15 @@ export default function QuestionManager({ sessionId, questions, currentQuestion 
                 </div>
                 <div className="flex gap-1 shrink-0">
                   {!isActive ? (
-                    <button onClick={() => activateQuestion(qId)} className="p-1.5 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white transition-all" title="활성화">
+                    <button onClick={() => activateQuestion(qId)} className="p-1.5 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white transition-all" title="활성화" aria-label="질문 활성화">
                       <Play size={12} />
                     </button>
                   ) : (
-                    <button onClick={clearActive} className="p-1.5 rounded-md bg-slate-200 text-slate-500 hover:bg-slate-300 transition-all" title="중지">
+                    <button onClick={clearActive} className="p-1.5 rounded-md bg-slate-200 text-slate-500 hover:bg-slate-300 transition-all" title="중지" aria-label="질문 중지">
                       <Square size={12} />
                     </button>
                   )}
-                  <button onClick={() => deleteQuestion(qId)} className="p-1.5 rounded-md text-slate-300 hover:bg-red-50 hover:text-red-500 transition-all" title="삭제">
+                  <button onClick={() => deleteQuestion(qId)} className="p-1.5 rounded-md text-slate-300 hover:bg-red-50 hover:text-red-500 transition-all" title="삭제" aria-label="질문 삭제">
                     <Trash2 size={12} />
                   </button>
                 </div>

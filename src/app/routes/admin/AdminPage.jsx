@@ -16,7 +16,7 @@ import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
 import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import { Sparkles, Loader2, Monitor, Target, Ticket, X, Users, Plus } from 'lucide-react';
+import { Sparkles, Loader2, Monitor, Target, Ticket, X, Users, Plus, AlertCircle } from 'lucide-react';
 import { useTimer } from '@/features/timer/api/useTimer';
 import TimerControls from '@/features/timer/components/TimerControls';
 import TimerRing from '@/features/timer/components/TimerRing';
@@ -24,12 +24,19 @@ import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 
 const STORED_SESSION_KEY = 'pinggo_admin_session';
 
+function MainContent({ currentMode, sessionId, session, onlineList }) {
+  if (currentMode === 'roulette') return <Roulette participants={onlineList} />;
+  if (currentMode === 'lottery') return <Lottery participants={onlineList} />;
+  return <VizRenderer sessionId={sessionId} session={session} />;
+}
+
 export default function AdminPage() {
   const [authed, setAuthed] = useState(sessionStorage.getItem('pinggo_admin') === 'true');
   const [sessionId, setSessionId] = useState(localStorage.getItem(STORED_SESSION_KEY) || '');
   const { session, loading } = useSession(sessionId);
   const { onlineList, count } = useParticipants(sessionId);
   const [presentMode, setPresentMode] = useState(false);
+  const [createError, setCreateError] = useState(null);
   const { isRunning: timerRunning, endTime, duration, startTimer, stopTimer } = useTimer(sessionId);
 
   const exitPresent = useCallback(() => setPresentMode(false), []);
@@ -42,12 +49,25 @@ export default function AdminPage() {
   }, [presentMode, exitPresent]);
 
   async function createSession() {
-    const newId = generateSessionId();
-    await set(ref(db, `sessions/${newId}`), {
-      status: 'active', currentQuestion: null, currentMode: 'waiting', createdAt: serverTimestamp(),
-    });
-    localStorage.setItem(STORED_SESSION_KEY, newId);
-    setSessionId(newId);
+    try {
+      setCreateError(null);
+      const newId = generateSessionId();
+      await set(ref(db, `sessions/${newId}`), {
+        status: 'active', currentQuestion: null, currentMode: 'waiting', createdAt: serverTimestamp(),
+      });
+      localStorage.setItem(STORED_SESSION_KEY, newId);
+      setSessionId(newId);
+    } catch {
+      setCreateError('세션 생성에 실패했습니다. 다시 시도해주세요.');
+    }
+  }
+
+  async function switchMode(mode) {
+    try {
+      await update(ref(db, `sessions/${sessionId}`), { currentMode: mode, currentQuestion: null });
+    } catch {
+      // Silently fail — Firebase will retry
+    }
   }
 
   if (!authed) return <AdminLogin onLogin={() => setAuthed(true)} />;
@@ -64,6 +84,12 @@ export default function AdminPage() {
             <Plus size={20} />
             새 세션 만들기
           </Button>
+          {createError && (
+            <p className="text-red-500 text-sm flex items-center justify-center gap-1.5">
+              <AlertCircle size={14} />
+              {createError}
+            </p>
+          )}
         </div>
       </div>
     );
@@ -84,12 +110,6 @@ export default function AdminPage() {
   const currentMode = session?.currentMode;
   const isGameActive = currentMode === 'roulette' || currentMode === 'lottery';
 
-  function renderMainContent() {
-    if (currentMode === 'roulette') return <Roulette participants={onlineList} />;
-    if (currentMode === 'lottery') return <Lottery participants={onlineList} />;
-    return <VizRenderer sessionId={sessionId} session={session} />;
-  }
-
   if (presentMode) {
     return (
       <div className="min-h-dvh bg-white relative cursor-pointer" onClick={exitPresent}>
@@ -102,7 +122,7 @@ export default function AdminPage() {
         </div>
         {/* Main content — scaled up for projector */}
         <div className="flex items-center justify-center min-h-dvh p-12 text-lg">
-          {renderMainContent()}
+          <MainContent currentMode={currentMode} sessionId={sessionId} session={session} onlineList={onlineList} />
         </div>
         {/* QR bottom-right */}
         <div className="fixed bottom-5 right-5 opacity-60">
@@ -163,32 +183,34 @@ export default function AdminPage() {
               { mode: 'roulette', label: '돌림판', icon: Target },
               { mode: 'lottery', label: '제비뽑기', icon: Ticket },
             ].map(({ mode, label, icon: Icon }) => (
-              <button
+              <Button
                 key={mode}
-                onClick={() => update(ref(db, `sessions/${sessionId}`), { currentMode: mode, currentQuestion: null })}
-                className={`w-full py-2.5 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
-                  currentMode === mode
-                    ? 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200'
-                    : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
-                }`}
+                onClick={() => switchMode(mode)}
+                variant={currentMode === mode ? 'primary' : 'secondary'}
+                size="sm"
+                className="w-full"
+                aria-label={`${label} 모드로 전환`}
               >
                 <Icon size={16} /> {label}
-              </button>
+              </Button>
             ))}
             {isGameActive && (
-              <button
-                onClick={() => update(ref(db, `sessions/${sessionId}`), { currentMode: 'waiting', currentQuestion: null })}
-                className="w-full py-2.5 rounded-lg bg-slate-50 text-slate-500 text-sm font-medium hover:bg-slate-100 transition-all flex items-center justify-center gap-2"
+              <Button
+                onClick={() => switchMode('waiting')}
+                variant="ghost"
+                size="sm"
+                className="w-full"
+                aria-label="게임 종료"
               >
                 <X size={16} /> 게임 종료
-              </button>
+              </Button>
             )}
           </div>
         </div>
 
         {/* Center */}
         <div className="flex-1 p-8 flex items-center justify-center overflow-auto">
-          {renderMainContent()}
+          <MainContent currentMode={currentMode} sessionId={sessionId} session={session} onlineList={onlineList} />
         </div>
 
         {/* Right sidebar */}
