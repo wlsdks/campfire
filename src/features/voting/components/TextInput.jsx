@@ -2,7 +2,7 @@ import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId } from '@/lib/participant';
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Send } from 'lucide-react';
 import VoteConfirm from './VoteConfirm';
 import Button from '@/components/ui/Button';
@@ -10,16 +10,23 @@ import Button from '@/components/ui/Button';
 export default function TextInput({ sessionId, questionId, placeholder, maxLength = 50 }) {
   const [text, setText] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(null);
 
   async function handleSubmit(e) {
     e.preventDefault();
     if (!text.trim()) return;
-    const pid = getParticipantId();
-    await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${pid}`), {
-      value: text.trim(),
-      timestamp: serverTimestamp(),
-    });
-    setSubmitted(true);
+    setError(null);
+    try {
+      const pid = getParticipantId();
+      await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${pid}`), {
+        value: text.trim(),
+        timestamp: serverTimestamp(),
+      });
+      setSubmitted(true);
+    } catch (err) {
+      console.error('Submit failed:', err);
+      setError('제출에 실패했습니다. 다시 시도해주세요.');
+    }
   }
 
   if (submitted) return <VoteConfirm />;
@@ -46,6 +53,18 @@ export default function TextInput({ sessionId, questionId, placeholder, maxLengt
           {text.length}/{maxLength}
         </span>
       </div>
+      <AnimatePresence>
+        {error && (
+          <motion.p
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            className="text-red-500 text-sm text-center font-medium"
+          >
+            {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
       <Button
         type="submit"
         variant="primary"

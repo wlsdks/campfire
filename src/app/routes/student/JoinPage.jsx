@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ref, set, serverTimestamp, onDisconnect } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId, getNickname, setNickname as saveNickname } from '@/lib/participant';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Loader2 } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
@@ -12,26 +12,34 @@ import Button from '@/components/ui/Button';
 export default function JoinPage({ sessionId, onJoin }) {
   const [nickname, setNickname] = useState(getNickname());
   const [joining, setJoining] = useState(false);
+  const [error, setError] = useState(null);
 
   async function handleJoin(e) {
     e.preventDefault();
     if (!nickname.trim()) return;
     setJoining(true);
+    setError(null);
 
-    const participantId = getParticipantId();
-    saveNickname(nickname.trim());
+    try {
+      const participantId = getParticipantId();
+      saveNickname(nickname.trim());
 
-    const participantRef = ref(db, `sessions/${sessionId}/participants/${participantId}`);
-    await set(participantRef, {
-      nickname: nickname.trim(),
-      joinedAt: serverTimestamp(),
-      online: true,
-    });
+      const participantRef = ref(db, `sessions/${sessionId}/participants/${participantId}`);
+      await set(participantRef, {
+        nickname: nickname.trim(),
+        joinedAt: serverTimestamp(),
+        online: true,
+      });
 
-    const onlineRef = ref(db, `sessions/${sessionId}/participants/${participantId}/online`);
-    onDisconnect(onlineRef).set(false);
+      const onlineRef = ref(db, `sessions/${sessionId}/participants/${participantId}/online`);
+      onDisconnect(onlineRef).set(false);
 
-    onJoin(participantId, nickname.trim());
+      onJoin(participantId, nickname.trim());
+    } catch (err) {
+      console.error('Join failed:', err);
+      setError('참여에 실패했습니다. 다시 시도해주세요.');
+      setJoining(false);
+    }
   }
 
   return (
@@ -86,6 +94,20 @@ export default function JoinPage({ sessionId, onJoin }) {
               autoFocus
             />
           </div>
+
+          {/* Error message */}
+          <AnimatePresence>
+            {error && (
+              <motion.p
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                className="text-red-500 text-sm text-center font-medium"
+              >
+                {error}
+              </motion.p>
+            )}
+          </AnimatePresence>
 
           {/* Submit */}
           <Button

@@ -11,12 +11,17 @@ export default function OXVoter({ sessionId, questionId }) {
 
   async function handleVote(value) {
     setSelected(value);
-    const pid = getParticipantId();
-    await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${pid}`), {
-      value,
-      timestamp: serverTimestamp(),
-    });
-    setVoted(true);
+    try {
+      const pid = getParticipantId();
+      await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${pid}`), {
+        value,
+        timestamp: serverTimestamp(),
+      });
+      setVoted(true);
+    } catch (err) {
+      console.error('Vote failed:', err);
+      setSelected(null);
+    }
   }
 
   if (voted) return <VoteConfirm />;
@@ -30,7 +35,7 @@ export default function OXVoter({ sessionId, questionId }) {
         whileTap={{ scale: 0.95 }}
         onClick={() => handleVote('O')}
         disabled={selected !== null}
-        className={`flex-1 py-10 rounded-xl bg-indigo-50 hover:bg-indigo-100 border transition-all flex flex-col items-center gap-1.5 ${selected === 'O' ? 'ring-2 ring-indigo-500 border-indigo-300' : 'border-transparent'}`}
+        className={`flex-1 py-10 rounded-xl bg-indigo-50 hover:bg-indigo-100 border transition-all flex flex-col items-center gap-1.5 ${selected === 'O' ? 'ring-2 ring-indigo-500 border-indigo-300' : 'border-transparent'} ${selected !== null && selected !== 'O' ? 'opacity-40 cursor-not-allowed' : ''}`}
       >
         <span className="text-5xl font-black text-indigo-600">O</span>
         <span className="text-sm font-medium text-indigo-400">맞아요</span>
@@ -42,7 +47,7 @@ export default function OXVoter({ sessionId, questionId }) {
         whileTap={{ scale: 0.95 }}
         onClick={() => handleVote('X')}
         disabled={selected !== null}
-        className={`flex-1 py-10 rounded-xl bg-slate-100 hover:bg-slate-200 border transition-all flex flex-col items-center gap-1.5 ${selected === 'X' ? 'ring-2 ring-slate-500 border-slate-400' : 'border-transparent'}`}
+        className={`flex-1 py-10 rounded-xl bg-slate-100 hover:bg-slate-200 border transition-all flex flex-col items-center gap-1.5 ${selected === 'X' ? 'ring-2 ring-slate-500 border-slate-400' : 'border-transparent'} ${selected !== null && selected !== 'X' ? 'opacity-40 cursor-not-allowed' : ''}`}
       >
         <span className="text-5xl font-black text-slate-600">X</span>
         <span className="text-sm font-medium text-slate-400">아니에요</span>
