@@ -24,7 +24,7 @@
 - [x] 3.1: AdminLogin
 - [x] 3.2: AdminPage layout
 - [x] 3.3: QuestionManager
-- [ ] 3.4: Sidebar panels
+- [x] 3.4: Sidebar panels
 - [ ] 3.5: Presentation mode
 - [ ] 3.R: Admin review cycle
 
@@ -99,3 +99,4 @@
 | 12 | 2026-03-19 | 3.1 AdminLogin | Sparkles icon, Card+Button components, error state with AlertCircle, indigo palette |
 | 13 | 2026-03-19 | 3.2 AdminPage layout | Header bar, lucide icons, mode buttons, no-session/loading screens, slate/indigo tokens |
 | 14 | 2026-03-19 | 3.3 QuestionManager | Lucide type icons, icon action buttons, indigo left border active, Badge LIVE, Button components |
+| 15 | 2026-03-19 | 3.4 Sidebar panels | Avatar initials, Hand/AlertCircle/Trash2 icons, Badge counts, IconButton dismiss |
