@@ -17,7 +17,7 @@
 - [x] 2.3: Voters (Choice/OX/Text)
 - [x] 2.4: WaitingPage
 - [x] 2.5: BottomBar + modals
-- [ ] 2.6: VoteConfirm
+- [x] 2.6: VoteConfirm
 - [ ] 2.R: Student review cycle
 
 ### Phase 3: Admin Pages
@@ -94,3 +94,4 @@
 | 7 | 2026-03-19 | 2.3 Voters redesign | Light tint buttons, selection ring, OX=indigo/slate, TextInput w/ Send icon+Button |
 | 8 | 2026-03-19 | 2.4 WaitingPage | Sparkles pulse, participant count Badge, session code Badge, slate tokens |
 | 9 | 2026-03-19 | 2.5 BottomBar+modals | Hand+MessageCircle icons, Modal component, Button component, slate-900 toast |
+| 10 | 2026-03-19 | 2.6 VoteConfirm | Animated checkmark, 2.5s delay → waiting text transition, Clock icon, emerald-100 |
