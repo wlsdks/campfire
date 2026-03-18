@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Sparkles, AlertCircle, LogIn } from 'lucide-react';
+import Card from '@/components/ui/Card';
+import Button from '@/components/ui/Button';
 
 const ADMIN_PASSWORD = 'pinggo';
 
@@ -18,49 +21,61 @@ export default function AdminLogin({ onLogin }) {
   }
 
   return (
-    <div className="min-h-dvh bg-gray-50 flex items-center justify-center">
+    <div className="min-h-dvh bg-slate-50 flex items-center justify-center p-4">
       <motion.form
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
         onSubmit={handleSubmit}
-        className="w-full max-w-sm px-4"
+        className="w-full max-w-sm"
       >
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-6">
-          <div className="text-center space-y-2">
-            <div className="text-5xl mb-3">🏓</div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              Pinggo Admin
-            </h1>
-            <p className="text-gray-400 text-sm">관리자 로그인</p>
+        <Card className="p-8 space-y-6">
+          <div className="text-center space-y-3">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.1 }}
+              className="w-14 h-14 rounded-2xl bg-indigo-100 flex items-center justify-center mx-auto"
+            >
+              <Sparkles size={28} className="text-indigo-600" />
+            </motion.div>
+            <div>
+              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Pinggo</h1>
+              <p className="text-slate-400 text-sm mt-1">관리자 로그인</p>
+            </div>
           </div>
 
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => { setPassword(e.target.value); setError(false); }}
-            placeholder="비밀번호를 입력하세요"
-            className="w-full px-5 py-4 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-300 text-center text-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
-            autoFocus
-          />
+          <div className="space-y-3">
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => { setPassword(e.target.value); setError(false); }}
+              placeholder="비밀번호를 입력하세요"
+              className={`w-full bg-white border rounded-lg px-4 py-3 text-base text-center placeholder:text-slate-400 focus:outline-none focus:ring-2 transition-all ${
+                error
+                  ? 'border-red-400 focus:ring-red-500/20 focus:border-red-500'
+                  : 'border-slate-200 focus:ring-indigo-500/20 focus:border-indigo-500'
+              }`}
+              autoFocus
+            />
 
-          {error && (
-            <motion.p
-              initial={{ opacity: 0, y: -5 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-rose-500 text-sm text-center"
-            >
-              비밀번호가 틀렸습니다
-            </motion.p>
-          )}
+            {error && (
+              <motion.p
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-red-500 text-sm text-center flex items-center justify-center gap-1.5"
+              >
+                <AlertCircle size={14} />
+                비밀번호가 틀렸습니다
+              </motion.p>
+            )}
+          </div>
 
-          <motion.button
-            type="submit"
-            whileTap={{ scale: 0.97 }}
-            className="w-full py-4 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-lg shadow-sm transition-all"
-          >
+          <Button type="submit" variant="primary" size="lg" className="w-full">
+            <LogIn size={18} />
             로그인
-          </motion.button>
-        </div>
+          </Button>
+        </Card>
       </motion.form>
     </div>
   );
