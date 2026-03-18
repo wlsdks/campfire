@@ -56,26 +56,26 @@ If something goes wrong during the cycle:
 ## Phase Plan
 
 ### Phase 1: Foundation
-- [ ] 1.0: Architecture migration → Bulletproof React structure + `@` path alias in vite.config.js
+- [x] 1.0: Architecture migration → Bulletproof React structure + `@` path alias in vite.config.js
 - [ ] 1.1: Install deps (lucide-react, lottie-react), add Pretendard + Inter fonts, create design-tokens.js
 - [ ] 1.2: Shared UI components (Button variants, Card, Badge, IconButton, Skeleton)
 - [ ] 1.3: Global styles + rename "shotshot" → "pinggo" everywhere
 
 ### Phase 2: Student Pages (Mobile-First)
-- [ ] 2.1: JoinPage — centered card, clean input, avatar preview, entry animation
-- [ ] 2.2: VotePage — question header, large vote buttons in thumb zone, tap feedback
-- [ ] 2.3: Voters (Choice/OX/Text) — color-coded, smooth states, consistent feel
-- [ ] 2.4: WaitingPage — ambient animation, participant count, session code
-- [ ] 2.5: BottomBar + modals — lucide icons, polished interactions
-- [ ] 2.6: VoteConfirm — Lottie checkmark, celebration, transition
+- [ ] 2.1: JoinPage — 화면 중앙 흰색 Card, Pinggo 로고(Sparkles 아이콘+텍스트), 세션코드 Badge, 닉네임 Input(Component Pattern 사용), 닉네임 첫글자 Avatar 미리보기, "참여하기" Primary Button 하단, 배경 slate-50
+- [ ] 2.2: VotePage — 상단에 질문 카드(제목 bold + 타입 Badge), 하단 2/3에 투표 버튼들, ConnectionDot 우상단 고정
+- [ ] 2.3: Voters — ChoiceVoter: 5색 풀너비 버튼(Vote Colors 사용) 선택 시 ring+scale 피드백 / OXVoter: 2분할 대형 버튼(O=indigo, X=slate) / TextInput: Input+Submit 조합
+- [ ] 2.4: WaitingPage — 중앙에 Pinggo 아이콘 부드러운 pulse, "다음 질문을 기다리는 중..." 텍스트, 참여자 수 Badge, 세션코드 하단 표시
+- [ ] 2.5: BottomBar — 고정 하단바 bg-white border-t, 손들기(Hand 아이콘) + 긴급질문(MessageCircle 아이콘) 두 버튼, 손들기 활성 시 amber 배경 토글, 질문 모달은 Modal Pattern 사용
+- [ ] 2.6: VoteConfirm — 중앙 체크 애니메이션(Lottie or Framer spring scale), "투표 완료!" 텍스트, 2초 후 "결과를 기다리는 중" 전환
 - [ ] 2.R: **REVIEW** — screenshot all student pages, fix issues
 
 ### Phase 3: Admin Pages (Responsive)
-- [ ] 3.1: AdminLogin — branded card, validation states
-- [ ] 3.2: AdminPage layout — responsive columns, session info, presentation mode
-- [ ] 3.3: QuestionManager — icon type selector, clean list, better form
-- [ ] 3.4: Sidebar panels — avatar initials, actions, unread badges
-- [ ] 3.5: Presentation mode — fullscreen, large fonts, keyboard hints
+- [ ] 3.1: AdminLogin — 중앙 Card, Pinggo 브랜드(Sparkles 아이콘 + "Pinggo" text-2xl font-bold text-indigo-600), 비밀번호 Input, Primary Button, 배경 slate-50
+- [ ] 3.2: AdminPage layout — 3열: 좌(w-80 질문관리) / 중앙(flex-1 시각화) / 우(w-72 참여자), 태블릿 이하에서 탭 전환 UI로 변경, 상단 바에 세션ID Badge + 참여자수 + 프레젠테이션 모드 Button
+- [ ] 3.3: QuestionManager — 질문 타입 4개 아이콘 버튼(BarChart3/Circle/Cloud/MessageSquare), 질문 목록 Card 리스트, 현재 활성 질문 indigo 좌측 보더, 새 질문 폼은 Card 안에 깔끔하게
+- [ ] 3.4: Sidebar panels — ParticipantList: Avatar(이니셜)+이름 리스트 / HandRaiseList: amber Badge 카운트+dismiss IconButton / UrgentQuestionList: 읽지않음 indigo dot 표시
+- [ ] 3.5: Presentation mode — 전체화면, 시각화만 표시, 배경 white, 폰트 1.5배 확대, ESC로 나가기 힌트
 - [ ] 3.R: **REVIEW** — screenshot all admin pages at all viewports
 
 ### Phase 4: Visualizations
