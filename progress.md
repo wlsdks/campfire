@@ -31,8 +31,8 @@
 ### Phase 4: Visualizations
 - [x] 4.1: BarChart
 - [x] 4.2: OXBattle
-- [ ] 4.3: WordCloud
-- [ ] 4.4: QACards
+- [x] 4.3: WordCloud
+- [x] 4.4: QACards
 - [ ] 4.R: Viz review cycle
 
 ### Phase 5: Games
@@ -104,3 +104,4 @@
 | 17 | 2026-03-19 | 3.R Admin review | All checks pass. Fixed JoinToast+ConnectionDot. Zero remnants in admin scope. |
 | 18 | 2026-03-19 | 4.1 BarChart+VizRenderer | Indigo bars, colored tracks, Sparkles empty state, type Badge, slate tokens |
 | 19 | 2026-03-19 | 4.2 OXBattle | Indigo/slate split, dynamic winner emphasis, 2-color progress bar |
+| 20 | 2026-03-19 | 4.3+4.4 WordCloud+QACards | Indigo/slate word palette, Cloud/MessageSquare empty states, slate tokens |
