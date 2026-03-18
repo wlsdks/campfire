@@ -3,13 +3,13 @@
 > Auto-updated each cycle. [x] = done, [ ] = pending, [~] = in progress
 > Last updated: 2026-03-19
 
-## Current: Phase 1 - Foundation
+## Current: Phase 2 - Student Pages
 
 ### Phase 1: Foundation
 - [x] 1.0: Architecture migration → Bulletproof React structure + @ path alias
 - [x] 1.1: Install deps + fonts + design tokens
 - [x] 1.2: Shared UI components
-- [ ] 1.3: Global styles + shotshot → pinggo cleanup
+- [x] 1.3: Global styles + shotshot → pinggo cleanup
 
 ### Phase 2: Student Pages
 - [ ] 2.1: JoinPage
@@ -88,3 +88,4 @@
 | 1 | 2026-03-19 | 1.0 Architecture migration | Bulletproof React structure, @ alias, all imports updated, build passing |
 | 2 | 2026-03-19 | 1.1 Deps + fonts + tokens | lucide-react, lottie-react, Pretendard+Inter CDN, design-tokens.js, global CSS |
 | 3 | 2026-03-19 | 1.2 Shared UI components | Button, Card, Badge, IconButton, Skeleton, Avatar, Modal — all from design tokens |
+| 4 | 2026-03-19 | 1.3 Rename + global styles | shotshot→pinggo in all files, no-session screen: dark→light + emoji→lucide icon |
