@@ -1,6 +1,36 @@
 @import "tailwindcss";
 
+/* Base font */
+html {
+  font-family: 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  color: #0F172A;
+  background: #F8FAFC;
+}
+
+/* Korean body text needs more breathing room */
+body {
+  line-height: 1.7;
+}
+
 /* Smooth scrollbar */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: 2px solid #4F46E5;
+  outline-offset: 2px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
