@@ -20,6 +20,7 @@ import { Sparkles, Loader2, Monitor, Target, Ticket, X, Users, Plus } from 'luci
 import { useTimer } from '@/features/timer/api/useTimer';
 import TimerControls from '@/features/timer/components/TimerControls';
 import TimerRing from '@/features/timer/components/TimerRing';
+import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 
 const STORED_SESSION_KEY = 'pinggo_admin_session';
 
@@ -93,6 +94,7 @@ export default function AdminPage() {
     return (
       <div className="min-h-dvh bg-white relative cursor-pointer" onClick={exitPresent}>
         <JoinToast sessionId={sessionId} />
+        <ReactionOverlay sessionId={sessionId} />
         {/* Alerts overlay */}
         <div className="fixed top-5 left-5 w-72 space-y-3 z-10">
           <HandRaiseList sessionId={sessionId} />

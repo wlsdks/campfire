@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Hand, MessageCircle, Send, CheckCircle } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
+import ReactionBar from '@/features/reactions/components/ReactionBar';
 
 export default function StudentBottomBar({ sessionId }) {
   const [showQuestionInput, setShowQuestionInput] = useState(false);
@@ -85,7 +86,9 @@ export default function StudentBottomBar({ sessionId }) {
       </AnimatePresence>
 
       {/* Bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-3 flex gap-2.5 z-30">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-2.5 z-30 space-y-2">
+        <ReactionBar sessionId={sessionId} />
+        <div className="flex gap-2.5">
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={toggleHand}
@@ -106,6 +109,7 @@ export default function StudentBottomBar({ sessionId }) {
           <MessageCircle size={18} />
           긴급 질문
         </motion.button>
+        </div>
       </div>
     </>
   );

@@ -9,7 +9,7 @@ export default function WaitingPage({ sessionId }) {
   const { count } = useParticipants(sessionId);
 
   return (
-    <div className="min-h-dvh bg-slate-50 flex flex-col items-center justify-center p-4 pb-24">
+    <div className="min-h-dvh bg-slate-50 flex flex-col items-center justify-center p-4 pb-32">
       {/* Connection status */}
       <div className="fixed top-4 right-4 z-10">
         <ConnectionDot />
