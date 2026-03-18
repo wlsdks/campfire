@@ -1,4 +1,4 @@
-import { ref, set } from 'firebase/database';
+import { ref, set, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,16 +10,23 @@ export default function HandRaiseList({ sessionId }) {
   const { raisedList, count } = useHandRaises(sessionId);
 
   async function dismissOne(participantId) {
-    await set(ref(db, `sessions/${sessionId}/handRaises/${participantId}/raised`), false);
+    try {
+      await set(ref(db, `sessions/${sessionId}/handRaises/${participantId}/raised`), false);
+    } catch (err) {
+      console.error('손들기 해제 실패:', err);
+    }
   }
 
   async function dismissAll() {
-    const updates = {};
-    raisedList.forEach(p => {
-      updates[`sessions/${sessionId}/handRaises/${p.id}/raised`] = false;
-    });
-    const { update } = await import('firebase/database');
-    await update(ref(db), updates);
+    try {
+      const updates = {};
+      raisedList.forEach(p => {
+        updates[`sessions/${sessionId}/handRaises/${p.id}/raised`] = false;
+      });
+      await update(ref(db), updates);
+    } catch (err) {
+      console.error('전체 손들기 해제 실패:', err);
+    }
   }
 
   if (count === 0) return null;
@@ -32,7 +39,7 @@ export default function HandRaiseList({ sessionId }) {
           손들기
           <Badge variant="warning">{count}</Badge>
         </span>
-        <button onClick={dismissAll} className="text-xs text-amber-400 hover:text-amber-600 transition-colors">전체 해제</button>
+        <button onClick={dismissAll} aria-label="모든 손들기 해제" className="text-xs text-amber-400 hover:text-amber-600 transition-colors">전체 해제</button>
       </div>
       <AnimatePresence>
         {raisedList.map((p, i) => (

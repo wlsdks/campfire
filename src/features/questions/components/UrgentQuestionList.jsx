@@ -9,11 +9,19 @@ export default function UrgentQuestionList({ sessionId }) {
   const { questionList, unreadCount } = useUrgentQuestions(sessionId);
 
   async function markRead(questionId) {
-    await update(ref(db, `sessions/${sessionId}/urgentQuestions/${questionId}`), { read: true });
+    try {
+      await update(ref(db, `sessions/${sessionId}/urgentQuestions/${questionId}`), { read: true });
+    } catch (err) {
+      console.error('질문 읽음 처리 실패:', err);
+    }
   }
 
   async function dismissOne(questionId) {
-    await remove(ref(db, `sessions/${sessionId}/urgentQuestions/${questionId}`));
+    try {
+      await remove(ref(db, `sessions/${sessionId}/urgentQuestions/${questionId}`));
+    } catch (err) {
+      console.error('질문 삭제 실패:', err);
+    }
   }
 
   if (questionList.length === 0) return null;
@@ -32,6 +40,8 @@ export default function UrgentQuestionList({ sessionId }) {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
+            role="button"
+            aria-label={q.read ? '읽은 질문' : '읽지 않은 질문 — 클릭하여 읽음 처리'}
             className={`p-2.5 rounded-lg text-sm transition-colors cursor-pointer ${
               q.read ? 'bg-white' : 'bg-red-100/60 hover:bg-red-100'
             }`}
@@ -44,6 +54,7 @@ export default function UrgentQuestionList({ sessionId }) {
                 <div className="flex justify-between items-center mt-1.5">
                   <span className="text-slate-400 text-xs">익명</span>
                   <button
+                    aria-label="질문 삭제"
                     onClick={(e) => { e.stopPropagation(); dismissOne(q.id); }}
                     className="text-slate-300 hover:text-red-500 transition-colors"
                   >
