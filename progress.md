@@ -25,7 +25,7 @@
 - [x] 3.2: AdminPage layout
 - [x] 3.3: QuestionManager
 - [x] 3.4: Sidebar panels
-- [ ] 3.5: Presentation mode
+- [x] 3.5: Presentation mode
 - [ ] 3.R: Admin review cycle
 
 ### Phase 4: Visualizations
@@ -100,3 +100,4 @@
 | 13 | 2026-03-19 | 3.2 AdminPage layout | Header bar, lucide icons, mode buttons, no-session/loading screens, slate/indigo tokens |
 | 14 | 2026-03-19 | 3.3 QuestionManager | Lucide type icons, icon action buttons, indigo left border active, Badge LIVE, Button components |
 | 15 | 2026-03-19 | 3.4 Sidebar panels | Avatar initials, Hand/AlertCircle/Trash2 icons, Badge counts, IconButton dismiss |
+| 16 | 2026-03-19 | 3.5 Presentation mode | ESC key exit, dark pill hint, session info badges, p-12 projector padding, text-lg |
