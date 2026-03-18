@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getDatabase } from 'firebase/database';
 
+// Firebase config is intentionally public (client-side SDK). These are not secret credentials.
 const firebaseConfig = {
   apiKey: "AIzaSyCsRs1BTT1NphOpbkoAwKn7rnrdQk16R2I",
   authDomain: "jinan-6c884.firebaseapp.com",
