@@ -3,7 +3,7 @@
 > Auto-updated each cycle. [x] = done, [ ] = pending, [~] = in progress
 > Last updated: 2026-03-19
 
-## Current: Phase 4 - Visualizations
+## Current: Phase 5 - Games
 
 ### Phase 1: Foundation
 - [x] 1.0: Architecture migration → Bulletproof React structure + @ path alias
@@ -33,7 +33,7 @@
 - [x] 4.2: OXBattle
 - [x] 4.3: WordCloud
 - [x] 4.4: QACards
-- [ ] 4.R: Viz review cycle
+- [x] 4.R: Viz review cycle
 
 ### Phase 5: Games
 - [ ] 5.1: Roulette
