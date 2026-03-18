@@ -15,7 +15,7 @@
 - [x] 2.1: JoinPage
 - [x] 2.2: VotePage
 - [x] 2.3: Voters (Choice/OX/Text)
-- [ ] 2.4: WaitingPage
+- [x] 2.4: WaitingPage
 - [ ] 2.5: BottomBar + modals
 - [ ] 2.6: VoteConfirm
 - [ ] 2.R: Student review cycle
@@ -92,3 +92,4 @@
 | 5 | 2026-03-19 | 2.1 JoinPage redesign | Card+Badge+Avatar+Button components, Sparkles icon, avatar preview, indigo palette |
 | 6 | 2026-03-19 | 2.2 VotePage redesign | Skeleton loading, question Card+Badge, ConnectionDot top-right, slate tokens |
 | 7 | 2026-03-19 | 2.3 Voters redesign | Light tint buttons, selection ring, OX=indigo/slate, TextInput w/ Send icon+Button |
+| 8 | 2026-03-19 | 2.4 WaitingPage | Sparkles pulse, participant count Badge, session code Badge, slate tokens |
