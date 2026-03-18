@@ -1,0 +1,38 @@
+import { BrowserRouter, Routes, Route, useSearchParams } from 'react-router-dom';
+import { useState } from 'react';
+import JoinPage from './pages/student/JoinPage';
+import VotePage from './pages/student/VotePage';
+import AdminPage from './pages/admin/AdminPage';
+
+function StudentRouter() {
+  const [searchParams] = useSearchParams();
+  const sessionId = searchParams.get('s');
+  const [joined, setJoined] = useState(false);
+
+  if (!sessionId) {
+    return (
+      <div className="min-h-dvh bg-gray-950 flex items-center justify-center text-white/50 text-lg">
+        세션 링크를 통해 접속해주세요
+      </div>
+    );
+  }
+
+  if (!joined) {
+    return <JoinPage sessionId={sessionId} onJoin={() => setJoined(true)} />;
+  }
+
+  return <VotePage sessionId={sessionId} />;
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<StudentRouter />} />
+        <Route path="/admin" element={<AdminPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+export default App;
