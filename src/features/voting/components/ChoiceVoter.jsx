@@ -6,17 +6,19 @@ import { useState } from 'react';
 import VoteConfirm from './VoteConfirm';
 
 const OPTION_STYLES = [
-  { bg: 'bg-blue-500 hover:bg-blue-600', letter: 'A' },
-  { bg: 'bg-emerald-500 hover:bg-emerald-600', letter: 'B' },
-  { bg: 'bg-amber-500 hover:bg-amber-600', letter: 'C' },
-  { bg: 'bg-violet-500 hover:bg-violet-600', letter: 'D' },
-  { bg: 'bg-rose-500 hover:bg-rose-600', letter: 'E' },
+  { bg: 'bg-indigo-50 hover:bg-indigo-100', text: 'text-indigo-700', badge: 'bg-indigo-600', letter: 'A' },
+  { bg: 'bg-emerald-50 hover:bg-emerald-100', text: 'text-emerald-700', badge: 'bg-emerald-600', letter: 'B' },
+  { bg: 'bg-amber-50 hover:bg-amber-100', text: 'text-amber-700', badge: 'bg-amber-600', letter: 'C' },
+  { bg: 'bg-violet-50 hover:bg-violet-100', text: 'text-violet-700', badge: 'bg-violet-600', letter: 'D' },
+  { bg: 'bg-pink-50 hover:bg-pink-100', text: 'text-pink-700', badge: 'bg-pink-600', letter: 'E' },
 ];
 
 export default function ChoiceVoter({ sessionId, questionId, options }) {
   const [voted, setVoted] = useState(false);
+  const [selected, setSelected] = useState(null);
 
   async function handleVote(option) {
+    setSelected(option);
     const pid = getParticipantId();
     await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${pid}`), {
       value: option,
@@ -28,23 +30,25 @@ export default function ChoiceVoter({ sessionId, questionId, options }) {
   if (voted) return <VoteConfirm />;
 
   return (
-    <div className="space-y-3 w-full">
+    <div className="space-y-2.5 w-full">
       {options.map((option, i) => {
         const style = OPTION_STYLES[i % OPTION_STYLES.length];
+        const isSelected = selected === option;
         return (
           <motion.button
             key={option}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.08 }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.05, duration: 0.25, ease: 'easeOut' }}
             whileTap={{ scale: 0.97 }}
             onClick={() => handleVote(option)}
-            className={`w-full py-4 px-5 rounded-2xl text-white font-semibold text-lg ${style.bg} shadow-sm active:brightness-90 transition-all flex items-center gap-4`}
+            disabled={selected !== null}
+            className={`w-full py-3.5 px-4 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${isSelected ? 'ring-2 ring-indigo-500 border-indigo-300' : 'border-transparent'} transition-all flex items-center gap-3`}
           >
-            <span className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center text-base font-bold shrink-0">
+            <span className={`w-8 h-8 rounded-lg ${style.badge} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
               {style.letter}
             </span>
-            <span className="text-left">{option}</span>
+            <span className="text-left leading-snug">{option}</span>
           </motion.button>
         );
       })}

@@ -3,7 +3,9 @@ import { db } from '@/lib/firebase';
 import { getParticipantId } from '@/lib/participant';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Send } from 'lucide-react';
 import VoteConfirm from './VoteConfirm';
+import Button from '@/components/ui/Button';
 
 export default function TextInput({ sessionId, questionId, placeholder, maxLength = 50 }) {
   const [text, setText] = useState('');
@@ -24,10 +26,11 @@ export default function TextInput({ sessionId, questionId, placeholder, maxLengt
 
   return (
     <motion.form
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: 'easeOut' }}
       onSubmit={handleSubmit}
-      className="w-full space-y-4"
+      className="w-full space-y-3"
     >
       <div className="relative">
         <input
@@ -36,23 +39,23 @@ export default function TextInput({ sessionId, questionId, placeholder, maxLengt
           onChange={(e) => setText(e.target.value)}
           placeholder={placeholder || '입력해주세요'}
           maxLength={maxLength}
-          className="w-full px-5 py-4 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-300 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+          className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3.5 pr-16 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
           autoFocus
         />
-        {maxLength && (
-          <span className="absolute right-4 bottom-3 text-xs text-gray-300">
-            {text.length}/{maxLength}
-          </span>
-        )}
+        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-300 font-medium">
+          {text.length}/{maxLength}
+        </span>
       </div>
-      <motion.button
+      <Button
         type="submit"
+        variant="primary"
+        size="lg"
         disabled={!text.trim()}
-        whileTap={{ scale: 0.97 }}
-        className="w-full py-4 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-lg disabled:opacity-30 shadow-sm transition-all"
+        className="w-full"
       >
-        제출
-      </motion.button>
+        <Send size={18} />
+        제출하기
+      </Button>
     </motion.form>
   );
 }
