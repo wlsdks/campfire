@@ -8,7 +8,7 @@
 ### Phase 1: Foundation
 - [x] 1.0: Architecture migration → Bulletproof React structure + @ path alias
 - [x] 1.1: Install deps + fonts + design tokens
-- [ ] 1.2: Shared UI components
+- [x] 1.2: Shared UI components
 - [ ] 1.3: Global styles + shotshot → pinggo cleanup
 
 ### Phase 2: Student Pages
@@ -87,3 +87,4 @@
 |---|------|------|-------|
 | 1 | 2026-03-19 | 1.0 Architecture migration | Bulletproof React structure, @ alias, all imports updated, build passing |
 | 2 | 2026-03-19 | 1.1 Deps + fonts + tokens | lucide-react, lottie-react, Pretendard+Inter CDN, design-tokens.js, global CSS |
+| 3 | 2026-03-19 | 1.2 Shared UI components | Button, Card, Badge, IconButton, Skeleton, Avatar, Modal — all from design tokens |
