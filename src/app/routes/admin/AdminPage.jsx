@@ -15,10 +15,10 @@ import JoinToast from '@/features/participants/components/JoinToast';
 import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
 import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
 
-const STORED_SESSION_KEY = 'shotshot_admin_session';
+const STORED_SESSION_KEY = 'pinggo_admin_session';
 
 export default function AdminPage() {
-  const [authed, setAuthed] = useState(sessionStorage.getItem('shotshot_admin') === 'true');
+  const [authed, setAuthed] = useState(sessionStorage.getItem('pinggo_admin') === 'true');
   const [sessionId, setSessionId] = useState(localStorage.getItem(STORED_SESSION_KEY) || '');
   const { session, loading } = useSession(sessionId);
   const { onlineList, count } = useParticipants(sessionId);

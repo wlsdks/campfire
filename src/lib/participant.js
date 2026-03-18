@@ -1,5 +1,5 @@
-const PARTICIPANT_ID_KEY = 'shotshot_participant_id';
-const NICKNAME_KEY = 'shotshot_nickname';
+const PARTICIPANT_ID_KEY = 'pinggo_participant_id';
+const NICKNAME_KEY = 'pinggo_nickname';
 
 export function getParticipantId() {
   let id = localStorage.getItem(PARTICIPANT_ID_KEY);

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 
-const ADMIN_PASSWORD = 'shotshot';
+const ADMIN_PASSWORD = 'pinggo';
 
 export default function AdminLogin({ onLogin }) {
   const [password, setPassword] = useState('');
@@ -10,7 +10,7 @@ export default function AdminLogin({ onLogin }) {
   function handleSubmit(e) {
     e.preventDefault();
     if (password === ADMIN_PASSWORD) {
-      sessionStorage.setItem('shotshot_admin', 'true');
+      sessionStorage.setItem('pinggo_admin', 'true');
       onLogin();
     } else {
       setError(true);
