@@ -29,7 +29,7 @@
 - [x] 3.R: Admin review cycle
 
 ### Phase 4: Visualizations
-- [ ] 4.1: BarChart
+- [x] 4.1: BarChart
 - [ ] 4.2: OXBattle
 - [ ] 4.3: WordCloud
 - [ ] 4.4: QACards
@@ -102,3 +102,4 @@
 | 15 | 2026-03-19 | 3.4 Sidebar panels | Avatar initials, Hand/AlertCircle/Trash2 icons, Badge counts, IconButton dismiss |
 | 16 | 2026-03-19 | 3.5 Presentation mode | ESC key exit, dark pill hint, session info badges, p-12 projector padding, text-lg |
 | 17 | 2026-03-19 | 3.R Admin review | All checks pass. Fixed JoinToast+ConnectionDot. Zero remnants in admin scope. |
+| 18 | 2026-03-19 | 4.1 BarChart+VizRenderer | Indigo bars, colored tracks, Sparkles empty state, type Badge, slate tokens |
