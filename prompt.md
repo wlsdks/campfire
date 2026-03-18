@@ -18,6 +18,7 @@ git status                    # Check for uncommitted changes from crashed cycle
 - Read `progress.md` → find next `[ ]` task
 - Run `git log --oneline -10` → understand what was done in recent cycles (avoid duplication, maintain continuity)
 - If the last cycle left WIP notes in progress.md, continue that work first
+- **If ALL tasks are [x]** → enter Phase 10 (Continuous Improvement): browse the app with Playwright, find the weakest spot, improve it
 
 ### 2. Execute
 - Read source files BEFORE editing
@@ -121,6 +122,27 @@ If something goes wrong during the cycle:
 - [ ] 9.6: Presenter mode (dark/light, keyboard shortcuts)
 - [ ] 9.7: Connection status (online/offline indicators)
 - [ ] 9.R: **FINAL REVIEW**
+
+### Phase 10: Continuous Improvement (모든 Phase 완료 후 무한 반복)
+> 계획된 태스크가 모두 [x]면 이 Phase로 진입. 매 사이클마다 아래 중 하나를 선택해서 실행.
+
+**매 사이클 시작 시:**
+1. Playwright로 앱 전체 탐색 (학생 + 어드민 모든 페이지)
+2. 가장 "아쉬운" 부분을 하나 찾기 (디자인, UX, 코드 품질, 성능)
+3. 그것을 개선하기
+
+**개선 카테고리 (순환하며 선택):**
+- **디자인 디테일**: 미세한 정렬, 색상 미세조정, 그림자/보더 일관성, hover/active 상태 개선, 마이크로 인터렉션 추가
+- **UX 개선**: 사용자 흐름 개선, 에러 메시지 개선, 빈 상태 개선, 로딩 경험 개선, 접근성 개선
+- **코드 품질**: 큰 컴포넌트 분리, 중복 제거, 성능 최적화, 불필요한 리렌더링 제거
+- **기능 고도화**: 기존 기능을 더 매끄럽게 (애니메이션 타이밍 조정, 전환 효과 개선, 엣지케이스 처리)
+- **신규 기능**: Feature Ideas 테이블에 있는 것 중 정말 가치 있는 것만 (한 사이클에 하나씩, 신중하게)
+
+**규칙:**
+- 한 사이클에 한 가지 개선에 집중 (산만하게 여러 개 건드리지 않기)
+- 반드시 Playwright 스크린샷 전후 비교
+- progress.md Cycle Log에 뭘 개선했는지 기록
+- 퀄리티가 이미 충분히 좋으면 → 코드 정리나 성능 개선에 투자
 
 ---
 
