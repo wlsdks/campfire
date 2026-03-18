@@ -14,16 +14,16 @@ export default function QACards({ sessionId, questionId }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            className="glass rounded-2xl p-5 hover:bg-white/[0.08] transition-colors"
+            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow"
           >
-            <p className="text-white text-lg leading-relaxed">{vote.value}</p>
+            <p className="text-gray-700 text-lg leading-relaxed">{vote.value}</p>
           </motion.div>
         ))}
       </AnimatePresence>
       {sorted.length === 0 && (
         <div className="text-center py-12 space-y-3">
           <div className="text-4xl opacity-30">💡</div>
-          <p className="text-white/20 text-lg">아직 질문이 없습니다...</p>
+          <p className="text-gray-300 text-lg">아직 질문이 없습니다...</p>
         </div>
       )}
     </div>

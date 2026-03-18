@@ -22,13 +22,13 @@ export default function HandRaiseList({ sessionId }) {
   if (count === 0) return null;
 
   return (
-    <div className="glass rounded-2xl p-3.5 space-y-2.5 border-amber-500/20">
+    <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3.5 space-y-2.5">
       <div className="flex items-center justify-between">
-        <span className="text-amber-400 font-semibold text-sm flex items-center gap-1.5">
+        <span className="text-amber-700 font-semibold text-sm flex items-center gap-1.5">
           ✋ 손들기
-          <span className="bg-amber-500/20 text-amber-400 text-xs px-1.5 py-0.5 rounded-full">{count}</span>
+          <span className="bg-amber-100 text-amber-700 text-xs px-1.5 py-0.5 rounded-full">{count}</span>
         </span>
-        <button onClick={dismissAll} className="text-xs text-white/30 hover:text-white/60 transition-colors">전체 해제</button>
+        <button onClick={dismissAll} className="text-xs text-amber-400 hover:text-amber-600 transition-colors">전체 해제</button>
       </div>
       <AnimatePresence>
         {raisedList.map((p, i) => (
@@ -39,11 +39,11 @@ export default function HandRaiseList({ sessionId }) {
             exit={{ opacity: 0, x: -20 }}
             className="flex items-center justify-between text-sm py-1"
           >
-            <span className="text-white">
-              <span className="text-white/25 mr-2 text-xs">{i + 1}.</span>
+            <span className="text-gray-700">
+              <span className="text-gray-400 mr-2 text-xs">{i + 1}.</span>
               {p.nickname}
             </span>
-            <button onClick={() => dismissOne(p.id)} className="text-white/20 hover:text-white/50 text-xs transition-colors">해제</button>
+            <button onClick={() => dismissOne(p.id)} className="text-gray-400 hover:text-gray-600 text-xs transition-colors">해제</button>
           </motion.div>
         ))}
       </AnimatePresence>

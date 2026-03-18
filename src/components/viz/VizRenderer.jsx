@@ -11,7 +11,7 @@ export default function VizRenderer({ sessionId, session }) {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-4">
         <div className="text-5xl opacity-20">🏓</div>
-        <p className="text-white/20 text-xl font-medium">질문을 활성화하세요</p>
+        <p className="text-gray-300 text-xl font-medium">질문을 활성화하세요</p>
       </div>
     );
   }
@@ -22,8 +22,8 @@ export default function VizRenderer({ sessionId, session }) {
   return (
     <div className="flex flex-col items-center justify-center h-full gap-8 w-full">
       <div className="text-center space-y-2">
-        <h2 className="text-3xl font-extrabold text-white">{question.title}</h2>
-        <div className="w-16 h-0.5 bg-gradient-to-r from-violet-500 to-indigo-500 mx-auto rounded-full" />
+        <h2 className="text-3xl font-bold text-gray-900">{question.title}</h2>
+        <div className="w-16 h-0.5 bg-blue-500 mx-auto rounded-full" />
       </div>
       {question.type === 'choice' && <BarChart sessionId={sessionId} questionId={currentQId} options={question.options || []} />}
       {question.type === 'ox' && <OXBattle sessionId={sessionId} questionId={currentQId} />}

@@ -30,19 +30,12 @@ export default function JoinPage({ sessionId, onJoin }) {
   }
 
   return (
-    <div className="min-h-dvh bg-gradient-to-br from-slate-950 via-indigo-950/50 to-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Animated background shapes */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-violet-600/10 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-indigo-600/10 rounded-full blur-3xl animate-float-delay" />
-        <div className="absolute top-1/2 left-1/2 w-48 h-48 bg-pink-600/8 rounded-full blur-3xl animate-float-delay-2" />
-      </div>
-
+    <div className="min-h-dvh bg-gray-50 flex items-center justify-center p-4">
       <motion.form
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         onSubmit={handleJoin}
-        className="w-full max-w-sm space-y-8 relative z-10"
+        className="w-full max-w-sm bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-8"
       >
         <div className="text-center space-y-3">
           <motion.div
@@ -53,10 +46,10 @@ export default function JoinPage({ sessionId, onJoin }) {
           >
             🏓
           </motion.div>
-          <h1 className="text-4xl font-extrabold bg-gradient-to-r from-violet-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold text-gray-900">
             Pinggo
           </h1>
-          <p className="text-white/40 text-base">닉네임을 정하고 참여해보세요!</p>
+          <p className="text-gray-400 text-base">닉네임을 정하고 참여해보세요!</p>
         </div>
 
         <div className="space-y-4">
@@ -66,7 +59,7 @@ export default function JoinPage({ sessionId, onJoin }) {
             onChange={(e) => setNickname(e.target.value)}
             placeholder="멋진 닉네임을 입력하세요"
             maxLength={10}
-            className="w-full px-5 py-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 text-white placeholder-white/25 text-center text-lg font-medium focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
+            className="w-full px-5 py-4 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-300 text-center text-lg font-medium focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
             autoFocus
           />
 
@@ -74,7 +67,7 @@ export default function JoinPage({ sessionId, onJoin }) {
             type="submit"
             disabled={!nickname.trim() || joining}
             whileTap={{ scale: 0.97 }}
-            className="w-full py-4 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-lg disabled:opacity-30 transition-all shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 hover:from-violet-500 hover:to-indigo-500"
+            className="w-full py-4 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-lg disabled:opacity-30 transition-all shadow-sm"
           >
             {joining ? (
               <span className="flex items-center justify-center gap-2">

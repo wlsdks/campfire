@@ -28,21 +28,21 @@ export default function Roulette({ participants, onResult }) {
   }
 
   const COLORS = [
-    '#7c3aed', '#3b82f6', '#10b981', '#f59e0b',
-    '#f43f5e', '#06b6d4', '#ec4899', '#84cc16',
-    '#8b5cf6', '#14b8a6', '#f97316', '#6366f1',
+    '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6',
+    '#F43F5E', '#06B6D4', '#EC4899', '#84CC16',
+    '#6366F1', '#14B8A6', '#F97316', '#0EA5E9',
   ];
 
   // Empty state
   if (names.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-6 py-16">
-        <div className="text-7xl animate-float">🎯</div>
+        <div className="text-7xl">🎯</div>
         <div className="text-center space-y-2">
-          <h3 className="text-2xl font-bold text-white">돌림판</h3>
-          <p className="text-white/40 text-lg">참여자가 접속하면 시작할 수 있어요</p>
+          <h3 className="text-2xl font-bold text-gray-900">돌림판</h3>
+          <p className="text-gray-400 text-lg">참여자가 접속하면 시작할 수 있어요</p>
         </div>
-        <div className="glass rounded-2xl px-6 py-3 text-white/30 text-sm">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 px-6 py-3 text-gray-400 text-sm">
           학생들에게 QR 코드를 공유하세요
         </div>
       </div>
@@ -53,21 +53,18 @@ export default function Roulette({ participants, onResult }) {
     <div className="flex flex-col items-center gap-8">
       <div className="relative w-96 h-96">
         {/* Pointer triangle */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 z-10 text-4xl drop-shadow-lg" style={{ filter: 'drop-shadow(0 4px 8px rgba(124, 58, 237, 0.4))' }}>
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 z-10 text-4xl text-blue-500 drop-shadow-lg">
           ▼
         </div>
 
-        {/* Glow effect behind wheel */}
-        <div className={`absolute inset-0 rounded-full bg-violet-500/20 blur-2xl transition-opacity duration-500 ${spinning ? 'opacity-100' : 'opacity-0'}`} />
-
         <motion.svg
           viewBox="0 0 200 200"
-          className="w-full h-full drop-shadow-2xl"
+          className="w-full h-full drop-shadow-lg"
           animate={{ rotate: rotation }}
           transition={{ duration: 4, ease: [0.17, 0.67, 0.12, 0.99] }}
         >
           {/* Outer ring */}
-          <circle cx="100" cy="100" r="98" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="2" />
+          <circle cx="100" cy="100" r="98" fill="none" stroke="#E2E8F0" strokeWidth="2" />
 
           {names.map((name, i) => {
             const startAngle = i * segmentAngle;
@@ -89,8 +86,8 @@ export default function Roulette({ participants, onResult }) {
                 <path
                   d={`M100,100 L${x1},${y1} A95,95 0 ${largeArc},1 ${x2},${y2} Z`}
                   fill={COLORS[i % COLORS.length]}
-                  stroke="rgba(0,0,0,0.2)"
-                  strokeWidth="1"
+                  stroke="white"
+                  strokeWidth="1.5"
                 />
                 <text
                   x={textX}
@@ -98,10 +95,10 @@ export default function Roulette({ participants, onResult }) {
                   fill="white"
                   fontSize={names.length > 10 ? '6' : '8'}
                   fontWeight="bold"
+                  fontFamily="system-ui, -apple-system, sans-serif"
                   textAnchor="middle"
-                  dominantBaseline="middle"
+                  dominantBaseline="central"
                   transform={`rotate(${textRotation}, ${textX}, ${textY})`}
-                  style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
                 >
                   {name.length > 6 ? name.slice(0, 6) + '..' : name}
                 </text>
@@ -110,8 +107,8 @@ export default function Roulette({ participants, onResult }) {
           })}
 
           {/* Center circle */}
-          <circle cx="100" cy="100" r="14" fill="#1e1b4b" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
-          <text x="100" y="100" fill="white" fontSize="8" textAnchor="middle" dominantBaseline="middle">
+          <circle cx="100" cy="100" r="18" fill="white" stroke="#E2E8F0" strokeWidth="1.5" />
+          <text x="100" y="100" fill="#3B82F6" fontSize="10" fontWeight="bold" fontFamily="system-ui, -apple-system, sans-serif" textAnchor="middle" dominantBaseline="central">
             GO
           </text>
         </motion.svg>
@@ -124,10 +121,10 @@ export default function Roulette({ participants, onResult }) {
           transition={{ type: 'spring', stiffness: 200, damping: 15 }}
           className="text-center space-y-2"
         >
-          <div className="text-5xl font-extrabold bg-gradient-to-r from-yellow-400 via-amber-400 to-orange-400 bg-clip-text text-transparent">
+          <div className="text-5xl font-extrabold text-blue-500">
             {winner}
           </div>
-          <div className="text-white/50 text-lg">당첨되었습니다!</div>
+          <div className="text-gray-500 text-lg">당첨되었습니다!</div>
         </motion.div>
       )}
 
@@ -135,7 +132,7 @@ export default function Roulette({ participants, onResult }) {
         onClick={spin}
         disabled={spinning || names.length === 0}
         whileTap={{ scale: 0.95 }}
-        className="px-10 py-4 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-lg disabled:opacity-30 shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 hover:from-violet-500 hover:to-indigo-500 transition-all"
+        className="px-10 py-4 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-lg disabled:opacity-30 shadow-sm transition-all"
       >
         {spinning ? (
           <span className="flex items-center gap-2">

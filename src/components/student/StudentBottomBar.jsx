@@ -46,7 +46,7 @@ export default function StudentBottomBar({ sessionId }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 flex items-end justify-center p-4"
+            className="fixed inset-0 bg-black/40 z-40 flex items-end justify-center p-4"
             onClick={() => setShowQuestionInput(false)}
           >
             <motion.form
@@ -55,11 +55,11 @@ export default function StudentBottomBar({ sessionId }) {
               exit={{ y: 100, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
               onSubmit={submitUrgentQuestion}
-              className="w-full max-w-sm glass-strong rounded-3xl p-5 space-y-4 mb-16"
+              className="w-full max-w-sm bg-white rounded-2xl shadow-lg border border-gray-100 p-5 space-y-4 mb-16"
             >
               <div className="text-center space-y-1">
-                <p className="text-white font-bold text-lg">익명 긴급 질문</p>
-                <p className="text-white/30 text-xs">이름이 표시되지 않아요</p>
+                <p className="text-gray-900 font-bold text-lg">익명 긴급 질문</p>
+                <p className="text-gray-400 text-xs">이름이 표시되지 않아요</p>
               </div>
               <textarea
                 value={questionText}
@@ -67,14 +67,14 @@ export default function StudentBottomBar({ sessionId }) {
                 placeholder="질문을 입력하세요..."
                 maxLength={300}
                 rows={3}
-                className="w-full px-4 py-3 rounded-2xl bg-white/5 border border-white/10 text-white placeholder-white/25 focus:outline-none focus:ring-2 focus:ring-rose-500/50 resize-none transition-all"
+                className="w-full px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-none transition-all"
                 autoFocus
               />
               <motion.button
                 type="submit"
                 disabled={!questionText.trim()}
                 whileTap={{ scale: 0.97 }}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 to-rose-500 text-white font-bold disabled:opacity-30 shadow-lg shadow-rose-500/25 transition-all"
+                className="w-full py-3.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-bold disabled:opacity-30 shadow-sm transition-all"
               >
                 보내기
               </motion.button>
@@ -89,21 +89,21 @@ export default function StudentBottomBar({ sessionId }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white px-5 py-2.5 rounded-2xl text-sm font-medium z-50 shadow-lg shadow-emerald-500/25"
+            className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-emerald-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium z-50 shadow-sm"
           >
             질문이 전송되었습니다!
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-slate-950/90 backdrop-blur-md border-t border-white/5 p-3 flex gap-3 z-30">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 flex gap-3 z-30">
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={toggleHand}
-          className={`flex-1 py-3.5 rounded-2xl font-bold text-base transition-all ${
+          className={`flex-1 py-3.5 rounded-xl font-bold text-base transition-all ${
             isRaised
-              ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-black shadow-lg shadow-amber-500/30'
-              : 'bg-white/5 border border-white/10 text-white/70 hover:bg-white/10'
+              ? 'bg-amber-100 text-amber-700 shadow-sm'
+              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
           }`}
         >
           {isRaised ? '✋ 손 내리기' : '✋ 손들기'}
@@ -111,7 +111,7 @@ export default function StudentBottomBar({ sessionId }) {
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => setShowQuestionInput(true)}
-          className="flex-1 py-3.5 rounded-2xl bg-white/5 border border-white/10 text-white/70 font-bold text-base hover:bg-white/10 transition-all"
+          className="flex-1 py-3.5 rounded-xl bg-gray-100 text-gray-600 font-bold text-base hover:bg-gray-200 transition-all"
         >
           ❓ 긴급 질문
         </motion.button>

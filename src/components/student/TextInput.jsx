@@ -36,11 +36,11 @@ export default function TextInput({ sessionId, questionId, placeholder, maxLengt
           onChange={(e) => setText(e.target.value)}
           placeholder={placeholder || '입력해주세요'}
           maxLength={maxLength}
-          className="w-full px-5 py-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 text-white placeholder-white/25 text-lg focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
+          className="w-full px-5 py-4 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-300 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
           autoFocus
         />
         {maxLength && (
-          <span className="absolute right-4 bottom-3 text-xs text-white/20">
+          <span className="absolute right-4 bottom-3 text-xs text-gray-300">
             {text.length}/{maxLength}
           </span>
         )}
@@ -49,7 +49,7 @@ export default function TextInput({ sessionId, questionId, placeholder, maxLengt
         type="submit"
         disabled={!text.trim()}
         whileTap={{ scale: 0.97 }}
-        className="w-full py-4 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-lg disabled:opacity-30 shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all"
+        className="w-full py-4 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-lg disabled:opacity-30 shadow-sm transition-all"
       >
         제출
       </motion.button>

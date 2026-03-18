@@ -5,7 +5,7 @@ export default function ConnectionDot() {
   return (
     <div className="flex items-center gap-1.5 text-xs">
       <div className={`w-1.5 h-1.5 rounded-full ${connected ? 'bg-emerald-400' : 'bg-amber-400 animate-pulse'}`} />
-      <span className="text-white/30">{connected ? '연결됨' : '재연결 중...'}</span>
+      <span className="text-gray-400">{connected ? '연결됨' : '재연결 중...'}</span>
     </div>
   );
 }

@@ -6,11 +6,11 @@ import { useState } from 'react';
 import VoteConfirm from './VoteConfirm';
 
 const OPTION_STYLES = [
-  { bg: 'from-blue-600 to-blue-500', shadow: 'shadow-blue-500/25', letter: 'A' },
-  { bg: 'from-emerald-600 to-emerald-500', shadow: 'shadow-emerald-500/25', letter: 'B' },
-  { bg: 'from-amber-600 to-amber-500', shadow: 'shadow-amber-500/25', letter: 'C' },
-  { bg: 'from-purple-600 to-purple-500', shadow: 'shadow-purple-500/25', letter: 'D' },
-  { bg: 'from-rose-600 to-rose-500', shadow: 'shadow-rose-500/25', letter: 'E' },
+  { bg: 'bg-blue-500 hover:bg-blue-600', letter: 'A' },
+  { bg: 'bg-emerald-500 hover:bg-emerald-600', letter: 'B' },
+  { bg: 'bg-amber-500 hover:bg-amber-600', letter: 'C' },
+  { bg: 'bg-violet-500 hover:bg-violet-600', letter: 'D' },
+  { bg: 'bg-rose-500 hover:bg-rose-600', letter: 'E' },
 ];
 
 export default function ChoiceVoter({ sessionId, questionId, options }) {
@@ -39,7 +39,7 @@ export default function ChoiceVoter({ sessionId, questionId, options }) {
             transition={{ delay: i * 0.08 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => handleVote(option)}
-            className={`w-full py-4 px-5 rounded-2xl text-white font-semibold text-lg bg-gradient-to-r ${style.bg} shadow-lg ${style.shadow} hover:brightness-110 active:brightness-90 transition-all flex items-center gap-4`}
+            className={`w-full py-4 px-5 rounded-2xl text-white font-semibold text-lg ${style.bg} shadow-sm active:brightness-90 transition-all flex items-center gap-4`}
           >
             <span className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center text-base font-bold shrink-0">
               {style.letter}

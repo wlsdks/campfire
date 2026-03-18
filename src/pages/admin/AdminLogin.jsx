@@ -18,53 +18,49 @@ export default function AdminLogin({ onLogin }) {
   }
 
   return (
-    <div className="min-h-dvh bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/3 left-1/3 w-96 h-96 bg-violet-600/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/3 right-1/3 w-72 h-72 bg-indigo-600/5 rounded-full blur-3xl" />
-      </div>
-
+    <div className="min-h-dvh bg-gray-50 flex items-center justify-center">
       <motion.form
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         onSubmit={handleSubmit}
-        className="space-y-6 w-full max-w-sm px-4 relative z-10"
+        className="w-full max-w-sm px-4"
       >
-        <div className="text-center space-y-2">
-          <div className="text-5xl mb-3">🏓</div>
-          <h1 className="text-3xl font-extrabold bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
-            Pinggo Admin
-          </h1>
-          <p className="text-white/30 text-sm">관리자 로그인</p>
-        </div>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-6">
+          <div className="text-center space-y-2">
+            <div className="text-5xl mb-3">🏓</div>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Pinggo Admin
+            </h1>
+            <p className="text-gray-400 text-sm">관리자 로그인</p>
+          </div>
 
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => { setPassword(e.target.value); setError(false); }}
-          placeholder="비밀번호를 입력하세요"
-          className="w-full px-5 py-4 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 text-white placeholder-white/25 text-center text-lg focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/50 transition-all"
-          autoFocus
-        />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => { setPassword(e.target.value); setError(false); }}
+            placeholder="비밀번호를 입력하세요"
+            className="w-full px-5 py-4 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-300 text-center text-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+            autoFocus
+          />
 
-        {error && (
-          <motion.p
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-red-400 text-sm text-center"
+          {error && (
+            <motion.p
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-rose-500 text-sm text-center"
+            >
+              비밀번호가 틀렸습니다
+            </motion.p>
+          )}
+
+          <motion.button
+            type="submit"
+            whileTap={{ scale: 0.97 }}
+            className="w-full py-4 rounded-xl bg-blue-500 hover:bg-blue-600 text-white font-bold text-lg shadow-sm transition-all"
           >
-            비밀번호가 틀렸습니다
-          </motion.p>
-        )}
-
-        <motion.button
-          type="submit"
-          whileTap={{ scale: 0.97 }}
-          className="w-full py-4 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold text-lg shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 hover:from-violet-500 hover:to-indigo-500 transition-all"
-        >
-          로그인
-        </motion.button>
+            로그인
+          </motion.button>
+        </div>
       </motion.form>
     </div>
   );

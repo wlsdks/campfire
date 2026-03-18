@@ -40,15 +40,15 @@ export default function AdminPage() {
 
   if (!sessionId || (!loading && !session)) {
     return (
-      <div className="min-h-dvh bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
+      <div className="min-h-dvh bg-gray-50 flex items-center justify-center">
         <div className="text-center space-y-6">
           <div className="text-6xl">🏓</div>
-          <h1 className="text-3xl font-extrabold bg-gradient-to-r from-violet-400 to-indigo-400 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold text-gray-900">
             Pinggo
           </h1>
           <button
             onClick={createSession}
-            className="px-10 py-4 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-lg font-bold shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 hover:from-violet-500 hover:to-indigo-500 transition-all"
+            className="px-10 py-4 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-lg font-bold shadow-sm transition-all"
           >
             새 세션 만들기
           </button>
@@ -59,10 +59,10 @@ export default function AdminPage() {
 
   if (loading) {
     return (
-      <div className="min-h-dvh bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
+      <div className="min-h-dvh bg-gray-50 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="text-4xl animate-shimmer">🏓</div>
-          <p className="text-white/50">로딩 중...</p>
+          <div className="text-4xl animate-pulse">🏓</div>
+          <p className="text-gray-400">로딩 중...</p>
         </div>
       </div>
     );
@@ -84,7 +84,7 @@ export default function AdminPage() {
 
   if (presentMode) {
     return (
-      <div className="min-h-dvh bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-8 relative cursor-pointer" onClick={() => setPresentMode(false)}>
+      <div className="min-h-dvh bg-gray-50 p-8 relative cursor-pointer" onClick={() => setPresentMode(false)}>
         <JoinToast sessionId={sessionId} />
         <div className="fixed top-4 left-4 w-72 space-y-3 z-10">
           <HandRaiseList sessionId={sessionId} />
@@ -96,7 +96,7 @@ export default function AdminPage() {
         <div className="fixed bottom-4 right-4 opacity-70">
           <QRCode url={studentUrl} size={80} />
         </div>
-        <div className="fixed top-4 right-4 glass rounded-xl px-3 py-1.5 text-white/40 text-sm">
+        <div className="fixed top-4 right-4 bg-white rounded-xl shadow-sm border border-gray-100 px-3 py-1.5 text-gray-400 text-sm">
           클릭하면 관리 모드로 복귀
         </div>
       </div>
@@ -106,11 +106,11 @@ export default function AdminPage() {
   const isGameActive = currentMode === 'roulette' || currentMode === 'lottery';
 
   return (
-    <div className="min-h-dvh bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex">
+    <div className="min-h-dvh bg-gray-50 flex">
       <JoinToast sessionId={sessionId} />
 
       {/* Left sidebar: questions + controls */}
-      <div className="w-80 border-r border-white/5 bg-white/[0.02] p-5 overflow-y-auto flex flex-col">
+      <div className="w-80 border-r border-gray-200 bg-white p-5 overflow-y-auto flex flex-col">
         <QuestionManager
           sessionId={sessionId}
           questions={session?.questions || {}}
@@ -118,12 +118,12 @@ export default function AdminPage() {
         />
 
         {/* Game & mode controls */}
-        <div className="mt-6 pt-6 border-t border-white/5 space-y-2">
-          <p className="text-white/30 text-xs font-semibold uppercase tracking-wider mb-3">모드 전환</p>
+        <div className="mt-6 pt-6 border-t border-gray-100 space-y-2">
+          <p className="text-gray-400 text-xs font-semibold uppercase tracking-wider mb-3">모드 전환</p>
 
           <button
             onClick={() => setPresentMode(true)}
-            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white text-sm font-semibold shadow-lg shadow-violet-500/20 hover:shadow-violet-500/30 transition-all flex items-center justify-center gap-2"
+            className="w-full py-2.5 rounded-xl bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold shadow-sm transition-all flex items-center justify-center gap-2"
           >
             <span>📺</span> 발표 모드
           </button>
@@ -132,10 +132,10 @@ export default function AdminPage() {
             onClick={async () => {
               await update(ref(db, `sessions/${sessionId}`), { currentMode: 'roulette', currentQuestion: null });
             }}
-            className={`w-full py-2.5 rounded-xl text-white text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+            className={`w-full py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
               currentMode === 'roulette'
-                ? 'bg-amber-500 shadow-lg shadow-amber-500/30'
-                : 'bg-white/5 border border-white/10 hover:bg-white/10'
+                ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-200'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
             <span>🎯</span> 돌림판
@@ -145,10 +145,10 @@ export default function AdminPage() {
             onClick={async () => {
               await update(ref(db, `sessions/${sessionId}`), { currentMode: 'lottery', currentQuestion: null });
             }}
-            className={`w-full py-2.5 rounded-xl text-white text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
+            className={`w-full py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center justify-center gap-2 ${
               currentMode === 'lottery'
-                ? 'bg-yellow-500 shadow-lg shadow-yellow-500/30'
-                : 'bg-white/5 border border-white/10 hover:bg-white/10'
+                ? 'bg-amber-50 text-amber-700 ring-1 ring-amber-200'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
             <span>🎰</span> 제비뽑기
@@ -159,7 +159,7 @@ export default function AdminPage() {
               onClick={async () => {
                 await update(ref(db, `sessions/${sessionId}`), { currentMode: 'waiting', currentQuestion: null });
               }}
-              className="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 text-white/60 text-sm font-semibold hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+              className="w-full py-2.5 rounded-xl bg-gray-100 text-gray-500 text-sm font-semibold hover:bg-gray-200 transition-all flex items-center justify-center gap-2"
             >
               <span>✕</span> 게임 종료
             </button>
@@ -173,22 +173,22 @@ export default function AdminPage() {
       </div>
 
       {/* Right sidebar: participants + QR */}
-      <div className="w-72 border-l border-white/5 bg-white/[0.02] p-5 space-y-5 overflow-y-auto">
+      <div className="w-72 border-l border-gray-200 bg-white p-5 space-y-5 overflow-y-auto">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-white font-bold text-lg">{count}</span>
-          <span className="text-white/40 text-sm">명 접속 중</span>
+          <span className="text-gray-900 font-bold text-lg">{count}</span>
+          <span className="text-gray-400 text-sm">명 접속 중</span>
         </div>
 
         <HandRaiseList sessionId={sessionId} />
         <UrgentQuestionList sessionId={sessionId} />
         <ParticipantList participants={onlineList} />
 
-        <div className="border-t border-white/5 pt-5">
+        <div className="border-t border-gray-100 pt-5">
           <div className="flex justify-center">
             <QRCode url={studentUrl} size={180} />
           </div>
-          <p className="text-white/30 text-xs mt-3 text-center break-all leading-relaxed">{studentUrl}</p>
+          <p className="text-gray-400 text-xs mt-3 text-center break-all leading-relaxed">{studentUrl}</p>
         </div>
       </div>
     </div>

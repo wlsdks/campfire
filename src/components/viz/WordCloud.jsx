@@ -3,9 +3,9 @@ import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const COLORS = [
-  '#818cf8', '#a78bfa', '#c084fc', '#e879f9',
-  '#f472b6', '#fb7185', '#fbbf24', '#34d399',
-  '#38bdf8', '#60a5fa', '#6ee7b7', '#fcd34d',
+  '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6',
+  '#F43F5E', '#06B6D4', '#EC4899', '#84CC16',
+  '#6366F1', '#14B8A6', '#F97316', '#0EA5E9',
 ];
 
 export default function WordCloud({ sessionId, questionId }) {
@@ -50,12 +50,12 @@ export default function WordCloud({ sessionId, questionId }) {
         {words.length === 0 && (
           <div className="text-center space-y-3">
             <div className="text-4xl opacity-30">💬</div>
-            <p className="text-white/20 text-lg">아직 입력이 없습니다...</p>
+            <p className="text-gray-300 text-lg">아직 입력이 없습니다...</p>
           </div>
         )}
       </div>
       {totalVotes > 0 && (
-        <div className="text-center text-white/20 text-sm mt-2">
+        <div className="text-center text-gray-400 text-sm mt-2">
           총 {totalVotes}개 응답
         </div>
       )}

@@ -26,20 +26,20 @@ export default function OXVoter({ sessionId, questionId }) {
         animate={{ opacity: 1, x: 0 }}
         whileTap={{ scale: 0.93 }}
         onClick={() => handleVote('O')}
-        className="flex-1 py-12 rounded-3xl bg-gradient-to-br from-blue-500 to-blue-600 text-white text-6xl font-black active:brightness-90 shadow-2xl shadow-blue-500/30 hover:shadow-blue-500/50 transition-all flex flex-col items-center gap-2"
+        className="flex-1 py-12 rounded-2xl bg-blue-500 hover:bg-blue-600 text-white text-6xl font-black active:brightness-90 shadow-sm transition-all flex flex-col items-center gap-2"
       >
         <span>O</span>
-        <span className="text-sm font-medium text-white/60">맞아요</span>
+        <span className="text-sm font-medium text-white/70">맞아요</span>
       </motion.button>
       <motion.button
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         whileTap={{ scale: 0.93 }}
         onClick={() => handleVote('X')}
-        className="flex-1 py-12 rounded-3xl bg-gradient-to-br from-rose-500 to-rose-600 text-white text-6xl font-black active:brightness-90 shadow-2xl shadow-rose-500/30 hover:shadow-rose-500/50 transition-all flex flex-col items-center gap-2"
+        className="flex-1 py-12 rounded-2xl bg-rose-500 hover:bg-rose-600 text-white text-6xl font-black active:brightness-90 shadow-sm transition-all flex flex-col items-center gap-2"
       >
         <span>X</span>
-        <span className="text-sm font-medium text-white/60">아니에요</span>
+        <span className="text-sm font-medium text-white/70">아니에요</span>
       </motion.button>
     </div>
   );
