@@ -5,16 +5,31 @@ import TextInput from '@/features/voting/components/TextInput';
 import WaitingPage from './WaitingPage';
 import ConnectionDot from '@/components/ui/ConnectionDot';
 import StudentBottomBar from './StudentBottomBar';
+import Badge from '@/components/ui/Badge';
+import { SkeletonCard } from '@/components/ui/Skeleton';
+import { motion } from 'framer-motion';
+import { Loader2 } from 'lucide-react';
+
+const TYPE_LABELS = {
+  choice: '객관식',
+  ox: 'O/X',
+  wordcloud: '워드클라우드',
+  qna: 'Q&A',
+};
 
 export default function VotePage({ sessionId }) {
   const { session, loading } = useSession(sessionId);
 
   if (loading) {
     return (
-      <div className="min-h-dvh bg-gray-50 flex items-center justify-center">
-        <div className="text-center space-y-3">
-          <div className="text-4xl animate-pulse">🏓</div>
-          <p className="text-gray-400">로딩 중...</p>
+      <div className="min-h-dvh bg-slate-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-sm space-y-4">
+          <div className="flex items-center justify-center gap-2 text-slate-400">
+            <Loader2 size={18} className="animate-spin" />
+            <span className="text-sm">불러오는 중...</span>
+          </div>
+          <SkeletonCard />
+          <SkeletonCard />
         </div>
       </div>
     );
@@ -29,29 +44,51 @@ export default function VotePage({ sessionId }) {
   if (!question) return <WaitingPage sessionId={sessionId} />;
 
   return (
-    <div className="min-h-dvh bg-gray-50 flex flex-col items-center p-4 pb-24">
-      <div className="w-full max-w-sm space-y-8 mt-8">
-        <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold text-gray-900 leading-tight">{question.title}</h2>
-          <div className="w-12 h-0.5 bg-blue-500 mx-auto rounded-full" />
-        </div>
-
-        {question.type === 'choice' && (
-          <ChoiceVoter key={currentQId} sessionId={sessionId} questionId={currentQId} options={question.options || []} />
-        )}
-        {question.type === 'ox' && (
-          <OXVoter key={currentQId} sessionId={sessionId} questionId={currentQId} />
-        )}
-        {question.type === 'wordcloud' && (
-          <TextInput key={currentQId} sessionId={sessionId} questionId={currentQId} placeholder="단어를 입력하세요" maxLength={20} />
-        )}
-        {question.type === 'qna' && (
-          <TextInput key={currentQId} sessionId={sessionId} questionId={currentQId} placeholder="질문을 입력하세요" maxLength={200} />
-        )}
-      </div>
-      <div className="fixed bottom-16 left-1/2 -translate-x-1/2">
+    <div className="min-h-dvh bg-slate-50 flex flex-col items-center p-4 pb-24">
+      {/* Connection status */}
+      <div className="fixed top-4 right-4 z-10">
         <ConnectionDot />
       </div>
+
+      <div className="w-full max-w-sm space-y-6 mt-4">
+        {/* Question header */}
+        <motion.div
+          key={currentQId}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+          className="bg-white rounded-xl shadow-sm border border-slate-100 p-5"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <h2 className="text-xl font-bold text-slate-900 leading-snug flex-1">
+              {question.title}
+            </h2>
+            <Badge variant="primary">{TYPE_LABELS[question.type] || question.type}</Badge>
+          </div>
+        </motion.div>
+
+        {/* Voter area */}
+        <motion.div
+          key={`voter-${currentQId}`}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: 'easeOut', delay: 0.1 }}
+        >
+          {question.type === 'choice' && (
+            <ChoiceVoter sessionId={sessionId} questionId={currentQId} options={question.options || []} />
+          )}
+          {question.type === 'ox' && (
+            <OXVoter sessionId={sessionId} questionId={currentQId} />
+          )}
+          {question.type === 'wordcloud' && (
+            <TextInput sessionId={sessionId} questionId={currentQId} placeholder="단어를 입력하세요" maxLength={20} />
+          )}
+          {question.type === 'qna' && (
+            <TextInput sessionId={sessionId} questionId={currentQId} placeholder="질문을 입력하세요" maxLength={200} />
+          )}
+        </motion.div>
+      </div>
+
       <StudentBottomBar sessionId={sessionId} />
     </div>
   );
