@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { ref, set, serverTimestamp, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { useSession } from '@/features/session/api/useSession';
@@ -76,22 +76,40 @@ export default function AdminPage() {
     return <VizRenderer sessionId={sessionId} session={session} />;
   }
 
+  const exitPresent = useCallback(() => setPresentMode(false), []);
+
+  useEffect(() => {
+    if (!presentMode) return;
+    const handler = (e) => { if (e.key === 'Escape') exitPresent(); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [presentMode, exitPresent]);
+
   if (presentMode) {
     return (
-      <div className="min-h-dvh bg-white p-8 relative cursor-pointer" onClick={() => setPresentMode(false)}>
+      <div className="min-h-dvh bg-white relative cursor-pointer" onClick={exitPresent}>
         <JoinToast sessionId={sessionId} />
-        <div className="fixed top-4 left-4 w-72 space-y-3 z-10">
+        {/* Alerts overlay */}
+        <div className="fixed top-5 left-5 w-72 space-y-3 z-10">
           <HandRaiseList sessionId={sessionId} />
           <UrgentQuestionList sessionId={sessionId} />
         </div>
-        <div className="flex items-center justify-center min-h-[calc(100dvh-4rem)]">
+        {/* Main content — scaled up for projector */}
+        <div className="flex items-center justify-center min-h-dvh p-12 text-lg">
           {renderMainContent()}
         </div>
-        <div className="fixed bottom-4 right-4 opacity-70">
+        {/* QR bottom-right */}
+        <div className="fixed bottom-5 right-5 opacity-60">
           <QRCode url={studentUrl} size={80} />
         </div>
-        <div className="fixed top-4 right-4 bg-white rounded-lg shadow-sm border border-slate-200 px-3 py-1.5 text-slate-400 text-sm">
-          클릭하면 관리 모드로 복귀
+        {/* Session info bottom-left */}
+        <div className="fixed bottom-5 left-5 flex items-center gap-2">
+          <Badge variant="success"><Users size={12} className="mr-1" />{count}명</Badge>
+          <Badge variant="neutral">{sessionId}</Badge>
+        </div>
+        {/* Exit hint — top right */}
+        <div className="fixed top-5 right-5 bg-slate-900/80 text-white px-3 py-1.5 rounded-lg text-sm">
+          ESC 또는 클릭으로 나가기
         </div>
       </div>
     );
