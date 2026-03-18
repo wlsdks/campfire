@@ -12,7 +12,7 @@
 - [x] 1.3: Global styles + shotshot → pinggo cleanup
 
 ### Phase 2: Student Pages
-- [ ] 2.1: JoinPage
+- [x] 2.1: JoinPage
 - [ ] 2.2: VotePage
 - [ ] 2.3: Voters (Choice/OX/Text)
 - [ ] 2.4: WaitingPage
@@ -89,3 +89,4 @@
 | 2 | 2026-03-19 | 1.1 Deps + fonts + tokens | lucide-react, lottie-react, Pretendard+Inter CDN, design-tokens.js, global CSS |
 | 3 | 2026-03-19 | 1.2 Shared UI components | Button, Card, Badge, IconButton, Skeleton, Avatar, Modal — all from design tokens |
 | 4 | 2026-03-19 | 1.3 Rename + global styles | shotshot→pinggo in all files, no-session screen: dark→light + emoji→lucide icon |
+| 5 | 2026-03-19 | 2.1 JoinPage redesign | Card+Badge+Avatar+Button components, Sparkles icon, avatar preview, indigo palette |
