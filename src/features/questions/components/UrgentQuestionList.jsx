@@ -2,6 +2,8 @@ import { ref, update, remove } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
 import { motion, AnimatePresence } from 'framer-motion';
+import { AlertCircle, Trash2 } from 'lucide-react';
+import Badge from '@/components/ui/Badge';
 
 export default function UrgentQuestionList({ sessionId }) {
   const { questionList, unreadCount } = useUrgentQuestions(sessionId);
@@ -17,29 +19,38 @@ export default function UrgentQuestionList({ sessionId }) {
   if (questionList.length === 0) return null;
 
   return (
-    <div className="bg-rose-50 border border-rose-200 rounded-2xl p-3.5 space-y-2.5">
-      <span className="text-rose-600 font-semibold text-sm flex items-center gap-1.5">
-        ❓ 긴급 질문
-        {unreadCount > 0 && (
-          <span className="bg-rose-100 text-rose-600 text-xs px-1.5 py-0.5 rounded-full animate-pulse">{unreadCount} 새 질문</span>
-        )}
+    <div className="bg-red-50 border border-red-100 rounded-xl p-3.5 space-y-2">
+      <span className="text-red-600 font-medium text-sm flex items-center gap-1.5">
+        <AlertCircle size={14} />
+        긴급 질문
+        {unreadCount > 0 && <Badge variant="error">{unreadCount} 새 질문</Badge>}
       </span>
       <AnimatePresence>
         {questionList.map((q) => (
           <motion.div
             key={q.id}
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className={`p-2.5 rounded-xl text-sm transition-colors cursor-pointer ${
-              q.read ? 'bg-white' : 'bg-rose-100 hover:bg-rose-200'
+            className={`p-2.5 rounded-lg text-sm transition-colors cursor-pointer ${
+              q.read ? 'bg-white' : 'bg-red-100/60 hover:bg-red-100'
             }`}
             onClick={() => !q.read && markRead(q.id)}
           >
-            <p className="text-gray-700 leading-relaxed">{q.text}</p>
-            <div className="flex justify-between items-center mt-1.5">
-              <span className="text-gray-400 text-xs">익명</span>
-              <button onClick={(e) => { e.stopPropagation(); dismissOne(q.id); }} className="text-gray-400 hover:text-rose-500 text-xs transition-colors">삭제</button>
+            <div className="flex items-start gap-2">
+              {!q.read && <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-1.5 shrink-0" />}
+              <div className="flex-1 min-w-0">
+                <p className="text-slate-700 leading-relaxed">{q.text}</p>
+                <div className="flex justify-between items-center mt-1.5">
+                  <span className="text-slate-400 text-xs">익명</span>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); dismissOne(q.id); }}
+                    className="text-slate-300 hover:text-red-500 transition-colors"
+                  >
+                    <Trash2 size={12} />
+                  </button>
+                </div>
+              </div>
             </div>
           </motion.div>
         ))}

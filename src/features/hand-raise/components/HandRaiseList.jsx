@@ -2,6 +2,9 @@ import { ref, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Hand, X } from 'lucide-react';
+import Badge from '@/components/ui/Badge';
+import IconButton from '@/components/ui/IconButton';
 
 export default function HandRaiseList({ sessionId }) {
   const { raisedList, count } = useHandRaises(sessionId);
@@ -22,11 +25,12 @@ export default function HandRaiseList({ sessionId }) {
   if (count === 0) return null;
 
   return (
-    <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3.5 space-y-2.5">
+    <div className="bg-amber-50 border border-amber-100 rounded-xl p-3.5 space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-amber-700 font-semibold text-sm flex items-center gap-1.5">
-          ✋ 손들기
-          <span className="bg-amber-100 text-amber-700 text-xs px-1.5 py-0.5 rounded-full">{count}</span>
+        <span className="text-amber-700 font-medium text-sm flex items-center gap-1.5">
+          <Hand size={14} />
+          손들기
+          <Badge variant="warning">{count}</Badge>
         </span>
         <button onClick={dismissAll} className="text-xs text-amber-400 hover:text-amber-600 transition-colors">전체 해제</button>
       </div>
@@ -34,16 +38,16 @@ export default function HandRaiseList({ sessionId }) {
         {raisedList.map((p, i) => (
           <motion.div
             key={p.id}
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: 12 }}
             animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
+            exit={{ opacity: 0, x: -12 }}
             className="flex items-center justify-between text-sm py-1"
           >
-            <span className="text-gray-700">
-              <span className="text-gray-400 mr-2 text-xs">{i + 1}.</span>
+            <span className="text-slate-700">
+              <span className="text-slate-400 mr-2 text-xs">{i + 1}.</span>
               {p.nickname}
             </span>
-            <button onClick={() => dismissOne(p.id)} className="text-gray-400 hover:text-gray-600 text-xs transition-colors">해제</button>
+            <IconButton icon={X} size="sm" variant="danger" label="해제" onClick={() => dismissOne(p.id)} />
           </motion.div>
         ))}
       </AnimatePresence>
