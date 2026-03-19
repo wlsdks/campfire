@@ -120,6 +120,7 @@
 | 디자인 토큰 감사 | 전체 | ✅ 완료 | Anti-AI 체크리스트 기반 전수 조사. design-tokens.js 레시피를 실제 컴포넌트와 동기화, Avatar/Badge/Button의 indigo→slate 교체, Lottery 레인보우→슬레이트 모노크로매틱, 세팅중 배지 amber→slate, QuizEventBanner/Roulette/Leaderboard의 장식적 색상 제거. 허용: Radio 아이콘(indigo), BarChart 브랜드 그라데이션(indigo), 타이머 기능색(amber/red), 접속 상태(emerald) |
 | 성능 최적화 감사 | 전체 | ✅ 완료 | React.memo 14개 컴포넌트 적용, 훅 3개(useVotes/useParticipants/useScores) 파생값 useMemo/useCallback 메모이제이션, AdminPage 콜백 12개 useCallback 안정화, drawParticipants/studentUrl useMemo 적용 |
 | 접근성 감사 | 전체 | ✅ 완료 | aria-label: 모든 아이콘 전용 버튼(채팅, 타이머, 뒤로가기 등), 모든 input/textarea에 aria-label 추가. role 속성: progressbar(참여율 바), alert(에러 메시지), status(토스트), log(참여자 알림), toolbar(학생 하단바), dialog aria-label(모달). aria-expanded: 아코디언, 타이머 팝업. aria-pressed: 손들기, 채팅 토글. focus-visible: Button/IconButton에 focus→focus-visible로 변경(키보드 전용 포커스 링). aria-hidden: 장식용 SVG 마스코트 3곳. group role: 객관식/OX 선택지 그룹 |
+| 학생 입장 페이지 폴리시 | 학생 | ✅ 완료 | 390x844 모바일 최적화. 강의명 표시(Firebase에서 courseName 조회), 닉네임 2자 이상 유효성 검사 + 실시간 글자수 카운터(x/10), 에러 시 빨간 테두리 + 힌트 텍스트, 아바타 미리보기 height 애니메이션, 모바일 autoFocus 안정화(setTimeout), enterKeyHint="go", 키보드 가리지 않도록 pt-[20vh] 상단 배치, ArrowRight 아이콘으로 CTA 방향성 부여 |
 
 ---
 

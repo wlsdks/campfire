@@ -199,7 +199,6 @@ git push origin background-improve
 > 최근 10개만 유지. 오래된 것은 삭제.
 
 <!-- 예시: 2026-03-20 01:30 | improve: 학생 투표 화면 터치 타겟 48px로 통일 -->
-2026-03-20 | improve: 데모 데이터 강화 — seed-demo.mjs에 채팅(학생↔강사 혼합), 손들기(2~4명), 긴급질문(읽음/안읽음), 퀴즈 점수(정답+속도보너스+티켓) 추가. active 세션 3개 + ended 세션 3개에 적용. 모든 기능 테스트 가능
 2026-03-20 | improve: 마이크로 인터랙션 감사 — 15개 컴포넌트에 active:scale 프레스 피드백 일괄 적용. 탭 버튼(active:scale-[0.97]), 세션 행(active:bg-slate-100), 질문 액션 버튼(active:scale-90), 아코디언 헤더(active:bg-slate-100), 모달 선택 카드(active:scale-[0.98]), 폼 선택기(active:scale-[0.96]). CSS transition-all 기반으로 Framer Motion 불필요한 곳은 성능 최적화
 2026-03-20 | improve: 컴포넌트 크기 감사 — AdminPage.jsx(1022줄) → 425줄로 분리. 5개 서브컴포넌트 추출: AdminSessionHeader(186줄, 헤더바+타이머+ElapsedTime), ClassSummary(179줄, 클래스 요약+질문별 인사이트), RightSidebar(204줄, 참여자 패널+QR+아코디언), PresentationView(90줄, 발표 모드+MainContent), ModeSwitcher(79줄, 모드 전환 아코디언). 미사용 import 정리
 2026-03-20 | improve: 발표 모드 QR 오버레이 — PresentQROverlay 컴포넌트 신설. 기본 축소 상태(slate-900 QR아이콘+세션코드+참여자 수 pill), 클릭 시 확대(QR 180px+세션코드 bold+링크복사+접속 수). Framer Motion AnimatePresence 전환, stopPropagation으로 발표 종료 미스클릭 방지. 기존 120px 고정 QR+URL 텍스트 제거, 하단좌측 세션코드 뱃지도 QR 오버레이로 통합
@@ -210,6 +209,7 @@ git push origin background-improve
 2026-03-20 | improve: 학생 질문 진행 표시 — VotePage 질문 헤더에 "질문 1/3" 텍스트 + 슬레이트 진행 바 추가. order 기준 정렬, useMemo로 계산, spring 애니메이션. 학생이 현재 진행 상황을 즉시 파악. TimerExpiredOverlay 서브컴포넌트 추출로 VotePage 본체 200줄 이하 유지
 2026-03-20 | improve: 질문 순서 변경 — QuestionList에 위/아래 화살표 버튼 추가, QuestionManager에 Firebase order 필드 스왑 로직 구현. CourseEditor(강의 템플릿 편집)에도 동일 적용. 첫/마지막 질문은 해당 방향 비활성화. Framer Motion layout 애니메이션으로 부드러운 순서 전환. 읽기전용 세션에서는 화살표 미표시
 2026-03-20 | improve: 퀴즈 정답 축하 이펙트 — ConfettiBurst 컴포넌트 신설(114줄). 정답 시 24개 슬레이트 파티클(원/사각/다이아몬드)이 체크마크 주변에서 폭발. Framer Motion SVG 순수 구현(외부 의존성 없음), seededRandom으로 deterministic 배치, 1.2초 후 자동 언마운트. QuizResult 카드 overflow-hidden으로 파티클을 카드 경계 내에 제한. 오답 시에는 렌더링하지 않음
+2026-03-20 | improve: 학생 입장 페이지 폴리시 — 390x844 모바일 최적화. Firebase에서 courseName 조회하여 강의명 표시, 닉네임 2자 이상 유효성 검사 + 실시간 글자수 카운터(x/10), 에러 시 빨간 테두리 + 힌트 텍스트, 아바타 미리보기 height 애니메이션(AnimatePresence), 모바일 autoFocus 안정화(setTimeout ref), enterKeyHint="go" + autoComplete="off", 키보드 오버랩 방지 pt-[20vh] 상단 배치, ArrowRight 아이콘 CTA. 불필요한 box-shadow 펄스 애니메이션 제거, Badge→인라인 span으로 경량화
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 
