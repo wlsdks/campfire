@@ -1,177 +1,74 @@
-# Pinggo Autonomous Improvement Cycle
+# Pinggo Background Improvement Loop
 
-> Cron every 20min. Design system & rules are in CLAUDE.md — read it every cycle.
-> Focus: design quality > feature quantity. Each cycle = app gets visibly better.
+> 15분 간격 자동 실행. CLAUDE.md의 디자인 시스템/규칙을 매 사이클 참조.
+> 브랜치: `background-improve`에서만 작업. main은 절대 건드리지 않음.
 
-## Cycle Workflow
+## 브랜치 규칙
 
-### 0. Safety Check (FIRST)
+- **작업 브랜치**: `background-improve` (이 브랜치에서만 커밋/푸시)
+- **서브에이전트 worktree**: 사용 가능하나, 작업 완료 후 반드시 `background-improve`에 merge
+- **main 브랜치**: 절대 직접 커밋/푸시하지 않음 (사용자가 직접 관리)
+- **다른 브랜치 생성 금지**: worktree 임시 브랜치 외에 새 브랜치 만들지 않음
+- **충돌 발생 시**: 반드시 해결 후 merge. 해결 못하면 해당 작업 버리고 다음으로
+
+## 사이클 워크플로우
+
+### 0. 안전 점검
 ```bash
 cd /Users/jinan/ai/Pinggo
-git status                    # Check for uncommitted changes from crashed cycle
+git checkout background-improve
+git status                    # 이전 사이클 미커밋 변경 확인
+npm run build                 # 빌드 통과 확인
 ```
-- If dirty state exists: review changes → if they look intentional, commit them. If broken, `git checkout .` to restore.
-- Ensure `npm run build` passes BEFORE starting new work. If not, fix first.
+- dirty state → 의도적이면 커밋, 깨졌으면 `git checkout .`
+- 빌드 실패 → 먼저 수정
 
-### 1. Read State
-- Read `CLAUDE.md` (design system, architecture, anti-AI rules)
-- Read `progress.md` → find next `[ ]` task
-- Run `git log --oneline -10` → understand what was done in recent cycles (avoid duplication, maintain continuity)
-- If the last cycle left WIP notes in progress.md, continue that work first
-- **If ALL tasks are [x]** → enter Phase 10 (Continuous Improvement): browse the app with Playwright, find the weakest spot, improve it
+### 1. 상태 파악
+- `CLAUDE.md` 읽기 (디자인 시스템, 안티-AI 규칙)
+- `git log --oneline -10` → 최근 작업 파악 (중복 방지)
+- Playwright로 앱 현재 상태 확인 (http://localhost:5173)
 
-### 2. Execute
-- Read source files BEFORE editing
-- Follow design system from CLAUDE.md strictly — all colors from tokens, all icons from lucide-react
-- Think: spacing, alignment, hierarchy, whitespace, consistency
-- **Apply the right persona** (CLAUDE.md 참고):
-  - Student pages → "나는 수업 중 한 손으로 폰 잡고 있는 학생" 관점
-  - Admin pages → "나는 학생들 앞에서 수업 진행 중인 강사" 관점
-  - Presentation mode → "나는 강의실 뒷자리에서 프로젝터 보는 학생" 관점
-- **Use sub-agents for parallel work** when beneficial:
-  - Research agent: 디자인 레퍼런스 조사, 라이브러리 문서 확인, UX 패턴 검색
-  - Explore agent: 코드베이스에서 패턴 찾기, 영향받는 파일 파악, 의존성 추적
-  - Code review agent: 큰 변경 후 품질 검토
-  - 예시: 디자인 작업 중 → 서브에이전트로 "Toss 앱의 투표 UI 패턴 조사" 병렬 실행
-  - 예시: Review 사이클 → 서브에이전트들로 여러 페이지 동시 스크린샷+분석
+### 2. 개선 실행
+- 한 사이클에 **한 가지 개선에 집중** (여러 개 동시에 건드리지 않기)
+- 소스 파일 읽고 나서 수정
+- CLAUDE.md 디자인 시스템 엄격 준수
 
-### 3. Verify
+### 3. 검증
 ```bash
-cd /Users/jinan/ai/Pinggo && npm run build   # Must pass
+npm run build   # 반드시 통과
 ```
-- Start dev server if needed: `npm run dev` (background)
-- CSS stale? → `rm -rf node_modules/.vite`, restart server
-- **Playwright MCP**: screenshot at desktop (1280x800) + mobile (390x844)
-- Ask: "Does this look like Toss/Linear or like an AI demo?" → iterate until real-product quality
+- Playwright 스크린샷으로 시각적 확인
+- "토스/Linear처럼 보이는가, AI 데모처럼 보이는가?" 자문
 
-### 4. Commit & Update
+### 4. 커밋 & 푸시
 ```bash
-git add -A && git commit -m "style/feat/refactor: description"
+git add -A && git commit -m "improve: 설명"
+git push origin background-improve
 ```
-- Update `progress.md`: mark `[x]`, add cycle log entry
-- Spot inconsistency in existing code? Fix it (same cycle or note for next)
 
-### 5. Error Recovery
-If something goes wrong during the cycle:
-- **Build fails and can't fix in 3 attempts** → revert changes (`git checkout .`), add note in progress.md, move to next task
-- **Playwright can't connect** → skip visual verification for this cycle, note in log, but still do build check
-- **Stuck on a task** → mark as `[~] WIP:` with notes, move on. Don't waste the whole cycle.
-- **Dev server won't start** → `kill $(lsof -ti:5173) 2>/dev/null; rm -rf node_modules/.vite; npm run dev &`
+### 5. 에러 복구
+- 빌드 3회 실패 → `git checkout .`, 다음 사이클로
+- Playwright 연결 실패 → 시각적 검증 스킵, 빌드만 확인
+- 막히면 → 포기하고 다음 사이클로. 한 사이클 낭비하지 않기
 
-### 6. Self-Improve (Optional, max 3 additions/cycle)
-- Add learnings to `## Learnings` section below
-- NEVER change baselines (colors, typography, architecture) in CLAUDE.md
+## 서브에이전트 활용
 
----
+적극 활용 권장:
+- **Research agent**: 디자인 레퍼런스, UX 패턴, 라이브러리 문서 조사
+- **Explore agent**: 코드베이스 분석, 패턴 찾기, 의존성 추적
+- **Code review agent**: 변경 후 품질 검토
+- **git worktree**: 병렬 작업 (완료 후 `background-improve`에 merge)
 
-## Phase Plan
+## 개선 카테고리 (순환 선택)
 
-### Phase 1: Foundation
-- [x] 1.0: Architecture migration → Bulletproof React structure + `@` path alias in vite.config.js
-- [ ] 1.1: Install deps (lucide-react, lottie-react), add Pretendard + Inter fonts, create design-tokens.js
-- [ ] 1.2: Shared UI components (Button variants, Card, Badge, IconButton, Skeleton)
-- [ ] 1.3: Global styles + rename "shotshot" → "pinggo" everywhere
+1. **디자인 디테일**: 정렬, 색상, 그림자/보더 일관성, hover/active 상태, 마이크로 인터랙션
+2. **UX 개선**: 사용자 흐름, 에러 메시지, 빈 상태, 로딩 경험, 접근성
+3. **코드 품질**: 큰 컴포넌트 분리(200줄 초과), 중복 제거, 성능 최적화
+4. **기능 고도화**: 애니메이션 타이밍, 전환 효과, 엣지케이스 처리
+5. **신규 기능**: 정말 가치 있는 것만, 한 사이클에 하나씩, 신중하게
 
-### Phase 2: Student Pages (Mobile-First)
-- [ ] 2.1: JoinPage — 화면 중앙 흰색 Card, Pinggo 로고(Sparkles 아이콘+텍스트), 세션코드 Badge, 닉네임 Input(Component Pattern 사용), 닉네임 첫글자 Avatar 미리보기, "참여하기" Primary Button 하단, 배경 slate-50
-- [ ] 2.2: VotePage — 상단에 질문 카드(제목 bold + 타입 Badge), 하단 2/3에 투표 버튼들, ConnectionDot 우상단 고정
-- [ ] 2.3: Voters — ChoiceVoter: 5색 풀너비 버튼(Vote Colors 사용) 선택 시 ring+scale 피드백 / OXVoter: 2분할 대형 버튼(O=indigo, X=slate) / TextInput: Input+Submit 조합
-- [ ] 2.4: WaitingPage — 중앙에 Pinggo 아이콘 부드러운 pulse, "다음 질문을 기다리는 중..." 텍스트, 참여자 수 Badge, 세션코드 하단 표시
-- [ ] 2.5: BottomBar — 고정 하단바 bg-white border-t, 손들기(Hand 아이콘) + 긴급질문(MessageCircle 아이콘) 두 버튼, 손들기 활성 시 amber 배경 토글, 질문 모달은 Modal Pattern 사용
-- [ ] 2.6: VoteConfirm — 중앙 체크 애니메이션(Lottie or Framer spring scale), "투표 완료!" 텍스트, 2초 후 "결과를 기다리는 중" 전환
-- [ ] 2.R: **REVIEW** — screenshot all student pages, fix issues
+## 페르소나 (작업 시 반드시 해당 관점에서 생각)
 
-### Phase 3: Admin Pages (Responsive)
-- [ ] 3.1: AdminLogin — 중앙 Card, Pinggo 브랜드(Sparkles 아이콘 + "Pinggo" text-2xl font-bold text-indigo-600), 비밀번호 Input, Primary Button, 배경 slate-50
-- [ ] 3.2: AdminPage layout — 3열: 좌(w-80 질문관리) / 중앙(flex-1 시각화) / 우(w-72 참여자), 태블릿 이하에서 탭 전환 UI로 변경, 상단 바에 세션ID Badge + 참여자수 + 프레젠테이션 모드 Button
-- [ ] 3.3: QuestionManager — 질문 타입 4개 아이콘 버튼(BarChart3/Circle/Cloud/MessageSquare), 질문 목록 Card 리스트, 현재 활성 질문 indigo 좌측 보더, 새 질문 폼은 Card 안에 깔끔하게
-- [ ] 3.4: Sidebar panels — ParticipantList: Avatar(이니셜)+이름 리스트 / HandRaiseList: amber Badge 카운트+dismiss IconButton / UrgentQuestionList: 읽지않음 indigo dot 표시
-- [ ] 3.5: Presentation mode — 전체화면, 시각화만 표시, 배경 white, 폰트 1.5배 확대, ESC로 나가기 힌트
-- [ ] 3.R: **REVIEW** — screenshot all admin pages at all viewports
-
-### Phase 4: Visualizations
-- [ ] 4.1: BarChart — smooth growth, percentage labels, responsive
-- [ ] 4.2: OXBattle — split-screen, animated counters, winner
-- [ ] 4.3: WordCloud — size distribution, smooth fade-in
-- [ ] 4.4: QACards — card grid, typography, scroll
-- [ ] 4.R: **REVIEW**
-
-### Phase 5: Games
-- [ ] 5.1: Roulette — smooth spin, confetti, name labels
-- [ ] 5.2: Lottery — card flip, winner reveal, multi-winner
-- [ ] 5.R: **REVIEW**
-
-### Phase 6: Timer
-- [ ] 6.1: Timer component (SVG ring, color transition, pulse at <5s)
-- [ ] 6.2: Firebase sync + useTimer() hook
-- [ ] 6.3: Admin controls (15/30/60/custom, start/pause/reset)
-- [ ] 6.4: Student display (countdown, auto-lock on expiry)
-- [ ] 6.R: **REVIEW**
-
-### Phase 7: Reactions
-- [ ] 7.1: Firebase model + useReactions() with rate limiting
-- [ ] 7.2: ReactionBar (student) — icon buttons, cooldown, thumb zone
-- [ ] 7.3: ReactionOverlay (admin) — floating bubbles, counts
-- [ ] 7.4: Integration + polish
-- [ ] 7.R: **REVIEW**
-
-### Phase 8: Quiz Mode
-- [ ] 8.1: Data model (isQuiz, correctAnswer, scores in Firebase)
-- [ ] 8.2: Admin UI (quiz toggle, correct answer, reveal)
-- [ ] 8.3: Student result (correct/wrong animation, points)
-- [ ] 8.4: Leaderboard (top 5 podium, position animations)
-- [ ] 8.5: Quiz flow polish (question → answer → leaderboard → next)
-- [ ] 8.R: **REVIEW**
-
-### Phase 9: Global Polish
-- [ ] 9.1: Loading states (skeleton screens everywhere)
-- [ ] 9.2: Error + empty states (friendly, illustrated)
-- [ ] 9.3: Micro-interactions audit (every transition intentional)
-- [ ] 9.4: Responsive audit (320/390/768/1024/1440px)
-- [ ] 9.5: Animation performance (60fps, prefers-reduced-motion)
-- [ ] 9.6: Presenter mode (dark/light, keyboard shortcuts)
-- [ ] 9.7: Connection status (online/offline indicators)
-- [ ] 9.R: **FINAL REVIEW**
-
-### Phase 10: Continuous Improvement (모든 Phase 완료 후 무한 반복)
-> 계획된 태스크가 모두 [x]면 이 Phase로 진입. 매 사이클마다 아래 중 하나를 선택해서 실행.
-
-**매 사이클 시작 시:**
-1. Playwright로 앱 전체 탐색 (학생 + 어드민 모든 페이지)
-2. 가장 "아쉬운" 부분을 하나 찾기 (디자인, UX, 코드 품질, 성능)
-3. 그것을 개선하기
-
-**개선 카테고리 (순환하며 선택):**
-- **디자인 디테일**: 미세한 정렬, 색상 미세조정, 그림자/보더 일관성, hover/active 상태 개선, 마이크로 인터렉션 추가
-- **UX 개선**: 사용자 흐름 개선, 에러 메시지 개선, 빈 상태 개선, 로딩 경험 개선, 접근성 개선
-- **코드 품질**: 큰 컴포넌트 분리, 중복 제거, 성능 최적화, 불필요한 리렌더링 제거
-- **기능 고도화**: 기존 기능을 더 매끄럽게 (애니메이션 타이밍 조정, 전환 효과 개선, 엣지케이스 처리)
-- **신규 기능**: Feature Ideas 테이블에 있는 것 중 정말 가치 있는 것만 (한 사이클에 하나씩, 신중하게)
-
-**규칙:**
-- 한 사이클에 한 가지 개선에 집중 (산만하게 여러 개 건드리지 않기)
-- 반드시 Playwright 스크린샷 전후 비교
-- progress.md Cycle Log에 뭘 개선했는지 기록
-- 퀄리티가 이미 충분히 좋으면 → 코드 정리나 성능 개선에 투자
-
----
-
-## Review Cycle Checklist (for X.R tasks)
-When a phase's REVIEW task comes up, check every page in that phase:
-
-- [ ] Visual hierarchy clear? (headings > body > captions)
-- [ ] Spacing consistent? No weird gaps or misalignments?
-- [ ] Colors from design tokens only? Max 2-3 per screen?
-- [ ] Icons all lucide-react, same size/stroke?
-- [ ] Touch targets 48px+ on mobile?
-- [ ] Looks like Toss/Linear, NOT like an AI demo?
-- [ ] Animations purposeful, not excessive?
-- [ ] Korean text readable? (line-height, font rendering)
-- [ ] Works at 390px mobile AND 1280px desktop?
-
-Fix ALL issues before marking the review [x].
-
----
-
-## Learnings
-> Add cycle learnings here. Max 3 per cycle. Keep concise.
+- **학생 페이지** → "나는 수업 중 한 손으로 폰 잡고 있는 학생"
+- **강사 페이지** → "나는 학생들 앞에서 수업 진행 중인 강사"
+- **프레젠터 화면** → "나는 강의실 뒷자리에서 프로젝터 보는 학생"
