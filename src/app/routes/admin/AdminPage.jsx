@@ -824,7 +824,7 @@ export default function AdminPage() {
               </RightPanelAccordion>
 
               {/* QR */}
-              <div className="border-t border-slate-100 pt-4">
+              <div className="pt-2">
                 <div className="flex justify-center">
                   <QRCode url={studentUrl} size={160} />
                 </div>
