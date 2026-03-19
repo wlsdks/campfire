@@ -27,11 +27,11 @@ export default function UrgentQuestionList({ sessionId }) {
   if (questionList.length === 0) return null;
 
   return (
-    <div className="bg-red-50 border border-red-100 rounded-xl p-3.5 space-y-2">
-      <span className="text-red-600 font-medium text-sm flex items-center gap-1.5">
-        <AlertCircle size={14} />
+    <div className="bg-white border border-slate-200 rounded-xl p-3.5 space-y-2">
+      <span className="text-slate-700 font-medium text-sm flex items-center gap-1.5">
+        <AlertCircle size={14} className="text-slate-400" />
         긴급 질문
-        {unreadCount > 0 && <Badge variant="error">{unreadCount} 새 질문</Badge>}
+        {unreadCount > 0 && <Badge variant="primary">{unreadCount} 새 질문</Badge>}
       </span>
       <AnimatePresence>
         {questionList.map((q) => (
@@ -43,12 +43,12 @@ export default function UrgentQuestionList({ sessionId }) {
             role="button"
             aria-label={q.read ? '읽은 질문' : '읽지 않은 질문 — 클릭하여 읽음 처리'}
             className={`p-2.5 rounded-lg text-sm transition-colors cursor-pointer ${
-              q.read ? 'bg-white' : 'bg-red-100/60 hover:bg-red-100'
+              q.read ? 'bg-slate-50' : 'bg-indigo-50/50 hover:bg-indigo-50'
             }`}
             onClick={() => !q.read && markRead(q.id)}
           >
             <div className="flex items-start gap-2">
-              {!q.read && <div className="w-1.5 h-1.5 rounded-full bg-indigo-500 mt-1.5 shrink-0" />}
+              {!q.read && <div className="w-1.5 h-1.5 rounded-full bg-slate-900 mt-1.5 shrink-0" />}
               <div className="flex-1 min-w-0">
                 <p className="text-slate-700 leading-relaxed">{q.text}</p>
                 <div className="flex justify-between items-center mt-1.5">

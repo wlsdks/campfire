@@ -62,9 +62,7 @@ export default function QuizVoter({ sessionId, questionId, question, renderResul
   if (question?.revealedAt) {
     return (
       <div className="bg-white rounded-xl border border-slate-100 p-6 text-center space-y-3">
-        <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto">
-          <Lock size={24} className="text-slate-400" />
-        </div>
+        <Lock size={28} className="text-slate-400 mx-auto" />
         <div className="space-y-1">
           <p className="text-slate-900 font-bold text-lg">정답이 공개되었습니다</p>
           <p className="text-slate-500 text-sm">이번 라운드 응답은 마감되었습니다</p>

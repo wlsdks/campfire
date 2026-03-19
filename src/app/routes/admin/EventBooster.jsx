@@ -4,9 +4,8 @@ import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import { QUIZ_EVENT_PRESETS } from '@/lib/quiz';
 
 const EVENT_ACCENT = {
-  'double-points': { idle: 'border-amber-200 bg-amber-50/50 hover:bg-amber-50', selected: 'border-amber-400 bg-amber-50 ring-1 ring-amber-200' },
-  'ticket-rush': { idle: 'border-emerald-200 bg-emerald-50/50 hover:bg-emerald-50', selected: 'border-emerald-400 bg-emerald-50 ring-1 ring-emerald-200' },
-  'jackpot': { idle: 'border-indigo-200 bg-indigo-50/50 hover:bg-indigo-50', selected: 'border-indigo-400 bg-indigo-50 ring-1 ring-indigo-200' },
+  idle: 'border-slate-200 bg-slate-50 hover:bg-slate-100',
+  selected: 'border-slate-900 bg-slate-50 ring-1 ring-slate-300',
 };
 
 /**
@@ -24,7 +23,7 @@ export default function EventBooster({ nextQuizEvent, onArmEvent, onClearEvent }
       <div className="space-y-1">
         <div className="flex items-center justify-between gap-2">
           <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider">이벤트 부스터</p>
-          <Badge variant={nextQuizEvent ? 'warning' : 'neutral'}>
+          <Badge variant={nextQuizEvent ? 'primary' : 'neutral'}>
             {nextQuizEvent ? '예약됨' : '없음'}
           </Badge>
         </div>
@@ -37,13 +36,12 @@ export default function EventBooster({ nextQuizEvent, onArmEvent, onClearEvent }
       <div className="grid grid-cols-1 gap-2">
         {QUIZ_EVENT_PRESETS.map((eventPreset) => {
           const isSelected = nextQuizEvent?.id === eventPreset.id;
-          const accent = EVENT_ACCENT[eventPreset.id] || { idle: 'border-slate-200 bg-slate-50 hover:bg-slate-100', selected: 'border-indigo-300 bg-indigo-50' };
           return (
             <button
               key={eventPreset.id}
               onClick={() => onArmEvent(eventPreset)}
               className={`rounded-lg border px-3 py-2 text-left transition-colors ${
-                isSelected ? accent.selected : accent.idle
+                isSelected ? EVENT_ACCENT.selected : EVENT_ACCENT.idle
               }`}
             >
               <p className="text-sm font-semibold text-slate-900">{eventPreset.label}</p>

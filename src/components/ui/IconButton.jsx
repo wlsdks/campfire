@@ -9,8 +9,8 @@ const sizes = {
 const variants = {
   ghost: 'hover:bg-slate-100 text-slate-500 hover:text-slate-700',
   subtle: 'bg-slate-50 hover:bg-slate-100 text-slate-600',
-  primary: 'bg-indigo-50 hover:bg-indigo-100 text-indigo-600',
-  danger: 'hover:bg-red-50 text-slate-400 hover:text-red-500',
+  primary: 'bg-slate-100 hover:bg-slate-200 text-slate-700',
+  danger: 'hover:bg-slate-200 text-slate-400 hover:text-slate-700',
 };
 
 export default function IconButton({

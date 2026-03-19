@@ -88,9 +88,7 @@ export default function Lottery({ participants, onResult }) {
   if (participants.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-16">
-        <div className="w-16 h-16 rounded-2xl bg-indigo-100 flex items-center justify-center">
-          <Ticket size={32} className="text-indigo-500" />
-        </div>
+        <Ticket size={36} className="text-slate-400" />
         <div className="text-center space-y-1">
           <h3 className="text-xl font-bold text-slate-900">{hasTicketMode ? '보상 추첨' : '제비뽑기'}</h3>
           <p className="text-slate-400 text-sm">참여자가 접속하면 시작할 수 있어요</p>
@@ -153,9 +151,7 @@ export default function Lottery({ participants, onResult }) {
 
         {winners.length === 0 && !revealing && (
           <div className="text-center space-y-2">
-            <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mx-auto">
-              <Ticket size={24} className="text-slate-300" />
-            </div>
+            <Ticket size={28} className="text-slate-300 mx-auto" />
             <p className="text-slate-300 text-base">추첨 버튼을 눌러주세요</p>
           </div>
         )}

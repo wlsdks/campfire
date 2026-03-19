@@ -51,9 +51,7 @@ export default function WordCloud({ sessionId, questionId }) {
         </AnimatePresence>
         {words.length === 0 && (
           <div className="text-center space-y-2">
-            <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mx-auto">
-              <Cloud size={24} className="text-slate-300" />
-            </div>
+            <Cloud size={28} className="text-slate-300 mx-auto" />
             <p className="text-slate-300 text-base">아직 입력이 없습니다</p>
           </div>
         )}

@@ -21,9 +21,7 @@ export default function ParticipantList({ participants }) {
       </AnimatePresence>
       {participants.length === 0 && (
         <div className="text-center py-6 space-y-2">
-          <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center mx-auto">
-            <Users size={20} className="text-slate-300" />
-          </div>
+          <Users size={24} className="text-slate-300 mx-auto" />
           <p className="text-slate-300 text-sm">아직 참여자가 없습니다</p>
         </div>
       )}

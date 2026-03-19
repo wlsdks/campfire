@@ -25,7 +25,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, ease: 'easeOut' }}
-      className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-8 shadow-sm"
+      className="w-full rounded-xl border border-slate-200 bg-white px-5 py-8 shadow-sm"
     >
       <div className="flex flex-col items-center gap-4">
         <motion.div

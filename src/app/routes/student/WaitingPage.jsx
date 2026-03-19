@@ -82,13 +82,13 @@ export default function WaitingPage({ sessionId, pendingEvent = null }) {
         <div className="relative w-16 h-16 mx-auto">
           {/* Sonar ping ring */}
           <motion.div
-            className="absolute inset-0 rounded-2xl border-2 border-indigo-300"
+            className="absolute inset-0 rounded-2xl border-2 border-slate-300"
             animate={{ scale: [1, 1.5], opacity: [0.4, 0] }}
             transition={{ repeat: Infinity, duration: 2.5, ease: 'easeOut' }}
           />
           {/* Second ring, offset timing */}
           <motion.div
-            className="absolute inset-0 rounded-2xl border-2 border-indigo-300"
+            className="absolute inset-0 rounded-2xl border-2 border-slate-300"
             animate={{ scale: [1, 1.5], opacity: [0.4, 0] }}
             transition={{ repeat: Infinity, duration: 2.5, ease: 'easeOut', delay: 1.25 }}
           />
@@ -96,9 +96,9 @@ export default function WaitingPage({ sessionId, pendingEvent = null }) {
           <motion.div
             animate={{ scale: [1, 1.03, 1] }}
             transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
-            className="w-16 h-16 rounded-2xl bg-indigo-100 flex items-center justify-center relative z-10"
+            className="relative z-10"
           >
-            <Radio size={32} className="text-indigo-500" />
+            <Radio size={36} className="text-indigo-600" />
           </motion.div>
         </div>
 
@@ -115,7 +115,7 @@ export default function WaitingPage({ sessionId, pendingEvent = null }) {
         {/* Info badges */}
         <div className="flex items-center justify-center gap-2 pt-1">
           {count > 0 && (
-            <Badge variant="primary">
+            <Badge variant="neutral">
               <Users size={12} className="mr-1" />
               {count}명 참여 중
             </Badge>

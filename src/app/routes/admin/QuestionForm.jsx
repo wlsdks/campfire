@@ -78,7 +78,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
                 aria-label={`${t.label} 유형 선택`}
                 className={`py-2 px-3 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
                   type === t.value
-                    ? 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200'
+                    ? 'bg-slate-900 text-white'
                     : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
                 }`}
               >
@@ -125,8 +125,8 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
           ))}
 
         {type === 'quiz' && (
-          <div className="space-y-2 rounded-lg bg-amber-50 border border-amber-100 p-3">
-            <p className="text-xs font-semibold text-amber-700 uppercase tracking-wider">정답 선택</p>
+          <div className="space-y-2 rounded-lg bg-slate-50 border border-slate-200 p-3">
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">정답 선택</p>
             <div className="flex flex-wrap gap-2">
               {options
                 .filter((option) => option.trim())
@@ -136,15 +136,15 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
                     onClick={() => setCorrectAnswer(option)}
                     className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                       correctAnswer === option
-                        ? 'bg-amber-500 text-white'
-                        : 'bg-white text-amber-700 border border-amber-200 hover:bg-amber-100'
+                        ? 'bg-slate-900 text-white'
+                        : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
                     }`}
                   >
                     {option}
                   </button>
                 ))}
             </div>
-            <p className="text-xs text-amber-700">
+            <p className="text-xs text-slate-500">
               정답자: 기본 {QUIZ_DEFAULTS.points}점 + 속도 보너스, 참여자 전원 티켓{' '}
               {QUIZ_DEFAULTS.participationTickets}장, 정답자 추가 티켓 {QUIZ_DEFAULTS.correctBonusTickets}장
             </p>

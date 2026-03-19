@@ -23,9 +23,7 @@ export default function QACards({ sessionId, questionId }) {
       </AnimatePresence>
       {sorted.length === 0 && (
         <div className="text-center py-12 space-y-2">
-          <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center mx-auto">
-            <MessageSquare size={24} className="text-slate-300" />
-          </div>
+          <MessageSquare size={28} className="text-slate-300 mx-auto" />
           <p className="text-slate-300 text-base">아직 응답이 없습니다</p>
         </div>
       )}

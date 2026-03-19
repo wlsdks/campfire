@@ -16,9 +16,7 @@ export default function VizRenderer({ sessionId, session }) {
   if (!['poll', 'quiz'].includes(currentMode) || !currentQId) {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-3">
-        <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center">
-          <BarChart3 size={24} className="text-slate-300" />
-        </div>
+        <BarChart3 size={28} className="text-slate-300" />
         <p className="text-slate-300 text-lg font-medium">질문을 활성화하세요</p>
       </div>
     );

@@ -109,14 +109,14 @@ export default function VoteConfirm({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-6 shadow-sm"
+      className="w-full rounded-xl border border-slate-200 bg-white px-5 py-6 shadow-sm"
     >
       <div className="flex flex-col items-center gap-5">
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 300, damping: 18 }}
-          className="flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-50 border border-indigo-100"
+          className="flex h-14 w-14 items-center justify-center"
         >
           <LottieCheckmark />
         </motion.div>

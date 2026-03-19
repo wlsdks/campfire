@@ -27,9 +27,9 @@ function AnimatedScore({ value, suffix = '점' }) {
 }
 
 const PODIUM_STYLES = [
-  'bg-amber-50 text-amber-700 border-amber-200',
+  'bg-slate-900 text-white border-slate-900',
+  'bg-slate-100 text-slate-700 border-slate-200',
   'bg-slate-50 text-slate-600 border-slate-200',
-  'bg-orange-50 text-orange-700 border-orange-200',
 ];
 
 export default function Leaderboard({
@@ -70,7 +70,7 @@ export default function Leaderboard({
           }`}
         >
           <span className={`w-6 text-center font-bold text-sm ${i < 3 ? '' : 'text-slate-400'}`}>
-            {i === 0 ? <Medal size={16} className="text-amber-500 mx-auto" /> : i + 1}
+            {i === 0 ? <Medal size={16} className="text-white mx-auto" /> : i + 1}
           </span>
           <Avatar name={entry.nickname} size="sm" />
           <div className="flex-1 min-w-0">
@@ -91,11 +91,11 @@ export default function Leaderboard({
             </div>
           </div>
           <div className="text-right shrink-0">
-            <span className="font-bold text-indigo-600 block">
+            <span className={`font-bold block ${i === 0 ? 'text-white' : 'text-slate-900'}`}>
               <AnimatedScore value={entry.total} />
             </span>
             {entry.lastPoints > 0 && (
-              <span className="text-xs text-emerald-500 font-medium">+{entry.lastPoints}</span>
+              <span className={`text-xs font-medium ${i === 0 ? 'text-white/70' : 'text-slate-400'}`}>+{entry.lastPoints}</span>
             )}
           </div>
         </motion.div>

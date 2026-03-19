@@ -84,9 +84,7 @@ export default function StudentBottomBar({ sessionId }) {
       <Modal open={showQuestionInput} onClose={() => setShowQuestionInput(false)}>
         <form onSubmit={submitUrgentQuestion} className="space-y-4">
           <div className="text-center space-y-1">
-            <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center mx-auto mb-2">
-              <MessageCircle size={20} className="text-indigo-600" />
-            </div>
+            <MessageCircle size={24} className="text-slate-900 mx-auto mb-2" />
             <p className="text-slate-900 font-bold text-lg">익명 긴급 질문</p>
             <p className="text-slate-400 text-xs">이름이 표시되지 않습니다</p>
           </div>
@@ -149,7 +147,7 @@ export default function StudentBottomBar({ sessionId }) {
           onClick={toggleHand}
           className={`flex-1 py-3 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-2 ${
             isRaised
-              ? 'bg-amber-50 text-amber-700 border border-amber-200'
+              ? 'bg-slate-900 text-white border border-slate-900'
               : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border border-transparent'
           }`}
         >

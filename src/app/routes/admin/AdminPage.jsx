@@ -33,7 +33,7 @@ function PresentEmptyState({ sessionId, studentUrl, count }) {
       <p className="text-slate-500 text-base break-all max-w-md text-center">{studentUrl}</p>
       <p className="text-slate-400 text-sm">학생들이 QR코드를 스캔하여 참여할 수 있습니다</p>
       <div className="flex items-center gap-3">
-        <Badge variant="success"><Users size={14} className="mr-1" />{count}명 접속 중</Badge>
+        <Badge variant="neutral"><Users size={14} className="mr-1" />{count}명 접속 중</Badge>
         <Badge variant="neutral">{sessionId}</Badge>
       </div>
     </div>
@@ -122,9 +122,7 @@ export default function AdminPage() {
     return (
       <div className="min-h-dvh bg-slate-50 flex items-center justify-center p-4">
         <div className="text-center space-y-5">
-          <div className="w-16 h-16 rounded-2xl bg-indigo-100 flex items-center justify-center mx-auto">
-            <Radio size={32} className="text-indigo-600" />
-          </div>
+          <Radio size={36} className="text-indigo-600 mx-auto" />
           <h1 className="text-2xl font-bold text-slate-900">Pinggo</h1>
           <Button onClick={createSession} variant="primary" size="lg" disabled={creating}>
             {creating ? <Loader2 size={20} className="animate-spin" /> : <Plus size={20} />}
@@ -192,7 +190,7 @@ export default function AdminPage() {
         </div>
         {/* Session info bottom-left */}
         <div className="fixed bottom-5 left-5 flex items-center gap-2">
-          <Badge variant="success"><Users size={12} className="mr-1" />{count}명</Badge>
+          <Badge variant="neutral"><Users size={12} className="mr-1" />{count}명</Badge>
           <Badge variant="neutral">{sessionId}</Badge>
         </div>
         {/* Exit hint — top right */}
@@ -211,20 +209,18 @@ export default function AdminPage() {
       {/* Header bar */}
       <div className="bg-white border-b border-slate-200 px-5 py-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
-            <Radio size={16} className="text-indigo-600" />
-          </div>
+          <Radio size={18} className="text-indigo-600" />
           <span className="font-bold text-slate-900">Pinggo</span>
           <Badge variant="neutral">{sessionId}</Badge>
         </div>
         <div className="flex items-center gap-3">
           {timerRunning && <TimerRing endTime={endTime} duration={duration} onExpire={stopTimer} size="sm" />}
-          <Badge variant="success">
+          <Badge variant="neutral">
             <Users size={12} className="mr-1" />
             {count}명
           </Badge>
-          {totalTickets > 0 && <Badge variant="warning">{totalTickets}장 티켓</Badge>}
-          {session?.pendingEvent?.label && <Badge variant="warning">{session.pendingEvent.label}</Badge>}
+          {totalTickets > 0 && <Badge variant="neutral">{totalTickets}장 티켓</Badge>}
+          {session?.pendingEvent?.label && <Badge variant="primary">{session.pendingEvent.label}</Badge>}
           <Button onClick={() => setPresentMode(true)} variant="primary" size="sm">
             <Monitor size={16} />
             발표 모드
@@ -261,7 +257,7 @@ export default function AdminPage() {
                 <button
                   key={mode}
                   onClick={() => switchMode(mode)}
-                  className="w-full inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium rounded-lg border-l-3 border-indigo-500 bg-indigo-50 text-indigo-700 transition-colors"
+                  className="w-full inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium rounded-lg bg-slate-900 text-white transition-colors"
                   aria-label={`${label} 모드로 전환`}
                 >
                   <Icon size={16} /> {label}

@@ -59,8 +59,8 @@ export default function QuestionList({
                     {qType?.label}
                   </span>
                   {isActive && <Badge variant="primary">LIVE</Badge>}
-                  {isQuiz && q.event && <Badge variant="warning">{q.event.label || '이벤트'}</Badge>}
-                  {isQuiz && q.revealedAt && <Badge variant="success">정답 공개</Badge>}
+                  {isQuiz && q.event && <Badge variant="neutral">{q.event.label || '이벤트'}</Badge>}
+                  {isQuiz && q.revealedAt && <Badge variant="neutral">정답 공개</Badge>}
                 </div>
                 <span className="text-slate-700 text-sm leading-snug">{q.title}</span>
               </div>
@@ -117,7 +117,7 @@ export default function QuestionList({
                 </button>
                 <button
                   onClick={() => onDelete(qId)}
-                  className="p-1.5 rounded-md text-slate-300 hover:bg-red-50 hover:text-red-500 transition-all"
+                  className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-700 transition-all"
                   title="삭제"
                   aria-label="질문 삭제"
                 >

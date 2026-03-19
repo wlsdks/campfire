@@ -52,9 +52,7 @@ export default function Roulette({ participants, onResult }) {
   if (names.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-16">
-        <div className="w-16 h-16 rounded-2xl bg-indigo-100 flex items-center justify-center">
-          <Target size={32} className="text-indigo-500" />
-        </div>
+        <Target size={36} className="text-slate-400" />
         <div className="text-center space-y-1">
           <h3 className="text-xl font-bold text-slate-900">돌림판</h3>
           <p className="text-slate-400 text-sm">참여자가 접속하면 시작할 수 있어요</p>

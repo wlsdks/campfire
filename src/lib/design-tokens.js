@@ -71,8 +71,8 @@ export const tw = {
 
   badge: 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
   badgePrimary: 'bg-indigo-50 text-indigo-700',
-  badgeSuccess: 'bg-emerald-50 text-emerald-700',
-  badgeWarning: 'bg-amber-50 text-amber-700',
+  badgeSuccess: 'bg-slate-100 text-slate-600',
+  badgeWarning: 'bg-slate-100 text-slate-600',
   badgeError: 'bg-red-50 text-red-700',
 
   avatar: 'rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-semibold',
