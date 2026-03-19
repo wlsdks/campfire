@@ -132,10 +132,10 @@ export default function VotePage({ sessionId }) {
               <OXVoter sessionId={sessionId} questionId={currentQId} />
             )}
             {question.type === 'wordcloud' && (
-              <TextInput sessionId={sessionId} questionId={currentQId} placeholder="단어를 입력하세요" maxLength={20} />
+              <TextInput sessionId={sessionId} questionId={currentQId} type="wordcloud" placeholder="단어를 입력하세요" maxLength={20} />
             )}
             {question.type === 'qna' && (
-              <TextInput sessionId={sessionId} questionId={currentQId} placeholder="질문을 입력하세요" maxLength={200} />
+              <TextInput sessionId={sessionId} questionId={currentQId} type="qna" placeholder="질문을 입력하세요" maxLength={200} />
             )}
           </motion.div>
       </div>
