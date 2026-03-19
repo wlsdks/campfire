@@ -2,6 +2,7 @@ import { useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ref, get } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import EmptyState from '@/components/ui/EmptyState';
 import { BarChart3, Circle, Cloud, MessageSquare, Trophy, Users, Layers, TrendingUp, Loader2 } from 'lucide-react';
 
 const QUESTION_TYPE_MAP = {
@@ -59,10 +60,13 @@ function OverviewCards({ totalClasses, totalParticipants, avgActivity, courseCou
 function CoursePerformance({ courseData }) {
   if (courseData.length === 0) {
     return (
-      <div className="text-center py-10">
-        <Layers size={20} className="text-slate-300 mx-auto mb-2" />
-        <p className="text-slate-400 text-sm">강의 데이터가 없습니다</p>
-      </div>
+      <EmptyState
+        title="강의 데이터가 없습니다"
+        description="강의를 진행하면 참여율 추이가 표시됩니다"
+        mascotSize="sm"
+        mood="thinking"
+        className="py-8"
+      />
     );
   }
 
@@ -120,10 +124,13 @@ function RecentQuestions({ questions, loading }) {
 
   if (questions.length === 0) {
     return (
-      <div className="text-center py-10">
-        <MessageSquare size={20} className="text-slate-300 mx-auto mb-2" />
-        <p className="text-slate-400 text-sm">최근 질문이 없습니다</p>
-      </div>
+      <EmptyState
+        title="최근 질문이 없습니다"
+        description="질문을 만들고 수업을 진행해보세요"
+        mascotSize="sm"
+        mood="thinking"
+        className="py-8"
+      />
     );
   }
 
@@ -268,10 +275,13 @@ export default function StatsView({ sessions }) {
 
   if (!sessions || sessions.length === 0) {
     return (
-      <div className="text-center py-16">
-        <TrendingUp size={20} className="text-slate-300 mx-auto mb-2" />
-        <p className="text-slate-400 text-sm">클래스를 만들면 통계가 표시됩니다</p>
-      </div>
+      <EmptyState
+        title="아직 수업 기록이 없습니다"
+        description="클래스를 진행하면 참여율, 질문 통계가 여기에 표시됩니다"
+        mascotSize="md"
+        mood="thinking"
+        className="py-12"
+      />
     );
   }
 

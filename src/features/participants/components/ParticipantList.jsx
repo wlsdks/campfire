@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
+import PinggoMascot from '@/components/ui/PinggoMascot';
 
 export default function ParticipantList({ participants, voteCounts }) {
   return (
@@ -26,10 +27,10 @@ export default function ParticipantList({ participants, voteCounts }) {
         })}
       </AnimatePresence>
       {participants.length === 0 && (
-        <div className="text-center py-6 space-y-2">
-          <Users size={24} className="text-slate-300 mx-auto" />
-          <p className="text-slate-400 text-sm">아직 참여자가 없습니다</p>
-          <p className="text-slate-300 text-xs">QR코드를 공유하여 학생을 초대하세요</p>
+        <div className="flex flex-col items-center text-center py-5 space-y-2">
+          <PinggoMascot size="xs" mood="waiting" />
+          <p className="text-slate-400 text-sm font-medium">아직 참여자가 없습니다</p>
+          <p className="text-slate-300 text-xs leading-relaxed">아래 QR코드를 공유하여<br />학생을 초대하세요</p>
         </div>
       )}
     </div>

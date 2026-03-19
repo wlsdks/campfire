@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart3, Check, ChevronDown, Circle, Cloud, Copy, MessageSquare, Play, Square, Trash2, Trophy } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
+import PinggoMascot from '@/components/ui/PinggoMascot';
 import { isQuizQuestion } from '@/lib/quiz';
 
 const QUESTION_TYPES = [
@@ -157,10 +158,10 @@ export default function QuestionList({
               })}
 
               {questionList.length === 0 && (
-                <div className="text-center py-8 space-y-1.5">
-                  <BarChart3 size={24} className="text-slate-300 mx-auto" />
-                  <p className="text-slate-400 text-sm">아직 질문이 없습니다</p>
-                  <p className="text-slate-300 text-xs">위의 + 추가 버튼으로 질문을 만드세요</p>
+                <div className="flex flex-col items-center text-center py-6 space-y-2">
+                  <PinggoMascot size="sm" mood="waiting" />
+                  <p className="text-slate-400 text-sm font-medium">아직 질문이 없습니다</p>
+                  <p className="text-slate-300 text-xs">위의 + 추가 버튼으로 첫 질문을 만들어보세요</p>
                 </div>
               )}
             </div>

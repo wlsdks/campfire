@@ -6,6 +6,7 @@ import AdminApproval from './AdminApproval';
 import StatsView from './StatsView';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
+import EmptyState from '@/components/ui/EmptyState';
 import { Plus, Loader2, Users, MessageSquare, LogOut, ChevronDown, ChevronUp, Archive, MoreHorizontal } from 'lucide-react';
 
 function PinggoMascotSmall() {
@@ -333,10 +334,18 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
                   불러오는 중...
                 </div>
               ) : sessions.length === 0 ? (
-                <div className="text-center py-16">
-                  <p className="text-slate-400 text-sm">아직 클래스가 없습니다</p>
-                  <p className="text-slate-300 text-xs mt-1">첫 번째 클래스를 만들어보세요</p>
-                </div>
+                <EmptyState
+                  title="첫 클래스를 만들어보세요"
+                  description="Pinggo와 함께 학생 참여를 이끌어보세요"
+                  steps={[
+                    '위의 버튼으로 클래스를 만드세요',
+                    '객관식, 퀴즈, 워드클라우드 등 질문을 추가하세요',
+                    'QR코드를 공유하면 학생들이 바로 참여합니다',
+                  ]}
+                  mascotSize="lg"
+                  mood="happy"
+                  className="py-12"
+                />
               ) : (
                 <div className="space-y-2">
                   {courseGroups.map(([name, list], gi) => (
@@ -384,11 +393,14 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="flex flex-col items-center justify-center min-h-[60vh] gap-3"
+              className="flex items-center justify-center min-h-[60vh]"
             >
-              <Archive size={32} className="text-slate-300" />
-              <p className="text-slate-400 text-sm font-medium">준비 중입니다</p>
-              <p className="text-slate-300 text-xs">질문을 저장하고 재사용할 수 있는 보관함이 추가될 예정입니다</p>
+              <EmptyState
+                title="준비 중입니다"
+                description="질문을 저장하고 재사용할 수 있는 보관함이 추가될 예정입니다"
+                mascotSize="md"
+                mood="thinking"
+              />
             </motion.div>
           )}
 
@@ -399,11 +411,14 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="flex flex-col items-center justify-center min-h-[60vh] gap-3"
+              className="flex items-center justify-center min-h-[60vh]"
             >
-              <MoreHorizontal size={32} className="text-slate-300" />
-              <p className="text-slate-400 text-sm font-medium">준비 중입니다</p>
-              <p className="text-slate-300 text-xs">추가 기능이 곧 제공될 예정입니다</p>
+              <EmptyState
+                title="준비 중입니다"
+                description="추가 기능이 곧 제공될 예정입니다"
+                mascotSize="md"
+                mood="thinking"
+              />
             </motion.div>
           )}
         </AnimatePresence>

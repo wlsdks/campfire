@@ -5,6 +5,7 @@ import QACards from './QACards';
 import { BarChart3 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Badge from '@/components/ui/Badge';
+import EmptyState from '@/components/ui/EmptyState';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import { isQuizQuestion } from '@/lib/quiz';
 
@@ -15,18 +16,21 @@ export default function VizRenderer({ sessionId, session }) {
   const currentMode = session?.currentMode;
 
   if (!['poll', 'quiz'].includes(currentMode) || !currentQId) {
+    const hasQuestions = session?.questions && Object.keys(session.questions).length > 0;
     return (
-      <div className="flex flex-col items-center justify-center h-full gap-4">
-        <motion.div
-          animate={{ y: [0, -6, 0] }}
-          transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
-        >
-          <BarChart3 size={36} className="text-slate-300" />
-        </motion.div>
-        <div className="text-center space-y-1">
-          <p className="text-slate-400 text-lg font-medium">아직 활성화된 질문이 없습니다</p>
-          <p className="text-slate-300 text-sm">왼쪽 패널에서 질문을 선택하고 시작하세요</p>
-        </div>
+      <div className="flex items-center justify-center h-full">
+        <EmptyState
+          title={hasQuestions ? '질문이 준비되어 있습니다' : '아직 질문이 없습니다'}
+          description={hasQuestions
+            ? '왼쪽 패널에서 질문을 활성화하면 여기에 실시간 결과가 표시됩니다'
+            : '왼쪽 상단의 + 추가 버튼으로 첫 질문을 만들어보세요'}
+          steps={hasQuestions
+            ? ['왼쪽 목록에서 질문을 선택하세요', '재생 버튼으로 활성화하세요', '학생 응답이 실시간으로 나타납니다']
+            : ['+ 추가 버튼으로 질문을 만드세요', '객관식, O/X, 워드클라우드 등 선택', '질문을 활성화하면 수업이 시작됩니다']}
+          mascotSize="lg"
+          mood="waiting"
+          className="py-8"
+        />
       </div>
     );
   }
