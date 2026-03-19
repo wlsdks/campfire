@@ -235,7 +235,8 @@ CTA 버튼:        bg-slate-900 (거의 검정, Linear/Notion 스타일)
 - **목적 있는 모션만** — 피드백/가이드/연결. 장식 모션 없음
 - **400ms 이하** — UI 피드백은 빠르게
 - **스태거는 미세하게** — 0.03-0.06s per item, 눈에 띄면 과함
-- **Lottie는 신중하게** — 인라인 JSON, 2초 이내, fallback 필수
+- **Lottie 인라인 JSON 사용 금지** — 브라우저 호환 불안정. Framer Motion SVG로 대체
+- **SVG path 애니메이션 추천** — `motion.path` + `pathLength` 조합이 가장 안정적
 - **과한 것보다 없는 게 낫다**
 
 ---
