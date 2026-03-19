@@ -28,14 +28,14 @@ export default function QuestionList({
   const activeCount = questionList.filter(([qId]) => qId === currentQuestion).length;
 
   return (
-    <div>
+    <div className="rounded-xl border border-indigo-100 bg-white overflow-hidden">
       {/* Accordion header */}
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-indigo-50/60 hover:bg-indigo-50 transition-colors mb-1.5"
+        className="w-full flex items-center justify-between px-3 py-2.5 text-left bg-indigo-50/50 hover:bg-indigo-50 transition-colors"
       >
         <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-indigo-600">{questionList.length}개 질문</span>
+          <span className="text-xs font-semibold text-indigo-600">추가된 문항 {questionList.length}개</span>
           {activeCount > 0 && <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />}
         </div>
         <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ duration: 0.2 }}>
@@ -53,7 +53,7 @@ export default function QuestionList({
             transition={{ duration: 0.2, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="space-y-1.5">
+            <div className="p-1.5 space-y-1.5">
               {questionList.map(([qId, q]) => {
                 const qType = QUESTION_TYPES.find((t) => t.value === q.type);
                 const Icon = qType?.icon || MessageSquare;

@@ -52,7 +52,7 @@ export default function QuizEventBanner({ event, state = 'active', compact = fal
           </div>
           {!compact && (
             <p className="max-w-[28rem] text-sm leading-relaxed text-slate-500">
-              {normalized.description}
+              {normalized.description?.replace(/다음 퀴즈/g, state === 'active' || state === 'result' ? '이번 퀴즈' : '다음 퀴즈')}
             </p>
           )}
           {/* Badges only shown for jackpot (multiple effects) */}
