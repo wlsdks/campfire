@@ -15,7 +15,7 @@ export default function BarChart({ sessionId, questionId, options, correctValue 
   const { totalVotes, countByValue } = useVotes(sessionId, questionId);
 
   return (
-    <div className="space-y-4 w-full max-w-2xl mx-auto">
+    <div className="space-y-4 w-full max-w-3xl mx-auto">
       {options.map((option, i) => {
         const count = countByValue(option);
         const pct = totalVotes > 0 ? (count / totalVotes) * 100 : 0;
