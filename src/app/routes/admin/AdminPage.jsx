@@ -26,6 +26,7 @@ import TimerControls from '@/features/timer/components/TimerControls';
 import TimerRing from '@/features/timer/components/TimerRing';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
+import ChatPanel from '@/features/chat/components/ChatPanel';
 import { generateQuestionId } from '@/lib/utils';
 import { QUIZ_DEFAULTS } from '@/lib/quiz';
 
@@ -193,6 +194,7 @@ export default function AdminPage() {
   const { participants, onlineList, count } = useParticipants(sessionId);
   const { scores, leaderboard, totalTickets } = useScores(sessionId);
   const [presentMode, setPresentMode] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const { isRunning: timerRunning, endTime, duration, startTimer, stopTimer } = useTimer(sessionId);
   const { pendingAdmins, pendingCount, approveAdmin, rejectAdmin } = useAdminApprovals();
@@ -431,6 +433,13 @@ export default function AdminPage() {
     <div className="h-dvh bg-slate-50 flex flex-col overflow-hidden">
       <JoinToast sessionId={sessionId} />
       <ReactionOverlay sessionId={sessionId} />
+      <ChatPanel
+        sessionId={sessionId}
+        senderName={adminUser?.displayName || '강사'}
+        senderType="instructor"
+        open={chatOpen}
+        onClose={() => setChatOpen(false)}
+      />
 
       {/* Header bar */}
       <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shrink-0">
@@ -460,7 +469,7 @@ export default function AdminPage() {
           {/* Chat button */}
           {!effectiveReadOnly && (
             <button
-              onClick={() => {/* TODO: open chat */}}
+              onClick={() => setChatOpen(!chatOpen)}
               className="flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all"
             >
               <MessageCircle size={20} />
@@ -722,7 +731,7 @@ export default function AdminPage() {
           transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
           className="border-l border-slate-200 bg-white overflow-hidden shrink-0 min-w-0 max-w-[460px] h-full"
         >
-        <div className="min-w-[280px] p-5 space-y-5 overflow-y-auto h-full scrollbar-hide">
+        <div className="min-w-[280px] p-5 space-y-2 overflow-y-auto h-full scrollbar-hide">
           {effectiveReadOnly ? (
             <>
               <div className="flex items-center gap-2">
