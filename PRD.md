@@ -149,3 +149,15 @@ sessions/
 admins/{uid}: { username, passwordHash, displayName, role, approved }
 courseTemplates/{courseId}: { name, questions/... }
 ```
+
+## 5. 데모 데이터 (seed-demo.mjs)
+
+`node scripts/seed-demo.mjs`로 6개 클래스, 14개 세션 생성.
+
+| 데이터 유형 | 적용 세션 | 설명 |
+|-------------|-----------|------|
+| 질문 & 투표 | 모든 세션 | 객관식/퀴즈/OX/워드클라우드/Q&A, 가중치 기반 투표 |
+| 채팅 | active 세션 3개 | 학생↔강사 혼합 메시지 (6~10개), 시간순 |
+| 손들기 | active 세션 3개 | 2~4명 학생 손 들기 상태 |
+| 긴급 질문 | active 세션 3개 | 2~4개 익명 질문, 읽음/안읽음 혼합 |
+| 퀴즈 점수 | active + ended (quiz 있는 세션) | 정답 기반 점수 + 속도 보너스 + 티켓 자동 계산 |

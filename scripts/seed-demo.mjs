@@ -4,6 +4,7 @@
  *
  * Creates 5+ classes with various rounds, statuses, questions, participants, and votes.
  * All questions include correctAnswer.
+ * Active sessions include chat, hand raises, urgent questions, and quiz scores.
  */
 
 const DB_URL = 'https://jinan-6c884-default-rtdb.asia-southeast1.firebasedatabase.app';
@@ -84,6 +85,169 @@ function makeQuizVotesWithTimestamp(participantIds, participants, options, weigh
   return votes;
 }
 
+// ─── INTERACTION GENERATORS ───────────────────────────
+
+function mid() { return `m_${uid()}`; }
+
+const CHAT_MESSAGES = [
+  // Student messages
+  { text: '교수님 질문 있습니다!', senderType: 'student' },
+  { text: '이 부분 다시 설명해주실 수 있나요?', senderType: 'student' },
+  { text: '감사합니다 이해했어요', senderType: 'student' },
+  { text: '혹시 자료 공유해주실 수 있나요?', senderType: 'student' },
+  { text: '오 신기하다', senderType: 'student' },
+  { text: '저도 같은 생각이에요', senderType: 'student' },
+  { text: '너무 재밌어요 이 수업', senderType: 'student' },
+  { text: '다음 시간에도 이런 활동 하면 좋겠어요', senderType: 'student' },
+  { text: '이거 시험에 나오나요?', senderType: 'student' },
+  { text: '과제 마감이 언제까지인가요?', senderType: 'student' },
+  { text: '실습 환경 세팅이 잘 안 돼요', senderType: 'student' },
+  { text: '와 진짜 신기하네요', senderType: 'student' },
+  // Instructor messages
+  { text: '좋은 질문이에요! 잠시 후 설명하겠습니다', senderType: 'instructor' },
+  { text: '네, 수업 후 자료 올려드릴게요', senderType: 'instructor' },
+  { text: '다음 질문으로 넘어갈게요', senderType: 'instructor' },
+  { text: '자, 투표 시작할게요. 준비되셨나요?', senderType: 'instructor' },
+  { text: '잘하고 있어요! 계속 참여해주세요', senderType: 'instructor' },
+  { text: '이 부분은 중요하니까 잘 봐주세요', senderType: 'instructor' },
+];
+
+const URGENT_QUESTIONS = [
+  '교수님, 지금 화면 안 보여요',
+  '이 개념이 실무에서 어떻게 쓰이는지 궁금합니다',
+  '앞에서 설명하신 예시 코드 다시 보여주실 수 있나요?',
+  '용어가 헷갈리는데 차이점을 알려주세요',
+  '과제 제출 방법을 모르겠어요',
+  '이 부분 좀 더 천천히 설명해주세요',
+  '실습 파일 링크가 안 열려요',
+];
+
+/**
+ * Generate chat messages for an active session.
+ * Mixes student and instructor messages with realistic timestamps.
+ */
+function makeChat(participantIds, participants, sessionStart, messageCount = 8) {
+  const chat = {};
+  const shuffled = [...CHAT_MESSAGES].sort(() => Math.random() - 0.5);
+  const count = Math.min(messageCount, shuffled.length);
+  const timeSpan = Date.now() - sessionStart;
+
+  for (let i = 0; i < count; i++) {
+    const msg = shuffled[i];
+    const id = mid();
+    const ts = sessionStart + Math.floor((timeSpan * (i + 1)) / (count + 1));
+    if (msg.senderType === 'student') {
+      const pIdx = Math.floor(Math.random() * participantIds.length);
+      const pId = participantIds[pIdx];
+      chat[id] = {
+        text: msg.text,
+        sender: participants[pId].nickname,
+        senderType: 'student',
+        timestamp: ts,
+      };
+    } else {
+      chat[id] = {
+        text: msg.text,
+        sender: '강사',
+        senderType: 'instructor',
+        timestamp: ts,
+      };
+    }
+  }
+  return chat;
+}
+
+/**
+ * Generate hand raises for some participants in an active session.
+ * 2-4 students have their hands raised.
+ */
+function makeHandRaises(participantIds, participants, sessionStart) {
+  const handRaises = {};
+  const shuffled = [...participantIds].sort(() => Math.random() - 0.5);
+  const raiseCount = 2 + Math.floor(Math.random() * 3); // 2-4
+  const timeSpan = Date.now() - sessionStart;
+
+  for (let i = 0; i < Math.min(raiseCount, shuffled.length); i++) {
+    const pId = shuffled[i];
+    handRaises[pId] = {
+      nickname: participants[pId].nickname,
+      raised: true,
+      raisedAt: sessionStart + Math.floor(timeSpan * (0.5 + Math.random() * 0.5)),
+    };
+  }
+  return handRaises;
+}
+
+/**
+ * Generate urgent questions from anonymous students.
+ * 2-4 questions, some read, some unread.
+ */
+function makeUrgentQuestions(sessionStart, questionCount = 3) {
+  const urgentQuestions = {};
+  const shuffled = [...URGENT_QUESTIONS].sort(() => Math.random() - 0.5);
+  const count = Math.min(questionCount, shuffled.length);
+  const timeSpan = Date.now() - sessionStart;
+
+  for (let i = 0; i < count; i++) {
+    const id = `uq_${uid()}`;
+    urgentQuestions[id] = {
+      text: shuffled[i],
+      timestamp: sessionStart + Math.floor((timeSpan * (i + 1)) / (count + 1)),
+      read: i < Math.floor(count / 2), // older ones are read
+    };
+  }
+  return urgentQuestions;
+}
+
+/**
+ * Generate quiz scores for participants based on their quiz votes.
+ * Calculates realistic scores from quiz question results.
+ */
+function makeScores(participantIds, participants, questions) {
+  const scores = {};
+  const quizQuestions = Object.values(questions).filter((q) => q.type === 'quiz' && q.votes && q.correctAnswer);
+
+  if (quizQuestions.length === 0) return scores;
+
+  for (const pId of participantIds) {
+    let total = 0;
+    let tickets = 0;
+
+    for (const q of quizQuestions) {
+      const vote = q.votes?.[pId];
+      if (!vote) continue;
+
+      // Participation ticket
+      tickets += q.participationTickets || 1;
+
+      // Base points for correct answer
+      if (vote.value === q.correctAnswer) {
+        total += q.points || 100;
+        tickets += q.correctBonusTickets || 2;
+
+        // Speed bonus
+        if (vote.timestamp && q.activatedAt) {
+          const elapsed = vote.timestamp - q.activatedAt;
+          const window = q.speedWindowMs || 30000;
+          const maxBonus = q.maxSpeedBonus || 50;
+          if (elapsed < window) {
+            total += Math.round(maxBonus * (1 - elapsed / window));
+          }
+        }
+      }
+    }
+
+    if (total > 0 || tickets > 0) {
+      scores[pId] = {
+        nickname: participants[pId].nickname,
+        total,
+        tickets,
+      };
+    }
+  }
+  return scores;
+}
+
 // ─── CLASSES ───────────────────────────────────────────
 
 const now = Date.now();
@@ -102,36 +266,38 @@ const sessions = {};
   const q1a = qid(), q1b = qid(), q1c = qid(), q1d = qid();
   const s1 = sid();
   const t1 = now - 7 * DAY;
+  const s1r1Questions = {
+    [q1a]: {
+      type: 'choice', title: '가장 자주 사용하는 프로그래밍 언어는?', order: 1,
+      options: ['Python', 'JavaScript', 'Java', 'Go'],
+      correctAnswer: 'Python',
+      votes: makeWeightedVotes(ids1, p1, ['Python', 'JavaScript', 'Java', 'Go'], [5, 3, 1, 1]),
+    },
+    [q1b]: {
+      type: 'quiz', title: 'HTTP 상태코드 404의 의미는?', order: 2,
+      options: ['서버 오류', '페이지 없음', '권한 없음', '리다이렉트'],
+      correctAnswer: '페이지 없음',
+      points: 100, participationTickets: 1, correctBonusTickets: 2,
+      speedWindowMs: 30000, maxSpeedBonus: 50,
+      activatedAt: t1 + HOUR, revealedAt: t1 + HOUR + 35000, awardedAt: t1 + HOUR + 35000,
+      votes: makeQuizVotesWithTimestamp(ids1, p1, ['서버 오류', '페이지 없음', '권한 없음', '리다이렉트'], [1, 6, 2, 1], t1 + HOUR),
+    },
+    [q1c]: {
+      type: 'ox', title: 'JavaScript는 인터프리터 언어이다', order: 3,
+      correctAnswer: 'O',
+      votes: makeWeightedVotes(ids1, p1, ['O', 'X'], [8, 2]),
+    },
+    [q1d]: {
+      type: 'wordcloud', title: '코딩할 때 가장 중요한 것은?', order: 4,
+      votes: makeVotes(ids1, p1, ['가독성', '성능', '유지보수', '테스트', '설계', '협업', '문서화', '가독성', '설계']),
+    },
+  };
   sessions[s1] = {
     status: 'ended', currentQuestion: q1a, currentMode: 'poll',
     createdAt: t1, courseName: '바이브 코딩 기초편', roundNumber: 1,
     participants: p1,
-    questions: {
-      [q1a]: {
-        type: 'choice', title: '가장 자주 사용하는 프로그래밍 언어는?', order: 1,
-        options: ['Python', 'JavaScript', 'Java', 'Go'],
-        correctAnswer: 'Python',
-        votes: makeWeightedVotes(ids1, p1, ['Python', 'JavaScript', 'Java', 'Go'], [5, 3, 1, 1]),
-      },
-      [q1b]: {
-        type: 'quiz', title: 'HTTP 상태코드 404의 의미는?', order: 2,
-        options: ['서버 오류', '페이지 없음', '권한 없음', '리다이렉트'],
-        correctAnswer: '페이지 없음',
-        points: 100, participationTickets: 1, correctBonusTickets: 2,
-        speedWindowMs: 30000, maxSpeedBonus: 50,
-        activatedAt: t1 + HOUR, revealedAt: t1 + HOUR + 35000, awardedAt: t1 + HOUR + 35000,
-        votes: makeQuizVotesWithTimestamp(ids1, p1, ['서버 오류', '페이지 없음', '권한 없음', '리다이렉트'], [1, 6, 2, 1], t1 + HOUR),
-      },
-      [q1c]: {
-        type: 'ox', title: 'JavaScript는 인터프리터 언어이다', order: 3,
-        correctAnswer: 'O',
-        votes: makeWeightedVotes(ids1, p1, ['O', 'X'], [8, 2]),
-      },
-      [q1d]: {
-        type: 'wordcloud', title: '코딩할 때 가장 중요한 것은?', order: 4,
-        votes: makeVotes(ids1, p1, ['가독성', '성능', '유지보수', '테스트', '설계', '협업', '문서화', '가독성', '설계']),
-      },
-    },
+    questions: s1r1Questions,
+    scores: makeScores(ids1, p1, s1r1Questions),
   };
 
   // Round 2 — ended
@@ -178,32 +344,37 @@ const sessions = {};
   const q3a = qid(), q3b = qid(), q3c = qid();
   const s3 = sid();
   const t3 = now - 2 * HOUR;
+  const s3Questions = {
+    [q3a]: {
+      type: 'choice', title: '오늘 수업 난이도는 어땠나요?', order: 1,
+      options: ['쉬웠다', '적당했다', '어려웠다', '매우 어려웠다'],
+      correctAnswer: '적당했다',
+      votes: makeWeightedVotes(ids3, p3, ['쉬웠다', '적당했다', '어려웠다', '매우 어려웠다'], [2, 8, 4, 1]),
+    },
+    [q3b]: {
+      type: 'quiz', title: 'REST API에서 데이터를 생성할 때 사용하는 HTTP 메서드는?', order: 2,
+      options: ['GET', 'POST', 'PUT', 'DELETE'],
+      correctAnswer: 'POST',
+      points: 100, participationTickets: 1, correctBonusTickets: 2,
+      speedWindowMs: 30000, maxSpeedBonus: 50,
+      activatedAt: t3 + 1800000,
+      votes: makeQuizVotesWithTimestamp(ids3, p3, ['GET', 'POST', 'PUT', 'DELETE'], [1, 8, 3, 1], t3 + 1800000),
+    },
+    [q3c]: {
+      type: 'ox', title: 'CSS Flexbox에서 기본 방향은 row이다', order: 3,
+      correctAnswer: 'O',
+      votes: makeWeightedVotes(ids3, p3, ['O', 'X'], [10, 3]),
+    },
+  };
   sessions[s3] = {
     status: 'active', currentQuestion: q3a, currentMode: 'poll',
     createdAt: t3, startedAt: t3 + 10 * 60000, courseName: '바이브 코딩 기초편', roundNumber: 3,
     participants: p3,
-    questions: {
-      [q3a]: {
-        type: 'choice', title: '오늘 수업 난이도는 어땠나요?', order: 1,
-        options: ['쉬웠다', '적당했다', '어려웠다', '매우 어려웠다'],
-        correctAnswer: '적당했다',
-        votes: makeWeightedVotes(ids3, p3, ['쉬웠다', '적당했다', '어려웠다', '매우 어려웠다'], [2, 8, 4, 1]),
-      },
-      [q3b]: {
-        type: 'quiz', title: 'REST API에서 데이터를 생성할 때 사용하는 HTTP 메서드는?', order: 2,
-        options: ['GET', 'POST', 'PUT', 'DELETE'],
-        correctAnswer: 'POST',
-        points: 100, participationTickets: 1, correctBonusTickets: 2,
-        speedWindowMs: 30000, maxSpeedBonus: 50,
-        activatedAt: t3 + 1800000,
-        votes: makeQuizVotesWithTimestamp(ids3, p3, ['GET', 'POST', 'PUT', 'DELETE'], [1, 8, 3, 1], t3 + 1800000),
-      },
-      [q3c]: {
-        type: 'ox', title: 'CSS Flexbox에서 기본 방향은 row이다', order: 3,
-        correctAnswer: 'O',
-        votes: makeWeightedVotes(ids3, p3, ['O', 'X'], [10, 3]),
-      },
-    },
+    questions: s3Questions,
+    chat: makeChat(ids3, p3, t3 + 10 * 60000, 6),
+    handRaises: makeHandRaises(ids3, p3, t3 + 10 * 60000),
+    urgentQuestions: makeUrgentQuestions(t3 + 10 * 60000, 2),
+    scores: makeScores(ids3, p3, s3Questions),
   };
 }
 
@@ -216,36 +387,38 @@ const sessions = {};
   const q1a = qid(), q1b = qid(), q1c = qid(), q1d = qid();
   const s1 = sid();
   const t1 = now - 5 * DAY;
+  const s1AdvQuestions = {
+    [q1a]: {
+      type: 'choice', title: '선호하는 상태관리 라이브러리는?', order: 1,
+      options: ['Redux', 'Zustand', 'Recoil', 'Jotai', 'Context API'],
+      correctAnswer: 'Zustand',
+      votes: makeWeightedVotes(ids1, p1, ['Redux', 'Zustand', 'Recoil', 'Jotai', 'Context API'], [3, 7, 2, 4, 3]),
+    },
+    [q1b]: {
+      type: 'quiz', title: 'React에서 side effect를 처리하는 훅은?', order: 2,
+      options: ['useState', 'useEffect', 'useMemo', 'useRef'],
+      correctAnswer: 'useEffect',
+      points: 100, participationTickets: 1, correctBonusTickets: 2,
+      speedWindowMs: 30000, maxSpeedBonus: 50,
+      activatedAt: t1 + HOUR, revealedAt: t1 + HOUR + 30000, awardedAt: t1 + HOUR + 30000,
+      votes: makeQuizVotesWithTimestamp(ids1, p1, ['useState', 'useEffect', 'useMemo', 'useRef'], [1, 12, 3, 2], t1 + HOUR),
+    },
+    [q1c]: {
+      type: 'ox', title: 'useEffect의 빈 의존성 배열은 마운트 시 1회만 실행된다', order: 3,
+      correctAnswer: 'O',
+      votes: makeWeightedVotes(ids1, p1, ['O', 'X'], [14, 4]),
+    },
+    [q1d]: {
+      type: 'wordcloud', title: 'React에서 가장 어려운 개념은?', order: 4,
+      votes: makeVotes(ids1, p1, ['상태관리', 'useEffect', '렌더링', '라이프사이클', '비동기', 'Hooks', '상태관리', 'useEffect', '렌더링']),
+    },
+  };
   sessions[s1] = {
     status: 'ended', currentQuestion: q1a, currentMode: 'poll',
     createdAt: t1, courseName: '바이브 코딩 중급편', roundNumber: 1,
     participants: p1,
-    questions: {
-      [q1a]: {
-        type: 'choice', title: '선호하는 상태관리 라이브러리는?', order: 1,
-        options: ['Redux', 'Zustand', 'Recoil', 'Jotai', 'Context API'],
-        correctAnswer: 'Zustand',
-        votes: makeWeightedVotes(ids1, p1, ['Redux', 'Zustand', 'Recoil', 'Jotai', 'Context API'], [3, 7, 2, 4, 3]),
-      },
-      [q1b]: {
-        type: 'quiz', title: 'React에서 side effect를 처리하는 훅은?', order: 2,
-        options: ['useState', 'useEffect', 'useMemo', 'useRef'],
-        correctAnswer: 'useEffect',
-        points: 100, participationTickets: 1, correctBonusTickets: 2,
-        speedWindowMs: 30000, maxSpeedBonus: 50,
-        activatedAt: t1 + HOUR, revealedAt: t1 + HOUR + 30000, awardedAt: t1 + HOUR + 30000,
-        votes: makeQuizVotesWithTimestamp(ids1, p1, ['useState', 'useEffect', 'useMemo', 'useRef'], [1, 12, 3, 2], t1 + HOUR),
-      },
-      [q1c]: {
-        type: 'ox', title: 'useEffect의 빈 의존성 배열은 마운트 시 1회만 실행된다', order: 3,
-        correctAnswer: 'O',
-        votes: makeWeightedVotes(ids1, p1, ['O', 'X'], [14, 4]),
-      },
-      [q1d]: {
-        type: 'wordcloud', title: 'React에서 가장 어려운 개념은?', order: 4,
-        votes: makeVotes(ids1, p1, ['상태관리', 'useEffect', '렌더링', '라이프사이클', '비동기', 'Hooks', '상태관리', 'useEffect', '렌더링']),
-      },
-    },
+    questions: s1AdvQuestions,
+    scores: makeScores(ids1, p1, s1AdvQuestions),
   };
 
   // Round 2 — active
@@ -254,34 +427,39 @@ const sessions = {};
   const q2a = qid(), q2b = qid(), q2c = qid(), q2d = qid();
   const s2 = sid();
   const t2 = now - 3 * HOUR;
+  const s2Questions = {
+    [q2a]: {
+      type: 'choice', title: '가장 좋아하는 CSS 프레임워크는?', order: 1,
+      options: ['Tailwind CSS', 'Bootstrap', 'styled-components', 'Vanilla CSS'],
+      correctAnswer: 'Tailwind CSS',
+      votes: makeWeightedVotes(ids2, p2, ['Tailwind CSS', 'Bootstrap', 'styled-components', 'Vanilla CSS'], [8, 2, 3, 2]),
+    },
+    [q2b]: {
+      type: 'quiz', title: 'Tailwind CSS에서 flex 컨테이너를 만드는 클래스는?', order: 2,
+      options: ['display-flex', 'flex', 'd-flex', 'flexbox'],
+      correctAnswer: 'flex',
+      points: 100, participationTickets: 1, correctBonusTickets: 2,
+      speedWindowMs: 30000, maxSpeedBonus: 50,
+      activatedAt: t2 + HOUR,
+      votes: makeQuizVotesWithTimestamp(ids2, p2, ['display-flex', 'flex', 'd-flex', 'flexbox'], [1, 10, 2, 1], t2 + HOUR),
+    },
+    [q2c]: {
+      type: 'ox', title: 'Tailwind CSS는 utility-first 프레임워크이다', order: 3,
+      correctAnswer: 'O',
+    },
+    [q2d]: {
+      type: 'wordcloud', title: 'Tailwind의 장점 하나만 말해주세요', order: 4,
+    },
+  };
   sessions[s2] = {
     status: 'active', currentQuestion: q2b, currentMode: 'quiz',
     createdAt: t2, startedAt: t2 + 15 * 60000, courseName: '바이브 코딩 중급편', roundNumber: 2,
     participants: p2,
-    questions: {
-      [q2a]: {
-        type: 'choice', title: '가장 좋아하는 CSS 프레임워크는?', order: 1,
-        options: ['Tailwind CSS', 'Bootstrap', 'styled-components', 'Vanilla CSS'],
-        correctAnswer: 'Tailwind CSS',
-        votes: makeWeightedVotes(ids2, p2, ['Tailwind CSS', 'Bootstrap', 'styled-components', 'Vanilla CSS'], [8, 2, 3, 2]),
-      },
-      [q2b]: {
-        type: 'quiz', title: 'Tailwind CSS에서 flex 컨테이너를 만드는 클래스는?', order: 2,
-        options: ['display-flex', 'flex', 'd-flex', 'flexbox'],
-        correctAnswer: 'flex',
-        points: 100, participationTickets: 1, correctBonusTickets: 2,
-        speedWindowMs: 30000, maxSpeedBonus: 50,
-        activatedAt: t2 + HOUR,
-        votes: makeQuizVotesWithTimestamp(ids2, p2, ['display-flex', 'flex', 'd-flex', 'flexbox'], [1, 10, 2, 1], t2 + HOUR),
-      },
-      [q2c]: {
-        type: 'ox', title: 'Tailwind CSS는 utility-first 프레임워크이다', order: 3,
-        correctAnswer: 'O',
-      },
-      [q2d]: {
-        type: 'wordcloud', title: 'Tailwind의 장점 하나만 말해주세요', order: 4,
-      },
-    },
+    questions: s2Questions,
+    chat: makeChat(ids2, p2, t2 + 15 * 60000, 10),
+    handRaises: makeHandRaises(ids2, p2, t2 + 15 * 60000),
+    urgentQuestions: makeUrgentQuestions(t2 + 15 * 60000, 4),
+    scores: makeScores(ids2, p2, s2Questions),
   };
 }
 
@@ -294,45 +472,47 @@ const sessions = {};
   const q1a = qid(), q1b = qid(), q1c = qid(), q1d = qid(), q1e = qid();
   const s1 = sid();
   const t1 = now - 10 * DAY;
+  const s1AiQuestions = {
+    [q1a]: {
+      type: 'choice', title: '프롬프트 작성 시 가장 중요한 요소는?', order: 1,
+      options: ['명확한 지시', '예시 제공', '역할 지정', '출력 형식 지정'],
+      correctAnswer: '명확한 지시',
+      votes: makeWeightedVotes(ids1, p1, ['명확한 지시', '예시 제공', '역할 지정', '출력 형식 지정'], [8, 4, 5, 3]),
+    },
+    [q1b]: {
+      type: 'quiz', title: 'Few-shot 프롬프팅에서 "shot"의 의미는?', order: 2,
+      options: ['시도 횟수', '예시 개수', '모델 크기', '토큰 수'],
+      correctAnswer: '예시 개수',
+      points: 100, participationTickets: 1, correctBonusTickets: 2,
+      speedWindowMs: 30000, maxSpeedBonus: 50,
+      activatedAt: t1 + HOUR, revealedAt: t1 + HOUR + 32000, awardedAt: t1 + HOUR + 32000,
+      votes: makeQuizVotesWithTimestamp(ids1, p1, ['시도 횟수', '예시 개수', '모델 크기', '토큰 수'], [3, 10, 4, 2], t1 + HOUR),
+    },
+    [q1c]: {
+      type: 'ox', title: 'Chain of Thought 프롬프팅은 추론 능력을 향상시킨다', order: 3,
+      correctAnswer: 'O',
+      votes: makeWeightedVotes(ids1, p1, ['O', 'X'], [16, 4]),
+    },
+    [q1d]: {
+      type: 'quiz', title: 'Temperature 값이 0에 가까우면 출력은?', order: 4,
+      options: ['더 창의적', '더 결정적', '더 긴 출력', '더 짧은 출력'],
+      correctAnswer: '더 결정적',
+      points: 100, participationTickets: 1, correctBonusTickets: 2,
+      speedWindowMs: 30000, maxSpeedBonus: 50,
+      activatedAt: t1 + 2 * HOUR, revealedAt: t1 + 2 * HOUR + 28000, awardedAt: t1 + 2 * HOUR + 28000,
+      votes: makeQuizVotesWithTimestamp(ids1, p1, ['더 창의적', '더 결정적', '더 긴 출력', '더 짧은 출력'], [4, 12, 2, 1], t1 + 2 * HOUR),
+    },
+    [q1e]: {
+      type: 'wordcloud', title: 'AI 시대에 가장 중요한 역량은?', order: 5,
+      votes: makeVotes(ids1, p1, ['비판적 사고', '창의성', '소통', '프롬프팅', '데이터 분석', '적응력', '비판적 사고', '창의성']),
+    },
+  };
   sessions[s1] = {
     status: 'ended', currentQuestion: q1a, currentMode: 'poll',
     createdAt: t1, courseName: 'AI 프롬프트 엔지니어링', roundNumber: 1,
     participants: p1,
-    questions: {
-      [q1a]: {
-        type: 'choice', title: '프롬프트 작성 시 가장 중요한 요소는?', order: 1,
-        options: ['명확한 지시', '예시 제공', '역할 지정', '출력 형식 지정'],
-        correctAnswer: '명확한 지시',
-        votes: makeWeightedVotes(ids1, p1, ['명확한 지시', '예시 제공', '역할 지정', '출력 형식 지정'], [8, 4, 5, 3]),
-      },
-      [q1b]: {
-        type: 'quiz', title: 'Few-shot 프롬프팅에서 "shot"의 의미는?', order: 2,
-        options: ['시도 횟수', '예시 개수', '모델 크기', '토큰 수'],
-        correctAnswer: '예시 개수',
-        points: 100, participationTickets: 1, correctBonusTickets: 2,
-        speedWindowMs: 30000, maxSpeedBonus: 50,
-        activatedAt: t1 + HOUR, revealedAt: t1 + HOUR + 32000, awardedAt: t1 + HOUR + 32000,
-        votes: makeQuizVotesWithTimestamp(ids1, p1, ['시도 횟수', '예시 개수', '모델 크기', '토큰 수'], [3, 10, 4, 2], t1 + HOUR),
-      },
-      [q1c]: {
-        type: 'ox', title: 'Chain of Thought 프롬프팅은 추론 능력을 향상시킨다', order: 3,
-        correctAnswer: 'O',
-        votes: makeWeightedVotes(ids1, p1, ['O', 'X'], [16, 4]),
-      },
-      [q1d]: {
-        type: 'quiz', title: 'Temperature 값이 0에 가까우면 출력은?', order: 4,
-        options: ['더 창의적', '더 결정적', '더 긴 출력', '더 짧은 출력'],
-        correctAnswer: '더 결정적',
-        points: 100, participationTickets: 1, correctBonusTickets: 2,
-        speedWindowMs: 30000, maxSpeedBonus: 50,
-        activatedAt: t1 + 2 * HOUR, revealedAt: t1 + 2 * HOUR + 28000, awardedAt: t1 + 2 * HOUR + 28000,
-        votes: makeQuizVotesWithTimestamp(ids1, p1, ['더 창의적', '더 결정적', '더 긴 출력', '더 짧은 출력'], [4, 12, 2, 1], t1 + 2 * HOUR),
-      },
-      [q1e]: {
-        type: 'wordcloud', title: 'AI 시대에 가장 중요한 역량은?', order: 5,
-        votes: makeVotes(ids1, p1, ['비판적 사고', '창의성', '소통', '프롬프팅', '데이터 분석', '적응력', '비판적 사고', '창의성']),
-      },
-    },
+    questions: s1AiQuestions,
+    scores: makeScores(ids1, p1, s1AiQuestions),
   };
 
   // Round 2 — setting
@@ -524,29 +704,34 @@ const sessions = {};
   const q2a = qid(), q2b = qid(), q2c = qid();
   const s2 = sid();
   const t2 = now - 1 * HOUR;
+  const s2UxQuestions = {
+    [q2a]: {
+      type: 'choice', title: '모바일 UI에서 터치 타겟의 최소 크기는?', order: 1,
+      options: ['32px', '44px', '48px', '56px'],
+      correctAnswer: '48px',
+      votes: makeWeightedVotes(ids2, p2, ['32px', '44px', '48px', '56px'], [1, 6, 8, 3]),
+    },
+    [q2b]: {
+      type: 'quiz', title: '색맹 사용자를 위해 색상만으로 정보를 전달하면 안 되는 이유는?', order: 2,
+      options: ['느리다', '비싸다', '구분이 불가능하다', '못 생겼다'],
+      correctAnswer: '구분이 불가능하다',
+      points: 100, participationTickets: 1, correctBonusTickets: 2,
+      speedWindowMs: 30000, maxSpeedBonus: 50,
+    },
+    [q2c]: {
+      type: 'ox', title: '다크모드는 항상 눈의 피로를 줄여준다', order: 3,
+      correctAnswer: 'X',
+    },
+  };
   sessions[s2] = {
     status: 'active', currentQuestion: q2a, currentMode: 'poll',
     createdAt: t2, startedAt: t2 + 5 * 60000, courseName: 'UX/UI 디자인 원칙', roundNumber: 2,
     participants: p2,
-    questions: {
-      [q2a]: {
-        type: 'choice', title: '모바일 UI에서 터치 타겟의 최소 크기는?', order: 1,
-        options: ['32px', '44px', '48px', '56px'],
-        correctAnswer: '48px',
-        votes: makeWeightedVotes(ids2, p2, ['32px', '44px', '48px', '56px'], [1, 6, 8, 3]),
-      },
-      [q2b]: {
-        type: 'quiz', title: '색맹 사용자를 위해 색상만으로 정보를 전달하면 안 되는 이유는?', order: 2,
-        options: ['느리다', '비싸다', '구분이 불가능하다', '못 생겼다'],
-        correctAnswer: '구분이 불가능하다',
-        points: 100, participationTickets: 1, correctBonusTickets: 2,
-        speedWindowMs: 30000, maxSpeedBonus: 50,
-      },
-      [q2c]: {
-        type: 'ox', title: '다크모드는 항상 눈의 피로를 줄여준다', order: 3,
-        correctAnswer: 'X',
-      },
-    },
+    questions: s2UxQuestions,
+    chat: makeChat(ids2, p2, t2 + 5 * 60000, 8),
+    handRaises: makeHandRaises(ids2, p2, t2 + 5 * 60000),
+    urgentQuestions: makeUrgentQuestions(t2 + 5 * 60000, 3),
+    scores: makeScores(ids2, p2, s2UxQuestions),
   };
 }
 
