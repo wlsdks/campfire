@@ -65,7 +65,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
   const displayError = localError || error;
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Type selector */}
       <div>
         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">질문 유형</p>
@@ -164,7 +164,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
             exit={{ opacity: 0, height: 0 }}
           >
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">정답 선택</p>
-            <div className="flex flex-wrap gap-2 mb-2">
+            <div className="flex flex-wrap gap-2">
               {options
                 .filter((o) => o.trim())
                 .map((option, i) => {
@@ -187,7 +187,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
                 })}
             </div>
             {type === 'quiz' && (
-              <div className="space-y-3">
+              <div className="space-y-2.5 mt-1">
                 <div className="space-y-1.5">
                   <div className="flex items-baseline gap-2">
                     <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">점수 설정</p>

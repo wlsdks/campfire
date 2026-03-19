@@ -24,8 +24,6 @@ export default function UrgentQuestionList({ sessionId }) {
     }
   }
 
-  if (questionList.length === 0) return null;
-
   return (
     <div className="bg-white border border-slate-200 rounded-xl p-3.5 space-y-2">
       <span className="text-slate-700 font-medium text-sm flex items-center gap-1.5">
@@ -33,6 +31,9 @@ export default function UrgentQuestionList({ sessionId }) {
         긴급 질문
         {unreadCount > 0 && <Badge variant="primary">{unreadCount} 새 질문</Badge>}
       </span>
+      {questionList.length === 0 && (
+        <p className="text-slate-300 text-xs py-1">수신된 질문이 없습니다</p>
+      )}
       <AnimatePresence>
         {questionList.map((q) => (
           <motion.div
