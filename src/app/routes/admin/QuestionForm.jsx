@@ -71,14 +71,14 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
               <button
                 key={t.value}
                 onClick={() => { setType(t.value); setLocalError(null); }}
-                className={`flex-1 flex flex-col items-center gap-1 py-2.5 rounded-lg transition-all ${
+                className={`flex-1 flex flex-col items-center justify-center gap-1.5 py-4 rounded-lg border transition-all ${
                   selected
-                    ? 'bg-slate-900 text-white shadow-sm'
-                    : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'
+                    ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
+                    : 'text-slate-400 border-slate-200 hover:bg-slate-50 hover:text-slate-600'
                 }`}
               >
-                <Icon size={18} strokeWidth={selected ? 2.2 : 1.8} />
-                <span className="text-[11px] font-medium">{t.label}</span>
+                <Icon size={22} strokeWidth={selected ? 2 : 1.6} />
+                <span className="text-xs font-medium">{t.label}</span>
               </button>
             );
           })}
@@ -107,10 +107,10 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
             exit={{ opacity: 0, height: 0 }}
           >
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">선택지</p>
-            <div className="space-y-2">
+            <div className="rounded-xl border border-slate-200 p-3 space-y-2">
               {options.map((opt, i) => (
                 <div key={i} className="flex items-center gap-2">
-                  <span className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500 shrink-0">
+                  <span className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-base font-bold text-slate-500 shrink-0">
                     {OPTION_LABELS[i]}
                   </span>
                   <input
