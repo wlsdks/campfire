@@ -2,6 +2,7 @@ import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import { Radio, Trophy } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
+import ConnectionBanner from '@/components/ui/ConnectionBanner';
 import { useScores } from '@/features/quiz/api/useScores';
 import { getParticipantId, getNickname } from '@/lib/participant';
 
@@ -34,34 +35,38 @@ export default function StudentHeader({ sessionId }) {
   const totalScore = myScore?.total || 0;
 
   return (
-    <motion.header
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-      className="fixed top-0 left-0 right-0 z-20 bg-white/80 backdrop-blur-sm border-b border-slate-200"
-    >
-      <div className="flex items-center justify-between px-6 py-4 max-w-lg mx-auto">
-        <div className="flex items-center gap-2">
-          <Radio size={18} className="text-indigo-600" />
-          <span className="font-bold text-lg text-slate-900">Pinggo</span>
-        </div>
+    <>
+      <motion.header
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+        className="fixed top-0 left-0 right-0 z-20 bg-white/80 backdrop-blur-sm border-b border-slate-200"
+      >
+        <div className="flex items-center justify-between px-6 py-4 max-w-lg mx-auto">
+          <div className="flex items-center gap-2">
+            <Radio size={18} className="text-indigo-600" />
+            <span className="font-bold text-lg text-slate-900">Pinggo</span>
+          </div>
 
-        <div className="flex items-center gap-3">
-          {totalScore > 0 && (
-            <motion.span
-              key="score"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 24 }}
-              className="text-sm font-medium text-slate-500 flex items-center gap-1"
-            >
-              <Trophy size={14} className="text-slate-500" />
-              <HeaderScore value={totalScore} />
-            </motion.span>
-          )}
-          <Avatar name={nickname} size="sm" />
+          <div className="flex items-center gap-3">
+            {totalScore > 0 && (
+              <motion.span
+                key="score"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+                className="text-sm font-medium text-slate-500 flex items-center gap-1"
+              >
+                <Trophy size={14} className="text-slate-500" />
+                <HeaderScore value={totalScore} />
+              </motion.span>
+            )}
+            <Avatar name={nickname} size="sm" />
+          </div>
         </div>
-      </div>
-    </motion.header>
+      </motion.header>
+
+      <ConnectionBanner />
+    </>
   );
 }

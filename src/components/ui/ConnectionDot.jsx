@@ -1,7 +1,7 @@
 import { useConnectionStatus } from '@/hooks/useConnectionStatus';
 
 export default function ConnectionDot() {
-  const connected = useConnectionStatus();
+  const { connected } = useConnectionStatus();
   return (
     <div className="flex items-center gap-1.5 text-xs">
       <div className={`w-1.5 h-1.5 rounded-full ${connected ? 'bg-emerald-400' : 'bg-amber-400 animate-pulse'}`} />

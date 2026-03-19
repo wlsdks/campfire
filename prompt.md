@@ -199,8 +199,6 @@ git push origin background-improve
 > 최근 10개만 유지. 오래된 것은 삭제.
 
 <!-- 예시: 2026-03-20 01:30 | improve: 학생 투표 화면 터치 타겟 48px로 통일 -->
-2026-03-20 | improve: VoteConfirm에 선택한 답변 표시 — 투표 후 학생이 자신의 응답을 확인 가능 (ChoiceVoter, OXVoter, QuizVoter 모두 적용)
-2026-03-20 | improve: Admin 화면 전체 인디고 제거 — AdminPage, SessionDashboard, QuestionList, EventBooster, AdminLogin, QuestionManager 6개 파일에서 16개 indigo 참조를 slate 모노크로매틱으로 통일
 2026-03-20 | improve: 학생 채팅 완성 — ChatPanel에 senderName/senderType 전달, onNewMessage 콜백으로 읽지 않은 메시지 알림 점 표시, 빈 상태 메시지 역할별 분기
 2026-03-20 | improve: 학생 대기 화면 개선 — Radio 아이콘을 Pinggo 마스코트(눈 깜빡임+안테나 펄스)로 교체, 순환 팁 메시지 5종 추가, 참여자 수 카드 강조, slate 모노크로매틱 통일
 2026-03-20 | improve: Admin 빈 상태 개선 — 공유 PinggoMascot+EmptyState 컴포넌트 생성, VizRenderer/SessionDashboard/StatsView/QuestionList/ParticipantList 7곳 빈 상태에 마스코트+단계별 안내 적용
@@ -209,6 +207,7 @@ git push origin background-improve
 2026-03-20 | improve: 리액션 바 업그레이드 — 5종 리액션에 고유 색상 피드백(탭 시만), 파티클 버스트 애니메이션, 스케일+로테이션 마이크로인터랙션, 하트 filled 아이콘, 컬러 버블 오버레이. 대기 상태는 slate 모노크로매틱 유지
 2026-03-20 | improve: 학생 타이머 표시 — TimerCountdown 바 컴포넌트(녹→황→적 진행률), 시간 종료 시 모든 투표 컴포넌트 잠금(disabled prop), "시간이 종료되었습니다" 오버레이. 질문 변경/타이머 재시작 시 자동 리셋
 2026-03-20 | improve: 헤더 질문 진행 표시 — 세션 코드 옆에 Layers 아이콘 + "2/5" (활성 질문 번호/전체) 또는 "N개" (비활성 시) 표시. 사이드바 접어도 강사가 진행 위치를 항상 파악 가능
+2026-03-20 | improve: 학생 연결 상태 배너 — 오프라인 시 헤더 아래 slate-900 "연결 끊김" 배너 슬라이드 다운, 재연결 시 emerald-600 "다시 연결됨" 2초 후 자동 소멸. Firebase .info/connected 기반, useConnectionStatus 훅 확장
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 
