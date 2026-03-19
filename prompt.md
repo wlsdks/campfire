@@ -202,6 +202,7 @@ git push origin background-improve
 2026-03-20 | improve: VoteConfirm에 선택한 답변 표시 — 투표 후 학생이 자신의 응답을 확인 가능 (ChoiceVoter, OXVoter, QuizVoter 모두 적용)
 2026-03-20 | improve: Admin 화면 전체 인디고 제거 — AdminPage, SessionDashboard, QuestionList, EventBooster, AdminLogin, QuestionManager 6개 파일에서 16개 indigo 참조를 slate 모노크로매틱으로 통일
 2026-03-20 | improve: 학생 채팅 완성 — ChatPanel에 senderName/senderType 전달, onNewMessage 콜백으로 읽지 않은 메시지 알림 점 표시, 빈 상태 메시지 역할별 분기
+2026-03-20 | improve: 학생 대기 화면 개선 — Radio 아이콘을 Pinggo 마스코트(눈 깜빡임+안테나 펄스)로 교체, 순환 팁 메시지 5종 추가, 참여자 수 카드 강조, slate 모노크로매틱 통일
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 
