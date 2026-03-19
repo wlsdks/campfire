@@ -23,7 +23,7 @@ const OPTION_STYLES = [
  * @param {string} props.sessionId
  * @param {string} props.questionId
  * @param {Object} props.question
- * @param {React.ReactNode} [props.renderResult] - Result UI rendered by the parent when quiz is revealed and user voted
+ * @param {function} [props.renderResult] - Render function called with currentVote when quiz is revealed and user voted
  */
 export default function QuizVoter({ sessionId, questionId, question, renderResult }) {
   const participantId = getParticipantId();
@@ -46,7 +46,7 @@ export default function QuizVoter({ sessionId, questionId, question, renderResul
   }
 
   if (question?.revealedAt && currentVote) {
-    return renderResult || null;
+    return typeof renderResult === 'function' ? renderResult(currentVote) : null;
   }
 
   if (currentVote) {

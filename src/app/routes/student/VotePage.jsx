@@ -16,7 +16,6 @@ import { Loader2, Trophy } from 'lucide-react';
 import { useScores } from '@/features/quiz/api/useScores';
 import { useTimer } from '@/features/timer/api/useTimer';
 import TimerRing from '@/features/timer/components/TimerRing';
-import { useVotes } from '@/hooks/useVotes';
 import { getParticipantId } from '@/lib/participant';
 import { getQuizReward } from '@/lib/quiz';
 
@@ -29,13 +28,10 @@ const TYPE_LABELS = {
 };
 
 /**
- * Builds the QuizResult element for the current participant's vote.
- * Extracted so the route owns the cross-feature composition.
+ * Renders the QuizResult from vote data passed by QuizVoter.
+ * No separate Firebase listener — receives currentVote from parent.
  */
-function QuizResultRenderer({ sessionId, questionId, question }) {
-  const { votes } = useVotes(sessionId, questionId);
-  const currentVote = votes[getParticipantId()] || null;
-
+function QuizResultFromVote({ question, currentVote }) {
   if (!currentVote) return null;
 
   const reward = getQuizReward(question, currentVote);
@@ -144,7 +140,9 @@ export default function VotePage({ sessionId }) {
                 sessionId={sessionId}
                 questionId={currentQId}
                 question={question}
-                renderResult={<QuizResultRenderer sessionId={sessionId} questionId={currentQId} question={question} />}
+                renderResult={(currentVote) => (
+                  <QuizResultFromVote question={question} currentVote={currentVote} />
+                )}
               />
             )}
             {question.type === 'ox' && (
