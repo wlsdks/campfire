@@ -106,16 +106,16 @@ export default function ChatPanel({ sessionId, open, onClose, onNewMessage }) {
           onChange={(e) => setInputText(e.target.value)}
           placeholder="메시지를 입력하세요"
           maxLength={MAX_LENGTH}
-          className="flex-1 bg-white border border-slate-200 rounded-lg px-4 py-3 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+          className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 focus:bg-white transition-all"
           aria-label="채팅 메시지 입력"
         />
         <button
           type="submit"
           disabled={!inputText.trim() || !canSend}
-          className="flex items-center justify-center w-11 h-11 rounded-lg bg-indigo-600 text-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-indigo-700 transition-colors shrink-0"
+          className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 text-white disabled:opacity-30 hover:bg-slate-800 transition-colors shrink-0"
           aria-label="메시지 보내기"
         >
-          <Send size={18} />
+          <Send size={16} />
         </button>
       </form>
     </Modal>
