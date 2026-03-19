@@ -30,6 +30,7 @@ export default function QuestionManager({
   onAddClick,
   onCollapse,
   readOnly = false,
+  onViewQuestion,
 }) {
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState(null);
@@ -338,6 +339,7 @@ export default function QuestionManager({
         onDuplicate={duplicateQuestion}
         onDelete={deleteQuestion}
         readOnly={readOnly}
+        onView={readOnly ? onViewQuestion : undefined}
       />
 
       <AnimatePresence>

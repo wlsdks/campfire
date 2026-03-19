@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { ref, update, set } from 'firebase/database';
 import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '@/lib/firebase';
@@ -51,6 +51,67 @@ function PresentEmptyState({ sessionId, studentUrl, count }) {
         <Badge variant="neutral"><Users size={14} className="mr-1" />{count}명 접속 중</Badge>
         <Badge variant="neutral">{sessionId}</Badge>
       </div>
+    </div>
+  );
+}
+
+function ClassSummary({ session, participants, leaderboard, count }) {
+  const questions = session?.questions || {};
+  const questionList = Object.values(questions);
+  const totalResponses = questionList.reduce((sum, q) => sum + (q.votes ? Object.keys(q.votes).length : 0), 0);
+  const participantCount = Object.keys(participants).length;
+  const voterIds = new Set();
+  questionList.forEach((q) => {
+    if (q.votes) Object.keys(q.votes).forEach((pid) => voterIds.add(pid));
+  });
+  const activeCount = voterIds.size;
+  const activityRate = participantCount > 0 ? Math.round((activeCount / participantCount) * 100) : 0;
+  const topStudent = leaderboard.length > 0 ? leaderboard[0] : null;
+
+  return (
+    <div className="w-full max-w-xl space-y-6">
+      <div className="text-center mb-2">
+        <h2 className="text-xl font-bold text-slate-900">클래스 요약</h2>
+        <p className="text-sm text-slate-400 mt-1">
+          {session?.courseName} {session?.roundNumber}차
+        </p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-3">
+        <div className="bg-white rounded-2xl border border-slate-200 p-5 text-center">
+          <p className="text-3xl font-bold text-slate-900">{participantCount}</p>
+          <p className="text-xs text-slate-400 mt-1">참여자</p>
+        </div>
+        <div className="bg-white rounded-2xl border border-slate-200 p-5 text-center">
+          <p className="text-3xl font-bold text-slate-900">{questionList.length}</p>
+          <p className="text-xs text-slate-400 mt-1">질문</p>
+        </div>
+        <div className="bg-white rounded-2xl border border-slate-200 p-5 text-center">
+          <p className="text-3xl font-bold text-slate-900">{activityRate}%</p>
+          <p className="text-xs text-slate-400 mt-1">참여율</p>
+          <div className="mt-2 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+            <div className="h-full bg-slate-700 rounded-full" style={{ width: `${activityRate}%` }} />
+          </div>
+        </div>
+      </div>
+
+      {topStudent && (
+        <div className="bg-white rounded-2xl border border-slate-200 p-5 flex items-center gap-4">
+          <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-lg font-bold text-slate-600">
+            {topStudent.nickname?.charAt(0)}
+          </div>
+          <div className="flex-1">
+            <p className="text-xs text-slate-400">최고의 학생</p>
+            <p className="text-lg font-bold text-slate-900">{topStudent.nickname}</p>
+          </div>
+          <div className="text-right">
+            <p className="text-2xl font-bold text-slate-900">{topStudent.total}</p>
+            <p className="text-xs text-slate-400">점</p>
+          </div>
+        </div>
+      )}
+
+      <p className="text-center text-xs text-slate-400">왼쪽에서 질문을 클릭하면 결과를 볼 수 있습니다</p>
     </div>
   );
 }
@@ -319,11 +380,19 @@ export default function AdminPage() {
           >
             <ArrowLeft size={20} />
           </button>
-          <Radio size={18} className="text-indigo-600" />
-          <span className="font-bold text-slate-900">Pinggo</span>
-          <span className="text-xs text-slate-400 font-mono">{sessionId}</span>
-          {effectiveReadOnly && <Badge variant="neutral">클래스 확인</Badge>}
-          {isSetting && <Badge variant="warning" className="py-1 px-2.5 text-xs font-semibold text-amber-600 bg-amber-50 border-amber-200">세팅중</Badge>}
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-bold text-slate-900">
+                {session?.courseName || 'Pinggo'}
+              </span>
+              {session?.roundNumber && (
+                <span className="text-sm font-medium text-slate-500">{session.roundNumber}차</span>
+              )}
+              {effectiveReadOnly && <Badge variant="neutral">클래스 확인</Badge>}
+              {isSetting && <Badge variant="warning" className="py-1 px-2.5 text-xs font-semibold text-amber-600 bg-amber-50 border-amber-200">세팅중</Badge>}
+            </div>
+            <span className="text-xs text-slate-400 font-mono">{sessionId}</span>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           {timerRunning && <TimerRing endTime={endTime} duration={duration} onExpire={stopTimer} size="sm" />}
@@ -390,6 +459,9 @@ export default function AdminPage() {
               pendingEvent={session?.pendingEvent || null}
               readOnly={effectiveReadOnly}
               onAddClick={effectiveReadOnly ? undefined : () => setShowCenterForm(true)}
+              onViewQuestion={effectiveReadOnly ? async (qId) => {
+                try { await update(ref(db, `sessions/${sessionId}`), { currentQuestion: qId, currentMode: 'poll' }); } catch {}
+              } : undefined}
             />
 
             {!effectiveReadOnly && (
@@ -486,14 +558,23 @@ export default function AdminPage() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15 }}
               >
-                <MainContent
-                  currentMode={currentMode}
-                  sessionId={sessionId}
-                  session={session}
-                  onlineList={onlineList}
-                  leaderboard={leaderboard}
-                  drawParticipants={drawParticipants}
-                />
+                {effectiveReadOnly && !session?.currentQuestion ? (
+                  <ClassSummary
+                    session={session}
+                    participants={participants}
+                    leaderboard={leaderboard}
+                    count={count}
+                  />
+                ) : (
+                  <MainContent
+                    currentMode={currentMode}
+                    sessionId={sessionId}
+                    session={session}
+                    onlineList={onlineList}
+                    leaderboard={leaderboard}
+                    drawParticipants={drawParticipants}
+                  />
+                )}
               </motion.div>
             )}
           </AnimatePresence>

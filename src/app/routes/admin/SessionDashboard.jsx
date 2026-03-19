@@ -384,7 +384,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="flex flex-col items-center justify-center py-20 gap-3"
+              className="flex flex-col items-center justify-center min-h-[60vh] gap-3"
             >
               <Archive size={32} className="text-slate-300" />
               <p className="text-slate-400 text-sm font-medium">준비 중입니다</p>
@@ -399,7 +399,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="flex flex-col items-center justify-center py-20 gap-3"
+              className="flex flex-col items-center justify-center min-h-[60vh] gap-3"
             >
               <MoreHorizontal size={32} className="text-slate-300" />
               <p className="text-slate-400 text-sm font-medium">준비 중입니다</p>

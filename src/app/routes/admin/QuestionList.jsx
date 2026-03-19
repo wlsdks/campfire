@@ -35,6 +35,7 @@ export default function QuestionList({
   onDuplicate,
   onDelete,
   readOnly = false,
+  onView,
 }) {
   return (
     <div className="space-y-1.5">
@@ -48,9 +49,10 @@ export default function QuestionList({
           <motion.div
             key={qId}
             layout
+            onClick={readOnly && onView ? () => onView(qId) : undefined}
             className={`p-3 rounded-xl border transition-all ${
               readOnly
-                ? 'bg-white border-slate-200'
+                ? `bg-white ${currentQuestion === qId ? 'border-slate-400 shadow-sm' : 'border-slate-200 hover:border-slate-300 cursor-pointer'}`
                 : isActive ? 'bg-white border-slate-300 shadow-sm' : 'bg-white border-slate-200 hover:border-slate-300'
             }`}
           >
