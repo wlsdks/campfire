@@ -20,7 +20,7 @@ import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
 import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import { Radio, Loader2, Monitor, Target, Ticket, Trophy, X, Users, Copy, Check, ArrowLeft, ChevronDown, Clock, PanelLeftClose, PanelLeftOpen, Square, Play } from 'lucide-react';
+import { Radio, Loader2, Monitor, Target, Ticket, Trophy, X, Users, Copy, Check, ArrowLeft, ChevronDown, Clock, MessageCircle, PanelLeftClose, PanelLeftOpen, Square, Play } from 'lucide-react';
 import { useTimer } from '@/features/timer/api/useTimer';
 import TimerControls from '@/features/timer/components/TimerControls';
 import TimerRing from '@/features/timer/components/TimerRing';
@@ -39,6 +39,41 @@ function getAdminUser() {
   } catch {
     return null;
   }
+}
+
+function RightPanelAccordion({ title, count, defaultOpen = false, children }) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="rounded-xl border border-slate-200 overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-3 py-2.5 text-left hover:bg-slate-50 transition-colors"
+      >
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-semibold text-slate-600">{title}</span>
+          {count > 0 && <span className="text-xs text-slate-400">{count}</span>}
+        </div>
+        <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
+          <ChevronDown size={14} className="text-slate-400" />
+        </motion.div>
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0 }}
+            animate={{ height: 'auto' }}
+            exit={{ height: 0 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            <div className="px-3 pb-3">
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }
 
 function PresentEmptyState({ sessionId, studentUrl, count }) {
@@ -422,6 +457,16 @@ export default function AdminPage() {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          {/* Chat button */}
+          {!effectiveReadOnly && (
+            <button
+              onClick={() => {/* TODO: open chat */}}
+              className="flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all"
+            >
+              <MessageCircle size={20} />
+              <span className="text-[10px] font-medium">채팅</span>
+            </button>
+          )}
           {/* Timer button */}
           {!effectiveReadOnly && (
             <div className="relative" ref={timerRef}>
@@ -714,11 +759,13 @@ export default function AdminPage() {
               })()}
 
               {leaderboard.length > 0 && (
-                <div className="border-t border-slate-100 pt-5">
-                  <Leaderboard entries={leaderboard} maxShow={5} title="상위 랭킹" />
-                </div>
+                <RightPanelAccordion title="상위 랭킹" count={leaderboard.length} defaultOpen={false}>
+                  <Leaderboard entries={leaderboard} maxShow={5} title={null} />
+                </RightPanelAccordion>
               )}
-              <ParticipantList participants={Object.entries(participants).map(([id, data]) => ({ id, ...data }))} voteCounts={voteCounts} />
+              <RightPanelAccordion title="참여자 목록" count={Object.keys(participants).length} defaultOpen>
+                <ParticipantList participants={Object.entries(participants).map(([id, data]) => ({ id, ...data }))} voteCounts={voteCounts} />
+              </RightPanelAccordion>
             </>
           ) : (
             <>
@@ -751,24 +798,32 @@ export default function AdminPage() {
                 );
               })()}
 
+              {/* Hand raises & urgent questions — always visible, top priority */}
               <HandRaiseList sessionId={sessionId} />
               <UrgentQuestionList sessionId={sessionId} />
-              {leaderboard.length > 0 && (
-                <div className="border-t border-slate-100 pt-5">
-                  <Leaderboard entries={leaderboard} maxShow={5} title="상위 랭킹" />
-                </div>
-              )}
-              <ParticipantList participants={onlineList} voteCounts={voteCounts} />
 
-              <div className="border-t border-slate-100 pt-5">
+              {/* Leaderboard accordion */}
+              {leaderboard.length > 0 && (
+                <RightPanelAccordion title="상위 랭킹" count={leaderboard.length} defaultOpen={false}>
+                  <Leaderboard entries={leaderboard} maxShow={5} title={null} />
+                </RightPanelAccordion>
+              )}
+
+              {/* Participant list accordion */}
+              <RightPanelAccordion title="참여자 목록" count={onlineList.length} defaultOpen>
+                <ParticipantList participants={onlineList} voteCounts={voteCounts} />
+              </RightPanelAccordion>
+
+              {/* QR */}
+              <div className="border-t border-slate-100 pt-4">
                 <div className="flex justify-center">
-                  <QRCode url={studentUrl} size={180} />
+                  <QRCode url={studentUrl} size={160} />
                 </div>
-                <Button onClick={copyStudentLink} variant="secondary" size="sm" className="w-full mt-4">
+                <Button onClick={copyStudentLink} variant="secondary" size="sm" className="w-full mt-3">
                   {copied ? <Check size={16} /> : <Copy size={16} />}
                   {copied ? '링크 복사됨' : '초대 링크 복사'}
                 </Button>
-                <p className="text-slate-400 text-xs mt-3 text-center break-all leading-relaxed">{studentUrl}</p>
+                <p className="text-slate-400 text-xs mt-2 text-center break-all leading-relaxed">{studentUrl}</p>
               </div>
             </>
           )}

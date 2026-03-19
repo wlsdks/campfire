@@ -53,15 +53,17 @@ export default function Leaderboard({
 
   return (
     <div className="w-full max-w-md mx-auto space-y-2">
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
-        className="flex items-center gap-2 mb-4"
-      >
-        <Trophy size={20} className="text-amber-500" />
-        <h3 className="text-lg font-bold text-slate-900">{title}</h3>
-      </motion.div>
+      {title && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, ease: 'easeOut' }}
+          className="flex items-center gap-2 mb-4"
+        >
+          <Trophy size={20} className="text-amber-500" />
+          <h3 className="text-lg font-bold text-slate-900">{title}</h3>
+        </motion.div>
+      )}
 
       {visible.map((entry, i) => (
         <motion.div
