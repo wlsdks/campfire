@@ -1,12 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ref, set, serverTimestamp, update } from 'firebase/database';
+import { ref, update, set } from 'firebase/database';
+import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '@/lib/firebase';
 import { useSession } from '@/features/session/api/useSession';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 import { useScores } from '@/features/quiz/api/useScores';
-import { generateSessionId } from '@/lib/utils';
+import { useAdminApprovals } from '@/features/session/api/useAdminApprovals';
 import AdminLogin from './AdminLogin';
+import SessionDashboard from './SessionDashboard';
+import CourseEditor from './CourseEditor';
 import QuestionManager from './QuestionManager';
+import QuestionForm from './QuestionForm';
 import ParticipantList from '@/features/participants/components/ParticipantList';
 import QRCode from '@/components/ui/QRCode';
 import VizRenderer from '@/features/visualization/components/VizRenderer';
@@ -17,14 +21,26 @@ import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
 import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import { Radio, Loader2, Monitor, Target, Ticket, Trophy, X, Users, Plus, AlertCircle, Copy, Check } from 'lucide-react';
+import { Radio, Loader2, Monitor, Target, Ticket, Trophy, X, Users, Copy, Check, ArrowLeft, PanelLeftClose, PanelLeftOpen, Square } from 'lucide-react';
 import { useTimer } from '@/features/timer/api/useTimer';
 import TimerControls from '@/features/timer/components/TimerControls';
 import TimerRing from '@/features/timer/components/TimerRing';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
+import { generateQuestionId } from '@/lib/utils';
+import { QUIZ_DEFAULTS } from '@/lib/quiz';
 
-const STORED_SESSION_KEY = 'pinggo_admin_session';
+function getAdminUser() {
+  try {
+    const raw = sessionStorage.getItem('pinggo_admin');
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (parsed && parsed.uid && parsed.username) return parsed;
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 function PresentEmptyState({ sessionId, studentUrl, count }) {
   return (
@@ -57,16 +73,46 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
   return <VizRenderer sessionId={sessionId} session={session} />;
 }
 
+function getUrlParam(key) {
+  return new URLSearchParams(window.location.search).get(key) || '';
+}
+
+function setUrlParams(params) {
+  const url = new URL(window.location);
+  // Clear all admin params first
+  url.searchParams.delete('s');
+  url.searchParams.delete('edit');
+  url.searchParams.delete('editName');
+  // Set new params
+  Object.entries(params).forEach(([k, v]) => {
+    if (v) url.searchParams.set(k, v);
+  });
+  window.history.replaceState({}, '', url);
+}
+
 export default function AdminPage() {
-  const [authed, setAuthed] = useState(sessionStorage.getItem('pinggo_admin') === 'true');
-  const [sessionId, setSessionId] = useState(localStorage.getItem(STORED_SESSION_KEY) || '');
+  const [adminUser, setAdminUser] = useState(() => getAdminUser());
+  const [sessionId, setSessionId] = useState(() => getUrlParam('s'));
+  const [readOnly, setReadOnly] = useState(false);
   const { session, loading } = useSession(sessionId);
   const { participants, onlineList, count } = useParticipants(sessionId);
   const { scores, leaderboard, totalTickets } = useScores(sessionId);
   const [presentMode, setPresentMode] = useState(false);
-  const [createError, setCreateError] = useState(null);
   const [copied, setCopied] = useState(false);
   const { isRunning: timerRunning, endTime, duration, startTimer, stopTimer } = useTimer(sessionId);
+  const { pendingAdmins, pendingCount, approveAdmin, rejectAdmin } = useAdminApprovals();
+
+  // Feature 2: Course Editor state
+  const [courseEditorId, setCourseEditorId] = useState(() => getUrlParam('edit') || null);
+  const [courseEditorName, setCourseEditorName] = useState(() => getUrlParam('editName') || '');
+
+  // Feature 4: Collapsible sidebar
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  // Feature 5: Center panel question form
+  const [showCenterForm, setShowCenterForm] = useState(false);
+
+  const isMaster = adminUser?.role === 'master';
 
   const exitPresent = useCallback(() => setPresentMode(false), []);
 
@@ -77,26 +123,32 @@ export default function AdminPage() {
     return () => window.removeEventListener('keydown', handler);
   }, [presentMode, exitPresent]);
 
-  const [creating, setCreating] = useState(false);
+  function handleLogin() {
+    setAdminUser(getAdminUser());
+  }
 
-  async function createSession() {
-    try {
-      setCreateError(null);
-      setCreating(true);
-      const newId = generateSessionId();
-      await set(ref(db, `sessions/${newId}`), {
-        status: 'active', currentQuestion: null, currentMode: 'waiting', createdAt: serverTimestamp(),
-      });
-      localStorage.setItem(STORED_SESSION_KEY, newId);
-      setSessionId(newId);
-    } catch {
-      setCreateError('세션 생성에 실패했습니다. 다시 시도해주세요.');
-    } finally {
-      setCreating(false);
-    }
+  function handleSelectSession(id, isReadOnly) {
+    setSessionId(id);
+    setReadOnly(isReadOnly);
+    setUrlParams({ s: id });
+  }
+
+  function handleBack() {
+    setSessionId('');
+    setReadOnly(false);
+    setPresentMode(false);
+    setUrlParams({});
+  }
+
+  function handleLogout() {
+    sessionStorage.removeItem('pinggo_admin');
+    setAdminUser(null);
+    setSessionId('');
+    setUrlParams({});
   }
 
   async function switchMode(mode) {
+    if (readOnly) return;
     try {
       await update(ref(db, `sessions/${sessionId}`), mode === 'leaderboard'
         ? { currentMode: mode }
@@ -116,29 +168,94 @@ export default function AdminPage() {
     }
   }
 
-  if (!authed) return <AdminLogin onLogin={() => setAuthed(true)} />;
+  // Feature 2: Course editor handlers
+  function handleEditCourse(templateId, name) {
+    setCourseEditorId(templateId);
+    setCourseEditorName(name);
+    setUrlParams({ edit: templateId, editName: name });
+  }
 
-  if (!sessionId || (!loading && !session)) {
+  function handleCourseEditorBack() {
+    setCourseEditorId(null);
+    setCourseEditorName('');
+    setUrlParams({});
+  }
+
+  // Feature 3: End session
+  async function handleEndSession() {
+    if (!window.confirm('클래스를 종료하시겠습니까? 종료 후에는 학생 참여가 불가합니다.')) return;
+    try {
+      await update(ref(db, `sessions/${sessionId}`), {
+        status: 'ended',
+        currentMode: 'waiting',
+        currentQuestion: null,
+      });
+      handleBack();
+    } catch {
+      // Silently fail
+    }
+  }
+
+  // Feature 5: Center form question submit
+  async function handleCenterFormSubmit({ type, title, options: cleanOptions, correctAnswer }) {
+    try {
+      const qId = generateQuestionId();
+      const questions = session?.questions || {};
+      const questionData = { type, title: title.trim(), order: Object.keys(questions).length + 1 };
+      const isChoiceLike = type === 'choice' || type === 'quiz';
+
+      if (isChoiceLike) {
+        questionData.options = cleanOptions;
+      }
+      if (type === 'quiz') {
+        questionData.correctAnswer = cleanOptions.includes(correctAnswer) ? correctAnswer : cleanOptions[0];
+        questionData.points = QUIZ_DEFAULTS.points;
+        questionData.participationTickets = QUIZ_DEFAULTS.participationTickets;
+        questionData.correctBonusTickets = QUIZ_DEFAULTS.correctBonusTickets;
+        questionData.speedWindowMs = QUIZ_DEFAULTS.speedWindowMs;
+        questionData.maxSpeedBonus = QUIZ_DEFAULTS.maxSpeedBonus;
+      }
+
+      await set(ref(db, `sessions/${sessionId}/questions/${qId}`), questionData);
+      setShowCenterForm(false);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  // 1. Not authenticated → Login
+  if (!adminUser) return <AdminLogin onLogin={handleLogin} />;
+
+  // 2a. Course Editor view
+  if (courseEditorId) {
     return (
-      <div className="min-h-dvh bg-slate-50 flex items-center justify-center p-4">
-        <div className="text-center space-y-5">
-          <Radio size={36} className="text-indigo-600 mx-auto" />
-          <h1 className="text-2xl font-bold text-slate-900">Pinggo</h1>
-          <Button onClick={createSession} variant="primary" size="lg" disabled={creating}>
-            {creating ? <Loader2 size={20} className="animate-spin" /> : <Plus size={20} />}
-            {creating ? '생성 중...' : '새 세션 만들기'}
-          </Button>
-          {createError && (
-            <p className="text-red-500 text-sm flex items-center justify-center gap-1.5">
-              <AlertCircle size={14} />
-              {createError}
-            </p>
-          )}
-        </div>
-      </div>
+      <CourseEditor
+        courseId={courseEditorId}
+        courseName={courseEditorName}
+        onBack={handleCourseEditorBack}
+      />
     );
   }
 
+  // 2. No session selected → Dashboard
+  if (!sessionId) {
+    return (
+      <SessionDashboard
+        onSelectSession={handleSelectSession}
+        onLogout={handleLogout}
+        adminUser={adminUser}
+        isMaster={isMaster}
+        pendingAdmins={pendingAdmins}
+        pendingCount={pendingCount}
+        approveAdmin={approveAdmin}
+        rejectAdmin={rejectAdmin}
+        onEditCourse={handleEditCourse}
+      />
+    );
+  }
+
+  // 3. Loading session data
   if (loading) {
     return (
       <div className="min-h-dvh bg-slate-50 flex items-center justify-center">
@@ -148,6 +265,12 @@ export default function AdminPage() {
         </div>
       </div>
     );
+  }
+
+  // 4. Session not found → back to dashboard
+  if (!session) {
+    handleBack();
+    return null;
   }
 
   const studentUrl = `${window.location.origin}/?s=${sessionId}`;
@@ -164,12 +287,10 @@ export default function AdminPage() {
       <div className="min-h-dvh bg-white relative cursor-pointer" onClick={exitPresent}>
         <JoinToast sessionId={sessionId} />
         <ReactionOverlay sessionId={sessionId} />
-        {/* Alerts overlay */}
         <div className="fixed top-5 left-5 w-72 space-y-3 z-10">
           <HandRaiseList sessionId={sessionId} />
           <UrgentQuestionList sessionId={sessionId} />
         </div>
-        {/* Main content — scaled up for projector */}
         <div className="flex items-center justify-center min-h-dvh p-12 text-lg">
           <MainContent
             currentMode={currentMode}
@@ -183,17 +304,14 @@ export default function AdminPage() {
             count={count}
           />
         </div>
-        {/* QR bottom-right */}
         <div className="fixed bottom-5 right-5 opacity-90 flex items-center gap-3">
           <span className="text-slate-600 text-sm font-medium bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm">{studentUrl}</span>
           <QRCode url={studentUrl} size={120} />
         </div>
-        {/* Session info bottom-left */}
         <div className="fixed bottom-5 left-5 flex items-center gap-2">
           <Badge variant="neutral"><Users size={12} className="mr-1" />{count}명</Badge>
           <Badge variant="neutral">{sessionId}</Badge>
         </div>
-        {/* Exit hint — top right */}
         <div className="fixed top-5 right-5 bg-slate-900/80 text-white px-3 py-1.5 rounded-lg text-sm">
           ESC 또는 클릭으로 나가기
         </div>
@@ -209,100 +327,193 @@ export default function AdminPage() {
       {/* Header bar */}
       <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
+          <button
+            onClick={handleBack}
+            className="text-slate-400 hover:text-slate-600 transition-colors"
+            aria-label="클래스 목록으로"
+          >
+            <ArrowLeft size={20} />
+          </button>
           <Radio size={18} className="text-indigo-600" />
           <span className="font-bold text-slate-900">Pinggo</span>
           <span className="text-xs text-slate-400 font-mono">{sessionId}</span>
+          {readOnly && <Badge variant="neutral">결과 조회</Badge>}
         </div>
         <div className="flex items-center gap-3">
           {timerRunning && <TimerRing endTime={endTime} duration={duration} onExpire={stopTimer} size="sm" />}
-          <Badge variant="neutral">
-            <Users size={12} className="mr-1" />
+          <Badge variant="neutral" className="py-2 px-3.5 text-sm">
+            <Users size={16} className="mr-1.5" />
             {count}명
           </Badge>
-          {totalTickets > 0 && <Badge variant="neutral">{totalTickets}장 티켓</Badge>}
-          {session?.pendingEvent?.label && <Badge variant="primary">{session.pendingEvent.label}</Badge>}
-          <Button onClick={() => setPresentMode(true)} variant="primary" size="sm">
-            <Monitor size={16} />
-            발표 모드
-          </Button>
+          {totalTickets > 0 && <Badge variant="neutral" className="py-2 px-3.5 text-sm">{totalTickets}장 티켓</Badge>}
+          {session?.pendingEvent?.label && <Badge variant="primary" className="py-2 px-3.5 text-sm">{session.pendingEvent.label}</Badge>}
+          {!readOnly && (
+            <>
+              <Button onClick={() => setPresentMode(true)} variant="primary" size="sm">
+                <Monitor size={18} />
+                발표 모드
+              </Button>
+              <Button onClick={handleEndSession} variant="secondary" size="sm">
+                <Square size={18} />
+                종료
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
       {/* Main layout */}
       <div className="flex flex-1 overflow-hidden">
+        {/* Left sidebar collapse toggle (visible when collapsed) */}
+        <AnimatePresence>
+          {sidebarCollapsed && (
+            <motion.button
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -8 }}
+              transition={{ duration: 0.15 }}
+              onClick={() => setSidebarCollapsed(false)}
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white border border-slate-200 border-l-0 rounded-r-xl p-3 shadow-md text-slate-400 hover:text-slate-700 transition-colors"
+              aria-label="사이드바 열기"
+            >
+              <PanelLeftOpen size={22} />
+            </motion.button>
+          )}
+        </AnimatePresence>
+
         {/* Left sidebar */}
-        <div className="w-[460px] border-r border-slate-200 bg-white p-5 overflow-y-auto flex flex-col shrink-0">
-          <QuestionManager
-            sessionId={sessionId}
-            questions={session?.questions || {}}
-            currentQuestion={session?.currentQuestion}
-            scores={scores}
-            participants={participants}
-            pendingEvent={session?.pendingEvent || null}
-          />
+        <motion.div
+          animate={{ width: sidebarCollapsed ? 0 : 460 }}
+          transition={{ duration: 0.25, ease: 'easeInOut' }}
+          className="border-r border-slate-200 bg-white overflow-hidden shrink-0"
+        >
+          <div className="w-[460px] p-5 overflow-y-auto h-full flex flex-col">
+            <QuestionManager
+              onCollapse={() => setSidebarCollapsed(true)}
+              sessionId={sessionId}
+              questions={session?.questions || {}}
+              currentQuestion={session?.currentQuestion}
+              scores={scores}
+              participants={participants}
+              pendingEvent={session?.pendingEvent || null}
+              readOnly={readOnly}
+              onAddClick={readOnly ? undefined : () => setShowCenterForm(true)}
+            />
 
-          <div className="mt-5 rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
-            <TimerControls isRunning={timerRunning} onStart={startTimer} onStop={stopTimer} />
-          </div>
+            {!readOnly && (
+              <>
+                <div className="mt-5 rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
+                  <TimerControls isRunning={timerRunning} onStart={startTimer} onStop={stopTimer} />
+                </div>
 
-          <div className="mt-5 rounded-xl border border-slate-200 bg-white p-3 shadow-sm space-y-2">
-            <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3">모드 전환</p>
-            {[
-              { mode: 'roulette', label: '돌림판', icon: Target },
-              { mode: 'lottery', label: totalTickets > 0 ? '보상 추첨' : '제비뽑기', icon: Ticket },
-              ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
-            ].map(({ mode, label, icon: Icon }) => {
-              const isActive = currentMode === mode;
-              return isActive ? (
-                <button
-                  key={mode}
-                  onClick={() => switchMode(mode)}
-                  className="w-full inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium rounded-lg bg-slate-900 text-white transition-colors"
-                  aria-label={`${label} 모드로 전환`}
-                >
-                  <Icon size={16} /> {label}
-                </button>
-              ) : (
-                <Button
-                  key={mode}
-                  onClick={() => switchMode(mode)}
-                  variant="secondary"
-                  size="sm"
-                  className="w-full"
-                  aria-label={`${label} 모드로 전환`}
-                >
-                  <Icon size={16} /> {label}
-                </Button>
-              );
-            })}
-            {isSpecialMode && (
-              <Button
-                onClick={() => switchMode('waiting')}
-                variant="ghost"
-                size="sm"
-                className="w-full"
-                aria-label="특수 화면 종료"
-              >
-                <X size={16} /> 화면 종료
-              </Button>
+                <div className="mt-5 rounded-xl border border-slate-200 bg-white p-3 shadow-sm space-y-2">
+                  <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3">모드 전환</p>
+                  {[
+                    { mode: 'roulette', label: '돌림판', icon: Target },
+                    { mode: 'lottery', label: totalTickets > 0 ? '보상 추첨' : '제비뽑기', icon: Ticket },
+                    ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
+                  ].map(({ mode, label, icon: Icon }) => {
+                    const isActive = currentMode === mode;
+                    return isActive ? (
+                      <button
+                        key={mode}
+                        onClick={() => switchMode(mode)}
+                        className="w-full inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium rounded-lg bg-slate-900 text-white transition-colors"
+                        aria-label={`${label} 모드로 전환`}
+                      >
+                        <Icon size={16} /> {label}
+                      </button>
+                    ) : (
+                      <Button
+                        key={mode}
+                        onClick={() => switchMode(mode)}
+                        variant="secondary"
+                        size="sm"
+                        className="w-full"
+                        aria-label={`${label} 모드로 전환`}
+                      >
+                        <Icon size={16} /> {label}
+                      </Button>
+                    );
+                  })}
+                  {isSpecialMode && (
+                    <Button
+                      onClick={() => switchMode('waiting')}
+                      variant="ghost"
+                      size="sm"
+                      className="w-full"
+                      aria-label="특수 화면 종료"
+                    >
+                      <X size={16} /> 화면 종료
+                    </Button>
+                  )}
+                </div>
+              </>
             )}
           </div>
-        </div>
+        </motion.div>
 
         {/* Center */}
-        <div className="flex-1 p-8 flex items-center justify-center overflow-auto">
-          <MainContent
-            currentMode={currentMode}
-            sessionId={sessionId}
-            session={session}
-            onlineList={onlineList}
-            leaderboard={leaderboard}
-            drawParticipants={drawParticipants}
-          />
+        <div className="flex-1 p-8 flex items-center justify-center overflow-auto relative">
+          <AnimatePresence mode="wait">
+            {showCenterForm ? (
+              <motion.div
+                key="center-form"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.2 }}
+                className="w-full max-w-2xl"
+              >
+                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+                  <div className="flex items-center justify-between mb-6">
+                    <div>
+                      <h2 className="text-xl font-bold text-slate-900">새 질문 추가</h2>
+                      <p className="text-slate-400 text-sm mt-1">질문을 작성하고 추가하세요</p>
+                    </div>
+                    <button
+                      onClick={() => setShowCenterForm(false)}
+                      className="p-2 rounded-lg text-slate-300 hover:text-slate-600 hover:bg-slate-100 transition-all"
+                      aria-label="취소"
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
+                  <QuestionForm
+                    onSubmit={handleCenterFormSubmit}
+                    onCancel={() => setShowCenterForm(false)}
+                    error={null}
+                  />
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="main-content"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+              >
+                <MainContent
+                  currentMode={currentMode}
+                  sessionId={sessionId}
+                  session={session}
+                  onlineList={onlineList}
+                  leaderboard={leaderboard}
+                  drawParticipants={drawParticipants}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Right sidebar */}
-        <div className="w-[400px] border-l border-slate-200 bg-white p-5 space-y-5 overflow-y-auto shrink-0">
+        <motion.div
+          animate={{ width: sidebarCollapsed ? 0 : 460 }}
+          transition={{ duration: 0.25, ease: 'easeInOut' }}
+          className="border-l border-slate-200 bg-white overflow-hidden shrink-0"
+        >
+        <div className="w-[460px] p-5 space-y-5 overflow-y-auto h-full">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="text-slate-900 font-bold text-lg">{count}</span>
@@ -352,6 +563,7 @@ export default function AdminPage() {
             <p className="text-slate-400 text-xs mt-3 text-center break-all leading-relaxed">{studentUrl}</p>
           </div>
         </div>
+        </motion.div>
       </div>
     </div>
   );

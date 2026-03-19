@@ -3,7 +3,7 @@ import { ref, set, remove, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { generateQuestionId } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
-import { CheckCircle, Play, Plus, Square } from 'lucide-react';
+import { CheckCircle, PanelLeftClose, Play, Plus, Square } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import {
   QUIZ_DEFAULTS,
@@ -27,6 +27,8 @@ export default function QuestionManager({
   scores = {},
   participants = {},
   pendingEvent = null,
+  onAddClick,
+  onCollapse,
 }) {
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState(null);
@@ -219,9 +221,31 @@ export default function QuestionManager({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold text-slate-900">질문 목록</h2>
-        <Button onClick={() => setShowForm(!showForm)} variant={showForm ? 'ghost' : 'primary'} size="sm">
-          {showForm ? '취소' : <><Plus size={14} /> 추가</>}
-        </Button>
+        <div className="flex items-center gap-1.5">
+          <Button
+            onClick={() => {
+              if (onAddClick) {
+                onAddClick();
+              } else {
+                setShowForm(!showForm);
+              }
+            }}
+            variant={showForm && !onAddClick ? 'ghost' : 'primary'}
+            size="sm"
+          >
+            {showForm && !onAddClick ? '취소' : <><Plus size={14} /> 추가</>}
+          </Button>
+          {onCollapse && (
+            <button
+              onClick={onCollapse}
+              className="p-2 rounded-lg text-slate-300 hover:text-slate-600 hover:bg-slate-100 transition-all"
+              title="패널 접기"
+              aria-label="사이드바 접기"
+            >
+              <PanelLeftClose size={36} />
+            </button>
+          )}
+        </div>
       </div>
 
       {questionList.length > 0 && (
@@ -276,7 +300,7 @@ export default function QuestionManager({
       />
 
       <AnimatePresence>
-        {showForm && (
+        {showForm && !onAddClick && (
           <QuestionForm
             onSubmit={handleSubmit}
             onCancel={() => setShowForm(false)}

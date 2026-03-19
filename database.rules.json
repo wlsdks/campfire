@@ -1,8 +1,39 @@
 {
   "rules": {
+    "admins": {
+      ".read": true,
+      ".write": true,
+      "$uid": {
+        ".validate": "newData.hasChild('username') && newData.hasChild('passwordHash')",
+        "username": { ".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 20" },
+        "passwordHash": { ".validate": "newData.isString()" },
+        "displayName": { ".validate": "newData.isString() && newData.val().length <= 20" },
+        "role": { ".validate": "newData.isString() && newData.val().matches(/^(master|admin)$/)" },
+        "approved": { ".validate": "newData.isBoolean()" },
+        "createdAt": { ".validate": true }
+      }
+    },
+    "courseTemplates": {
+      ".read": true,
+      ".write": true,
+      "$courseId": {
+        ".validate": "newData.hasChild('name')",
+        "name": { ".validate": "newData.isString() && newData.val().length <= 100" },
+        "createdAt": { ".validate": true },
+        "questions": {
+          ".write": true,
+          "$qId": {
+            ".validate": "newData.hasChild('title') && newData.hasChild('type')",
+            "title": { ".validate": "newData.isString() && newData.val().length <= 500" },
+            "type": { ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna)$/)" },
+            "$other": { ".validate": true }
+          }
+        }
+      }
+    },
     "sessions": {
+      ".read": true,
       "$sessionId": {
-        ".read": true,
         ".write": true,
 
         "status": {
@@ -22,6 +53,14 @@
         },
         "createdAt": {
           ".write": true
+        },
+        "courseName": {
+          ".write": true,
+          ".validate": "newData.isString() && newData.val().length <= 100"
+        },
+        "roundNumber": {
+          ".write": true,
+          ".validate": "newData.isNumber()"
         },
 
         "questions": {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { BarChart3, Circle, Cloud, MessageSquare, Plus, Trophy } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { BarChart3, Circle, Cloud, MessageSquare, Plus, Trophy, Trash2, Check, AlertCircle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { QUIZ_DEFAULTS } from '@/lib/quiz';
 
@@ -12,18 +12,10 @@ const QUESTION_TYPES = [
   { value: 'qna', label: 'Q&A', icon: MessageSquare },
 ];
 
-const INPUT_CLASS =
-  'w-full bg-white border border-slate-200 rounded-lg px-3 py-2.5 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all';
+const OPTION_LABELS = ['A', 'B', 'C', 'D', 'E'];
 
-/**
- * Form for creating a new question (type selector, title, options, correct answer for quiz).
- * Presentational component — delegates submission to parent via onSubmit callback.
- *
- * @param {Object} props
- * @param {(data: { type: string, title: string, options: string[], correctAnswer: string }) => Promise<boolean>} props.onSubmit
- * @param {() => void} props.onCancel
- * @param {string|null} props.error
- */
+const INPUT = 'w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm placeholder:text-slate-300 focus:outline-none focus:border-slate-400 transition-colors';
+
 export default function QuestionForm({ onSubmit, onCancel, error }) {
   const [type, setType] = useState('choice');
   const [title, setTitle] = useState('');
@@ -34,20 +26,19 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
   const isChoiceLike = type === 'choice' || type === 'quiz';
 
   async function handleAdd() {
-    if (!title.trim()) return;
-
-    const cleanOptions = options.filter((option) => option.trim());
-
+    if (!title.trim()) {
+      setLocalError('질문 내용을 입력해주세요.');
+      return;
+    }
+    const cleanOptions = options.filter((o) => o.trim());
     if (isChoiceLike && cleanOptions.length < 2) {
-      setLocalError('선택형 질문은 최소 2개의 선택지가 필요합니다.');
+      setLocalError('최소 2개의 선택지가 필요합니다.');
       return;
     }
-
     if (type === 'quiz' && !correctAnswer) {
-      setLocalError('퀴즈의 정답 선택지를 지정해주세요.');
+      setLocalError('정답을 선택해주세요.');
       return;
     }
-
     setLocalError(null);
     const success = await onSubmit({ type, title, options: cleanOptions, correctAnswer });
     if (success) {
@@ -58,107 +49,168 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
     }
   }
 
+  function removeOption(index) {
+    if (options.length <= 2) return;
+    const next = options.filter((_, i) => i !== index);
+    setOptions(next);
+    if (correctAnswer && !next.includes(correctAnswer)) setCorrectAnswer('');
+  }
+
   const displayError = localError || error;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: 'auto' }}
-      exit={{ opacity: 0, height: 0 }}
-      className="overflow-hidden"
-    >
-      <div className="bg-white rounded-xl shadow-sm border border-slate-100 p-4 space-y-3">
-        <div className="grid grid-cols-2 gap-1.5">
+    <div className="space-y-6">
+      {/* Type selector */}
+      <div>
+        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">질문 유형</p>
+        <div className="flex gap-1.5">
           {QUESTION_TYPES.map((t) => {
             const Icon = t.icon;
+            const selected = type === t.value;
             return (
               <button
                 key={t.value}
-                onClick={() => setType(t.value)}
-                aria-label={`${t.label} 유형 선택`}
-                className={`py-2 px-3 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 ${
-                  type === t.value
-                    ? 'bg-slate-900 text-white'
-                    : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
+                onClick={() => { setType(t.value); setLocalError(null); }}
+                className={`flex-1 flex flex-col items-center gap-1 py-2.5 rounded-lg transition-all ${
+                  selected
+                    ? 'bg-slate-900 text-white shadow-sm'
+                    : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'
                 }`}
               >
-                <Icon size={14} /> {t.label}
+                <Icon size={18} strokeWidth={selected ? 2.2 : 1.8} />
+                <span className="text-[11px] font-medium">{t.label}</span>
               </button>
             );
           })}
         </div>
+      </div>
 
-        <input
+      {/* Title */}
+      <div>
+        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">질문 내용</p>
+        <textarea
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="질문 내용을 입력하세요"
-          className={INPUT_CLASS}
+          onChange={(e) => { setTitle(e.target.value); setLocalError(null); }}
+          placeholder="학생들에게 보여줄 질문을 입력하세요"
+          rows={3}
+          className={`${INPUT} resize-none text-base leading-relaxed`}
           autoFocus
         />
+      </div>
 
-        {isChoiceLike &&
-          options.map((opt, i) => (
-            <div key={i} className="flex gap-2">
-              <input
-                value={opt}
-                onChange={(e) => {
-                  const nextOptions = [...options];
-                  nextOptions[i] = e.target.value;
-                  setOptions(nextOptions);
-                  if (correctAnswer && !nextOptions.includes(correctAnswer)) {
-                    setCorrectAnswer('');
-                  }
-                }}
-                placeholder={`선택지 ${i + 1}`}
-                className={`flex-1 ${INPUT_CLASS}`}
-              />
-              {i === options.length - 1 && options.length < 5 && (
+      {/* Options */}
+      <AnimatePresence>
+        {isChoiceLike && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+          >
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">선택지</p>
+            <div className="space-y-2">
+              {options.map((opt, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <span className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500 shrink-0">
+                    {OPTION_LABELS[i]}
+                  </span>
+                  <input
+                    value={opt}
+                    onChange={(e) => {
+                      const next = [...options];
+                      next[i] = e.target.value;
+                      setOptions(next);
+                      if (correctAnswer && !next.includes(correctAnswer)) setCorrectAnswer('');
+                      setLocalError(null);
+                    }}
+                    placeholder={`선택지 ${OPTION_LABELS[i]}`}
+                    className={`flex-1 ${INPUT} py-2.5`}
+                  />
+                  {options.length > 2 && (
+                    <button
+                      onClick={() => removeOption(i)}
+                      className="p-1.5 rounded-lg text-slate-300 hover:text-red-500 transition-colors"
+                      aria-label="선택지 삭제"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  )}
+                </div>
+              ))}
+              {options.length < 5 && (
                 <button
                   onClick={() => setOptions([...options, ''])}
-                  className="px-3 py-2 rounded-lg bg-slate-50 text-slate-500 hover:bg-slate-100 transition-all text-sm"
-                  aria-label="선택지 추가"
+                  className="w-full py-2.5 rounded-xl border border-dashed border-slate-200 text-slate-400 text-sm hover:border-slate-300 hover:text-slate-500 transition-colors flex items-center justify-center gap-1.5"
                 >
-                  <Plus size={14} />
+                  <Plus size={14} /> 선택지 추가
                 </button>
               )}
             </div>
-          ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
+      {/* Quiz: correct answer */}
+      <AnimatePresence>
         {type === 'quiz' && (
-          <div className="space-y-2 rounded-lg bg-slate-50 border border-slate-200 p-3">
-            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">정답 선택</p>
-            <div className="flex flex-wrap gap-2">
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+          >
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">정답 선택</p>
+            <div className="flex flex-wrap gap-2 mb-3">
               {options
-                .filter((option) => option.trim())
-                .map((option) => (
-                  <button
-                    key={option}
-                    onClick={() => setCorrectAnswer(option)}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      correctAnswer === option
-                        ? 'bg-slate-900 text-white'
-                        : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-100'
-                    }`}
-                  >
-                    {option}
-                  </button>
-                ))}
+                .filter((o) => o.trim())
+                .map((option, i) => {
+                  const isCorrect = correctAnswer === option;
+                  return (
+                    <button
+                      key={option}
+                      onClick={() => { setCorrectAnswer(option); setLocalError(null); }}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
+                        isCorrect
+                          ? 'bg-slate-900 text-white'
+                          : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+                      }`}
+                    >
+                      {isCorrect && <Check size={14} />}
+                      <span className="font-bold">{OPTION_LABELS[i]}</span>
+                      {option}
+                    </button>
+                  );
+                })}
             </div>
-            <p className="text-xs text-slate-500">
-              정답자: 기본 {QUIZ_DEFAULTS.points}점 + 속도 보너스, 참여자 전원 티켓{' '}
-              {QUIZ_DEFAULTS.participationTickets}장, 정답자 추가 티켓 {QUIZ_DEFAULTS.correctBonusTickets}장
+            <p className="text-xs text-slate-400">
+              기본 {QUIZ_DEFAULTS.points}점 + 속도 보너스 · 참여 티켓 {QUIZ_DEFAULTS.participationTickets}장 · 정답 보너스 {QUIZ_DEFAULTS.correctBonusTickets}장
             </p>
-          </div>
+          </motion.div>
         )}
+      </AnimatePresence>
 
+      {/* Error */}
+      <AnimatePresence>
         {displayError && (
-          <p className="text-red-500 text-sm flex items-center gap-1.5">{displayError}</p>
+          <motion.p
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            className="text-red-500 text-sm flex items-center gap-1.5"
+          >
+            <AlertCircle size={14} />
+            {displayError}
+          </motion.p>
         )}
+      </AnimatePresence>
 
-        <Button onClick={handleAdd} variant="primary" size="md" className="w-full">
+      {/* Buttons */}
+      <div className="flex gap-3 pt-2">
+        <Button onClick={onCancel} variant="secondary" size="md" className="flex-1">
+          취소
+        </Button>
+        <Button onClick={handleAdd} variant="primary" size="md" className="flex-[2]">
           추가하기
         </Button>
       </div>
-    </motion.div>
+    </div>
   );
 }
