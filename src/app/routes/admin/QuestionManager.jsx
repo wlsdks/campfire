@@ -7,6 +7,7 @@ import { CheckCircle, PanelLeftClose, Play, Plus, Square } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import {
   QUIZ_DEFAULTS,
+  QUIZ_EVENT_PRESETS,
   getQuestionMode,
   getQuizReward,
   isQuizQuestion,
@@ -14,7 +15,6 @@ import {
 } from '@/lib/quiz';
 import QuestionForm from './QuestionForm';
 import QuestionList from './QuestionList';
-import EventBooster from './EventBooster';
 
 function getNow() {
   return Date.now();
@@ -35,6 +35,7 @@ export default function QuestionManager({
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState(null);
   const [toast, setToast] = useState(null);
+  const [nextEvent, setNextEvent] = useState(null);
   const toastTimerRef = useRef(null);
 
   useEffect(() => () => {
@@ -98,6 +99,10 @@ export default function QuestionManager({
         updates[`questions/${qId}/activatedAt`] = getNow();
         updates[`questions/${qId}/revealedAt`] = null;
         updates[`questions/${qId}/awardedAt`] = null;
+        if (nextEvent) {
+          updates[`questions/${qId}/event`] = normalizeQuizEvent(nextEvent);
+          setNextEvent(null);
+        }
       }
 
       await update(ref(db, `sessions/${sessionId}`), updates);
@@ -277,6 +282,27 @@ export default function QuestionManager({
               </p>
             )}
           </div>
+          {/* Event toggle — shown when next question is quiz */}
+          {nextEntry && isQuizQuestion(nextEntry[1]) && (
+            <div className="flex flex-wrap gap-1.5">
+              {QUIZ_EVENT_PRESETS.map((preset) => {
+                const isSelected = nextEvent?.id === preset.id;
+                return (
+                  <button
+                    key={preset.id}
+                    onClick={() => setNextEvent(isSelected ? null : preset)}
+                    className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
+                      isSelected
+                        ? 'bg-indigo-600 text-white'
+                        : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                    }`}
+                  >
+                    {preset.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-2">
             <Button
               onClick={() => nextEntry && activateQuestion(nextEntry[0])}
@@ -286,6 +312,7 @@ export default function QuestionManager({
             >
               <Play size={14} />
               {currentEntry ? '다음 질문' : '첫 질문 시작'}
+              {nextEvent && ' ✦'}
             </Button>
             <Button onClick={clearActive} variant="secondary" size="sm" disabled={!currentEntry}>
               <Square size={14} />

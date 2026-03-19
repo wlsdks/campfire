@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { ref, update, set } from 'firebase/database';
 import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '@/lib/firebase';
@@ -189,6 +189,17 @@ export default function AdminPage() {
   const [showCenterForm, setShowCenterForm] = useState(false);
   const [modeOpen, setModeOpen] = useState(false);
   const [timerOpen, setTimerOpen] = useState(false);
+  const timerRef = useRef(null);
+
+  // Close timer popup on outside click
+  useEffect(() => {
+    if (!timerOpen) return;
+    function handleClick(e) {
+      if (timerRef.current && !timerRef.current.contains(e.target)) setTimerOpen(false);
+    }
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [timerOpen]);
 
   const isMaster = adminUser?.role === 'master';
 
@@ -413,10 +424,10 @@ export default function AdminPage() {
         <div className="flex items-center gap-3">
           {/* Timer button */}
           {!effectiveReadOnly && (
-            <div className="relative">
+            <div className="relative" ref={timerRef}>
               <button
                 onClick={() => setTimerOpen(!timerOpen)}
-                className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg transition-all ${
+                className={`flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg transition-all ${
                   timerRunning ? 'text-indigo-600' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
                 }`}
               >
@@ -424,7 +435,7 @@ export default function AdminPage() {
                   <TimerRing endTime={endTime} duration={duration} onExpire={stopTimer} size="sm" />
                 ) : (
                   <>
-                    <Clock size={18} />
+                    <Clock size={20} />
                     <span className="text-[10px] font-medium">타이머</span>
                   </>
                 )}
@@ -436,8 +447,9 @@ export default function AdminPage() {
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: -4, scale: 0.95 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute right-0 top-full mt-2 bg-white rounded-xl border border-slate-200 shadow-lg p-3 z-50 w-56"
+                    className="absolute right-0 top-full mt-2 bg-white rounded-2xl border border-slate-200 shadow-xl p-4 z-50 w-72"
                   >
+                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">타이머 설정</p>
                     <TimerControls isRunning={timerRunning} onStart={(s) => { startTimer(s); setTimerOpen(false); }} onStop={stopTimer} />
                   </motion.div>
                 )}
@@ -596,7 +608,7 @@ export default function AdminPage() {
         </motion.div>
 
         {/* Center */}
-        <div className="flex-1 min-w-0 p-8 overflow-hidden relative h-full">
+        <div className="flex-1 min-w-0 p-8 overflow-auto relative h-full scrollbar-hide">
           <AnimatePresence mode="wait">
             {showCenterForm ? (
               <motion.div
