@@ -19,7 +19,7 @@ export default function ParticipantList({ participants, voteCounts }) {
               <Avatar name={p.nickname} size="sm" />
               <span className="truncate flex-1">{p.nickname}</span>
               {voteCount > 0 && (
-                <span className="text-xs text-slate-400 font-medium tabular-nums shrink-0">{voteCount}답</span>
+                <span className="text-xs text-slate-400 font-medium tabular-nums shrink-0">{voteCount}개 참여</span>
               )}
             </motion.div>
           );

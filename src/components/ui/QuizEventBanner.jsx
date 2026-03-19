@@ -55,7 +55,8 @@ export default function QuizEventBanner({ event, state = 'active', compact = fal
               {normalized.description}
             </p>
           )}
-          {badges.length > 0 && (
+          {/* Badges only shown for jackpot (multiple effects) */}
+          {badges.length > 1 && (
             <div className="flex flex-wrap gap-1.5">
               {badges.map((badge) => (
                 <span

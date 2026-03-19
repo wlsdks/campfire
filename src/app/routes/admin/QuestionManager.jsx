@@ -53,7 +53,7 @@ export default function QuestionManager({
   const nextEntry = activeIndex >= 0 ? questionList[activeIndex + 1] : questionList[0];
   const nextQuizEvent = normalizeQuizEvent(pendingEvent);
 
-  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer }) {
+  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points }) {
     try {
       setError(null);
       const qId = generateQuestionId();
@@ -68,7 +68,7 @@ export default function QuestionManager({
         questionData.correctAnswer = correctAnswer || 'O';
       }
       if (type === 'quiz') {
-        questionData.points = QUIZ_DEFAULTS.points;
+        questionData.points = points || QUIZ_DEFAULTS.points;
         questionData.participationTickets = QUIZ_DEFAULTS.participationTickets;
         questionData.correctBonusTickets = QUIZ_DEFAULTS.correctBonusTickets;
         questionData.speedWindowMs = QUIZ_DEFAULTS.speedWindowMs;

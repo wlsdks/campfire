@@ -21,6 +21,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
   const [title, setTitle] = useState('');
   const [options, setOptions] = useState(['', '']);
   const [correctAnswer, setCorrectAnswer] = useState('');
+  const [points, setPoints] = useState(QUIZ_DEFAULTS.points);
   const [localError, setLocalError] = useState(null);
 
   const isChoiceLike = type === 'choice' || type === 'quiz';
@@ -44,7 +45,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
       return;
     }
     setLocalError(null);
-    const success = await onSubmit({ type, title, options: cleanOptions, correctAnswer });
+    const success = await onSubmit({ type, title, options: cleanOptions, correctAnswer, points });
     if (success) {
       setTitle('');
       setOptions(['', '']);
@@ -185,9 +186,27 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
                 })}
             </div>
             {type === 'quiz' && (
-              <p className="text-xs text-slate-400">
-                기본 {QUIZ_DEFAULTS.points}점 + 속도 보너스 · 참여 티켓 {QUIZ_DEFAULTS.participationTickets}장 · 정답 보너스 {QUIZ_DEFAULTS.correctBonusTickets}장
-              </p>
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">점수 설정</p>
+                <div className="flex gap-2">
+                  {[50, 100, 200, 500].map((v) => (
+                    <button
+                      key={v}
+                      onClick={() => setPoints(v)}
+                      className={`flex-1 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                        points === v
+                          ? 'bg-slate-900 text-white'
+                          : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
+                      }`}
+                    >
+                      {v}점
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-slate-400">
+                  정답 {points}점 + 속도 보너스 최대 {QUIZ_DEFAULTS.maxSpeedBonus}점
+                </p>
+              </div>
             )}
           </motion.div>
         )}
