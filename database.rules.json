@@ -3,7 +3,109 @@
     "sessions": {
       "$sessionId": {
         ".read": true,
-        ".write": true
+
+        "status": {
+          ".write": true,
+          ".validate": "newData.isString() && newData.val().length <= 20"
+        },
+        "currentQuestion": {
+          ".write": true,
+          ".validate": "newData.isString() || !newData.exists()"
+        },
+        "currentMode": {
+          ".write": true,
+          ".validate": "newData.isString() && newData.val().length <= 20"
+        },
+        "pendingEvent": {
+          ".write": true
+        },
+        "createdAt": {
+          ".write": true
+        },
+
+        "questions": {
+          ".write": true,
+          "$questionId": {
+            ".validate": "newData.hasChild('title') && newData.hasChild('type')",
+            "title": {
+              ".validate": "newData.isString() && newData.val().length <= 500"
+            },
+            "type": {
+              ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna)$/)"
+            },
+            "votes": {
+              "$participantId": {
+                ".validate": "newData.hasChild('value')",
+                "value": {
+                  ".validate": "newData.isString() && newData.val().length <= 200"
+                },
+                "nickname": {
+                  ".validate": "newData.isString() && newData.val().length <= 10"
+                }
+              }
+            }
+          }
+        },
+
+        "participants": {
+          ".write": true,
+          "$participantId": {
+            ".validate": "newData.hasChild('nickname')",
+            "nickname": {
+              ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 10"
+            }
+          }
+        },
+
+        "reactions": {
+          ".write": true,
+          "$reactionId": {
+            ".validate": "newData.hasChild('type') && newData.hasChild('timestamp')",
+            "type": {
+              ".validate": "newData.isString() && newData.val().length <= 20"
+            },
+            "timestamp": {
+              ".validate": "newData.isNumber()"
+            }
+          }
+        },
+
+        "urgentQuestions": {
+          ".write": true,
+          "$questionId": {
+            ".validate": "newData.hasChild('text') && newData.hasChild('timestamp')",
+            "text": {
+              ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 200"
+            },
+            "timestamp": {
+              ".validate": "newData.isNumber()"
+            }
+          }
+        },
+
+        "handRaises": {
+          ".write": true
+        },
+
+        "scores": {
+          ".write": true,
+          "$participantId": {
+            ".validate": "newData.hasChild('nickname') && newData.hasChild('total')",
+            "nickname": {
+              ".validate": "newData.isString() && newData.val().length <= 10"
+            },
+            "total": {
+              ".validate": "newData.isNumber()"
+            },
+            "tickets": {
+              ".validate": "newData.isNumber()"
+            }
+          }
+        },
+
+        "$other": {
+          ".write": true
+        }
       }
     }
   }
