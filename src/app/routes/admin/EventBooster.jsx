@@ -1,6 +1,11 @@
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
 import { QUIZ_EVENT_PRESETS } from '@/lib/quiz';
 
 export default function EventBooster({ nextQuizEvent, onArmEvent, onClearEvent }) {
+  const [open, setOpen] = useState(false);
+
   function handleToggle(eventPreset) {
     if (nextQuizEvent?.id === eventPreset.id) {
       onClearEvent();
@@ -9,33 +14,62 @@ export default function EventBooster({ nextQuizEvent, onArmEvent, onClearEvent }
     }
   }
 
-  return (
-    <div className="rounded-xl border border-slate-200 bg-white p-3 space-y-2">
-      <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">이벤트 부스터</p>
+  const hasActive = Boolean(nextQuizEvent);
 
-      <div className="space-y-1.5">
-        {QUIZ_EVENT_PRESETS.map((preset) => {
-          const isSelected = nextQuizEvent?.id === preset.id;
-          return (
-            <button
-              key={preset.id}
-              onClick={() => handleToggle(preset)}
-              className={`w-full rounded-lg border px-3 py-2.5 text-left transition-all ${
-                isSelected
-                  ? 'border-indigo-200 bg-indigo-50/60'
-                  : 'border-slate-200 bg-white hover:bg-slate-50'
-              }`}
-            >
-              <p className={`text-sm font-semibold ${isSelected ? 'text-indigo-700' : 'text-slate-900'}`}>
-                {preset.label}
-              </p>
-              <p className={`text-xs leading-relaxed ${isSelected ? 'text-indigo-500' : 'text-slate-400'}`}>
-                {preset.description}
-              </p>
-            </button>
-          );
-        })}
-      </div>
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-3 py-2.5 text-left hover:bg-slate-50 transition-colors"
+      >
+        <div className="flex items-center gap-2">
+          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">이벤트 부스터</p>
+          {hasActive && (
+            <span className="text-xs font-medium text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">
+              {nextQuizEvent.label}
+            </span>
+          )}
+        </div>
+        <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
+          <ChevronDown size={14} className="text-slate-400" />
+        </motion.div>
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0 }}
+            animate={{ height: 'auto' }}
+            exit={{ height: 0 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            <div className="px-3 pb-3 space-y-1.5">
+              {QUIZ_EVENT_PRESETS.map((preset) => {
+                const isSelected = nextQuizEvent?.id === preset.id;
+                return (
+                  <button
+                    key={preset.id}
+                    onClick={() => handleToggle(preset)}
+                    className={`w-full rounded-lg border px-3 py-2.5 text-left transition-all ${
+                      isSelected
+                        ? 'border-indigo-200 bg-indigo-50/60'
+                        : 'border-slate-200 bg-white hover:bg-slate-50'
+                    }`}
+                  >
+                    <p className={`text-sm font-semibold ${isSelected ? 'text-indigo-700' : 'text-slate-900'}`}>
+                      {preset.label}
+                    </p>
+                    <p className={`text-xs leading-relaxed ${isSelected ? 'text-indigo-500' : 'text-slate-400'}`}>
+                      {preset.description}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -366,7 +366,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="min-h-dvh bg-slate-50 flex flex-col">
+    <div className="h-dvh bg-slate-50 flex flex-col overflow-hidden">
       <JoinToast sessionId={sessionId} />
       <ReactionOverlay sessionId={sessionId} />
 
@@ -375,10 +375,10 @@ export default function AdminPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={handleBack}
-            className="text-slate-400 hover:text-slate-600 transition-colors"
+            className="p-2 -ml-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all"
             aria-label="클래스 목록으로"
           >
-            <ArrowLeft size={20} />
+            <ArrowLeft size={22} />
           </button>
           <div>
             <div className="flex items-center gap-2">
@@ -444,12 +444,11 @@ export default function AdminPage() {
 
         {/* Left sidebar */}
         <motion.div
-          animate={{ width: sidebarCollapsed ? 0 : '28%' }}
-          transition={{ duration: 0.25, ease: 'easeInOut' }}
-          className="border-r border-slate-200 bg-white overflow-hidden shrink-0 min-w-0 max-w-[460px]"
-          style={sidebarCollapsed ? { width: 0 } : { minWidth: 280 }}
+          animate={{ width: sidebarCollapsed ? 0 : '28%', minWidth: sidebarCollapsed ? 0 : 280 }}
+          transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+          className="border-r border-slate-200 bg-white overflow-hidden shrink-0 min-w-0 max-w-[460px] h-full"
         >
-          <div className="min-w-[280px] p-5 overflow-y-auto h-full flex flex-col">
+          <div className="min-w-[280px] p-5 overflow-y-auto h-full flex flex-col scrollbar-hide">
             <QuestionManager
               onCollapse={effectiveReadOnly ? undefined : () => setSidebarCollapsed(true)}
               sessionId={sessionId}
@@ -525,7 +524,7 @@ export default function AdminPage() {
         </motion.div>
 
         {/* Center */}
-        <div className="flex-1 min-w-0 p-8 overflow-auto relative">
+        <div className="flex-1 min-w-0 p-8 overflow-hidden relative h-full">
           <AnimatePresence mode="wait">
             {showCenterForm ? (
               <motion.div
@@ -564,7 +563,7 @@ export default function AdminPage() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15 }}
-                className="w-full h-full flex items-center"
+                className="w-full h-full"
               >
                 {effectiveReadOnly && !session?.currentQuestion ? (
                   <ClassSummary
@@ -590,12 +589,11 @@ export default function AdminPage() {
 
         {/* Right sidebar */}
         <motion.div
-          animate={{ width: sidebarCollapsed ? 0 : '28%' }}
-          transition={{ duration: 0.25, ease: 'easeInOut' }}
-          className="border-l border-slate-200 bg-white overflow-hidden shrink-0 min-w-0 max-w-[460px]"
-          style={sidebarCollapsed ? { width: 0 } : { minWidth: 280 }}
+          animate={{ width: sidebarCollapsed ? 0 : '28%', minWidth: sidebarCollapsed ? 0 : 280 }}
+          transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+          className="border-l border-slate-200 bg-white overflow-hidden shrink-0 min-w-0 max-w-[460px] h-full"
         >
-        <div className="min-w-[280px] p-5 space-y-5 overflow-y-auto h-full">
+        <div className="min-w-[280px] p-5 space-y-5 overflow-y-auto h-full scrollbar-hide">
           {effectiveReadOnly ? (
             <>
               <div className="flex items-center gap-2">
