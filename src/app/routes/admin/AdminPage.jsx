@@ -102,6 +102,10 @@ export default function AdminPage() {
   const { pendingAdmins, pendingCount, approveAdmin, rejectAdmin } = useAdminApprovals();
 
   const isSetting = session?.status === 'setting';
+  const isEnded = session?.status === 'ended';
+
+  // Derive readOnly from session status (ended sessions are always read-only)
+  const effectiveReadOnly = readOnly || isEnded;
 
   // Feature 4: Collapsible sidebar
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -145,7 +149,7 @@ export default function AdminPage() {
   }
 
   async function switchMode(mode) {
-    if (readOnly) return;
+    if (effectiveReadOnly) return;
     try {
       await update(ref(db, `sessions/${sessionId}`), mode === 'leaderboard'
         ? { currentMode: mode }
@@ -318,7 +322,7 @@ export default function AdminPage() {
           <Radio size={18} className="text-indigo-600" />
           <span className="font-bold text-slate-900">Pinggo</span>
           <span className="text-xs text-slate-400 font-mono">{sessionId}</span>
-          {readOnly && <Badge variant="neutral">클래스 확인</Badge>}
+          {effectiveReadOnly && <Badge variant="neutral">클래스 확인</Badge>}
           {isSetting && <Badge variant="warning" className="py-1 px-2.5 text-xs font-semibold text-amber-600 bg-amber-50 border-amber-200">세팅중</Badge>}
         </div>
         <div className="flex items-center gap-3">
@@ -329,13 +333,13 @@ export default function AdminPage() {
           </Badge>
           {totalTickets > 0 && <Badge variant="neutral" className="py-2 px-3.5 text-sm">{totalTickets}장 티켓</Badge>}
           {session?.pendingEvent?.label && <Badge variant="primary" className="py-2 px-3.5 text-sm">{session.pendingEvent.label}</Badge>}
-          {!readOnly && isSetting && (
+          {!effectiveReadOnly && isSetting && (
             <Button onClick={handleStartSession} variant="primary" size="sm">
               <Play size={18} />
               시작하기
             </Button>
           )}
-          {!readOnly && !isSetting && (
+          {!effectiveReadOnly && !isSetting && (
             <>
               <Button onClick={() => setPresentMode(true)} variant="primary" size="sm">
                 <Monitor size={18} />
@@ -377,18 +381,18 @@ export default function AdminPage() {
         >
           <div className="w-[460px] p-5 overflow-y-auto h-full flex flex-col">
             <QuestionManager
-              onCollapse={() => setSidebarCollapsed(true)}
+              onCollapse={effectiveReadOnly ? undefined : () => setSidebarCollapsed(true)}
               sessionId={sessionId}
               questions={session?.questions || {}}
               currentQuestion={session?.currentQuestion}
               scores={scores}
               participants={participants}
               pendingEvent={session?.pendingEvent || null}
-              readOnly={readOnly}
-              onAddClick={readOnly ? undefined : () => setShowCenterForm(true)}
+              readOnly={effectiveReadOnly}
+              onAddClick={effectiveReadOnly ? undefined : () => setShowCenterForm(true)}
             />
 
-            {!readOnly && (
+            {!effectiveReadOnly && (
               <>
                 <div className="mt-5 rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
                   <TimerControls isRunning={timerRunning} onStart={startTimer} onStop={stopTimer} />
@@ -502,54 +506,100 @@ export default function AdminPage() {
           className="border-l border-slate-200 bg-white overflow-hidden shrink-0"
         >
         <div className="w-[460px] p-5 space-y-5 overflow-y-auto h-full">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-slate-900 font-bold text-lg">{count}</span>
-            <span className="text-slate-400 text-sm">명 접속 중</span>
-          </div>
-
-          {(() => {
-            const activeQId = session?.currentQuestion;
-            const activeQ = activeQId ? session?.questions?.[activeQId] : null;
-            const voted = activeQ?.votes ? Object.keys(activeQ.votes).length : 0;
-            const total = count || 0;
-            const pct = total > 0 ? Math.round((voted / total) * 100) : 0;
-            if (!activeQ) return null;
-            return (
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 text-xs font-medium">참여율</span>
-                  <span className="text-slate-600 text-xs font-semibold">{voted}/{total}명 투표</span>
-                </div>
-                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-indigo-500 rounded-full transition-all duration-500"
-                    style={{ width: `${pct}%` }}
-                  />
-                </div>
+          {effectiveReadOnly ? (
+            <>
+              <div className="flex items-center gap-2">
+                <Users size={16} className="text-slate-400" />
+                <span className="text-slate-900 font-bold text-lg">{Object.keys(participants).length}</span>
+                <span className="text-slate-400 text-sm">명 참여</span>
               </div>
-            );
-          })()}
 
-          <HandRaiseList sessionId={sessionId} />
-          <UrgentQuestionList sessionId={sessionId} />
-          {leaderboard.length > 0 && (
-            <div className="border-t border-slate-100 pt-5">
-              <Leaderboard entries={leaderboard} maxShow={5} title="상위 랭킹" />
-            </div>
+              {(() => {
+                const allParticipants = Object.keys(participants).length;
+                const questions = session?.questions || {};
+                const voterIds = new Set();
+                Object.values(questions).forEach((q) => {
+                  if (q.votes) {
+                    Object.keys(q.votes).forEach((pid) => voterIds.add(pid));
+                  }
+                });
+                const activeCount = voterIds.size;
+                const pct = allParticipants > 0 ? Math.round((activeCount / allParticipants) * 100) : 0;
+                return (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500 text-xs font-medium">참여율</span>
+                      <span className="text-slate-600 text-xs font-semibold">{activeCount}/{allParticipants}명 활동</span>
+                    </div>
+                    <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-slate-500 rounded-full transition-all duration-500"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {leaderboard.length > 0 && (
+                <div className="border-t border-slate-100 pt-5">
+                  <Leaderboard entries={leaderboard} maxShow={5} title="상위 랭킹" />
+                </div>
+              )}
+              <ParticipantList participants={Object.entries(participants).map(([id, data]) => ({ id, ...data }))} />
+            </>
+          ) : (
+            <>
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-slate-900 font-bold text-lg">{count}</span>
+                <span className="text-slate-400 text-sm">명 접속 중</span>
+              </div>
+
+              {(() => {
+                const activeQId = session?.currentQuestion;
+                const activeQ = activeQId ? session?.questions?.[activeQId] : null;
+                const voted = activeQ?.votes ? Object.keys(activeQ.votes).length : 0;
+                const total = count || 0;
+                const pct = total > 0 ? Math.round((voted / total) * 100) : 0;
+                if (!activeQ) return null;
+                return (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500 text-xs font-medium">참여율</span>
+                      <span className="text-slate-600 text-xs font-semibold">{voted}/{total}명 투표</span>
+                    </div>
+                    <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-indigo-500 rounded-full transition-all duration-500"
+                        style={{ width: `${pct}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })()}
+
+              <HandRaiseList sessionId={sessionId} />
+              <UrgentQuestionList sessionId={sessionId} />
+              {leaderboard.length > 0 && (
+                <div className="border-t border-slate-100 pt-5">
+                  <Leaderboard entries={leaderboard} maxShow={5} title="상위 랭킹" />
+                </div>
+              )}
+              <ParticipantList participants={onlineList} />
+
+              <div className="border-t border-slate-100 pt-5">
+                <div className="flex justify-center">
+                  <QRCode url={studentUrl} size={180} />
+                </div>
+                <Button onClick={copyStudentLink} variant="secondary" size="sm" className="w-full mt-4">
+                  {copied ? <Check size={16} /> : <Copy size={16} />}
+                  {copied ? '링크 복사됨' : '초대 링크 복사'}
+                </Button>
+                <p className="text-slate-400 text-xs mt-3 text-center break-all leading-relaxed">{studentUrl}</p>
+              </div>
+            </>
           )}
-          <ParticipantList participants={onlineList} />
-
-          <div className="border-t border-slate-100 pt-5">
-            <div className="flex justify-center">
-              <QRCode url={studentUrl} size={180} />
-            </div>
-            <Button onClick={copyStudentLink} variant="secondary" size="sm" className="w-full mt-4">
-              {copied ? <Check size={16} /> : <Copy size={16} />}
-              {copied ? '링크 복사됨' : '초대 링크 복사'}
-            </Button>
-            <p className="text-slate-400 text-xs mt-3 text-center break-all leading-relaxed">{studentUrl}</p>
-          </div>
         </div>
         </motion.div>
       </div>

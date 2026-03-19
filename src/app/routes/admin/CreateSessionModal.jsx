@@ -1,11 +1,11 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ref, set, serverTimestamp } from 'firebase/database';
+import { ref, set, get, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
-import { generateSessionId } from '@/lib/utils';
+import { generateSessionId, generateQuestionId } from '@/lib/utils';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
-import { Plus, BookOpen, ChevronRight, Loader2, AlertCircle } from 'lucide-react';
+import { Plus, BookOpen, ChevronRight, Loader2, AlertCircle, Copy } from 'lucide-react';
 
 export default function CreateSessionModal({ open, onClose, onCreated, sessions }) {
   const [step, setStep] = useState('course'); // 'course' | 'new-course' | 'confirm'
@@ -14,6 +14,10 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
   const [roundNumber, setRoundNumber] = useState(1);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState(null);
+
+  // Duplication state
+  const [duplicateEnabled, setDuplicateEnabled] = useState(false);
+  const [duplicateSourceId, setDuplicateSourceId] = useState('');
 
   const courses = useMemo(() => {
     const courseMap = {};
@@ -30,9 +34,19 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
     return Object.values(courseMap).sort((a, b) => b.count - a.count);
   }, [sessions]);
 
+  // Previous rounds for the selected course
+  const previousRounds = useMemo(() => {
+    if (!selectedCourse) return [];
+    return sessions
+      .filter((s) => s.courseName === selectedCourse && s.questionCount > 0)
+      .sort((a, b) => (b.roundNumber || 0) - (a.roundNumber || 0));
+  }, [sessions, selectedCourse]);
+
   function handleSelectCourse(course) {
     setSelectedCourse(course.name);
     setRoundNumber(course.maxRound + 1);
+    setDuplicateEnabled(false);
+    setDuplicateSourceId('');
     setStep('confirm');
   }
 
@@ -45,6 +59,8 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
     if (!newCourseName.trim()) return;
     setSelectedCourse(newCourseName.trim());
     setRoundNumber(1);
+    setDuplicateEnabled(false);
+    setDuplicateSourceId('');
     setStep('confirm');
   }
 
@@ -54,6 +70,8 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
     setNewCourseName('');
     setRoundNumber(1);
     setError(null);
+    setDuplicateEnabled(false);
+    setDuplicateSourceId('');
   }
 
   async function handleCreate() {
@@ -61,14 +79,43 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
       setError(null);
       setCreating(true);
       const newId = generateSessionId();
-      await set(ref(db, `sessions/${newId}`), {
+
+      const sessionData = {
         status: 'setting',
         currentQuestion: null,
         currentMode: 'waiting',
         createdAt: serverTimestamp(),
         courseName: selectedCourse,
         roundNumber,
-      });
+      };
+
+      // If duplicating, fetch source questions and copy them
+      if (duplicateEnabled && duplicateSourceId) {
+        const sourceSnap = await get(ref(db, `sessions/${duplicateSourceId}/questions`));
+        const sourceQuestions = sourceSnap.val();
+
+        if (sourceQuestions) {
+          const newQuestions = {};
+          Object.values(sourceQuestions)
+            .sort((a, b) => (a.order || 0) - (b.order || 0))
+            .forEach((q, i) => {
+              const newQId = generateQuestionId();
+              // Copy question data, strip runtime/vote data
+              const {
+                votes: _votes,
+                activatedAt: _activatedAt,
+                revealedAt: _revealedAt,
+                awardedAt: _awardedAt,
+                event: _event,
+                ...rest
+              } = q;
+              newQuestions[newQId] = { ...rest, order: i + 1 };
+            });
+          sessionData.questions = newQuestions;
+        }
+      }
+
+      await set(ref(db, `sessions/${newId}`), sessionData);
       onCreated(newId);
       handleReset();
       onClose();
@@ -215,6 +262,70 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
                 </div>
               </div>
             </div>
+
+            {/* Duplicate from previous round */}
+            {previousRounds.length > 0 && (
+              <div className="space-y-3">
+                <button
+                  onClick={() => {
+                    const next = !duplicateEnabled;
+                    setDuplicateEnabled(next);
+                    if (next && previousRounds.length > 0) {
+                      setDuplicateSourceId(previousRounds[0].id);
+                    } else {
+                      setDuplicateSourceId('');
+                    }
+                  }}
+                  className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left ${
+                    duplicateEnabled
+                      ? 'border-slate-300 bg-slate-50'
+                      : 'border-slate-100 hover:border-slate-200'
+                  }`}
+                >
+                  <Copy size={16} className={duplicateEnabled ? 'text-slate-700' : 'text-slate-400'} />
+                  <div className="flex-1">
+                    <p className={`text-sm font-medium ${duplicateEnabled ? 'text-slate-900' : 'text-slate-500'}`}>
+                      이전 차수 복제
+                    </p>
+                    <p className="text-xs text-slate-400">질문 목록을 복사하여 새 클래스에 추가합니다</p>
+                  </div>
+                  <div className={`w-9 h-5 rounded-full transition-colors relative ${duplicateEnabled ? 'bg-slate-900' : 'bg-slate-200'}`}>
+                    <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-all ${duplicateEnabled ? 'left-4' : 'left-0.5'}`} />
+                  </div>
+                </button>
+
+                <AnimatePresence>
+                  {duplicateEnabled && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="space-y-1.5">
+                        {previousRounds.map((s) => (
+                          <button
+                            key={s.id}
+                            onClick={() => setDuplicateSourceId(s.id)}
+                            className={`w-full flex items-center justify-between p-2.5 rounded-lg border text-left transition-all text-sm ${
+                              duplicateSourceId === s.id
+                                ? 'border-slate-300 bg-white shadow-sm'
+                                : 'border-slate-100 hover:border-slate-200'
+                            }`}
+                          >
+                            <span className={`font-medium ${duplicateSourceId === s.id ? 'text-slate-900' : 'text-slate-500'}`}>
+                              {s.roundNumber ? `${s.roundNumber}차` : s.id}
+                            </span>
+                            <span className="text-xs text-slate-400">{s.questionCount}개 질문</span>
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
 
             <AnimatePresence>
               {error && (

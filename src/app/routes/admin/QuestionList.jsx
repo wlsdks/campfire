@@ -34,6 +34,7 @@ export default function QuestionList({
   onClearActive,
   onDuplicate,
   onDelete,
+  readOnly = false,
 }) {
   return (
     <div className="space-y-1.5">
@@ -48,82 +49,91 @@ export default function QuestionList({
             key={qId}
             layout
             className={`p-3 rounded-xl border transition-all ${
-              isActive ? 'bg-white border-slate-300 shadow-sm' : 'bg-white border-slate-200 hover:border-slate-300'
+              readOnly
+                ? 'bg-white border-slate-200'
+                : isActive ? 'bg-white border-slate-300 shadow-sm' : 'bg-white border-slate-200 hover:border-slate-300'
             }`}
           >
             <div className="flex items-start justify-between gap-2">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 mb-0.5">
-                  <Icon size={12} className={isActive ? 'text-indigo-500' : 'text-slate-400'} />
-                  <span className={`text-xs font-medium ${isActive ? 'text-indigo-600' : 'text-slate-400'}`}>
+                  <Icon size={12} className={!readOnly && isActive ? 'text-indigo-500' : 'text-slate-400'} />
+                  <span className={`text-xs font-medium ${!readOnly && isActive ? 'text-indigo-600' : 'text-slate-400'}`}>
                     {qType?.label}
                   </span>
-                  {isActive && <Badge variant="primary">LIVE</Badge>}
+                  {!readOnly && isActive && <Badge variant="primary">LIVE</Badge>}
                   {isQuiz && q.event && <Badge variant="neutral">{q.event.label || '이벤트'}</Badge>}
                   {isQuiz && q.revealedAt && <Badge variant="neutral">정답 공개</Badge>}
                 </div>
                 <span className="text-slate-700 text-sm leading-snug">{q.title}</span>
+                {readOnly && q.votes && (
+                  <span className="text-slate-400 text-xs ml-1">
+                    ({Object.keys(q.votes).length}명 응답)
+                  </span>
+                )}
               </div>
 
-              <div className="flex gap-1 shrink-0">
-                {!isActive ? (
-                  <button
-                    onClick={() => onActivate(qId)}
-                    className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all"
-                    title="활성화"
-                    aria-label="질문 활성화"
-                  >
-                    <Play size={12} />
-                  </button>
-                ) : (
-                  <>
-                    {isQuiz && !q.revealedAt && (
-                      <button
-                        onClick={() => onReveal(qId)}
-                        className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all"
-                        title="정답 공개"
-                        aria-label="정답 공개"
-                      >
-                        <Check size={12} />
-                      </button>
-                    )}
-                    {isQuiz && q.revealedAt && (
-                      <button
-                        onClick={onShowLeaderboard}
-                        className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all"
-                        title="리더보드 보기"
-                        aria-label="리더보드 보기"
-                      >
-                        <Trophy size={12} />
-                      </button>
-                    )}
+              {!readOnly && (
+                <div className="flex gap-1 shrink-0">
+                  {!isActive ? (
                     <button
-                      onClick={onClearActive}
-                      className="p-1.5 rounded-md bg-slate-200 text-slate-500 hover:bg-slate-300 transition-all"
-                      title="중지"
-                      aria-label="질문 중지"
+                      onClick={() => onActivate(qId)}
+                      className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all"
+                      title="활성화"
+                      aria-label="질문 활성화"
                     >
-                      <Square size={12} />
+                      <Play size={12} />
                     </button>
-                  </>
-                )}
-                <button
-                  onClick={() => onDuplicate(qId)}
-                  className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-600 transition-all"
-                  title="복제"
-                  aria-label="질문 복제"
-                >
-                  <Copy size={12} />
-                </button>
-                <button
-                  onClick={() => onDelete(qId)}
-                  className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-700 transition-all"
-                  title="삭제"
-                  aria-label="질문 삭제"
-                >
-                  <Trash2 size={12} />
-                </button>
-              </div>
+                  ) : (
+                    <>
+                      {isQuiz && !q.revealedAt && (
+                        <button
+                          onClick={() => onReveal(qId)}
+                          className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all"
+                          title="정답 공개"
+                          aria-label="정답 공개"
+                        >
+                          <Check size={12} />
+                        </button>
+                      )}
+                      {isQuiz && q.revealedAt && (
+                        <button
+                          onClick={onShowLeaderboard}
+                          className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all"
+                          title="리더보드 보기"
+                          aria-label="리더보드 보기"
+                        >
+                          <Trophy size={12} />
+                        </button>
+                      )}
+                      <button
+                        onClick={onClearActive}
+                        className="p-1.5 rounded-md bg-slate-200 text-slate-500 hover:bg-slate-300 transition-all"
+                        title="중지"
+                        aria-label="질문 중지"
+                      >
+                        <Square size={12} />
+                      </button>
+                    </>
+                  )}
+                  <button
+                    onClick={() => onDuplicate(qId)}
+                    className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-600 transition-all"
+                    title="복제"
+                    aria-label="질문 복제"
+                  >
+                    <Copy size={12} />
+                  </button>
+                  <button
+                    onClick={() => onDelete(qId)}
+                    className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-700 transition-all"
+                    title="삭제"
+                    aria-label="질문 삭제"
+                  >
+                    <Trash2 size={12} />
+                  </button>
+                </div>
+              )}
             </div>
           </motion.div>
         );

@@ -6,7 +6,7 @@ import AdminApproval from './AdminApproval';
 import StatsView from './StatsView';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import { Plus, Loader2, Users, MessageSquare, LogOut, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, Loader2, Users, MessageSquare, LogOut, ChevronDown, ChevronUp, Archive, MoreHorizontal } from 'lucide-react';
 
 function PinggoMascotSmall() {
   return (
@@ -196,7 +196,9 @@ function UngroupedSessions({ sessions, onSelect, startIndex }) {
 
 const TABS = [
   { key: 'classes', label: '내 클래스' },
-  { key: 'dashboard', label: '대시보드' },
+  { key: 'history', label: '수업 기록' },
+  { key: 'library', label: '질문 보관함' },
+  { key: 'more', label: '더보기' },
 ];
 
 export default function SessionDashboard({ onSelectSession, onLogout, adminUser, isMaster, pendingAdmins, pendingCount, approveAdmin, rejectAdmin }) {
@@ -235,7 +237,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
   }, [sessions]);
 
   function handleSelect(session) {
-    const readOnly = session.status !== 'active';
+    const readOnly = session.status === 'ended';
     onSelectSession(session.id, readOnly);
   }
 
@@ -279,9 +281,10 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
         </div>
       </div>
 
-      {/* Tab bar */}
-      <div className="bg-white border-b border-slate-100 px-6 py-2">
-        <div className="max-w-2xl mx-auto flex gap-1">
+      {/* Content */}
+      <div className="flex-1 max-w-2xl mx-auto w-full px-6 py-6 space-y-3">
+        {/* Tab bar */}
+        <div className="flex gap-1 mb-4">
           {TABS.map((tab) => (
             <button
               key={tab.key}
@@ -296,12 +299,8 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
             </button>
           ))}
         </div>
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 max-w-2xl mx-auto w-full px-6 py-6 space-y-3">
         <AnimatePresence mode="wait">
-          {activeTab === 'classes' ? (
+          {activeTab === 'classes' && (
             <motion.div
               key="classes"
               initial={{ opacity: 0 }}
@@ -357,9 +356,11 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
                 </div>
               )}
             </motion.div>
-          ) : (
+          )}
+
+          {activeTab === 'history' && (
             <motion.div
-              key="dashboard"
+              key="history"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -373,6 +374,36 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
               ) : (
                 <StatsView sessions={sessions} />
               )}
+            </motion.div>
+          )}
+
+          {activeTab === 'library' && (
+            <motion.div
+              key="library"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="flex flex-col items-center justify-center py-20 gap-3"
+            >
+              <Archive size={32} className="text-slate-300" />
+              <p className="text-slate-400 text-sm font-medium">준비 중입니다</p>
+              <p className="text-slate-300 text-xs">질문을 저장하고 재사용할 수 있는 보관함이 추가될 예정입니다</p>
+            </motion.div>
+          )}
+
+          {activeTab === 'more' && (
+            <motion.div
+              key="more"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="flex flex-col items-center justify-center py-20 gap-3"
+            >
+              <MoreHorizontal size={32} className="text-slate-300" />
+              <p className="text-slate-400 text-sm font-medium">준비 중입니다</p>
+              <p className="text-slate-300 text-xs">추가 기능이 곧 제공될 예정입니다</p>
             </motion.div>
           )}
         </AnimatePresence>

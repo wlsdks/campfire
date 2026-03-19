@@ -29,6 +29,7 @@ export default function QuestionManager({
   pendingEvent = null,
   onAddClick,
   onCollapse,
+  readOnly = false,
 }) {
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState(null);
@@ -217,25 +218,30 @@ export default function QuestionManager({
     }
   }
 
+  // Count completed questions for readOnly summary
+  const completedCount = questionList.filter(([, q]) => q.activatedAt || q.revealedAt).length;
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold text-slate-900">질문 목록</h2>
         <div className="flex items-center gap-1.5">
-          <Button
-            onClick={() => {
-              if (onAddClick) {
-                onAddClick();
-              } else {
-                setShowForm(!showForm);
-              }
-            }}
-            variant={showForm && !onAddClick ? 'ghost' : 'primary'}
-            size="sm"
-          >
-            {showForm && !onAddClick ? '취소' : <><Plus size={14} /> 추가</>}
-          </Button>
-          {onCollapse && (
+          {!readOnly && (
+            <Button
+              onClick={() => {
+                if (onAddClick) {
+                  onAddClick();
+                } else {
+                  setShowForm(!showForm);
+                }
+              }}
+              variant={showForm && !onAddClick ? 'ghost' : 'primary'}
+              size="sm"
+            >
+              {showForm && !onAddClick ? '취소' : <><Plus size={14} /> 추가</>}
+            </Button>
+          )}
+          {!readOnly && onCollapse && (
             <button
               onClick={onCollapse}
               className="p-2 rounded-lg text-slate-300 hover:text-slate-600 hover:bg-slate-100 transition-all"
@@ -248,7 +254,7 @@ export default function QuestionManager({
         </div>
       </div>
 
-      {questionList.length > 0 && (
+      {questionList.length > 0 && !readOnly && (
         <div className="rounded-xl border border-slate-200 bg-white p-3 space-y-3 shadow-sm">
           <div className="space-y-1">
             <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">빠른 진행</p>
@@ -293,21 +299,34 @@ export default function QuestionManager({
         </div>
       )}
 
-      <EventBooster
-        nextQuizEvent={nextQuizEvent}
-        onArmEvent={armEvent}
-        onClearEvent={clearPendingEvent}
-      />
+      {questionList.length > 0 && readOnly && (
+        <div className="rounded-xl border border-slate-200 bg-white p-3 space-y-1 shadow-sm">
+          <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">수업 요약</p>
+          <p className="text-slate-900 text-sm font-medium">
+            질문 {questionList.length}개 · {completedCount}개 진행 완료
+          </p>
+        </div>
+      )}
 
-      <AnimatePresence>
-        {showForm && !onAddClick && (
-          <QuestionForm
-            onSubmit={handleSubmit}
-            onCancel={() => setShowForm(false)}
-            error={error}
-          />
-        )}
-      </AnimatePresence>
+      {!readOnly && (
+        <EventBooster
+          nextQuizEvent={nextQuizEvent}
+          onArmEvent={armEvent}
+          onClearEvent={clearPendingEvent}
+        />
+      )}
+
+      {!readOnly && (
+        <AnimatePresence>
+          {showForm && !onAddClick && (
+            <QuestionForm
+              onSubmit={handleSubmit}
+              onCancel={() => setShowForm(false)}
+              error={error}
+            />
+          )}
+        </AnimatePresence>
+      )}
 
       <QuestionList
         questionList={questionList}
@@ -318,6 +337,7 @@ export default function QuestionManager({
         onClearActive={clearActive}
         onDuplicate={duplicateQuestion}
         onDelete={deleteQuestion}
+        readOnly={readOnly}
       />
 
       <AnimatePresence>
