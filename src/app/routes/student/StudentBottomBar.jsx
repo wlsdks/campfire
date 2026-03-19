@@ -1,21 +1,34 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { ref, set, push, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId, getNickname } from '@/lib/participant';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Hand, MessageCircle, Send, CheckCircle, AlertCircle } from 'lucide-react';
+import { Hand, MessageCircle, MessageSquare, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 import ReactionBar from '@/features/reactions/components/ReactionBar';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
+import ChatPanel from '@/features/chat/components/ChatPanel';
+import { timing } from '@/lib/design-tokens';
 
 export default function StudentBottomBar({ sessionId }) {
   const [showQuestionInput, setShowQuestionInput] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [hasUnread, setHasUnread] = useState(false);
   const [questionText, setQuestionText] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const { handRaises } = useHandRaises(sessionId);
+
+  const handleOpenChat = () => {
+    setShowChat(true);
+    setHasUnread(false);
+  };
+
+  const handleNewMessage = useCallback(() => {
+    setHasUnread(true);
+  }, []);
 
   const pid = getParticipantId();
   const isRaised = handRaises[pid]?.raised === true;
@@ -47,7 +60,7 @@ export default function StudentBottomBar({ sessionId }) {
       setQuestionText('');
       setShowQuestionInput(false);
       setSubmitted(true);
-      setTimeout(() => setSubmitted(false), 2000);
+      setTimeout(() => setSubmitted(false), timing.successToastDuration);
     } catch (err) {
       console.error('Submit question failed:', err);
       setSubmitError('전송에 실패했습니다. 다시 시도해주세요.');
@@ -58,6 +71,14 @@ export default function StudentBottomBar({ sessionId }) {
   return (
     <>
       <ReactionOverlay sessionId={sessionId} />
+
+      {/* Chat panel */}
+      <ChatPanel
+        sessionId={sessionId}
+        open={showChat}
+        onClose={() => setShowChat(false)}
+        onNewMessage={handleNewMessage}
+      />
 
       {/* Question modal */}
       <Modal open={showQuestionInput} onClose={() => setShowQuestionInput(false)}>
@@ -116,7 +137,11 @@ export default function StudentBottomBar({ sessionId }) {
       </AnimatePresence>
 
       {/* Bottom bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-2.5 z-30 space-y-2">
+      <motion.div
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-2.5 z-30 space-y-2">
         <ReactionBar sessionId={sessionId} />
         <div className="flex gap-2.5">
         <motion.button
@@ -139,8 +164,19 @@ export default function StudentBottomBar({ sessionId }) {
           <MessageCircle size={18} />
           긴급 질문
         </motion.button>
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          onClick={handleOpenChat}
+          className="flex-1 py-3 rounded-lg bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 transition-all flex items-center justify-center gap-2 border border-transparent relative"
+        >
+          <MessageSquare size={18} />
+          채팅
+          {hasUnread && (
+            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-indigo-600" />
+          )}
+        </motion.button>
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }
