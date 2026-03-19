@@ -165,6 +165,20 @@ export default function AdminPage() {
   const isSetting = session?.status === 'setting';
   const isEnded = session?.status === 'ended';
 
+  // Count votes per participant across all questions
+  const voteCounts = useMemo(() => {
+    const questions = session?.questions;
+    if (!questions) return {};
+    const counts = {};
+    for (const q of Object.values(questions)) {
+      if (!q.votes) continue;
+      for (const pid of Object.keys(q.votes)) {
+        counts[pid] = (counts[pid] || 0) + 1;
+      }
+    }
+    return counts;
+  }, [session?.questions]);
+
   // Derive readOnly from session status (ended sessions are always read-only)
   const effectiveReadOnly = readOnly || isEnded;
 
@@ -634,7 +648,7 @@ export default function AdminPage() {
                   <Leaderboard entries={leaderboard} maxShow={5} title="상위 랭킹" />
                 </div>
               )}
-              <ParticipantList participants={Object.entries(participants).map(([id, data]) => ({ id, ...data }))} />
+              <ParticipantList participants={Object.entries(participants).map(([id, data]) => ({ id, ...data }))} voteCounts={voteCounts} />
             </>
           ) : (
             <>
@@ -674,7 +688,7 @@ export default function AdminPage() {
                   <Leaderboard entries={leaderboard} maxShow={5} title="상위 랭킹" />
                 </div>
               )}
-              <ParticipantList participants={onlineList} />
+              <ParticipantList participants={onlineList} voteCounts={voteCounts} />
 
               <div className="border-t border-slate-100 pt-5">
                 <div className="flex justify-center">

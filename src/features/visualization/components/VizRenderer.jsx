@@ -55,7 +55,7 @@ export default function VizRenderer({ sessionId, session }) {
       )}
 
       {isQuizQuestion(question) && question.event && (
-        <div className="w-full max-w-4xl self-center">
+        <div className="w-full max-w-xl self-center px-8">
           <QuizEventBanner event={question.event} state={answerRevealed ? 'result' : 'active'} />
         </div>
       )}
