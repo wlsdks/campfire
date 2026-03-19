@@ -207,7 +207,7 @@ export default function AdminPage() {
       <ReactionOverlay sessionId={sessionId} />
 
       {/* Header bar */}
-      <div className="bg-white border-b border-slate-200 px-5 py-3 flex items-center justify-between shrink-0">
+      <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <Radio size={18} className="text-indigo-600" />
           <span className="font-bold text-slate-900">Pinggo</span>
@@ -231,7 +231,7 @@ export default function AdminPage() {
       {/* Main layout */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left sidebar */}
-        <div className="w-80 border-r border-slate-200 bg-white p-5 overflow-y-auto flex flex-col shrink-0">
+        <div className="w-96 border-r border-slate-200 bg-white p-5 overflow-y-auto flex flex-col shrink-0">
           <QuestionManager
             sessionId={sessionId}
             questions={session?.questions || {}}
@@ -302,7 +302,7 @@ export default function AdminPage() {
         </div>
 
         {/* Right sidebar */}
-        <div className="w-72 border-l border-slate-200 bg-white p-5 space-y-5 overflow-y-auto shrink-0">
+        <div className="w-80 border-l border-slate-200 bg-white p-5 space-y-5 overflow-y-auto shrink-0">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="text-slate-900 font-bold text-lg">{count}</span>

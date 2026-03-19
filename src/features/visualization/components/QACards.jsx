@@ -52,7 +52,7 @@ export default function QACards({ sessionId, questionId, title }) {
 
   return (
     <>
-      <div className="w-full max-w-3xl mx-auto">
+      <div className="w-full max-w-4xl mx-auto">
         {/* Question header */}
         <div className="mb-6">
           {title && <h2 className="text-2xl font-bold text-slate-900 mb-1">{title}</h2>}
