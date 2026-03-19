@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Sparkles, AlertCircle, LogIn } from 'lucide-react';
+import { Radio, AlertCircle, LogIn } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 
@@ -37,7 +37,7 @@ export default function AdminLogin({ onLogin }) {
               transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.1 }}
               className="w-14 h-14 rounded-2xl bg-indigo-100 flex items-center justify-center mx-auto"
             >
-              <Sparkles size={28} className="text-indigo-600" />
+              <Radio size={28} className="text-indigo-600" />
             </motion.div>
             <div>
               <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Pinggo</h1>
@@ -51,10 +51,10 @@ export default function AdminLogin({ onLogin }) {
               value={password}
               onChange={(e) => { setPassword(e.target.value); setError(false); }}
               placeholder="비밀번호를 입력하세요"
-              className={`w-full bg-white border rounded-lg px-4 py-3 text-base text-center placeholder:text-slate-400 focus:outline-none focus:ring-2 transition-all ${
+              className={`w-full bg-slate-50 border rounded-xl px-4 py-3.5 text-base text-center placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:bg-white transition-all ${
                 error
                   ? 'border-red-400 focus:ring-red-500/20 focus:border-red-500'
-                  : 'border-slate-200 focus:ring-indigo-500/20 focus:border-indigo-500'
+                  : 'border-slate-200 focus:ring-indigo-500/20 focus:border-indigo-400'
               }`}
               autoFocus
             />

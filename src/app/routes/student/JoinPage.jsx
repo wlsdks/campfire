@@ -3,7 +3,7 @@ import { ref, set, serverTimestamp, onDisconnect } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId, getNickname, setNickname as saveNickname } from '@/lib/participant';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Loader2 } from 'lucide-react';
+import { Radio, Loader2 } from 'lucide-react';
 import Card from '@/components/ui/Card';
 import Badge from '@/components/ui/Badge';
 import Avatar from '@/components/ui/Avatar';
@@ -60,7 +60,7 @@ export default function JoinPage({ sessionId, onJoin }) {
               transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.1 }}
               className="w-14 h-14 rounded-2xl bg-indigo-100 flex items-center justify-center mx-auto"
             >
-              <Sparkles size={28} className="text-indigo-600" />
+              <Radio size={28} className="text-indigo-600" />
             </motion.div>
             <div>
               <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Pinggo</h1>
@@ -90,7 +90,7 @@ export default function JoinPage({ sessionId, onJoin }) {
               onChange={(e) => setNickname(e.target.value)}
               placeholder="닉네임 입력"
               maxLength={10}
-              className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-base text-center placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-center font-medium placeholder:text-slate-300 placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 focus:bg-white transition-all"
               autoFocus
             />
           </div>

@@ -1,23 +1,31 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ref, set, serverTimestamp } from 'firebase/database';
-import { Lock, Sparkles } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { getNickname, getParticipantId } from '@/lib/participant';
-import { getQuizReward } from '@/lib/quiz';
 import { useVotes } from '@/hooks/useVotes';
 import VoteConfirm from './VoteConfirm';
-import QuizResult from '@/features/quiz/components/QuizResult';
 
 const OPTION_STYLES = [
-  { bg: 'bg-indigo-50 hover:bg-indigo-100', text: 'text-indigo-700', badge: 'bg-indigo-600', letter: 'A' },
-  { bg: 'bg-emerald-50 hover:bg-emerald-100', text: 'text-emerald-700', badge: 'bg-emerald-600', letter: 'B' },
-  { bg: 'bg-amber-50 hover:bg-amber-100', text: 'text-amber-700', badge: 'bg-amber-600', letter: 'C' },
-  { bg: 'bg-violet-50 hover:bg-violet-100', text: 'text-violet-700', badge: 'bg-violet-600', letter: 'D' },
-  { bg: 'bg-pink-50 hover:bg-pink-100', text: 'text-pink-700', badge: 'bg-pink-600', letter: 'E' },
+  { bg: 'bg-white hover:bg-slate-50', text: 'text-slate-800', badge: 'bg-slate-800', letter: 'A' },
+  { bg: 'bg-white hover:bg-slate-50', text: 'text-slate-800', badge: 'bg-slate-700', letter: 'B' },
+  { bg: 'bg-white hover:bg-slate-50', text: 'text-slate-800', badge: 'bg-slate-600', letter: 'C' },
+  { bg: 'bg-white hover:bg-slate-50', text: 'text-slate-800', badge: 'bg-slate-500', letter: 'D' },
+  { bg: 'bg-white hover:bg-slate-50', text: 'text-slate-800', badge: 'bg-slate-500', letter: 'E' },
 ];
 
-export default function QuizVoter({ sessionId, questionId, question }) {
+/**
+ * Quiz voting component. Handles vote submission only.
+ * Quiz result display is handled by the parent route (VotePage).
+ *
+ * @param {Object} props
+ * @param {string} props.sessionId
+ * @param {string} props.questionId
+ * @param {Object} props.question
+ * @param {React.ReactNode} [props.renderResult] - Result UI rendered by the parent when quiz is revealed and user voted
+ */
+export default function QuizVoter({ sessionId, questionId, question, renderResult }) {
   const participantId = getParticipantId();
   const { votes } = useVotes(sessionId, questionId);
   const currentVote = votes[participantId] || null;
@@ -38,16 +46,7 @@ export default function QuizVoter({ sessionId, questionId, question }) {
   }
 
   if (question?.revealedAt && currentVote) {
-    const reward = getQuizReward(question, currentVote);
-    return (
-      <QuizResult
-        isCorrect={reward.isCorrect}
-        points={reward.points}
-        tickets={reward.tickets}
-        correctAnswer={question.correctAnswer}
-        event={question.event || null}
-      />
-    );
+    return renderResult || null;
   }
 
   if (currentVote) {
@@ -77,14 +76,11 @@ export default function QuizVoter({ sessionId, questionId, question }) {
 
   return (
     <div className="space-y-4 w-full">
-      <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-700 flex items-start gap-2">
-        <Sparkles size={16} className="mt-0.5 shrink-0" />
-        <span>
-          {question?.event
-            ? '이번 퀴즈는 이벤트 라운드입니다. 보너스 점수와 티켓이 함께 적용됩니다.'
-            : '정답자에게 점수와 이벤트 티켓이 지급됩니다. 빠르게 답할수록 점수가 더 높습니다.'}
-        </span>
-      </div>
+      <p className="text-xs text-slate-400 text-center">
+        {question?.event
+          ? '이벤트 라운드 — 보너스 점수와 티켓이 함께 적용됩니다'
+          : '빠르게 답할수록 더 높은 점수를 받을 수 있습니다'}
+      </p>
 
       <div className="space-y-2.5">
         {(question?.options || []).map((option, index) => {
@@ -100,7 +96,7 @@ export default function QuizVoter({ sessionId, questionId, question }) {
               onClick={() => handleVote(option)}
               disabled={selected !== null}
               className={`w-full py-3.5 px-4 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${
-                isSelected ? 'ring-2 ring-indigo-500 border-indigo-300' : 'border-transparent'
+                isSelected ? 'ring-2 ring-slate-400 border-slate-300 bg-slate-50' : 'border-slate-200'
               } ${selected !== null && !isSelected ? 'opacity-40 cursor-not-allowed' : ''} transition-all flex items-center gap-3`}
             >
               <span className={`w-8 h-8 rounded-lg ${style.badge} text-white flex items-center justify-center text-sm font-bold shrink-0`}>

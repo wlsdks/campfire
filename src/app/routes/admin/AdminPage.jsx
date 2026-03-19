@@ -17,7 +17,7 @@ import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
 import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import { Sparkles, Loader2, Monitor, Target, Ticket, Trophy, X, Users, Plus, AlertCircle, Copy, Check } from 'lucide-react';
+import { Radio, Loader2, Monitor, Target, Ticket, Trophy, X, Users, Plus, AlertCircle, Copy, Check } from 'lucide-react';
 import { useTimer } from '@/features/timer/api/useTimer';
 import TimerControls from '@/features/timer/components/TimerControls';
 import TimerRing from '@/features/timer/components/TimerRing';
@@ -26,12 +26,34 @@ import Leaderboard from '@/features/quiz/components/Leaderboard';
 
 const STORED_SESSION_KEY = 'pinggo_admin_session';
 
-function MainContent({ currentMode, sessionId, session, onlineList, leaderboard, drawParticipants }) {
+function PresentEmptyState({ sessionId, studentUrl, count }) {
+  return (
+    <div className="flex flex-col items-center justify-center gap-6">
+      <QRCode url={studentUrl} size={200} />
+      <p className="text-slate-500 text-base break-all max-w-md text-center">{studentUrl}</p>
+      <p className="text-slate-400 text-sm">학생들이 QR코드를 스캔하여 참여할 수 있습니다</p>
+      <div className="flex items-center gap-3">
+        <Badge variant="success"><Users size={14} className="mr-1" />{count}명 접속 중</Badge>
+        <Badge variant="neutral">{sessionId}</Badge>
+      </div>
+    </div>
+  );
+}
+
+function MainContent({ currentMode, sessionId, session, onlineList, leaderboard, drawParticipants, presentMode, studentUrl, count }) {
   if (currentMode === 'roulette') return <Roulette participants={onlineList} />;
   if (currentMode === 'lottery') return <Lottery participants={drawParticipants} />;
   if (currentMode === 'leaderboard') {
     return <Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" />;
   }
+
+  const currentQId = session?.currentQuestion;
+  const isActive = ['poll', 'quiz'].includes(currentMode) && currentQId;
+
+  if (presentMode && !isActive) {
+    return <PresentEmptyState sessionId={sessionId} studentUrl={studentUrl} count={count} />;
+  }
+
   return <VizRenderer sessionId={sessionId} session={session} />;
 }
 
@@ -55,9 +77,12 @@ export default function AdminPage() {
     return () => window.removeEventListener('keydown', handler);
   }, [presentMode, exitPresent]);
 
+  const [creating, setCreating] = useState(false);
+
   async function createSession() {
     try {
       setCreateError(null);
+      setCreating(true);
       const newId = generateSessionId();
       await set(ref(db, `sessions/${newId}`), {
         status: 'active', currentQuestion: null, currentMode: 'waiting', createdAt: serverTimestamp(),
@@ -66,6 +91,8 @@ export default function AdminPage() {
       setSessionId(newId);
     } catch {
       setCreateError('세션 생성에 실패했습니다. 다시 시도해주세요.');
+    } finally {
+      setCreating(false);
     }
   }
 
@@ -96,12 +123,12 @@ export default function AdminPage() {
       <div className="min-h-dvh bg-slate-50 flex items-center justify-center p-4">
         <div className="text-center space-y-5">
           <div className="w-16 h-16 rounded-2xl bg-indigo-100 flex items-center justify-center mx-auto">
-            <Sparkles size={32} className="text-indigo-600" />
+            <Radio size={32} className="text-indigo-600" />
           </div>
           <h1 className="text-2xl font-bold text-slate-900">Pinggo</h1>
-          <Button onClick={createSession} variant="primary" size="lg">
-            <Plus size={20} />
-            새 세션 만들기
+          <Button onClick={createSession} variant="primary" size="lg" disabled={creating}>
+            {creating ? <Loader2 size={20} className="animate-spin" /> : <Plus size={20} />}
+            {creating ? '생성 중...' : '새 세션 만들기'}
           </Button>
           {createError && (
             <p className="text-red-500 text-sm flex items-center justify-center gap-1.5">
@@ -153,11 +180,15 @@ export default function AdminPage() {
             onlineList={onlineList}
             leaderboard={leaderboard}
             drawParticipants={drawParticipants}
+            presentMode
+            studentUrl={studentUrl}
+            count={count}
           />
         </div>
         {/* QR bottom-right */}
-        <div className="fixed bottom-5 right-5 opacity-60">
-          <QRCode url={studentUrl} size={80} />
+        <div className="fixed bottom-5 right-5 opacity-90 flex items-center gap-3">
+          <span className="text-slate-600 text-sm font-medium bg-white/80 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm">{studentUrl}</span>
+          <QRCode url={studentUrl} size={120} />
         </div>
         {/* Session info bottom-left */}
         <div className="fixed bottom-5 left-5 flex items-center gap-2">
@@ -181,7 +212,7 @@ export default function AdminPage() {
       <div className="bg-white border-b border-slate-200 px-5 py-3 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center">
-            <Sparkles size={16} className="text-indigo-600" />
+            <Radio size={16} className="text-indigo-600" />
           </div>
           <span className="font-bold text-slate-900">Pinggo</span>
           <Badge variant="neutral">{sessionId}</Badge>
@@ -224,18 +255,30 @@ export default function AdminPage() {
               { mode: 'roulette', label: '돌림판', icon: Target },
               { mode: 'lottery', label: totalTickets > 0 ? '보상 추첨' : '제비뽑기', icon: Ticket },
               ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
-            ].map(({ mode, label, icon: Icon }) => (
-              <Button
-                key={mode}
-                onClick={() => switchMode(mode)}
-                variant={currentMode === mode ? 'primary' : 'secondary'}
-                size="sm"
-                className="w-full"
-                aria-label={`${label} 모드로 전환`}
-              >
-                <Icon size={16} /> {label}
-              </Button>
-            ))}
+            ].map(({ mode, label, icon: Icon }) => {
+              const isActive = currentMode === mode;
+              return isActive ? (
+                <button
+                  key={mode}
+                  onClick={() => switchMode(mode)}
+                  className="w-full inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium rounded-lg border-l-3 border-indigo-500 bg-indigo-50 text-indigo-700 transition-colors"
+                  aria-label={`${label} 모드로 전환`}
+                >
+                  <Icon size={16} /> {label}
+                </button>
+              ) : (
+                <Button
+                  key={mode}
+                  onClick={() => switchMode(mode)}
+                  variant="secondary"
+                  size="sm"
+                  className="w-full"
+                  aria-label={`${label} 모드로 전환`}
+                >
+                  <Icon size={16} /> {label}
+                </Button>
+              );
+            })}
             {isSpecialMode && (
               <Button
                 onClick={() => switchMode('waiting')}
@@ -269,6 +312,29 @@ export default function AdminPage() {
             <span className="text-slate-900 font-bold text-lg">{count}</span>
             <span className="text-slate-400 text-sm">명 접속 중</span>
           </div>
+
+          {(() => {
+            const activeQId = session?.currentQuestion;
+            const activeQ = activeQId ? session?.questions?.[activeQId] : null;
+            const voted = activeQ?.votes ? Object.keys(activeQ.votes).length : 0;
+            const total = count || 0;
+            const pct = total > 0 ? Math.round((voted / total) * 100) : 0;
+            if (!activeQ) return null;
+            return (
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-500 text-xs font-medium">참여율</span>
+                  <span className="text-slate-600 text-xs font-semibold">{voted}/{total}명 투표</span>
+                </div>
+                <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-indigo-500 rounded-full transition-all duration-500"
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
+              </div>
+            );
+          })()}
 
           <HandRaiseList sessionId={sessionId} />
           <UrgentQuestionList sessionId={sessionId} />

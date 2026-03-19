@@ -2,9 +2,9 @@ import BarChart from './BarChart';
 import OXBattle from './OXBattle';
 import WordCloud from './WordCloud';
 import QACards from './QACards';
-import { Sparkles } from 'lucide-react';
+import { BarChart3 } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
-import QuizEventBanner from '@/features/quiz/components/QuizEventBanner';
+import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import { isQuizQuestion } from '@/lib/quiz';
 
 const TYPE_LABELS = { choice: '객관식', ox: 'O/X', wordcloud: '워드클라우드', qna: 'Q&A', quiz: '퀴즈' };
@@ -17,7 +17,7 @@ export default function VizRenderer({ sessionId, session }) {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-3">
         <div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center">
-          <Sparkles size={24} className="text-slate-300" />
+          <BarChart3 size={24} className="text-slate-300" />
         </div>
         <p className="text-slate-300 text-lg font-medium">질문을 활성화하세요</p>
       </div>

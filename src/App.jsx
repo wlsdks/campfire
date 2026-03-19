@@ -1,7 +1,7 @@
 import { onDisconnect, ref, set, serverTimestamp } from 'firebase/database';
 import { BrowserRouter, Routes, Route, useSearchParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { Sparkles } from 'lucide-react';
+import { Radio } from 'lucide-react';
 import JoinPage from '@/app/routes/student/JoinPage';
 import VotePage from '@/app/routes/student/VotePage';
 import AdminPage from '@/app/routes/admin/AdminPage';
@@ -45,7 +45,7 @@ function StudentRouter() {
       <div className="min-h-dvh bg-slate-50 flex items-center justify-center">
         <div className="text-center space-y-3">
           <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center mx-auto">
-            <Sparkles size={24} className="text-indigo-600" />
+            <Radio size={24} className="text-indigo-600" />
           </div>
           <p className="text-slate-400 text-base">세션 링크를 통해 접속해주세요</p>
         </div>
