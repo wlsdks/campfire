@@ -90,7 +90,7 @@ export default function AdminSessionHeader({
               <span className="text-sm font-medium text-slate-500">{session.roundNumber}차</span>
             )}
             {effectiveReadOnly && <Badge variant="neutral">클래스 확인</Badge>}
-            {isSetting && <Badge variant="warning" className="py-1 px-2.5 text-xs font-semibold text-amber-600 bg-amber-50 border-amber-200">세팅중</Badge>}
+            {isSetting && <Badge variant="warning" className="py-1 px-2.5 text-xs font-semibold">세팅중</Badge>}
           </div>
           <div className="flex items-center gap-2">
             <span className="text-xs text-slate-400">세션 <span className="font-mono">{sessionId}</span></span>

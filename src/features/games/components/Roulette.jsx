@@ -123,7 +123,7 @@ export default function Roulette({ participants, onResult }) {
           transition={{ type: 'spring', stiffness: 250, damping: 18 }}
           className="text-center space-y-1"
         >
-          <div className="text-4xl font-bold text-indigo-600">{winner}</div>
+          <div className="text-4xl font-bold text-slate-900">{winner}</div>
           <div className="text-slate-500 text-base">당첨되었습니다!</div>
         </motion.div>
       )}

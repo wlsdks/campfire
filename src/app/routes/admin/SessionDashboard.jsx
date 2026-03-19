@@ -66,7 +66,7 @@ function SessionRow({ session, onClick, index }) {
       onClick={onClick}
       className="w-full flex items-center gap-4 px-5 py-3.5 text-left transition-all hover:bg-slate-50 active:bg-slate-100 group"
     >
-      <span className={`text-sm font-bold w-8 shrink-0 ${isSetting ? 'text-amber-500' : isActive ? 'text-slate-900' : 'text-slate-400'}`}>
+      <span className={`text-sm font-bold w-8 shrink-0 ${isSetting ? 'text-slate-500' : isActive ? 'text-slate-900' : 'text-slate-400'}`}>
         {session.roundNumber ? `${session.roundNumber}차` : '—'}
       </span>
       <span className="text-sm text-slate-500 w-32 shrink-0">{formatDate(session.createdAt)}</span>
@@ -78,7 +78,7 @@ function SessionRow({ session, onClick, index }) {
         <span className="font-medium text-slate-500">{session.questionCount}</span>개 질문
       </div>
       {isSetting ? (
-        <span className="text-xs font-semibold text-amber-600 shrink-0">세팅중</span>
+        <span className="text-xs font-semibold text-slate-500 shrink-0">세팅중</span>
       ) : isActive ? (
         <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 shrink-0">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />

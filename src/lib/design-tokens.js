@@ -58,7 +58,7 @@ export const tw = {
   cardHover: 'bg-white rounded-xl shadow-sm border border-slate-100 p-5 hover:shadow-md transition-shadow',
 
   btnBase: 'font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2',
-  btnPrimary: 'bg-indigo-600 hover:bg-indigo-700 text-white focus:ring-indigo-500',
+  btnPrimary: 'bg-slate-900 hover:bg-slate-800 text-white focus:ring-slate-400',
   btnSecondary: 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 focus:ring-slate-300',
   btnGhost: 'hover:bg-slate-100 text-slate-600 focus:ring-slate-300',
   btnDanger: 'bg-red-500 hover:bg-red-600 text-white focus:ring-red-400',
@@ -70,12 +70,12 @@ export const tw = {
   inputError: 'border-red-400 focus:ring-red-500/20 focus:border-red-500',
 
   badge: 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
-  badgePrimary: 'bg-indigo-50 text-indigo-700',
+  badgePrimary: 'bg-slate-100 text-slate-700',
   badgeSuccess: 'bg-slate-100 text-slate-600',
   badgeWarning: 'bg-slate-100 text-slate-600',
   badgeError: 'bg-red-50 text-red-700',
 
-  avatar: 'rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-semibold',
+  avatar: 'rounded-full bg-slate-100 text-slate-700 flex items-center justify-center font-semibold',
 
   modalBackdrop: 'fixed inset-0 bg-black/40 backdrop-blur-sm z-50',
   modalContent: 'bg-white rounded-2xl shadow-lg p-6 max-w-md mx-auto',

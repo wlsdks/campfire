@@ -301,7 +301,7 @@ export default function QuestionManager({
                 : '아직 활성화된 질문이 없습니다. 첫 질문을 바로 시작할 수 있습니다.'}
             </p>
             {currentEntry?.[1]?.type === 'quiz' && (
-              <p className="text-amber-600 text-xs font-medium">
+              <p className="text-slate-500 text-xs font-medium">
                 {currentEntry[1].revealedAt
                   ? '정답 공개가 완료되었습니다. 리더보드로 이어서 보여줄 수 있습니다.'
                   : '정답 공개 전까지 답안을 모으는 중입니다.'}

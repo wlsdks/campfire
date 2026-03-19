@@ -60,7 +60,7 @@ export default function Leaderboard({
           transition={{ duration: 0.3, ease: 'easeOut' }}
           className="flex items-center gap-2 mb-4"
         >
-          <Trophy size={20} className="text-amber-500" />
+          <Trophy size={20} className="text-slate-500" />
           <h3 className="text-lg font-bold text-slate-900">{title}</h3>
         </motion.div>
       )}
@@ -80,7 +80,7 @@ export default function Leaderboard({
           className={`flex items-center gap-3 px-4 py-3 rounded-xl border ${
             i < 3 ? PODIUM_STYLES[i] : 'bg-white border-slate-100'
           } ${
-            entry.id === highlightId ? 'ring-2 ring-indigo-200 border-indigo-200' : ''
+            entry.id === highlightId ? 'ring-2 ring-slate-300 border-slate-300' : ''
           }`}
         >
           <span className={`w-6 text-center font-bold text-sm ${i < 3 ? '' : 'text-slate-400'}`}>

@@ -4,8 +4,8 @@ import { Ticket, Loader2, Minus, Plus, Trophy } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
 const CARD_COLORS = [
-  'bg-indigo-600', 'bg-emerald-600', 'bg-amber-500',
-  'bg-violet-600', 'bg-pink-500',
+  'bg-slate-900', 'bg-slate-700', 'bg-slate-800',
+  'bg-slate-600', 'bg-slate-900',
 ];
 
 function pickLotteryWinners(participants, count) {
@@ -123,7 +123,7 @@ export default function Lottery({ participants, onResult }) {
           {hasTicketMode ? '퀴즈와 참여로 모은 티켓이 많을수록 당첨 확률이 올라갑니다' : '현재는 균등 추첨으로 진행됩니다'}
         </p>
         {hasTicketMode && (
-          <p className="text-amber-600 text-sm font-medium">현재 티켓 총합 {totalTickets}장</p>
+          <p className="text-slate-600 text-sm font-medium">현재 티켓 총합 {totalTickets}장</p>
         )}
       </div>
 
@@ -158,7 +158,7 @@ export default function Lottery({ participants, onResult }) {
 
         {revealing && winners.length === 0 && (
           <div className="text-center space-y-2">
-            <Loader2 size={32} className="animate-spin text-indigo-400 mx-auto" />
+            <Loader2 size={32} className="animate-spin text-slate-400 mx-auto" />
             <p className="text-slate-500 text-base">추첨 중...</p>
           </div>
         )}

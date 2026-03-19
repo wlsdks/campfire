@@ -11,9 +11,9 @@ const STATE_STYLES = {
   },
   active: {
     card: 'border-slate-200 bg-white text-slate-800 shadow-sm',
-    label: 'text-indigo-600',
+    label: 'text-slate-900',
     chip: 'border-slate-200 bg-slate-50 text-slate-600',
-    icon: 'text-indigo-600',
+    icon: 'text-slate-900',
     title: '보너스 라운드',
   },
   result: {

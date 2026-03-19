@@ -199,12 +199,6 @@ git push origin background-improve
 > 최근 10개만 유지. 오래된 것은 삭제.
 
 <!-- 예시: 2026-03-20 01:30 | improve: 학생 투표 화면 터치 타겟 48px로 통일 -->
-2026-03-20 | improve: 학생 대기 화면 개선 — Radio 아이콘을 Pinggo 마스코트(눈 깜빡임+안테나 펄스)로 교체, 순환 팁 메시지 5종 추가, 참여자 수 카드 강조, slate 모노크로매틱 통일
-2026-03-20 | improve: Admin 빈 상태 개선 — 공유 PinggoMascot+EmptyState 컴포넌트 생성, VizRenderer/SessionDashboard/StatsView/QuestionList/ParticipantList 7곳 빈 상태에 마스코트+단계별 안내 적용
-2026-03-20 | improve: Admin 키보드 단축키 — useAdminKeyboardShortcuts 훅 생성, ←→ 질문 이동, Space 다음, R 정답공개, L 리더보드, Esc 대기. 빠른 진행 카드에 kbd 힌트 배지 표시
-2026-03-20 | improve: 완료 세션 인사이트 — ClassSummary에 질문별 정답률, 평균 정답률, 가장 어려운 질문 하이라이트, 응답률 미니바 추가. 강사가 수업 후 어떤 질문이 어려웠는지 즉시 파악 가능
-2026-03-20 | improve: 리액션 바 업그레이드 — 5종 리액션에 고유 색상 피드백(탭 시만), 파티클 버스트 애니메이션, 스케일+로테이션 마이크로인터랙션, 하트 filled 아이콘, 컬러 버블 오버레이. 대기 상태는 slate 모노크로매틱 유지
-2026-03-20 | improve: 학생 타이머 표시 — TimerCountdown 바 컴포넌트(녹→황→적 진행률), 시간 종료 시 모든 투표 컴포넌트 잠금(disabled prop), "시간이 종료되었습니다" 오버레이. 질문 변경/타이머 재시작 시 자동 리셋
 2026-03-20 | improve: 헤더 질문 진행 표시 — 세션 코드 옆에 Layers 아이콘 + "2/5" (활성 질문 번호/전체) 또는 "N개" (비활성 시) 표시. 사이드바 접어도 강사가 진행 위치를 항상 파악 가능
 2026-03-20 | improve: 학생 연결 상태 배너 — 오프라인 시 헤더 아래 slate-900 "연결 끊김" 배너 슬라이드 다운, 재연결 시 emerald-600 "다시 연결됨" 2초 후 자동 소멸. Firebase .info/connected 기반, useConnectionStatus 훅 확장
 2026-03-20 | improve: 세션 경과 시간 — 활성 세션 헤더에 "N분 경과" 실시간 표시(Clock 아이콘+muted text). startedAt(세션 시작 시 serverTimestamp) 우선, createdAt 폴백. 30초 간격 업데이트, 1분 미만 숨김. useSession에 createdAt/startedAt 구독 추가
@@ -213,6 +207,7 @@ git push origin background-improve
 2026-03-20 | improve: 컴포넌트 크기 감사 — AdminPage.jsx(1022줄) → 425줄로 분리. 5개 서브컴포넌트 추출: AdminSessionHeader(186줄, 헤더바+타이머+ElapsedTime), ClassSummary(179줄, 클래스 요약+질문별 인사이트), RightSidebar(204줄, 참여자 패널+QR+아코디언), PresentationView(90줄, 발표 모드+MainContent), ModeSwitcher(79줄, 모드 전환 아코디언). 미사용 import 정리
 2026-03-20 | improve: 발표 모드 QR 오버레이 — PresentQROverlay 컴포넌트 신설. 기본 축소 상태(slate-900 QR아이콘+세션코드+참여자 수 pill), 클릭 시 확대(QR 180px+세션코드 bold+링크복사+접속 수). Framer Motion AnimatePresence 전환, stopPropagation으로 발표 종료 미스클릭 방지. 기존 120px 고정 QR+URL 텍스트 제거, 하단좌측 세션코드 뱃지도 QR 오버레이로 통합
 2026-03-20 | improve: 학생 실시간 투표 결과 — StudentLiveResults 컴포넌트 신설(95줄). 투표 후 VoteConfirm 아래에 실시간 분포 미니 바 차트 표시. 내 선택 강조(bold+dark bar), 참여자 수 실시간 갱신, useVotes 훅으로 Firebase 실시간 연동. ChoiceVoter(객관식), OXVoter(O/X)에 적용. QuizVoter는 정답 공개 전까지 결과 비공개 유지. slate 모노크로매틱, 모바일(390px) 최적화
+2026-03-20 | improve: 디자인 토큰 감사 — Anti-AI 체크리스트 기반 전수 조사. design-tokens.js의 stale 레시피(btnPrimary/badgePrimary/avatar) indigo→slate 동기화, Avatar bg-indigo-100→bg-slate-100, Lottery 레인보우 카드→슬레이트 모노크로매틱, AdminSessionHeader 세팅중 배지 amber→slate, SessionDashboard 세팅 상태 amber→slate, QuizEventBanner/Roulette/Leaderboard/QuestionManager 장식적 색상 제거. 허용 유지: Radio 아이콘(indigo), BarChart/OXBattle 브랜드(indigo gradient), 타이머 기능색(amber/red), 접속 상태(emerald), 리액션 피드백(각 고유색)
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 

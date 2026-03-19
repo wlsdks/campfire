@@ -114,6 +114,7 @@
 | 마이크로 인터랙션 | 전체 | ✅ 완료 | 모든 버튼/카드에 active:scale 프레스 피드백 추가. 탭 버튼, 세션 행, 질문 액션 버튼, 아코디언 헤더, 모달 선택 버튼 등 15개 컴포넌트 일괄 적용. CSS-only로 Framer Motion 불필요한 곳은 성능 최적화 |
 | 컴포넌트 크기 감사 | 강사 | ✅ 완료 | AdminPage.jsx 1022→425줄로 분리. AdminSessionHeader(186), ClassSummary(179), RightSidebar(204), PresentationView(90), ModeSwitcher(79) 5개 컴포넌트 추출 |
 | 발표 모드 QR 오버레이 | 강사 | ✅ 완료 | 접이식 QR 오버레이 — 기본 축소(세션코드+참여자 수 pill), 클릭 시 확대(QR 180px+세션코드+링크복사+접속 수). Framer Motion 전환, stopPropagation으로 발표 종료 방지 |
+| 디자인 토큰 감사 | 전체 | ✅ 완료 | Anti-AI 체크리스트 기반 전수 조사. design-tokens.js 레시피를 실제 컴포넌트와 동기화, Avatar/Badge/Button의 indigo→slate 교체, Lottery 레인보우→슬레이트 모노크로매틱, 세팅중 배지 amber→slate, QuizEventBanner/Roulette/Leaderboard의 장식적 색상 제거. 허용: Radio 아이콘(indigo), BarChart 브랜드 그라데이션(indigo), 타이머 기능색(amber/red), 접속 상태(emerald) |
 
 ---
 
