@@ -209,6 +209,7 @@ git push origin background-improve
 2026-03-20 | improve: 질문 순서 변경 — QuestionList에 위/아래 화살표 버튼 추가, QuestionManager에 Firebase order 필드 스왑 로직 구현. CourseEditor(강의 템플릿 편집)에도 동일 적용. 첫/마지막 질문은 해당 방향 비활성화. Framer Motion layout 애니메이션으로 부드러운 순서 전환. 읽기전용 세션에서는 화살표 미표시
 2026-03-20 | improve: 퀴즈 정답 축하 이펙트 — ConfettiBurst 컴포넌트 신설(114줄). 정답 시 24개 슬레이트 파티클(원/사각/다이아몬드)이 체크마크 주변에서 폭발. Framer Motion SVG 순수 구현(외부 의존성 없음), seededRandom으로 deterministic 배치, 1.2초 후 자동 언마운트. QuizResult 카드 overflow-hidden으로 파티클을 카드 경계 내에 제한. 오답 시에는 렌더링하지 않음
 2026-03-20 | improve: 학생 리더보드 폴리시 — LeaderboardPage: MyRankCard 히어로(순위 5xl, 상위 % 표시, 연속정답/최고연속/티켓 배지), 8위 밖 StickyMyRank 하단 고정 카드. Leaderboard: LeaderboardRow 서브컴포넌트 추출, layoutId 기반 순서 변경 애니메이션, RankChange 화살표(실시간 순위 변동), "나" 태그(podium/일반 분기), 3연속 이상 streak amber 강조, lastPoints AnimatePresence 전환
+2026-03-20 | feat: CSV 내보내기 — ClassSummary(완료 세션 요약 페이지)에 "내보내기" 드롭다운 메뉴 추가. 2가지 CSV 다운로드: (1) 질문 결과(번호/질문/유형/선택지/정답/응답수/응답률/정답률/선택지별 분포), (2) 참여자별 응답(닉네임/각 질문 답변/총점/티켓). UTF-8 BOM 포함 Excel 호환. lib/csv.js 유틸리티, ExportMenu.jsx 드롭다운 컴포넌트. bg-slate-900 CTA, lucide Download/FileSpreadsheet/Users 아이콘
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 

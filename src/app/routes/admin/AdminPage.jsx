@@ -413,6 +413,7 @@ export default function AdminPage() {
                   <ClassSummary
                     session={session}
                     participants={participants}
+                    scores={scores}
                     leaderboard={leaderboard}
                     count={count}
                   />

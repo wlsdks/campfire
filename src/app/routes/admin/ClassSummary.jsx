@@ -1,5 +1,6 @@
 import { memo, useMemo } from 'react';
-import { BarChart3, Trophy, Circle, Cloud, MessageSquare, AlertTriangle, Users } from 'lucide-react';
+import { BarChart3, Trophy, Circle, Cloud, MessageSquare, AlertTriangle } from 'lucide-react';
+import ExportMenu from './ExportMenu';
 
 const QTYPE_META = {
   choice: { label: '객관식', icon: BarChart3 },
@@ -38,7 +39,7 @@ function getQuestionInsights(questions, participantCount) {
   });
 }
 
-export default memo(function ClassSummary({ session, participants, leaderboard }) {
+export default memo(function ClassSummary({ session, participants, scores, leaderboard }) {
   const questions = session?.questions || {};
   const questionList = Object.values(questions);
   const participantCount = Object.keys(participants).length;
@@ -61,11 +62,16 @@ export default memo(function ClassSummary({ session, participants, leaderboard }
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-5">
-      <div className="text-center mb-2">
-        <h2 className="text-xl font-bold text-slate-900">클래스 요약</h2>
-        <p className="text-sm text-slate-400 mt-1">
-          {session?.courseName} {session?.roundNumber}차
-        </p>
+      <div className="flex items-start justify-between mb-2">
+        <div>
+          <h2 className="text-xl font-bold text-slate-900">클래스 요약</h2>
+          <p className="text-sm text-slate-400 mt-1">
+            {session?.courseName} {session?.roundNumber}차
+          </p>
+        </div>
+        {questionList.length > 0 && (
+          <ExportMenu session={session} participants={participants} scores={scores} />
+        )}
       </div>
 
       {/* Top stats */}

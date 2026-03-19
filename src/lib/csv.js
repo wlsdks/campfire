@@ -1,0 +1,183 @@
+/**
+ * CSV export utilities for session data.
+ *
+ * Generates two export types:
+ * 1. Question summary — one row per question with stats
+ * 2. Per-participant responses — one row per participant with answers
+ */
+
+/**
+ * Escapes a CSV cell value (handles commas, quotes, newlines).
+ * @param {*} value
+ * @returns {string}
+ */
+function escapeCSV(value) {
+  if (value == null) return '';
+  const str = String(value);
+  if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+    return '"' + str.replace(/"/g, '""') + '"';
+  }
+  return str;
+}
+
+/**
+ * Converts a 2D array to a CSV string with BOM for Excel compatibility.
+ * @param {Array<Array<string>>} rows
+ * @returns {string}
+ */
+function toCSVString(rows) {
+  const BOM = '\uFEFF';
+  return BOM + rows.map((row) => row.map(escapeCSV).join(',')).join('\n');
+}
+
+/**
+ * Triggers a browser download of a CSV file.
+ * @param {string} csvString
+ * @param {string} filename
+ */
+function downloadCSV(csvString, filename) {
+  const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+/**
+ * Builds a sorted array of questions from the session.
+ * @param {object} questions - session.questions object from Firebase
+ * @returns {Array<{id: string, data: object}>}
+ */
+function getSortedQuestions(questions) {
+  return Object.entries(questions || {})
+    .map(([id, data]) => ({ id, data }))
+    .sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
+}
+
+const QTYPE_LABELS = {
+  choice: '객관식',
+  quiz: '퀴즈',
+  ox: 'O/X',
+  wordcloud: '워드클라우드',
+  qna: 'Q&A',
+};
+
+/**
+ * Exports question-level summary CSV.
+ *
+ * Columns: 번호, 질문, 유형, 선택지, 정답, 응답수, 응답률(%), 정답률(%), 선택지별 분포
+ *
+ * @param {object} session
+ * @param {object} participants - { pid: { nickname, ... } }
+ * @param {string} filename
+ */
+export function exportQuestionSummary(session, participants, filename) {
+  const sorted = getSortedQuestions(session?.questions);
+  const participantCount = Object.keys(participants || {}).length;
+
+  const header = ['번호', '질문', '유형', '선택지', '정답', '응답 수', '응답률(%)', '정답률(%)', '선택지별 분포'];
+  const rows = [header];
+
+  sorted.forEach((q, i) => {
+    const { data } = q;
+    const votes = data.votes || {};
+    const voteCount = Object.keys(votes).length;
+    const responseRate = participantCount > 0 ? Math.round((voteCount / participantCount) * 100) : 0;
+
+    const options = (data.options || []).join(' / ');
+    const correctAnswer = data.correctAnswer || '';
+
+    let correctRate = '';
+    if (data.correctAnswer && voteCount > 0) {
+      const correctCount = Object.values(votes).filter((v) => v.value === data.correctAnswer).length;
+      correctRate = Math.round((correctCount / voteCount) * 100);
+    }
+
+    // Distribution: count per option value
+    const dist = {};
+    Object.values(votes).forEach((v) => {
+      const val = v.value || '(없음)';
+      dist[val] = (dist[val] || 0) + 1;
+    });
+    const distStr = Object.entries(dist)
+      .map(([val, cnt]) => `${val}: ${cnt}명`)
+      .join(', ');
+
+    rows.push([
+      i + 1,
+      data.title || '',
+      QTYPE_LABELS[data.type] || data.type,
+      options,
+      correctAnswer,
+      voteCount,
+      responseRate,
+      correctRate,
+      distStr,
+    ]);
+  });
+
+  downloadCSV(toCSVString(rows), filename);
+}
+
+/**
+ * Exports per-participant response CSV.
+ *
+ * Columns: 닉네임, [Q1 title], [Q2 title], ..., 총점, 티켓
+ *
+ * @param {object} session
+ * @param {object} participants - { pid: { nickname, ... } }
+ * @param {object} scores - { pid: { total, tickets, nickname } }
+ * @param {string} filename
+ */
+export function exportParticipantResponses(session, participants, scores, filename) {
+  const sorted = getSortedQuestions(session?.questions);
+  const hasScores = Object.keys(scores || {}).length > 0;
+
+  // Header: 닉네임 + question titles + optional score columns
+  const header = ['닉네임'];
+  sorted.forEach((q, i) => {
+    header.push(`Q${i + 1}. ${q.data.title || ''}`);
+  });
+  if (hasScores) {
+    header.push('총점', '티켓');
+  }
+
+  const rows = [header];
+
+  // Build a row per participant
+  const pids = Object.keys(participants || {});
+  pids.forEach((pid) => {
+    const p = participants[pid];
+    const nickname = p?.nickname || scores?.[pid]?.nickname || pid;
+    const row = [nickname];
+
+    sorted.forEach((q) => {
+      const vote = q.data.votes?.[pid];
+      row.push(vote?.value ?? '');
+    });
+
+    if (hasScores) {
+      const s = scores[pid];
+      row.push(s?.total ?? 0, s?.tickets ?? 0);
+    }
+
+    rows.push(row);
+  });
+
+  downloadCSV(toCSVString(rows), filename);
+}
+
+/**
+ * Generates a safe filename prefix from session metadata.
+ * @param {object} session
+ * @returns {string}
+ */
+export function getFilenamePrefix(session) {
+  const course = (session?.courseName || 'Pinggo').replace(/[/\\?%*:|"<>]/g, '_');
+  const round = session?.roundNumber ? `_${session.roundNumber}차` : '';
+  return `${course}${round}`;
+}
