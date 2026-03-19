@@ -48,7 +48,7 @@ function RightPanelAccordion({ title, count, defaultOpen = false, children }) {
     <div className="rounded-xl border border-slate-200 overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-3 py-2.5 text-left hover:bg-slate-50 transition-colors"
+        className="w-full flex items-center justify-between px-3 py-2.5 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors"
       >
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-slate-600">{title}</span>
@@ -606,7 +606,7 @@ export default function AdminPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={handleBack}
-            className="p-2 -ml-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all"
+            className="p-2 -ml-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all active:scale-90"
             aria-label="클래스 목록으로"
           >
             <ArrowLeft size={22} />
@@ -647,7 +647,7 @@ export default function AdminPage() {
           {!effectiveReadOnly && (
             <button
               onClick={() => setChatOpen(!chatOpen)}
-              className="flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all"
+              className="flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all active:scale-95"
             >
               <MessageCircle size={20} />
               <span className="text-[10px] font-medium">채팅</span>
@@ -658,7 +658,7 @@ export default function AdminPage() {
             <div className="relative" ref={timerRef}>
               <button
                 onClick={() => setTimerOpen(!timerOpen)}
-                className={`flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg transition-all ${
+                className={`flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg transition-all active:scale-95 ${
                   timerRunning ? 'text-slate-900' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
                 }`}
               >
@@ -724,7 +724,7 @@ export default function AdminPage() {
               exit={{ opacity: 0, x: -8 }}
               transition={{ duration: 0.15 }}
               onClick={() => setSidebarCollapsed(false)}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white border border-slate-200 border-l-0 rounded-r-xl p-3 shadow-md text-slate-400 hover:text-slate-700 transition-colors"
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white border border-slate-200 border-l-0 rounded-r-xl p-3 shadow-md text-slate-400 hover:text-slate-700 transition-all active:scale-95"
               aria-label="사이드바 열기"
             >
               <PanelLeftOpen size={22} />
@@ -766,7 +766,7 @@ export default function AdminPage() {
                 <div className="mt-3 rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
                   <button
                     onClick={() => setModeOpen(!modeOpen)}
-                    className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 transition-colors"
+                    className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors"
                   >
                     <div className="flex items-center gap-2">
                       <p className="text-slate-500 text-sm font-semibold">모드 전환</p>
@@ -800,7 +800,7 @@ export default function AdminPage() {
                               <button
                                 key={mode}
                                 onClick={() => switchMode(mode)}
-                                className="w-full inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium rounded-lg bg-slate-900 text-white transition-colors"
+                                className="w-full inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium rounded-lg bg-slate-900 text-white transition-all active:scale-[0.97]"
                                 aria-label={`${label} 모드로 전환`}
                               >
                                 <Icon size={16} /> {label}
@@ -859,7 +859,7 @@ export default function AdminPage() {
                     </div>
                     <button
                       onClick={() => setShowCenterForm(false)}
-                      className="p-2 rounded-lg text-slate-300 hover:text-slate-600 hover:bg-slate-100 transition-all"
+                      className="p-2 rounded-lg text-slate-300 hover:text-slate-600 hover:bg-slate-100 transition-all active:scale-90"
                       aria-label="취소"
                     >
                       <X size={20} />

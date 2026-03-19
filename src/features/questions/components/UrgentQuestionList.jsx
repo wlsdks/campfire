@@ -29,7 +29,7 @@ export default function UrgentQuestionList({ sessionId }) {
     <div className="rounded-xl border border-slate-200 overflow-hidden">
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 transition-colors"
+        className="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors"
       >
         <span className="text-sm font-semibold text-slate-600 flex items-center gap-1.5">
           <AlertCircle size={14} className="text-slate-400" />
@@ -86,7 +86,7 @@ export default function UrgentQuestionList({ sessionId }) {
                           <button
                             aria-label="질문 삭제"
                             onClick={(e) => { e.stopPropagation(); dismissOne(q.id); }}
-                            className="text-slate-300 hover:text-red-500 transition-colors"
+                            className="text-slate-300 hover:text-red-500 transition-all active:scale-90"
                           >
                             <Trash2 size={12} />
                           </button>

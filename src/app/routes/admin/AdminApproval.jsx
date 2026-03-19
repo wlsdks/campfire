@@ -126,7 +126,7 @@ export default function AdminApproval({ pendingAdmins, pendingCount, approveAdmi
       {/* Trigger button */}
       <button
         onClick={() => setOpen(true)}
-        className="relative flex items-center gap-1.5 text-slate-400 hover:text-slate-600 text-sm transition-colors"
+        className="relative flex items-center gap-1.5 text-slate-400 hover:text-slate-600 text-sm transition-all active:scale-95"
         aria-label="관리자 승인 관리"
       >
         <ShieldCheck size={18} />

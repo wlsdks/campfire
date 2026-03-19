@@ -209,6 +209,7 @@ git push origin background-improve
 2026-03-20 | improve: 학생 연결 상태 배너 — 오프라인 시 헤더 아래 slate-900 "연결 끊김" 배너 슬라이드 다운, 재연결 시 emerald-600 "다시 연결됨" 2초 후 자동 소멸. Firebase .info/connected 기반, useConnectionStatus 훅 확장
 2026-03-20 | improve: 세션 경과 시간 — 활성 세션 헤더에 "N분 경과" 실시간 표시(Clock 아이콘+muted text). startedAt(세션 시작 시 serverTimestamp) 우선, createdAt 폴백. 30초 간격 업데이트, 1분 미만 숨김. useSession에 createdAt/startedAt 구독 추가
 2026-03-20 | improve: 데모 데이터 강화 — seed-demo.mjs에 채팅(학생↔강사 혼합), 손들기(2~4명), 긴급질문(읽음/안읽음), 퀴즈 점수(정답+속도보너스+티켓) 추가. active 세션 3개 + ended 세션 3개에 적용. 모든 기능 테스트 가능
+2026-03-20 | improve: 마이크로 인터랙션 감사 — 15개 컴포넌트에 active:scale 프레스 피드백 일괄 적용. 탭 버튼(active:scale-[0.97]), 세션 행(active:bg-slate-100), 질문 액션 버튼(active:scale-90), 아코디언 헤더(active:bg-slate-100), 모달 선택 카드(active:scale-[0.98]), 폼 선택기(active:scale-[0.96]). CSS transition-all 기반으로 Framer Motion 불필요한 곳은 성능 최적화
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 

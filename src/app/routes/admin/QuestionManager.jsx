@@ -276,7 +276,7 @@ export default function QuestionManager({
           {!readOnly && onCollapse && (
             <button
               onClick={onCollapse}
-              className="p-2 rounded-lg text-slate-300 hover:text-slate-600 hover:bg-slate-100 transition-all"
+              className="p-2 rounded-lg text-slate-300 hover:text-slate-600 hover:bg-slate-100 transition-all active:scale-90"
               title="패널 접기"
               aria-label="사이드바 접기"
             >
@@ -317,7 +317,7 @@ export default function QuestionManager({
                   <button
                     key={preset.id}
                     onClick={() => setNextEvent(isSelected ? null : preset)}
-                    className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
+                    className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all active:scale-[0.96] ${
                       isSelected
                         ? 'bg-slate-900 text-white'
                         : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
@@ -368,7 +368,7 @@ export default function QuestionManager({
       {questionList.length > 0 && readOnly && (
         <button
           onClick={() => onViewQuestion?.('__summary__')}
-          className={`w-full rounded-xl border bg-white p-3 space-y-1 shadow-sm text-left transition-all ${
+          className={`w-full rounded-xl border bg-white p-3 space-y-1 shadow-sm text-left transition-all active:scale-[0.98] ${
             !currentQuestion ? 'border-slate-400 shadow-md' : 'border-slate-200 hover:border-slate-300'
           }`}
         >

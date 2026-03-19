@@ -33,7 +33,7 @@ export default function QuestionList({
       {/* Accordion header */}
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="w-full flex items-center justify-between px-4 py-3 text-left bg-slate-50 hover:bg-slate-100 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 text-left bg-slate-50 hover:bg-slate-100 active:bg-slate-200/60 transition-colors"
       >
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-slate-700">추가된 문항 {questionList.length}개</span>
@@ -96,7 +96,7 @@ export default function QuestionList({
                           {!isActive ? (
                             <button
                               onClick={() => onActivate(qId)}
-                              className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all"
+                              className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all active:scale-90"
                               title="활성화"
                               aria-label="질문 활성화"
                             >
@@ -107,7 +107,7 @@ export default function QuestionList({
                               {isQuiz && !q.revealedAt && (
                                 <button
                                   onClick={() => onReveal(qId)}
-                                  className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all"
+                                  className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all active:scale-90"
                                   title="정답 공개"
                                   aria-label="정답 공개"
                                 >
@@ -117,7 +117,7 @@ export default function QuestionList({
                               {isQuiz && q.revealedAt && (
                                 <button
                                   onClick={onShowLeaderboard}
-                                  className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all"
+                                  className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all active:scale-90"
                                   title="리더보드 보기"
                                   aria-label="리더보드 보기"
                                 >
@@ -126,7 +126,7 @@ export default function QuestionList({
                               )}
                               <button
                                 onClick={onClearActive}
-                                className="p-1.5 rounded-md bg-slate-200 text-slate-500 hover:bg-slate-300 transition-all"
+                                className="p-1.5 rounded-md bg-slate-200 text-slate-500 hover:bg-slate-300 transition-all active:scale-90"
                                 title="중지"
                                 aria-label="질문 중지"
                               >
@@ -136,7 +136,7 @@ export default function QuestionList({
                           )}
                           <button
                             onClick={() => onDuplicate(qId)}
-                            className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-600 transition-all"
+                            className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-600 transition-all active:scale-90"
                             title="복제"
                             aria-label="질문 복제"
                           >
@@ -144,7 +144,7 @@ export default function QuestionList({
                           </button>
                           <button
                             onClick={() => onDelete(qId)}
-                            className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-700 transition-all"
+                            className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-700 transition-all active:scale-90"
                             title="삭제"
                             aria-label="질문 삭제"
                           >

@@ -64,7 +64,7 @@ function SessionRow({ session, onClick, index }) {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.2, delay: index * 0.02 }}
       onClick={onClick}
-      className="w-full flex items-center gap-4 px-5 py-3.5 text-left transition-all hover:bg-slate-50 group"
+      className="w-full flex items-center gap-4 px-5 py-3.5 text-left transition-all hover:bg-slate-50 active:bg-slate-100 group"
     >
       <span className={`text-sm font-bold w-8 shrink-0 ${isSetting ? 'text-amber-500' : isActive ? 'text-slate-900' : 'text-slate-400'}`}>
         {session.roundNumber ? `${session.roundNumber}차` : '—'}
@@ -120,7 +120,7 @@ function CourseGroup({ name, sessions, onSelect, startIndex }) {
       {/* Course header */}
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="w-full text-left px-5 py-5 transition-colors hover:bg-slate-50/50"
+        className="w-full text-left px-5 py-5 transition-all hover:bg-slate-50/50 active:bg-slate-100/50"
       >
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-lg font-bold text-slate-900">{name}</h3>
@@ -274,7 +274,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
           )}
           <button
             onClick={onLogout}
-            className="flex items-center gap-1.5 text-slate-400 hover:text-slate-600 text-sm transition-colors"
+            className="flex items-center gap-1.5 text-slate-400 hover:text-slate-600 text-sm transition-all active:scale-[0.97]"
           >
             <LogOut size={16} />
             로그아웃
@@ -290,7 +290,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+              className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all active:scale-[0.97] ${
                 activeTab === tab.key
                   ? 'bg-slate-900 text-white'
                   : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'

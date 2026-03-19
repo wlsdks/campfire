@@ -20,7 +20,7 @@ export default function EventBooster({ nextQuizEvent, onArmEvent, onClearEvent }
     <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-3 py-2.5 text-left hover:bg-slate-50 transition-colors"
+        className="w-full flex items-center justify-between px-3 py-2.5 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors"
       >
         <div className="flex items-center gap-2">
           <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">이벤트 부스터</p>
@@ -51,7 +51,7 @@ export default function EventBooster({ nextQuizEvent, onArmEvent, onClearEvent }
                   <button
                     key={preset.id}
                     onClick={() => handleToggle(preset)}
-                    className={`w-full rounded-lg border px-3 py-2.5 text-left transition-all ${
+                    className={`w-full rounded-lg border px-3 py-2.5 text-left transition-all active:scale-[0.98] ${
                       isSelected
                         ? 'border-slate-400 bg-slate-50'
                         : 'border-slate-200 bg-white hover:bg-slate-50'

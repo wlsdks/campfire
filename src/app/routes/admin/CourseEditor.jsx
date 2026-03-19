@@ -89,7 +89,7 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="text-slate-400 hover:text-slate-600 transition-colors"
+            className="text-slate-400 hover:text-slate-600 transition-all active:scale-90"
             aria-label="돌아가기"
           >
             <ArrowLeft size={20} />
@@ -165,7 +165,7 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
                   <div className="flex gap-1 shrink-0">
                     <button
                       onClick={() => handleDuplicate(qId)}
-                      className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-600 transition-all"
+                      className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-600 transition-all active:scale-90"
                       title="복제"
                       aria-label="질문 복제"
                     >
@@ -173,7 +173,7 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
                     </button>
                     <button
                       onClick={() => handleDelete(qId)}
-                      className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-700 transition-all"
+                      className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-700 transition-all active:scale-90"
                       title="삭제"
                       aria-label="질문 삭제"
                     >

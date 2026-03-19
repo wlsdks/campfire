@@ -80,7 +80,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
               <button
                 key={t.value}
                 onClick={() => { setType(t.value); setLocalError(null); }}
-                className={`flex-1 flex flex-col items-center justify-center gap-1.5 py-4 rounded-lg border transition-all ${
+                className={`flex-1 flex flex-col items-center justify-center gap-1.5 py-4 rounded-lg border transition-all active:scale-[0.96] ${
                   selected
                     ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
                     : 'text-slate-400 border-slate-200 hover:bg-slate-50 hover:text-slate-600'
@@ -138,7 +138,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
                   {options.length > 2 && (
                     <button
                       onClick={() => removeOption(i)}
-                      className="p-1.5 rounded-lg text-slate-300 hover:text-red-500 transition-colors"
+                      className="p-1.5 rounded-lg text-slate-300 hover:text-red-500 transition-all active:scale-90"
                       aria-label="선택지 삭제"
                     >
                       <Trash2 size={14} />
@@ -149,7 +149,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
               {options.length < 5 && (
                 <button
                   onClick={() => setOptions([...options, ''])}
-                  className="w-full py-2.5 rounded-xl border border-dashed border-slate-200 text-slate-400 text-sm hover:border-slate-300 hover:text-slate-500 transition-colors flex items-center justify-center gap-1.5"
+                  className="w-full py-2.5 rounded-xl border border-dashed border-slate-200 text-slate-400 text-sm hover:border-slate-300 hover:text-slate-500 transition-all active:scale-[0.98] flex items-center justify-center gap-1.5"
                 >
                   <Plus size={14} /> 선택지 추가
                 </button>
@@ -178,7 +178,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
                     <button
                       key={option}
                       onClick={() => { setCorrectAnswer(option); setLocalError(null); }}
-                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5 ${
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.96] flex items-center gap-1.5 ${
                         isCorrect
                           ? 'bg-slate-900 text-white'
                           : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
@@ -213,7 +213,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
                 <button
                   key={v}
                   onClick={() => setPoints(v)}
-                  className={`flex-1 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                  className={`flex-1 py-1.5 rounded-lg text-sm font-medium transition-all active:scale-[0.96] ${
                     points === v
                       ? 'bg-slate-900 text-white'
                       : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
@@ -244,7 +244,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
                   <button
                     key={preset.id}
                     onClick={() => setEvent(isSelected ? null : preset)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all active:scale-[0.96] ${
                       isSelected
                         ? 'bg-slate-900 text-white'
                         : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
@@ -276,7 +276,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
                   <button
                     key={val}
                     onClick={() => { setCorrectAnswer(val); setLocalError(null); }}
-                    className={`flex-1 py-3 rounded-lg text-lg font-bold transition-all flex items-center justify-center gap-2 ${
+                    className={`flex-1 py-3 rounded-lg text-lg font-bold transition-all active:scale-[0.96] flex items-center justify-center gap-2 ${
                       isCorrect
                         ? 'bg-slate-900 text-white'
                         : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
