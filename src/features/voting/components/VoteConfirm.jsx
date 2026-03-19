@@ -37,6 +37,8 @@ export default function VoteConfirm({
   waitingLabel = '결과를 기다리는 중...',
   submittedDescription = '응답이 기록되었습니다',
   waitingDescription = '강사가 다음 단계를 진행하면 표시됩니다',
+  selectedAnswer = null,
+  selectedAnswerLabel = '내 응답',
 }) {
   const [waiting, setWaiting] = useState(false);
 
@@ -69,6 +71,18 @@ export default function VoteConfirm({
             {waiting ? waitingDescription : submittedDescription}
           </p>
         </div>
+
+        {selectedAnswer && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.3, ease: 'easeOut' }}
+            className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center w-full"
+          >
+            <p className="text-xs font-medium text-slate-400 mb-1">{selectedAnswerLabel}</p>
+            <p className="text-sm font-medium text-slate-700">{selectedAnswer}</p>
+          </motion.div>
+        )}
       </div>
     </motion.div>
   );

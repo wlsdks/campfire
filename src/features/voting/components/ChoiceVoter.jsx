@@ -32,7 +32,11 @@ export default function ChoiceVoter({ sessionId, questionId, options }) {
     }
   }
 
-  if (voted) return <VoteConfirm />;
+  if (voted) {
+    const idx = options.indexOf(selected);
+    const letter = idx >= 0 ? OPTION_STYLES[idx % OPTION_STYLES.length].letter : '';
+    return <VoteConfirm selectedAnswer={letter ? `${letter}. ${selected}` : selected} />;
+  }
 
   return (
     <div className="space-y-2.5 w-full">

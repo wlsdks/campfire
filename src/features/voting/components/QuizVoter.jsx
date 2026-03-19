@@ -50,11 +50,16 @@ export default function QuizVoter({ sessionId, questionId, question, renderResul
   }
 
   if (currentVote) {
+    const votedValue = currentVote.value;
+    const optIdx = (question?.options || []).indexOf(votedValue);
+    const ansLetter = optIdx >= 0 ? OPTION_STYLES[optIdx % OPTION_STYLES.length].letter : '';
     return (
       <VoteConfirm
         submittedLabel="답안 제출 완료!"
         waitingLabel="정답 공개를 기다리는 중..."
         waitingDescription="강사가 정답과 순위를 공개하면 결과를 확인할 수 있습니다"
+        selectedAnswer={ansLetter ? `${ansLetter}. ${votedValue}` : votedValue}
+        selectedAnswerLabel="내 답안"
       />
     );
   }

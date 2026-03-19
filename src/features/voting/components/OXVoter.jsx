@@ -24,7 +24,7 @@ export default function OXVoter({ sessionId, questionId }) {
     }
   }
 
-  if (voted) return <VoteConfirm />;
+  if (voted) return <VoteConfirm selectedAnswer={selected === 'O' ? 'O (맞아요)' : 'X (아니에요)'} />;
 
   return (
     <div className="flex gap-3 w-full">
