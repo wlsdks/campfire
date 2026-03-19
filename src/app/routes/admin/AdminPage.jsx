@@ -531,13 +531,13 @@ export default function AdminPage() {
 
             {!effectiveReadOnly && (
               <>
-                <div className="mt-5 rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+                <div className="mt-3 rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
                   <button
                     onClick={() => setModeOpen(!modeOpen)}
-                    className="w-full flex items-center justify-between px-3 py-2.5 text-left hover:bg-slate-50 transition-colors"
+                    className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 transition-colors"
                   >
                     <div className="flex items-center gap-2">
-                      <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">모드 전환</p>
+                      <p className="text-slate-500 text-sm font-semibold">모드 전환</p>
                       {isSpecialMode && (
                         <span className="text-xs font-medium text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">
                           {currentMode === 'roulette' ? '돌림판' : currentMode === 'lottery' ? '제비뽑기' : '리더보드'}

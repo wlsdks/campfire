@@ -261,15 +261,15 @@ export default function QuestionManager({
       </div>
 
       {questionList.length > 0 && !readOnly && (
-        <div className="rounded-xl border border-slate-200 bg-white p-3 space-y-3 shadow-sm">
-          <div className="space-y-1">
+        <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3 shadow-sm">
+          <div className="space-y-1.5">
             <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">빠른 진행</p>
-            <p className="text-slate-900 text-sm font-medium">
+            <p className="text-slate-900 text-base font-semibold">
               {currentEntry
                 ? `${activeIndex + 1}/${questionList.length}번째 질문 진행 중`
                 : `질문 ${questionList.length}개 준비됨`}
             </p>
-            <p className="text-slate-400 text-xs leading-relaxed">
+            <p className="text-slate-400 text-sm leading-relaxed">
               {currentEntry
                 ? currentEntry[1].title
                 : '아직 활성화된 질문이 없습니다. 첫 질문을 바로 시작할 수 있습니다.'}

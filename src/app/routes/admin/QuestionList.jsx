@@ -32,10 +32,10 @@ export default function QuestionList({
       {/* Accordion header */}
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="w-full flex items-center justify-between px-3 py-2.5 text-left bg-indigo-50/50 hover:bg-indigo-50 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 text-left bg-indigo-50/50 hover:bg-indigo-50 transition-colors"
       >
         <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-indigo-600">추가된 문항 {questionList.length}개</span>
+          <span className="text-sm font-semibold text-indigo-600">추가된 문항 {questionList.length}개</span>
           {activeCount > 0 && <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />}
         </div>
         <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ duration: 0.2 }}>
