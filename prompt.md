@@ -206,6 +206,7 @@ git push origin background-improve
 2026-03-20 | improve: Admin 빈 상태 개선 — 공유 PinggoMascot+EmptyState 컴포넌트 생성, VizRenderer/SessionDashboard/StatsView/QuestionList/ParticipantList 7곳 빈 상태에 마스코트+단계별 안내 적용
 2026-03-20 | improve: Admin 키보드 단축키 — useAdminKeyboardShortcuts 훅 생성, ←→ 질문 이동, Space 다음, R 정답공개, L 리더보드, Esc 대기. 빠른 진행 카드에 kbd 힌트 배지 표시
 2026-03-20 | improve: 완료 세션 인사이트 — ClassSummary에 질문별 정답률, 평균 정답률, 가장 어려운 질문 하이라이트, 응답률 미니바 추가. 강사가 수업 후 어떤 질문이 어려웠는지 즉시 파악 가능
+2026-03-20 | improve: 리액션 바 업그레이드 — 5종 리액션에 고유 색상 피드백(탭 시만), 파티클 버스트 애니메이션, 스케일+로테이션 마이크로인터랙션, 하트 filled 아이콘, 컬러 버블 오버레이. 대기 상태는 slate 모노크로매틱 유지
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 

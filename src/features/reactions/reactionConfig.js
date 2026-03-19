@@ -1,43 +1,67 @@
 import { ThumbsUp, Flame, Heart, Laugh, PartyPopper } from 'lucide-react';
 
-const SHARED_STYLES = {
-  buttonClass: 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700',
-  activeClass: 'border-slate-400 bg-slate-100 text-slate-700 shadow-sm',
-  bubbleBg: 'bg-slate-100',
-  bubbleBorder: 'border-slate-200/60',
-  bubbleIcon: 'text-slate-700',
-};
+// Resting state: all monochromatic slate (no color)
+// Active/flash state: each reaction gets a subtle tint for feedback
+// Bubble overlay: each reaction gets a soft tint for visual variety
+
+const SHARED_BUTTON = 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700';
 
 export const REACTIONS = [
   {
     type: 'thumbsup',
     icon: ThumbsUp,
     label: '좋아요',
-    ...SHARED_STYLES,
+    buttonClass: SHARED_BUTTON,
+    activeClass: 'border-slate-400 bg-slate-900 text-white shadow-sm',
+    bubbleBg: 'bg-slate-100',
+    bubbleBorder: 'border-slate-200/60',
+    bubbleIcon: 'text-slate-800',
+    // For programmatic color in particles
+    accentColor: '#334155', // slate-700
   },
   {
     type: 'fire',
     icon: Flame,
     label: '불꽃',
-    ...SHARED_STYLES,
+    buttonClass: SHARED_BUTTON,
+    activeClass: 'border-orange-300 bg-orange-50 text-orange-600 shadow-sm',
+    bubbleBg: 'bg-orange-50',
+    bubbleBorder: 'border-orange-200/60',
+    bubbleIcon: 'text-orange-600',
+    accentColor: '#EA580C', // orange-600
   },
   {
     type: 'heart',
     icon: Heart,
     label: '하트',
-    ...SHARED_STYLES,
+    buttonClass: SHARED_BUTTON,
+    activeClass: 'border-rose-300 bg-rose-50 text-rose-500 shadow-sm',
+    bubbleBg: 'bg-rose-50',
+    bubbleBorder: 'border-rose-200/60',
+    bubbleIcon: 'text-rose-500',
+    accentColor: '#F43F5E', // rose-500
   },
   {
     type: 'laugh',
     icon: Laugh,
     label: '웃음',
-    ...SHARED_STYLES,
+    buttonClass: SHARED_BUTTON,
+    activeClass: 'border-amber-300 bg-amber-50 text-amber-600 shadow-sm',
+    bubbleBg: 'bg-amber-50',
+    bubbleBorder: 'border-amber-200/60',
+    bubbleIcon: 'text-amber-600',
+    accentColor: '#D97706', // amber-600
   },
   {
     type: 'clap',
     icon: PartyPopper,
     label: '박수',
-    ...SHARED_STYLES,
+    buttonClass: SHARED_BUTTON,
+    activeClass: 'border-violet-300 bg-violet-50 text-violet-600 shadow-sm',
+    bubbleBg: 'bg-violet-50',
+    bubbleBorder: 'border-violet-200/60',
+    bubbleIcon: 'text-violet-600',
+    accentColor: '#7C3AED', // violet-600
   },
 ];
 
