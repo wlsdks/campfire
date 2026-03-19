@@ -75,6 +75,8 @@ export default function StudentBottomBar({ sessionId }) {
       {/* Chat panel */}
       <ChatPanel
         sessionId={sessionId}
+        senderName={getNickname() || '익명'}
+        senderType="student"
         open={showChat}
         onClose={() => setShowChat(false)}
         onNewMessage={handleNewMessage}

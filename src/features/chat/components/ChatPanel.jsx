@@ -42,16 +42,25 @@ function ChatMessage({ msg, isOwn }) {
   );
 }
 
-export default function ChatPanel({ sessionId, senderName, senderType, open, onClose }) {
+export default function ChatPanel({ sessionId, senderName, senderType, open, onClose, onNewMessage }) {
   const { messages, sendMessage, loading, canSend } = useChat(sessionId);
   const [inputText, setInputText] = useState('');
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const prevCountRef = useRef(0);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages.length]);
+
+  // Notify parent of new messages when panel is closed
+  useEffect(() => {
+    if (messages.length > prevCountRef.current && !open && onNewMessage) {
+      onNewMessage();
+    }
+    prevCountRef.current = messages.length;
+  }, [messages.length, open, onNewMessage]);
 
   useEffect(() => {
     if (open) {
@@ -117,7 +126,11 @@ export default function ChatPanel({ sessionId, senderName, senderType, open, onC
                 <div className="flex-1 flex items-center justify-center">
                   <p className="text-sm text-slate-300 text-center leading-relaxed">
                     아직 메시지가 없습니다<br />
-                    <span className="text-xs">학생들과 실시간으로 소통하세요</span>
+                    <span className="text-xs">
+                      {senderType === 'instructor'
+                        ? '학생들과 실시간으로 소통하세요'
+                        : '강사와 학생들에게 메시지를 보내세요'}
+                    </span>
                   </p>
                 </div>
               )}
