@@ -2,6 +2,7 @@ import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import { Check, Ticket, X } from 'lucide-react';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
+import ConfettiBurst from './ConfettiBurst';
 
 function CountUp({ value, prefix = '+', suffix = '점' }) {
   const motionVal = useMotionValue(0);
@@ -25,19 +26,22 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 280, damping: 28 }}
-      className="w-full rounded-xl border border-slate-200 bg-white px-5 py-8 shadow-sm"
+      className="w-full rounded-xl border border-slate-200 bg-white px-5 py-8 shadow-sm overflow-hidden relative"
     >
-      <div className="flex flex-col items-center gap-4">
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.12, type: 'spring', stiffness: 340, damping: 22 }}
-        >
-          {isCorrect
-            ? <Check size={36} className="text-slate-800" strokeWidth={2.5} />
-            : <X size={36} className="text-slate-400" strokeWidth={2.5} />
-          }
-        </motion.div>
+      {isCorrect && <ConfettiBurst />}
+      <div className="flex flex-col items-center gap-4 relative z-[1]">
+        <div className="relative">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.12, type: 'spring', stiffness: 340, damping: 22 }}
+          >
+            {isCorrect
+              ? <Check size={36} className="text-slate-800" strokeWidth={2.5} />
+              : <X size={36} className="text-slate-400" strokeWidth={2.5} />
+            }
+          </motion.div>
+        </div>
 
         <div className="space-y-1 text-center">
           <p className={`text-2xl font-bold ${isCorrect ? 'text-slate-900' : 'text-slate-500'}`}>

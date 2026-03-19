@@ -209,6 +209,7 @@ git push origin background-improve
 2026-03-20 | improve: 접근성 감사 — 전체 앱 aria 속성 감사 및 적용. aria-label: 아이콘 전용 버튼(채팅/타이머/뒤로가기), 모든 input/textarea에 추가. role: progressbar(참여율 바 2곳), alert(에러 메시지 5곳), status+aria-live(토스트 3곳), log(JoinToast), toolbar(학생 하단바), dialog aria-label(모달). aria-expanded: 아코디언 버튼, 타이머 팝업. aria-pressed: 손들기/채팅 토글. focus-visible: Button/IconButton focus→focus-visible 변경(키보드 전용 포커스 링). aria-hidden: 장식 SVG 마스코트 3곳. group role: 객관식/OX 선택지 그룹화
 2026-03-20 | improve: 학생 질문 진행 표시 — VotePage 질문 헤더에 "질문 1/3" 텍스트 + 슬레이트 진행 바 추가. order 기준 정렬, useMemo로 계산, spring 애니메이션. 학생이 현재 진행 상황을 즉시 파악. TimerExpiredOverlay 서브컴포넌트 추출로 VotePage 본체 200줄 이하 유지
 2026-03-20 | improve: 질문 순서 변경 — QuestionList에 위/아래 화살표 버튼 추가, QuestionManager에 Firebase order 필드 스왑 로직 구현. CourseEditor(강의 템플릿 편집)에도 동일 적용. 첫/마지막 질문은 해당 방향 비활성화. Framer Motion layout 애니메이션으로 부드러운 순서 전환. 읽기전용 세션에서는 화살표 미표시
+2026-03-20 | improve: 퀴즈 정답 축하 이펙트 — ConfettiBurst 컴포넌트 신설(114줄). 정답 시 24개 슬레이트 파티클(원/사각/다이아몬드)이 체크마크 주변에서 폭발. Framer Motion SVG 순수 구현(외부 의존성 없음), seededRandom으로 deterministic 배치, 1.2초 후 자동 언마운트. QuizResult 카드 overflow-hidden으로 파티클을 카드 경계 내에 제한. 오답 시에는 렌더링하지 않음
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 
