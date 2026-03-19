@@ -8,7 +8,6 @@ import { useScores } from '@/features/quiz/api/useScores';
 import { useAdminApprovals } from '@/features/session/api/useAdminApprovals';
 import AdminLogin from './AdminLogin';
 import SessionDashboard from './SessionDashboard';
-import CourseEditor from './CourseEditor';
 import QuestionManager from './QuestionManager';
 import QuestionForm from './QuestionForm';
 import ParticipantList from '@/features/participants/components/ParticipantList';
@@ -21,7 +20,7 @@ import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
 import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import { Radio, Loader2, Monitor, Target, Ticket, Trophy, X, Users, Copy, Check, ArrowLeft, PanelLeftClose, PanelLeftOpen, Square } from 'lucide-react';
+import { Radio, Loader2, Monitor, Target, Ticket, Trophy, X, Users, Copy, Check, ArrowLeft, PanelLeftClose, PanelLeftOpen, Square, Play } from 'lucide-react';
 import { useTimer } from '@/features/timer/api/useTimer';
 import TimerControls from '@/features/timer/components/TimerControls';
 import TimerRing from '@/features/timer/components/TimerRing';
@@ -102,9 +101,7 @@ export default function AdminPage() {
   const { isRunning: timerRunning, endTime, duration, startTimer, stopTimer } = useTimer(sessionId);
   const { pendingAdmins, pendingCount, approveAdmin, rejectAdmin } = useAdminApprovals();
 
-  // Feature 2: Course Editor state
-  const [courseEditorId, setCourseEditorId] = useState(() => getUrlParam('edit') || null);
-  const [courseEditorName, setCourseEditorName] = useState(() => getUrlParam('editName') || '');
+  const isSetting = session?.status === 'setting';
 
   // Feature 4: Collapsible sidebar
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -168,22 +165,18 @@ export default function AdminPage() {
     }
   }
 
-  // Feature 2: Course editor handlers
-  function handleEditCourse(templateId, name) {
-    setCourseEditorId(templateId);
-    setCourseEditorName(name);
-    setUrlParams({ edit: templateId, editName: name });
+  // Start session (setting → active)
+  async function handleStartSession() {
+    try {
+      await update(ref(db, `sessions/${sessionId}`), { status: 'active' });
+    } catch {
+      // Silently fail
+    }
   }
 
-  function handleCourseEditorBack() {
-    setCourseEditorId(null);
-    setCourseEditorName('');
-    setUrlParams({});
-  }
-
-  // Feature 3: End session
+  // End session
   async function handleEndSession() {
-    if (!window.confirm('클래스를 종료하시겠습니까? 종료 후에는 학생 참여가 불가합니다.')) return;
+    if (!window.confirm('클래스를 종료하시겠습니까? 종료 후 학생들은 더 이상 참여할 수 없습니다.')) return;
     try {
       await update(ref(db, `sessions/${sessionId}`), {
         status: 'ended',
@@ -227,17 +220,6 @@ export default function AdminPage() {
   // 1. Not authenticated → Login
   if (!adminUser) return <AdminLogin onLogin={handleLogin} />;
 
-  // 2a. Course Editor view
-  if (courseEditorId) {
-    return (
-      <CourseEditor
-        courseId={courseEditorId}
-        courseName={courseEditorName}
-        onBack={handleCourseEditorBack}
-      />
-    );
-  }
-
   // 2. No session selected → Dashboard
   if (!sessionId) {
     return (
@@ -250,7 +232,6 @@ export default function AdminPage() {
         pendingCount={pendingCount}
         approveAdmin={approveAdmin}
         rejectAdmin={rejectAdmin}
-        onEditCourse={handleEditCourse}
       />
     );
   }
@@ -337,7 +318,8 @@ export default function AdminPage() {
           <Radio size={18} className="text-indigo-600" />
           <span className="font-bold text-slate-900">Pinggo</span>
           <span className="text-xs text-slate-400 font-mono">{sessionId}</span>
-          {readOnly && <Badge variant="neutral">결과 조회</Badge>}
+          {readOnly && <Badge variant="neutral">클래스 확인</Badge>}
+          {isSetting && <Badge variant="warning" className="py-1 px-2.5 text-xs font-semibold text-amber-600 bg-amber-50 border-amber-200">세팅중</Badge>}
         </div>
         <div className="flex items-center gap-3">
           {timerRunning && <TimerRing endTime={endTime} duration={duration} onExpire={stopTimer} size="sm" />}
@@ -347,7 +329,13 @@ export default function AdminPage() {
           </Badge>
           {totalTickets > 0 && <Badge variant="neutral" className="py-2 px-3.5 text-sm">{totalTickets}장 티켓</Badge>}
           {session?.pendingEvent?.label && <Badge variant="primary" className="py-2 px-3.5 text-sm">{session.pendingEvent.label}</Badge>}
-          {!readOnly && (
+          {!readOnly && isSetting && (
+            <Button onClick={handleStartSession} variant="primary" size="sm">
+              <Play size={18} />
+              시작하기
+            </Button>
+          )}
+          {!readOnly && !isSetting && (
             <>
               <Button onClick={() => setPresentMode(true)} variant="primary" size="sm">
                 <Monitor size={18} />

@@ -323,6 +323,42 @@ function LoginView({ onLogin, onSwitchToRegister }) {
             계정이 없으신가요? <span className="font-medium text-slate-700">회원가입</span>
           </button>
         </motion.div>
+
+        {/* Demo login */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.7 }}
+        >
+          <div className="border-t border-slate-100 pt-4">
+            <button
+              type="button"
+              onClick={async () => {
+                setSubmitting(true);
+                setError('');
+                try {
+                  sessionStorage.setItem(
+                    'pinggo_admin',
+                    JSON.stringify({
+                      uid: 'demo',
+                      username: 'demo',
+                      displayName: '데모 사용자',
+                      role: 'admin',
+                    })
+                  );
+                  onLogin();
+                } catch {
+                  setError('데모 로그인에 실패했습니다');
+                  setSubmitting(false);
+                }
+              }}
+              className="w-full py-2.5 text-sm text-slate-400 hover:text-slate-600 transition-colors"
+              disabled={submitting}
+            >
+              데모로 둘러보기
+            </button>
+          </div>
+        </motion.div>
       </Card>
     </motion.form>
   );

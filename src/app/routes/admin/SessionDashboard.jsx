@@ -5,7 +5,7 @@ import CreateSessionModal from './CreateSessionModal';
 import AdminApproval from './AdminApproval';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import { Plus, Loader2, Calendar, Users, MessageSquare, LogOut, BookOpen, Activity, ChevronDown, ChevronUp, Pencil } from 'lucide-react';
+import { Plus, Loader2, Users, MessageSquare, LogOut, ChevronDown, ChevronUp } from 'lucide-react';
 
 function PinggoMascotSmall() {
   return (
@@ -53,60 +53,43 @@ function formatDate(timestamp) {
 }
 
 function SessionRow({ session, onClick, index }) {
+  const isSetting = session.status === 'setting';
   const isActive = session.status === 'active';
 
   return (
     <motion.button
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, delay: index * 0.03 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.2, delay: index * 0.02 }}
       onClick={onClick}
-      className="w-full flex items-center gap-4 p-3.5 rounded-xl hover:bg-slate-50 transition-all text-left group"
+      className="w-full flex items-center gap-4 px-5 py-3.5 text-left transition-all hover:bg-indigo-50/40 group"
     >
-      {/* Round badge */}
-      <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
-        <span className="text-sm font-bold text-slate-600">
-          {session.roundNumber ? `${session.roundNumber}차` : '-'}
+      <span className={`text-sm font-bold w-8 shrink-0 ${isSetting ? 'text-amber-500' : isActive ? 'text-indigo-600' : 'text-slate-400'}`}>
+        {session.roundNumber ? `${session.roundNumber}차` : '—'}
+      </span>
+      <span className="text-sm text-slate-500 w-32 shrink-0">{formatDate(session.createdAt)}</span>
+      <div className="flex items-center gap-1 flex-1 text-xs text-slate-400">
+        <span className="font-medium text-slate-500">{session.participantCount}</span>명 접속
+        <span className="mx-1">·</span>
+        <span className="font-medium text-slate-500">{session.activeCount || 0}</span>명 참여
+        <span className="mx-1">·</span>
+        <span className="font-medium text-slate-500">{session.questionCount}</span>개 질문
+      </div>
+      {isSetting ? (
+        <span className="text-xs font-semibold text-amber-600 shrink-0">세팅중</span>
+      ) : isActive ? (
+        <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 shrink-0">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          진행 중
         </span>
-      </div>
-
-      {/* Info */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="font-mono text-sm text-slate-700">{session.id}</span>
-          {isActive && (
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          )}
-        </div>
-        <div className="flex items-center gap-3 text-slate-400 text-xs mt-0.5">
-          <span className="flex items-center gap-1">
-            <Calendar size={11} />
-            {formatDate(session.createdAt)}
-          </span>
-          <span className="flex items-center gap-1">
-            <Users size={11} />
-            {session.participantCount}명
-          </span>
-          <span className="flex items-center gap-1">
-            <MessageSquare size={11} />
-            {session.questionCount}개
-          </span>
-        </div>
-      </div>
-
-      {/* Activity rate */}
-      <div className="text-right shrink-0">
-        <div className="flex items-center gap-1 text-slate-600">
-          <Activity size={13} />
-          <span className="text-sm font-semibold">{session.activityRate}%</span>
-        </div>
-        <span className="text-xs text-slate-400">참여율</span>
-      </div>
+      ) : (
+        <span className="text-xs text-slate-400 shrink-0">완료</span>
+      )}
     </motion.button>
   );
 }
 
-function CourseGroup({ name, sessions, onSelect, startIndex, onEditCourse }) {
+function CourseGroup({ name, sessions, onSelect, startIndex }) {
   const [collapsed, setCollapsed] = useState(false);
 
   // Find the courseTemplateId from any session in this group
@@ -130,51 +113,43 @@ function CourseGroup({ name, sessions, onSelect, startIndex, onEditCourse }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="bg-white rounded-xl border border-slate-100 overflow-hidden"
+      className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm"
     >
       {/* Course header */}
-      <div className="flex items-center justify-between p-4 hover:bg-slate-50/50 transition-colors">
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="flex items-center gap-3 flex-1 text-left"
-        >
-          <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center">
-            <BookOpen size={20} className="text-slate-600" />
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        className="w-full text-left px-5 py-5 transition-colors hover:bg-slate-50/50"
+      >
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-lg font-bold text-slate-900">{name}</h3>
+          {collapsed ? <ChevronDown size={16} className="text-slate-400" /> : <ChevronUp size={16} className="text-slate-400" />}
+        </div>
+        <div className="flex items-center gap-6">
+          <div>
+            <span className="text-2xl font-bold text-slate-900">{stats.rounds}</span>
+            <span className="text-xs text-slate-400 ml-1">차수</span>
           </div>
           <div>
-            <h3 className="font-bold text-slate-900 text-base">{name}</h3>
-            <div className="flex items-center gap-3 text-xs text-slate-400 mt-0.5">
-              <span>{stats.rounds}개 차수</span>
-              <span>총 {stats.totalParticipants}명</span>
-              <span>평균 참여율 {stats.avgActivity}%</span>
+            <span className="text-2xl font-bold text-slate-900">{stats.totalParticipants}</span>
+            <span className="text-xs text-slate-400 ml-1">명</span>
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-xs text-slate-400">평균 참여율</span>
+              <span className="text-sm font-bold text-slate-700">{stats.avgActivity}%</span>
+            </div>
+            <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-indigo-500 rounded-full transition-all duration-500"
+                style={{ width: `${stats.avgActivity}%` }}
+              />
             </div>
           </div>
-        </button>
-        <div className="flex items-center gap-1">
-          {courseTemplateId && onEditCourse && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onEditCourse(courseTemplateId, name);
-              }}
-              className="p-2 rounded-lg text-slate-300 hover:text-slate-600 hover:bg-slate-100 transition-all"
-              title="템플릿 편집"
-              aria-label="강의 템플릿 편집"
-            >
-              <Pencil size={16} />
-            </button>
-          )}
-          <button
-            onClick={() => setCollapsed(!collapsed)}
-            className="p-2 rounded-lg text-slate-400 hover:bg-slate-100 transition-colors"
-          >
-            {collapsed ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
-          </button>
         </div>
-      </div>
+      </button>
 
       {/* Session list */}
-      {!collapsed && (
+      {!collapsed && sessions.length > 0 && (
         <div className="border-t border-slate-100 divide-y divide-slate-50">
           {sessions.map((session, i) => (
             <SessionRow
@@ -198,12 +173,12 @@ function UngroupedSessions({ sessions, onSelect, startIndex }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="bg-white rounded-xl border border-slate-100 overflow-hidden"
     >
-      <div className="p-4 border-b border-slate-100">
-        <h3 className="font-bold text-slate-500 text-sm">미분류 클래스</h3>
-      </div>
-      <div className="divide-y divide-slate-50">
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="px-5 py-3 border-b border-slate-100">
+          <span className="text-sm font-semibold text-slate-500">미분류 클래스</span>
+        </div>
+        <div className="bg-slate-50/50 divide-y divide-slate-100">
         {sessions.map((session, i) => (
           <SessionRow
             key={session.id}
@@ -212,12 +187,13 @@ function UngroupedSessions({ sessions, onSelect, startIndex }) {
             index={startIndex + i}
           />
         ))}
+        </div>
       </div>
     </motion.div>
   );
 }
 
-export default function SessionDashboard({ onSelectSession, onLogout, adminUser, isMaster, pendingAdmins, pendingCount, approveAdmin, rejectAdmin, onEditCourse }) {
+export default function SessionDashboard({ onSelectSession, onLogout, adminUser, isMaster, pendingAdmins, pendingCount, approveAdmin, rejectAdmin }) {
   const { sessions, loading, refresh } = useSessionList();
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -297,7 +273,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
       </div>
 
       {/* Content */}
-      <div className="flex-1 max-w-2xl mx-auto w-full px-6 py-8 space-y-4">
+      <div className="flex-1 max-w-2xl mx-auto w-full px-6 py-6 space-y-3">
         {/* Create button */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
@@ -327,7 +303,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
             <p className="text-slate-300 text-xs mt-1">첫 번째 클래스를 만들어보세요</p>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-2">
             {courseGroups.map(([name, list], gi) => (
               <CourseGroup
                 key={name}
@@ -335,7 +311,6 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
                 sessions={list}
                 onSelect={handleSelect}
                 startIndex={gi * 10}
-                onEditCourse={onEditCourse}
               />
             ))}
             <UngroupedSessions

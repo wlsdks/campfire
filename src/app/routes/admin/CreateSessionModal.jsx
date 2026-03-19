@@ -2,55 +2,29 @@ import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
-import { generateSessionId, generateQuestionId } from '@/lib/utils';
-import { getCourseTemplateQuestions } from '@/features/session/api/useCourseTemplate';
+import { generateSessionId } from '@/lib/utils';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 import { Plus, BookOpen, ChevronRight, Loader2, AlertCircle } from 'lucide-react';
 
-/** Fields to keep when copying template questions into a new session */
-const TEMPLATE_KEEP_FIELDS = [
-  'type', 'title', 'options', 'correctAnswer', 'order',
-  'points', 'maxSpeedBonus', 'speedWindowMs',
-  'participationTickets', 'correctBonusTickets',
-];
-
-function stripTemplateQuestion(q) {
-  const clean = {};
-  TEMPLATE_KEEP_FIELDS.forEach((key) => {
-    if (q[key] !== undefined) clean[key] = q[key];
-  });
-  return clean;
-}
-
-function generateCourseTemplateId() {
-  return 'ct_' + crypto.randomUUID().slice(0, 8);
-}
-
 export default function CreateSessionModal({ open, onClose, onCreated, sessions }) {
   const [step, setStep] = useState('course'); // 'course' | 'new-course' | 'confirm'
   const [selectedCourse, setSelectedCourse] = useState('');
-  const [selectedCourseTemplateId, setSelectedCourseTemplateId] = useState(null);
   const [newCourseName, setNewCourseName] = useState('');
   const [roundNumber, setRoundNumber] = useState(1);
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState(null);
 
-  // Extract unique course names from existing sessions
   const courses = useMemo(() => {
     const courseMap = {};
     sessions.forEach((s) => {
       if (!s.courseName) return;
       if (!courseMap[s.courseName]) {
-        courseMap[s.courseName] = { name: s.courseName, count: 0, maxRound: 0, courseTemplateId: null };
+        courseMap[s.courseName] = { name: s.courseName, count: 0, maxRound: 0 };
       }
       courseMap[s.courseName].count++;
       if (s.roundNumber > courseMap[s.courseName].maxRound) {
         courseMap[s.courseName].maxRound = s.roundNumber;
-      }
-      // Take the courseTemplateId from any session in this course
-      if (s.courseTemplateId && !courseMap[s.courseName].courseTemplateId) {
-        courseMap[s.courseName].courseTemplateId = s.courseTemplateId;
       }
     });
     return Object.values(courseMap).sort((a, b) => b.count - a.count);
@@ -58,7 +32,6 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
 
   function handleSelectCourse(course) {
     setSelectedCourse(course.name);
-    setSelectedCourseTemplateId(course.courseTemplateId || null);
     setRoundNumber(course.maxRound + 1);
     setStep('confirm');
   }
@@ -71,7 +44,6 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
   function handleNewCourseSubmit() {
     if (!newCourseName.trim()) return;
     setSelectedCourse(newCourseName.trim());
-    setSelectedCourseTemplateId(null); // new course, will generate on create
     setRoundNumber(1);
     setStep('confirm');
   }
@@ -79,7 +51,6 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
   function handleReset() {
     setStep('course');
     setSelectedCourse('');
-    setSelectedCourseTemplateId(null);
     setNewCourseName('');
     setRoundNumber(1);
     setError(null);
@@ -90,44 +61,19 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
       setError(null);
       setCreating(true);
       const newId = generateSessionId();
-
-      // Determine or create courseTemplateId
-      let templateId = selectedCourseTemplateId;
-      if (!templateId) {
-        // New course — create a template entry
-        templateId = generateCourseTemplateId();
-        await set(ref(db, `courseTemplates/${templateId}`), {
-          name: selectedCourse,
-          createdAt: serverTimestamp(),
-        });
-      }
-
-      // Create the session
       await set(ref(db, `sessions/${newId}`), {
-        status: 'active',
+        status: 'setting',
         currentQuestion: null,
         currentMode: 'waiting',
         createdAt: serverTimestamp(),
         courseName: selectedCourse,
         roundNumber,
-        courseTemplateId: templateId,
       });
-
-      // Copy template questions into the new session
-      const templateQuestions = await getCourseTemplateQuestions(templateId);
-      if (templateQuestions) {
-        const entries = Object.entries(templateQuestions);
-        for (const [, q] of entries) {
-          const qId = generateQuestionId();
-          await set(ref(db, `sessions/${newId}/questions/${qId}`), stripTemplateQuestion(q));
-        }
-      }
-
       onCreated(newId);
       handleReset();
       onClose();
     } catch {
-      setError('세션 생성에 실패했습니다.');
+      setError('클래스 등록에 실패했습니다.');
     } finally {
       setCreating(false);
     }
@@ -141,7 +87,6 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
   return (
     <Modal open={open} onClose={handleClose}>
       <AnimatePresence mode="wait">
-        {/* Step 1: Select course */}
         {step === 'course' && (
           <motion.div
             key="course"
@@ -152,7 +97,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
             className="space-y-5"
           >
             <div>
-              <h2 className="text-xl font-bold text-slate-900">새 세션 만들기</h2>
+              <h2 className="text-xl font-bold text-slate-900">새 클래스 등록</h2>
               <p className="text-slate-400 text-sm mt-1">강의를 선택하세요</p>
             </div>
 
@@ -189,7 +134,6 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
           </motion.div>
         )}
 
-        {/* Step 2: New course name */}
         {step === 'new-course' && (
           <motion.div
             key="new-course"
@@ -210,7 +154,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
               onChange={(e) => setNewCourseName(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleNewCourseSubmit()}
               placeholder="예: 바이브 코딩 기초편"
-              className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-4 py-3.5 text-base placeholder:text-slate-300 focus:outline-none focus:bg-white focus:border-indigo-400 focus:shadow-[0_0_0_3px_rgba(79,70,229,0.1)] transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base placeholder:text-slate-300 focus:outline-none focus:bg-white focus:border-slate-400 transition-all"
               autoFocus
             />
 
@@ -231,7 +175,6 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
           </motion.div>
         )}
 
-        {/* Step 3: Confirm */}
         {step === 'confirm' && (
           <motion.div
             key="confirm"
@@ -242,8 +185,8 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
             className="space-y-5"
           >
             <div>
-              <h2 className="text-xl font-bold text-slate-900">세션 확인</h2>
-              <p className="text-slate-400 text-sm mt-1">정보를 확인하고 생성하세요</p>
+              <h2 className="text-xl font-bold text-slate-900">클래스 확인</h2>
+              <p className="text-slate-400 text-sm mt-1">정보를 확인하고 등록하세요</p>
             </div>
 
             <div className="bg-slate-50 rounded-xl p-4 space-y-3">
@@ -299,7 +242,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
                 disabled={creating}
               >
                 {creating ? <Loader2 size={18} className="animate-spin" /> : <Plus size={18} />}
-                {creating ? '생성 중...' : '세션 시작'}
+                {creating ? '등록 중...' : '클래스 등록'}
               </Button>
             </div>
           </motion.div>

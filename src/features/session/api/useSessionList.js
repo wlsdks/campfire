@@ -53,6 +53,7 @@ export function useSessionList() {
           participantCount,
           questionCount,
           activityRate,
+          activeCount,
           courseName: session.courseName || null,
           roundNumber: session.roundNumber || null,
           courseTemplateId: session.courseTemplateId || null,
