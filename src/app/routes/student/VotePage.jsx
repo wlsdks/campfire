@@ -5,18 +5,16 @@ import QuizVoter from '@/features/voting/components/QuizVoter';
 import TextInput from '@/features/voting/components/TextInput';
 import WaitingPage from './WaitingPage';
 import LeaderboardPage from './LeaderboardPage';
-import ConnectionDot from '@/components/ui/ConnectionDot';
+import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
 import Badge from '@/components/ui/Badge';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import QuizResult from '@/features/quiz/components/QuizResult';
 import { SkeletonCard } from '@/components/ui/Skeleton';
 import { motion } from 'framer-motion';
-import { Loader2, Trophy } from 'lucide-react';
-import { useScores } from '@/features/quiz/api/useScores';
+import { Loader2 } from 'lucide-react';
 import { useTimer } from '@/features/timer/api/useTimer';
 import TimerRing from '@/features/timer/components/TimerRing';
-import { getParticipantId } from '@/lib/participant';
 import { getQuizReward } from '@/lib/quiz';
 
 const TYPE_LABELS = {
@@ -49,8 +47,6 @@ function QuizResultFromVote({ question, currentVote }) {
 export default function VotePage({ sessionId }) {
   const { session, loading } = useSession(sessionId);
   const { isRunning: timerRunning, endTime, duration } = useTimer(sessionId);
-  const { scores } = useScores(sessionId);
-  const myScore = scores[getParticipantId()];
 
   if (loading) {
     return (
@@ -80,20 +76,7 @@ export default function VotePage({ sessionId }) {
 
   return (
     <div className="min-h-dvh bg-slate-50 flex flex-col items-center justify-center p-4 pb-36 pt-16">
-      {/* Top bar */}
-      <div className="fixed top-0 left-0 right-0 z-20 bg-white/80 backdrop-blur-sm border-b border-slate-100 px-4 py-2.5">
-        <div className="flex items-center justify-between max-w-sm mx-auto">
-          <div className="flex items-center gap-2">
-            <ConnectionDot />
-            {myScore && (
-              <span className="text-xs font-medium text-slate-500 flex items-center gap-1">
-                <Trophy size={12} className="text-amber-500" />
-                {myScore.total || 0}점
-              </span>
-            )}
-          </div>
-        </div>
-      </div>
+      <StudentHeader sessionId={sessionId} />
 
       <div className="w-full max-w-sm space-y-4">
           {/* Question header */}

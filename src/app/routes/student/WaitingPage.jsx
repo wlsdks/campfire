@@ -2,11 +2,12 @@ import { motion } from 'framer-motion';
 import { Radio, Users } from 'lucide-react';
 import { useState } from 'react';
 import Lottie from 'lottie-react';
-import ConnectionDot from '@/components/ui/ConnectionDot';
 import Badge from '@/components/ui/Badge';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
+import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
+import { getNickname } from '@/lib/participant';
 
 /** Inline Lottie JSON: 3 dots that pulse in sequence like a typing indicator. */
 const pulsingDotsData = {
@@ -70,13 +71,11 @@ function PulsingDots() {
 
 export default function WaitingPage({ sessionId, pendingEvent = null }) {
   const { count } = useParticipants(sessionId);
+  const nickname = getNickname();
 
   return (
-    <div className="min-h-dvh bg-slate-50 flex flex-col items-center justify-center p-4 pb-32">
-      {/* Connection status */}
-      <div className="fixed top-4 right-4 z-10">
-        <ConnectionDot />
-      </div>
+    <div className="min-h-dvh bg-slate-50 flex flex-col items-center justify-center p-4 pb-32 pt-16">
+      <StudentHeader sessionId={sessionId} />
 
       <div className="text-center space-y-5">
         {/* Broadcasting icon with sonar ring */}
@@ -103,9 +102,12 @@ export default function WaitingPage({ sessionId, pendingEvent = null }) {
           </motion.div>
         </div>
 
-        {/* Status text */}
+        {/* Greeting + Status text */}
         <div className="space-y-1.5">
-          <p className="text-slate-600 text-lg font-medium">다음 질문을 기다리는 중...</p>
+          {nickname && (
+            <p className="text-slate-900 text-xl font-bold">안녕하세요, {nickname}님!</p>
+          )}
+          <p className="text-slate-500 text-base">다음 질문을 기다리는 중...</p>
           <p className="text-slate-400 text-sm">강사가 질문을 활성화하면 표시됩니다</p>
           <PulsingDots />
         </div>

@@ -1,6 +1,6 @@
 import { Trophy, Ticket } from 'lucide-react';
-import ConnectionDot from '@/components/ui/ConnectionDot';
 import Badge from '@/components/ui/Badge';
+import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
 import { useScores } from '@/features/quiz/api/useScores';
@@ -13,12 +13,10 @@ export default function LeaderboardPage({ sessionId }) {
   const myEntry = myRank > 0 ? leaderboard[myRank - 1] : null;
 
   return (
-    <div className="min-h-dvh bg-slate-50 flex flex-col items-center p-4 pb-32">
-      <div className="fixed top-4 right-4 z-10">
-        <ConnectionDot />
-      </div>
+    <div className="min-h-dvh bg-slate-50 flex flex-col items-center p-4 pb-32 pt-16">
+      <StudentHeader sessionId={sessionId} />
 
-      <div className="w-full max-w-sm space-y-5 mt-4">
+      <div className="w-full max-w-sm space-y-5">
         <div className="bg-white rounded-xl border border-slate-100 shadow-sm p-5 text-center space-y-3">
           <div className="w-14 h-14 rounded-2xl bg-amber-100 flex items-center justify-center mx-auto">
             <Trophy size={28} className="text-amber-600" />
