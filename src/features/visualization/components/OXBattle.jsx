@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
 import { useVotes } from '@/hooks/useVotes';
+import { Check } from 'lucide-react';
 
-export default function OXBattle({ sessionId, questionId }) {
+export default function OXBattle({ sessionId, questionId, correctValue = null, revealed = false }) {
   const { totalVotes, countByValue } = useVotes(sessionId, questionId);
   const oCount = countByValue('O');
   const xCount = countByValue('X');
@@ -9,25 +10,42 @@ export default function OXBattle({ sessionId, questionId }) {
   const xPct = totalVotes > 0 ? (xCount / totalVotes) * 100 : 50;
   const oWinning = oCount > xCount;
   const xWinning = xCount > oCount;
+  const oCorrect = revealed && correctValue === 'O';
+  const xCorrect = revealed && correctValue === 'X';
 
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-6">
+    <div className="w-full max-w-xl mx-auto space-y-6">
       {/* Split display */}
       <div className="flex items-center justify-between text-center">
-        <div className="flex-1 space-y-2">
-          <motion.div
-            key={oCount}
-            initial={{ scale: 1.3 }}
-            animate={{ scale: 1 }}
-            className={`text-7xl font-black ${oWinning ? 'text-indigo-600' : 'text-indigo-400'}`}
-          >
-            O
-          </motion.div>
+        <div className={`flex-1 space-y-2 py-4 rounded-xl transition-all ${oCorrect ? 'bg-indigo-50/50 ring-2 ring-indigo-500/30' : ''}`}>
+          <div className="relative inline-block">
+            <motion.div
+              key={oCount}
+              initial={{ scale: 1.3 }}
+              animate={{ scale: 1 }}
+              className={`text-7xl font-black ${
+                revealed
+                  ? oCorrect ? 'text-indigo-600' : 'text-slate-300'
+                  : oWinning ? 'text-indigo-600' : 'text-indigo-400'
+              }`}
+            >
+              O
+            </motion.div>
+            {oCorrect && (
+              <motion.span
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute -top-1 -right-3 flex items-center justify-center w-6 h-6 rounded-full bg-indigo-600 text-white"
+              >
+                <Check size={14} strokeWidth={3} />
+              </motion.span>
+            )}
+          </div>
           <motion.div
             key={`o-${oCount}`}
             initial={{ scale: 1.15 }}
             animate={{ scale: 1 }}
-            className="text-3xl font-bold text-slate-900"
+            className={`text-3xl font-bold ${oCorrect ? 'text-indigo-700' : 'text-slate-900'}`}
           >
             {oCount}
           </motion.div>
@@ -38,20 +56,35 @@ export default function OXBattle({ sessionId, questionId }) {
           <div className="text-slate-200 text-2xl font-bold">VS</div>
         </div>
 
-        <div className="flex-1 space-y-2">
-          <motion.div
-            key={xCount}
-            initial={{ scale: 1.3 }}
-            animate={{ scale: 1 }}
-            className={`text-7xl font-black ${xWinning ? 'text-slate-700' : 'text-slate-400'}`}
-          >
-            X
-          </motion.div>
+        <div className={`flex-1 space-y-2 py-4 rounded-xl transition-all ${xCorrect ? 'bg-slate-100/80 ring-2 ring-slate-400/30' : ''}`}>
+          <div className="relative inline-block">
+            <motion.div
+              key={xCount}
+              initial={{ scale: 1.3 }}
+              animate={{ scale: 1 }}
+              className={`text-7xl font-black ${
+                revealed
+                  ? xCorrect ? 'text-slate-700' : 'text-slate-300'
+                  : xWinning ? 'text-slate-700' : 'text-slate-400'
+              }`}
+            >
+              X
+            </motion.div>
+            {xCorrect && (
+              <motion.span
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute -top-1 -right-3 flex items-center justify-center w-6 h-6 rounded-full bg-slate-700 text-white"
+              >
+                <Check size={14} strokeWidth={3} />
+              </motion.span>
+            )}
+          </div>
           <motion.div
             key={`x-${xCount}`}
             initial={{ scale: 1.15 }}
             animate={{ scale: 1 }}
-            className="text-3xl font-bold text-slate-900"
+            className={`text-3xl font-bold ${xCorrect ? 'text-slate-800' : 'text-slate-900'}`}
           >
             {xCount}
           </motion.div>

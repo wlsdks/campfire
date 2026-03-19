@@ -69,7 +69,7 @@ function ClassSummary({ session, participants, leaderboard, count }) {
   const topStudent = leaderboard.length > 0 ? leaderboard[0] : null;
 
   return (
-    <div className="w-full max-w-xl space-y-6">
+    <div className="w-full max-w-xl mx-auto space-y-6">
       <div className="text-center mb-2">
         <h2 className="text-xl font-bold text-slate-900">클래스 요약</h2>
         <p className="text-sm text-slate-400 mt-1">
@@ -444,11 +444,12 @@ export default function AdminPage() {
 
         {/* Left sidebar */}
         <motion.div
-          animate={{ width: sidebarCollapsed ? 0 : 460 }}
+          animate={{ width: sidebarCollapsed ? 0 : '28%' }}
           transition={{ duration: 0.25, ease: 'easeInOut' }}
-          className="border-r border-slate-200 bg-white overflow-hidden shrink-0"
+          className="border-r border-slate-200 bg-white overflow-hidden shrink-0 min-w-0 max-w-[460px]"
+          style={sidebarCollapsed ? { width: 0 } : { minWidth: 280 }}
         >
-          <div className="w-[460px] p-5 overflow-y-auto h-full flex flex-col">
+          <div className="min-w-[280px] p-5 overflow-y-auto h-full flex flex-col">
             <QuestionManager
               onCollapse={effectiveReadOnly ? undefined : () => setSidebarCollapsed(true)}
               sessionId={sessionId}
@@ -524,7 +525,7 @@ export default function AdminPage() {
         </motion.div>
 
         {/* Center */}
-        <div className="flex-1 p-8 flex items-center justify-center overflow-auto relative">
+        <div className="flex-1 min-w-0 p-8 overflow-auto relative">
           <AnimatePresence mode="wait">
             {showCenterForm ? (
               <motion.div
@@ -533,7 +534,7 @@ export default function AdminPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
                 transition={{ duration: 0.2 }}
-                className="w-full max-w-2xl"
+                className="w-full max-w-2xl mx-auto"
               >
                 <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
                   <div className="flex items-center justify-between mb-6">
@@ -563,6 +564,7 @@ export default function AdminPage() {
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15 }}
+                className="w-full h-full flex items-center"
               >
                 {effectiveReadOnly && !session?.currentQuestion ? (
                   <ClassSummary
@@ -588,11 +590,12 @@ export default function AdminPage() {
 
         {/* Right sidebar */}
         <motion.div
-          animate={{ width: sidebarCollapsed ? 0 : 460 }}
+          animate={{ width: sidebarCollapsed ? 0 : '28%' }}
           transition={{ duration: 0.25, ease: 'easeInOut' }}
-          className="border-l border-slate-200 bg-white overflow-hidden shrink-0"
+          className="border-l border-slate-200 bg-white overflow-hidden shrink-0 min-w-0 max-w-[460px]"
+          style={sidebarCollapsed ? { width: 0 } : { minWidth: 280 }}
         >
-        <div className="w-[460px] p-5 space-y-5 overflow-y-auto h-full">
+        <div className="min-w-[280px] p-5 space-y-5 overflow-y-auto h-full">
           {effectiveReadOnly ? (
             <>
               <div className="flex items-center gap-2">

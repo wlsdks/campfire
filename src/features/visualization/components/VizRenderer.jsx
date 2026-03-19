@@ -35,6 +35,9 @@ export default function VizRenderer({ sessionId, session }) {
   if (!question) return null;
 
   const isQA = question.type === 'qna';
+  const isEnded = session?.status === 'ended';
+  const hasCorrectAnswer = Boolean(question.correctAnswer);
+  const answerRevealed = Boolean(question.revealedAt) || isEnded;
 
   return (
     <div className={`flex flex-col w-full h-full ${isQA ? 'pt-4' : 'justify-center gap-6'}`}>
@@ -43,9 +46,9 @@ export default function VizRenderer({ sessionId, session }) {
       <div className="text-center space-y-2 self-center">
         <Badge variant="primary">{TYPE_LABELS[question.type] || question.type}</Badge>
         <h2 className="text-3xl font-bold text-slate-900">{question.title}</h2>
-        {isQuizQuestion(question) && (
+        {hasCorrectAnswer && isQuizQuestion(question) && (
           <p className="text-slate-400 text-sm">
-            {question.revealedAt ? `정답 공개: ${question.correctAnswer}` : '정답 공개 전입니다. 먼저 답안을 모아보세요.'}
+            {answerRevealed ? `정답: ${question.correctAnswer}` : '정답 공개 전입니다. 먼저 답안을 모아보세요.'}
           </p>
         )}
       </div>
@@ -53,23 +56,38 @@ export default function VizRenderer({ sessionId, session }) {
 
       {isQuizQuestion(question) && question.event && (
         <div className="w-full max-w-4xl self-center">
-          <QuizEventBanner event={question.event} state={question.revealedAt ? 'result' : 'active'} />
+          <QuizEventBanner event={question.event} state={answerRevealed ? 'result' : 'active'} />
         </div>
       )}
 
       {/* Visualization */}
       <div className={isQA ? 'flex-1 overflow-y-auto px-4 py-3' : 'w-full'}>
-        {question.type === 'choice' && <BarChart sessionId={sessionId} questionId={currentQId} options={question.options || []} />}
+        {question.type === 'choice' && (
+          <BarChart
+            sessionId={sessionId}
+            questionId={currentQId}
+            options={question.options || []}
+            correctValue={question.correctAnswer}
+            revealed={hasCorrectAnswer && answerRevealed}
+          />
+        )}
         {question.type === 'quiz' && (
           <BarChart
             sessionId={sessionId}
             questionId={currentQId}
             options={question.options || []}
             correctValue={question.correctAnswer}
-            revealed={Boolean(question.revealedAt)}
+            revealed={answerRevealed}
           />
         )}
-        {question.type === 'ox' && <OXBattle sessionId={sessionId} questionId={currentQId} />}
+        {question.type === 'ox' && (
+          <OXBattle
+            sessionId={sessionId}
+            questionId={currentQId}
+            correctValue={question.correctAnswer}
+            revealed={hasCorrectAnswer && answerRevealed}
+          />
+        )}
         {question.type === 'wordcloud' && <WordCloud sessionId={sessionId} questionId={currentQId} />}
         {isQA && <QACards sessionId={sessionId} questionId={currentQId} title={question.title} />}
       </div>

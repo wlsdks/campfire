@@ -35,7 +35,11 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
       setLocalError('최소 2개의 선택지가 필요합니다.');
       return;
     }
-    if (type === 'quiz' && !correctAnswer) {
+    if ((type === 'quiz' || type === 'choice') && !correctAnswer) {
+      setLocalError('정답을 선택해주세요.');
+      return;
+    }
+    if (type === 'ox' && !correctAnswer) {
       setLocalError('정답을 선택해주세요.');
       return;
     }
@@ -149,9 +153,9 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
         )}
       </AnimatePresence>
 
-      {/* Quiz: correct answer */}
+      {/* Correct answer for choice-like types */}
       <AnimatePresence>
-        {type === 'quiz' && (
+        {isChoiceLike && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
@@ -180,9 +184,43 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
                   );
                 })}
             </div>
-            <p className="text-xs text-slate-400">
-              기본 {QUIZ_DEFAULTS.points}점 + 속도 보너스 · 참여 티켓 {QUIZ_DEFAULTS.participationTickets}장 · 정답 보너스 {QUIZ_DEFAULTS.correctBonusTickets}장
-            </p>
+            {type === 'quiz' && (
+              <p className="text-xs text-slate-400">
+                기본 {QUIZ_DEFAULTS.points}점 + 속도 보너스 · 참여 티켓 {QUIZ_DEFAULTS.participationTickets}장 · 정답 보너스 {QUIZ_DEFAULTS.correctBonusTickets}장
+              </p>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* O/X correct answer */}
+      <AnimatePresence>
+        {type === 'ox' && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+          >
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">정답 선택</p>
+            <div className="flex gap-2">
+              {['O', 'X'].map((val) => {
+                const isCorrect = correctAnswer === val;
+                return (
+                  <button
+                    key={val}
+                    onClick={() => { setCorrectAnswer(val); setLocalError(null); }}
+                    className={`flex-1 py-3 rounded-lg text-lg font-bold transition-all flex items-center justify-center gap-2 ${
+                      isCorrect
+                        ? 'bg-slate-900 text-white'
+                        : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+                    }`}
+                  >
+                    {isCorrect && <Check size={16} />}
+                    {val}
+                  </button>
+                );
+              })}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

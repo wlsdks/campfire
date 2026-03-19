@@ -62,9 +62,12 @@ export default function QuestionManager({
 
       if (isChoiceLike) {
         questionData.options = cleanOptions;
+        questionData.correctAnswer = cleanOptions.includes(correctAnswer) ? correctAnswer : cleanOptions[0];
+      }
+      if (type === 'ox') {
+        questionData.correctAnswer = correctAnswer || 'O';
       }
       if (type === 'quiz') {
-        questionData.correctAnswer = cleanOptions.includes(correctAnswer) ? correctAnswer : cleanOptions[0];
         questionData.points = QUIZ_DEFAULTS.points;
         questionData.participationTickets = QUIZ_DEFAULTS.participationTickets;
         questionData.correctBonusTickets = QUIZ_DEFAULTS.correctBonusTickets;
