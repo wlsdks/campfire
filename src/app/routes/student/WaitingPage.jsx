@@ -39,12 +39,12 @@ export default function WaitingPage({ sessionId, pendingEvent = null }) {
         {/* Broadcasting icon with sonar ring */}
         <div className="relative w-12 h-12 mx-auto">
           <motion.div
-            className="absolute inset-0 rounded-full border border-indigo-200"
+            className="absolute inset-0 rounded-full border border-slate-300"
             animate={{ scale: [1, 2], opacity: [0.5, 0] }}
             transition={{ repeat: Infinity, duration: 2.5, ease: 'easeOut' }}
           />
           <motion.div
-            className="absolute inset-0 rounded-full border border-indigo-200"
+            className="absolute inset-0 rounded-full border border-slate-300"
             animate={{ scale: [1, 2], opacity: [0.5, 0] }}
             transition={{ repeat: Infinity, duration: 2.5, ease: 'easeOut', delay: 1.25 }}
           />

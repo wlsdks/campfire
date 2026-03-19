@@ -113,7 +113,7 @@ export default function JoinPage({ sessionId, onJoin }) {
           {/* Submit */}
           <motion.div
             animate={nickname.trim() && !joining ? {
-              boxShadow: ['0 0 0 0 rgba(79,70,229,0)', '0 0 0 4px rgba(79,70,229,0.12)', '0 0 0 0 rgba(79,70,229,0)'],
+              boxShadow: ['0 0 0 0 rgba(15,23,42,0)', '0 0 0 4px rgba(15,23,42,0.08)', '0 0 0 0 rgba(15,23,42,0)'],
             } : {}}
             transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             className="rounded-lg"

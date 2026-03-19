@@ -94,7 +94,7 @@ export default function StudentBottomBar({ sessionId }) {
             placeholder="질문을 입력하세요..."
             maxLength={300}
             rows={3}
-            className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none transition-all"
+            className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 resize-none transition-all"
             autoFocus
           />
           <Button type="submit" variant="primary" size="lg" disabled={!questionText.trim()} className="w-full">
@@ -172,7 +172,7 @@ export default function StudentBottomBar({ sessionId }) {
               <MessageSquare size={16} />
               채팅
               {hasUnread && (
-                <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-indigo-600" />
+                <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500" />
               )}
             </motion.button>
           </div>
