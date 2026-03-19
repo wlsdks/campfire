@@ -1,34 +1,23 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { useRef, useState, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useReactions } from '@/features/reactions/api/useReactions';
 import { REACTIONS } from '@/features/reactions/reactionConfig';
 
-const COOLDOWN_MS = 1500;
+const COOLDOWN_MS = 500;
 
 export default function ReactionBar({ sessionId }) {
   const { sendReaction } = useReactions(sessionId);
   const [lastSent, setLastSent] = useState(null);
-  const [canSend, setCanSend] = useState(true);
-  const flashTimerRef = useRef(null);
-  const cooldownTimerRef = useRef(null);
+  const cooldownRef = useRef(0);
 
-  useEffect(() => () => {
-    if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
-    if (cooldownTimerRef.current) clearTimeout(cooldownTimerRef.current);
-  }, []);
+  const handleReaction = useCallback((type) => {
+    const now = performance.now();
+    if (now - cooldownRef.current < COOLDOWN_MS) return;
+    cooldownRef.current = now;
 
-  const handleReaction = useCallback(async (type) => {
-    if (!canSend) return;
-    const sent = await sendReaction(type);
-    if (sent) {
-      setLastSent(type);
-      setCanSend(false);
-      if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
-      flashTimerRef.current = setTimeout(() => setLastSent(null), 300);
-      if (cooldownTimerRef.current) clearTimeout(cooldownTimerRef.current);
-      cooldownTimerRef.current = setTimeout(() => setCanSend(true), COOLDOWN_MS);
-    }
-  }, [canSend, sendReaction]);
+    setLastSent(type);
+    sendReaction(type);
+  }, [sendReaction]);
 
   return (
     <div className="flex items-center justify-center gap-1.5">
@@ -37,14 +26,25 @@ export default function ReactionBar({ sessionId }) {
         return (
           <motion.button
             key={type}
-            whileTap={{ scale: 0.88 }}
+            whileTap={{ scale: 0.85 }}
             onClick={() => handleReaction(type)}
             aria-label={label}
-            className={`flex h-12 w-12 items-center justify-center rounded-xl border transition-all ${
+            className={`relative flex h-12 w-12 items-center justify-center rounded-xl border transition-colors ${
               isActive ? activeClass : buttonClass
             }`}
           >
             <Icon size={20} />
+            <AnimatePresence>
+              {isActive && (
+                <motion.div
+                  initial={{ scale: 0.5, opacity: 1 }}
+                  animate={{ scale: 2, opacity: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5, ease: 'easeOut' }}
+                  className="absolute inset-0 rounded-xl border border-indigo-300"
+                />
+              )}
+            </AnimatePresence>
           </motion.button>
         );
       })}
