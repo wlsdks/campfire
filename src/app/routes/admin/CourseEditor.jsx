@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, BarChart3, Circle, Cloud, Copy, MessageSquare, Plus, Trash2, Trophy, CheckCircle } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowUp, BarChart3, Circle, Cloud, Copy, MessageSquare, Plus, Trash2, Trophy, CheckCircle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useCourseTemplate } from '@/features/session/api/useCourseTemplate';
 import { generateQuestionId } from '@/lib/utils';
@@ -16,7 +16,7 @@ const QUESTION_TYPES = [
 ];
 
 export default function CourseEditor({ courseId, courseName, onBack }) {
-  const { template, loading, addQuestion, deleteQuestion, duplicateQuestion, refresh } = useCourseTemplate(courseId);
+  const { template, loading, addQuestion, deleteQuestion, duplicateQuestion, swapQuestionOrder, refresh } = useCourseTemplate(courseId);
   const [showForm, setShowForm] = useState(false);
   const [toast, setToast] = useState(null);
   const toastTimerRef = useRef(null);
@@ -72,6 +72,17 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
       order: questionList.length + 1,
     });
     showToast('질문이 복제되었습니다');
+  }
+
+  async function handleMove(qId, direction) {
+    const idx = questionList.findIndex(([id]) => id === qId);
+    if (idx < 0) return;
+    const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+    if (swapIdx < 0 || swapIdx >= questionList.length) return;
+
+    const [currentId, currentQ] = questionList[idx];
+    const [swapId, swapQ] = questionList[swapIdx];
+    await swapQuestionOrder(currentId, currentQ.order ?? idx + 1, swapId, swapQ.order ?? swapIdx + 1);
   }
 
   if (loading) {
@@ -131,12 +142,45 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
             return (
               <motion.div
                 key={qId}
+                layout
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.25, delay: index * 0.03 }}
                 className="p-3 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition-all"
               >
-                <div className="flex items-start justify-between gap-2">
+                <div className="flex items-start gap-2">
+                  {/* Reorder buttons */}
+                  {questionList.length > 1 && (
+                    <div className="flex flex-col shrink-0 -ml-1">
+                      <button
+                        onClick={() => handleMove(qId, 'up')}
+                        disabled={index === 0}
+                        className={`p-0.5 rounded transition-all active:scale-90 ${
+                          index === 0
+                            ? 'text-slate-200 cursor-default'
+                            : 'text-slate-300 hover:bg-slate-100 hover:text-slate-600'
+                        }`}
+                        title="위로 이동"
+                        aria-label="질문 위로 이동"
+                      >
+                        <ArrowUp size={11} />
+                      </button>
+                      <button
+                        onClick={() => handleMove(qId, 'down')}
+                        disabled={index === questionList.length - 1}
+                        className={`p-0.5 rounded transition-all active:scale-90 ${
+                          index === questionList.length - 1
+                            ? 'text-slate-200 cursor-default'
+                            : 'text-slate-300 hover:bg-slate-100 hover:text-slate-600'
+                        }`}
+                        title="아래로 이동"
+                        aria-label="질문 아래로 이동"
+                      >
+                        <ArrowDown size={11} />
+                      </button>
+                    </div>
+                  )}
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 mb-0.5">
                       <span className="text-xs text-slate-400 font-mono">{index + 1}.</span>

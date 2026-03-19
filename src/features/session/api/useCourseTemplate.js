@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ref, get, set, remove, serverTimestamp } from 'firebase/database';
+import { ref, get, set, remove, update, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 
 /**
@@ -86,7 +86,20 @@ export function useCourseTemplate(courseId) {
     }
   }, [courseId, fetchTemplate]);
 
-  return { template, loading, save, addQuestion, updateQuestion, deleteQuestion, duplicateQuestion, refresh: fetchTemplate };
+  const swapQuestionOrder = useCallback(async (qIdA, orderA, qIdB, orderB) => {
+    if (!courseId) return;
+    try {
+      await update(ref(db, `courseTemplates/${courseId}`), {
+        [`questions/${qIdA}/order`]: orderB,
+        [`questions/${qIdB}/order`]: orderA,
+      });
+      await fetchTemplate();
+    } catch {
+      // Silently fail
+    }
+  }, [courseId, fetchTemplate]);
+
+  return { template, loading, save, addQuestion, updateQuestion, deleteQuestion, duplicateQuestion, swapQuestionOrder, refresh: fetchTemplate };
 }
 
 /**

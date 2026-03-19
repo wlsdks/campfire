@@ -170,6 +170,25 @@ export default function QuestionManager({
     }
   }
 
+  async function moveQuestion(qId, direction) {
+    const idx = questionList.findIndex(([id]) => id === qId);
+    if (idx < 0) return;
+    const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+    if (swapIdx < 0 || swapIdx >= questionList.length) return;
+
+    const [currentId, currentQ] = questionList[idx];
+    const [swapId, swapQ] = questionList[swapIdx];
+
+    try {
+      await update(ref(db, `sessions/${sessionId}`), {
+        [`questions/${currentId}/order`]: swapQ.order ?? swapIdx + 1,
+        [`questions/${swapId}/order`]: currentQ.order ?? idx + 1,
+      });
+    } catch {
+      // Silently fail — Firebase will retry
+    }
+  }
+
   async function revealQuiz(qId) {
     const question = questions?.[qId];
     if (!isQuizQuestion(question)) return;
@@ -400,6 +419,8 @@ export default function QuestionManager({
         onClearActive={clearActive}
         onDuplicate={duplicateQuestion}
         onDelete={deleteQuestion}
+        onMoveUp={(qId) => moveQuestion(qId, 'up')}
+        onMoveDown={(qId) => moveQuestion(qId, 'down')}
         readOnly={readOnly}
         onView={readOnly ? onViewQuestion : undefined}
       />

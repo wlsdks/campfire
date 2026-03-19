@@ -1,6 +1,6 @@
 import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BarChart3, Check, ChevronDown, Circle, Cloud, Copy, MessageSquare, Play, Square, Trash2, Trophy } from 'lucide-react';
+import { ArrowDown, ArrowUp, BarChart3, Check, ChevronDown, Circle, Cloud, Copy, MessageSquare, Play, Square, Trash2, Trophy } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import PinggoMascot from '@/components/ui/PinggoMascot';
 import { isQuizQuestion } from '@/lib/quiz';
@@ -22,6 +22,8 @@ export default memo(function QuestionList({
   onClearActive,
   onDuplicate,
   onDelete,
+  onMoveUp,
+  onMoveDown,
   readOnly = false,
   onView,
 }) {
@@ -55,16 +57,19 @@ export default memo(function QuestionList({
             className="overflow-hidden"
           >
             <div className="p-1.5 space-y-1.5">
-              {questionList.map(([qId, q]) => {
+              {questionList.map(([qId, q], index) => {
                 const qType = QUESTION_TYPES.find((t) => t.value === q.type);
                 const Icon = qType?.icon || MessageSquare;
                 const isActive = currentQuestion === qId;
                 const isQuiz = isQuizQuestion(q);
+                const isFirst = index === 0;
+                const isLast = index === questionList.length - 1;
 
                 return (
                   <motion.div
                     key={qId}
                     layout
+                    transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
                     onClick={readOnly && onView ? () => onView(qId) : undefined}
                     className={`p-3 rounded-xl border transition-all ${
                       readOnly
@@ -72,7 +77,39 @@ export default memo(function QuestionList({
                         : isActive ? 'bg-white border-slate-300 shadow-sm' : 'bg-white border-slate-200 hover:border-slate-300'
                     }`}
                   >
-                    <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-start gap-2">
+                      {/* Reorder buttons */}
+                      {!readOnly && questionList.length > 1 && (
+                        <div className="flex flex-col shrink-0 -ml-1">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); onMoveUp?.(qId); }}
+                            disabled={isFirst}
+                            className={`p-0.5 rounded transition-all active:scale-90 ${
+                              isFirst
+                                ? 'text-slate-200 cursor-default'
+                                : 'text-slate-300 hover:bg-slate-100 hover:text-slate-600'
+                            }`}
+                            title="위로 이동"
+                            aria-label="질문 위로 이동"
+                          >
+                            <ArrowUp size={11} />
+                          </button>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); onMoveDown?.(qId); }}
+                            disabled={isLast}
+                            className={`p-0.5 rounded transition-all active:scale-90 ${
+                              isLast
+                                ? 'text-slate-200 cursor-default'
+                                : 'text-slate-300 hover:bg-slate-100 hover:text-slate-600'
+                            }`}
+                            title="아래로 이동"
+                            aria-label="질문 아래로 이동"
+                          >
+                            <ArrowDown size={11} />
+                          </button>
+                        </div>
+                      )}
+
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5 mb-0.5">
                           <Icon size={12} className={!readOnly && isActive ? 'text-slate-700' : 'text-slate-400'} />
