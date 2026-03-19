@@ -211,7 +211,7 @@ export default function AdminPage() {
         <div className="flex items-center gap-3">
           <Radio size={18} className="text-indigo-600" />
           <span className="font-bold text-slate-900">Pinggo</span>
-          <Badge variant="neutral">{sessionId}</Badge>
+          <span className="text-xs text-slate-400 font-mono">{sessionId}</span>
         </div>
         <div className="flex items-center gap-3">
           {timerRunning && <TimerRing endTime={endTime} duration={duration} onExpire={stopTimer} size="sm" />}
@@ -241,11 +241,11 @@ export default function AdminPage() {
             pendingEvent={session?.pendingEvent || null}
           />
 
-          <div className="mt-4 pt-4 border-t border-slate-100">
+          <div className="mt-5 rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
             <TimerControls isRunning={timerRunning} onStart={startTimer} onStop={stopTimer} />
           </div>
 
-          <div className="mt-4 pt-4 border-t border-slate-100 space-y-2">
+          <div className="mt-5 rounded-xl border border-slate-200 bg-white p-3 shadow-sm space-y-2">
             <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3">모드 전환</p>
             {[
               { mode: 'roulette', label: '돌림판', icon: Target },

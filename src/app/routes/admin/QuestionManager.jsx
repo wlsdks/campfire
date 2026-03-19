@@ -225,9 +225,9 @@ export default function QuestionManager({
       </div>
 
       {questionList.length > 0 && (
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-3">
+        <div className="rounded-xl border border-slate-200 bg-white p-3 space-y-3 shadow-sm">
           <div className="space-y-1">
-            <p className="text-slate-500 text-xs font-semibold uppercase tracking-wider">빠른 진행</p>
+            <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">빠른 진행</p>
             <p className="text-slate-900 text-sm font-medium">
               {currentEntry
                 ? `${activeIndex + 1}/${questionList.length}번째 질문 진행 중`

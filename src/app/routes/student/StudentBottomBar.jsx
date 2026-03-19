@@ -139,40 +139,42 @@ export default function StudentBottomBar({ sessionId }) {
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 py-2.5 z-30 space-y-2">
+        className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 pt-2 pb-[calc(0.625rem+env(safe-area-inset-bottom))] z-30">
         <ReactionBar sessionId={sessionId} />
-        <div className="flex gap-2.5">
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={toggleHand}
-          className={`flex-1 py-3 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-2 ${
-            isRaised
-              ? 'bg-slate-900 text-white border border-slate-900'
-              : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border border-transparent'
-          }`}
-        >
-          <Hand size={18} />
-          {isRaised ? '손 내리기' : '손들기'}
-        </motion.button>
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setShowQuestionInput(true)}
-          className="flex-1 py-3 rounded-lg bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 transition-all flex items-center justify-center gap-2 border border-transparent"
-        >
-          <MessageCircle size={18} />
-          긴급 질문
-        </motion.button>
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={handleOpenChat}
-          className="flex-1 py-3 rounded-lg bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 transition-all flex items-center justify-center gap-2 border border-transparent relative"
-        >
-          <MessageSquare size={18} />
-          채팅
-          {hasUnread && (
-            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-indigo-600" />
-          )}
-        </motion.button>
+        <div className="border-t border-slate-100 mt-2 pt-2">
+          <div className="grid grid-cols-3 gap-2">
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={toggleHand}
+              className={`h-11 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-1.5 ${
+                isRaised
+                  ? 'bg-slate-900 text-white'
+                  : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              <Hand size={16} />
+              {isRaised ? '손 내리기' : '손들기'}
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setShowQuestionInput(true)}
+              className="h-11 rounded-lg bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 transition-all flex items-center justify-center gap-1.5"
+            >
+              <MessageCircle size={16} />
+              긴급 질문
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={handleOpenChat}
+              className="h-11 rounded-lg bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 transition-all flex items-center justify-center gap-1.5 relative"
+            >
+              <MessageSquare size={16} />
+              채팅
+              {hasUnread && (
+                <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-indigo-600" />
+              )}
+            </motion.button>
+          </div>
         </div>
       </motion.div>
     </>

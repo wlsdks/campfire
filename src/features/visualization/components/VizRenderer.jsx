@@ -3,6 +3,7 @@ import OXBattle from './OXBattle';
 import WordCloud from './WordCloud';
 import QACards from './QACards';
 import { BarChart3 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import Badge from '@/components/ui/Badge';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import { isQuizQuestion } from '@/lib/quiz';
@@ -15,9 +16,17 @@ export default function VizRenderer({ sessionId, session }) {
 
   if (!['poll', 'quiz'].includes(currentMode) || !currentQId) {
     return (
-      <div className="flex flex-col items-center justify-center h-full gap-3">
-        <BarChart3 size={28} className="text-slate-300" />
-        <p className="text-slate-300 text-lg font-medium">질문을 활성화하세요</p>
+      <div className="flex flex-col items-center justify-center h-full gap-4">
+        <motion.div
+          animate={{ y: [0, -6, 0] }}
+          transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
+        >
+          <BarChart3 size={36} className="text-slate-300" />
+        </motion.div>
+        <div className="text-center space-y-1">
+          <p className="text-slate-400 text-lg font-medium">아직 활성화된 질문이 없습니다</p>
+          <p className="text-slate-300 text-sm">왼쪽 패널에서 질문을 선택하고 시작하세요</p>
+        </div>
       </div>
     );
   }

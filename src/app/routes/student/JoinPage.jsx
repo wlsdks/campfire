@@ -70,7 +70,7 @@ export default function JoinPage({ sessionId, onJoin }) {
           </div>
 
           {/* Avatar preview + Input */}
-          <div className="space-y-4">
+          <div className="space-y-5">
             {nickname.trim() && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}

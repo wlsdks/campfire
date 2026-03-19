@@ -47,8 +47,8 @@ export default function QuestionList({
           <motion.div
             key={qId}
             layout
-            className={`p-3 rounded-lg transition-all ${
-              isActive ? 'bg-slate-100 ring-1 ring-slate-300' : 'bg-slate-50 hover:bg-slate-100'
+            className={`p-3 rounded-xl border transition-all ${
+              isActive ? 'bg-white border-slate-300 shadow-sm' : 'bg-white border-slate-200 hover:border-slate-300'
             }`}
           >
             <div className="flex items-start justify-between gap-2">
@@ -130,10 +130,10 @@ export default function QuestionList({
       })}
 
       {questionList.length === 0 && (
-        <div className="text-center py-8 text-slate-300 text-sm">
-          아직 질문이 없습니다
-          <br />
-          위의 + 추가 버튼으로 질문을 만드세요
+        <div className="text-center py-8 space-y-1.5">
+          <BarChart3 size={24} className="text-slate-300 mx-auto" />
+          <p className="text-slate-400 text-sm">아직 질문이 없습니다</p>
+          <p className="text-slate-300 text-xs">위의 + 추가 버튼으로 질문을 만드세요</p>
         </div>
       )}
     </div>

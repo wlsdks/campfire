@@ -22,7 +22,8 @@ export default function ParticipantList({ participants }) {
       {participants.length === 0 && (
         <div className="text-center py-6 space-y-2">
           <Users size={24} className="text-slate-300 mx-auto" />
-          <p className="text-slate-300 text-sm">아직 참여자가 없습니다</p>
+          <p className="text-slate-400 text-sm">아직 참여자가 없습니다</p>
+          <p className="text-slate-300 text-xs">QR코드를 공유하여 학생을 초대하세요</p>
         </div>
       )}
     </div>
