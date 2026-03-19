@@ -69,6 +69,25 @@
 - "이 기능이 있으면 수업이 더 재미있어지는가?" → Yes면 우선
 - "이건 쿨해 보이지만 실제로 쓸까?" → No면 보류
 
+## 백엔드 & 데이터 규칙
+
+### Firebase Realtime DB
+- **Mock 데이터 절대 금지**: 프론트엔드는 반드시 실제 Firebase API 호출 기반
+- **하드코딩 데이터 금지**: 모든 데이터는 Firebase에서 읽고 쓰기
+- **테이블(경로) 추가**: 새 기능에 필요하면 자유롭게 추가
+  - `database.rules.json`에 규칙 반드시 추가
+  - 기존 데이터 구조와 일관성 유지 (CLAUDE.md 아키텍처 참고)
+- **데모 데이터 갱신**: 구조 변경 시 `scripts/seed-demo.mjs` 업데이트 후 재실행
+  - `node scripts/seed-demo.mjs`로 기존 데이터 삭제 + 새 데이터 시드
+- **기존 테이블 구조 변경 시**: database.rules.json도 함께 수정
+
+### 프론트-백 연동 체크
+- 새 훅 만들 때: `onValue`/`onChildAdded` 실시간 구독 사용
+- `useEffect` cleanup에서 Firebase 리스너 해제 필수
+- 데이터 쓰기: `set`/`update`/`push` 직접 호출
+- 에러 처리: try-catch로 감싸고, 사용자에게 실패 피드백
+- **매 사이클 검증**: Playwright로 실제 데이터가 Firebase에 저장/조회되는지 확인
+
 ## 사이클 워크플로우
 
 ### 0. 안전 점검
