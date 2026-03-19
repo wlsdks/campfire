@@ -1,9 +1,9 @@
-import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
+import { motion, useMotionValue, useTransform, animate, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, memo } from 'react';
-import { Flame, Medal, Ticket, Trophy } from 'lucide-react';
+import { ChevronUp, ChevronDown, Flame, Medal, Ticket, Trophy } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
 
-/** Animated number counter — counts from 0 to `value` on mount. */
+/** Animated number counter — counts from prev to `value` on change. */
 function AnimatedScore({ value, suffix = '점' }) {
   const motionVal = useMotionValue(0);
   const rounded = useTransform(motionVal, (v) => Math.round(v));
@@ -26,11 +26,110 @@ function AnimatedScore({ value, suffix = '점' }) {
   return <span ref={displayRef}>{value}{suffix}</span>;
 }
 
+/** Shows rank change arrow with number. */
+function RankChange({ delta }) {
+  if (delta === 0) return null;
+  const isUp = delta > 0;
+  return (
+    <motion.span
+      initial={{ opacity: 0, scale: 0.5 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+      className={`inline-flex items-center text-xs font-semibold ${isUp ? 'text-emerald-600' : 'text-red-500'}`}
+    >
+      {isUp ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+      {Math.abs(delta)}
+    </motion.span>
+  );
+}
+
 const PODIUM_STYLES = [
   'bg-slate-900 text-white border-slate-900',
   'bg-slate-100 text-slate-700 border-slate-200',
   'bg-slate-50 text-slate-600 border-slate-200',
 ];
+
+/** Single leaderboard row — extracted for clarity. */
+function LeaderboardRow({ entry, rank, isHighlighted, isPodium, podiumIndex, rankDelta }) {
+  const podiumStyle = isPodium ? PODIUM_STYLES[podiumIndex] : 'bg-white border-slate-100';
+  const highlightStyle = isHighlighted && !isPodium
+    ? 'ring-2 ring-slate-900/20 border-slate-400 bg-slate-50'
+    : isHighlighted && isPodium
+      ? 'ring-2 ring-white/30'
+      : '';
+
+  return (
+    <motion.div
+      layout
+      layoutId={entry.id}
+      initial={{ opacity: 0, x: -16 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{
+        layout: { type: 'spring', stiffness: 300, damping: 28 },
+        delay: rank * 0.04,
+        type: 'spring',
+        stiffness: 300,
+        damping: 26,
+      }}
+      className={`flex items-center gap-3 px-4 py-3 rounded-xl border ${podiumStyle} ${highlightStyle}`}
+    >
+      {/* Rank number / medal */}
+      <span className={`w-6 text-center font-bold text-sm shrink-0 ${rank < 3 ? '' : 'text-slate-400'}`}>
+        {rank === 0 ? <Medal size={16} className="text-white mx-auto" /> : rank + 1}
+      </span>
+
+      <Avatar name={entry.nickname} size="sm" />
+
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5">
+          <span className="font-medium text-sm truncate">{entry.nickname}</span>
+          {isHighlighted && (
+            <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
+              rank === 0 ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'
+            }`}>나</span>
+          )}
+        </div>
+        <div className="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
+          {rankDelta !== 0 && <RankChange delta={rankDelta} />}
+          {(entry.streak || 0) > 1 && (
+            <span className={`inline-flex items-center gap-0.5 font-medium ${
+              (entry.streak || 0) >= 3 ? 'text-amber-600' : ''
+            }`}>
+              <Flame size={12} />
+              {entry.streak}연속
+            </span>
+          )}
+          {(entry.tickets || 0) > 0 && (
+            <span className="inline-flex items-center gap-0.5">
+              <Ticket size={12} />
+              {entry.tickets}
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="text-right shrink-0">
+        <span className={`font-bold block ${rank === 0 ? 'text-white' : 'text-slate-900'}`}>
+          <AnimatedScore value={entry.total} />
+        </span>
+        <AnimatePresence mode="popLayout">
+          {entry.lastPoints > 0 && (
+            <motion.span
+              key={`pts-${entry.lastPoints}-${entry.lastQuestionId}`}
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 4 }}
+              transition={{ duration: 0.25 }}
+              className={`text-xs font-medium ${rank === 0 ? 'text-white/70' : 'text-slate-400'}`}
+            >
+              +{entry.lastPoints}
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+}
 
 export default memo(function Leaderboard({
   entries,
@@ -40,6 +139,26 @@ export default memo(function Leaderboard({
   highlightId = null,
 }) {
   const visible = entries.slice(0, maxShow);
+
+  // Track previous ranks for rank-change indicators
+  const prevRanksRef = useRef({});
+  const rankDeltas = useRef({});
+
+  useEffect(() => {
+    const newRanks = {};
+    entries.forEach((entry, i) => { newRanks[entry.id] = i; });
+
+    const prev = prevRanksRef.current;
+    const deltas = {};
+    entries.forEach((entry, i) => {
+      if (prev[entry.id] !== undefined) {
+        // positive delta = moved up (lower index = better rank)
+        deltas[entry.id] = prev[entry.id] - i;
+      }
+    });
+    rankDeltas.current = deltas;
+    prevRanksRef.current = newRanks;
+  }, [entries]);
 
   if (visible.length === 0) {
     return (
@@ -66,53 +185,15 @@ export default memo(function Leaderboard({
       )}
 
       {visible.map((entry, i) => (
-        <motion.div
+        <LeaderboardRow
           key={entry.id}
-          initial={{ opacity: 0, x: -16 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{
-            delay: i * 0.04,
-            type: 'spring',
-            stiffness: 300,
-            damping: 26,
-          }}
-          layout
-          className={`flex items-center gap-3 px-4 py-3 rounded-xl border ${
-            i < 3 ? PODIUM_STYLES[i] : 'bg-white border-slate-100'
-          } ${
-            entry.id === highlightId ? 'ring-2 ring-slate-300 border-slate-300' : ''
-          }`}
-        >
-          <span className={`w-6 text-center font-bold text-sm ${i < 3 ? '' : 'text-slate-400'}`}>
-            {i === 0 ? <Medal size={16} className="text-white mx-auto" /> : i + 1}
-          </span>
-          <Avatar name={entry.nickname} size="sm" />
-          <div className="flex-1 min-w-0">
-            <span className="font-medium text-sm truncate block">{entry.nickname}</span>
-            <div className="flex items-center gap-2 text-xs text-slate-400 mt-1">
-              {(entry.tickets || 0) > 0 && (
-                <span className="inline-flex items-center gap-1">
-                  <Ticket size={12} />
-                  {entry.tickets}
-                </span>
-              )}
-              {(entry.streak || 0) > 1 && (
-                <span className="inline-flex items-center gap-1">
-                  <Flame size={12} />
-                  {entry.streak}연속
-                </span>
-              )}
-            </div>
-          </div>
-          <div className="text-right shrink-0">
-            <span className={`font-bold block ${i === 0 ? 'text-white' : 'text-slate-900'}`}>
-              <AnimatedScore value={entry.total} />
-            </span>
-            {entry.lastPoints > 0 && (
-              <span className={`text-xs font-medium ${i === 0 ? 'text-white/70' : 'text-slate-400'}`}>+{entry.lastPoints}</span>
-            )}
-          </div>
-        </motion.div>
+          entry={entry}
+          rank={i}
+          isHighlighted={entry.id === highlightId}
+          isPodium={i < 3}
+          podiumIndex={i}
+          rankDelta={rankDeltas.current[entry.id] || 0}
+        />
       ))}
     </div>
   );
