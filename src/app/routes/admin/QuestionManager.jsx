@@ -189,6 +189,26 @@ export default function QuestionManager({
     }
   }
 
+  async function reorderQuestion(fromId, toId) {
+    const fromIdx = questionList.findIndex(([id]) => id === fromId);
+    const toIdx = questionList.findIndex(([id]) => id === toId);
+    if (fromIdx < 0 || toIdx < 0 || fromIdx === toIdx) return;
+
+    try {
+      const updates = {};
+      // Recompute all order values based on new position
+      const reordered = [...questionList];
+      const [moved] = reordered.splice(fromIdx, 1);
+      reordered.splice(toIdx, 0, moved);
+      reordered.forEach(([id], i) => {
+        updates[`questions/${id}/order`] = i + 1;
+      });
+      await update(ref(db, `sessions/${sessionId}`), updates);
+    } catch {
+      // Silently fail
+    }
+  }
+
   async function revealQuiz(qId) {
     const question = questions?.[qId];
     if (!isQuizQuestion(question)) return;
@@ -419,6 +439,7 @@ export default function QuestionManager({
         onClearActive={clearActive}
         onDuplicate={duplicateQuestion}
         onDelete={deleteQuestion}
+        onReorder={reorderQuestion}
         onMoveUp={(qId) => moveQuestion(qId, 'up')}
         onMoveDown={(qId) => moveQuestion(qId, 'down')}
         readOnly={readOnly}

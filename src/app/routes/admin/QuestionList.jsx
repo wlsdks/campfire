@@ -1,6 +1,6 @@
-import { useState, memo } from 'react';
+import { useState, useRef, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowDown, ArrowUp, BarChart3, Check, ChevronDown, Circle, Cloud, Copy, MessageSquare, Play, Square, Trash2, Trophy } from 'lucide-react';
+import { GripVertical, BarChart3, Check, ChevronDown, Circle, Cloud, Copy, MessageSquare, Play, Square, Trash2, Trophy } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import PinggoMascot from '@/components/ui/PinggoMascot';
 import { isQuizQuestion } from '@/lib/quiz';
@@ -26,9 +26,35 @@ export default memo(function QuestionList({
   onMoveDown,
   readOnly = false,
   onView,
+  onReorder,
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const activeCount = questionList.filter(([qId]) => qId === currentQuestion).length;
+  const dragItem = useRef(null);
+  const dragOver = useRef(null);
+
+  function handleDragStart(index) {
+    dragItem.current = index;
+  }
+
+  function handleDragEnter(index) {
+    dragOver.current = index;
+  }
+
+  function handleDragEnd() {
+    if (dragItem.current === null || dragOver.current === null || dragItem.current === dragOver.current) {
+      dragItem.current = null;
+      dragOver.current = null;
+      return;
+    }
+    const fromId = questionList[dragItem.current]?.[0];
+    const toId = questionList[dragOver.current]?.[0];
+    if (fromId && toId && onReorder) {
+      onReorder(fromId, toId);
+    }
+    dragItem.current = null;
+    dragOver.current = null;
+  }
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
@@ -70,6 +96,11 @@ export default memo(function QuestionList({
                     key={qId}
                     layout
                     transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+                    draggable={!readOnly && questionList.length > 1}
+                    onDragStart={() => handleDragStart(index)}
+                    onDragEnter={() => handleDragEnter(index)}
+                    onDragEnd={handleDragEnd}
+                    onDragOver={(e) => e.preventDefault()}
                     onClick={readOnly && onView ? () => onView(qId) : undefined}
                     className={`p-3 rounded-xl border transition-all ${
                       readOnly
@@ -78,35 +109,10 @@ export default memo(function QuestionList({
                     }`}
                   >
                     <div className="flex items-start gap-2">
-                      {/* Reorder buttons */}
+                      {/* Drag handle */}
                       {!readOnly && questionList.length > 1 && (
-                        <div className="flex flex-col shrink-0 -ml-1">
-                          <button
-                            onClick={(e) => { e.stopPropagation(); onMoveUp?.(qId); }}
-                            disabled={isFirst}
-                            className={`p-0.5 rounded transition-all active:scale-90 ${
-                              isFirst
-                                ? 'text-slate-200 cursor-default'
-                                : 'text-slate-300 hover:bg-slate-100 hover:text-slate-600'
-                            }`}
-                            title="위로 이동"
-                            aria-label="질문 위로 이동"
-                          >
-                            <ArrowUp size={11} />
-                          </button>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); onMoveDown?.(qId); }}
-                            disabled={isLast}
-                            className={`p-0.5 rounded transition-all active:scale-90 ${
-                              isLast
-                                ? 'text-slate-200 cursor-default'
-                                : 'text-slate-300 hover:bg-slate-100 hover:text-slate-600'
-                            }`}
-                            title="아래로 이동"
-                            aria-label="질문 아래로 이동"
-                          >
-                            <ArrowDown size={11} />
-                          </button>
+                        <div className="shrink-0 -ml-1 cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 transition-colors pt-0.5">
+                          <GripVertical size={14} />
                         </div>
                       )}
 

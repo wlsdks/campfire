@@ -1,11 +1,19 @@
-import { memo } from 'react';
+import { memo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Target, Ticket, Trophy, X, ChevronDown } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
 export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTickets, leaderboard, modeOpen, onToggle, onSwitchMode }) {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (modeOpen && containerRef.current) {
+      setTimeout(() => containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 250);
+    }
+  }, [modeOpen]);
+
   return (
-    <div className="mt-3 rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+    <div ref={containerRef} className="mt-3 rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
       <button
         onClick={onToggle}
         className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors"
