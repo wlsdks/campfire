@@ -1,7 +1,5 @@
 import { motion } from 'framer-motion';
 import { Radio, Users } from 'lucide-react';
-import { useState } from 'react';
-import Lottie from 'lottie-react';
 import Badge from '@/components/ui/Badge';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
@@ -9,62 +7,17 @@ import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
 import { getNickname } from '@/lib/participant';
 
-/** Inline Lottie JSON: 3 dots that pulse in sequence like a typing indicator. */
-const pulsingDotsData = {
-  v: '5.7.4', fr: 30, ip: 0, op: 60, w: 60, h: 16,
-  layers: [0, 1, 2].map((i) => ({
-    ty: 4, ip: 0, op: 60, st: 0,
-    ks: {
-      p: { a: 0, k: [12 + i * 18, 8, 0] },
-      s: { a: 1, k: [
-        { t: i * 6, s: [100, 100, 100], e: [140, 140, 100], i: { x: [0.4], y: [1] }, o: { x: [0.2], y: [0] } },
-        { t: i * 6 + 10, s: [140, 140, 100], e: [100, 100, 100], i: { x: [0.4], y: [1] }, o: { x: [0.2], y: [0] } },
-        { t: i * 6 + 20, s: [100, 100, 100] },
-      ] },
-      o: { a: 1, k: [
-        { t: i * 6, s: [50], e: [100] },
-        { t: i * 6 + 10, s: [100], e: [50] },
-        { t: i * 6 + 20, s: [50] },
-      ] },
-      r: { a: 0, k: 0 }, a: { a: 0, k: [0, 0, 0] },
-    },
-    shapes: [{
-      ty: 'el', p: { a: 0, k: [0, 0] }, s: { a: 0, k: [6, 6] },
-    }, {
-      ty: 'fl', c: { a: 0, k: [0.58, 0.55, 0.86, 1] }, o: { a: 0, k: 100 },
-    }],
-  })),
-};
-
-/** 3 pulsing dots indicator with Lottie, falls back to CSS. */
 function PulsingDots() {
-  const [hasLottie, setHasLottie] = useState(true);
-
-  if (!hasLottie) {
-    return (
-      <div className="flex items-center gap-1.5 justify-center pt-2">
-        {[0, 1, 2].map((i) => (
-          <motion.div
-            key={i}
-            className="w-1.5 h-1.5 rounded-full bg-indigo-300"
-            animate={{ scale: [1, 1.4, 1], opacity: [0.5, 1, 0.5] }}
-            transition={{ repeat: Infinity, duration: 1.2, delay: i * 0.2, ease: 'easeInOut' }}
-          />
-        ))}
-      </div>
-    );
-  }
-
   return (
-    <div className="flex justify-center pt-2">
-      <div className="w-[60px] h-4">
-        <Lottie
-          animationData={pulsingDotsData}
-          loop
-          autoplay
-          onError={() => setHasLottie(false)}
+    <div className="flex items-center gap-2 justify-center pt-3">
+      {[0, 1, 2].map((i) => (
+        <motion.div
+          key={i}
+          className="w-1.5 h-1.5 rounded-full bg-slate-300"
+          animate={{ scale: [1, 1.5, 1], opacity: [0.4, 1, 0.4] }}
+          transition={{ repeat: Infinity, duration: 1.2, delay: i * 0.2, ease: 'easeInOut' }}
         />
-      </div>
+      ))}
     </div>
   );
 }
