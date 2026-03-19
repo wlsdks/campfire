@@ -16,12 +16,11 @@ function createBubbleConfig(key, type) {
   return {
     id: `${key}-${type}`,
     type,
-    left: 10 + (seed % 76),
-    drift: ((Math.floor(seed / 7) % 56) - 28) * 3,
-    size: 54 + (Math.floor(seed / 17) % 16),
-    duration: (timing.reactionBubbleLifetime + 1200 + (seed % 900)) / 1000,
-    rotate: (Math.floor(seed / 13) % 20) - 10,
-    sway: 10 + (Math.floor(seed / 29) % 10),
+    left: 12 + (seed % 72),
+    drift: ((Math.floor(seed / 7) % 40) - 20) * 2,
+    size: 42 + (Math.floor(seed / 17) % 12),
+    duration: (timing.reactionBubbleLifetime + 800 + (seed % 600)) / 1000,
+    rotate: (Math.floor(seed / 13) % 12) - 6,
   };
 }
 
@@ -77,7 +76,7 @@ export default function ReactionOverlay({ sessionId }) {
   }, [sessionId]);
 
   return (
-    <div className="fixed inset-0 z-40 pointer-events-none overflow-hidden [mask-image:linear-gradient(to_top,black_75%,transparent)]">
+    <div className="fixed inset-0 z-40 pointer-events-none overflow-hidden">
       <AnimatePresence>
         {bubbles.map((bubble) => {
           const reaction = REACTION_META[bubble.type] || REACTION_META.thumbsup;
@@ -86,33 +85,28 @@ export default function ReactionOverlay({ sessionId }) {
           return (
             <motion.div
               key={bubble.id}
-              initial={{ opacity: 0, y: 0, x: 0, scale: 0.76, rotate: -bubble.rotate }}
+              initial={{ opacity: 0, y: 0, scale: 0.5 }}
               animate={{
-                opacity: [0, 1, 0.96, 0],
-                y: [0, -160, -460, -1080],
-                x: [0, bubble.sway, -bubble.sway * 0.8, bubble.drift],
-                scale: [0.76, 1, 1.05, 1.1],
-                rotate: [-bubble.rotate, bubble.rotate * 0.2, -bubble.rotate * 0.35, bubble.rotate],
+                opacity: [0, 0.9, 0.85, 0],
+                y: [0, -120, -360, -720],
+                x: [0, bubble.drift * 0.3, -bubble.drift * 0.5, bubble.drift],
+                scale: [0.5, 1, 1, 0.9],
+                rotate: [0, bubble.rotate, -bubble.rotate * 0.5, 0],
               }}
               exit={{ opacity: 0 }}
               transition={{
                 duration: bubble.duration,
                 ease: 'easeOut',
-                times: [0, 0.18, 0.72, 1],
+                times: [0, 0.15, 0.65, 1],
               }}
               className="absolute bottom-[max(4.75rem,env(safe-area-inset-bottom))]"
               style={{ left: `${bubble.left}%` }}
             >
               <div
-                className={`relative flex items-center justify-center rounded-full border bg-gradient-to-br ${reaction.bubbleShell} ${reaction.bubbleBorder} ${reaction.bubbleShadow} backdrop-blur-[2px]`}
+                className={`flex items-center justify-center rounded-full border ${reaction.bubbleBg} ${reaction.bubbleBorder} shadow-sm`}
                 style={{ width: bubble.size, height: bubble.size }}
               >
-                <div className="absolute left-[18%] top-[14%] h-[24%] w-[24%] rounded-full bg-white/75 blur-[1px]" />
-                <div className="absolute right-[20%] top-[22%] h-[10%] w-[10%] rounded-full bg-white/80" />
-                <div className={`absolute -right-1 top-[26%] h-2.5 w-2.5 rounded-full ${reaction.bubbleTrail}`} />
-                <div className={`absolute -left-1 top-[48%] h-1.5 w-1.5 rounded-full ${reaction.bubbleTrail}`} />
-                <div className="absolute inset-[7px] rounded-full border border-white/40 bg-white/55" />
-                <Icon size={Math.round(bubble.size * 0.42)} className={`relative z-10 ${reaction.bubbleIcon}`} />
+                <Icon size={Math.round(bubble.size * 0.44)} className={reaction.bubbleIcon} />
               </div>
             </motion.div>
           );
