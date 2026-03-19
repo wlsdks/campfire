@@ -111,6 +111,7 @@
 | 연결 상태 배너 | 학생 | ✅ 완료 | 오프라인 시 "연결 끊김" 배너, 재연결 시 "다시 연결됨" 자동 소멸. Firebase .info/connected 기반 |
 | 세션 경과 시간 | 강사 | ✅ 완료 | 활성 세션 헤더에 "N분 경과" 실시간 표시. startedAt 우선, createdAt 폴백. 30초 간격 업데이트, 1분 미만 숨김 |
 | 마이크로 인터랙션 | 전체 | ✅ 완료 | 모든 버튼/카드에 active:scale 프레스 피드백 추가. 탭 버튼, 세션 행, 질문 액션 버튼, 아코디언 헤더, 모달 선택 버튼 등 15개 컴포넌트 일괄 적용. CSS-only로 Framer Motion 불필요한 곳은 성능 최적화 |
+| 컴포넌트 크기 감사 | 강사 | ✅ 완료 | AdminPage.jsx 1022→425줄로 분리. AdminSessionHeader(186), ClassSummary(179), RightSidebar(204), PresentationView(90), ModeSwitcher(79) 5개 컴포넌트 추출 |
 
 ---
 
