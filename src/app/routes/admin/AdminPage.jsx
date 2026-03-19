@@ -231,7 +231,7 @@ export default function AdminPage() {
       {/* Main layout */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left sidebar */}
-        <div className="w-[420px] border-r border-slate-200 bg-white p-5 overflow-y-auto flex flex-col shrink-0">
+        <div className="w-[460px] border-r border-slate-200 bg-white p-5 overflow-y-auto flex flex-col shrink-0">
           <QuestionManager
             sessionId={sessionId}
             questions={session?.questions || {}}
@@ -302,7 +302,7 @@ export default function AdminPage() {
         </div>
 
         {/* Right sidebar */}
-        <div className="w-[360px] border-l border-slate-200 bg-white p-5 space-y-5 overflow-y-auto shrink-0">
+        <div className="w-[400px] border-l border-slate-200 bg-white p-5 space-y-5 overflow-y-auto shrink-0">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             <span className="text-slate-900 font-bold text-lg">{count}</span>
