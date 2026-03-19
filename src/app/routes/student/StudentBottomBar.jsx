@@ -139,7 +139,8 @@ export default function StudentBottomBar({ sessionId }) {
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 260, damping: 28, delay: 0.1 }}
-        className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 pt-2 pb-[calc(0.625rem+env(safe-area-inset-bottom))] z-30">
+        className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-30">
+        <div className="max-w-lg mx-auto px-4 pt-2 pb-[calc(0.625rem+env(safe-area-inset-bottom))]">
         <ReactionBar sessionId={sessionId} />
         <div className="border-t border-slate-100 mt-2 pt-2">
           <div className="grid grid-cols-3 gap-2">
@@ -175,6 +176,7 @@ export default function StudentBottomBar({ sessionId }) {
               )}
             </motion.button>
           </div>
+        </div>
         </div>
       </motion.div>
     </>
