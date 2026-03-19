@@ -22,16 +22,16 @@ function CountUp({ value, prefix = '+', suffix = '점' }) {
 export default function QuizResult({ isCorrect, points, tickets = 0, correctAnswer, event = null }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 8 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: 'easeOut' }}
+      transition={{ type: 'spring', stiffness: 280, damping: 28 }}
       className="w-full rounded-xl border border-slate-200 bg-white px-5 py-8 shadow-sm"
     >
       <div className="flex flex-col items-center gap-4">
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          transition={{ delay: 0.15, type: 'spring', stiffness: 300, damping: 18 }}
+          transition={{ delay: 0.12, type: 'spring', stiffness: 340, damping: 22 }}
         >
           {isCorrect
             ? <Check size={36} className="text-slate-800" strokeWidth={2.5} />
@@ -61,9 +61,9 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
           <div className="flex items-center justify-center gap-6 pt-2">
             {points > 0 && (
               <motion.div
-                initial={{ opacity: 0, y: 8 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
+                transition={{ delay: 0.25, type: 'spring', stiffness: 300, damping: 26 }}
                 className="text-center"
               >
                 <p className="text-xs font-medium text-slate-400">점수</p>
@@ -73,13 +73,18 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
               </motion.div>
             )}
             {points > 0 && tickets > 0 && (
-              <div className="w-px h-8 bg-slate-200" />
+              <motion.div
+                initial={{ opacity: 0, scaleY: 0 }}
+                animate={{ opacity: 1, scaleY: 1 }}
+                transition={{ delay: 0.35, duration: 0.25, ease: 'easeOut' }}
+                className="w-px h-8 bg-slate-200"
+              />
             )}
             {tickets > 0 && (
               <motion.div
-                initial={{ opacity: 0, y: 8 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35 }}
+                transition={{ delay: 0.32, type: 'spring', stiffness: 300, damping: 26 }}
                 className="text-center"
               >
                 <p className="text-xs font-medium text-slate-400 flex items-center justify-center gap-1">

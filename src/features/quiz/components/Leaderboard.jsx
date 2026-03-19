@@ -51,17 +51,27 @@ export default function Leaderboard({
 
   return (
     <div className="w-full max-w-md mx-auto space-y-2">
-      <div className="flex items-center gap-2 mb-4">
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
+        className="flex items-center gap-2 mb-4"
+      >
         <Trophy size={20} className="text-amber-500" />
         <h3 className="text-lg font-bold text-slate-900">{title}</h3>
-      </div>
+      </motion.div>
 
       {visible.map((entry, i) => (
         <motion.div
           key={entry.id}
-          initial={{ opacity: 0, x: -12 }}
+          initial={{ opacity: 0, x: -16 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: i * 0.05 }}
+          transition={{
+            delay: i * 0.04,
+            type: 'spring',
+            stiffness: 300,
+            damping: 26,
+          }}
           layout
           className={`flex items-center gap-3 px-4 py-3 rounded-xl border ${
             i < 3 ? PODIUM_STYLES[i] : 'bg-white border-slate-100'

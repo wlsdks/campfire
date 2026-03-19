@@ -106,16 +106,16 @@ export default function VoteConfirm({
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: 'spring', stiffness: 280, damping: 28 }}
       className="w-full rounded-xl border border-slate-200 bg-white px-5 py-6 shadow-sm"
     >
       <div className="flex flex-col items-center gap-5">
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 18 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 22, delay: 0.1 }}
           className="flex h-14 w-14 items-center justify-center"
         >
           <LottieCheckmark />
@@ -124,18 +124,29 @@ export default function VoteConfirm({
         <div className="space-y-1.5 text-center">
           <motion.p
             key={waiting ? 'waiting' : 'done'}
-            initial={{ opacity: 0, y: 4 }}
+            initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
             className="text-xl font-bold text-slate-900"
           >
             {waiting ? waitingLabel : submittedLabel}
           </motion.p>
-          <p className="text-sm text-slate-500">
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.3 }}
+            className="text-sm text-slate-500"
+          >
             {waiting ? '잠시 후 강사가 다음 단계를 진행하면 상태가 바뀝니다.' : submittedDescription}
-          </p>
+          </motion.p>
         </div>
 
-        <div className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25, duration: 0.3, ease: 'easeOut' }}
+          className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center"
+        >
           <p className="text-xs font-medium text-slate-400">현재 상태</p>
           <p className="mt-1 text-sm text-slate-600">
             {waiting ? (
@@ -150,7 +161,7 @@ export default function VoteConfirm({
               </span>
             )}
           </p>
-        </div>
+        </motion.div>
       </div>
     </motion.div>
   );

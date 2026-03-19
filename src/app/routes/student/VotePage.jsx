@@ -82,9 +82,9 @@ export default function VotePage({ sessionId }) {
           {/* Question header */}
           <motion.div
             key={`header-${currentQId}`}
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
+            transition={{ type: 'spring', stiffness: 300, damping: 28 }}
             className="bg-white rounded-xl shadow-sm border border-slate-200 p-5"
           >
             <div className="flex items-start justify-between gap-3">
@@ -100,9 +100,9 @@ export default function VotePage({ sessionId }) {
 
           {question.type === 'quiz' && question.event && (
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, ease: 'easeOut', delay: 0.05 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 28, delay: 0.04 }}
             >
               <QuizEventBanner event={question.event} state={question.revealedAt ? 'result' : 'active'} />
             </motion.div>
@@ -111,9 +111,9 @@ export default function VotePage({ sessionId }) {
           {/* Voter area */}
           <motion.div
             key={`voter-${currentQId}`}
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, ease: 'easeOut', delay: 0.1 }}
+            transition={{ type: 'spring', stiffness: 280, damping: 28, delay: 0.08 }}
           >
             {question.type === 'choice' && (
               <ChoiceVoter sessionId={sessionId} questionId={currentQId} options={question.options || []} />

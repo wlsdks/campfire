@@ -136,9 +136,9 @@ export default function StudentBottomBar({ sessionId }) {
 
       {/* Bottom bar */}
       <motion.div
-        initial={{ y: 100, opacity: 0 }}
+        initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        transition={{ type: 'spring', stiffness: 260, damping: 28, delay: 0.1 }}
         className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-4 pt-2 pb-[calc(0.625rem+env(safe-area-inset-bottom))] z-30">
         <ReactionBar sessionId={sessionId} />
         <div className="border-t border-slate-100 mt-2 pt-2">

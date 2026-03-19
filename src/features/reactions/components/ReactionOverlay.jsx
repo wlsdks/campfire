@@ -85,19 +85,19 @@ export default function ReactionOverlay({ sessionId }) {
           return (
             <motion.div
               key={bubble.id}
-              initial={{ opacity: 0, y: 0, scale: 0.5 }}
+              initial={{ opacity: 0, y: 0, scale: 0.4 }}
               animate={{
-                opacity: [0, 0.9, 0.85, 0],
-                y: [0, -120, -360, -720],
-                x: [0, bubble.drift * 0.3, -bubble.drift * 0.5, bubble.drift],
-                scale: [0.5, 1, 1, 0.9],
+                opacity: [0, 0.95, 0.85, 0],
+                y: [0, -100, -340, -680],
+                x: [0, bubble.drift * 0.25, -bubble.drift * 0.4, bubble.drift * 0.8],
+                scale: [0.4, 1.05, 1, 0.85],
                 rotate: [0, bubble.rotate, -bubble.rotate * 0.5, 0],
               }}
-              exit={{ opacity: 0 }}
+              exit={{ opacity: 0, scale: 0.6, transition: { duration: 0.15 } }}
               transition={{
                 duration: bubble.duration,
-                ease: 'easeOut',
-                times: [0, 0.15, 0.65, 1],
+                ease: [0.2, 0.65, 0.3, 0.9],
+                times: [0, 0.12, 0.6, 1],
               }}
               className="absolute bottom-[max(4.75rem,env(safe-area-inset-bottom))]"
               style={{ left: `${bubble.left}%` }}

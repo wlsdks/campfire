@@ -87,15 +87,24 @@ export default function QuizVoter({ sessionId, questionId, question, renderResul
           return (
             <motion.button
               key={option}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05, duration: 0.25, ease: 'easeOut' }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{
+                opacity: selected !== null && !isSelected ? 0.4 : 1,
+                y: 0,
+                scale: isSelected ? 0.98 : 1,
+              }}
+              transition={{
+                delay: index * 0.04,
+                type: 'spring',
+                stiffness: 300,
+                damping: 26,
+              }}
               whileTap={{ scale: 0.97 }}
               onClick={() => handleVote(option)}
               disabled={selected !== null}
               className={`w-full py-3.5 px-4 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${
                 isSelected ? 'ring-2 ring-slate-400 border-slate-300 bg-slate-50' : 'border-slate-200'
-              } ${selected !== null && !isSelected ? 'opacity-40 cursor-not-allowed' : ''} transition-all flex items-center gap-3`}
+              } ${selected !== null && !isSelected ? 'cursor-not-allowed' : ''} transition-colors flex items-center gap-3`}
             >
               <span className={`w-8 h-8 rounded-lg ${style.badge} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
                 {style.letter}
