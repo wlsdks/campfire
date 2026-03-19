@@ -71,9 +71,10 @@
 
 ## 백엔드 & 데이터 규칙
 
-### Firebase Realtime DB
-- **Mock 데이터 절대 금지**: 프론트엔드는 반드시 실제 Firebase API 호출 기반
-- **하드코딩 데이터 금지**: 모든 데이터는 Firebase에서 읽고 쓰기
+### 아키텍처: React + Firebase (서버리스)
+- 별도 백엔드 서버 없음. React에서 Firebase SDK로 직접 읽기/쓰기
+- **Mock 데이터 절대 금지**: 하드코딩된 가짜 데이터로 UI 채우지 않기
+- **모든 데이터는 Firebase Realtime DB**에서 읽고 쓰기 (`onValue`, `set`, `push`, `update`)
 - **테이블(경로) 추가**: 새 기능에 필요하면 자유롭게 추가
   - `database.rules.json`에 규칙 반드시 추가
   - 기존 데이터 구조와 일관성 유지 (CLAUDE.md 아키텍처 참고)
