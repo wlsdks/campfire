@@ -79,26 +79,23 @@ export default function WaitingPage({ sessionId, pendingEvent = null }) {
 
       <div className="text-center space-y-5">
         {/* Broadcasting icon with sonar ring */}
-        <div className="relative w-16 h-16 mx-auto">
-          {/* Sonar ping ring */}
+        <div className="relative w-12 h-12 mx-auto">
           <motion.div
-            className="absolute inset-0 rounded-2xl border-2 border-slate-300"
-            animate={{ scale: [1, 1.5], opacity: [0.4, 0] }}
+            className="absolute inset-0 rounded-full border border-indigo-200"
+            animate={{ scale: [1, 2], opacity: [0.5, 0] }}
             transition={{ repeat: Infinity, duration: 2.5, ease: 'easeOut' }}
           />
-          {/* Second ring, offset timing */}
           <motion.div
-            className="absolute inset-0 rounded-2xl border-2 border-slate-300"
-            animate={{ scale: [1, 1.5], opacity: [0.4, 0] }}
+            className="absolute inset-0 rounded-full border border-indigo-200"
+            animate={{ scale: [1, 2], opacity: [0.5, 0] }}
             transition={{ repeat: Infinity, duration: 2.5, ease: 'easeOut', delay: 1.25 }}
           />
-          {/* Icon container */}
           <motion.div
-            animate={{ scale: [1, 1.03, 1] }}
+            animate={{ scale: [1, 1.05, 1] }}
             transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
-            className="relative z-10"
+            className="w-12 h-12 flex items-center justify-center relative z-10"
           >
-            <Radio size={36} className="text-indigo-600" />
+            <Radio size={28} className="text-indigo-500" />
           </motion.div>
         </div>
 
