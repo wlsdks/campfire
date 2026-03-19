@@ -35,9 +35,9 @@ export default function AdminLogin({ onLogin }) {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.1 }}
-              className="mx-auto"
+              className="flex justify-center"
             >
-              <Radio size={32} className="text-indigo-600" />
+              <Radio size={28} className="text-indigo-500" />
             </motion.div>
             <div>
               <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Pinggo</h1>

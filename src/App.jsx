@@ -44,7 +44,7 @@ function StudentRouter() {
     return (
       <div className="min-h-dvh bg-slate-50 flex items-center justify-center">
         <div className="text-center space-y-3">
-          <Radio size={28} className="text-indigo-600 mx-auto" />
+          <div className="flex justify-center"><Radio size={28} className="text-indigo-500" /></div>
           <p className="text-slate-400 text-base">세션 링크를 통해 접속해주세요</p>
         </div>
       </div>
