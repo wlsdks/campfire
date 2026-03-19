@@ -25,13 +25,14 @@ const OPTION_STYLES = [
  * @param {Object} props.question
  * @param {function} [props.renderResult] - Render function called with currentVote when quiz is revealed and user voted
  */
-export default function QuizVoter({ sessionId, questionId, question, renderResult }) {
+export default function QuizVoter({ sessionId, questionId, question, renderResult, disabled = false }) {
   const participantId = getParticipantId();
   const { votes } = useVotes(sessionId, questionId);
   const currentVote = votes[participantId] || null;
   const [selected, setSelected] = useState(null);
 
   async function handleVote(option) {
+    if (disabled) return;
     setSelected(option);
     try {
       await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${participantId}`), {
@@ -106,10 +107,10 @@ export default function QuizVoter({ sessionId, questionId, question, renderResul
               }}
               whileTap={{ scale: 0.97 }}
               onClick={() => handleVote(option)}
-              disabled={selected !== null}
+              disabled={selected !== null || disabled}
               className={`w-full py-3.5 px-4 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${
                 isSelected ? 'ring-2 ring-slate-400 border-slate-300 bg-slate-50' : 'border-slate-200'
-              } ${selected !== null && !isSelected ? 'cursor-not-allowed' : ''} transition-colors flex items-center gap-3`}
+              } ${(selected !== null && !isSelected) || disabled ? 'cursor-not-allowed' : ''} transition-colors flex items-center gap-3`}
             >
               <span className={`w-8 h-8 rounded-lg ${style.badge} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
                 {style.letter}

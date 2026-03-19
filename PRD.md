@@ -92,6 +92,7 @@
 | 돌림판 (룰렛) | 강사 | ✅ 완료 | 참여자 중 무작위 선택 |
 | 제비뽑기 (로터리) | 강사 | ✅ 완료 | 카드 뒤집기 당첨 |
 | 타이머 | 강사 | ✅ 완료 | 15/30/60/커스텀, 헤더 아이콘 팝업 |
+| 학생 타이머 표시 | 학생 | ✅ 완료 | 카운트다운 바 (녹→황→적), 시간 종료 시 투표 잠금 + 안내 오버레이 |
 
 ### 2.8 UI/UX
 
@@ -140,6 +141,7 @@ sessions/
     reactions/{reactionId}: { type, timestamp }
     urgentQuestions/{questionId}: { text, timestamp, read }
     handRaises/{participantId}: { raised, nickname, timestamp }
+    timer: { endTime, duration, running, startedAt }
 
 admins/{uid}: { username, passwordHash, displayName, role, approved }
 courseTemplates/{courseId}: { name, questions/... }

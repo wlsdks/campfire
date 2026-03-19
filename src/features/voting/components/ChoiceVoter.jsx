@@ -13,11 +13,12 @@ const OPTION_STYLES = [
   { bg: 'bg-white hover:bg-slate-50', text: 'text-slate-800', badge: 'bg-slate-500', letter: 'E' },
 ];
 
-export default function ChoiceVoter({ sessionId, questionId, options }) {
+export default function ChoiceVoter({ sessionId, questionId, options, disabled = false }) {
   const [voted, setVoted] = useState(false);
   const [selected, setSelected] = useState(null);
 
   async function handleVote(option) {
+    if (disabled) return;
     setSelected(option);
     try {
       const pid = getParticipantId();
@@ -60,7 +61,7 @@ export default function ChoiceVoter({ sessionId, questionId, options }) {
             }
             whileTap={!hasSelection ? { scale: 0.97 } : undefined}
             onClick={() => handleVote(option)}
-            disabled={hasSelection}
+            disabled={hasSelection || disabled}
             className={`w-full py-3.5 px-4 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${isSelected ? 'ring-2 ring-slate-400 border-slate-300 bg-slate-50' : 'border-slate-200'} ${hasSelection && !isSelected ? 'cursor-not-allowed' : ''} transition-colors flex items-center gap-3`}
           >
             <span className={`w-8 h-8 rounded-lg ${style.badge} text-white flex items-center justify-center text-sm font-bold shrink-0`}>

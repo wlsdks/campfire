@@ -55,7 +55,7 @@ function SubmitConfirm({ type, value }) {
   );
 }
 
-export default function TextInput({ sessionId, questionId, type = 'wordcloud', placeholder, maxLength = 50 }) {
+export default function TextInput({ sessionId, questionId, type = 'wordcloud', placeholder, maxLength = 50, disabled = false }) {
   const [text, setText] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submittedValue, setSubmittedValue] = useState('');
@@ -63,7 +63,7 @@ export default function TextInput({ sessionId, questionId, type = 'wordcloud', p
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!text.trim()) return;
+    if (!text.trim() || disabled) return;
     setError(null);
     try {
       const pid = getParticipantId();
@@ -119,7 +119,7 @@ export default function TextInput({ sessionId, questionId, type = 'wordcloud', p
         type="submit"
         variant="primary"
         size="lg"
-        disabled={!text.trim()}
+        disabled={!text.trim() || disabled}
         className="w-full"
       >
         <Send size={18} />

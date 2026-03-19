@@ -1,3 +1,4 @@
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useSession } from '@/features/session/api/useSession';
 import ChoiceVoter from '@/features/voting/components/ChoiceVoter';
 import OXVoter from '@/features/voting/components/OXVoter';
@@ -11,10 +12,10 @@ import Badge from '@/components/ui/Badge';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import QuizResult from '@/features/quiz/components/QuizResult';
 import { SkeletonCard } from '@/components/ui/Skeleton';
-import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+import TimerCountdown from '@/features/timer/components/TimerCountdown';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Loader2, Clock } from 'lucide-react';
 import { useTimer } from '@/features/timer/api/useTimer';
-import TimerRing from '@/features/timer/components/TimerRing';
 import { getQuizReward } from '@/lib/quiz';
 
 const TYPE_LABELS = {
@@ -47,6 +48,23 @@ function QuizResultFromVote({ question, currentVote }) {
 export default function VotePage({ sessionId }) {
   const { session, loading } = useSession(sessionId);
   const { isRunning: timerRunning, endTime, duration } = useTimer(sessionId);
+  const [timerExpired, setTimerExpired] = useState(false);
+
+  const handleTimerExpire = useCallback(() => {
+    setTimerExpired(true);
+  }, []);
+
+  // Reset timerExpired when question changes or timer restarts
+  const prevQuestionRef = useRef(session?.currentQuestion);
+  const prevEndTimeRef = useRef(endTime);
+  useEffect(() => {
+    const currentQId = session?.currentQuestion;
+    if (currentQId !== prevQuestionRef.current || (endTime && endTime !== prevEndTimeRef.current)) {
+      setTimerExpired(false);
+    }
+    prevQuestionRef.current = currentQId;
+    prevEndTimeRef.current = endTime;
+  }, [session?.currentQuestion, endTime]);
 
   if (loading) {
     return (
@@ -91,12 +109,20 @@ export default function VotePage({ sessionId }) {
               <h2 className="text-xl font-bold text-slate-900 leading-snug flex-1">
                 {question.title}
               </h2>
-              <div className="flex items-center gap-2 shrink-0">
-                {timerRunning && <TimerRing endTime={endTime} duration={duration} size="sm" />}
-                <Badge variant="primary">{TYPE_LABELS[question.type] || question.type}</Badge>
-              </div>
+              <Badge variant="primary">{TYPE_LABELS[question.type] || question.type}</Badge>
             </div>
           </motion.div>
+
+          {/* Timer countdown bar */}
+          <AnimatePresence>
+            {timerRunning && (
+              <TimerCountdown
+                endTime={endTime}
+                duration={duration}
+                onExpire={handleTimerExpire}
+              />
+            )}
+          </AnimatePresence>
 
           {question.type === 'quiz' && question.event && (
             <motion.div
@@ -114,29 +140,69 @@ export default function VotePage({ sessionId }) {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: 'spring', stiffness: 280, damping: 28, delay: 0.08 }}
+            className="relative"
           >
             {question.type === 'choice' && (
-              <ChoiceVoter sessionId={sessionId} questionId={currentQId} options={question.options || []} />
+              <ChoiceVoter sessionId={sessionId} questionId={currentQId} options={question.options || []} disabled={timerExpired} />
             )}
             {question.type === 'quiz' && (
               <QuizVoter
                 sessionId={sessionId}
                 questionId={currentQId}
                 question={question}
+                disabled={timerExpired}
                 renderResult={(currentVote) => (
                   <QuizResultFromVote question={question} currentVote={currentVote} />
                 )}
               />
             )}
             {question.type === 'ox' && (
-              <OXVoter sessionId={sessionId} questionId={currentQId} />
+              <OXVoter sessionId={sessionId} questionId={currentQId} disabled={timerExpired} />
             )}
             {question.type === 'wordcloud' && (
-              <TextInput sessionId={sessionId} questionId={currentQId} type="wordcloud" placeholder="단어를 입력하세요" maxLength={20} />
+              <TextInput sessionId={sessionId} questionId={currentQId} type="wordcloud" placeholder="단어를 입력하세요" maxLength={20} disabled={timerExpired} />
             )}
             {question.type === 'qna' && (
-              <TextInput sessionId={sessionId} questionId={currentQId} type="qna" placeholder="질문을 입력하세요" maxLength={200} />
+              <TextInput sessionId={sessionId} questionId={currentQId} type="qna" placeholder="질문을 입력하세요" maxLength={200} disabled={timerExpired} />
             )}
+
+            {/* Time's up overlay */}
+            <AnimatePresence>
+              {timerExpired && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute inset-0 bg-white/80 backdrop-blur-[2px] rounded-xl flex flex-col items-center justify-center gap-2"
+                >
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 22, delay: 0.1 }}
+                    className="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center"
+                  >
+                    <Clock size={22} className="text-white" />
+                  </motion.div>
+                  <motion.p
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-lg font-bold text-slate-900"
+                  >
+                    시간이 종료되었습니다
+                  </motion.p>
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-sm text-slate-400"
+                  >
+                    결과를 기다려주세요
+                  </motion.p>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
       </div>
 
