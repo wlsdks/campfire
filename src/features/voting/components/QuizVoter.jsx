@@ -66,7 +66,7 @@ export default function QuizVoter({ sessionId, questionId, question, renderResul
         <div className="space-y-1">
           <p className="text-slate-900 font-bold text-lg">정답이 공개되었습니다</p>
           <p className="text-slate-500 text-sm">이번 라운드 응답은 마감되었습니다</p>
-          <p className="text-indigo-600 font-medium">정답: {question.correctAnswer}</p>
+          <p className="text-slate-700 font-medium">정답: {question.correctAnswer}</p>
         </div>
       </div>
     );

@@ -1,5 +1,5 @@
 const variants = {
-  primary: 'bg-indigo-50 text-indigo-700',
+  primary: 'bg-slate-100 text-slate-700',
   success: 'bg-slate-100 text-slate-600',
   warning: 'bg-slate-100 text-slate-600',
   error: 'bg-red-50 text-red-700',

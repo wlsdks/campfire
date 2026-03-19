@@ -55,7 +55,7 @@ export default function StudentHeader({ sessionId }) {
               transition={{ type: 'spring', stiffness: 300, damping: 24 }}
               className="text-sm font-medium text-slate-500 flex items-center gap-1"
             >
-              <Trophy size={14} className="text-amber-500" />
+              <Trophy size={14} className="text-slate-500" />
               <HeaderScore value={totalScore} />
             </motion.span>
           )}
