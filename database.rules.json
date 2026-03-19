@@ -123,6 +123,17 @@
           }
         },
 
+        "chat": {
+          ".write": true,
+          "$messageId": {
+            ".validate": "newData.hasChild('text') && newData.hasChild('sender')",
+            "text": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 500" },
+            "sender": { ".validate": "newData.isString() && newData.val().length <= 20" },
+            "senderType": { ".validate": "newData.isString()" },
+            "timestamp": { ".validate": true }
+          }
+        },
+
         "handRaises": {
           ".write": true
         },

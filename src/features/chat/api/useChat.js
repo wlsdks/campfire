@@ -1,7 +1,6 @@
 import { ref, push, onValue, serverTimestamp, query, limitToLast } from 'firebase/database';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { db } from '@/lib/firebase';
-import { getParticipantId, getNickname } from '@/lib/participant';
 
 const MAX_MESSAGES = 100;
 const COOLDOWN_MS = 2000;
@@ -10,7 +9,7 @@ const COOLDOWN_MS = 2000;
  * Real-time chat hook for a session.
  * Subscribes to the latest 100 messages and provides a rate-limited sendMessage action.
  * @param {string} sessionId
- * @returns {{ messages: Array, sendMessage: (text: string) => Promise<boolean>, loading: boolean, canSend: boolean }}
+ * @returns {{ messages: Array, sendMessage: (text: string, sender: string, senderType: string) => Promise<boolean>, loading: boolean, canSend: boolean }}
  */
 export function useChat(sessionId) {
   const [messages, setMessages] = useState([]);
@@ -45,17 +44,15 @@ export function useChat(sessionId) {
     };
   }, [sessionId]);
 
-  const sendMessage = useCallback(async (text) => {
+  const sendMessage = useCallback(async (text, sender, senderType) => {
     const trimmed = text?.trim();
     if (!sessionId || !trimmed || !canSend) return false;
 
     try {
-      const pid = getParticipantId();
-      const nickname = getNickname();
       await push(ref(db, `sessions/${sessionId}/chat`), {
         text: trimmed,
-        nickname,
-        participantId: pid,
+        sender: sender || '익명',
+        senderType: senderType || 'student',
         timestamp: serverTimestamp(),
       });
 
