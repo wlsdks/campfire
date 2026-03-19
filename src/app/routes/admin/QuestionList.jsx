@@ -29,26 +29,26 @@ function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, o
     zIndex: isDragging ? 10 : undefined,
   };
 
+  // Stop drag from activating on action buttons
+  const stopDrag = (e) => e.stopPropagation();
+
   return (
     <div
       ref={setNodeRef}
       style={style}
+      {...(!readOnly ? { ...attributes, ...listeners } : {})}
       onClick={readOnly && onView ? () => onView(qId) : undefined}
-      className={`p-3 rounded-xl border transition-all ${
-        isDragging ? 'shadow-lg opacity-90 scale-[1.02] bg-white border-slate-300' :
+      className={`p-3 rounded-xl border transition-all touch-none ${
+        isDragging ? 'shadow-lg opacity-80 scale-[1.03] bg-white border-slate-300 cursor-grabbing' :
         readOnly
           ? `bg-white ${currentQuestion === qId ? 'border-slate-400 shadow-sm' : 'border-slate-200 hover:border-slate-300 cursor-pointer'}`
-          : isActive ? 'bg-white border-slate-300 shadow-sm' : 'bg-white border-slate-200 hover:border-slate-300'
+          : isActive ? 'bg-white border-slate-300 shadow-sm cursor-grab' : 'bg-white border-slate-200 hover:border-slate-300 cursor-grab'
       }`}
     >
       <div className="flex items-start gap-2">
-        {/* Drag handle */}
+        {/* Drag indicator */}
         {!readOnly && (
-          <div
-            {...attributes}
-            {...listeners}
-            className="shrink-0 -ml-1 cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 transition-colors pt-0.5 touch-none"
-          >
+          <div className="shrink-0 -ml-1 text-slate-200 pt-0.5">
             <GripVertical size={14} />
           </div>
         )}
@@ -70,7 +70,7 @@ function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, o
         </div>
 
         {!readOnly && (
-          <div className="flex gap-1 shrink-0">
+          <div className="flex gap-1 shrink-0" onPointerDown={stopDrag}>
             {!isActive ? (
               <button onClick={() => onActivate(qId)} className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all active:scale-90" aria-label="질문 활성화">
                 <Play size={12} />
