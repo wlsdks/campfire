@@ -20,7 +20,7 @@ import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
 import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import { Radio, Loader2, Monitor, Target, Ticket, Trophy, X, Users, Copy, Check, ArrowLeft, ChevronDown, PanelLeftClose, PanelLeftOpen, Square, Play } from 'lucide-react';
+import { Radio, Loader2, Monitor, Target, Ticket, Trophy, X, Users, Copy, Check, ArrowLeft, ChevronDown, Clock, PanelLeftClose, PanelLeftOpen, Square, Play } from 'lucide-react';
 import { useTimer } from '@/features/timer/api/useTimer';
 import TimerControls from '@/features/timer/components/TimerControls';
 import TimerRing from '@/features/timer/components/TimerRing';
@@ -188,6 +188,7 @@ export default function AdminPage() {
   // Feature 5: Center panel question form
   const [showCenterForm, setShowCenterForm] = useState(false);
   const [modeOpen, setModeOpen] = useState(false);
+  const [timerOpen, setTimerOpen] = useState(false);
 
   const isMaster = adminUser?.role === 'master';
 
@@ -410,13 +411,44 @@ export default function AdminPage() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          {timerRunning && <TimerRing endTime={endTime} duration={duration} onExpire={stopTimer} size="sm" />}
+          {/* Timer button */}
+          {!effectiveReadOnly && (
+            <div className="relative">
+              <button
+                onClick={() => setTimerOpen(!timerOpen)}
+                className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg transition-all ${
+                  timerRunning ? 'text-indigo-600' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                {timerRunning ? (
+                  <TimerRing endTime={endTime} duration={duration} onExpire={stopTimer} size="sm" />
+                ) : (
+                  <>
+                    <Clock size={18} />
+                    <span className="text-[10px] font-medium">타이머</span>
+                  </>
+                )}
+              </button>
+              <AnimatePresence>
+                {timerOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -4, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -4, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 top-full mt-2 bg-white rounded-xl border border-slate-200 shadow-lg p-3 z-50 w-56"
+                  >
+                    <TimerControls isRunning={timerRunning} onStart={(s) => { startTimer(s); setTimerOpen(false); }} onStop={stopTimer} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
           <Badge variant="neutral" className="py-2 px-3.5 text-sm">
             <Users size={16} className="mr-1.5" />
             {count}명
           </Badge>
           {totalTickets > 0 && <Badge variant="neutral" className="py-2 px-3.5 text-sm">{totalTickets}장 티켓</Badge>}
-          {session?.pendingEvent?.label && <Badge variant="primary" className="py-2 px-3.5 text-sm">{session.pendingEvent.label}</Badge>}
           {!effectiveReadOnly && isSetting && (
             <Button onClick={handleStartSession} variant="primary" size="sm">
               <Play size={18} />
@@ -471,7 +503,7 @@ export default function AdminPage() {
               currentQuestion={session?.currentQuestion}
               scores={scores}
               participants={participants}
-              pendingEvent={session?.pendingEvent || null}
+              pendingEvent={null}
               readOnly={effectiveReadOnly}
               onAddClick={effectiveReadOnly ? undefined : () => setShowCenterForm(true)}
               onViewQuestion={effectiveReadOnly ? async (qId) => {
@@ -487,10 +519,6 @@ export default function AdminPage() {
 
             {!effectiveReadOnly && (
               <>
-                <div className="mt-5 rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
-                  <TimerControls isRunning={timerRunning} onStart={startTimer} onStop={stopTimer} />
-                </div>
-
                 <div className="mt-5 rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
                   <button
                     onClick={() => setModeOpen(!modeOpen)}

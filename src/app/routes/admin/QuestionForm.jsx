@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart3, Circle, Cloud, MessageSquare, Plus, Trophy, Trash2, Check, AlertCircle } from 'lucide-react';
 import Button from '@/components/ui/Button';
-import { QUIZ_DEFAULTS } from '@/lib/quiz';
+import { QUIZ_DEFAULTS, QUIZ_EVENT_PRESETS } from '@/lib/quiz';
 
 const QUESTION_TYPES = [
   { value: 'choice', label: '객관식', icon: BarChart3 },
@@ -22,6 +22,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
   const [options, setOptions] = useState(['', '']);
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [points, setPoints] = useState(QUIZ_DEFAULTS.points);
+  const [event, setEvent] = useState(null);
   const [localError, setLocalError] = useState(null);
 
   const isChoiceLike = type === 'choice' || type === 'quiz';
@@ -45,7 +46,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
       return;
     }
     setLocalError(null);
-    const success = await onSubmit({ type, title, options: cleanOptions, correctAnswer, points });
+    const success = await onSubmit({ type, title, options: cleanOptions, correctAnswer, points, event });
     if (success) {
       setTitle('');
       setOptions(['', '']);
@@ -206,6 +207,32 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
                 <p className="text-xs text-slate-400">
                   정답 {points}점 + 속도 보너스 최대 {QUIZ_DEFAULTS.maxSpeedBonus}점
                 </p>
+              </div>
+            )}
+            {type === 'quiz' && (
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">이벤트 (선택)</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {QUIZ_EVENT_PRESETS.map((preset) => {
+                    const isSelected = event?.id === preset.id;
+                    return (
+                      <button
+                        key={preset.id}
+                        onClick={() => setEvent(isSelected ? null : preset)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                          isSelected
+                            ? 'bg-slate-900 text-white'
+                            : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
+                        }`}
+                      >
+                        {preset.label}
+                      </button>
+                    );
+                  })}
+                </div>
+                {event && (
+                  <p className="text-xs text-indigo-500">{event.description}</p>
+                )}
               </div>
             )}
           </motion.div>

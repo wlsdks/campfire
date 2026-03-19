@@ -53,7 +53,7 @@ export default function QuestionManager({
   const nextEntry = activeIndex >= 0 ? questionList[activeIndex + 1] : questionList[0];
   const nextQuizEvent = normalizeQuizEvent(pendingEvent);
 
-  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points }) {
+  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event }) {
     try {
       setError(null);
       const qId = generateQuestionId();
@@ -73,6 +73,7 @@ export default function QuestionManager({
         questionData.correctBonusTickets = QUIZ_DEFAULTS.correctBonusTickets;
         questionData.speedWindowMs = QUIZ_DEFAULTS.speedWindowMs;
         questionData.maxSpeedBonus = QUIZ_DEFAULTS.maxSpeedBonus;
+        if (event) questionData.event = event;
       }
 
       await set(ref(db, `sessions/${sessionId}/questions/${qId}`), questionData);
@@ -97,10 +98,6 @@ export default function QuestionManager({
         updates[`questions/${qId}/activatedAt`] = getNow();
         updates[`questions/${qId}/revealedAt`] = null;
         updates[`questions/${qId}/awardedAt`] = null;
-        if (nextQuizEvent) {
-          updates[`questions/${qId}/event`] = nextQuizEvent;
-          updates.pendingEvent = null;
-        }
       }
 
       await update(ref(db, `sessions/${sessionId}`), updates);
@@ -315,14 +312,6 @@ export default function QuestionManager({
             질문 {questionList.length}개 · {completedCount}개 진행 완료
           </p>
         </button>
-      )}
-
-      {!readOnly && (
-        <EventBooster
-          nextQuizEvent={nextQuizEvent}
-          onArmEvent={armEvent}
-          onClearEvent={clearPendingEvent}
-        />
       )}
 
       {!readOnly && (
