@@ -1,5 +1,8 @@
-import { useState, useRef, memo } from 'react';
+import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, BarChart3, Check, ChevronDown, Circle, Cloud, Copy, MessageSquare, Play, Square, Trash2, Trophy } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import PinggoMascot from '@/components/ui/PinggoMascot';
@@ -13,52 +16,112 @@ const QUESTION_TYPES = [
   { value: 'qna', label: 'Q&A', icon: MessageSquare },
 ];
 
+function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, onReveal, onShowLeaderboard, onClearActive, onDuplicate, onDelete }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: qId });
+  const qType = QUESTION_TYPES.find((t) => t.value === q.type);
+  const Icon = qType?.icon || MessageSquare;
+  const isActive = currentQuestion === qId;
+  const isQuiz = isQuizQuestion(q);
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 10 : undefined,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      onClick={readOnly && onView ? () => onView(qId) : undefined}
+      className={`p-3 rounded-xl border transition-all ${
+        isDragging ? 'shadow-lg opacity-90 scale-[1.02] bg-white border-slate-300' :
+        readOnly
+          ? `bg-white ${currentQuestion === qId ? 'border-slate-400 shadow-sm' : 'border-slate-200 hover:border-slate-300 cursor-pointer'}`
+          : isActive ? 'bg-white border-slate-300 shadow-sm' : 'bg-white border-slate-200 hover:border-slate-300'
+      }`}
+    >
+      <div className="flex items-start gap-2">
+        {/* Drag handle */}
+        {!readOnly && (
+          <div
+            {...attributes}
+            {...listeners}
+            className="shrink-0 -ml-1 cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 transition-colors pt-0.5 touch-none"
+          >
+            <GripVertical size={14} />
+          </div>
+        )}
+
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <Icon size={12} className={!readOnly && isActive ? 'text-slate-700' : 'text-slate-400'} />
+            <span className={`text-xs font-medium ${!readOnly && isActive ? 'text-slate-700' : 'text-slate-400'}`}>
+              {qType?.label}
+            </span>
+            {!readOnly && isActive && <Badge variant="primary">LIVE</Badge>}
+            {isQuiz && q.event && <Badge variant="neutral">{q.event.label || '이벤트'}</Badge>}
+            {isQuiz && q.revealedAt && <Badge variant="neutral">정답 공개</Badge>}
+          </div>
+          <span className="text-slate-700 text-sm leading-snug">{q.title}</span>
+          {readOnly && q.votes && (
+            <span className="text-slate-400 text-xs ml-1">({Object.keys(q.votes).length}명 응답)</span>
+          )}
+        </div>
+
+        {!readOnly && (
+          <div className="flex gap-1 shrink-0">
+            {!isActive ? (
+              <button onClick={() => onActivate(qId)} className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all active:scale-90" aria-label="질문 활성화">
+                <Play size={12} />
+              </button>
+            ) : (
+              <>
+                {isQuiz && !q.revealedAt && (
+                  <button onClick={() => onReveal(qId)} className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all active:scale-90" aria-label="정답 공개">
+                    <Check size={12} />
+                  </button>
+                )}
+                {isQuiz && q.revealedAt && (
+                  <button onClick={onShowLeaderboard} className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all active:scale-90" aria-label="리더보드 보기">
+                    <Trophy size={12} />
+                  </button>
+                )}
+                <button onClick={onClearActive} className="p-1.5 rounded-md bg-slate-200 text-slate-500 hover:bg-slate-300 transition-all active:scale-90" aria-label="질문 중지">
+                  <Square size={12} />
+                </button>
+              </>
+            )}
+            <button onClick={() => onDuplicate(qId)} className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-600 transition-all active:scale-90" aria-label="질문 복제">
+              <Copy size={12} />
+            </button>
+            <button onClick={() => onDelete(qId)} className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-700 transition-all active:scale-90" aria-label="질문 삭제">
+              <Trash2 size={12} />
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default memo(function QuestionList({
-  questionList,
-  currentQuestion,
-  onActivate,
-  onReveal,
-  onShowLeaderboard,
-  onClearActive,
-  onDuplicate,
-  onDelete,
-  onMoveUp,
-  onMoveDown,
-  readOnly = false,
-  onView,
-  onReorder,
+  questionList, currentQuestion, onActivate, onReveal, onShowLeaderboard, onClearActive,
+  onDuplicate, onDelete, readOnly = false, onView, onReorder,
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const activeCount = questionList.filter(([qId]) => qId === currentQuestion).length;
-  const dragItem = useRef(null);
-  const dragOver = useRef(null);
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+  const ids = questionList.map(([qId]) => qId);
 
-  function handleDragStart(index) {
-    dragItem.current = index;
-  }
-
-  function handleDragEnter(index) {
-    dragOver.current = index;
-  }
-
-  function handleDragEnd() {
-    if (dragItem.current === null || dragOver.current === null || dragItem.current === dragOver.current) {
-      dragItem.current = null;
-      dragOver.current = null;
-      return;
-    }
-    const fromId = questionList[dragItem.current]?.[0];
-    const toId = questionList[dragOver.current]?.[0];
-    if (fromId && toId && onReorder) {
-      onReorder(fromId, toId);
-    }
-    dragItem.current = null;
-    dragOver.current = null;
+  function handleDragEnd(event) {
+    const { active, over } = event;
+    if (!over || active.id === over.id || !onReorder) return;
+    onReorder(active.id, over.id);
   }
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
-      {/* Accordion header */}
       <button
         onClick={() => setCollapsed(!collapsed)}
         className="w-full flex items-center justify-between px-4 py-3 text-left bg-slate-50 hover:bg-slate-100 active:bg-slate-200/60 transition-colors"
@@ -72,7 +135,6 @@ export default memo(function QuestionList({
         </motion.div>
       </button>
 
-      {/* Question items */}
       <AnimatePresence>
         {!collapsed && (
           <motion.div
@@ -83,122 +145,27 @@ export default memo(function QuestionList({
             className="overflow-hidden"
           >
             <div className="p-1.5 space-y-1.5">
-              {questionList.map(([qId, q], index) => {
-                const qType = QUESTION_TYPES.find((t) => t.value === q.type);
-                const Icon = qType?.icon || MessageSquare;
-                const isActive = currentQuestion === qId;
-                const isQuiz = isQuizQuestion(q);
-                const isFirst = index === 0;
-                const isLast = index === questionList.length - 1;
-
-                return (
-                  <motion.div
-                    key={qId}
-                    layout
-                    transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-                    draggable={!readOnly && questionList.length > 1}
-                    onDragStart={() => handleDragStart(index)}
-                    onDragEnter={() => handleDragEnter(index)}
-                    onDragEnd={handleDragEnd}
-                    onDragOver={(e) => e.preventDefault()}
-                    onClick={readOnly && onView ? () => onView(qId) : undefined}
-                    className={`p-3 rounded-xl border transition-all ${
-                      readOnly
-                        ? `bg-white ${currentQuestion === qId ? 'border-slate-400 shadow-sm' : 'border-slate-200 hover:border-slate-300 cursor-pointer'}`
-                        : isActive ? 'bg-white border-slate-300 shadow-sm' : 'bg-white border-slate-200 hover:border-slate-300'
-                    }`}
-                  >
-                    <div className="flex items-start gap-2">
-                      {/* Drag handle */}
-                      {!readOnly && questionList.length > 1 && (
-                        <div className="shrink-0 -ml-1 cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 transition-colors pt-0.5">
-                          <GripVertical size={14} />
-                        </div>
-                      )}
-
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 mb-0.5">
-                          <Icon size={12} className={!readOnly && isActive ? 'text-slate-700' : 'text-slate-400'} />
-                          <span className={`text-xs font-medium ${!readOnly && isActive ? 'text-slate-700' : 'text-slate-400'}`}>
-                            {qType?.label}
-                          </span>
-                          {!readOnly && isActive && <Badge variant="primary">LIVE</Badge>}
-                          {isQuiz && q.event && <Badge variant="neutral">{q.event.label || '이벤트'}</Badge>}
-                          {isQuiz && q.revealedAt && <Badge variant="neutral">정답 공개</Badge>}
-                        </div>
-                        <span className="text-slate-700 text-sm leading-snug">{q.title}</span>
-                        {readOnly && q.votes && (
-                          <span className="text-slate-400 text-xs ml-1">
-                            ({Object.keys(q.votes).length}명 응답)
-                          </span>
-                        )}
-                      </div>
-
-                      {!readOnly && (
-                        <div className="flex gap-1 shrink-0">
-                          {!isActive ? (
-                            <button
-                              onClick={() => onActivate(qId)}
-                              className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all active:scale-90"
-                              title="활성화"
-                              aria-label="질문 활성화"
-                            >
-                              <Play size={12} />
-                            </button>
-                          ) : (
-                            <>
-                              {isQuiz && !q.revealedAt && (
-                                <button
-                                  onClick={() => onReveal(qId)}
-                                  className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all active:scale-90"
-                                  title="정답 공개"
-                                  aria-label="정답 공개"
-                                >
-                                  <Check size={12} />
-                                </button>
-                              )}
-                              {isQuiz && q.revealedAt && (
-                                <button
-                                  onClick={onShowLeaderboard}
-                                  className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all active:scale-90"
-                                  title="리더보드 보기"
-                                  aria-label="리더보드 보기"
-                                >
-                                  <Trophy size={12} />
-                                </button>
-                              )}
-                              <button
-                                onClick={onClearActive}
-                                className="p-1.5 rounded-md bg-slate-200 text-slate-500 hover:bg-slate-300 transition-all active:scale-90"
-                                title="중지"
-                                aria-label="질문 중지"
-                              >
-                                <Square size={12} />
-                              </button>
-                            </>
-                          )}
-                          <button
-                            onClick={() => onDuplicate(qId)}
-                            className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-600 transition-all active:scale-90"
-                            title="복제"
-                            aria-label="질문 복제"
-                          >
-                            <Copy size={12} />
-                          </button>
-                          <button
-                            onClick={() => onDelete(qId)}
-                            className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-700 transition-all active:scale-90"
-                            title="삭제"
-                            aria-label="질문 삭제"
-                          >
-                            <Trash2 size={12} />
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                );
-              })}
+              {!readOnly && questionList.length > 1 ? (
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                  <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+                    {questionList.map(([qId, q]) => (
+                      <SortableItem
+                        key={qId} qId={qId} q={q} currentQuestion={currentQuestion} readOnly={readOnly}
+                        onActivate={onActivate} onReveal={onReveal} onShowLeaderboard={onShowLeaderboard}
+                        onClearActive={onClearActive} onDuplicate={onDuplicate} onDelete={onDelete}
+                      />
+                    ))}
+                  </SortableContext>
+                </DndContext>
+              ) : (
+                questionList.map(([qId, q]) => (
+                  <SortableItem
+                    key={qId} qId={qId} q={q} currentQuestion={currentQuestion} readOnly={readOnly}
+                    onView={onView} onActivate={onActivate} onReveal={onReveal} onShowLeaderboard={onShowLeaderboard}
+                    onClearActive={onClearActive} onDuplicate={onDuplicate} onDelete={onDelete}
+                  />
+                ))
+              )}
 
               {questionList.length === 0 && (
                 <div className="flex flex-col items-center text-center py-6 space-y-2">

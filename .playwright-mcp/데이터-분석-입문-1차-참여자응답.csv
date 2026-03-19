@@ -1,0 +1,15 @@
+﻿닉네임,Q1. 데이터 분석에 가장 많이 사용하는 도구는?,Q2. 평균은 이상치(Outlier)에 민감하다,Q3. 상관관계와 인과관계의 차이를 나타내는 표현은?
+지유,R,X,Correlation does not imply causation
+준서,Python,,Correlation does not imply causation
+하준,SQL,O,Correlation does not imply causation
+채원,Excel,O,Correlation does not imply causation
+동현,,X,Causation requires correlation
+다은,Python,O,Correlation does not imply causation
+하윤,,O,Correlation implies causation
+유나,SQL,O,Correlation does not imply causation
+수아,Excel,O,
+지우,Python,O,Correlation implies causation
+하영,Excel,O,Causation requires correlation
+도윤,Python,O,Correlation does not imply causation
+건우,SQL,,Correlation does not imply causation
+현우,Python,O,Correlation does not imply causation

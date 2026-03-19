@@ -1,0 +1,4 @@
+﻿번호,질문,유형,선택지,정답,응답 수,응답률(%),정답률(%),선택지별 분포
+1,데이터 분석에 가장 많이 사용하는 도구는?,객관식,Excel / Python / R / SQL,Python,12,86,42,"R: 1명, Python: 5명, SQL: 3명, Excel: 3명"
+2,평균은 이상치(Outlier)에 민감하다,O/X,,O,12,86,83,"X: 2명, O: 10명"
+3,상관관계와 인과관계의 차이를 나타내는 표현은?,퀴즈,Correlation implies causation / Correlation does not imply causation / Causation requires correlation,Correlation does not imply causation,13,93,69,"Correlation does not imply causation: 9명, Causation requires correlation: 2명, Correlation implies causation: 2명"
