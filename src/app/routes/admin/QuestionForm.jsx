@@ -187,52 +187,49 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
                 })}
             </div>
             {type === 'quiz' && (
-              <div className="space-y-2">
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">점수 설정</p>
-                <div className="flex gap-2">
-                  {[50, 100, 200, 500].map((v) => (
-                    <button
-                      key={v}
-                      onClick={() => setPoints(v)}
-                      className={`flex-1 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                        points === v
-                          ? 'bg-slate-900 text-white'
-                          : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
-                      }`}
-                    >
-                      {v}점
-                    </button>
-                  ))}
-                </div>
-                <p className="text-xs text-slate-400">
-                  정답 {points}점 + 속도 보너스 최대 {QUIZ_DEFAULTS.maxSpeedBonus}점
-                </p>
-              </div>
-            )}
-            {type === 'quiz' && (
-              <div className="space-y-2">
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">이벤트 (선택)</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {QUIZ_EVENT_PRESETS.map((preset) => {
-                    const isSelected = event?.id === preset.id;
-                    return (
+              <div className="space-y-3">
+                <div className="space-y-1.5">
+                  <div className="flex items-baseline gap-2">
+                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">점수 설정</p>
+                    <span className="text-[11px] text-slate-300">(+속도 보너스 최대 {QUIZ_DEFAULTS.maxSpeedBonus}점)</span>
+                  </div>
+                  <div className="flex gap-1.5">
+                    {[50, 100, 200, 500].map((v) => (
                       <button
-                        key={preset.id}
-                        onClick={() => setEvent(isSelected ? null : preset)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                          isSelected
+                        key={v}
+                        onClick={() => setPoints(v)}
+                        className={`flex-1 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                          points === v
                             ? 'bg-slate-900 text-white'
                             : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
                         }`}
                       >
-                        {preset.label}
+                        {v}점
                       </button>
-                    );
-                  })}
+                    ))}
+                  </div>
                 </div>
-                {event && (
-                  <p className="text-xs text-indigo-500">{event.description}</p>
-                )}
+                <div className="space-y-1.5">
+                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">이벤트 <span className="normal-case font-normal">(선택)</span></p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {QUIZ_EVENT_PRESETS.map((preset) => {
+                      const isSelected = event?.id === preset.id;
+                      return (
+                        <button
+                          key={preset.id}
+                          onClick={() => setEvent(isSelected ? null : preset)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                            isSelected
+                              ? 'bg-slate-900 text-white'
+                              : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
+                          }`}
+                        >
+                          {preset.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             )}
           </motion.div>
