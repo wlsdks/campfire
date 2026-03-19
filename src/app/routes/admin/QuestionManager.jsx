@@ -301,12 +301,17 @@ export default function QuestionManager({
       )}
 
       {questionList.length > 0 && readOnly && (
-        <div className="rounded-xl border border-slate-200 bg-white p-3 space-y-1 shadow-sm">
+        <button
+          onClick={() => onViewQuestion?.('__summary__')}
+          className={`w-full rounded-xl border bg-white p-3 space-y-1 shadow-sm text-left transition-all ${
+            !currentQuestion ? 'border-slate-400 shadow-md' : 'border-slate-200 hover:border-slate-300'
+          }`}
+        >
           <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">수업 요약</p>
           <p className="text-slate-900 text-sm font-medium">
             질문 {questionList.length}개 · {completedCount}개 진행 완료
           </p>
-        </div>
+        </button>
       )}
 
       {!readOnly && (

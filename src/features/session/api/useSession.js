@@ -22,6 +22,8 @@ export function useSession(sessionId) {
   const [status, setStatus] = useState(NOT_LOADED);
   const [pendingEvent, setPendingEvent] = useState(NOT_LOADED);
   const [questions, setQuestions] = useState(NOT_LOADED);
+  const [courseName, setCourseName] = useState(NOT_LOADED);
+  const [roundNumber, setRoundNumber] = useState(NOT_LOADED);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -48,6 +50,12 @@ export function useSession(sessionId) {
     const qRef = ref(db, `sessions/${sessionId}/questions`);
     unsubs.push(onValue(qRef, (snap) => setQuestions(snap.val() || {})));
 
+    const cnRef = ref(db, `sessions/${sessionId}/courseName`);
+    unsubs.push(onValue(cnRef, (snap) => setCourseName(snap.val())));
+
+    const rnRef = ref(db, `sessions/${sessionId}/roundNumber`);
+    unsubs.push(onValue(rnRef, (snap) => setRoundNumber(snap.val())));
+
     return () => {
       unsubs.forEach((unsub) => unsub());
       // Reset on cleanup so next sessionId starts fresh.
@@ -56,6 +64,8 @@ export function useSession(sessionId) {
       setStatus(NOT_LOADED);
       setPendingEvent(NOT_LOADED);
       setQuestions(NOT_LOADED);
+      setCourseName(NOT_LOADED);
+      setRoundNumber(NOT_LOADED);
     };
   }, [sessionId]);
 
@@ -76,8 +86,10 @@ export function useSession(sessionId) {
       status: status === NOT_LOADED ? null : (status ?? null),
       pendingEvent: pendingEvent === NOT_LOADED ? null : (pendingEvent ?? null),
       questions: questions ?? {},
+      courseName: courseName === NOT_LOADED ? null : (courseName ?? null),
+      roundNumber: roundNumber === NOT_LOADED ? null : (roundNumber ?? null),
     };
-  }, [loading, currentQuestion, currentMode, status, pendingEvent, questions]);
+  }, [loading, currentQuestion, currentMode, status, pendingEvent, questions, courseName, roundNumber]);
 
   return { session, loading };
 }

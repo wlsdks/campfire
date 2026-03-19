@@ -391,7 +391,7 @@ export default function AdminPage() {
               {effectiveReadOnly && <Badge variant="neutral">클래스 확인</Badge>}
               {isSetting && <Badge variant="warning" className="py-1 px-2.5 text-xs font-semibold text-amber-600 bg-amber-50 border-amber-200">세팅중</Badge>}
             </div>
-            <span className="text-xs text-slate-400 font-mono">{sessionId}</span>
+            <span className="text-xs text-slate-400">세션 <span className="font-mono">{sessionId}</span></span>
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -460,7 +460,13 @@ export default function AdminPage() {
               readOnly={effectiveReadOnly}
               onAddClick={effectiveReadOnly ? undefined : () => setShowCenterForm(true)}
               onViewQuestion={effectiveReadOnly ? async (qId) => {
-                try { await update(ref(db, `sessions/${sessionId}`), { currentQuestion: qId, currentMode: 'poll' }); } catch {}
+                try {
+                  if (qId === '__summary__') {
+                    await update(ref(db, `sessions/${sessionId}`), { currentQuestion: null, currentMode: 'waiting' });
+                  } else {
+                    await update(ref(db, `sessions/${sessionId}`), { currentQuestion: qId, currentMode: 'poll' });
+                  }
+                } catch {}
               } : undefined}
             />
 

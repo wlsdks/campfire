@@ -37,10 +37,10 @@ export default function VizRenderer({ sessionId, session }) {
   const isQA = question.type === 'qna';
 
   return (
-    <div className={`flex flex-col w-full h-full ${isQA ? 'pt-4' : 'items-center justify-center gap-6'}`}>
+    <div className={`flex flex-col w-full h-full ${isQA ? 'pt-4' : 'justify-center gap-6'}`}>
       {/* Header — hidden for Q&A (QACards has its own), centered for others */}
       {!isQA && (
-      <div className="text-center space-y-2">
+      <div className="text-center space-y-2 self-center">
         <Badge variant="primary">{TYPE_LABELS[question.type] || question.type}</Badge>
         <h2 className="text-3xl font-bold text-slate-900">{question.title}</h2>
         {isQuizQuestion(question) && (
@@ -52,13 +52,13 @@ export default function VizRenderer({ sessionId, session }) {
       )}
 
       {isQuizQuestion(question) && question.event && (
-        <div className="w-full max-w-4xl">
+        <div className="w-full max-w-4xl self-center">
           <QuizEventBanner event={question.event} state={question.revealedAt ? 'result' : 'active'} />
         </div>
       )}
 
       {/* Visualization */}
-      <div className={isQA ? 'flex-1 overflow-y-auto px-4 py-3' : ''}>
+      <div className={isQA ? 'flex-1 overflow-y-auto px-4 py-3' : 'w-full'}>
         {question.type === 'choice' && <BarChart sessionId={sessionId} questionId={currentQId} options={question.options || []} />}
         {question.type === 'quiz' && (
           <BarChart

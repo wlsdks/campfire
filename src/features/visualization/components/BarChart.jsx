@@ -15,7 +15,7 @@ export default function BarChart({ sessionId, questionId, options, correctValue 
   const { totalVotes, countByValue } = useVotes(sessionId, questionId);
 
   return (
-    <div className="space-y-4 w-full max-w-5xl mx-auto px-4">
+    <div className="space-y-5 w-full max-w-full px-8">
       {options.map((option, i) => {
         const count = countByValue(option);
         const pct = totalVotes > 0 ? (count / totalVotes) * 100 : 0;
@@ -46,7 +46,7 @@ export default function BarChart({ sessionId, questionId, options, correctValue 
                 <span className="text-slate-400 text-sm">{formatPercent(count, totalVotes)}</span>
               </div>
             </div>
-            <div className={`h-10 ${style.track} rounded-xl overflow-hidden`}>
+            <div className={`h-12 ${style.track} rounded-xl overflow-hidden`}>
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.max(pct, count > 0 ? 2 : 0)}%` }}
