@@ -13,6 +13,7 @@ const QUESTION_TYPES = [
 ];
 
 const OPTION_LABELS = ['A', 'B', 'C', 'D', 'E'];
+const GAP = 'pt-4'; // 모든 섹션 간 동일한 간격
 
 const INPUT = 'w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm placeholder:text-slate-300 focus:outline-none focus:border-slate-400 transition-colors';
 
@@ -51,6 +52,8 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
       setTitle('');
       setOptions(['', '']);
       setCorrectAnswer('');
+      setPoints(QUIZ_DEFAULTS.points);
+      setEvent(null);
       onCancel();
     }
   }
@@ -65,8 +68,8 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
   const displayError = localError || error;
 
   return (
-    <div className="space-y-3">
-      {/* Type selector */}
+    <div>
+      {/* 질문 유형 */}
       <div>
         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">질문 유형</p>
         <div className="flex gap-1.5">
@@ -91,8 +94,8 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
         </div>
       </div>
 
-      {/* Title */}
-      <div>
+      {/* 질문 내용 */}
+      <div className={GAP}>
         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">질문 내용</p>
         <textarea
           value={title}
@@ -104,13 +107,14 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
         />
       </div>
 
-      {/* Options */}
+      {/* 선택지 */}
       <AnimatePresence>
         {isChoiceLike && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
+            className={GAP}
           >
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">선택지</p>
             <div className="rounded-xl border border-slate-200 p-3 space-y-2">
@@ -155,13 +159,14 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
         )}
       </AnimatePresence>
 
-      {/* Correct answer for choice-like types */}
+      {/* 정답 선택 (객관식/퀴즈) */}
       <AnimatePresence>
         {isChoiceLike && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
+            className={GAP}
           >
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">정답 선택</p>
             <div className="flex flex-wrap gap-2">
@@ -186,63 +191,82 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
                   );
                 })}
             </div>
-            {type === 'quiz' && (
-              <div className="space-y-2.5 mt-1">
-                <div className="space-y-1.5">
-                  <div className="flex items-baseline gap-2">
-                    <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">점수 설정</p>
-                    <span className="text-[11px] text-slate-300">(+속도 보너스 최대 {QUIZ_DEFAULTS.maxSpeedBonus}점)</span>
-                  </div>
-                  <div className="flex gap-1.5">
-                    {[50, 100, 200, 500].map((v) => (
-                      <button
-                        key={v}
-                        onClick={() => setPoints(v)}
-                        className={`flex-1 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                          points === v
-                            ? 'bg-slate-900 text-white'
-                            : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
-                        }`}
-                      >
-                        {v}점
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div className="space-y-1.5">
-                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">이벤트 <span className="normal-case font-normal">(선택)</span></p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {QUIZ_EVENT_PRESETS.map((preset) => {
-                      const isSelected = event?.id === preset.id;
-                      return (
-                        <button
-                          key={preset.id}
-                          onClick={() => setEvent(isSelected ? null : preset)}
-                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                            isSelected
-                              ? 'bg-slate-900 text-white'
-                              : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
-                          }`}
-                        >
-                          {preset.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            )}
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* O/X correct answer */}
+      {/* 점수 설정 (퀴즈만) */}
+      <AnimatePresence>
+        {type === 'quiz' && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className={GAP}
+          >
+            <div className="flex items-baseline gap-2 mb-2">
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">점수 설정</p>
+              <span className="text-[11px] text-slate-300">(+속도 보너스 최대 {QUIZ_DEFAULTS.maxSpeedBonus}점)</span>
+            </div>
+            <div className="flex gap-1.5">
+              {[50, 100, 200, 500].map((v) => (
+                <button
+                  key={v}
+                  onClick={() => setPoints(v)}
+                  className={`flex-1 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                    points === v
+                      ? 'bg-slate-900 text-white'
+                      : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
+                  }`}
+                >
+                  {v}점
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 이벤트 (퀴즈만) */}
+      <AnimatePresence>
+        {type === 'quiz' && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className={GAP}
+          >
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">이벤트 <span className="normal-case font-normal">(선택)</span></p>
+            <div className="flex flex-wrap gap-1.5">
+              {QUIZ_EVENT_PRESETS.map((preset) => {
+                const isSelected = event?.id === preset.id;
+                return (
+                  <button
+                    key={preset.id}
+                    onClick={() => setEvent(isSelected ? null : preset)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                      isSelected
+                        ? 'bg-slate-900 text-white'
+                        : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
+                    }`}
+                  >
+                    {preset.label}
+                  </button>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* O/X 정답 선택 */}
       <AnimatePresence>
         {type === 'ox' && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
+            className={GAP}
           >
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">정답 선택</p>
             <div className="flex gap-2">
@@ -275,7 +299,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
-            className="text-red-500 text-sm flex items-center gap-1.5"
+            className="text-red-500 text-sm flex items-center gap-1.5 pt-3"
           >
             <AlertCircle size={14} />
             {displayError}
@@ -284,7 +308,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
       </AnimatePresence>
 
       {/* Buttons */}
-      <div className="flex gap-3 pt-2">
+      <div className="flex gap-3 pt-4">
         <Button onClick={onCancel} variant="secondary" size="md" className="flex-1">
           취소
         </Button>
