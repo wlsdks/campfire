@@ -43,8 +43,10 @@ export default function Leaderboard({
 
   if (visible.length === 0) {
     return (
-      <div className="text-center py-8 text-slate-300 text-sm">
-        {emptyLabel}
+      <div className="text-center py-10 space-y-2">
+        <Trophy size={32} className="text-slate-200 mx-auto" />
+        <p className="text-slate-400 text-sm">{emptyLabel}</p>
+        <p className="text-slate-300 text-xs">퀴즈에 정답을 맞히면 점수가 올라갑니다</p>
       </div>
     );
   }

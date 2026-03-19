@@ -106,7 +106,7 @@ export default function ChatPanel({ sessionId, open, onClose, onNewMessage }) {
           onChange={(e) => setInputText(e.target.value)}
           placeholder="메시지를 입력하세요"
           maxLength={MAX_LENGTH}
-          className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 focus:bg-white transition-all"
+          className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 focus:bg-white transition-all"
           aria-label="채팅 메시지 입력"
         />
         <button

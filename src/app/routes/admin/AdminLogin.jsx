@@ -54,7 +54,7 @@ export default function AdminLogin({ onLogin }) {
               className={`w-full bg-slate-50 border rounded-xl px-4 py-3.5 text-base text-center placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:bg-white transition-all ${
                 error
                   ? 'border-red-400 focus:ring-red-500/20 focus:border-red-500'
-                  : 'border-slate-200 focus:ring-indigo-500/20 focus:border-indigo-400'
+                  : 'border-slate-200 focus:ring-slate-900/10 focus:border-slate-400'
               }`}
               autoFocus
             />

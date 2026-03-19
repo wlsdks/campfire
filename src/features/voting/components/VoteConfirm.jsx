@@ -145,7 +145,7 @@ export default function VoteConfirm({
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25, duration: 0.3, ease: 'easeOut' }}
-          className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center"
+          className="w-full rounded-xl border border-slate-200 bg-white px-5 py-4 text-center shadow-sm"
         >
           <p className="text-xs font-medium text-slate-400">현재 상태</p>
           <p className="mt-1 text-sm text-slate-600">

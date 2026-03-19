@@ -91,7 +91,7 @@ export default function JoinPage({ sessionId, onJoin }) {
               onChange={(e) => setNickname(e.target.value)}
               placeholder="닉네임 입력"
               maxLength={10}
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-center font-medium placeholder:text-slate-300 placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 focus:bg-white transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-center font-medium placeholder:text-slate-300 placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 focus:bg-white transition-all"
               autoFocus
             />
           </div>
