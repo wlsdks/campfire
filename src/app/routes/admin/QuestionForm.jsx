@@ -65,10 +65,10 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
   const displayError = localError || error;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Type selector */}
       <div>
-        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">질문 유형</p>
+        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">질문 유형</p>
         <div className="flex gap-1.5">
           {QUESTION_TYPES.map((t) => {
             const Icon = t.icon;
@@ -164,7 +164,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
             exit={{ opacity: 0, height: 0 }}
           >
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">정답 선택</p>
-            <div className="flex flex-wrap gap-2 mb-3">
+            <div className="flex flex-wrap gap-2 mb-2">
               {options
                 .filter((o) => o.trim())
                 .map((option, i) => {
