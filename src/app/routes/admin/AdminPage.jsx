@@ -571,6 +571,7 @@ export default function AdminPage() {
               participants={participants}
               pendingEvent={null}
               readOnly={effectiveReadOnly}
+              formOpen={showCenterForm}
               onAddClick={effectiveReadOnly ? undefined : () => setShowCenterForm(true)}
               onViewQuestion={effectiveReadOnly ? async (qId) => {
                 try {

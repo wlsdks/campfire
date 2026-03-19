@@ -13,8 +13,20 @@ import {
   isQuizQuestion,
   normalizeQuizEvent,
 } from '@/lib/quiz';
+import { useAdminKeyboardShortcuts } from '@/hooks/useAdminKeyboardShortcuts';
 import QuestionForm from './QuestionForm';
 import QuestionList from './QuestionList';
+
+function KeyHint({ keys, label }) {
+  return (
+    <span className="inline-flex items-center gap-1 text-[10px] text-slate-400">
+      <kbd className="px-1 py-0.5 bg-slate-100 rounded text-[10px] font-mono text-slate-500 border border-slate-200 leading-none">
+        {keys}
+      </kbd>
+      {label}
+    </span>
+  );
+}
 
 function getNow() {
   return Date.now();
@@ -31,6 +43,7 @@ export default function QuestionManager({
   onCollapse,
   readOnly = false,
   onViewQuestion,
+  formOpen = false,
 }) {
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState(null);
@@ -227,6 +240,19 @@ export default function QuestionManager({
   // Count completed questions for readOnly summary
   const completedCount = questionList.filter(([, q]) => q.activatedAt || q.revealedAt).length;
 
+  // Keyboard shortcuts for quick session control
+  const shortcutsEnabled = !readOnly && !formOpen && !showForm && questionList.length > 0;
+  useAdminKeyboardShortcuts({
+    enabled: shortcutsEnabled,
+    questionList,
+    currentQuestion,
+    onActivate: activateQuestion,
+    onReveal: revealQuiz,
+    onShowLeaderboard: showLeaderboard,
+    onClearActive: clearActive,
+    isQuizFn: isQuizQuestion,
+  });
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -324,6 +350,18 @@ export default function QuestionManager({
               다음 예정: <span className="text-slate-600">{nextEntry[1].title}</span>
             </p>
           )}
+          {/* Keyboard shortcut hints */}
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            <KeyHint keys="← →" label="질문 이동" />
+            <KeyHint keys="Space" label="다음" />
+            <KeyHint keys="Esc" label="대기" />
+            {currentEntry?.[1]?.type === 'quiz' && !currentEntry[1].revealedAt && (
+              <KeyHint keys="R" label="정답 공개" />
+            )}
+            {currentEntry?.[1]?.type === 'quiz' && currentEntry[1].revealedAt && (
+              <KeyHint keys="L" label="리더보드" />
+            )}
+          </div>
         </div>
       )}
 

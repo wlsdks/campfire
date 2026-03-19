@@ -204,6 +204,7 @@ git push origin background-improve
 2026-03-20 | improve: 학생 채팅 완성 — ChatPanel에 senderName/senderType 전달, onNewMessage 콜백으로 읽지 않은 메시지 알림 점 표시, 빈 상태 메시지 역할별 분기
 2026-03-20 | improve: 학생 대기 화면 개선 — Radio 아이콘을 Pinggo 마스코트(눈 깜빡임+안테나 펄스)로 교체, 순환 팁 메시지 5종 추가, 참여자 수 카드 강조, slate 모노크로매틱 통일
 2026-03-20 | improve: Admin 빈 상태 개선 — 공유 PinggoMascot+EmptyState 컴포넌트 생성, VizRenderer/SessionDashboard/StatsView/QuestionList/ParticipantList 7곳 빈 상태에 마스코트+단계별 안내 적용
+2026-03-20 | improve: Admin 키보드 단축키 — useAdminKeyboardShortcuts 훅 생성, ←→ 질문 이동, Space 다음, R 정답공개, L 리더보드, Esc 대기. 빠른 진행 카드에 kbd 힌트 배지 표시
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 
