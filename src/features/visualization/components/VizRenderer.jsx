@@ -34,35 +34,46 @@ export default function VizRenderer({ sessionId, session }) {
   const question = session?.questions?.[currentQId];
   if (!question) return null;
 
+  const isQA = question.type === 'qna';
+
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-6 w-full">
-      <div className="text-center space-y-2">
-        <Badge variant="primary">{TYPE_LABELS[question.type] || question.type}</Badge>
-        <h2 className="text-3xl font-bold text-slate-900">{question.title}</h2>
+    <div className={`flex flex-col w-full h-full ${isQA ? 'pt-4' : 'items-center justify-center gap-6'}`}>
+      {/* Header — compact for Q&A, centered for others */}
+      <div className={`space-y-2 ${isQA ? 'px-4 pb-4 border-b border-slate-100' : 'text-center'}`}>
+        <div className={`flex items-center gap-2 ${isQA ? '' : 'justify-center'}`}>
+          <Badge variant="primary">{TYPE_LABELS[question.type] || question.type}</Badge>
+          {isQA && <span className="text-xs text-slate-400">{question.title}</span>}
+        </div>
+        {!isQA && <h2 className="text-3xl font-bold text-slate-900">{question.title}</h2>}
         {isQuizQuestion(question) && (
           <p className="text-slate-400 text-sm">
             {question.revealedAt ? `정답 공개: ${question.correctAnswer}` : '정답 공개 전입니다. 먼저 답안을 모아보세요.'}
           </p>
         )}
       </div>
+
       {isQuizQuestion(question) && question.event && (
         <div className="w-full max-w-2xl">
           <QuizEventBanner event={question.event} state={question.revealedAt ? 'result' : 'active'} />
         </div>
       )}
-      {question.type === 'choice' && <BarChart sessionId={sessionId} questionId={currentQId} options={question.options || []} />}
-      {question.type === 'quiz' && (
-        <BarChart
-          sessionId={sessionId}
-          questionId={currentQId}
-          options={question.options || []}
-          correctValue={question.correctAnswer}
-          revealed={Boolean(question.revealedAt)}
-        />
-      )}
-      {question.type === 'ox' && <OXBattle sessionId={sessionId} questionId={currentQId} />}
-      {question.type === 'wordcloud' && <WordCloud sessionId={sessionId} questionId={currentQId} />}
-      {question.type === 'qna' && <QACards sessionId={sessionId} questionId={currentQId} />}
+
+      {/* Visualization */}
+      <div className={isQA ? 'flex-1 overflow-y-auto px-4 py-3' : ''}>
+        {question.type === 'choice' && <BarChart sessionId={sessionId} questionId={currentQId} options={question.options || []} />}
+        {question.type === 'quiz' && (
+          <BarChart
+            sessionId={sessionId}
+            questionId={currentQId}
+            options={question.options || []}
+            correctValue={question.correctAnswer}
+            revealed={Boolean(question.revealedAt)}
+          />
+        )}
+        {question.type === 'ox' && <OXBattle sessionId={sessionId} questionId={currentQId} />}
+        {question.type === 'wordcloud' && <WordCloud sessionId={sessionId} questionId={currentQId} />}
+        {isQA && <QACards sessionId={sessionId} questionId={currentQId} />}
+      </div>
     </div>
   );
 }
