@@ -3,6 +3,7 @@ import { ref, set, serverTimestamp, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { useSession } from '@/features/session/api/useSession';
 import { useParticipants } from '@/features/participants/api/useParticipants';
+import { useScores } from '@/features/quiz/api/useScores';
 import { generateSessionId } from '@/lib/utils';
 import AdminLogin from './AdminLogin';
 import QuestionManager from './QuestionManager';
@@ -16,17 +17,21 @@ import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
 import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import { Sparkles, Loader2, Monitor, Target, Ticket, X, Users, Plus, AlertCircle } from 'lucide-react';
+import { Sparkles, Loader2, Monitor, Target, Ticket, Trophy, X, Users, Plus, AlertCircle, Copy, Check } from 'lucide-react';
 import { useTimer } from '@/features/timer/api/useTimer';
 import TimerControls from '@/features/timer/components/TimerControls';
 import TimerRing from '@/features/timer/components/TimerRing';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
+import Leaderboard from '@/features/quiz/components/Leaderboard';
 
 const STORED_SESSION_KEY = 'pinggo_admin_session';
 
-function MainContent({ currentMode, sessionId, session, onlineList }) {
+function MainContent({ currentMode, sessionId, session, onlineList, leaderboard, drawParticipants }) {
   if (currentMode === 'roulette') return <Roulette participants={onlineList} />;
-  if (currentMode === 'lottery') return <Lottery participants={onlineList} />;
+  if (currentMode === 'lottery') return <Lottery participants={drawParticipants} />;
+  if (currentMode === 'leaderboard') {
+    return <Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" />;
+  }
   return <VizRenderer sessionId={sessionId} session={session} />;
 }
 
@@ -34,9 +39,11 @@ export default function AdminPage() {
   const [authed, setAuthed] = useState(sessionStorage.getItem('pinggo_admin') === 'true');
   const [sessionId, setSessionId] = useState(localStorage.getItem(STORED_SESSION_KEY) || '');
   const { session, loading } = useSession(sessionId);
-  const { onlineList, count } = useParticipants(sessionId);
+  const { participants, onlineList, count } = useParticipants(sessionId);
+  const { scores, leaderboard, totalTickets } = useScores(sessionId);
   const [presentMode, setPresentMode] = useState(false);
   const [createError, setCreateError] = useState(null);
+  const [copied, setCopied] = useState(false);
   const { isRunning: timerRunning, endTime, duration, startTimer, stopTimer } = useTimer(sessionId);
 
   const exitPresent = useCallback(() => setPresentMode(false), []);
@@ -64,9 +71,21 @@ export default function AdminPage() {
 
   async function switchMode(mode) {
     try {
-      await update(ref(db, `sessions/${sessionId}`), { currentMode: mode, currentQuestion: null });
+      await update(ref(db, `sessions/${sessionId}`), mode === 'leaderboard'
+        ? { currentMode: mode }
+        : { currentMode: mode, currentQuestion: null });
     } catch {
       // Silently fail — Firebase will retry
+    }
+  }
+
+  async function copyStudentLink() {
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}/?s=${sessionId}`);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
     }
   }
 
@@ -108,7 +127,12 @@ export default function AdminPage() {
 
   const studentUrl = `${window.location.origin}/?s=${sessionId}`;
   const currentMode = session?.currentMode;
-  const isGameActive = currentMode === 'roulette' || currentMode === 'lottery';
+  const drawParticipants = onlineList.map((participant) => ({
+    ...participant,
+    ...scores[participant.id],
+    tickets: scores[participant.id]?.tickets || 0,
+  }));
+  const isSpecialMode = ['roulette', 'lottery', 'leaderboard'].includes(currentMode);
 
   if (presentMode) {
     return (
@@ -122,7 +146,14 @@ export default function AdminPage() {
         </div>
         {/* Main content — scaled up for projector */}
         <div className="flex items-center justify-center min-h-dvh p-12 text-lg">
-          <MainContent currentMode={currentMode} sessionId={sessionId} session={session} onlineList={onlineList} />
+          <MainContent
+            currentMode={currentMode}
+            sessionId={sessionId}
+            session={session}
+            onlineList={onlineList}
+            leaderboard={leaderboard}
+            drawParticipants={drawParticipants}
+          />
         </div>
         {/* QR bottom-right */}
         <div className="fixed bottom-5 right-5 opacity-60">
@@ -144,6 +175,7 @@ export default function AdminPage() {
   return (
     <div className="min-h-dvh bg-slate-50 flex flex-col">
       <JoinToast sessionId={sessionId} />
+      <ReactionOverlay sessionId={sessionId} />
 
       {/* Header bar */}
       <div className="bg-white border-b border-slate-200 px-5 py-3 flex items-center justify-between shrink-0">
@@ -160,6 +192,8 @@ export default function AdminPage() {
             <Users size={12} className="mr-1" />
             {count}명
           </Badge>
+          {totalTickets > 0 && <Badge variant="warning">{totalTickets}장 티켓</Badge>}
+          {session?.pendingEvent?.label && <Badge variant="warning">{session.pendingEvent.label}</Badge>}
           <Button onClick={() => setPresentMode(true)} variant="primary" size="sm">
             <Monitor size={16} />
             발표 모드
@@ -171,7 +205,14 @@ export default function AdminPage() {
       <div className="flex flex-1 overflow-hidden">
         {/* Left sidebar */}
         <div className="w-80 border-r border-slate-200 bg-white p-5 overflow-y-auto flex flex-col shrink-0">
-          <QuestionManager sessionId={sessionId} questions={session?.questions || {}} currentQuestion={session?.currentQuestion} />
+          <QuestionManager
+            sessionId={sessionId}
+            questions={session?.questions || {}}
+            currentQuestion={session?.currentQuestion}
+            scores={scores}
+            participants={participants}
+            pendingEvent={session?.pendingEvent || null}
+          />
 
           <div className="mt-4 pt-4 border-t border-slate-100">
             <TimerControls isRunning={timerRunning} onStart={startTimer} onStop={stopTimer} />
@@ -181,7 +222,8 @@ export default function AdminPage() {
             <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider mb-3">모드 전환</p>
             {[
               { mode: 'roulette', label: '돌림판', icon: Target },
-              { mode: 'lottery', label: '제비뽑기', icon: Ticket },
+              { mode: 'lottery', label: totalTickets > 0 ? '보상 추첨' : '제비뽑기', icon: Ticket },
+              ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
             ].map(({ mode, label, icon: Icon }) => (
               <Button
                 key={mode}
@@ -194,15 +236,15 @@ export default function AdminPage() {
                 <Icon size={16} /> {label}
               </Button>
             ))}
-            {isGameActive && (
+            {isSpecialMode && (
               <Button
                 onClick={() => switchMode('waiting')}
                 variant="ghost"
                 size="sm"
                 className="w-full"
-                aria-label="게임 종료"
+                aria-label="특수 화면 종료"
               >
-                <X size={16} /> 게임 종료
+                <X size={16} /> 화면 종료
               </Button>
             )}
           </div>
@@ -210,7 +252,14 @@ export default function AdminPage() {
 
         {/* Center */}
         <div className="flex-1 p-8 flex items-center justify-center overflow-auto">
-          <MainContent currentMode={currentMode} sessionId={sessionId} session={session} onlineList={onlineList} />
+          <MainContent
+            currentMode={currentMode}
+            sessionId={sessionId}
+            session={session}
+            onlineList={onlineList}
+            leaderboard={leaderboard}
+            drawParticipants={drawParticipants}
+          />
         </div>
 
         {/* Right sidebar */}
@@ -223,12 +272,21 @@ export default function AdminPage() {
 
           <HandRaiseList sessionId={sessionId} />
           <UrgentQuestionList sessionId={sessionId} />
+          {leaderboard.length > 0 && (
+            <div className="border-t border-slate-100 pt-5">
+              <Leaderboard entries={leaderboard} maxShow={5} title="상위 랭킹" />
+            </div>
+          )}
           <ParticipantList participants={onlineList} />
 
           <div className="border-t border-slate-100 pt-5">
             <div className="flex justify-center">
               <QRCode url={studentUrl} size={180} />
             </div>
+            <Button onClick={copyStudentLink} variant="secondary" size="sm" className="w-full mt-4">
+              {copied ? <Check size={16} /> : <Copy size={16} />}
+              {copied ? '링크 복사됨' : '초대 링크 복사'}
+            </Button>
             <p className="text-slate-400 text-xs mt-3 text-center break-all leading-relaxed">{studentUrl}</p>
           </div>
         </div>

@@ -37,5 +37,7 @@ export function useScores(sessionId) {
     .map(([id, data]) => ({ id, ...data }))
     .sort((a, b) => (b.total || 0) - (a.total || 0));
 
-  return { scores, leaderboard, addScore, calculatePoints };
+  const totalTickets = leaderboard.reduce((sum, entry) => sum + (entry.tickets || 0), 0);
+
+  return { scores, leaderboard, totalTickets, addScore, calculatePoints };
 }

@@ -1,11 +1,14 @@
 import { useSession } from '@/features/session/api/useSession';
 import ChoiceVoter from '@/features/voting/components/ChoiceVoter';
 import OXVoter from '@/features/voting/components/OXVoter';
+import QuizVoter from '@/features/voting/components/QuizVoter';
 import TextInput from '@/features/voting/components/TextInput';
 import WaitingPage from './WaitingPage';
+import LeaderboardPage from './LeaderboardPage';
 import ConnectionDot from '@/components/ui/ConnectionDot';
 import StudentBottomBar from './StudentBottomBar';
 import Badge from '@/components/ui/Badge';
+import QuizEventBanner from '@/features/quiz/components/QuizEventBanner';
 import { SkeletonCard } from '@/components/ui/Skeleton';
 import { motion } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
@@ -15,6 +18,7 @@ import TimerRing from '@/features/timer/components/TimerRing';
 const TYPE_LABELS = {
   choice: '객관식',
   ox: 'O/X',
+  quiz: '퀴즈',
   wordcloud: '워드클라우드',
   qna: 'Q&A',
 };
@@ -41,10 +45,13 @@ export default function VotePage({ sessionId }) {
   const currentQId = session?.currentQuestion;
   const currentMode = session?.currentMode;
 
-  if (currentMode !== 'poll' || !currentQId) return <WaitingPage sessionId={sessionId} />;
+  if (currentMode === 'leaderboard') return <LeaderboardPage sessionId={sessionId} />;
+  if (!['poll', 'quiz'].includes(currentMode) || !currentQId) {
+    return <WaitingPage sessionId={sessionId} pendingEvent={session?.pendingEvent || null} />;
+  }
 
   const question = session?.questions?.[currentQId];
-  if (!question) return <WaitingPage sessionId={sessionId} />;
+  if (!question) return <WaitingPage sessionId={sessionId} pendingEvent={session?.pendingEvent || null} />;
 
   return (
     <div className="min-h-dvh bg-slate-50 flex flex-col items-center p-4 pb-32">
@@ -73,6 +80,17 @@ export default function VotePage({ sessionId }) {
           </div>
         </motion.div>
 
+        {question.type === 'quiz' && question.event && (
+          <motion.div
+            key={`event-${currentQId}`}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut', delay: 0.05 }}
+          >
+            <QuizEventBanner event={question.event} state={question.revealedAt ? 'result' : 'active'} />
+          </motion.div>
+        )}
+
         {/* Voter area */}
         <motion.div
           key={`voter-${currentQId}`}
@@ -82,6 +100,9 @@ export default function VotePage({ sessionId }) {
         >
           {question.type === 'choice' && (
             <ChoiceVoter sessionId={sessionId} questionId={currentQId} options={question.options || []} />
+          )}
+          {question.type === 'quiz' && (
+            <QuizVoter sessionId={sessionId} questionId={currentQId} question={question} />
           )}
           {question.type === 'ox' && (
             <OXVoter sessionId={sessionId} questionId={currentQId} />

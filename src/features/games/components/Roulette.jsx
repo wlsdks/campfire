@@ -8,6 +8,15 @@ const SEGMENT_COLORS = [
   '#4338CA', '#C7D2FE', '#3730A3', '#93C5FD',
 ];
 
+function getSpinResult(nameCount, segmentAngle) {
+  const winnerIndex = Math.floor(Math.random() * nameCount);
+  const extraRotations = (5 + Math.random() * 3) * 360;
+  return {
+    winnerIndex,
+    targetAngle: extraRotations + (360 - winnerIndex * segmentAngle - segmentAngle / 2),
+  };
+}
+
 export default function Roulette({ participants, onResult }) {
   const [spinning, setSpinning] = useState(false);
   const [winner, setWinner] = useState(null);
@@ -29,9 +38,7 @@ export default function Roulette({ participants, onResult }) {
     if (spinning || names.length === 0) return;
     setSpinning(true);
     setWinner(null);
-    const winnerIndex = Math.floor(Math.random() * names.length);
-    const extraRotations = (5 + Math.random() * 3) * 360;
-    const targetAngle = extraRotations + (360 - winnerIndex * segmentAngle - segmentAngle / 2);
+    const { winnerIndex, targetAngle } = getSpinResult(names.length, segmentAngle);
     setRotation(prev => prev + targetAngle);
     timerRef.current = setTimeout(() => {
       if (!mountedRef.current) return;

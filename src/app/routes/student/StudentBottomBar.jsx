@@ -8,6 +8,7 @@ import { Hand, MessageCircle, Send, CheckCircle, AlertCircle } from 'lucide-reac
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 import ReactionBar from '@/features/reactions/components/ReactionBar';
+import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 
 export default function StudentBottomBar({ sessionId }) {
   const [showQuestionInput, setShowQuestionInput] = useState(false);
@@ -56,6 +57,8 @@ export default function StudentBottomBar({ sessionId }) {
 
   return (
     <>
+      <ReactionOverlay sessionId={sessionId} />
+
       {/* Question modal */}
       <Modal open={showQuestionInput} onClose={() => setShowQuestionInput(false)}>
         <form onSubmit={submitUrgentQuestion} className="space-y-4">

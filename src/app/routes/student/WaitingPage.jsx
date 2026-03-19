@@ -3,9 +3,10 @@ import { Sparkles, Users } from 'lucide-react';
 import ConnectionDot from '@/components/ui/ConnectionDot';
 import Badge from '@/components/ui/Badge';
 import { useParticipants } from '@/features/participants/api/useParticipants';
+import QuizEventBanner from '@/features/quiz/components/QuizEventBanner';
 import StudentBottomBar from './StudentBottomBar';
 
-export default function WaitingPage({ sessionId }) {
+export default function WaitingPage({ sessionId, pendingEvent = null }) {
   const { count } = useParticipants(sessionId);
 
   return (
@@ -41,6 +42,12 @@ export default function WaitingPage({ sessionId }) {
           )}
           <Badge variant="neutral">{sessionId}</Badge>
         </div>
+
+        {pendingEvent && (
+          <div className="pt-2 max-w-sm mx-auto">
+            <QuizEventBanner event={pendingEvent} state="pending" />
+          </div>
+        )}
       </div>
 
       <StudentBottomBar sessionId={sessionId} />

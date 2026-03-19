@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useVotes } from '@/hooks/useVotes';
 import { formatPercent } from '@/lib/utils';
+import Badge from '@/components/ui/Badge';
 
 const COLORS = [
   { bar: 'bg-indigo-500', text: 'text-indigo-600', track: 'bg-indigo-50' },
@@ -10,7 +11,7 @@ const COLORS = [
   { bar: 'bg-pink-500', text: 'text-pink-600', track: 'bg-pink-50' },
 ];
 
-export default function BarChart({ sessionId, questionId, options }) {
+export default function BarChart({ sessionId, questionId, options, correctValue = null, revealed = false }) {
   const { totalVotes, countByValue } = useVotes(sessionId, questionId);
 
   return (
@@ -19,6 +20,7 @@ export default function BarChart({ sessionId, questionId, options }) {
         const count = countByValue(option);
         const pct = totalVotes > 0 ? (count / totalVotes) * 100 : 0;
         const style = COLORS[i % COLORS.length];
+        const isCorrect = revealed && correctValue === option;
         return (
           <motion.div
             key={option}
@@ -28,7 +30,10 @@ export default function BarChart({ sessionId, questionId, options }) {
             className="space-y-1.5"
           >
             <div className="flex justify-between items-baseline">
-              <span className="font-medium text-slate-700 text-base">{option}</span>
+              <div className="flex items-center gap-2">
+                <span className="font-medium text-slate-700 text-base">{option}</span>
+                {isCorrect && <Badge variant="success">정답</Badge>}
+              </div>
               <div className="flex items-baseline gap-1.5">
                 <motion.span
                   key={count}
@@ -46,7 +51,7 @@ export default function BarChart({ sessionId, questionId, options }) {
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.max(pct, count > 0 ? 2 : 0)}%` }}
                 transition={{ type: 'spring', stiffness: 80, damping: 22, delay: i * 0.08 }}
-                className={`h-full rounded-xl ${style.bar}`}
+                className={`h-full rounded-xl ${isCorrect ? 'bg-emerald-500' : style.bar}`}
               />
             </div>
           </motion.div>
