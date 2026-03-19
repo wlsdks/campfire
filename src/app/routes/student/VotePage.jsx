@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useSession } from '@/features/session/api/useSession';
 import ChoiceVoter from '@/features/voting/components/ChoiceVoter';
 import OXVoter from '@/features/voting/components/OXVoter';
@@ -26,13 +26,9 @@ const TYPE_LABELS = {
   qna: 'Q&A',
 };
 
-/**
- * Renders the QuizResult from vote data passed by QuizVoter.
- * No separate Firebase listener — receives currentVote from parent.
- */
+/** Renders QuizResult from vote data passed by QuizVoter. */
 function QuizResultFromVote({ question, currentVote }) {
   if (!currentVote) return null;
-
   const reward = getQuizReward(question, currentVote);
   return (
     <QuizResult
@@ -42,6 +38,44 @@ function QuizResultFromVote({ question, currentVote }) {
       correctAnswer={question.correctAnswer}
       event={question.event || null}
     />
+  );
+}
+
+/** Timer expired overlay shown when countdown reaches zero. */
+function TimerExpiredOverlay() {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+      className="absolute inset-0 bg-white/80 backdrop-blur-[2px] rounded-xl flex flex-col items-center justify-center gap-2"
+    >
+      <motion.div
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 22, delay: 0.1 }}
+        className="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center"
+      >
+        <Clock size={22} className="text-white" />
+      </motion.div>
+      <motion.p
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="text-lg font-bold text-slate-900"
+      >
+        시간이 종료되었습니다
+      </motion.p>
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        className="text-sm text-slate-400"
+      >
+        결과를 기다려주세요
+      </motion.p>
+    </motion.div>
   );
 }
 
@@ -65,6 +99,18 @@ export default function VotePage({ sessionId }) {
     prevQuestionRef.current = currentQId;
     prevEndTimeRef.current = endTime;
   }, [session?.currentQuestion, endTime]);
+
+  // Compute question progress: "질문 1/3"
+  // Must be before all conditional returns to satisfy React hooks rules.
+  const questionProgress = useMemo(() => {
+    const currentQId = session?.currentQuestion;
+    const questions = session?.questions || {};
+    const sorted = Object.entries(questions).sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
+    const total = sorted.length;
+    if (total === 0 || !currentQId) return null;
+    const idx = sorted.findIndex(([qId]) => qId === currentQId);
+    return idx >= 0 ? { current: idx + 1, total } : null;
+  }, [session?.questions, session?.currentQuestion]);
 
   if (loading) {
     return (
@@ -90,6 +136,7 @@ export default function VotePage({ sessionId }) {
   }
 
   const question = session?.questions?.[currentQId];
+
   if (!question) return <WaitingPage sessionId={sessionId} pendingEvent={session?.pendingEvent || null} />;
 
   return (
@@ -105,6 +152,21 @@ export default function VotePage({ sessionId }) {
             transition={{ type: 'spring', stiffness: 300, damping: 28 }}
             className="bg-white rounded-xl shadow-sm border border-slate-200 p-5"
           >
+            {questionProgress && (
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-xs font-medium text-slate-400">
+                  질문 {questionProgress.current}/{questionProgress.total}
+                </span>
+                <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-slate-300 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(questionProgress.current / questionProgress.total) * 100}%` }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 30, delay: 0.15 }}
+                  />
+                </div>
+              </div>
+            )}
             <div className="flex items-start justify-between gap-3">
               <h2 className="text-xl font-bold text-slate-900 leading-snug flex-1">
                 {question.title}
@@ -168,40 +230,7 @@ export default function VotePage({ sessionId }) {
 
             {/* Time's up overlay */}
             <AnimatePresence>
-              {timerExpired && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="absolute inset-0 bg-white/80 backdrop-blur-[2px] rounded-xl flex flex-col items-center justify-center gap-2"
-                >
-                  <motion.div
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 22, delay: 0.1 }}
-                    className="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center"
-                  >
-                    <Clock size={22} className="text-white" />
-                  </motion.div>
-                  <motion.p
-                    initial={{ opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="text-lg font-bold text-slate-900"
-                  >
-                    시간이 종료되었습니다
-                  </motion.p>
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="text-sm text-slate-400"
-                  >
-                    결과를 기다려주세요
-                  </motion.p>
-                </motion.div>
-              )}
+              {timerExpired && <TimerExpiredOverlay />}
             </AnimatePresence>
           </motion.div>
       </div>

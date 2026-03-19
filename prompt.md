@@ -199,7 +199,6 @@ git push origin background-improve
 > 최근 10개만 유지. 오래된 것은 삭제.
 
 <!-- 예시: 2026-03-20 01:30 | improve: 학생 투표 화면 터치 타겟 48px로 통일 -->
-2026-03-20 | improve: 학생 연결 상태 배너 — 오프라인 시 헤더 아래 slate-900 "연결 끊김" 배너 슬라이드 다운, 재연결 시 emerald-600 "다시 연결됨" 2초 후 자동 소멸. Firebase .info/connected 기반, useConnectionStatus 훅 확장
 2026-03-20 | improve: 세션 경과 시간 — 활성 세션 헤더에 "N분 경과" 실시간 표시(Clock 아이콘+muted text). startedAt(세션 시작 시 serverTimestamp) 우선, createdAt 폴백. 30초 간격 업데이트, 1분 미만 숨김. useSession에 createdAt/startedAt 구독 추가
 2026-03-20 | improve: 데모 데이터 강화 — seed-demo.mjs에 채팅(학생↔강사 혼합), 손들기(2~4명), 긴급질문(읽음/안읽음), 퀴즈 점수(정답+속도보너스+티켓) 추가. active 세션 3개 + ended 세션 3개에 적용. 모든 기능 테스트 가능
 2026-03-20 | improve: 마이크로 인터랙션 감사 — 15개 컴포넌트에 active:scale 프레스 피드백 일괄 적용. 탭 버튼(active:scale-[0.97]), 세션 행(active:bg-slate-100), 질문 액션 버튼(active:scale-90), 아코디언 헤더(active:bg-slate-100), 모달 선택 카드(active:scale-[0.98]), 폼 선택기(active:scale-[0.96]). CSS transition-all 기반으로 Framer Motion 불필요한 곳은 성능 최적화
@@ -209,6 +208,7 @@ git push origin background-improve
 2026-03-20 | improve: 디자인 토큰 감사 — Anti-AI 체크리스트 기반 전수 조사. design-tokens.js의 stale 레시피(btnPrimary/badgePrimary/avatar) indigo→slate 동기화, Avatar bg-indigo-100→bg-slate-100, Lottery 레인보우 카드→슬레이트 모노크로매틱, AdminSessionHeader 세팅중 배지 amber→slate, SessionDashboard 세팅 상태 amber→slate, QuizEventBanner/Roulette/Leaderboard/QuestionManager 장식적 색상 제거. 허용 유지: Radio 아이콘(indigo), BarChart/OXBattle 브랜드(indigo gradient), 타이머 기능색(amber/red), 접속 상태(emerald), 리액션 피드백(각 고유색)
 2026-03-20 | improve: 성능 최적화 감사 — React.memo 14개 컴포넌트(BarChart, OXBattle, WordCloud, QACards, VizRenderer, ParticipantList, QuestionList, AdminSessionHeader, RightSidebar, StudentLiveResults, ModeSwitcher, ClassSummary, Leaderboard + 기존 ReactionButton) 적용. useVotes/useParticipants/useScores 3개 훅의 파생값(voteList/tallied/countByValue/list/onlineList/leaderboard/totalTickets) useMemo/useCallback으로 안정화. AdminPage 콜백 12개 useCallback으로 감싸서 하위 memo 컴포넌트가 불필요하게 리렌더되지 않도록. drawParticipants/studentUrl useMemo 적용
 2026-03-20 | improve: 접근성 감사 — 전체 앱 aria 속성 감사 및 적용. aria-label: 아이콘 전용 버튼(채팅/타이머/뒤로가기), 모든 input/textarea에 추가. role: progressbar(참여율 바 2곳), alert(에러 메시지 5곳), status+aria-live(토스트 3곳), log(JoinToast), toolbar(학생 하단바), dialog aria-label(모달). aria-expanded: 아코디언 버튼, 타이머 팝업. aria-pressed: 손들기/채팅 토글. focus-visible: Button/IconButton focus→focus-visible 변경(키보드 전용 포커스 링). aria-hidden: 장식 SVG 마스코트 3곳. group role: 객관식/OX 선택지 그룹화
+2026-03-20 | improve: 학생 질문 진행 표시 — VotePage 질문 헤더에 "질문 1/3" 텍스트 + 슬레이트 진행 바 추가. order 기준 정렬, useMemo로 계산, spring 애니메이션. 학생이 현재 진행 상황을 즉시 파악. TimerExpiredOverlay 서브컴포넌트 추출로 VotePage 본체 200줄 이하 유지
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 
