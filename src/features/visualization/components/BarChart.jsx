@@ -4,11 +4,11 @@ import { formatPercent } from '@/lib/utils';
 import Badge from '@/components/ui/Badge';
 
 const COLORS = [
-  { bar: 'bg-indigo-500', text: 'text-indigo-600', track: 'bg-indigo-50' },
-  { bar: 'bg-emerald-500', text: 'text-emerald-600', track: 'bg-emerald-50' },
-  { bar: 'bg-amber-500', text: 'text-amber-600', track: 'bg-amber-50' },
-  { bar: 'bg-violet-500', text: 'text-violet-600', track: 'bg-violet-50' },
-  { bar: 'bg-pink-500', text: 'text-pink-600', track: 'bg-pink-50' },
+  { bar: 'bg-slate-700', text: 'text-slate-700', track: 'bg-slate-100' },
+  { bar: 'bg-slate-500', text: 'text-slate-600', track: 'bg-slate-100' },
+  { bar: 'bg-slate-400', text: 'text-slate-500', track: 'bg-slate-100' },
+  { bar: 'bg-slate-400', text: 'text-slate-500', track: 'bg-slate-100' },
+  { bar: 'bg-slate-300', text: 'text-slate-400', track: 'bg-slate-100' },
 ];
 
 export default function BarChart({ sessionId, questionId, options, correctValue = null, revealed = false }) {
@@ -51,7 +51,7 @@ export default function BarChart({ sessionId, questionId, options, correctValue 
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.max(pct, count > 0 ? 2 : 0)}%` }}
                 transition={{ type: 'spring', stiffness: 80, damping: 22, delay: i * 0.08 }}
-                className={`h-full rounded-xl ${isCorrect ? 'bg-emerald-500' : style.bar}`}
+                className={`h-full rounded-xl ${isCorrect ? 'bg-slate-900' : style.bar}`}
               />
             </div>
           </motion.div>
