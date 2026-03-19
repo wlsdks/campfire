@@ -28,18 +28,18 @@ export default function QuestionList({
   const activeCount = questionList.filter(([qId]) => qId === currentQuestion).length;
 
   return (
-    <div className="rounded-xl border border-indigo-100 bg-white overflow-hidden">
+    <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
       {/* Accordion header */}
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="w-full flex items-center justify-between px-4 py-3 text-left bg-indigo-50/50 hover:bg-indigo-50 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 text-left bg-slate-50 hover:bg-slate-100 transition-colors"
       >
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-indigo-600">추가된 문항 {questionList.length}개</span>
-          {activeCount > 0 && <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />}
+          <span className="text-sm font-semibold text-slate-700">추가된 문항 {questionList.length}개</span>
+          {activeCount > 0 && <span className="w-1.5 h-1.5 rounded-full bg-slate-700 animate-pulse" />}
         </div>
         <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ duration: 0.2 }}>
-          <ChevronDown size={14} className="text-indigo-400" />
+          <ChevronDown size={14} className="text-slate-400" />
         </motion.div>
       </button>
 
@@ -74,8 +74,8 @@ export default function QuestionList({
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5 mb-0.5">
-                          <Icon size={12} className={!readOnly && isActive ? 'text-indigo-500' : 'text-slate-400'} />
-                          <span className={`text-xs font-medium ${!readOnly && isActive ? 'text-indigo-600' : 'text-slate-400'}`}>
+                          <Icon size={12} className={!readOnly && isActive ? 'text-slate-700' : 'text-slate-400'} />
+                          <span className={`text-xs font-medium ${!readOnly && isActive ? 'text-slate-700' : 'text-slate-400'}`}>
                             {qType?.label}
                           </span>
                           {!readOnly && isActive && <Badge variant="primary">LIVE</Badge>}

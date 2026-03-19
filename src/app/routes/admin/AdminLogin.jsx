@@ -160,7 +160,7 @@ const inputClass = (hasError, isFocused) =>
     hasError
       ? 'border-red-300 focus:border-red-400 focus:shadow-[0_0_0_3px_rgba(239,68,68,0.1)]'
       : isFocused
-        ? 'border-indigo-400 shadow-[0_0_0_3px_rgba(79,70,229,0.1)]'
+        ? 'border-slate-400 shadow-[0_0_0_3px_rgba(15,23,42,0.06)]'
         : 'border-slate-200'
   }`;
 

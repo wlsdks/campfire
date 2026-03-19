@@ -293,7 +293,7 @@ export default function QuestionManager({
                     onClick={() => setNextEvent(isSelected ? null : preset)}
                     className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${
                       isSelected
-                        ? 'bg-indigo-600 text-white'
+                        ? 'bg-slate-900 text-white'
                         : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
                     }`}
                   >

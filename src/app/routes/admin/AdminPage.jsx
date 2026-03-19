@@ -482,7 +482,7 @@ export default function AdminPage() {
               <button
                 onClick={() => setTimerOpen(!timerOpen)}
                 className={`flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg transition-all ${
-                  timerRunning ? 'text-indigo-600' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
+                  timerRunning ? 'text-slate-900' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
                 }`}
               >
                 {timerRunning ? (
@@ -799,7 +799,7 @@ export default function AdminPage() {
                     </div>
                     <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-indigo-500 rounded-full transition-all duration-500"
+                        className="h-full bg-slate-700 rounded-full transition-all duration-500"
                         style={{ width: `${pct}%` }}
                       />
                     </div>

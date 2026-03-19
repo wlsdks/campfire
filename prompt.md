@@ -200,6 +200,7 @@ git push origin background-improve
 
 <!-- 예시: 2026-03-20 01:30 | improve: 학생 투표 화면 터치 타겟 48px로 통일 -->
 2026-03-20 | improve: VoteConfirm에 선택한 답변 표시 — 투표 후 학생이 자신의 응답을 확인 가능 (ChoiceVoter, OXVoter, QuizVoter 모두 적용)
+2026-03-20 | improve: Admin 화면 전체 인디고 제거 — AdminPage, SessionDashboard, QuestionList, EventBooster, AdminLogin, QuestionManager 6개 파일에서 16개 indigo 참조를 slate 모노크로매틱으로 통일
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 

@@ -25,7 +25,7 @@ export default function EventBooster({ nextQuizEvent, onArmEvent, onClearEvent }
         <div className="flex items-center gap-2">
           <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">이벤트 부스터</p>
           {hasActive && (
-            <span className="text-xs font-medium text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">
+            <span className="text-xs font-medium text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">
               {nextQuizEvent.label}
             </span>
           )}
@@ -53,14 +53,14 @@ export default function EventBooster({ nextQuizEvent, onArmEvent, onClearEvent }
                     onClick={() => handleToggle(preset)}
                     className={`w-full rounded-lg border px-3 py-2.5 text-left transition-all ${
                       isSelected
-                        ? 'border-indigo-200 bg-indigo-50/60'
+                        ? 'border-slate-400 bg-slate-50'
                         : 'border-slate-200 bg-white hover:bg-slate-50'
                     }`}
                   >
-                    <p className={`text-sm font-semibold ${isSelected ? 'text-indigo-700' : 'text-slate-900'}`}>
+                    <p className="text-sm font-semibold text-slate-900">
                       {preset.label}
                     </p>
-                    <p className={`text-xs leading-relaxed ${isSelected ? 'text-indigo-500' : 'text-slate-400'}`}>
+                    <p className={`text-xs leading-relaxed ${isSelected ? 'text-slate-600' : 'text-slate-400'}`}>
                       {preset.description}
                     </p>
                   </button>
