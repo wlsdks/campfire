@@ -8,12 +8,17 @@ import LeaderboardPage from './LeaderboardPage';
 import ConnectionDot from '@/components/ui/ConnectionDot';
 import StudentBottomBar from './StudentBottomBar';
 import Badge from '@/components/ui/Badge';
-import QuizEventBanner from '@/features/quiz/components/QuizEventBanner';
+import QuizEventBanner from '@/components/ui/QuizEventBanner';
+import QuizResult from '@/features/quiz/components/QuizResult';
 import { SkeletonCard } from '@/components/ui/Skeleton';
 import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Trophy } from 'lucide-react';
+import { useScores } from '@/features/quiz/api/useScores';
 import { useTimer } from '@/features/timer/api/useTimer';
 import TimerRing from '@/features/timer/components/TimerRing';
+import { useVotes } from '@/hooks/useVotes';
+import { getParticipantId } from '@/lib/participant';
+import { getQuizReward } from '@/lib/quiz';
 
 const TYPE_LABELS = {
   choice: '객관식',
@@ -23,9 +28,33 @@ const TYPE_LABELS = {
   qna: 'Q&A',
 };
 
+/**
+ * Builds the QuizResult element for the current participant's vote.
+ * Extracted so the route owns the cross-feature composition.
+ */
+function QuizResultRenderer({ sessionId, questionId, question }) {
+  const { votes } = useVotes(sessionId, questionId);
+  const currentVote = votes[getParticipantId()] || null;
+
+  if (!currentVote) return null;
+
+  const reward = getQuizReward(question, currentVote);
+  return (
+    <QuizResult
+      isCorrect={reward.isCorrect}
+      points={reward.points}
+      tickets={reward.tickets}
+      correctAnswer={question.correctAnswer}
+      event={question.event || null}
+    />
+  );
+}
+
 export default function VotePage({ sessionId }) {
   const { session, loading } = useSession(sessionId);
   const { isRunning: timerRunning, endTime, duration } = useTimer(sessionId);
+  const { scores } = useScores(sessionId);
+  const myScore = scores[getParticipantId()];
 
   if (loading) {
     return (
@@ -54,66 +83,80 @@ export default function VotePage({ sessionId }) {
   if (!question) return <WaitingPage sessionId={sessionId} pendingEvent={session?.pendingEvent || null} />;
 
   return (
-    <div className="min-h-dvh bg-slate-50 flex flex-col items-center p-4 pb-32">
-      {/* Connection status */}
-      <div className="fixed top-4 right-4 z-10">
-        <ConnectionDot />
+    <div className="min-h-dvh bg-slate-50 flex flex-col items-center justify-center p-4 pb-36 pt-16">
+      {/* Top bar */}
+      <div className="fixed top-0 left-0 right-0 z-20 bg-white/80 backdrop-blur-sm border-b border-slate-100 px-4 py-2.5">
+        <div className="flex items-center justify-between max-w-sm mx-auto">
+          <div className="flex items-center gap-2">
+            <ConnectionDot />
+            {myScore && (
+              <span className="text-xs font-medium text-slate-500 flex items-center gap-1">
+                <Trophy size={12} className="text-amber-500" />
+                {myScore.total || 0}점
+              </span>
+            )}
+          </div>
+        </div>
       </div>
 
-      <div className="w-full max-w-sm space-y-6 mt-4">
-        {/* Question header */}
-        <motion.div
-          key={currentQId}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: 'easeOut' }}
-          className="bg-white rounded-xl shadow-sm border border-slate-100 p-5"
-        >
-          <div className="flex items-start justify-between gap-3">
-            <h2 className="text-xl font-bold text-slate-900 leading-snug flex-1">
-              {question.title}
-            </h2>
-            <div className="flex items-center gap-2 shrink-0">
-              {timerRunning && <TimerRing endTime={endTime} duration={duration} size="sm" />}
-              <Badge variant="primary">{TYPE_LABELS[question.type] || question.type}</Badge>
-            </div>
-          </div>
-        </motion.div>
-
-        {question.type === 'quiz' && question.event && (
+      <div className="w-full max-w-sm space-y-4">
+          {/* Question header */}
           <motion.div
-            key={`event-${currentQId}`}
+            key={`header-${currentQId}`}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, ease: 'easeOut', delay: 0.05 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="bg-white rounded-xl shadow-sm border border-slate-200 p-5"
           >
-            <QuizEventBanner event={question.event} state={question.revealedAt ? 'result' : 'active'} />
+            <div className="flex items-start justify-between gap-3">
+              <h2 className="text-xl font-bold text-slate-900 leading-snug flex-1">
+                {question.title}
+              </h2>
+              <div className="flex items-center gap-2 shrink-0">
+                {timerRunning && <TimerRing endTime={endTime} duration={duration} size="sm" />}
+                <Badge variant="primary">{TYPE_LABELS[question.type] || question.type}</Badge>
+              </div>
+            </div>
           </motion.div>
-        )}
 
-        {/* Voter area */}
-        <motion.div
-          key={`voter-${currentQId}`}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: 'easeOut', delay: 0.1 }}
-        >
-          {question.type === 'choice' && (
-            <ChoiceVoter sessionId={sessionId} questionId={currentQId} options={question.options || []} />
+          {question.type === 'quiz' && question.event && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, ease: 'easeOut', delay: 0.05 }}
+            >
+              <QuizEventBanner event={question.event} state={question.revealedAt ? 'result' : 'active'} />
+            </motion.div>
           )}
-          {question.type === 'quiz' && (
-            <QuizVoter sessionId={sessionId} questionId={currentQId} question={question} />
-          )}
-          {question.type === 'ox' && (
-            <OXVoter sessionId={sessionId} questionId={currentQId} />
-          )}
-          {question.type === 'wordcloud' && (
-            <TextInput sessionId={sessionId} questionId={currentQId} placeholder="단어를 입력하세요" maxLength={20} />
-          )}
-          {question.type === 'qna' && (
-            <TextInput sessionId={sessionId} questionId={currentQId} placeholder="질문을 입력하세요" maxLength={200} />
-          )}
-        </motion.div>
+
+          {/* Voter area */}
+          <motion.div
+            key={`voter-${currentQId}`}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: 'easeOut', delay: 0.1 }}
+          >
+            {question.type === 'choice' && (
+              <ChoiceVoter sessionId={sessionId} questionId={currentQId} options={question.options || []} />
+            )}
+            {question.type === 'quiz' && (
+              <QuizVoter
+                sessionId={sessionId}
+                questionId={currentQId}
+                question={question}
+                renderResult={<QuizResultRenderer sessionId={sessionId} questionId={currentQId} question={question} />}
+              />
+            )}
+            {question.type === 'ox' && (
+              <OXVoter sessionId={sessionId} questionId={currentQId} />
+            )}
+            {question.type === 'wordcloud' && (
+              <TextInput sessionId={sessionId} questionId={currentQId} placeholder="단어를 입력하세요" maxLength={20} />
+            )}
+            {question.type === 'qna' && (
+              <TextInput sessionId={sessionId} questionId={currentQId} placeholder="질문을 입력하세요" maxLength={200} />
+            )}
+          </motion.div>
       </div>
 
       <StudentBottomBar sessionId={sessionId} />

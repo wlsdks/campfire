@@ -1,6 +1,30 @@
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
+import { useEffect, useRef } from 'react';
 import { Flame, Medal, Ticket, Trophy } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
+
+/** Animated number counter — counts from 0 to `value` on mount. */
+function AnimatedScore({ value, suffix = '점' }) {
+  const motionVal = useMotionValue(0);
+  const rounded = useTransform(motionVal, (v) => Math.round(v));
+  const displayRef = useRef(null);
+
+  useEffect(() => {
+    const unsubscribe = rounded.on('change', (v) => {
+      if (displayRef.current) displayRef.current.textContent = `${v}${suffix}`;
+    });
+    const controls = animate(motionVal, value, {
+      duration: 0.8,
+      ease: [0.25, 0.1, 0.25, 1],
+    });
+    return () => {
+      controls.stop();
+      unsubscribe();
+    };
+  }, [value, motionVal, rounded, suffix]);
+
+  return <span ref={displayRef}>{value}{suffix}</span>;
+}
 
 const PODIUM_STYLES = [
   'bg-amber-50 text-amber-700 border-amber-200',
@@ -67,7 +91,9 @@ export default function Leaderboard({
             </div>
           </div>
           <div className="text-right shrink-0">
-            <span className="font-bold text-indigo-600 block">{entry.total}점</span>
+            <span className="font-bold text-indigo-600 block">
+              <AnimatedScore value={entry.total} />
+            </span>
             {entry.lastPoints > 0 && (
               <span className="text-xs text-emerald-500 font-medium">+{entry.lastPoints}</span>
             )}
