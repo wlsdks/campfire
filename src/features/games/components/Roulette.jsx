@@ -2,10 +2,11 @@ import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Target, Loader2 } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import { colors } from '@/lib/design-tokens';
 
 const SEGMENT_COLORS = [
-  '#4F46E5', '#818CF8', '#6366F1', '#A5B4FC',
-  '#4338CA', '#C7D2FE', '#3730A3', '#93C5FD',
+  colors.vote.A, colors.vote.B, colors.vote.C, colors.vote.D,
+  colors.vote.E, colors.primary.light, colors.accent.DEFAULT, colors.primary.dark,
 ];
 
 function getSpinResult(nameCount, segmentAngle) {
@@ -65,8 +66,10 @@ export default function Roulette({ participants, onResult }) {
   return (
     <div className="flex flex-col items-center gap-6">
       <div className="relative w-full max-w-[320px] aspect-square mx-auto">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-0.5 z-10 text-3xl text-indigo-600 drop-shadow">
-          ▼
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-0.5 z-10 drop-shadow">
+          <svg width="24" height="20" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 20L0 0H24L12 20Z" fill={colors.primary.DEFAULT} />
+          </svg>
         </div>
         <motion.svg
           viewBox="0 0 200 200"
@@ -74,7 +77,7 @@ export default function Roulette({ participants, onResult }) {
           animate={{ rotate: rotation }}
           transition={{ duration: 4, ease: [0.17, 0.67, 0.12, 0.99] }}
         >
-          <circle cx="100" cy="100" r="98" fill="none" stroke="#E2E8F0" strokeWidth="1.5" />
+          <circle cx="100" cy="100" r="98" fill="none" stroke={colors.border} strokeWidth="1.5" />
           {names.map((name, i) => {
             const startAngle = i * segmentAngle;
             const endAngle = startAngle + segmentAngle;
@@ -110,8 +113,8 @@ export default function Roulette({ participants, onResult }) {
               </g>
             );
           })}
-          <circle cx="100" cy="100" r="18" fill="white" stroke="#E2E8F0" strokeWidth="1.5" />
-          <text x="100" y="100" fill="#4F46E5" fontSize="10" fontWeight="bold" fontFamily="'Pretendard', system-ui" textAnchor="middle" dominantBaseline="central">GO</text>
+          <circle cx="100" cy="100" r="18" fill="white" stroke={colors.border} strokeWidth="1.5" />
+          <text x="100" y="100" fill={colors.primary.DEFAULT} fontSize="10" fontWeight="bold" fontFamily="'Pretendard', system-ui" textAnchor="middle" dominantBaseline="central">GO</text>
         </motion.svg>
       </div>
 

@@ -2,11 +2,12 @@ import { useVotes } from '@/hooks/useVotes';
 import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Cloud } from 'lucide-react';
+import { colors } from '@/lib/design-tokens';
 
-// Restrained palette: indigo shades + slate for variety without rainbow
+// Restrained palette: vote colors + primary shades for variety without rainbow
 const COLORS = [
-  '#4F46E5', '#6366F1', '#818CF8', '#3730A3',
-  '#475569', '#334155', '#06B6D4', '#0891B2',
+  colors.vote.A, colors.vote.D, colors.primary.light, colors.primary.dark,
+  colors.text.secondary, colors.accent.DEFAULT, colors.vote.B, colors.vote.E,
 ];
 
 export default function WordCloud({ sessionId, questionId }) {

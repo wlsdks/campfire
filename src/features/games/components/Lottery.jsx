@@ -4,8 +4,8 @@ import { Ticket, Loader2, Minus, Plus, Trophy } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
 const CARD_COLORS = [
-  'bg-indigo-600', 'bg-indigo-500', 'bg-indigo-700',
-  'bg-slate-700', 'bg-indigo-800', 'bg-slate-600',
+  'bg-indigo-600', 'bg-emerald-600', 'bg-amber-500',
+  'bg-violet-600', 'bg-pink-500',
 ];
 
 function pickLotteryWinners(participants, count) {
