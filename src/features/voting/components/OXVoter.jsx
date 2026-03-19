@@ -4,6 +4,7 @@ import { getParticipantId } from '@/lib/participant';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import VoteConfirm from './VoteConfirm';
+import StudentLiveResults from './StudentLiveResults';
 
 export default function OXVoter({ sessionId, questionId, disabled = false }) {
   const [voted, setVoted] = useState(false);
@@ -25,7 +26,19 @@ export default function OXVoter({ sessionId, questionId, disabled = false }) {
     }
   }
 
-  if (voted) return <VoteConfirm selectedAnswer={selected === 'O' ? 'O (맞아요)' : 'X (아니에요)'} />;
+  if (voted) {
+    return (
+      <div className="space-y-3">
+        <VoteConfirm selectedAnswer={selected === 'O' ? 'O (맞아요)' : 'X (아니에요)'} />
+        <StudentLiveResults
+          sessionId={sessionId}
+          questionId={questionId}
+          options={['O', 'X']}
+          myAnswer={selected}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="flex gap-3 w-full">

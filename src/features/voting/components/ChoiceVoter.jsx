@@ -4,6 +4,7 @@ import { getParticipantId } from '@/lib/participant';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import VoteConfirm from './VoteConfirm';
+import StudentLiveResults from './StudentLiveResults';
 
 const OPTION_STYLES = [
   { bg: 'bg-white hover:bg-slate-50', text: 'text-slate-800', badge: 'bg-slate-800', letter: 'A' },
@@ -36,7 +37,17 @@ export default function ChoiceVoter({ sessionId, questionId, options, disabled =
   if (voted) {
     const idx = options.indexOf(selected);
     const letter = idx >= 0 ? OPTION_STYLES[idx % OPTION_STYLES.length].letter : '';
-    return <VoteConfirm selectedAnswer={letter ? `${letter}. ${selected}` : selected} />;
+    return (
+      <div className="space-y-3">
+        <VoteConfirm selectedAnswer={letter ? `${letter}. ${selected}` : selected} />
+        <StudentLiveResults
+          sessionId={sessionId}
+          questionId={questionId}
+          options={options}
+          myAnswer={selected}
+        />
+      </div>
+    );
   }
 
   return (
