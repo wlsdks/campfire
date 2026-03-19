@@ -168,11 +168,61 @@ Rate limit: 학생당 3초에 1회, Firebase에 최근 50개만 유지
 
 ## Anti-AI Aesthetic (CRITICAL)
 
-Reference: Toss (토스), Linear, Notion — restrained, clean, professional.
+Reference: Toss (토스), Linear, Notion, Vercel, Raycast — restrained, clean, professional.
 
-**NEVER**: Rainbow/gradients, 5+ colors per screen, blue-purple AI gradients, mixed icon styles, everything animated, excessive shadows+borders+radius on every element, generic tech-startup look
+### "AI Purple Problem" 인지 (2026)
+AI 코드 생성 도구는 Tailwind의 `bg-indigo-500` 기본값 때문에 인디고/보라 그라디언트를 과다 생성한다.
+이것이 "AI가 만든 느낌"의 가장 큰 원인. 우리도 인디고를 쓰지만, 아래 규칙으로 차별화한다.
 
-**ALWAYS**: Monochromatic + 1 accent, consistent shapes throughout, whitespace over decoration, lucide-react icons only (same stroke/size), Lottie only for success/celebration/empty states (under 2s, subtle)
+### AI 생성 UI의 공통 패턴 (이것을 피할 것)
+1. **인디고/보라 도배** — 모든 요소가 인디고. 버튼, 배지, 카드, 배경까지 전부 같은 색
+2. **과도한 그라디언트** — `bg-gradient-to-r from-indigo-500 to-purple-600` 같은 AI 기본 패턴
+3. **글래스모피즘 남용** — backdrop-blur + 반투명 bg를 모든 요소에 적용
+4. **균일한 radius** — 모든 요소가 `rounded-xl` 또는 `rounded-2xl`로 동일
+5. **빈 공간 공포** — 여백이 있으면 장식 요소를 채워넣음
+6. **과잉 애니메이션** — 모든 요소에 hover scale, transition, 스프링 효과
+7. **Sparkles/Wand 아이콘** — AI 도구가 기본으로 넣는 아이콘
+8. **대칭적 그리드** — 모든 카드가 완벽히 동일한 크기와 간격
+
+### NEVER
+- 인디고 + 보라 그라디언트 조합 (가장 대표적인 AI 시그니처)
+- 5+ 색상을 한 화면에 사용
+- 모든 요소에 그림자 + 테두리 + 라운드를 동시 적용
+- `backdrop-blur`를 2개 이상의 요소에 사용
+- 빈 상태에 Sparkles 아이콘 (대안: 맥락에 맞는 구체적 아이콘 사용)
+- 모든 버튼/카드에 동일한 hover 효과
+- 장식용 그라디언트 배경
+
+### ALWAYS
+- **색상 절제**: 인디고는 CTA(주요 액션) 버튼에만. 나머지는 슬레이트 계열
+- **의미 있는 색상만**: 각 색상에 역할 부여 (인디고=액션, 에메랄드=성공, 앰버=경고/보상)
+- **여백 > 장식**: 빈 공간을 장식으로 채우지 않음
+- **비대칭 레이아웃**: 약간의 비대칭이 인간적 느낌을 줌
+- **일관된 아이콘**: lucide-react만, 같은 stroke width/size
+- **미묘한 차이**: 같은 컴포넌트도 맥락에 따라 미세하게 다른 스타일링
+- **텍스트 위계**: 제목-본문-캡션의 크기/무게 차이를 명확하게
+- **실제 콘텐츠 우선**: 장식적 UI 요소보다 콘텐츠가 주인공
+
+### 한국 앱 참고 (토스 스타일)
+- 큰 제목 + 넉넉한 여백 + 최소 장식
+- 색상은 기능에만 사용 (상태, 액션), 장식에 사용하지 않음
+- 카드 간 구분은 간격으로, 테두리가 아닌 여백으로
+- 숫자/금액은 크고 굵게, 라벨은 작고 연하게
+- 애니메이션은 상태 전환에만, 장식적 모션은 거의 없음
+
+### Motion & 인터랙션 원칙
+- **부드럽고 유기적** — 모든 전환은 ease-out 또는 spring, 갑작스러운 변화 없음
+- **목적 있는 모션만** — 피드백/가이드/연결을 위한 것만. 장식 모션 없음
+- **400ms 이하** — UI 피드백. spring: stiffness 300, damping 20-30
+- **Lottie는 신중하게** — 성공/축하/빈 상태에만, 2초 이내, 인라인 JSON 우선
+- **과한 것보다 없는 게 낫다** — 제거해도 UX가 깨지지 않으면 넣지 말 것
+
+### 색상 원칙 (모노크로매틱)
+- **슬레이트 중심** — 선택지, 바 차트, 액션 버튼 등 기본 UI는 슬레이트 계열
+- **인디고는 CTA에만** — 주요 버튼(참여하기, 로그인)과 배지에만 사용
+- **한 화면 2-3색 최대** — 슬레이트 + 1 accent (상황에 따라 인디고 or 에메랄드)
+- **박스 안에 색상 넣지 말 것** — 배경색 tint 대신 텍스트 색상과 여백으로 구분
+- **왼쪽 컬러 바 금지** — border-l-3 같은 좌측 악센트 바는 AI 안티패턴
 
 ---
 
