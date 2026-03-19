@@ -20,7 +20,7 @@ import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
 import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import { Radio, Loader2, Monitor, Target, Ticket, Trophy, X, Users, Copy, Check, ArrowLeft, ChevronDown, Clock, MessageCircle, PanelLeftClose, PanelLeftOpen, Square, Play, BarChart3, Circle, Cloud, MessageSquare, AlertTriangle } from 'lucide-react';
+import { Radio, Loader2, Monitor, Target, Ticket, Trophy, X, Users, Copy, Check, ArrowLeft, ChevronDown, Clock, MessageCircle, PanelLeftClose, PanelLeftOpen, Square, Play, BarChart3, Circle, Cloud, MessageSquare, AlertTriangle, Layers } from 'lucide-react';
 import { useTimer } from '@/features/timer/api/useTimer';
 import TimerControls from '@/features/timer/components/TimerControls';
 import TimerRing from '@/features/timer/components/TimerRing';
@@ -333,6 +333,17 @@ export default function AdminPage() {
     return counts;
   }, [session?.questions]);
 
+  // Question progress for header (hook must be before early returns)
+  const questionProgress = useMemo(() => {
+    const questions = session?.questions || {};
+    const sorted = Object.entries(questions).sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
+    const total = sorted.length;
+    if (total === 0) return null;
+    const currentQId = session?.currentQuestion;
+    const activeIdx = currentQId ? sorted.findIndex(([qId]) => qId === currentQId) : -1;
+    return { current: activeIdx >= 0 ? activeIdx + 1 : null, total };
+  }, [session?.questions, session?.currentQuestion]);
+
   // Derive readOnly from session status (ended sessions are always read-only)
   const effectiveReadOnly = readOnly || isEnded;
 
@@ -579,7 +590,23 @@ export default function AdminPage() {
               {effectiveReadOnly && <Badge variant="neutral">클래스 확인</Badge>}
               {isSetting && <Badge variant="warning" className="py-1 px-2.5 text-xs font-semibold text-amber-600 bg-amber-50 border-amber-200">세팅중</Badge>}
             </div>
-            <span className="text-xs text-slate-400">세션 <span className="font-mono">{sessionId}</span></span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-400">세션 <span className="font-mono">{sessionId}</span></span>
+              {questionProgress && (
+                <span className="inline-flex items-center gap-1 text-xs text-slate-400">
+                  <span className="text-slate-200">·</span>
+                  <Layers size={12} className="text-slate-300" />
+                  {questionProgress.current ? (
+                    <span>
+                      <span className="font-semibold text-slate-600">{questionProgress.current}</span>
+                      <span className="text-slate-300">/{questionProgress.total}</span>
+                    </span>
+                  ) : (
+                    <span>{questionProgress.total}개</span>
+                  )}
+                </span>
+              )}
+            </div>
           </div>
         </div>
         <div className="flex items-center gap-3">
