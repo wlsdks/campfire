@@ -199,6 +199,7 @@ git push origin background-improve
 > 최근 10개만 유지. 오래된 것은 삭제.
 
 <!-- 예시: 2026-03-20 01:30 | improve: 학생 투표 화면 터치 타겟 48px로 통일 -->
+2026-03-20 | improve: 에러 바운더리 — ErrorBoundary 컴포넌트 신설(112줄). React class component로 getDerivedStateFromError/componentDidCatch 구현. 라우트 레벨(student/admin) 2개 + 세분화 경계(VizRenderer visualization, VotePage voter) 2개 = 총 4개 경계. 한국어 복구 UI(다시 시도/새로고침), details 태그로 에러 상세 접기, scope별 console.error 로깅. fullPage prop으로 전체화면/인라인 모드 분기
 2026-03-20 | improve: 컴포넌트 크기 감사 — AdminPage.jsx(1022줄) → 425줄로 분리. 5개 서브컴포넌트 추출: AdminSessionHeader(186줄, 헤더바+타이머+ElapsedTime), ClassSummary(179줄, 클래스 요약+질문별 인사이트), RightSidebar(204줄, 참여자 패널+QR+아코디언), PresentationView(90줄, 발표 모드+MainContent), ModeSwitcher(79줄, 모드 전환 아코디언). 미사용 import 정리
 2026-03-20 | improve: 발표 모드 QR 오버레이 — PresentQROverlay 컴포넌트 신설. 기본 축소 상태(slate-900 QR아이콘+세션코드+참여자 수 pill), 클릭 시 확대(QR 180px+세션코드 bold+링크복사+접속 수). Framer Motion AnimatePresence 전환, stopPropagation으로 발표 종료 미스클릭 방지. 기존 120px 고정 QR+URL 텍스트 제거, 하단좌측 세션코드 뱃지도 QR 오버레이로 통합
 2026-03-20 | improve: 학생 실시간 투표 결과 — StudentLiveResults 컴포넌트 신설(95줄). 투표 후 VoteConfirm 아래에 실시간 분포 미니 바 차트 표시. 내 선택 강조(bold+dark bar), 참여자 수 실시간 갱신, useVotes 훅으로 Firebase 실시간 연동. ChoiceVoter(객관식), OXVoter(O/X)에 적용. QuizVoter는 정답 공개 전까지 결과 비공개 유지. slate 모노크로매틱, 모바일(390px) 최적화

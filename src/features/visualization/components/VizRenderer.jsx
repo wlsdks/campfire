@@ -7,6 +7,7 @@ import { BarChart3 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Badge from '@/components/ui/Badge';
 import EmptyState from '@/components/ui/EmptyState';
+import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import { isQuizQuestion } from '@/lib/quiz';
 
@@ -66,36 +67,38 @@ export default memo(function VizRenderer({ sessionId, session }) {
       )}
 
       {/* Visualization */}
-      <div className={isQA ? 'flex-1 overflow-y-auto px-4 py-3' : 'w-full'}>
-        {question.type === 'choice' && (
-          <BarChart
-            sessionId={sessionId}
-            questionId={currentQId}
-            options={question.options || []}
-            correctValue={question.correctAnswer}
-            revealed={hasCorrectAnswer && answerRevealed}
-          />
-        )}
-        {question.type === 'quiz' && (
-          <BarChart
-            sessionId={sessionId}
-            questionId={currentQId}
-            options={question.options || []}
-            correctValue={question.correctAnswer}
-            revealed={answerRevealed}
-          />
-        )}
-        {question.type === 'ox' && (
-          <OXBattle
-            sessionId={sessionId}
-            questionId={currentQId}
-            correctValue={question.correctAnswer}
-            revealed={hasCorrectAnswer && answerRevealed}
-          />
-        )}
-        {question.type === 'wordcloud' && <WordCloud sessionId={sessionId} questionId={currentQId} />}
-        {isQA && <QACards sessionId={sessionId} questionId={currentQId} title={question.title} />}
-      </div>
+      <ErrorBoundary scope="visualization" fullPage={false}>
+        <div className={isQA ? 'flex-1 overflow-y-auto px-4 py-3' : 'w-full'}>
+          {question.type === 'choice' && (
+            <BarChart
+              sessionId={sessionId}
+              questionId={currentQId}
+              options={question.options || []}
+              correctValue={question.correctAnswer}
+              revealed={hasCorrectAnswer && answerRevealed}
+            />
+          )}
+          {question.type === 'quiz' && (
+            <BarChart
+              sessionId={sessionId}
+              questionId={currentQId}
+              options={question.options || []}
+              correctValue={question.correctAnswer}
+              revealed={answerRevealed}
+            />
+          )}
+          {question.type === 'ox' && (
+            <OXBattle
+              sessionId={sessionId}
+              questionId={currentQId}
+              correctValue={question.correctAnswer}
+              revealed={hasCorrectAnswer && answerRevealed}
+            />
+          )}
+          {question.type === 'wordcloud' && <WordCloud sessionId={sessionId} questionId={currentQId} />}
+          {isQA && <QACards sessionId={sessionId} questionId={currentQId} title={question.title} />}
+        </div>
+      </ErrorBoundary>
     </div>
   );
 });

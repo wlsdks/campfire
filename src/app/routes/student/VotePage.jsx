@@ -10,6 +10,7 @@ import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
 import Badge from '@/components/ui/Badge';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
+import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import QuizResult from '@/features/quiz/components/QuizResult';
 import { SkeletonCard } from '@/components/ui/Skeleton';
 import TimerCountdown from '@/features/timer/components/TimerCountdown';
@@ -197,42 +198,44 @@ export default function VotePage({ sessionId }) {
           )}
 
           {/* Voter area */}
-          <motion.div
-            key={`voter-${currentQId}`}
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ type: 'spring', stiffness: 280, damping: 28, delay: 0.08 }}
-            className="relative"
-          >
-            {question.type === 'choice' && (
-              <ChoiceVoter sessionId={sessionId} questionId={currentQId} options={question.options || []} disabled={timerExpired} />
-            )}
-            {question.type === 'quiz' && (
-              <QuizVoter
-                sessionId={sessionId}
-                questionId={currentQId}
-                question={question}
-                disabled={timerExpired}
-                renderResult={(currentVote) => (
-                  <QuizResultFromVote question={question} currentVote={currentVote} />
-                )}
-              />
-            )}
-            {question.type === 'ox' && (
-              <OXVoter sessionId={sessionId} questionId={currentQId} disabled={timerExpired} />
-            )}
-            {question.type === 'wordcloud' && (
-              <TextInput sessionId={sessionId} questionId={currentQId} type="wordcloud" placeholder="단어를 입력하세요" maxLength={20} disabled={timerExpired} />
-            )}
-            {question.type === 'qna' && (
-              <TextInput sessionId={sessionId} questionId={currentQId} type="qna" placeholder="질문을 입력하세요" maxLength={200} disabled={timerExpired} />
-            )}
+          <ErrorBoundary scope="voter" fullPage={false}>
+            <motion.div
+              key={`voter-${currentQId}`}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ type: 'spring', stiffness: 280, damping: 28, delay: 0.08 }}
+              className="relative"
+            >
+              {question.type === 'choice' && (
+                <ChoiceVoter sessionId={sessionId} questionId={currentQId} options={question.options || []} disabled={timerExpired} />
+              )}
+              {question.type === 'quiz' && (
+                <QuizVoter
+                  sessionId={sessionId}
+                  questionId={currentQId}
+                  question={question}
+                  disabled={timerExpired}
+                  renderResult={(currentVote) => (
+                    <QuizResultFromVote question={question} currentVote={currentVote} />
+                  )}
+                />
+              )}
+              {question.type === 'ox' && (
+                <OXVoter sessionId={sessionId} questionId={currentQId} disabled={timerExpired} />
+              )}
+              {question.type === 'wordcloud' && (
+                <TextInput sessionId={sessionId} questionId={currentQId} type="wordcloud" placeholder="단어를 입력하세요" maxLength={20} disabled={timerExpired} />
+              )}
+              {question.type === 'qna' && (
+                <TextInput sessionId={sessionId} questionId={currentQId} type="qna" placeholder="질문을 입력하세요" maxLength={200} disabled={timerExpired} />
+              )}
 
-            {/* Time's up overlay */}
-            <AnimatePresence>
-              {timerExpired && <TimerExpiredOverlay />}
-            </AnimatePresence>
-          </motion.div>
+              {/* Time's up overlay */}
+              <AnimatePresence>
+                {timerExpired && <TimerExpiredOverlay />}
+              </AnimatePresence>
+            </motion.div>
+          </ErrorBoundary>
       </div>
 
       <StudentBottomBar sessionId={sessionId} />
