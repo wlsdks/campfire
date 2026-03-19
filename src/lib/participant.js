@@ -70,14 +70,3 @@ export function markSessionJoined(sessionId, participantId) {
     },
   });
 }
-
-/**
- * Removes the joined marker for a session.
- * @param {string} sessionId
- */
-export function clearJoinedSession(sessionId) {
-  if (!sessionId) return;
-  const joinedSessions = readJoinedSessions();
-  delete joinedSessions[sessionId];
-  writeJoinedSessions(joinedSessions);
-}
