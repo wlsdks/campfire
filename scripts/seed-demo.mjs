@@ -180,7 +180,7 @@ const sessions = {};
   const t3 = now - 2 * HOUR;
   sessions[s3] = {
     status: 'active', currentQuestion: q3a, currentMode: 'poll',
-    createdAt: t3, courseName: '바이브 코딩 기초편', roundNumber: 3,
+    createdAt: t3, startedAt: t3 + 10 * 60000, courseName: '바이브 코딩 기초편', roundNumber: 3,
     participants: p3,
     questions: {
       [q3a]: {
@@ -256,7 +256,7 @@ const sessions = {};
   const t2 = now - 3 * HOUR;
   sessions[s2] = {
     status: 'active', currentQuestion: q2b, currentMode: 'quiz',
-    createdAt: t2, courseName: '바이브 코딩 중급편', roundNumber: 2,
+    createdAt: t2, startedAt: t2 + 15 * 60000, courseName: '바이브 코딩 중급편', roundNumber: 2,
     participants: p2,
     questions: {
       [q2a]: {
@@ -526,7 +526,7 @@ const sessions = {};
   const t2 = now - 1 * HOUR;
   sessions[s2] = {
     status: 'active', currentQuestion: q2a, currentMode: 'poll',
-    createdAt: t2, courseName: 'UX/UI 디자인 원칙', roundNumber: 2,
+    createdAt: t2, startedAt: t2 + 5 * 60000, courseName: 'UX/UI 디자인 원칙', roundNumber: 2,
     participants: p2,
     questions: {
       [q2a]: {

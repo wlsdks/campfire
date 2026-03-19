@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { ref, update, set } from 'firebase/database';
+import { ref, update, set, serverTimestamp } from 'firebase/database';
 import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '@/lib/firebase';
 import { useSession } from '@/features/session/api/useSession';
@@ -88,6 +88,38 @@ function PresentEmptyState({ sessionId, studentUrl, count }) {
         <Badge variant="neutral">{sessionId}</Badge>
       </div>
     </div>
+  );
+}
+
+function formatElapsed(ms) {
+  const totalSec = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSec / 3600);
+  const mins = Math.floor((totalSec % 3600) / 60);
+  if (hours > 0) return `${hours}시간 ${mins}분 경과`;
+  return `${mins}분 경과`;
+}
+
+function ElapsedTime({ startedAt, createdAt, status }) {
+  const [now, setNow] = useState(Date.now());
+  const origin = startedAt || createdAt;
+
+  useEffect(() => {
+    if (!origin || status !== 'active') return;
+    const id = setInterval(() => setNow(Date.now()), 30_000);
+    return () => clearInterval(id);
+  }, [origin, status]);
+
+  if (!origin || status !== 'active') return null;
+
+  const elapsed = Math.max(0, now - origin);
+  if (elapsed < 60_000) return null;
+
+  return (
+    <span className="inline-flex items-center gap-1 text-xs text-slate-400">
+      <span className="text-slate-200">&middot;</span>
+      <Clock size={12} className="text-slate-300" />
+      <span>{formatElapsed(elapsed)}</span>
+    </span>
   );
 }
 
@@ -425,7 +457,7 @@ export default function AdminPage() {
   // Start session (setting → active)
   async function handleStartSession() {
     try {
-      await update(ref(db, `sessions/${sessionId}`), { status: 'active' });
+      await update(ref(db, `sessions/${sessionId}`), { status: 'active', startedAt: serverTimestamp() });
     } catch {
       // Silently fail
     }
@@ -606,6 +638,7 @@ export default function AdminPage() {
                   )}
                 </span>
               )}
+              <ElapsedTime startedAt={session?.startedAt} createdAt={session?.createdAt} status={session?.status} />
             </div>
           </div>
         </div>

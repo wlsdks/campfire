@@ -208,6 +208,7 @@ git push origin background-improve
 2026-03-20 | improve: 학생 타이머 표시 — TimerCountdown 바 컴포넌트(녹→황→적 진행률), 시간 종료 시 모든 투표 컴포넌트 잠금(disabled prop), "시간이 종료되었습니다" 오버레이. 질문 변경/타이머 재시작 시 자동 리셋
 2026-03-20 | improve: 헤더 질문 진행 표시 — 세션 코드 옆에 Layers 아이콘 + "2/5" (활성 질문 번호/전체) 또는 "N개" (비활성 시) 표시. 사이드바 접어도 강사가 진행 위치를 항상 파악 가능
 2026-03-20 | improve: 학생 연결 상태 배너 — 오프라인 시 헤더 아래 slate-900 "연결 끊김" 배너 슬라이드 다운, 재연결 시 emerald-600 "다시 연결됨" 2초 후 자동 소멸. Firebase .info/connected 기반, useConnectionStatus 훅 확장
+2026-03-20 | improve: 세션 경과 시간 — 활성 세션 헤더에 "N분 경과" 실시간 표시(Clock 아이콘+muted text). startedAt(세션 시작 시 serverTimestamp) 우선, createdAt 폴백. 30초 간격 업데이트, 1분 미만 숨김. useSession에 createdAt/startedAt 구독 추가
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 
