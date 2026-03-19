@@ -211,6 +211,7 @@ git push origin background-improve
 2026-03-20 | improve: 데모 데이터 강화 — seed-demo.mjs에 채팅(학생↔강사 혼합), 손들기(2~4명), 긴급질문(읽음/안읽음), 퀴즈 점수(정답+속도보너스+티켓) 추가. active 세션 3개 + ended 세션 3개에 적용. 모든 기능 테스트 가능
 2026-03-20 | improve: 마이크로 인터랙션 감사 — 15개 컴포넌트에 active:scale 프레스 피드백 일괄 적용. 탭 버튼(active:scale-[0.97]), 세션 행(active:bg-slate-100), 질문 액션 버튼(active:scale-90), 아코디언 헤더(active:bg-slate-100), 모달 선택 카드(active:scale-[0.98]), 폼 선택기(active:scale-[0.96]). CSS transition-all 기반으로 Framer Motion 불필요한 곳은 성능 최적화
 2026-03-20 | improve: 컴포넌트 크기 감사 — AdminPage.jsx(1022줄) → 425줄로 분리. 5개 서브컴포넌트 추출: AdminSessionHeader(186줄, 헤더바+타이머+ElapsedTime), ClassSummary(179줄, 클래스 요약+질문별 인사이트), RightSidebar(204줄, 참여자 패널+QR+아코디언), PresentationView(90줄, 발표 모드+MainContent), ModeSwitcher(79줄, 모드 전환 아코디언). 미사용 import 정리
+2026-03-20 | improve: 발표 모드 QR 오버레이 — PresentQROverlay 컴포넌트 신설. 기본 축소 상태(slate-900 QR아이콘+세션코드+참여자 수 pill), 클릭 시 확대(QR 180px+세션코드 bold+링크복사+접속 수). Framer Motion AnimatePresence 전환, stopPropagation으로 발표 종료 미스클릭 방지. 기존 120px 고정 QR+URL 텍스트 제거, 하단좌측 세션코드 뱃지도 QR 오버레이로 통합
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 
