@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import { motion } from 'framer-motion';
 import { useVotes } from '@/hooks/useVotes';
 import { Check } from 'lucide-react';
 
-export default function OXBattle({ sessionId, questionId, correctValue = null, revealed = false }) {
+export default memo(function OXBattle({ sessionId, questionId, correctValue = null, revealed = false }) {
   const { totalVotes, countByValue } = useVotes(sessionId, questionId);
   const oCount = countByValue('O');
   const xCount = countByValue('X');
@@ -114,4 +115,4 @@ export default function OXBattle({ sessionId, questionId, correctValue = null, r
       </div>
     </div>
   );
-}
+});

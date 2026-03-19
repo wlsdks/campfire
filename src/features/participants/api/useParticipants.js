@@ -1,5 +1,5 @@
 import { ref, onValue } from 'firebase/database';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { db } from '@/lib/firebase';
 
 export function useParticipants(sessionId) {
@@ -14,8 +14,17 @@ export function useParticipants(sessionId) {
     return () => unsub();
   }, [sessionId]);
 
-  const list = Object.entries(participants).map(([id, data]) => ({ id, ...data }));
-  const onlineList = list.filter(p => p.online);
+  const list = useMemo(
+    () => Object.entries(participants).map(([id, data]) => ({ id, ...data })),
+    [participants]
+  );
 
-  return { participants, list, onlineList, count: onlineList.length };
+  const onlineList = useMemo(
+    () => list.filter(p => p.online),
+    [list]
+  );
+
+  const count = onlineList.length;
+
+  return { participants, list, onlineList, count };
 }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo, useMemo } from 'react';
 import { useVotes } from '@/hooks/useVotes';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Users } from 'lucide-react';
@@ -45,10 +45,13 @@ function DetailModal({ item, onClose }) {
   );
 }
 
-export default function QACards({ sessionId, questionId, title }) {
+export default memo(function QACards({ sessionId, questionId, title }) {
   const { voteList } = useVotes(sessionId, questionId);
   const [selected, setSelected] = useState(null);
-  const sorted = [...voteList].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+  const sorted = useMemo(
+    () => [...voteList].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)),
+    [voteList]
+  );
 
   return (
     <>
@@ -105,4 +108,4 @@ export default function QACards({ sessionId, questionId, title }) {
       </AnimatePresence>
     </>
   );
-}
+});

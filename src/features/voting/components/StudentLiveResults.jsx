@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import { motion } from 'framer-motion';
 import { useVotes } from '@/hooks/useVotes';
 import { formatPercent } from '@/lib/utils';
@@ -15,7 +15,7 @@ import { Users } from 'lucide-react';
  * @param {string[]} props.options - vote option labels
  * @param {string} props.myAnswer - the option this student voted for
  */
-export default function StudentLiveResults({ sessionId, questionId, options, myAnswer }) {
+export default memo(function StudentLiveResults({ sessionId, questionId, options, myAnswer }) {
   const { totalVotes, countByValue } = useVotes(sessionId, questionId);
 
   const maxCount = useMemo(() => {
@@ -92,4 +92,4 @@ export default function StudentLiveResults({ sessionId, questionId, options, myA
       </div>
     </motion.div>
   );
-}
+});

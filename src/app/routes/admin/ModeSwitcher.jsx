@@ -1,8 +1,9 @@
+import { memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Target, Ticket, Trophy, X, ChevronDown } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
-export default function ModeSwitcher({ currentMode, isSpecialMode, totalTickets, leaderboard, modeOpen, onToggle, onSwitchMode }) {
+export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTickets, leaderboard, modeOpen, onToggle, onSwitchMode }) {
   return (
     <div className="mt-3 rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
       <button
@@ -76,4 +77,4 @@ export default function ModeSwitcher({ currentMode, isSpecialMode, totalTickets,
       </AnimatePresence>
     </div>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
@@ -38,7 +38,7 @@ function ElapsedTime({ startedAt, createdAt, status }) {
   );
 }
 
-export default function AdminSessionHeader({
+export default memo(function AdminSessionHeader({
   session,
   sessionId,
   effectiveReadOnly,
@@ -183,4 +183,4 @@ export default function AdminSessionHeader({
       </div>
     </div>
   );
-}
+});

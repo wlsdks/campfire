@@ -1,5 +1,5 @@
 import { ref, onValue } from 'firebase/database';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { db } from '@/lib/firebase';
 
 export function useVotes(sessionId, questionId) {
@@ -14,20 +14,29 @@ export function useVotes(sessionId, questionId) {
     return () => unsub();
   }, [sessionId, questionId]);
 
-  const voteList = Object.entries(votes).map(([id, data]) => ({ id, ...data }));
+  const voteList = useMemo(
+    () => Object.entries(votes).map(([id, data]) => ({ id, ...data })),
+    [votes]
+  );
+
   const totalVotes = voteList.length;
 
-  function countByValue(value) {
-    return voteList.filter(v => v.value === value).length;
-  }
-
-  function tally() {
+  /** Pre-computed tally: { value: count } */
+  const tallied = useMemo(() => {
     const counts = {};
     voteList.forEach(v => {
       counts[v.value] = (counts[v.value] || 0) + 1;
     });
     return counts;
-  }
+  }, [voteList]);
+
+  const countByValue = useCallback(
+    (value) => tallied[value] || 0,
+    [tallied]
+  );
+
+  /** Returns the pre-computed tally object (stable ref). */
+  const tally = useCallback(() => tallied, [tallied]);
 
   return { votes, voteList, totalVotes, countByValue, tally };
 }

@@ -1,5 +1,5 @@
 import { useVotes } from '@/hooks/useVotes';
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Cloud } from 'lucide-react';
 import { colors } from '@/lib/design-tokens';
@@ -10,7 +10,7 @@ const COLORS = [
   colors.text.secondary, colors.accent.DEFAULT, colors.vote.B, colors.vote.E,
 ];
 
-export default function WordCloud({ sessionId, questionId }) {
+export default memo(function WordCloud({ sessionId, questionId }) {
   const { tally, totalVotes } = useVotes(sessionId, questionId);
   const tallied = tally();
 
@@ -63,4 +63,4 @@ export default function WordCloud({ sessionId, questionId }) {
       )}
     </div>
   );
-}
+});

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart3, Check, ChevronDown, Circle, Cloud, Copy, MessageSquare, Play, Square, Trash2, Trophy } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
@@ -13,7 +13,7 @@ const QUESTION_TYPES = [
   { value: 'qna', label: 'Q&A', icon: MessageSquare },
 ];
 
-export default function QuestionList({
+export default memo(function QuestionList({
   questionList,
   currentQuestion,
   onActivate,
@@ -170,4 +170,4 @@ export default function QuestionList({
       </AnimatePresence>
     </div>
   );
-}
+});

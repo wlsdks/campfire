@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react';
 import { BarChart3, Trophy, Circle, Cloud, MessageSquare, AlertTriangle, Users } from 'lucide-react';
 
 const QTYPE_META = {
@@ -37,7 +38,7 @@ function getQuestionInsights(questions, participantCount) {
   });
 }
 
-export default function ClassSummary({ session, participants, leaderboard }) {
+export default memo(function ClassSummary({ session, participants, leaderboard }) {
   const questions = session?.questions || {};
   const questionList = Object.values(questions);
   const participantCount = Object.keys(participants).length;
@@ -176,4 +177,4 @@ export default function ClassSummary({ session, participants, leaderboard }) {
       <p className="text-center text-xs text-slate-400">왼쪽에서 질문을 클릭하면 결과를 볼 수 있습니다</p>
     </div>
   );
-}
+});

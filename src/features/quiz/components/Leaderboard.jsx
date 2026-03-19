@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, memo } from 'react';
 import { Flame, Medal, Ticket, Trophy } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
 
@@ -32,7 +32,7 @@ const PODIUM_STYLES = [
   'bg-slate-50 text-slate-600 border-slate-200',
 ];
 
-export default function Leaderboard({
+export default memo(function Leaderboard({
   entries,
   maxShow = 10,
   title = '리더보드',
@@ -116,4 +116,4 @@ export default function Leaderboard({
       ))}
     </div>
   );
-}
+});

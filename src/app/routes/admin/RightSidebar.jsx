@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, ChevronDown, Copy, Check } from 'lucide-react';
 import ParticipantList from '@/features/participants/components/ParticipantList';
@@ -161,7 +161,7 @@ function ReadOnlyRightSidebar({ session, participants, leaderboard, voteCounts }
   );
 }
 
-export default function RightSidebar({
+export default memo(function RightSidebar({
   session,
   sessionId,
   effectiveReadOnly,
@@ -201,4 +201,4 @@ export default function RightSidebar({
       </div>
     </motion.div>
   );
-}
+});

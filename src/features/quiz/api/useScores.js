@@ -1,5 +1,5 @@
 import { ref, onValue } from 'firebase/database';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { db } from '@/lib/firebase';
 
 export function useScores(sessionId) {
@@ -14,11 +14,17 @@ export function useScores(sessionId) {
     return () => unsub();
   }, [sessionId]);
 
-  const leaderboard = Object.entries(scores)
-    .map(([id, data]) => ({ id, ...data }))
-    .sort((a, b) => (b.total || 0) - (a.total || 0) || (a.nickname || '').localeCompare(b.nickname || ''));
+  const leaderboard = useMemo(
+    () => Object.entries(scores)
+      .map(([id, data]) => ({ id, ...data }))
+      .sort((a, b) => (b.total || 0) - (a.total || 0) || (a.nickname || '').localeCompare(b.nickname || '')),
+    [scores]
+  );
 
-  const totalTickets = leaderboard.reduce((sum, entry) => sum + (entry.tickets || 0), 0);
+  const totalTickets = useMemo(
+    () => leaderboard.reduce((sum, entry) => sum + (entry.tickets || 0), 0),
+    [leaderboard]
+  );
 
   return { scores, leaderboard, totalTickets };
 }

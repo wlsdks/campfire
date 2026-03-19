@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import BarChart from './BarChart';
 import OXBattle from './OXBattle';
 import WordCloud from './WordCloud';
@@ -11,7 +12,7 @@ import { isQuizQuestion } from '@/lib/quiz';
 
 const TYPE_LABELS = { choice: '객관식', ox: 'O/X', wordcloud: '워드클라우드', qna: 'Q&A', quiz: '퀴즈' };
 
-export default function VizRenderer({ sessionId, session }) {
+export default memo(function VizRenderer({ sessionId, session }) {
   const currentQId = session?.currentQuestion;
   const currentMode = session?.currentMode;
 
@@ -97,4 +98,4 @@ export default function VizRenderer({ sessionId, session }) {
       </div>
     </div>
   );
-}
+});

@@ -1,27 +1,32 @@
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import { motion } from 'framer-motion';
 import { useVotes } from '@/hooks/useVotes';
 import { formatPercent } from '@/lib/utils';
 import { Check } from 'lucide-react';
 
-export default function BarChart({ sessionId, questionId, options, correctValue = null, revealed = false }) {
+export default memo(function BarChart({ sessionId, questionId, options, correctValue = null, revealed = false }) {
   const { totalVotes, countByValue } = useVotes(sessionId, questionId);
+
+  // Pre-compute counts once so rankMap doesn't depend on the function reference
+  const counts = useMemo(
+    () => options.map((o) => countByValue(o)),
+    [options, countByValue]
+  );
 
   // Rank options by count (descending) to assign color intensity
   const rankMap = useMemo(() => {
-    const counts = options.map((o) => countByValue(o));
     const sorted = [...counts].sort((a, b) => b - a);
     const map = {};
     counts.forEach((c, i) => {
       map[i] = sorted.indexOf(c);
     });
     return map;
-  }, [options, countByValue]);
+  }, [counts]);
 
   return (
     <div className="space-y-4 w-full max-w-xl mx-auto px-8">
       {options.map((option, i) => {
-        const count = countByValue(option);
+        const count = counts[i];
         const pct = totalVotes > 0 ? (count / totalVotes) * 100 : 0;
         const isCorrect = revealed && correctValue === option;
         const isWrong = revealed && correctValue && correctValue !== option;
@@ -89,4 +94,4 @@ export default function BarChart({ sessionId, questionId, options, correctValue 
       </div>
     </div>
   );
-}
+});

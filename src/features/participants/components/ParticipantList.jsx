@@ -1,9 +1,10 @@
+import { memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
 import PinggoMascot from '@/components/ui/PinggoMascot';
 
-export default function ParticipantList({ participants, voteCounts }) {
+export default memo(function ParticipantList({ participants, voteCounts }) {
   return (
     <div className="space-y-0.5 max-h-64 overflow-y-auto scrollbar-hide">
       <AnimatePresence>
@@ -35,4 +36,4 @@ export default function ParticipantList({ participants, voteCounts }) {
       )}
     </div>
   );
-}
+});

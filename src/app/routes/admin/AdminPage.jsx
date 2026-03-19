@@ -98,6 +98,22 @@ export default function AdminPage() {
 
   const isMaster = adminUser?.role === 'master';
 
+  // Memoize student URL so it doesn't create a new string every render
+  const studentUrl = useMemo(
+    () => `${window.location.origin}/?s=${sessionId}`,
+    [sessionId]
+  );
+
+  // Memoize drawParticipants (merged online list + scores)
+  const drawParticipants = useMemo(
+    () => onlineList.map((participant) => ({
+      ...participant,
+      ...scores[participant.id],
+      tickets: scores[participant.id]?.tickets || 0,
+    })),
+    [onlineList, scores]
+  );
+
   function handleLogin() {
     setAdminUser(getAdminUser());
   }
@@ -122,7 +138,18 @@ export default function AdminPage() {
     setUrlParams({});
   }
 
-  async function switchMode(mode) {
+  // Stabilized callbacks for child components (avoid inline arrow functions)
+  const handleChatToggle = useCallback(() => setChatOpen(prev => !prev), []);
+  const handleChatClose = useCallback(() => setChatOpen(false), []);
+  const handlePresentMode = useCallback(() => setPresentMode(true), []);
+  const handleExitPresent = useCallback(() => setPresentMode(false), []);
+  const handleModeToggle = useCallback(() => setModeOpen(prev => !prev), []);
+  const handleCollapseOpen = useCallback(() => setSidebarCollapsed(false), []);
+  const handleCollapseClose = useCallback(() => setSidebarCollapsed(true), []);
+  const handleShowCenterForm = useCallback(() => setShowCenterForm(true), []);
+  const handleHideCenterForm = useCallback(() => setShowCenterForm(false), []);
+
+  const switchMode = useCallback(async (mode) => {
     if (effectiveReadOnly) return;
     try {
       await update(ref(db, `sessions/${sessionId}`), mode === 'leaderboard'
@@ -131,17 +158,17 @@ export default function AdminPage() {
     } catch {
       // Silently fail
     }
-  }
+  }, [sessionId, effectiveReadOnly]);
 
-  async function handleStartSession() {
+  const handleStartSession = useCallback(async () => {
     try {
       await update(ref(db, `sessions/${sessionId}`), { status: 'active', startedAt: serverTimestamp() });
     } catch {
       // Silently fail
     }
-  }
+  }, [sessionId]);
 
-  async function handleEndSession() {
+  const handleEndSession = useCallback(async () => {
     if (!window.confirm('클래스를 종료하시겠습니까? 종료 후 학생들은 더 이상 참여할 수 없습니다.')) return;
     try {
       await update(ref(db, `sessions/${sessionId}`), {
@@ -153,9 +180,9 @@ export default function AdminPage() {
     } catch {
       // Silently fail
     }
-  }
+  }, [sessionId, handleBack]);
 
-  async function handleCenterFormSubmit({ type, title, options: cleanOptions, correctAnswer }) {
+  const handleCenterFormSubmit = useCallback(async ({ type, title, options: cleanOptions, correctAnswer }) => {
     try {
       const qId = generateQuestionId();
       const questions = session?.questions || {};
@@ -180,7 +207,20 @@ export default function AdminPage() {
     } catch {
       return false;
     }
-  }
+  }, [sessionId, session?.questions]);
+
+  const handleViewQuestion = useMemo(() => {
+    if (!effectiveReadOnly) return undefined;
+    return async (qId) => {
+      try {
+        if (qId === '__summary__') {
+          await update(ref(db, `sessions/${sessionId}`), { currentQuestion: null, currentMode: 'waiting' });
+        } else {
+          await update(ref(db, `sessions/${sessionId}`), { currentQuestion: qId, currentMode: 'poll' });
+        }
+      } catch {}
+    };
+  }, [effectiveReadOnly, sessionId]);
 
   // 1. Not authenticated
   if (!adminUser) return <AdminLogin onLogin={handleLogin} />;
@@ -219,13 +259,7 @@ export default function AdminPage() {
     return null;
   }
 
-  const studentUrl = `${window.location.origin}/?s=${sessionId}`;
   const currentMode = session?.currentMode;
-  const drawParticipants = onlineList.map((participant) => ({
-    ...participant,
-    ...scores[participant.id],
-    tickets: scores[participant.id]?.tickets || 0,
-  }));
   const isSpecialMode = ['roulette', 'lottery', 'leaderboard'].includes(currentMode);
 
   // 5. Presentation mode (full-screen)
@@ -240,7 +274,7 @@ export default function AdminPage() {
         drawParticipants={drawParticipants}
         studentUrl={studentUrl}
         count={count}
-        onExit={() => setPresentMode(false)}
+        onExit={handleExitPresent}
       />
     );
   }
@@ -255,7 +289,7 @@ export default function AdminPage() {
         senderName={adminUser?.displayName || '강사'}
         senderType="instructor"
         open={chatOpen}
-        onClose={() => setChatOpen(false)}
+        onClose={handleChatClose}
       />
 
       <AdminSessionHeader
@@ -267,7 +301,7 @@ export default function AdminPage() {
         count={count}
         totalTickets={totalTickets}
         chatOpen={chatOpen}
-        onChatToggle={() => setChatOpen(!chatOpen)}
+        onChatToggle={handleChatToggle}
         timerRunning={timerRunning}
         endTime={endTime}
         duration={duration}
@@ -276,7 +310,7 @@ export default function AdminPage() {
         onBack={handleBack}
         onStartSession={handleStartSession}
         onEndSession={handleEndSession}
-        onPresentMode={() => setPresentMode(true)}
+        onPresentMode={handlePresentMode}
       />
 
       {/* Main layout */}
@@ -289,7 +323,7 @@ export default function AdminPage() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -8 }}
               transition={{ duration: 0.15 }}
-              onClick={() => setSidebarCollapsed(false)}
+              onClick={handleCollapseOpen}
               className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white border border-slate-200 border-l-0 rounded-r-xl p-3 shadow-md text-slate-400 hover:text-slate-700 transition-all active:scale-95"
               aria-label="사이드바 열기"
             >
@@ -306,7 +340,7 @@ export default function AdminPage() {
         >
           <div className="min-w-[280px] p-5 overflow-y-auto h-full flex flex-col scrollbar-hide">
             <QuestionManager
-              onCollapse={effectiveReadOnly ? undefined : () => setSidebarCollapsed(true)}
+              onCollapse={effectiveReadOnly ? undefined : handleCollapseClose}
               sessionId={sessionId}
               questions={session?.questions || {}}
               currentQuestion={session?.currentQuestion}
@@ -315,16 +349,8 @@ export default function AdminPage() {
               pendingEvent={null}
               readOnly={effectiveReadOnly}
               formOpen={showCenterForm}
-              onAddClick={effectiveReadOnly ? undefined : () => setShowCenterForm(true)}
-              onViewQuestion={effectiveReadOnly ? async (qId) => {
-                try {
-                  if (qId === '__summary__') {
-                    await update(ref(db, `sessions/${sessionId}`), { currentQuestion: null, currentMode: 'waiting' });
-                  } else {
-                    await update(ref(db, `sessions/${sessionId}`), { currentQuestion: qId, currentMode: 'poll' });
-                  }
-                } catch {}
-              } : undefined}
+              onAddClick={effectiveReadOnly ? undefined : handleShowCenterForm}
+              onViewQuestion={handleViewQuestion}
             />
 
             {!effectiveReadOnly && (
@@ -334,7 +360,7 @@ export default function AdminPage() {
                 totalTickets={totalTickets}
                 leaderboard={leaderboard}
                 modeOpen={modeOpen}
-                onToggle={() => setModeOpen(!modeOpen)}
+                onToggle={handleModeToggle}
                 onSwitchMode={switchMode}
               />
             )}
@@ -360,7 +386,7 @@ export default function AdminPage() {
                       <p className="text-slate-400 text-sm mt-1">질문을 작성하고 추가하세요</p>
                     </div>
                     <button
-                      onClick={() => setShowCenterForm(false)}
+                      onClick={handleHideCenterForm}
                       className="p-2 rounded-lg text-slate-300 hover:text-slate-600 hover:bg-slate-100 transition-all active:scale-90"
                       aria-label="취소"
                     >
@@ -369,7 +395,7 @@ export default function AdminPage() {
                   </div>
                   <QuestionForm
                     onSubmit={handleCenterFormSubmit}
-                    onCancel={() => setShowCenterForm(false)}
+                    onCancel={handleHideCenterForm}
                     error={null}
                   />
                 </div>
@@ -422,4 +448,3 @@ export default function AdminPage() {
     </div>
   );
 }
-
