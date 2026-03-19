@@ -3,6 +3,7 @@
     "sessions": {
       "$sessionId": {
         ".read": true,
+        ".write": true,
 
         "status": {
           ".write": true,
