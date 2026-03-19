@@ -1,8 +1,9 @@
 import { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useSessionList } from '@/features/session/api/useSessionList';
 import CreateSessionModal from './CreateSessionModal';
 import AdminApproval from './AdminApproval';
+import StatsView from './StatsView';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import { Plus, Loader2, Users, MessageSquare, LogOut, ChevronDown, ChevronUp } from 'lucide-react';
@@ -193,9 +194,15 @@ function UngroupedSessions({ sessions, onSelect, startIndex }) {
   );
 }
 
+const TABS = [
+  { key: 'classes', label: '내 클래스' },
+  { key: 'dashboard', label: '대시보드' },
+];
+
 export default function SessionDashboard({ onSelectSession, onLogout, adminUser, isMaster, pendingAdmins, pendingCount, approveAdmin, rejectAdmin }) {
   const { sessions, loading, refresh } = useSessionList();
   const [modalOpen, setModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('classes');
 
   // Group sessions by course
   const { courseGroups, ungrouped } = useMemo(() => {
@@ -245,7 +252,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
           <PinggoMascotSmall />
           <div>
             <h1 className="text-lg font-bold text-slate-900">Pinggo</h1>
-            <p className="text-slate-400 text-xs">내 클래스</p>
+            <p className="text-slate-400 text-xs">{TABS.find((t) => t.key === activeTab)?.label}</p>
           </div>
         </div>
         <div className="flex items-center gap-4">
@@ -272,54 +279,103 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
         </div>
       </div>
 
+      {/* Tab bar */}
+      <div className="bg-white border-b border-slate-100 px-6 py-2">
+        <div className="max-w-2xl mx-auto flex gap-1">
+          {TABS.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-colors ${
+                activeTab === tab.key
+                  ? 'bg-slate-900 text-white'
+                  : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Content */}
       <div className="flex-1 max-w-2xl mx-auto w-full px-6 py-6 space-y-3">
-        {/* Create button */}
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <Button
-            onClick={() => setModalOpen(true)}
-            variant="primary"
-            size="lg"
-            className="w-full"
-          >
-            <Plus size={20} />
-            새 클래스 만들기
-          </Button>
-        </motion.div>
+        <AnimatePresence mode="wait">
+          {activeTab === 'classes' ? (
+            <motion.div
+              key="classes"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="space-y-3"
+            >
+              {/* Create button */}
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Button
+                  onClick={() => setModalOpen(true)}
+                  variant="primary"
+                  size="lg"
+                  className="w-full"
+                >
+                  <Plus size={20} />
+                  새 클래스 만들기
+                </Button>
+              </motion.div>
 
-        {/* Session list */}
-        {loading ? (
-          <div className="flex items-center justify-center py-16 text-slate-400">
-            <Loader2 size={20} className="animate-spin mr-2" />
-            불러오는 중...
-          </div>
-        ) : sessions.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-slate-400 text-sm">아직 클래스가 없습니다</p>
-            <p className="text-slate-300 text-xs mt-1">첫 번째 클래스를 만들어보세요</p>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {courseGroups.map(([name, list], gi) => (
-              <CourseGroup
-                key={name}
-                name={name}
-                sessions={list}
-                onSelect={handleSelect}
-                startIndex={gi * 10}
-              />
-            ))}
-            <UngroupedSessions
-              sessions={ungrouped}
-              onSelect={handleSelect}
-              startIndex={courseGroups.length * 10}
-            />
-          </div>
-        )}
+              {/* Session list */}
+              {loading ? (
+                <div className="flex items-center justify-center py-16 text-slate-400">
+                  <Loader2 size={20} className="animate-spin mr-2" />
+                  불러오는 중...
+                </div>
+              ) : sessions.length === 0 ? (
+                <div className="text-center py-16">
+                  <p className="text-slate-400 text-sm">아직 클래스가 없습니다</p>
+                  <p className="text-slate-300 text-xs mt-1">첫 번째 클래스를 만들어보세요</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {courseGroups.map(([name, list], gi) => (
+                    <CourseGroup
+                      key={name}
+                      name={name}
+                      sessions={list}
+                      onSelect={handleSelect}
+                      startIndex={gi * 10}
+                    />
+                  ))}
+                  <UngroupedSessions
+                    sessions={ungrouped}
+                    onSelect={handleSelect}
+                    startIndex={courseGroups.length * 10}
+                  />
+                </div>
+              )}
+            </motion.div>
+          ) : (
+            <motion.div
+              key="dashboard"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+            >
+              {loading ? (
+                <div className="flex items-center justify-center py-16 text-slate-400">
+                  <Loader2 size={20} className="animate-spin mr-2" />
+                  불러오는 중...
+                </div>
+              ) : (
+                <StatsView sessions={sessions} />
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <CreateSessionModal
