@@ -83,7 +83,7 @@ export default function StudentBottomBar({ sessionId }) {
       />
 
       {/* Question modal */}
-      <Modal open={showQuestionInput} onClose={() => setShowQuestionInput(false)}>
+      <Modal open={showQuestionInput} onClose={() => setShowQuestionInput(false)} ariaLabel="익명 긴급 질문">
         <form onSubmit={submitUrgentQuestion} className="space-y-4">
           <div className="text-center space-y-1">
             <MessageCircle size={24} className="text-slate-900 mx-auto mb-2" />
@@ -94,6 +94,7 @@ export default function StudentBottomBar({ sessionId }) {
             value={questionText}
             onChange={(e) => setQuestionText(e.target.value)}
             placeholder="질문을 입력하세요..."
+            aria-label="긴급 질문 내용"
             maxLength={300}
             rows={3}
             className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 resize-none transition-all"
@@ -113,6 +114,8 @@ export default function StudentBottomBar({ sessionId }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
+            role="status"
+            aria-live="polite"
             className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-2.5 rounded-lg text-sm font-medium z-50 shadow-lg flex items-center gap-2"
           >
             <CheckCircle size={16} />
@@ -128,6 +131,7 @@ export default function StudentBottomBar({ sessionId }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 10 }}
+            role="alert"
             className="fixed bottom-20 left-1/2 -translate-x-1/2 bg-red-500 text-white px-4 py-2.5 rounded-lg text-sm font-medium z-50 shadow-lg flex items-center gap-2"
           >
             <AlertCircle size={16} />
@@ -141,6 +145,8 @@ export default function StudentBottomBar({ sessionId }) {
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 260, damping: 28, delay: 0.1 }}
+        role="toolbar"
+        aria-label="참여 도구"
         className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-30">
         <div className="max-w-lg mx-auto px-4 pt-2 pb-[calc(0.625rem+env(safe-area-inset-bottom))]">
         <ReactionBar sessionId={sessionId} />
@@ -149,6 +155,7 @@ export default function StudentBottomBar({ sessionId }) {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={toggleHand}
+              aria-pressed={isRaised}
               className={`h-11 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-1.5 ${
                 isRaised
                   ? 'bg-slate-900 text-white'

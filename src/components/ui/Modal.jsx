@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function Modal({ open, onClose, children, className = '' }) {
+export default function Modal({ open, onClose, children, className = '', ariaLabel }) {
   const dialogRef = useRef(null);
   const previousFocusRef = useRef(null);
 
@@ -74,6 +74,7 @@ export default function Modal({ open, onClose, children, className = '' }) {
             ref={dialogRef}
             role="dialog"
             aria-modal="true"
+            aria-label={ariaLabel}
             tabIndex={-1}
             onKeyDown={trapFocus}
             initial={{ opacity: 0, scale: 0.95, y: 8 }}

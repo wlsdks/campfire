@@ -90,6 +90,7 @@ export default function JoinPage({ sessionId, onJoin }) {
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
               placeholder="닉네임 입력"
+              aria-label="닉네임"
               maxLength={10}
               className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base text-center font-medium placeholder:text-slate-300 placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 focus:bg-white transition-all"
               autoFocus
@@ -104,6 +105,7 @@ export default function JoinPage({ sessionId, onJoin }) {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -4 }}
                 className="text-red-500 text-sm text-center font-medium"
+                role="alert"
               >
                 {error}
               </motion.p>

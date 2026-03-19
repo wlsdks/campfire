@@ -40,6 +40,7 @@ export default function StudentHeader({ sessionId }) {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+        aria-label="Pinggo 학생 헤더"
         className="fixed top-0 left-0 right-0 z-20 bg-white/80 backdrop-blur-sm border-b border-slate-200"
       >
         <div className="flex items-center justify-between px-6 py-4 max-w-lg mx-auto">

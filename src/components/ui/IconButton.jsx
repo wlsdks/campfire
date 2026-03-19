@@ -27,7 +27,7 @@ export default function IconButton({
     <motion.button
       whileTap={{ scale: 0.9 }}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-      className={`inline-flex items-center justify-center rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400/50 focus:ring-offset-1 ${sizes[size]} ${variants[variant]} ${className}`}
+      className={`inline-flex items-center justify-center rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400/50 focus-visible:ring-offset-1 ${sizes[size]} ${variants[variant]} ${className}`}
       aria-label={label}
       {...props}
     >

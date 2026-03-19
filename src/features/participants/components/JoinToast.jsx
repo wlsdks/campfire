@@ -27,7 +27,7 @@ export default function JoinToast({ sessionId }) {
   }, [sessionId]);
 
   return (
-    <div className="fixed top-4 right-4 space-y-2 z-50">
+    <div className="fixed top-4 right-4 space-y-2 z-50" role="log" aria-label="참여자 알림" aria-live="polite">
       <AnimatePresence>
         {toasts.map((toast) => (
           <motion.div

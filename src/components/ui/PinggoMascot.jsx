@@ -32,6 +32,7 @@ export default function PinggoMascot({ size = 'md', mood = 'happy' }) {
       height={px}
       viewBox="0 0 120 120"
       fill="none"
+      aria-hidden="true"
       animate={{ y: [0, -4, 0] }}
       transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
     >

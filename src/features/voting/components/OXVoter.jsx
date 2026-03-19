@@ -41,7 +41,7 @@ export default function OXVoter({ sessionId, questionId, disabled = false }) {
   }
 
   return (
-    <div className="flex gap-3 w-full">
+    <div className="flex gap-3 w-full" role="group" aria-label="O/X 선택">
       <motion.button
         initial={{ opacity: 0, x: -12 }}
         animate={{ opacity: 1, x: 0 }}

@@ -21,6 +21,8 @@ export default function ConnectionBanner() {
           className="fixed top-[57px] left-0 right-0 z-10"
         >
           <div
+            role="alert"
+            aria-live="assertive"
             className={`flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium ${
               showBanner === 'offline'
                 ? 'bg-slate-900 text-white'

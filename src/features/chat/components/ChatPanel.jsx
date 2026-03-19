@@ -158,6 +158,7 @@ export default function ChatPanel({ sessionId, senderName, senderType, open, onC
                   }
                 }}
                 placeholder="메시지를 입력하세요"
+                aria-label="채팅 메시지"
                 maxLength={MAX_LENGTH}
                 className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm placeholder:text-slate-300 focus:outline-none focus:border-slate-400 focus:bg-white transition-all"
               />

@@ -95,6 +95,7 @@ export default function TextInput({ sessionId, questionId, type = 'wordcloud', p
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder={placeholder || '입력해주세요'}
+          aria-label={type === 'qna' ? '질문 입력' : '단어 입력'}
           maxLength={maxLength}
           className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 pr-16 text-base placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 focus:bg-white transition-all"
           autoFocus
@@ -109,6 +110,7 @@ export default function TextInput({ sessionId, questionId, type = 'wordcloud', p
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
+            role="alert"
             className="text-red-500 text-sm text-center font-medium"
           >
             {error}

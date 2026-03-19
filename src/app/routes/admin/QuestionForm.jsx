@@ -101,6 +101,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
           value={title}
           onChange={(e) => { setTitle(e.target.value); setLocalError(null); }}
           placeholder="학생들에게 보여줄 질문을 입력하세요"
+          aria-label="질문 내용"
           rows={3}
           className={`${INPUT} resize-none text-base leading-relaxed`}
           autoFocus
@@ -133,6 +134,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
                       setLocalError(null);
                     }}
                     placeholder={`선택지 ${OPTION_LABELS[i]}`}
+                    aria-label={`선택지 ${OPTION_LABELS[i]}`}
                     className={`flex-1 ${INPUT} py-2.5`}
                   />
                   {options.length > 2 && (
@@ -299,6 +301,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
+            role="alert"
             className="text-red-500 text-sm flex items-center gap-1.5 pt-3"
           >
             <AlertCircle size={14} />

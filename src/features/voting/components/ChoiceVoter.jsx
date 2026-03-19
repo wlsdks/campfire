@@ -51,7 +51,7 @@ export default function ChoiceVoter({ sessionId, questionId, options, disabled =
   }
 
   return (
-    <div className="space-y-2.5 w-full">
+    <div className="space-y-2.5 w-full" role="group" aria-label="선택지">
       {options.map((option, i) => {
         const style = OPTION_STYLES[i % OPTION_STYLES.length];
         const isSelected = selected === option;

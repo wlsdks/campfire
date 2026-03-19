@@ -14,6 +14,7 @@ function PinggoMascot() {
       height="120"
       viewBox="0 0 120 120"
       fill="none"
+      aria-hidden="true"
       initial={{ y: 0 }}
       animate={{ y: [0, -6, 0] }}
       transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
@@ -266,6 +267,7 @@ function LoginView({ onLogin, onSwitchToRegister }) {
             onFocus={() => setFocusedField('username')}
             onBlur={() => setFocusedField(null)}
             placeholder="아이디"
+            aria-label="아이디"
             className={inputClass(!!error, focusedField === 'username')}
             autoComplete="username"
             autoFocus
@@ -277,6 +279,7 @@ function LoginView({ onLogin, onSwitchToRegister }) {
             onFocus={() => setFocusedField('password')}
             onBlur={() => setFocusedField(null)}
             placeholder="비밀번호"
+            aria-label="비밀번호"
             className={inputClass(!!error, focusedField === 'password')}
             autoComplete="current-password"
           />
@@ -288,6 +291,7 @@ function LoginView({ onLogin, onSwitchToRegister }) {
                 animate={{ opacity: 1, y: 0, height: 'auto' }}
                 exit={{ opacity: 0, y: -4, height: 0 }}
                 className="text-red-500 text-sm text-center flex items-center justify-center gap-1.5"
+                role="alert"
               >
                 <AlertCircle size={14} />
                 {error}
@@ -544,6 +548,7 @@ function RegisterView({ onLogin, onSwitchToLogin }) {
             onFocus={() => setFocusedField('username')}
             onBlur={() => setFocusedField(null)}
             placeholder="아이디"
+            aria-label="아이디"
             className={inputClass(!!error, focusedField === 'username')}
             autoComplete="username"
             autoFocus
@@ -555,6 +560,7 @@ function RegisterView({ onLogin, onSwitchToLogin }) {
             onFocus={() => setFocusedField('password')}
             onBlur={() => setFocusedField(null)}
             placeholder="비밀번호"
+            aria-label="비밀번호"
             className={inputClass(!!error, focusedField === 'password')}
             autoComplete="new-password"
           />
@@ -565,6 +571,7 @@ function RegisterView({ onLogin, onSwitchToLogin }) {
             onFocus={() => setFocusedField('displayName')}
             onBlur={() => setFocusedField(null)}
             placeholder="이름"
+            aria-label="이름"
             className={inputClass(!!error, focusedField === 'displayName')}
             autoComplete="name"
           />
@@ -576,6 +583,7 @@ function RegisterView({ onLogin, onSwitchToLogin }) {
                 animate={{ opacity: 1, y: 0, height: 'auto' }}
                 exit={{ opacity: 0, y: -4, height: 0 }}
                 className="text-red-500 text-sm text-center flex items-center justify-center gap-1.5"
+                role="alert"
               >
                 <AlertCircle size={14} />
                 {error}

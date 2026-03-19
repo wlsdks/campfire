@@ -15,6 +15,7 @@ function RightPanelAccordion({ title, count, defaultOpen = false, children }) {
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-3 py-2.5 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors"
+        aria-expanded={open}
       >
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-slate-600">{title}</span>
@@ -76,7 +77,7 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
             <span className="text-slate-500 text-xs font-medium">참여율</span>
             <span className="text-slate-600 text-xs font-semibold">{voted}/{total}명 투표</span>
           </div>
-          <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`참여율 ${pct}%`}>
             <div
               className="h-full bg-slate-700 rounded-full transition-all duration-500"
               style={{ width: `${pct}%` }}
@@ -141,7 +142,7 @@ function ReadOnlyRightSidebar({ session, participants, leaderboard, voteCounts }
           <span className="text-slate-500 text-xs font-medium">참여율</span>
           <span className="text-slate-600 text-xs font-semibold">{activeCount}/{allParticipants}명 활동</span>
         </div>
-        <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+        <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`참여율 ${pct}%`}>
           <div
             className="h-full bg-slate-500 rounded-full transition-all duration-500"
             style={{ width: `${pct}%` }}

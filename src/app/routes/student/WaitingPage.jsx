@@ -24,6 +24,7 @@ function WaitingMascot() {
       height="100"
       viewBox="0 0 120 120"
       fill="none"
+      aria-hidden="true"
       initial={{ opacity: 0, scale: 0.85 }}
       animate={{ opacity: 1, scale: 1, y: [0, -5, 0] }}
       transition={{

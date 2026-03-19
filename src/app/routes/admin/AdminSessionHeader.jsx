@@ -118,6 +118,8 @@ export default memo(function AdminSessionHeader({
           <button
             onClick={onChatToggle}
             className="flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all active:scale-95"
+            aria-label={chatOpen ? '채팅 닫기' : '채팅 열기'}
+            aria-pressed={chatOpen}
           >
             <MessageCircle size={20} />
             <span className="text-[10px] font-medium">채팅</span>
@@ -131,6 +133,8 @@ export default memo(function AdminSessionHeader({
               className={`flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg transition-all active:scale-95 ${
                 timerRunning ? 'text-slate-900' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
               }`}
+              aria-label={timerRunning ? '타이머 진행 중 - 설정 열기' : '타이머 설정'}
+              aria-expanded={timerOpen}
             >
               {timerRunning ? (
                 <TimerRing endTime={endTime} duration={duration} onExpire={onTimerStop} size="sm" />

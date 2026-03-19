@@ -116,6 +116,7 @@
 | 발표 모드 QR 오버레이 | 강사 | ✅ 완료 | 접이식 QR 오버레이 — 기본 축소(세션코드+참여자 수 pill), 클릭 시 확대(QR 180px+세션코드+링크복사+접속 수). Framer Motion 전환, stopPropagation으로 발표 종료 방지 |
 | 디자인 토큰 감사 | 전체 | ✅ 완료 | Anti-AI 체크리스트 기반 전수 조사. design-tokens.js 레시피를 실제 컴포넌트와 동기화, Avatar/Badge/Button의 indigo→slate 교체, Lottery 레인보우→슬레이트 모노크로매틱, 세팅중 배지 amber→slate, QuizEventBanner/Roulette/Leaderboard의 장식적 색상 제거. 허용: Radio 아이콘(indigo), BarChart 브랜드 그라데이션(indigo), 타이머 기능색(amber/red), 접속 상태(emerald) |
 | 성능 최적화 감사 | 전체 | ✅ 완료 | React.memo 14개 컴포넌트 적용, 훅 3개(useVotes/useParticipants/useScores) 파생값 useMemo/useCallback 메모이제이션, AdminPage 콜백 12개 useCallback 안정화, drawParticipants/studentUrl useMemo 적용 |
+| 접근성 감사 | 전체 | ✅ 완료 | aria-label: 모든 아이콘 전용 버튼(채팅, 타이머, 뒤로가기 등), 모든 input/textarea에 aria-label 추가. role 속성: progressbar(참여율 바), alert(에러 메시지), status(토스트), log(참여자 알림), toolbar(학생 하단바), dialog aria-label(모달). aria-expanded: 아코디언, 타이머 팝업. aria-pressed: 손들기, 채팅 토글. focus-visible: Button/IconButton에 focus→focus-visible로 변경(키보드 전용 포커스 링). aria-hidden: 장식용 SVG 마스코트 3곳. group role: 객관식/OX 선택지 그룹 |
 
 ---
 
