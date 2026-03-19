@@ -124,6 +124,7 @@
 | 성능 최적화 감사 | 전체 | ✅ 완료 | React.memo 14개 컴포넌트 적용, 훅 3개(useVotes/useParticipants/useScores) 파생값 useMemo/useCallback 메모이제이션, AdminPage 콜백 12개 useCallback 안정화, drawParticipants/studentUrl useMemo 적용 |
 | 접근성 감사 | 전체 | ✅ 완료 | aria-label: 모든 아이콘 전용 버튼(채팅, 타이머, 뒤로가기 등), 모든 input/textarea에 aria-label 추가. role 속성: progressbar(참여율 바), alert(에러 메시지), status(토스트), log(참여자 알림), toolbar(학생 하단바), dialog aria-label(모달). aria-expanded: 아코디언, 타이머 팝업. aria-pressed: 손들기, 채팅 토글. focus-visible: Button/IconButton에 focus→focus-visible로 변경(키보드 전용 포커스 링). aria-hidden: 장식용 SVG 마스코트 3곳. group role: 객관식/OX 선택지 그룹 |
 | 학생 입장 페이지 폴리시 | 학생 | ✅ 완료 | 390x844 모바일 최적화. 강의명 표시(Firebase에서 courseName 조회), 닉네임 2자 이상 유효성 검사 + 실시간 글자수 카운터(x/10), 에러 시 빨간 테두리 + 힌트 텍스트, 아바타 미리보기 height 애니메이션, 모바일 autoFocus 안정화(setTimeout), enterKeyHint="go", 키보드 가리지 않도록 pt-[20vh] 상단 배치, ArrowRight 아이콘으로 CTA 방향성 부여 |
+| PWA 매니페스트 | 학생 | ✅ 완료 | manifest.json + 서비스워커로 "홈 화면에 추가" 지원. 아이콘 4종(192/512 일반+마스코블), Apple 메타태그(apple-touch-icon, apple-mobile-web-app-capable, status-bar-style), theme-color #0F172A, 네트워크 우선+앱 셸 캐시 전략, 학생 화면에 설치 유도 배너(Chrome beforeinstallprompt + iOS 수동 안내) |
 
 ---
 

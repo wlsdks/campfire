@@ -6,6 +6,7 @@ import JoinPage from '@/app/routes/student/JoinPage';
 import VotePage from '@/app/routes/student/VotePage';
 import AdminPage from '@/app/routes/admin/AdminPage';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
+import InstallPrompt from '@/components/ui/InstallPrompt';
 import { db } from '@/lib/firebase';
 import { getNickname, getParticipantId, hasJoinedSession, markSessionJoined } from '@/lib/participant';
 
@@ -75,6 +76,7 @@ function App() {
         <Route path="/" element={
           <ErrorBoundary scope="student">
             <StudentRouter />
+            <InstallPrompt />
           </ErrorBoundary>
         } />
         <Route path="/admin" element={
