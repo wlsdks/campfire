@@ -31,7 +31,7 @@ function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, o
       style={style}
       {...(!readOnly ? { ...attributes, ...listeners } : {})}
       onClick={readOnly && onView ? () => onView(qId) : undefined}
-      className={`p-3.5 rounded-xl border transition-all touch-none ${
+      className={`p-3.5 rounded-xl border transition-all touch-none group ${
         isDragging ? 'shadow-lg opacity-80 scale-[1.03] bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-500 cursor-grabbing' :
         readOnly
           ? `bg-white dark:bg-slate-800 ${currentQuestion === qId ? 'border-slate-400 dark:border-slate-500 shadow-sm' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 cursor-pointer'}`
@@ -41,7 +41,7 @@ function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, o
       <div className="flex items-start gap-2">
         {/* Drag indicator */}
         {!readOnly && (
-          <div className="shrink-0 -ml-1 text-slate-200 dark:text-slate-600 pt-0.5">
+          <div className="shrink-0 -ml-1 text-slate-300 dark:text-slate-600 group-hover:text-slate-400 dark:group-hover:text-slate-500 transition-colors pt-0.5 cursor-grab active:cursor-grabbing">
             <GripVertical size={14} />
           </div>
         )}
