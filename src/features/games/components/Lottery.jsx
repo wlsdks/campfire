@@ -1,7 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Ticket, Loader2, Minus, Plus, Trophy } from 'lucide-react';
+import { Ticket, Loader2, Minus, Plus, Trophy, RotateCcw } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import Avatar from '@/components/ui/Avatar';
+
+const ConfettiBurst = lazy(() => import('@/features/quiz/components/ConfettiBurst'));
 
 const CARD_COLORS = [
   'bg-slate-900', 'bg-slate-700', 'bg-slate-800',
@@ -90,7 +93,7 @@ export default function Lottery({ participants, onResult }) {
       <div className="flex flex-col items-center justify-center gap-4 py-16">
         <Ticket size={36} className="text-slate-400" />
         <div className="text-center space-y-1">
-          <h3 className="text-xl font-bold text-slate-900">{hasTicketMode ? '보상 추첨' : '제비뽑기'}</h3>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">{hasTicketMode ? '보상 추첨' : '제비뽑기'}</h3>
           <p className="text-slate-400 text-sm">참여자가 접속하면 시작할 수 있어요</p>
         </div>
       </div>
@@ -135,15 +138,18 @@ export default function Lottery({ participants, onResult }) {
               key={winner.id}
               initial={{ rotateY: 180, opacity: 0, scale: 0.5 }}
               animate={{ rotateY: 0, opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, type: 'spring', stiffness: 200, damping: 20 }}
-              className={`w-32 h-40 ${CARD_COLORS[i % CARD_COLORS.length]} rounded-xl flex flex-col items-center justify-center shadow-md`}
+              transition={{ type: 'spring', stiffness: 300, damping: 25, delay: i * 0.05 }}
+              className={`w-36 h-44 ${CARD_COLORS[i % CARD_COLORS.length]} rounded-2xl flex flex-col items-center justify-center shadow-lg`}
               style={{ perspective: 1000 }}
             >
-              <Trophy size={28} className="text-white/80 mb-2" />
-              <div className="text-white font-bold text-base">{winner.nickname}</div>
-              <div className="text-white/50 text-xs mt-1">#{i + 1} 당첨</div>
+              {i === 0 && <Suspense fallback={null}><ConfettiBurst /></Suspense>}
+              <Avatar name={winner.nickname} size="md" />
+              <div className="text-white font-bold text-base mt-2">{winner.nickname}</div>
+              <span className="mt-1 px-2 py-0.5 bg-white/20 rounded-full text-white/90 text-[10px] font-bold">
+                #{i + 1} 당첨
+              </span>
               {hasTicketMode && (
-                <div className="text-white/60 text-xs mt-1">티켓 {winner.tickets || 0}장</div>
+                <div className="text-white/60 text-[10px] mt-1">티켓 {winner.tickets || 0}장</div>
               )}
             </motion.div>
           ))}
@@ -164,13 +170,21 @@ export default function Lottery({ participants, onResult }) {
         )}
       </div>
 
-      <Button onClick={draw} disabled={revealing || eligibleParticipants.length === 0} variant="primary" size="lg">
-        {revealing ? (
-          <span className="flex items-center gap-2"><Loader2 size={20} className="animate-spin" /> 추첨 중...</span>
-        ) : (
-          <span className="flex items-center gap-2"><Ticket size={20} /> {hasTicketMode ? '보상 추첨' : '추첨하기'}</span>
+      <div className="flex gap-3">
+        {winners.length > 0 && !revealing && (
+          <Button onClick={() => setWinners([])} variant="secondary" size="lg">
+            <RotateCcw size={18} />
+            초기화
+          </Button>
         )}
-      </Button>
+        <Button onClick={draw} disabled={revealing || eligibleParticipants.length === 0} variant="primary" size="lg">
+          {revealing ? (
+            <span className="flex items-center gap-2"><Loader2 size={20} className="animate-spin" /> 추첨 중...</span>
+          ) : (
+            <span className="flex items-center gap-2"><Ticket size={20} /> {winners.length > 0 ? '다시 추첨' : hasTicketMode ? '보상 추첨' : '추첨하기'}</span>
+          )}
+        </Button>
+      </div>
     </div>
   );
 }
