@@ -23,7 +23,7 @@ function MyRankCard({ rank, entry, total }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-      className="bg-white rounded-xl border border-slate-100 shadow-sm p-5"
+      className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm p-5"
     >
       {/* Rank number hero */}
       <div className="text-center mb-4">
@@ -32,7 +32,7 @@ function MyRankCard({ rank, entry, total }) {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 340, damping: 22, delay: 0.1 }}
         >
-          <span className="text-5xl font-bold text-slate-900 tabular-nums">{rank}</span>
+          <span className="text-5xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">{rank}</span>
           <span className="text-lg font-bold text-slate-400 ml-0.5">위</span>
         </motion.div>
         {total > 1 && (
@@ -85,15 +85,15 @@ function StickyMyRank({ rank, entry, total }) {
           transition={{ type: 'spring', stiffness: 300, damping: 26 }}
           className="fixed bottom-[120px] left-1/2 -translate-x-1/2 z-20 w-[calc(100%-2rem)] max-w-sm"
         >
-          <div className="bg-white rounded-xl border border-slate-200 shadow-md px-4 py-3 flex items-center gap-3">
-            <span className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-600 shrink-0">
+          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md px-4 py-3 flex items-center gap-3">
+            <span className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-sm font-bold text-slate-600 dark:text-slate-300 shrink-0">
               {rank}
             </span>
             <div className="flex-1 min-w-0">
-              <span className="text-sm font-medium text-slate-900 truncate block">{entry.nickname}</span>
+              <span className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate block">{entry.nickname}</span>
               <span className="text-xs text-slate-400">{entry.total}점</span>
             </div>
-            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-200 text-slate-600 shrink-0">나</span>
+            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 shrink-0">나</span>
           </div>
         </motion.div>
       )}
@@ -118,7 +118,7 @@ export default function LeaderboardPage({ sessionId }) {
   }, [leaderboard, participantId]);
 
   return (
-    <div className="min-h-dvh bg-slate-50 flex flex-col items-center p-4 pb-32 pt-16">
+    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center p-4 pb-32 pt-16">
       <StudentHeader sessionId={sessionId} />
 
       <div className="w-full max-w-sm space-y-5">
@@ -135,7 +135,7 @@ export default function LeaderboardPage({ sessionId }) {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-            className="bg-white rounded-xl border border-slate-100 shadow-sm p-4"
+            className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm p-4"
           >
             <TeamScoreboard teamScores={teamScores} title="팀 대항전" />
           </motion.div>

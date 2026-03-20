@@ -79,12 +79,12 @@ export default function QuizVoter({ sessionId, questionId, question, renderResul
 
   if (question?.revealedAt) {
     return (
-      <div className="bg-white rounded-xl border border-slate-100 p-6 text-center space-y-3">
+      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 p-6 text-center space-y-3">
         <Lock size={32} className="text-slate-400 mx-auto" />
         <div className="space-y-1">
-          <p className="text-slate-900 font-bold text-lg">정답이 공개되었습니다</p>
-          <p className="text-slate-500 text-sm">이번 라운드 응답은 마감되었습니다</p>
-          <p className="text-slate-700 font-medium">정답: {question.correctAnswer}</p>
+          <p className="text-slate-900 dark:text-slate-100 font-bold text-lg">정답이 공개되었습니다</p>
+          <p className="text-slate-500 dark:text-slate-400 text-sm">이번 라운드 응답은 마감되었습니다</p>
+          <p className="text-slate-700 dark:text-slate-200 font-medium">정답: {question.correctAnswer}</p>
         </div>
       </div>
     );

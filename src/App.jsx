@@ -2,6 +2,8 @@ import { onDisconnect, ref, set, serverTimestamp } from 'firebase/database';
 import { BrowserRouter, Routes, Route, useSearchParams } from 'react-router-dom';
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { Radio } from 'lucide-react';
+import { motion } from 'framer-motion';
+import PinggoMascot from '@/components/ui/PinggoMascot';
 import JoinPage from '@/app/routes/student/JoinPage';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import InstallPrompt from '@/components/ui/InstallPrompt';
@@ -47,11 +49,42 @@ function StudentRouter() {
 
   if (!sessionId) {
     return (
-      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
-        <div className="text-center space-y-3">
-          <div className="flex justify-center"><Radio size={28} className="text-indigo-500" /></div>
-          <p className="text-slate-400 text-base">세션 링크를 통해 접속해주세요</p>
-        </div>
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+          className="text-center space-y-5 max-w-xs"
+        >
+          <motion.div
+            initial={{ scale: 0.85, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 260, damping: 22, delay: 0.1 }}
+            className="flex justify-center"
+          >
+            <PinggoMascot size="lg" mood="waiting" />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: 0.25 }}
+            className="space-y-2"
+          >
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pinggo</h1>
+            <p className="text-slate-400 text-sm leading-relaxed">
+              강사가 공유한 링크 또는 QR코드를<br />통해 접속해주세요
+            </p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.45 }}
+            className="flex items-center justify-center gap-2"
+          >
+            <Radio size={14} className="text-indigo-500" />
+            <span className="text-xs text-slate-300 dark:text-slate-500">실시간 강의 참여 플랫폼</span>
+          </motion.div>
+        </motion.div>
       </div>
     );
   }

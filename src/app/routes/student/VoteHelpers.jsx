@@ -40,7 +40,7 @@ export function TimerExpiredOverlay() {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="absolute inset-0 bg-white/80 backdrop-blur-[2px] rounded-xl flex flex-col items-center justify-center gap-2"
+      className="absolute inset-0 bg-white/80 dark:bg-slate-800/80 backdrop-blur-[2px] rounded-xl flex flex-col items-center justify-center gap-2"
     >
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
@@ -54,7 +54,7 @@ export function TimerExpiredOverlay() {
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="text-lg font-bold text-slate-900"
+        className="text-lg font-bold text-slate-900 dark:text-slate-100"
       >
         시간이 종료되었습니다
       </motion.p>

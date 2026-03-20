@@ -44,16 +44,16 @@ function RankChange({ delta }) {
 }
 
 const PODIUM_STYLES = [
-  'bg-slate-900 text-white border-slate-900',
-  'bg-slate-100 text-slate-700 border-slate-200',
-  'bg-slate-50 text-slate-600 border-slate-200',
+  'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 border-slate-900 dark:border-slate-100',
+  'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-600',
+  'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600',
 ];
 
 /** Single leaderboard row — extracted for clarity. */
 function LeaderboardRow({ entry, rank, isHighlighted, isPodium, podiumIndex, rankDelta }) {
-  const podiumStyle = isPodium ? PODIUM_STYLES[podiumIndex] : 'bg-white border-slate-100';
+  const podiumStyle = isPodium ? PODIUM_STYLES[podiumIndex] : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700';
   const highlightStyle = isHighlighted && !isPodium
-    ? 'ring-2 ring-slate-900/20 border-slate-400 bg-slate-50'
+    ? 'ring-2 ring-slate-900/20 dark:ring-slate-400/30 border-slate-400 dark:border-slate-500 bg-slate-50 dark:bg-slate-700'
     : isHighlighted && isPodium
       ? 'ring-2 ring-white/30'
       : '';
@@ -75,7 +75,7 @@ function LeaderboardRow({ entry, rank, isHighlighted, isPodium, podiumIndex, ran
     >
       {/* Rank number / medal */}
       <span className={`w-6 text-center font-bold text-sm shrink-0 ${rank < 3 ? '' : 'text-slate-400'}`}>
-        {rank === 0 ? <Medal size={16} className="text-white mx-auto" /> : rank + 1}
+        {rank === 0 ? <Medal size={16} className="text-white dark:text-slate-900 mx-auto" /> : rank + 1}
       </span>
 
       <Avatar name={entry.nickname} size="sm" />
@@ -85,7 +85,7 @@ function LeaderboardRow({ entry, rank, isHighlighted, isPodium, podiumIndex, ran
           <span className="font-medium text-sm truncate">{entry.nickname}</span>
           {isHighlighted && (
             <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
-              rank === 0 ? 'bg-white/20 text-white' : 'bg-slate-200 text-slate-600'
+              rank === 0 ? 'bg-white/20 text-white dark:bg-slate-900/20 dark:text-slate-900' : 'bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-200'
             }`}>나</span>
           )}
         </div>
@@ -109,7 +109,7 @@ function LeaderboardRow({ entry, rank, isHighlighted, isPodium, podiumIndex, ran
       </div>
 
       <div className="text-right shrink-0">
-        <span className={`font-bold block ${rank === 0 ? 'text-white' : 'text-slate-900'}`}>
+        <span className={`font-bold block ${rank === 0 ? 'text-white dark:text-slate-900' : 'text-slate-900 dark:text-slate-100'}`}>
           <AnimatedScore value={entry.total} />
         </span>
         <AnimatePresence mode="popLayout">
@@ -163,9 +163,9 @@ export default memo(function Leaderboard({
   if (visible.length === 0) {
     return (
       <div className="text-center py-10 space-y-2">
-        <Trophy size={32} className="text-slate-200 mx-auto" />
+        <Trophy size={32} className="text-slate-200 dark:text-slate-600 mx-auto" />
         <p className="text-slate-400 text-sm">{emptyLabel}</p>
-        <p className="text-slate-300 text-xs">퀴즈에 정답을 맞히면 점수가 올라갑니다</p>
+        <p className="text-slate-300 dark:text-slate-500 text-xs">퀴즈에 정답을 맞히면 점수가 올라갑니다</p>
       </div>
     );
   }
@@ -180,7 +180,7 @@ export default memo(function Leaderboard({
           className="flex items-center gap-2 mb-4"
         >
           <Trophy size={20} className="text-slate-500" />
-          <h3 className="text-lg font-bold text-slate-900">{title}</h3>
+          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">{title}</h3>
         </motion.div>
       )}
 

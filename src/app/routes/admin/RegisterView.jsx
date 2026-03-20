@@ -9,12 +9,12 @@ import Button from '@/components/ui/Button';
 import PinggoMascot from '@/components/ui/PinggoMascot';
 
 const inputClass = (hasError, isFocused) =>
-  `w-full bg-slate-50 border-2 rounded-xl px-4 py-3.5 text-base placeholder:text-slate-300 focus:outline-none focus:bg-white transition-all duration-200 ${
+  `w-full bg-slate-50 dark:bg-slate-700 border-2 rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:bg-white dark:focus:bg-slate-600 transition-all duration-200 ${
     hasError
       ? 'border-red-300 focus:border-red-400 focus:shadow-[0_0_0_3px_rgba(239,68,68,0.1)]'
       : isFocused
         ? 'border-slate-400 shadow-[0_0_0_3px_rgba(15,23,42,0.06)]'
-        : 'border-slate-200'
+        : 'border-slate-200 dark:border-slate-600'
   }`;
 
 export default function RegisterView({ onLogin, onSwitchToLogin }) {
@@ -104,10 +104,10 @@ export default function RegisterView({ onLogin, onSwitchToLogin }) {
           <div className="text-center space-y-3">
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
               transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.2 }}
-              className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mx-auto">
-              <UserPlus size={24} className="text-slate-600" />
+              className="w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mx-auto">
+              <UserPlus size={24} className="text-slate-600 dark:text-slate-300" />
             </motion.div>
-            <h2 className="text-xl font-bold text-slate-900">가입 완료!</h2>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">가입 완료!</h2>
             <p className="text-slate-400 text-sm leading-relaxed">
               관리자 승인 후 이용 가능합니다.<br />잠시만 기다려주세요.
             </p>
@@ -134,7 +134,7 @@ export default function RegisterView({ onLogin, onSwitchToLogin }) {
         <motion.div className="text-center space-y-1"
           initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Pinggo</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pinggo</h1>
           <p className="text-slate-400 text-sm">관리자 회원가입</p>
         </motion.div>
 
@@ -181,7 +181,7 @@ export default function RegisterView({ onLogin, onSwitchToLogin }) {
           transition={{ duration: 0.4, delay: 0.6 }}>
           <button type="button" onClick={onSwitchToLogin}
             className="text-sm text-slate-400 hover:text-slate-600 transition-colors">
-            이미 계정이 있으신가요? <span className="font-medium text-slate-700">로그인</span>
+            이미 계정이 있으신가요? <span className="font-medium text-slate-700 dark:text-slate-200">로그인</span>
           </button>
         </motion.div>
       </Card>
