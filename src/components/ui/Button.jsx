@@ -23,7 +23,7 @@ const Button = forwardRef(function Button(
       ref={ref}
       whileTap={{ scale: disabled ? 1 : 0.97 }}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-      className={`inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${variants[variant]} ${sizes[size]} ${disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''} ${className}`}
+      className={`inline-flex items-center justify-center font-medium rounded-lg transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${variants[variant]} ${sizes[size]} ${disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : ''} ${className}`}
       disabled={disabled}
       {...props}
     >

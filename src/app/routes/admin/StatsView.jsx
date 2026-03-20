@@ -100,12 +100,12 @@ function RecentQuestions({ questions, loading, courseFilter }) {
     return <EmptyState title="최근 질문이 없습니다" description="질문을 만들고 수업을 진행해보세요" mascotSize="sm" mood="thinking" className="py-8" />;
   }
   return (
-    <motion.div variants={stagger.container} initial="initial" animate="animate" className="divide-y divide-slate-100 dark:divide-slate-700">
+    <motion.div variants={stagger.container} initial="initial" animate="animate" className="space-y-1">
       {filtered.map((q, i) => {
         const typeInfo = QUESTION_TYPE_MAP[q.type] || { label: q.type, icon: MessageSquare };
         const Icon = typeInfo.icon;
         return (
-          <motion.div key={`${q.sessionId}-${q.qId}-${i}`} variants={stagger.item} className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
+          <motion.div key={`${q.sessionId}-${q.qId}-${i}`} variants={stagger.item} className="flex items-center gap-3 py-2.5">
             <Icon size={16} className="text-slate-400 shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-sm text-slate-700 dark:text-slate-200 truncate">{q.title}</p>

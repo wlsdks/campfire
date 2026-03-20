@@ -69,14 +69,14 @@ export function DifficultQuestions({ questions, loading }) {
 
   return (
     <motion.div variants={stagger.container} initial="initial" animate="animate"
-      className="divide-y divide-slate-100 dark:divide-slate-700">
+      className="space-y-1">
       {questions.map((q, i) => {
         const typeInfo = QUESTION_TYPE_MAP[q.type] || { label: q.type, icon: MessageSquare };
         const Icon = typeInfo.icon;
         const isVeryHard = q.correctRate < 30;
         return (
           <motion.div key={`${q.sessionId}-${q.qId}-${i}`} variants={stagger.item}
-            className="flex items-center gap-3 py-3 first:pt-0 last:pb-0">
+            className="flex items-center gap-3 py-2.5">
             <div className="flex items-center justify-center w-6 h-6 shrink-0">
               {isVeryHard
                 ? <AlertTriangle size={14} className="text-slate-500 dark:text-slate-400" />

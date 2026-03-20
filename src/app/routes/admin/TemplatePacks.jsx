@@ -87,7 +87,7 @@ function PackCard({ pack, onImport, imported, index }) {
           >
             <div className="px-4 pb-4 bg-slate-50/50 dark:bg-slate-800/50">
               <p className="text-xs text-slate-400 py-2 leading-relaxed">{pack.description}</p>
-              <div className="divide-y divide-slate-100 dark:divide-slate-700/50">
+              <div className="space-y-0.5">
                 {pack.questions.map((q, i) => (
                   <PackQuestionPreview key={i} question={q} index={i} />
                 ))}

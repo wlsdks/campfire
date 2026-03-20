@@ -72,7 +72,7 @@ export default function WaitingPage({ sessionId, pendingEvent = null }) {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.35, ease: 'easeOut' }}
-              className="text-slate-900 dark:text-slate-100 text-xl font-bold tracking-tight"
+              className="text-slate-900 dark:text-slate-100 text-xl font-bold tracking-tight leading-tight"
             >
               {nickname}님, 준비 완료!
             </motion.p>

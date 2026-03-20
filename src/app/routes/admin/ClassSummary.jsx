@@ -78,7 +78,7 @@ export default memo(function ClassSummary({ session, participants, scores, leade
     <div className="w-full max-w-2xl mx-auto space-y-5 pb-8">
       <div className="flex items-start justify-between mb-2">
         <div>
-          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">클래스 요약</h2>
+          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 leading-tight">클래스 요약</h2>
           <p className="text-sm text-slate-400 mt-1">
             {session?.courseName} {session?.roundNumber}차
           </p>

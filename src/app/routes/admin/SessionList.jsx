@@ -40,7 +40,7 @@ function SessionRow({ session, onClick, onDelete, onDuplicate, index }) {
       <span className={`text-sm font-bold w-8 shrink-0 ${isSetting ? 'text-slate-500' : isActive || isReviewing ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400'}`}>
         {session.roundNumber ? `${session.roundNumber}차` : '—'}
       </span>
-      <span className="text-sm text-slate-500 dark:text-slate-400 w-32 max-sm:w-auto shrink-0">{formatDate(session.createdAt)}</span>
+      <span className="text-sm text-slate-500 dark:text-slate-400 w-32 max-sm:w-auto shrink-0 tabular-nums">{formatDate(session.createdAt)}</span>
       <div className="flex items-center gap-1 flex-1 text-xs text-slate-400 min-w-0 max-sm:hidden tabular-nums">
         <span className="font-medium text-slate-500 dark:text-slate-400">{session.participantCount}</span>명 접속
         <span className="mx-1">·</span>
@@ -111,7 +111,7 @@ export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, s
         className="w-full text-left px-5 py-6 transition-all hover:bg-slate-50/50 dark:hover:bg-slate-700/30 active:bg-slate-100/50 dark:active:bg-slate-700/50"
       >
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">{name}</h3>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 leading-tight">{name}</h3>
           <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ duration: 0.2 }}>
             <ChevronDown size={16} className="text-slate-400" />
           </motion.div>
@@ -147,7 +147,7 @@ export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, s
             transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
             className="overflow-hidden"
           >
-            <div className="border-t border-slate-100 dark:border-slate-700 divide-y divide-slate-50 dark:divide-slate-700/50">
+            <div className="border-t border-slate-100 dark:border-slate-700">
               {sessions.map((session, i) => (
                 <SessionRow key={session.id} session={session} onClick={() => onSelect(session)} onDelete={onDelete} onDuplicate={onDuplicate} index={startIndex + i} />
               ))}
@@ -168,7 +168,7 @@ export function UngroupedSessions({ sessions, onSelect, onDelete, onDuplicate, s
         <div className="px-5 py-3 border-b border-slate-100 dark:border-slate-700">
           <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">미분류 클래스</span>
         </div>
-        <div className="bg-slate-50/50 dark:bg-slate-800/50 divide-y divide-slate-100 dark:divide-slate-700/50">
+        <div className="bg-slate-50/50 dark:bg-slate-800/50">
           {sessions.map((session, i) => (
             <SessionRow key={session.id} session={session} onClick={() => onSelect(session)} onDelete={onDelete} onDuplicate={onDuplicate} index={startIndex + i} />
           ))}

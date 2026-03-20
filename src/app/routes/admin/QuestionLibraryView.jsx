@@ -170,7 +170,7 @@ export default function QuestionLibraryView({ adminUid }) {
       {/* Header actions */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">질문 보관함</h2>
+          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 leading-snug">질문 보관함</h2>
           <p className="text-slate-400 text-xs mt-0.5">
             {questions.length > 0 ? `${questions.length}개의 질문이 저장됨` : '자주 쓰는 질문을 저장하세요'}
           </p>
