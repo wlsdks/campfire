@@ -236,15 +236,15 @@ export default memo(function AdminSessionHeader({
             aria-label="참여자 패널 열기"
           >
             <Users size={18} />
-            <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">{count}</span>
+            <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 tabular-nums">{count}</span>
           </button>
         ) : (
-          <Badge variant="neutral" className="py-2 px-3.5 text-sm">
+          <Badge variant="neutral" className="py-2 px-3.5 text-sm tabular-nums">
             <Users size={16} className="mr-1.5" />
             {count}명
           </Badge>
         )}
-        {!isTablet && totalTickets > 0 && <Badge variant="neutral" className="py-2 px-3.5 text-sm">{totalTickets}장 티켓</Badge>}
+        {!isTablet && totalTickets > 0 && <Badge variant="neutral" className="py-2 px-3.5 text-sm tabular-nums">{totalTickets}장 티켓</Badge>}
         {!effectiveReadOnly && isSetting && (
           <Button onClick={onStartSession} variant="primary" size="sm">
             <Play size={isTablet ? 16 : 18} />
