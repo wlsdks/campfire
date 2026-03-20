@@ -8,7 +8,7 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTic
 
   useEffect(() => {
     if (modeOpen && containerRef.current) {
-      setTimeout(() => containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 250);
+      setTimeout(() => containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' }), 250);
     }
   }, [modeOpen]);
 

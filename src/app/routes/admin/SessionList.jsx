@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
-import { ChevronDown, ChevronUp, Copy, Trash2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown, Copy, Trash2 } from 'lucide-react';
 
 function formatDate(timestamp) {
   if (!timestamp) return '';
@@ -112,7 +112,9 @@ export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, s
       >
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">{name}</h3>
-          {collapsed ? <ChevronDown size={16} className="text-slate-400" /> : <ChevronUp size={16} className="text-slate-400" />}
+          <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ duration: 0.2 }}>
+            <ChevronDown size={16} className="text-slate-400" />
+          </motion.div>
         </div>
         <div className="flex items-center gap-6">
           <div>
@@ -136,13 +138,23 @@ export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, s
         </div>
       </button>
 
-      {!collapsed && sessions.length > 0 && (
-        <div className="border-t border-slate-100 dark:border-slate-700 divide-y divide-slate-50 dark:divide-slate-700/50">
-          {sessions.map((session, i) => (
-            <SessionRow key={session.id} session={session} onClick={() => onSelect(session)} onDelete={onDelete} onDuplicate={onDuplicate} index={startIndex + i} />
-          ))}
-        </div>
-      )}
+      <AnimatePresence>
+        {!collapsed && sessions.length > 0 && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="border-t border-slate-100 dark:border-slate-700 divide-y divide-slate-50 dark:divide-slate-700/50">
+              {sessions.map((session, i) => (
+                <SessionRow key={session.id} session={session} onClick={() => onSelect(session)} onDelete={onDelete} onDuplicate={onDuplicate} index={startIndex + i} />
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }
