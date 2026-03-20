@@ -1,12 +1,8 @@
-import { memo, useState } from 'react';
+import { memo, useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, ChevronDown, Swords, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
-/**
- * Accordion control for starting/stopping team battle.
- * Placed in the left sidebar below ModeSwitcher.
- */
 export default memo(function TeamBattleControl({
   isActive,
   teamCount,
@@ -16,14 +12,21 @@ export default memo(function TeamBattleControl({
 }) {
   const [open, setOpen] = useState(false);
   const [selectedCount, setSelectedCount] = useState(2);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (open && containerRef.current) {
+      setTimeout(() => containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 250);
+    }
+  }, [open]);
 
   const canStart = participantCount >= 4;
 
   return (
-    <div className="mt-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden shadow-sm">
+    <div ref={containerRef} className="mt-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden shadow-sm">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors"
       >
         <div className="flex items-center gap-2">
           <Swords size={16} className="text-slate-400" />

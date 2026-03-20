@@ -8,7 +8,13 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTic
 
   useEffect(() => {
     if (modeOpen && containerRef.current) {
-      setTimeout(() => containerRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' }), 250);
+      setTimeout(() => {
+        // Scroll parent container to absolute bottom
+        const scrollParent = containerRef.current.closest('[class*="overflow-y"]') || containerRef.current.parentElement;
+        if (scrollParent) {
+          scrollParent.scrollTo({ top: scrollParent.scrollHeight, behavior: 'smooth' });
+        }
+      }, 250);
     }
   }, [modeOpen]);
 
