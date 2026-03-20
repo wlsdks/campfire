@@ -167,38 +167,38 @@ export default function StudentBottomBar({ sessionId }) {
         transition={{ type: 'spring', stiffness: 260, damping: 28, delay: 0.1 }}
         role="toolbar"
         aria-label="참여 도구"
-        className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 z-30">
-        <div className="max-w-xl mx-auto px-6 pt-2 pb-[calc(0.625rem+env(safe-area-inset-bottom))]">
+        className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 z-30">
+        <div className="max-w-xl mx-auto px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
         <ReactionBar sessionId={sessionId} />
-        <div className="border-t border-slate-100 dark:border-slate-700 mt-2 pt-2">
-          <div className="grid grid-cols-4 gap-1.5">
+        <div className="mt-3 pt-3">
+          <div className="grid grid-cols-4 gap-2">
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={toggleHand}
               aria-pressed={isRaised}
-              className={`h-11 rounded-lg font-medium text-xs transition-all flex items-center justify-center gap-1 ${
+              className={`h-12 rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-1.5 ${
                 isRaised
                   ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
                   : 'bg-slate-50 text-slate-600 hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600'
               }`}
             >
-              <Hand size={15} />
+              <Hand size={18} />
               {isRaised ? '내리기' : '손들기'}
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowQuestionInput(true)}
-              className="h-11 rounded-lg bg-slate-50 text-slate-600 font-medium text-xs hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-1"
+              className="h-12 rounded-xl bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-1.5"
             >
-              <MessageCircle size={15} />
+              <MessageCircle size={18} />
               긴급
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={handleOpenQA}
-              className="h-11 rounded-lg bg-slate-50 text-slate-600 font-medium text-xs hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-1 relative"
+              className="h-12 rounded-xl bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-1.5 relative"
             >
-              <HelpCircle size={15} />
+              <HelpCircle size={18} />
               질문
               {hasNewQuestion && (
                 <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500" />
@@ -207,9 +207,9 @@ export default function StudentBottomBar({ sessionId }) {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={handleOpenChat}
-              className="h-11 rounded-lg bg-slate-50 text-slate-600 font-medium text-xs hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-1 relative"
+              className="h-12 rounded-xl bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-1.5 relative"
             >
-              <MessageSquare size={15} />
+              <MessageSquare size={18} />
               채팅
               {hasUnread && (
                 <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500" />
