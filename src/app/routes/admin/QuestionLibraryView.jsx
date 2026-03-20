@@ -6,6 +6,7 @@ import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
 import Toast from '@/components/ui/Toast';
 import QuestionForm from './QuestionForm';
+import TemplatePacks from './TemplatePacks';
 import { QUIZ_DEFAULTS } from '@/lib/quiz';
 import { QUESTION_TYPES } from '@/lib/question-types';
 import { useToast } from '@/hooks/useToast';
@@ -132,6 +133,25 @@ export default function QuestionLibraryView({ adminUid }) {
     return false;
   }
 
+  async function handleImportPack(packQuestions) {
+    let count = 0;
+    for (const q of packQuestions) {
+      const questionData = { type: q.type, title: q.title };
+      if (q.options) questionData.options = q.options;
+      if (q.correctAnswer) questionData.correctAnswer = q.correctAnswer;
+      if (q.type === 'quiz') {
+        questionData.points = q.points || QUIZ_DEFAULTS.points;
+        questionData.participationTickets = QUIZ_DEFAULTS.participationTickets;
+        questionData.correctBonusTickets = QUIZ_DEFAULTS.correctBonusTickets;
+        questionData.speedWindowMs = QUIZ_DEFAULTS.speedWindowMs;
+        questionData.maxSpeedBonus = QUIZ_DEFAULTS.maxSpeedBonus;
+      }
+      const id = await saveQuestion(questionData);
+      if (id) count++;
+    }
+    if (count > 0) showToast(`${count}개 질문이 보관함에 추가되었습니다`);
+  }
+
   async function handleDelete(qId) {
     const ok = await deleteQuestion(qId);
     if (ok) showToast('질문이 삭제되었습니다');
@@ -185,6 +205,9 @@ export default function QuestionLibraryView({ adminUid }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Template packs */}
+      <TemplatePacks onImportPack={handleImportPack} />
 
       {/* Search + filter (only show when there are questions) */}
       {questions.length > 0 && (

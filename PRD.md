@@ -59,6 +59,7 @@
 | 질문 순서 변경 | 강사 | ✅ 완료 | 위/아래 화살표로 질문 순서 조정, 강의 템플릿 편집에서도 동일 |
 | CSV 내보내기 | 강사 | ✅ 완료 | 완료 세션의 질문 결과(응답률/정답률/분포) 및 참여자별 응답(답변/점수/티켓) CSV 다운로드. BOM 포함 Excel 호환 |
 | 질문 보관함 | 강사 | ✅ 완료 | 자주 쓰는 질문을 보관함에 저장/재사용. 대시보드 "질문 보관함" 탭에서 새 질문 생성, 검색, 유형별 필터. 세션 내 질문에서 보관함으로 저장(BookmarkPlus), 보관함에서 세션으로 가져오기(ImportFromLibraryModal). Firebase path: questionLibrary/{adminUid}/{qId} |
+| 질문 템플릿 팩 | 강사 | ✅ 완료 | 바로 사용할 수 있는 사전 제작 질문 모음 5종(아이스브레이킹/수업 평가/팀빌딩/CS 기초 퀴즈/비판적 사고). 질문 보관함 탭 상단에 TemplatePacks 섹션 표시. 각 팩 5개 질문(10종 유형 혼합: choice/quiz/ox/wordcloud/qna/scale/debate/ranking/fillinblank). 아코디언 펼치기로 질문 미리보기(번호+유형아이콘+질문텍스트). "보관함에 추가" 원클릭으로 전체 팩 개인 라이브러리에 저장. 추가 완료 시 Check 아이콘 상태 전환. 저장된 질문은 ImportFromLibraryModal로 세션에 즉시 가져오기 가능. src/lib/template-packs.js(데이터) + src/app/routes/admin/TemplatePacks.jsx(UI). Firebase 추가 구조 불필요(기존 questionLibrary 활용) |
 | 실시간 투표 | 학생 | ✅ 완료 | 활성화된 질문에 실시간 참여 |
 | 투표 확인 애니메이션 | 학생 | ✅ 완료 | 투표 후 체크 애니메이션 + 선택한 답변 표시 |
 | 학생 실시간 결과 | 학생 | ✅ 완료 | 투표 후 객관식/OX 실시간 분포 미니 차트 (퀴즈 제외) |
