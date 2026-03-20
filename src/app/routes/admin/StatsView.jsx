@@ -233,15 +233,15 @@ export default function StatsView({ sessions }) {
   return (
     <div className="space-y-5">
       {/* Sub-tab switcher */}
-      <div className="flex gap-1">
+      <div className="flex gap-4 border-b border-slate-200 dark:border-slate-700">
         {SUB_TABS.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveSubTab(tab.key)}
-            className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all active:scale-[0.97] ${
+            className={`px-1 pb-2.5 text-sm font-medium transition-all border-b-2 -mb-px ${
               activeSubTab === tab.key
-                ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
+                ? 'border-slate-900 dark:border-slate-100 text-slate-900 dark:text-slate-100'
+                : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
             }`}
           >
             {tab.label}
