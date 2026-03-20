@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronRight, Download, Check, Snowflake, ClipboardList, Users, Code, Lightbulb, Package } from 'lucide-react';
+import { ChevronRight, Download, Check, Snowflake, ClipboardList, Users, Code, Lightbulb, Package } from 'lucide-react';
 import { TEMPLATE_PACKS } from '@/lib/template-packs';
 import { QUESTION_TYPES } from '@/lib/question-types';
 import Button from '@/components/ui/Button';
@@ -124,61 +124,23 @@ function PackCard({ pack, onImport, imported, index }) {
 
 export default function TemplatePacks({ onImportPack }) {
   const [imported, setImported] = useState(new Set());
-  const [sectionOpen, setSectionOpen] = useState(false);
-  const containerRef = useRef(null);
-
-  useEffect(() => {
-    if (sectionOpen && containerRef.current) {
-      setTimeout(() => {
-        const scrollParent = containerRef.current.closest('[class*="overflow"]');
-        if (scrollParent) {
-          scrollParent.scrollTo({ top: scrollParent.scrollHeight, behavior: 'smooth' });
-        }
-      }, 300);
-    }
-  }, [sectionOpen]);
-
   function handleImport(pack) {
     onImportPack(pack.questions);
     setImported((prev) => new Set(prev).add(pack.id));
   }
 
   return (
-    <div ref={containerRef} className="space-y-3">
-      <button
-        onClick={() => setSectionOpen(!sectionOpen)}
-        className="w-full flex items-center justify-between py-2 group"
-      >
-        <div className="flex items-center gap-2">
-          <Package size={14} className="text-slate-400" />
-          <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300">템플릿 팩</h3>
-          <span className="text-[11px] text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded-full">{TEMPLATE_PACKS.length}</span>
-        </div>
-        <motion.div
-          animate={{ rotate: sectionOpen ? 180 : 0 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-          className="text-slate-300 dark:text-slate-500"
-        >
-          <ChevronDown size={14} />
-        </motion.div>
-      </button>
-      <AnimatePresence>
-        {sectionOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-            className="overflow-hidden"
-          >
-            <div className="space-y-2.5">
-              {TEMPLATE_PACKS.map((pack, i) => (
-                <PackCard key={pack.id} pack={pack} onImport={handleImport} imported={imported.has(pack.id)} index={i} />
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <div className="space-y-3">
+      <div className="flex items-center gap-2 pt-2">
+        <Package size={14} className="text-slate-400" />
+        <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300">템플릿 팩</h3>
+        <span className="text-[11px] text-slate-300 dark:text-slate-500">바로 사용할 수 있는 질문 모음</span>
+      </div>
+      <div className="space-y-2.5">
+        {TEMPLATE_PACKS.map((pack, i) => (
+          <PackCard key={pack.id} pack={pack} onImport={handleImport} imported={imported.has(pack.id)} index={i} />
+        ))}
+      </div>
     </div>
   );
 }
