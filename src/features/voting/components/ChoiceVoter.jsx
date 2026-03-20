@@ -51,7 +51,7 @@ export default function ChoiceVoter({ sessionId, questionId, options, disabled =
   }
 
   return (
-    <div className="space-y-2.5 w-full" role="group" aria-label="선택지">
+    <div className="space-y-3 w-full" role="group" aria-label="선택지">
       {options.map((option, i) => {
         const style = OPTION_STYLES[i % OPTION_STYLES.length];
         const isSelected = selected === option;
@@ -73,9 +73,9 @@ export default function ChoiceVoter({ sessionId, questionId, options, disabled =
             whileTap={!hasSelection ? { scale: 0.97 } : undefined}
             onClick={() => handleVote(option)}
             disabled={hasSelection || disabled}
-            className={`w-full py-3.5 px-4 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${isSelected ? 'ring-2 ring-slate-400 border-slate-300 bg-slate-50 dark:bg-slate-700' : 'border-slate-200 dark:border-slate-700'} ${hasSelection && !isSelected ? 'cursor-not-allowed' : ''} transition-colors flex items-center gap-3`}
+            className={`w-full py-4 px-5 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${isSelected ? 'ring-2 ring-slate-400 border-slate-300 bg-slate-50 dark:bg-slate-700' : 'border-slate-200 dark:border-slate-700'} ${hasSelection && !isSelected ? 'cursor-not-allowed' : ''} transition-colors flex items-center gap-3.5`}
           >
-            <span className={`w-8 h-8 rounded-lg ${style.badge} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
+            <span className={`w-9 h-9 rounded-lg ${style.badge} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
               {style.letter}
             </span>
             <span className="text-left leading-snug">{option}</span>

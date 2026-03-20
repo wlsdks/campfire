@@ -114,7 +114,7 @@ export default function AdminPage() {
           <motion.div animate={{ width: s.sidebarCollapsed ? 0 : '28%', minWidth: s.sidebarCollapsed ? 0 : 280 }}
             transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
             className="border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden shrink-0 min-w-0 max-w-[460px] h-full">
-            <div className="min-w-[280px] p-5 overflow-y-auto h-full scrollbar-hide">{leftSidebarContent}</div>
+            <div className="min-w-[280px] p-6 overflow-y-auto h-full scrollbar-hide">{leftSidebarContent}</div>
           </motion.div>
         )}
 

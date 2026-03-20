@@ -140,7 +140,7 @@ export default function VotePage({ sessionId }) {
     <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center p-4 pb-36 pt-16">
       <StudentHeader sessionId={sessionId} />
 
-      <div className="w-full max-w-sm space-y-4">
+      <div className="w-full max-w-sm space-y-5">
           {/* Speed quiz banner */}
           {isSpeedQuiz && question?.type === 'quiz' && (
             <SpeedQuizBanner
@@ -170,10 +170,10 @@ export default function VotePage({ sessionId }) {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-            className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5"
+            className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6"
           >
             {questionProgress && (
-              <div className="flex items-center gap-2 mb-3">
+              <div className="flex items-center gap-2 mb-4">
                 <span className="text-xs font-medium text-slate-400">
                   질문 {questionProgress.current}/{questionProgress.total}
                 </span>
@@ -188,7 +188,7 @@ export default function VotePage({ sessionId }) {
               </div>
             )}
             <div className="flex items-start justify-between gap-3">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 leading-snug flex-1">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 leading-snug flex-1">
                 {question.title}
               </h2>
               <div className="flex items-center gap-1.5 shrink-0">

@@ -31,7 +31,7 @@ function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, o
       style={style}
       {...(!readOnly ? { ...attributes, ...listeners } : {})}
       onClick={readOnly && onView ? () => onView(qId) : undefined}
-      className={`p-3 rounded-xl border transition-all touch-none ${
+      className={`p-3.5 rounded-xl border transition-all touch-none ${
         isDragging ? 'shadow-lg opacity-80 scale-[1.03] bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-500 cursor-grabbing' :
         readOnly
           ? `bg-white dark:bg-slate-800 ${currentQuestion === qId ? 'border-slate-400 dark:border-slate-500 shadow-sm' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 cursor-pointer'}`
@@ -47,9 +47,9 @@ function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, o
         )}
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 mb-0.5">
-            <Icon size={12} className={!readOnly && isActive ? 'text-slate-700' : 'text-slate-400'} />
-            <span className={`text-xs font-medium ${!readOnly && isActive ? 'text-slate-700' : 'text-slate-400'}`}>
+          <div className="flex items-center gap-1.5 mb-1">
+            <Icon size={13} className={!readOnly && isActive ? 'text-slate-700' : 'text-slate-400'} />
+            <span className={`text-xs font-semibold ${!readOnly && isActive ? 'text-slate-700' : 'text-slate-400'}`}>
               {qType?.label}
             </span>
             {!readOnly && isActive && <Badge variant="primary">LIVE</Badge>}
@@ -143,7 +143,7 @@ export default memo(function QuestionList({
             transition={{ duration: 0.2, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="p-1.5 space-y-1.5">
+            <div className="p-2 space-y-2">
               {!readOnly && questionList.length > 1 ? (
                 <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                   <SortableContext items={ids} strategy={verticalListSortingStrategy}>
