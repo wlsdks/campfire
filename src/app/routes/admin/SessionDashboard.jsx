@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, lazy, Suspense } from 'react';
+import { useState, useMemo, useCallback, useRef, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSessionList } from '@/features/session/api/useSessionList';
 import CreateSessionModal from './CreateSessionModal';
@@ -34,6 +34,14 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
   const [statusFilter, setStatusFilter] = useState('all');
   const [duplicating, setDuplicating] = useState(false);
   const { toast, showToast } = useToast();
+  const contentRef = useRef(null);
+
+  const handleTabChange = useCallback((key) => {
+    setActiveTab(key);
+    if (contentRef.current) {
+      contentRef.current.scrollTo({ top: 0 });
+    }
+  }, []);
 
   const filteredSessions = useMemo(() => {
     let result = sessions;
@@ -123,20 +131,20 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
 
 
       {/* Content */}
-      <div className="flex-1 max-w-2xl mx-auto w-full px-6 max-sm:px-4 py-6 space-y-3">
+      <div ref={contentRef} className="flex-1 max-w-2xl mx-auto w-full px-6 max-sm:px-4 py-6 space-y-3 overflow-y-auto">
         {/* Tab bar */}
         <div className="flex gap-1 mb-2">
           {TABS.map((tab) => (
-            <button key={tab.key} onClick={() => setActiveTab(tab.key)}
+            <button key={tab.key} onClick={() => handleTabChange(tab.key)}
               className={`px-4 max-sm:px-3 py-1.5 text-sm font-medium rounded-lg transition-all active:scale-[0.97] whitespace-nowrap ${
                 activeTab === tab.key ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800'}`}>
               {tab.label}
             </button>
           ))}
         </div>
-        <AnimatePresence mode="wait">
+
           {activeTab === 'classes' && (
-            <motion.div key="classes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="space-y-3">
+            <motion.div key="classes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className="space-y-3">
               <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
                 <Button onClick={() => setModalOpen(true)} variant="primary" size="lg" className="w-full">
                   <Plus size={20} />새 클래스 만들기
@@ -194,7 +202,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
             </motion.div>
           )}
           {activeTab === 'history' && (
-            <motion.div key="history" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+            <motion.div key="history" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }}>
               {loading ? (
                 <div className="flex items-center justify-center py-16 text-slate-400"><Loader2 size={20} className="animate-spin mr-2" />불러오는 중...</div>
               ) : (
@@ -205,20 +213,19 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
             </motion.div>
           )}
           {activeTab === 'library' && (
-            <motion.div key="library" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+            <motion.div key="library" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }}>
               <Suspense fallback={<SuspenseFallback fullPage={false} />}>
                 <QuestionLibraryView adminUid={adminUser?.uid} />
               </Suspense>
             </motion.div>
           )}
           {activeTab === 'more' && (
-            <motion.div key="more" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
+            <motion.div key="more" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }}>
               <Suspense fallback={<SuspenseFallback fullPage={false} />}>
                 <MoreView adminUser={adminUser} sessions={sessions} />
               </Suspense>
             </motion.div>
           )}
-        </AnimatePresence>
       </div>
 
       <CreateSessionModal open={modalOpen} onClose={() => setModalOpen(false)} onCreated={handleCreated} sessions={sessions} />
