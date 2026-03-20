@@ -58,7 +58,7 @@ export default memo(function QACards({ sessionId, questionId, title }) {
       <div className="w-full max-w-4xl mx-auto">
         {/* Question header */}
         <div className="mb-6">
-          {title && <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-1">{title}</h2>}
+          {title && <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight leading-tight mb-1">{title}</h2>}
           <div className="flex items-center gap-3 text-sm text-slate-400">
             <span className="flex items-center gap-1">
               <Users size={14} />
