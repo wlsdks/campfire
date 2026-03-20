@@ -137,7 +137,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
           {TABS.map((tab) => (
             <button key={tab.key} onClick={() => handleTabChange(tab.key)}
               className={`px-4 max-sm:px-3 py-1.5 text-sm font-medium rounded-lg transition-all active:scale-[0.97] whitespace-nowrap ${
-                activeTab === tab.key ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800'}`}>
+                activeTab === tab.key ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-slate-500 border border-slate-200 dark:border-slate-700 hover:text-slate-700 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800'}`}>
               {tab.label}
             </button>
           ))}
