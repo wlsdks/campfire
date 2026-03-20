@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import EmptyState from '@/components/ui/EmptyState';
 import { MessageSquare, Users, Loader2 } from 'lucide-react';
@@ -13,6 +13,11 @@ const stagger = {
     animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } },
   },
 };
+
+const SUB_TABS = [
+  { key: 'overview', label: '개요' },
+  { key: 'questions', label: '질문 분석' },
+];
 
 function OverviewCards({ totalClasses, totalParticipants, avgActivity, courseCount }) {
   return (
@@ -78,16 +83,20 @@ function CoursePerformance({ courseData }) {
   );
 }
 
-function RecentQuestions({ questions, loading }) {
+function RecentQuestions({ questions, loading, courseFilter }) {
+  const filtered = courseFilter === 'all'
+    ? questions
+    : questions.filter((q) => (q.courseName || '미분류') === courseFilter);
+
   if (loading) {
     return <div className="flex items-center justify-center py-10 text-slate-400"><Loader2 size={16} className="animate-spin mr-2" /><span className="text-sm">질문 불러오는 중...</span></div>;
   }
-  if (questions.length === 0) {
+  if (filtered.length === 0) {
     return <EmptyState title="최근 질문이 없습니다" description="질문을 만들고 수업을 진행해보세요" mascotSize="sm" mood="thinking" className="py-8" />;
   }
   return (
     <motion.div variants={stagger.container} initial="initial" animate="animate" className="divide-y divide-slate-100 dark:divide-slate-700">
-      {questions.map((q, i) => {
+      {filtered.map((q, i) => {
         const typeInfo = QUESTION_TYPE_MAP[q.type] || { label: q.type, icon: MessageSquare };
         const Icon = typeInfo.icon;
         return (
@@ -108,7 +117,76 @@ function RecentQuestions({ questions, loading }) {
   );
 }
 
+function OverviewTab({ stats }) {
+  return (
+    <div className="space-y-8">
+      <OverviewCards
+        totalClasses={stats.totalClasses}
+        totalParticipants={stats.totalParticipants}
+        avgActivity={stats.avgActivity}
+        courseCount={stats.courseCount}
+      />
+      <div>
+        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">강의별 참여율 추이</h3>
+        <CoursePerformance courseData={stats.courseData} />
+      </div>
+    </div>
+  );
+}
+
+function QuestionsTab({ questions, difficultQuestions, questionsLoading, courseNames }) {
+  const [courseFilter, setCourseFilter] = useState('all');
+
+  return (
+    <div className="space-y-6">
+      {/* Course filter */}
+      {courseNames.length > 1 && (
+        <div className="flex gap-1 overflow-x-auto scrollbar-hide -mx-1 px-1 pb-1">
+          <button
+            onClick={() => setCourseFilter('all')}
+            className={`px-3 py-1 rounded-lg text-xs font-medium transition-all active:scale-[0.96] whitespace-nowrap shrink-0 ${
+              courseFilter === 'all'
+                ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
+                : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-600'
+            }`}
+          >
+            전체
+          </button>
+          {courseNames.map((name) => (
+            <button
+              key={name}
+              onClick={() => setCourseFilter(name)}
+              className={`px-3 py-1 rounded-lg text-xs font-medium transition-all active:scale-[0.96] whitespace-nowrap shrink-0 ${
+                courseFilter === name
+                  ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
+                  : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-600'
+              }`}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div>
+        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">가장 어려웠던 질문</h3>
+        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+          <DifficultQuestions questions={courseFilter === 'all' ? difficultQuestions : difficultQuestions.filter((q) => (q.courseName || '미분류') === courseFilter)} loading={questionsLoading} />
+        </div>
+      </div>
+      <div>
+        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">최근 질문</h3>
+        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+          <RecentQuestions questions={questions} loading={questionsLoading} courseFilter={courseFilter} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function StatsView({ sessions }) {
+  const [activeSubTab, setActiveSubTab] = useState('overview');
+
   const stats = useMemo(() => {
     if (!sessions || sessions.length === 0) {
       return { totalClasses: 0, totalParticipants: 0, avgActivity: 0, courseCount: 0, courseData: [] };
@@ -132,11 +210,18 @@ export default function StatsView({ sessions }) {
           name,
           rounds: list.length,
           totalParticipants: list.reduce((sum, s) => sum + s.participantCount, 0),
-          roundDetails: list.map((s) => ({ roundNumber: s.roundNumber || '—', activityRate: s.activityRate, participantCount: s.participantCount })),
+          roundDetails: list.map((s) => ({ roundNumber: s.roundNumber || '\u2014', activityRate: s.activityRate, participantCount: s.participantCount })),
         };
       })
       .sort((a, b) => b.totalParticipants - a.totalParticipants);
     return { totalClasses, totalParticipants, avgActivity, courseCount, courseData };
+  }, [sessions]);
+
+  const courseNames = useMemo(() => {
+    if (!sessions) return [];
+    const names = new Set();
+    sessions.forEach((s) => names.add(s.courseName || '미분류'));
+    return [...names].sort();
   }, [sessions]);
 
   const { questions, difficultQuestions, loading: questionsLoading } = useRecentQuestions(sessions);
@@ -146,24 +231,34 @@ export default function StatsView({ sessions }) {
   }
 
   return (
-    <div className="space-y-8">
-      <OverviewCards totalClasses={stats.totalClasses} totalParticipants={stats.totalParticipants} avgActivity={stats.avgActivity} courseCount={stats.courseCount} />
-      <div>
-        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">강의별 참여율 추이</h3>
-        <CoursePerformance courseData={stats.courseData} />
+    <div className="space-y-5">
+      {/* Sub-tab switcher */}
+      <div className="flex gap-1">
+        {SUB_TABS.map((tab) => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveSubTab(tab.key)}
+            className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all active:scale-[0.97] ${
+              activeSubTab === tab.key
+                ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
-      <div>
-        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">가장 어려웠던 질문</h3>
-        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
-          <DifficultQuestions questions={difficultQuestions} loading={questionsLoading} />
-        </div>
-      </div>
-      <div>
-        <h3 className="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">최근 질문</h3>
-        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
-          <RecentQuestions questions={questions} loading={questionsLoading} />
-        </div>
-      </div>
+
+      {/* Tab content */}
+      {activeSubTab === 'overview' && <OverviewTab stats={stats} />}
+      {activeSubTab === 'questions' && (
+        <QuestionsTab
+          questions={questions}
+          difficultQuestions={difficultQuestions}
+          questionsLoading={questionsLoading}
+          courseNames={courseNames}
+        />
+      )}
     </div>
   );
 }

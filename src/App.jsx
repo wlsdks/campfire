@@ -8,6 +8,7 @@ import InstallPrompt from '@/components/ui/InstallPrompt';
 import { SuspenseFallback } from '@/components/ui/Skeleton';
 import { db } from '@/lib/firebase';
 import { getNickname, getParticipantId, hasJoinedSession, markSessionJoined } from '@/lib/participant';
+import { useTheme } from '@/hooks/useTheme';
 
 const VotePage = lazy(() => import('@/app/routes/student/VotePage'));
 const AdminPage = lazy(() => import('@/app/routes/admin/AdminPage'));
@@ -76,6 +77,9 @@ function StudentRouter() {
 }
 
 function App() {
+  // Apply theme at app root so it's always active (not just on MoreView mount)
+  useTheme();
+
   return (
     <BrowserRouter>
       <Routes>

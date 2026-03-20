@@ -2,6 +2,8 @@
  * Pre-built question template packs for instructors.
  * Each pack contains 5 curated questions spanning multiple question types.
  * Designed for real classroom use: icebreakers, evaluations, discussions.
+ *
+ * icon: lucide-react icon name key — resolved in TemplatePacks component.
  */
 
 export const TEMPLATE_PACKS = [
@@ -9,7 +11,7 @@ export const TEMPLATE_PACKS = [
     id: 'icebreaker',
     name: '아이스브레이킹',
     description: '수업 시작 전 분위기를 풀어주는 5가지 질문',
-    emoji: '🧊',
+    icon: 'Snowflake',
     questions: [
       {
         type: 'scale',
@@ -40,7 +42,7 @@ export const TEMPLATE_PACKS = [
     id: 'class-eval',
     name: '수업 평가',
     description: '수업 만족도와 개선점을 파악하는 5가지 질문',
-    emoji: '📋',
+    icon: 'ClipboardList',
     questions: [
       {
         type: 'scale',
@@ -70,7 +72,7 @@ export const TEMPLATE_PACKS = [
     id: 'team-building',
     name: '팀빌딩',
     description: '팀원끼리 친해지는 재미있는 5가지 질문',
-    emoji: '🤝',
+    icon: 'Users',
     questions: [
       {
         type: 'choice',
@@ -102,7 +104,7 @@ export const TEMPLATE_PACKS = [
     id: 'cs-basics',
     name: 'CS 기초 퀴즈',
     description: '컴퓨터 과학 기초 지식을 점검하는 5가지 퀴즈',
-    emoji: '💻',
+    icon: 'Code',
     questions: [
       {
         type: 'quiz',
@@ -140,7 +142,7 @@ export const TEMPLATE_PACKS = [
     id: 'critical-thinking',
     name: '비판적 사고',
     description: '토론과 논리적 사고를 자극하는 5가지 질문',
-    emoji: '🧠',
+    icon: 'Lightbulb',
     questions: [
       {
         type: 'debate',
