@@ -33,7 +33,7 @@ function ElapsedTime({ startedAt, createdAt, status }) {
     <span className="inline-flex items-center gap-1 text-xs text-slate-400">
       <span className="text-slate-300">&middot;</span>
       <Clock size={12} className="text-slate-400" />
-      <span>{formatElapsed(elapsed)}</span>
+      <span className="tabular-nums">{formatElapsed(elapsed)}</span>
     </span>
   );
 }
@@ -161,7 +161,7 @@ export default memo(function AdminSessionHeader({
                 {!isTablet && <span className="text-slate-300">&middot;</span>}
                 <Layers size={12} className="text-slate-400" />
                 {questionProgress.current ? (
-                  <span>
+                  <span className="tabular-nums">
                     <span className="font-semibold text-slate-600 dark:text-slate-300">{questionProgress.current}</span>
                     <span className="text-slate-400 dark:text-slate-500">/{questionProgress.total}</span>
                   </span>
