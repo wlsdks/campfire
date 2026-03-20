@@ -1,7 +1,8 @@
-import { useState, useMemo, lazy, Suspense } from 'react';
+import { useState, useMemo, useCallback, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSessionList } from '@/features/session/api/useSessionList';
 import CreateSessionModal from './CreateSessionModal';
+import DeleteSessionModal from './DeleteSessionModal';
 import AdminApproval from './AdminApproval';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
@@ -22,8 +23,9 @@ const TABS = [
 ];
 
 export default function SessionDashboard({ onSelectSession, onLogout, adminUser, isMaster, pendingAdmins, pendingCount, approveAdmin, rejectAdmin }) {
-  const { sessions, loading, refresh } = useSessionList();
+  const { sessions, loading, refresh, deleteSession } = useSessionList();
   const [modalOpen, setModalOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
   const [activeTab, setActiveTab] = useState('classes');
 
   const { courseGroups, ungrouped } = useMemo(() => {
@@ -58,6 +60,10 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
     refresh();
     onSelectSession(sessionId, false);
   }
+
+  const handleDeleteRequest = useCallback((session) => {
+    setDeleteTarget(session);
+  }, []);
 
   return (
     <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col">
@@ -107,9 +113,9 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
               ) : (
                 <div className="space-y-2">
                   {courseGroups.map(([name, list], gi) => (
-                    <CourseGroup key={name} name={name} sessions={list} onSelect={handleSelect} startIndex={gi * 10} />
+                    <CourseGroup key={name} name={name} sessions={list} onSelect={handleSelect} onDelete={handleDeleteRequest} startIndex={gi * 10} />
                   ))}
-                  <UngroupedSessions sessions={ungrouped} onSelect={handleSelect} startIndex={courseGroups.length * 10} />
+                  <UngroupedSessions sessions={ungrouped} onSelect={handleSelect} onDelete={handleDeleteRequest} startIndex={courseGroups.length * 10} />
                 </div>
               )}
             </motion.div>
@@ -143,6 +149,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
       </div>
 
       <CreateSessionModal open={modalOpen} onClose={() => setModalOpen(false)} onCreated={handleCreated} sessions={sessions} />
+      <DeleteSessionModal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} session={deleteTarget} onConfirm={deleteSession} />
     </div>
   );
 }

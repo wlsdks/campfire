@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
 
 function formatDate(timestamp) {
   if (!timestamp) return '';
@@ -14,24 +14,29 @@ function formatDate(timestamp) {
   return `${month}/${day} ${ampm} ${h12}:${minutes}`;
 }
 
-function SessionRow({ session, onClick, index }) {
+function SessionRow({ session, onClick, onDelete, index }) {
   const isSetting = session.status === 'setting';
   const isActive = session.status === 'active';
   const isReviewing = session.status === 'reviewing';
 
+  function handleDelete(e) {
+    e.stopPropagation();
+    onDelete?.(session);
+  }
+
   return (
-    <motion.button
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.2, delay: index * 0.02 }}
+      className="w-full flex items-center gap-4 px-5 py-3.5 text-left transition-all hover:bg-slate-50 dark:hover:bg-slate-700/50 active:bg-slate-100 dark:active:bg-slate-700 group cursor-pointer"
       onClick={onClick}
-      className="w-full flex items-center gap-4 px-5 py-3.5 text-left transition-all hover:bg-slate-50 dark:hover:bg-slate-700/50 active:bg-slate-100 dark:active:bg-slate-700 group"
     >
       <span className={`text-sm font-bold w-8 shrink-0 ${isSetting ? 'text-slate-500' : isActive || isReviewing ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400'}`}>
         {session.roundNumber ? `${session.roundNumber}차` : '—'}
       </span>
       <span className="text-sm text-slate-500 dark:text-slate-400 w-32 shrink-0">{formatDate(session.createdAt)}</span>
-      <div className="flex items-center gap-1 flex-1 text-xs text-slate-400">
+      <div className="flex items-center gap-1 flex-1 text-xs text-slate-400 min-w-0">
         <span className="font-medium text-slate-500 dark:text-slate-400">{session.participantCount}</span>명 접속
         <span className="mx-1">·</span>
         <span className="font-medium text-slate-500 dark:text-slate-400">{session.activeCount || 0}</span>명 참여
@@ -53,11 +58,20 @@ function SessionRow({ session, onClick, index }) {
       ) : (
         <span className="text-xs text-slate-400 shrink-0">완료</span>
       )}
-    </motion.button>
+      {!isActive && (
+        <button
+          onClick={handleDelete}
+          className="shrink-0 p-1.5 rounded-lg text-slate-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all active:scale-90 max-sm:opacity-60"
+          aria-label="세션 삭제"
+        >
+          <Trash2 size={14} />
+        </button>
+      )}
+    </motion.div>
   );
 }
 
-export function CourseGroup({ name, sessions, onSelect, startIndex }) {
+export function CourseGroup({ name, sessions, onSelect, onDelete, startIndex }) {
   const [collapsed, setCollapsed] = useState(false);
 
   const stats = useMemo(() => {
@@ -108,7 +122,7 @@ export function CourseGroup({ name, sessions, onSelect, startIndex }) {
       {!collapsed && sessions.length > 0 && (
         <div className="border-t border-slate-100 dark:border-slate-700 divide-y divide-slate-50 dark:divide-slate-700/50">
           {sessions.map((session, i) => (
-            <SessionRow key={session.id} session={session} onClick={() => onSelect(session)} index={startIndex + i} />
+            <SessionRow key={session.id} session={session} onClick={() => onSelect(session)} onDelete={onDelete} index={startIndex + i} />
           ))}
         </div>
       )}
@@ -116,7 +130,7 @@ export function CourseGroup({ name, sessions, onSelect, startIndex }) {
   );
 }
 
-export function UngroupedSessions({ sessions, onSelect, startIndex }) {
+export function UngroupedSessions({ sessions, onSelect, onDelete, startIndex }) {
   if (sessions.length === 0) return null;
 
   return (
@@ -127,7 +141,7 @@ export function UngroupedSessions({ sessions, onSelect, startIndex }) {
         </div>
         <div className="bg-slate-50/50 dark:bg-slate-800/50 divide-y divide-slate-100 dark:divide-slate-700/50">
           {sessions.map((session, i) => (
-            <SessionRow key={session.id} session={session} onClick={() => onSelect(session)} index={startIndex + i} />
+            <SessionRow key={session.id} session={session} onClick={() => onSelect(session)} onDelete={onDelete} index={startIndex + i} />
           ))}
         </div>
       </div>

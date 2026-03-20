@@ -1,5 +1,5 @@
-import { ref, get } from 'firebase/database';
-import { useState, useEffect } from 'react';
+import { ref, get, remove } from 'firebase/database';
+import { useState, useEffect, useCallback } from 'react';
 import { db } from '@/lib/firebase';
 
 /**
@@ -74,5 +74,16 @@ export function useSessionList() {
     fetchSessions();
   }, []);
 
-  return { sessions, loading, refresh: fetchSessions };
+  const deleteSession = useCallback(async (sessionId) => {
+    try {
+      await remove(ref(db, `sessions/${sessionId}`));
+      setSessions((prev) => prev.filter((s) => s.id !== sessionId));
+      return true;
+    } catch (err) {
+      console.error('Failed to delete session:', err);
+      return false;
+    }
+  }, []);
+
+  return { sessions, loading, refresh: fetchSessions, deleteSession };
 }
