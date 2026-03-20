@@ -187,7 +187,7 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
                             key={i}
                             className={`text-xs px-2 py-0.5 rounded-md ${
                               q.correctAnswer === opt
-                                ? 'bg-slate-900 text-white'
+                                ? 'bg-orange-600 text-white'
                                 : 'bg-slate-50 text-slate-500'
                             }`}
                           >

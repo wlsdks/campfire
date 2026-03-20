@@ -33,7 +33,7 @@ export default function SessionSearchFilter({ searchQuery, onSearchChange, statu
           onBlur={() => setFocused(false)}
           placeholder="강의명으로 검색..."
           aria-label="세션 검색"
-          className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-9 py-2.5 text-sm placeholder:text-slate-300 dark:placeholder:text-slate-500 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-900/10 dark:focus:ring-slate-400/20 focus:border-slate-300 dark:focus:border-slate-600 transition-all"
+          className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-9 py-2.5 text-sm placeholder:text-slate-300 dark:placeholder:text-slate-500 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-orange-500/20 dark:focus:ring-orange-400/20 focus:border-orange-500 dark:focus:border-slate-600 transition-all"
         />
         <AnimatePresence>
           {searchQuery && (
@@ -63,7 +63,7 @@ export default function SessionSearchFilter({ searchQuery, onSearchChange, statu
             onClick={() => onStatusChange(filter.key)}
             className={`shrink-0 px-3 py-1 text-xs font-medium rounded-lg transition-all active:scale-[0.96] ${
               statusFilter === filter.key
-                ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
+                ? 'bg-orange-600 text-white dark:bg-orange-500'
                 : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50'
             }`}
           >

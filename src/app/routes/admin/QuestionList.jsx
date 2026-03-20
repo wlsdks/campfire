@@ -66,18 +66,18 @@ function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, o
         {!readOnly && (
           <div className="flex gap-1 shrink-0" onPointerDown={stopDrag}>
             {!isActive ? (
-              <button onClick={() => onActivate(qId)} className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 dark:bg-slate-600 dark:hover:bg-slate-500 text-white transition-all active:scale-90" aria-label="질문 활성화">
+              <button onClick={() => onActivate(qId)} className="p-1.5 rounded-md bg-orange-600 hover:bg-orange-700 dark:bg-orange-600 dark:hover:bg-orange-500 text-white transition-all active:scale-90" aria-label="질문 활성화">
                 <Play size={12} />
               </button>
             ) : (
               <>
                 {isQuiz && !q.revealedAt && (
-                  <button onClick={() => onReveal(qId)} className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 dark:bg-slate-600 dark:hover:bg-slate-500 text-white transition-all active:scale-90" aria-label="정답 공개">
+                  <button onClick={() => onReveal(qId)} className="p-1.5 rounded-md bg-orange-600 hover:bg-orange-700 dark:bg-orange-600 dark:hover:bg-orange-500 text-white transition-all active:scale-90" aria-label="정답 공개">
                     <Check size={12} />
                   </button>
                 )}
                 {isQuiz && q.revealedAt && (
-                  <button onClick={onShowLeaderboard} className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 dark:bg-slate-600 dark:hover:bg-slate-500 text-white transition-all active:scale-90" aria-label="리더보드 보기">
+                  <button onClick={onShowLeaderboard} className="p-1.5 rounded-md bg-orange-600 hover:bg-orange-700 dark:bg-orange-600 dark:hover:bg-orange-500 text-white transition-all active:scale-90" aria-label="리더보드 보기">
                     <Trophy size={12} />
                   </button>
                 )}

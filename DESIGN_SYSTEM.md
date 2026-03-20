@@ -40,10 +40,12 @@ AI가 생성한 것처럼 보이면 안 됨. 토스, Linear, Notion처럼 절제
 ### 브랜드 & 기본
 | 용도 | 색상 | Tailwind | Hex |
 |------|------|----------|-----|
-| CTA / Primary | slate-900 | `bg-slate-900` | `#0F172A` |
-| CTA hover | slate-800 | `hover:bg-slate-800` | `#1E293B` |
-| 브랜드 아이콘 | indigo-600 | -- | `#4F46E5` |
-| Input focus ring | -- | `focus:ring-slate-900/10` | -- |
+| CTA / Primary | orange-600 | `bg-orange-600` | `#EA580C` |
+| CTA hover | orange-700 | `hover:bg-orange-700` | `#C2410C` |
+| CTA dark mode | orange-500 | `dark:bg-orange-500` | `#F97316` |
+| 브랜드 아이콘 | orange-600 | -- | `#EA580C` |
+| Input focus ring | -- | `focus:ring-orange-500/20` | -- |
+| Active/selected states | orange-600 | `bg-orange-600` | `#EA580C` |
 
 ### 배경 & 표면
 | 용도 | Tailwind | Hex |
@@ -76,14 +78,14 @@ AI가 생성한 것처럼 보이면 안 됨. 토스, Linear, Notion처럼 절제
 | 경고/타이머 | `amber-500` | `#F59E0B` |
 | 에러/위험 | `red-500` | `#EF4444` |
 
-### 차트 색상 (브랜드 예외)
+### 차트 색상 (브랜드)
 | 용도 | Tailwind | Hex |
 |------|----------|-----|
-| 바 차트 1 (정답/상위) | indigo-600 | `#4F46E5` |
-| 바 차트 2 | indigo-400 | `#818CF8` |
-| 바 차트 3 | indigo-300 | `#A5B4FC` |
+| 바 차트 1 (정답/상위) | orange-600 | `#EA580C` |
+| 바 차트 2 | orange-400 | `#FB923C` |
+| 바 차트 3 | orange-300 | `#FDBA74` |
 | 오답/비활성 바 | slate-300 | `#CBD5E1` |
-| OX - O | indigo-600 | `#4F46E5` |
+| OX - O | orange-600 | `#EA580C` |
 | OX - X | slate-400 | `#94A3B8` |
 
 ---
@@ -106,10 +108,10 @@ AI가 생성한 것처럼 보이면 안 됨. 토스, Linear, Notion처럼 절제
 | 보조 텍스트 | `text-slate-600` | `text-slate-300` | `dark:text-slate-300` |
 | 흐린 텍스트 | `text-slate-400` | `text-slate-400` | (동일) |
 | hover 배경 | `bg-slate-50` | `bg-slate-700` | `dark:hover:bg-slate-700` |
-| CTA 버튼 | `bg-slate-900` | `bg-slate-100 text-slate-900` | `dark:bg-slate-100 dark:text-slate-900` |
+| CTA 버튼 | `bg-orange-600` | `bg-orange-500 text-white` | `dark:bg-orange-500` |
 | Input 배경 | `bg-white` | `bg-slate-700` | `dark:bg-slate-700` |
 | 스크롤바 thumb | `#CBD5E1` | `#334155` | CSS `.dark ::-webkit-scrollbar-thumb` |
-| focus-visible | indigo-600 | indigo-400 | CSS `.dark :focus-visible` |
+| focus-visible | orange-600 | orange-400 | CSS `.dark :focus-visible` |
 
 ### 다크 모드 CSS (index.css)
 ```css
@@ -121,7 +123,7 @@ html.dark {
   color-scheme: dark;
 }
 .dark ::-webkit-scrollbar-thumb { background: #334155; }
-.dark :focus-visible { outline-color: #818CF8; }
+.dark :focus-visible { outline-color: #FB923C; }
 ```
 
 ### 적용 범위
@@ -222,7 +224,7 @@ font-family: 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', system
 전환: transition-all
 프레스: active:scale-[0.97]
 포커스: focus-visible:ring-2 focus-visible:ring-offset-2
-다크 Primary: dark:bg-slate-100 dark:text-slate-900
+다크 Primary: dark:bg-orange-500 dark:hover:bg-orange-400 text-white
 다크 Secondary: dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600
 다크 Ghost: dark:hover:bg-slate-700 dark:text-slate-300
 다크 Danger: (동일)
@@ -233,7 +235,7 @@ font-family: 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', system
 패딩: px-4 py-3
 모서리: rounded-lg (8px) / rounded-xl (12px, textarea)
 테두리: border border-slate-200
-포커스: focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400
+포커스: focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500
 placeholder: text-slate-400
 다크: dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100
 ```
@@ -502,13 +504,13 @@ cardInteractive: 'bg-white rounded-xl border border-slate-200 hover:border-slate
 
 // Buttons
 btnBase:      'font-medium rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.97]'
-btnPrimary:   'bg-slate-900 hover:bg-slate-800 text-white focus-visible:ring-slate-400'
+btnPrimary:   'bg-orange-600 hover:bg-orange-700 text-white focus-visible:ring-orange-400'  // renders as Pinggo Teal via @theme
 btnSecondary: 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 focus-visible:ring-slate-300'
 btnGhost:     'hover:bg-slate-100 text-slate-600 focus-visible:ring-slate-300'
 btnDanger:    'bg-red-500 hover:bg-red-600 text-white focus-visible:ring-red-400'
 
 // Inputs
-input:      'w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 transition-all'
+input:      'w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all'
 inputError: 'border-red-400 focus:ring-red-500/20 focus:border-red-500'
 
 // Badges

@@ -58,7 +58,7 @@ export default function BetSelector({ onSelect }) {
               disabled={selected !== null}
               className={`w-full flex items-center gap-4 px-4 py-4 rounded-xl border transition-all ${
                 isSelected
-                  ? 'bg-slate-900 text-white border-slate-900'
+                  ? 'bg-orange-600 text-white border-orange-600'
                   : 'bg-white text-slate-800 border-slate-200 hover:bg-slate-50'
               } ${isDisabled ? 'cursor-not-allowed' : ''}`}
             >

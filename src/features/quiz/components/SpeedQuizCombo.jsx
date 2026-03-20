@@ -28,9 +28,9 @@ export default memo(function SpeedQuizCombo({ streak = 0 }) {
             transition={{ type: 'spring', stiffness: 500, damping: 18 }}
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border shadow-sm ${
               combo.level >= 3
-                ? 'bg-slate-900 text-white border-slate-800'
+                ? 'bg-orange-600 text-white border-orange-700'
                 : combo.level >= 2
-                  ? 'bg-slate-800 text-white border-slate-700'
+                  ? 'bg-orange-700 text-white border-orange-800'
                   : 'bg-white text-slate-700 border-slate-200'
             }`}
           >

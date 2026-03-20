@@ -57,7 +57,7 @@ export default function StudentHeader({ sessionId }) {
       >
         <div className="flex items-center justify-between px-6 py-4 max-w-lg mx-auto">
           <div className="flex items-center gap-2">
-            <Radio size={18} className="text-indigo-600" />
+            <Radio size={18} className="text-orange-600" />
             <span className="font-bold text-lg text-slate-900 dark:text-slate-100">Pinggo</span>
           </div>
 

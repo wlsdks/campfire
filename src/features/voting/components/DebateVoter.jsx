@@ -126,12 +126,12 @@ export default function DebateVoter({ sessionId, questionId, disabled = false })
           disabled={disabled}
           className={`flex-1 py-6 rounded-xl border transition-all flex flex-col items-center gap-1.5 ${
             side === 'for'
-              ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
+              ? 'bg-orange-600 text-white border-orange-600 shadow-sm'
               : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-600'
           } ${disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
         >
           <span className="text-3xl font-black">찬성</span>
-          <span className={`text-xs font-medium ${side === 'for' ? 'text-slate-300' : 'text-slate-400'}`}>동의합니다</span>
+          <span className={`text-xs font-medium ${side === 'for' ? 'text-orange-200' : 'text-slate-400'}`}>동의합니다</span>
         </motion.button>
         <motion.button
           whileTap={{ scale: 0.95 }}
@@ -139,7 +139,7 @@ export default function DebateVoter({ sessionId, questionId, disabled = false })
           disabled={disabled}
           className={`flex-1 py-6 rounded-xl border transition-all flex flex-col items-center gap-1.5 ${
             side === 'against'
-              ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
+              ? 'bg-orange-600 text-white border-orange-600 shadow-sm'
               : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-600'
           } ${disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
         >
@@ -178,7 +178,7 @@ export default function DebateVoter({ sessionId, questionId, disabled = false })
               whileTap={{ scale: 0.97 }}
               onClick={handleSubmit}
               disabled={disabled || submitting}
-              className="w-full py-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium text-base transition-colors disabled:opacity-50 active:scale-[0.97]"
+              className="w-full py-3 rounded-lg bg-orange-600 hover:bg-orange-700 text-white font-medium text-base transition-colors disabled:opacity-50 active:scale-[0.97]"
             >
               {submitting ? '제출 중...' : '제출하기'}
             </motion.button>

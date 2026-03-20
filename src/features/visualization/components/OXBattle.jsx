@@ -18,7 +18,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
     <div className="w-full max-w-xl mx-auto space-y-6">
       {/* Split display */}
       <div className="flex items-center justify-between text-center">
-        <div className={`flex-1 space-y-2 py-4 rounded-xl transition-all ${oCorrect ? 'bg-indigo-50/50 ring-2 ring-indigo-500/30' : ''}`}>
+        <div className={`flex-1 space-y-2 py-4 rounded-xl transition-all ${oCorrect ? 'bg-orange-50/50 ring-2 ring-orange-500/30' : ''}`}>
           <div className="relative inline-block">
             <motion.div
               key={oCount}
@@ -26,8 +26,8 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
               animate={{ scale: 1 }}
               className={`text-7xl font-black ${
                 revealed
-                  ? oCorrect ? 'text-indigo-600' : 'text-slate-300'
-                  : oWinning ? 'text-indigo-600' : 'text-indigo-400'
+                  ? oCorrect ? 'text-orange-600' : 'text-slate-300'
+                  : oWinning ? 'text-orange-600' : 'text-orange-400'
               }`}
             >
               O
@@ -36,7 +36,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
               <motion.span
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="absolute -top-1 -right-3 flex items-center justify-center w-6 h-6 rounded-full bg-indigo-600 text-white"
+                className="absolute -top-1 -right-3 flex items-center justify-center w-6 h-6 rounded-full bg-orange-600 text-white"
               >
                 <Check size={14} strokeWidth={3} />
               </motion.span>
@@ -46,7 +46,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
             key={`o-${oCount}`}
             initial={{ scale: 1.15 }}
             animate={{ scale: 1 }}
-            className={`text-3xl font-bold ${oCorrect ? 'text-indigo-700 dark:text-indigo-400' : 'text-slate-900 dark:text-slate-100'}`}
+            className={`text-3xl font-bold ${oCorrect ? 'text-orange-700 dark:text-orange-400' : 'text-slate-900 dark:text-slate-100'}`}
           >
             {oCount}
           </motion.div>
@@ -99,7 +99,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
           <motion.div
             animate={{ width: `${oPct}%` }}
             transition={{ type: 'spring', stiffness: 60, damping: 22 }}
-            className="bg-indigo-500 h-full rounded-l-full"
+            className="bg-orange-500 h-full rounded-l-full"
           />
           <motion.div
             animate={{ width: `${xPct}%` }}
@@ -108,7 +108,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
           />
         </div>
         <div className="flex justify-between text-base font-bold">
-          <span className="text-indigo-600">{Math.round(oPct)}%</span>
+          <span className="text-orange-600">{Math.round(oPct)}%</span>
           <span className="text-slate-300 text-sm">총 {totalVotes}명</span>
           <span className="text-slate-600 dark:text-slate-300">{Math.round(xPct)}%</span>
         </div>

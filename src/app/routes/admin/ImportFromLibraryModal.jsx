@@ -21,7 +21,7 @@ function PickableCard({ question, selected, onToggle }) {
     >
       <div className="flex items-start gap-2.5">
         <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
-          selected ? 'bg-slate-900 border-slate-900' : 'border-slate-300'
+          selected ? 'bg-orange-600 border-orange-600' : 'border-slate-300'
         }`}>
           {selected && <Check size={12} className="text-white" />}
         </div>
@@ -38,7 +38,7 @@ function PickableCard({ question, selected, onToggle }) {
                   key={i}
                   className={`text-[11px] px-1.5 py-0.5 rounded-md ${
                     question.correctAnswer === opt
-                      ? 'bg-slate-900 text-white'
+                      ? 'bg-orange-600 text-white'
                       : 'bg-slate-50 text-slate-500'
                   }`}
                 >
@@ -54,7 +54,7 @@ function PickableCard({ question, selected, onToggle }) {
                   key={v}
                   className={`text-[11px] px-2 py-0.5 rounded-md font-semibold ${
                     question.correctAnswer === v
-                      ? 'bg-slate-900 text-white'
+                      ? 'bg-orange-600 text-white'
                       : 'bg-slate-50 text-slate-400'
                   }`}
                 >

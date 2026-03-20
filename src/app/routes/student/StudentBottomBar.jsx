@@ -117,7 +117,7 @@ export default function StudentBottomBar({ sessionId }) {
             aria-label="긴급 질문 내용"
             maxLength={300}
             rows={3}
-            className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-4 py-3 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 dark:focus:ring-slate-400/20 focus:border-slate-400 resize-none transition-all"
+            className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-4 py-3 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 dark:focus:ring-orange-400/20 focus:border-orange-500 resize-none transition-all"
             autoFocus
           />
           <Button type="submit" variant="primary" size="lg" disabled={!questionText.trim()} className="w-full">
@@ -178,7 +178,7 @@ export default function StudentBottomBar({ sessionId }) {
               aria-pressed={isRaised}
               className={`h-11 rounded-lg font-medium text-xs transition-all flex items-center justify-center gap-1 ${
                 isRaised
-                  ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
+                  ? 'bg-orange-600 text-white dark:bg-orange-500'
                   : 'bg-slate-50 text-slate-600 hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600'
               }`}
             >

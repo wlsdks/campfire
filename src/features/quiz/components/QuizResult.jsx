@@ -62,7 +62,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
             transition={{ delay: 0.15, type: 'spring', stiffness: 400, damping: 20 }}
             className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border shadow-sm ${
               streak >= 5
-                ? 'bg-slate-900 text-white border-slate-800'
+                ? 'bg-orange-600 text-white border-orange-700'
                 : 'bg-white text-slate-700 border-slate-200'
             }`}
           >

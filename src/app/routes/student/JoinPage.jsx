@@ -87,7 +87,7 @@ export default function JoinPage({ sessionId, onJoin }) {
               transition={{ type: 'spring', stiffness: 300, damping: 24, delay: 0.1 }}
               className="flex justify-center"
             >
-              <Radio size={26} className="text-indigo-500" />
+              <Radio size={26} className="text-orange-500" />
             </motion.div>
             <div>
               <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pinggo</h1>
@@ -146,7 +146,7 @@ export default function JoinPage({ sessionId, onJoin }) {
               className={`w-full bg-slate-50 dark:bg-slate-700 border rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 text-center font-medium placeholder:text-slate-300 dark:placeholder:text-slate-500 placeholder:font-normal focus:outline-none focus:ring-2 focus:bg-white dark:focus:bg-slate-600 transition-all ${
                 tooShort || error
                   ? 'border-red-300 focus:ring-red-500/15 focus:border-red-400'
-                  : 'border-slate-200 dark:border-slate-600 focus:ring-slate-900/8 dark:focus:ring-slate-400/20 focus:border-slate-400'
+                  : 'border-slate-200 dark:border-slate-600 focus:ring-orange-500/15 dark:focus:ring-orange-400/20 focus:border-orange-500'
               }`}
             />
             <div className="flex items-center justify-between px-1">

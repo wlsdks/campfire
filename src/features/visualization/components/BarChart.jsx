@@ -34,14 +34,14 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
 
         // Color by rank: top = darkest
         const barColor = isCorrect
-          ? 'bg-indigo-600'
+          ? 'bg-orange-600'
           : isWrong
             ? 'bg-slate-300'
             : rank === 0
-              ? 'bg-indigo-500'
+              ? 'bg-orange-500'
               : rank === 1
-                ? 'bg-indigo-400'
-                : 'bg-indigo-300';
+                ? 'bg-orange-400'
+                : 'bg-orange-300';
 
         const countColor = count > 0 && rank === 0 ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500 dark:text-slate-400';
 
@@ -51,16 +51,16 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08, duration: 0.3, ease: 'easeOut' }}
-            className={`space-y-1.5 ${isCorrect ? 'rounded-lg ring-2 ring-indigo-500/30 p-3 -mx-3 bg-indigo-50/30 dark:bg-indigo-950/30' : ''}`}
+            className={`space-y-1.5 ${isCorrect ? 'rounded-lg ring-2 ring-orange-500/30 p-3 -mx-3 bg-orange-50/30 dark:bg-orange-950/30' : ''}`}
           >
             <div className="flex justify-between items-baseline gap-2">
               <div className="flex items-center gap-2 min-w-0 flex-1">
                 {isCorrect && (
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-indigo-600 text-white shrink-0">
+                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-orange-600 text-white shrink-0">
                     <Check size={12} strokeWidth={3} />
                   </span>
                 )}
-                <span className={`font-medium text-base truncate ${isCorrect ? 'text-indigo-700 dark:text-indigo-400 font-semibold' : isWrong ? 'text-slate-400' : 'text-slate-700 dark:text-slate-200'}`}>
+                <span className={`font-medium text-base truncate ${isCorrect ? 'text-orange-700 dark:text-orange-400 font-semibold' : isWrong ? 'text-slate-400' : 'text-slate-700 dark:text-slate-200'}`}>
                   {option}
                 </span>
               </div>
@@ -69,11 +69,11 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
                   key={count}
                   initial={{ scale: 1.2 }}
                   animate={{ scale: 1 }}
-                  className={`font-bold text-lg ${isCorrect ? 'text-indigo-700' : countColor}`}
+                  className={`font-bold text-lg ${isCorrect ? 'text-orange-700' : countColor}`}
                 >
                   {count}
                 </motion.span>
-                <span className={`text-sm ${isCorrect ? 'text-indigo-500' : 'text-slate-400'}`}>
+                <span className={`text-sm ${isCorrect ? 'text-orange-500' : 'text-slate-400'}`}>
                   {formatPercent(count, totalVotes)}
                 </span>
               </div>

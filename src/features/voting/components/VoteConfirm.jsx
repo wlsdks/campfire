@@ -9,7 +9,7 @@ function AnimatedCheck() {
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 300, damping: 15 }}
-        className="absolute inset-0 bg-slate-900 rounded-full"
+        className="absolute inset-0 bg-orange-600 rounded-full"
       />
       {/* White checkmark draws */}
       <motion.svg
