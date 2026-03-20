@@ -1,4 +1,5 @@
 import { memo, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import { ArrowUpDown, BarChart3, Trophy, Circle, Cloud, MessageSquare, Swords, TextCursorInput, Thermometer, AlertTriangle } from 'lucide-react';
 import AchievementSummary from '@/features/quiz/components/AchievementSummary';
 import ExportMenu from './ExportMenu';
@@ -74,7 +75,7 @@ export default memo(function ClassSummary({ session, participants, scores, leade
     : null;
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-5">
+    <div className="w-full max-w-2xl mx-auto space-y-5 pb-8">
       <div className="flex items-start justify-between mb-2">
         <div>
           <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">클래스 요약</h2>
@@ -97,18 +98,20 @@ export default memo(function ClassSummary({ session, participants, scores, leade
           <p className="text-3xl font-bold text-slate-900 dark:text-slate-100">{activityRate}%</p>
           <p className="text-xs text-slate-400 mt-1">참여율</p>
           <div className="mt-2 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-            <div className="h-full bg-slate-700 dark:bg-slate-300 rounded-full" style={{ width: `${activityRate}%` }} />
+            <motion.div className="h-full bg-slate-700 dark:bg-slate-300 rounded-full"
+              initial={{ width: 0 }} animate={{ width: `${activityRate}%` }}
+              transition={{ type: 'spring', stiffness: 80, damping: 20, delay: 0.2 }} />
           </div>
         </div>
-        <div className="bg-white rounded-2xl border border-slate-200 p-5 text-center">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 text-center">
           {avgCorrectRate !== null ? (
             <>
-              <p className="text-3xl font-bold text-slate-900">{avgCorrectRate}%</p>
+              <p className="text-3xl font-bold text-slate-900 dark:text-slate-100">{avgCorrectRate}%</p>
               <p className="text-xs text-slate-400 mt-1">평균 정답률</p>
             </>
           ) : (
             <>
-              <p className="text-3xl font-bold text-slate-900">{questionList.length}</p>
+              <p className="text-3xl font-bold text-slate-900 dark:text-slate-100">{questionList.length}</p>
               <p className="text-xs text-slate-400 mt-1">질문</p>
             </>
           )}
@@ -169,7 +172,7 @@ export default memo(function ClassSummary({ session, participants, scores, leade
                       <span className="text-xs text-slate-400">{q.voteCount}명 응답</span>
                       {q.hasCorrectAnswer && q.correctRate !== null && (
                         <>
-                          <span className="text-slate-200">&middot;</span>
+                          <span className="text-slate-200 dark:text-slate-600">&middot;</span>
                           <span className={`text-xs font-medium ${
                             q.correctRate >= 70 ? 'text-slate-600' : q.correctRate >= 40 ? 'text-slate-500' : 'text-slate-900 font-semibold'
                           }`}>
@@ -182,12 +185,14 @@ export default memo(function ClassSummary({ session, participants, scores, leade
                   {/* Response rate bar */}
                   <div className="w-16 shrink-0">
                     <div className="h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-slate-400 rounded-full transition-all"
-                        style={{ width: `${q.responseRate}%` }}
+                      <motion.div
+                        className="h-full bg-slate-400 rounded-full"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${q.responseRate}%` }}
+                        transition={{ type: 'spring', stiffness: 80, damping: 20, delay: 0.1 + i * 0.05 }}
                       />
                     </div>
-                    <p className="text-[10px] text-slate-300 text-right mt-0.5">{q.responseRate}%</p>
+                    <p className="text-[10px] text-slate-300 dark:text-slate-500 text-right mt-0.5">{q.responseRate}%</p>
                   </div>
                 </div>
               );
@@ -196,7 +201,7 @@ export default memo(function ClassSummary({ session, participants, scores, leade
         </div>
       )}
 
-      <p className="text-center text-xs text-slate-400">왼쪽에서 질문을 클릭하면 결과를 볼 수 있습니다</p>
+      <p className="text-center text-xs text-slate-400 pt-4">왼쪽에서 질문을 클릭하면 결과를 볼 수 있습니다</p>
     </div>
   );
 });
