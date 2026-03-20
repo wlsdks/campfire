@@ -182,7 +182,7 @@ export default function SessionSummaryCard({ session, sessionId, reviewing = fal
 
       <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
         className="text-center text-xs text-slate-400"
-      >{reviewing ? '하단에서 질문이나 채팅을 보낼 수 있어요' : '수업이 종료되었습니다'}</motion.p>
+      >{reviewing ? '하단에서 질문이나 채팅을 보낼 수 있어요' : '오늘도 수고하셨습니다!'}</motion.p>
     </div>
   );
 }
