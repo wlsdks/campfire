@@ -296,7 +296,6 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 > 최근 10개만 유지. 오래된 것은 삭제.
 
 <!-- 예시: 2026-03-20 01:30 | improve: 학생 투표 화면 터치 타겟 48px로 통일 -->
-2026-03-20 | feat: 숨겨진 업적 시스템 — 5종 업적(첫정답/5연속/전문항참여/번개응답/만점왕). useAchievements 훅(기존 votes+scores 순수 계산), AchievementToast(학생 실시간 알림, spring+큐), SessionSummaryCard에 업적 리스트(stagger), AchievementSummary(강사 달성 인원 통계). Firebase 구조 추가 불필요. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 2026-03-20 | feat: 더보기 탭 — 대시보드 마지막 탭 구현. ProfileSection(프로필 수정, Firebase 저장), QuickStats(클래스/참여자/질문 통계), ShortcutsSection(6개 단축키 시각 가이드, KeyBadge UI), AppInfo(버전/플랫폼). MoreView(145줄)+ProfileSection(85줄) 분리. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 2026-03-20 | feat: 스피드 퀴즈 모드 — 퀴즈 2개 이상 세션에서 rapid-fire 자동진행. 강사: QuestionManager에 "스피드 퀴즈" 원클릭 시작/중단 버튼(Zap아이콘), 헤더에 "스피드" 배지, useSpeedQuiz(자동10초타이머→자동정답공개+점수반영→3.5초후자동다음문제→리더보드). 학생: SpeedQuizBanner(진행 N/M+도트), SpeedQuizCombo(연속정답 카운터, 3연속 x1.2배·5연속 x1.5배 콤보 배율). useSpeedQuizStudent(읽기전용). VoteHelpers.jsx 추출(200줄 규칙). Firebase path: speedQuiz(transient). database.rules.json+seed-demo 업데이트. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 2026-03-20 | feat: 포인트 베팅 — 퀴즈 질문에 베팅 배율 선택 기능. 강사: QuestionForm에 "포인트 베팅" 토글 switch, QuestionList에 "베팅" 배지, VizRenderer에 BetDistribution(1x/2x/3x 분포 3카드). 학생: BetSelector(94줄, 3단계 Shield/Target/Flame), QuizVoter에 bet→options 2단계 흐름, VoteConfirm에 bet 라벨. quiz.js에 BET_OPTIONS+getQuizReward bet 배수/패널티 로직(정답 Nx배, 오답 -30/-60). QuizResult에 bet 배지+음수점수 빨간색. 총점 최소 0. 13개 파일 업데이트. seed-demo에 betting 데모 데이터. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
@@ -305,6 +304,7 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 2026-03-20 | fix: E2E Playwright 전체 테스트 — admin 로그인→세션 생성→8종 질문 추가(객관식/퀴즈/OX/워드클라우드/QnA/감정온도계/찬반토론/순위맞추기)→세션 시작→각 질문 활성화→학생 참여&투표→퀴즈 정답 공개→리더보드. 버그 발견: AdminPage handleCenterFormSubmit에서 ranking/OX/choice 유형의 options/correctAnswer 누락 — QuestionManager의 handleSubmit과 동기화하여 수정. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 2026-03-20 | feat: 연승 시각화 — 퀴즈 3연속 정답 시 StreakBadge(Flame+N연속!) 표시. StreakBadge.jsx(64줄) 신규 컴포넌트, 투표 화면 상단 플로팅 pill. QuizResult에 streak prop 추가(3연속 정답! 배지+연승 서브텍스트). VoteHelpers에 streak 전달. 5연속 이상 bg-slate-900 다크 배지+빠른 화염. 기존 scores.streak 활용, Firebase 추가 불필요. 4개 파일 수정. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 2026-03-20 | feat: 빈칸 채우기 — 새 질문 유형 `fillinblank` 구현. FillBlankVoter(학생 텍스트입력+문장미리보기+실시간빈칸치환+30자제한+AnswerDistribution정답률바), FillBlankChart(강사 문장+빈칸표시+정답률히어로%+답변빈도바차트+정답하이라이트). QuestionForm에 ___빈칸미리보기UI+정답입력. 15개 파일 업데이트(question-types/QuestionForm/QuestionManager/AdminPage/CourseEditor/VizRenderer/VotePage/VoteHelpers/ClassSummary/csv/database.rules.json/seed-demo/PRD). TextCursorInput아이콘. 대소문자무관정답판정. seed-demo에 makeFillBlankVotes+데모질문2개. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
+2026-03-20 | improve: 컴포넌트 크기 재감사 — 200줄 규칙 대규모 리팩토링. AdminPage(594→112), QuestionManager(541→155), AdminLogin(501→28), QuestionForm(500→131), SessionDashboard(393→138), StatsView(303→241) 분리. 12개 신규 파일: useAdminSession/useQuestionActions/useRecentQuestions 훅, TabletDrawers/CenterContent/QuickProgressCard/LoginView/RegisterView/QuestionFormSections/SessionList 컴포넌트. question 생성 로직 중복 제거(handleSubmit 통합). 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 
