@@ -197,7 +197,7 @@ export default function AdminPage() {
     }
   }, [sessionId, handleBack]);
 
-  const handleCenterFormSubmit = useCallback(async ({ type, title, options: cleanOptions, correctAnswer }) => {
+  const handleCenterFormSubmit = useCallback(async ({ type, title, options: cleanOptions, correctAnswer, betting }) => {
     try {
       const qId = generateQuestionId();
       const questions = session?.questions || {};
@@ -214,6 +214,7 @@ export default function AdminPage() {
         questionData.correctBonusTickets = QUIZ_DEFAULTS.correctBonusTickets;
         questionData.speedWindowMs = QUIZ_DEFAULTS.speedWindowMs;
         questionData.maxSpeedBonus = QUIZ_DEFAULTS.maxSpeedBonus;
+        if (betting) questionData.betting = true;
       }
 
       await set(ref(db, `sessions/${sessionId}/questions/${qId}`), questionData);

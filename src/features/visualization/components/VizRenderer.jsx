@@ -1,10 +1,11 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import BarChart from './BarChart';
 import OXBattle from './OXBattle';
 import WordCloud from './WordCloud';
 import QACards from './QACards';
 import ScaleChart from './ScaleChart';
 import DebateChart from './DebateChart';
+import BetDistribution from './BetDistribution';
 import { BarChart3 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Badge from '@/components/ui/Badge';
@@ -81,13 +82,18 @@ export default memo(function VizRenderer({ sessionId, session }) {
             />
           )}
           {question.type === 'quiz' && (
-            <BarChart
-              sessionId={sessionId}
-              questionId={currentQId}
-              options={question.options || []}
-              correctValue={question.correctAnswer}
-              revealed={answerRevealed}
-            />
+            <>
+              <BarChart
+                sessionId={sessionId}
+                questionId={currentQId}
+                options={question.options || []}
+                correctValue={question.correctAnswer}
+                revealed={answerRevealed}
+              />
+              {question.betting && (
+                <BetDistribution sessionId={sessionId} questionId={currentQId} />
+              )}
+            </>
           )}
           {question.type === 'ox' && (
             <OXBattle

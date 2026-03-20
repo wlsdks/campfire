@@ -67,7 +67,7 @@ function makeWeightedVotes(participantIds, participants, options, weights, voteR
   return votes;
 }
 
-function makeQuizVotesWithTimestamp(participantIds, participants, options, weights, activatedAt) {
+function makeQuizVotesWithTimestamp(participantIds, participants, options, weights, activatedAt, betting = false) {
   const votes = {};
   const votingIds = participantIds.filter(() => Math.random() < 0.85);
   const cumulative = [];
@@ -76,11 +76,17 @@ function makeQuizVotesWithTimestamp(participantIds, participants, options, weigh
   for (const id of votingIds) {
     const r = Math.random() * sum;
     const idx = cumulative.findIndex((c) => r < c);
-    votes[id] = {
+    const vote = {
       value: options[idx],
       nickname: participants[id].nickname,
       timestamp: activatedAt + Math.floor(Math.random() * 25000),
     };
+    if (betting) {
+      // Distribute bets: ~40% 1x, ~35% 2x, ~25% 3x
+      const br = Math.random();
+      vote.bet = br < 0.4 ? '1' : br < 0.75 ? '2' : '3';
+    }
+    votes[id] = vote;
   }
   return votes;
 }
@@ -290,20 +296,26 @@ function makeScores(participantIds, participants, questions) {
       // Participation ticket
       tickets += q.participationTickets || 1;
 
+      // Bet multiplier
+      const betMul = q.betting ? (parseInt(vote.bet, 10) || 1) : 1;
+      const betPenalty = betMul === 3 ? 60 : betMul === 2 ? 30 : 0;
+
       // Base points for correct answer
       if (vote.value === q.correctAnswer) {
-        total += q.points || 100;
-        tickets += q.correctBonusTickets || 2;
-
+        let pts = q.points || 100;
         // Speed bonus
         if (vote.timestamp && q.activatedAt) {
           const elapsed = vote.timestamp - q.activatedAt;
           const window = q.speedWindowMs || 30000;
           const maxBonus = q.maxSpeedBonus || 50;
           if (elapsed < window) {
-            total += Math.round(maxBonus * (1 - elapsed / window));
+            pts += Math.round(maxBonus * (1 - elapsed / window));
           }
         }
+        total += pts * betMul;
+        tickets += q.correctBonusTickets || 2;
+      } else if (q.betting && betPenalty > 0) {
+        total = Math.max(0, total - betPenalty);
       }
     }
 
@@ -450,6 +462,9 @@ const sessions = {};
       correctAnswer: 'git stash',
       points: 100, participationTickets: 1, correctBonusTickets: 2,
       speedWindowMs: 30000, maxSpeedBonus: 50,
+      betting: true,
+      activatedAt: t3 + 2 * HOUR, revealedAt: t3 + 2 * HOUR + 32000, awardedAt: t3 + 2 * HOUR + 32000,
+      votes: makeQuizVotesWithTimestamp(ids3, p3, ['git save', 'git stash', 'git store', 'git cache'], [2, 8, 3, 1], t3 + 2 * HOUR, true),
     },
     [q3g]: {
       type: 'quiz', title: 'JavaScript에서 비동기 처리에 사용하는 키워드는?', order: 7,
@@ -457,6 +472,7 @@ const sessions = {};
       correctAnswer: 'async/await',
       points: 100, participationTickets: 1, correctBonusTickets: 2,
       speedWindowMs: 30000, maxSpeedBonus: 50,
+      betting: true,
     },
   };
   sessions[s3] = {

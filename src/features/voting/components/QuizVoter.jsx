@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ref, set, serverTimestamp } from 'firebase/database';
 import { Lock } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { getNickname, getParticipantId } from '@/lib/participant';
 import { useVotes } from '@/hooks/useVotes';
 import VoteConfirm from './VoteConfirm';
+import BetSelector from './BetSelector';
 
 const OPTION_STYLES = [
   { bg: 'bg-white hover:bg-slate-50', text: 'text-slate-800', badge: 'bg-slate-800', letter: 'A' },
@@ -14,6 +15,8 @@ const OPTION_STYLES = [
   { bg: 'bg-white hover:bg-slate-50', text: 'text-slate-800', badge: 'bg-slate-500', letter: 'D' },
   { bg: 'bg-white hover:bg-slate-50', text: 'text-slate-800', badge: 'bg-slate-500', letter: 'E' },
 ];
+
+const BET_LABELS = { 1: '1x 안전', 2: '2x 자신', 3: '3x 올인' };
 
 /**
  * Quiz voting component. Handles vote submission only.
@@ -30,16 +33,24 @@ export default function QuizVoter({ sessionId, questionId, question, renderResul
   const { votes } = useVotes(sessionId, questionId);
   const currentVote = votes[participantId] || null;
   const [selected, setSelected] = useState(null);
+  const [betMultiplier, setBetMultiplier] = useState(null);
+
+  const bettingEnabled = question?.betting === true;
+  const needsBet = bettingEnabled && betMultiplier === null;
 
   async function handleVote(option) {
     if (disabled) return;
     setSelected(option);
     try {
-      await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${participantId}`), {
+      const voteData = {
         value: option,
         nickname: getNickname(),
         timestamp: serverTimestamp(),
-      });
+      };
+      if (bettingEnabled && betMultiplier) {
+        voteData.bet = String(betMultiplier);
+      }
+      await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${participantId}`), voteData);
     } catch (err) {
       console.error('Quiz vote failed:', err);
       setSelected(null);
@@ -54,13 +65,14 @@ export default function QuizVoter({ sessionId, questionId, question, renderResul
     const votedValue = currentVote.value;
     const optIdx = (question?.options || []).indexOf(votedValue);
     const ansLetter = optIdx >= 0 ? OPTION_STYLES[optIdx % OPTION_STYLES.length].letter : '';
+    const betLabel = currentVote.bet ? BET_LABELS[parseInt(currentVote.bet, 10)] : null;
     return (
       <VoteConfirm
         submittedLabel="답안 제출 완료!"
         waitingLabel="정답 공개를 기다리는 중..."
         waitingDescription="강사가 정답과 순위를 공개하면 결과를 확인할 수 있습니다"
         selectedAnswer={ansLetter ? `${ansLetter}. ${votedValue}` : votedValue}
-        selectedAnswerLabel="내 답안"
+        selectedAnswerLabel={betLabel ? `내 답안 (${betLabel})` : '내 답안'}
       />
     );
   }
@@ -80,46 +92,62 @@ export default function QuizVoter({ sessionId, questionId, question, renderResul
 
   return (
     <div className="space-y-4 w-full">
-      <p className="text-xs text-slate-400 text-center">
-        {question?.event
-          ? '이벤트 라운드 — 보너스 점수와 티켓이 함께 적용됩니다'
-          : '빠르게 답할수록 더 높은 점수를 받을 수 있습니다'}
-      </p>
+      <AnimatePresence mode="wait">
+        {needsBet ? (
+          <BetSelector key="bet" onSelect={setBetMultiplier} />
+        ) : (
+          <motion.div
+            key="options"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+            className="space-y-4"
+          >
+            <p className="text-xs text-slate-400 text-center">
+              {bettingEnabled && betMultiplier
+                ? `${betMultiplier}x 베팅 — ${betMultiplier > 1 ? '높은 위험, 높은 보상!' : '안전하게 참여'}`
+                : question?.event
+                  ? '이벤트 라운드 — 보너스 점수와 티켓이 함께 적용됩니다'
+                  : '빠르게 답할수록 더 높은 점수를 받을 수 있습니다'}
+            </p>
 
-      <div className="space-y-2.5">
-        {(question?.options || []).map((option, index) => {
-          const style = OPTION_STYLES[index % OPTION_STYLES.length];
-          const isSelected = selected === option;
-          return (
-            <motion.button
-              key={option}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{
-                opacity: selected !== null && !isSelected ? 0.4 : 1,
-                y: 0,
-                scale: isSelected ? 0.98 : 1,
-              }}
-              transition={{
-                delay: index * 0.04,
-                type: 'spring',
-                stiffness: 300,
-                damping: 26,
-              }}
-              whileTap={{ scale: 0.97 }}
-              onClick={() => handleVote(option)}
-              disabled={selected !== null || disabled}
-              className={`w-full py-3.5 px-4 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${
-                isSelected ? 'ring-2 ring-slate-400 border-slate-300 bg-slate-50' : 'border-slate-200'
-              } ${(selected !== null && !isSelected) || disabled ? 'cursor-not-allowed' : ''} transition-colors flex items-center gap-3`}
-            >
-              <span className={`w-8 h-8 rounded-lg ${style.badge} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
-                {style.letter}
-              </span>
-              <span className="text-left leading-snug">{option}</span>
-            </motion.button>
-          );
-        })}
-      </div>
+            <div className="space-y-2.5">
+              {(question?.options || []).map((option, index) => {
+                const style = OPTION_STYLES[index % OPTION_STYLES.length];
+                const isSelected = selected === option;
+                return (
+                  <motion.button
+                    key={option}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{
+                      opacity: selected !== null && !isSelected ? 0.4 : 1,
+                      y: 0,
+                      scale: isSelected ? 0.98 : 1,
+                    }}
+                    transition={{
+                      delay: index * 0.04,
+                      type: 'spring',
+                      stiffness: 300,
+                      damping: 26,
+                    }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={() => handleVote(option)}
+                    disabled={selected !== null || disabled}
+                    className={`w-full py-3.5 px-4 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${
+                      isSelected ? 'ring-2 ring-slate-400 border-slate-300 bg-slate-50' : 'border-slate-200'
+                    } ${(selected !== null && !isSelected) || disabled ? 'cursor-not-allowed' : ''} transition-colors flex items-center gap-3`}
+                  >
+                    <span className={`w-8 h-8 rounded-lg ${style.badge} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
+                      {style.letter}
+                    </span>
+                    <span className="text-left leading-snug">{option}</span>
+                  </motion.button>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

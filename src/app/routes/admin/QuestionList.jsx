@@ -62,6 +62,7 @@ function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, o
               {qType?.label}
             </span>
             {!readOnly && isActive && <Badge variant="primary">LIVE</Badge>}
+            {isQuiz && q.betting && <Badge variant="neutral">베팅</Badge>}
             {isQuiz && q.event && <Badge variant="neutral">{q.event.label || '이벤트'}</Badge>}
             {isQuiz && q.revealedAt && <Badge variant="neutral">정답 공개</Badge>}
           </div>

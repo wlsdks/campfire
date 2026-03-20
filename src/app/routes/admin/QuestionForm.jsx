@@ -26,6 +26,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
   const [correctAnswer, setCorrectAnswer] = useState('');
   const [points, setPoints] = useState(QUIZ_DEFAULTS.points);
   const [event, setEvent] = useState(null);
+  const [betting, setBetting] = useState(false);
   const [localError, setLocalError] = useState(null);
 
   const isChoiceLike = type === 'choice' || type === 'quiz';
@@ -49,13 +50,14 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
       return;
     }
     setLocalError(null);
-    const success = await onSubmit({ type, title, options: cleanOptions, correctAnswer, points, event });
+    const success = await onSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting });
     if (success) {
       setTitle('');
       setOptions(['', '']);
       setCorrectAnswer('');
       setPoints(QUIZ_DEFAULTS.points);
       setEvent(null);
+      setBetting(false);
       onCancel();
     }
   }
@@ -258,6 +260,40 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
                   </button>
                 );
               })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 포인트 베팅 (퀴즈만) */}
+      <AnimatePresence>
+        {type === 'quiz' && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className={GAP}
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">포인트 베팅</p>
+                <p className="text-[11px] text-slate-300 mt-0.5">학생이 배율을 선택 (1x/2x/3x)</p>
+              </div>
+              <button
+                onClick={() => setBetting(!betting)}
+                className={`relative w-11 h-6 rounded-full transition-colors ${
+                  betting ? 'bg-slate-900' : 'bg-slate-200'
+                }`}
+                role="switch"
+                aria-checked={betting}
+                aria-label="포인트 베팅 활성화"
+              >
+                <motion.div
+                  animate={{ x: betting ? 20 : 2 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  className="absolute top-1 w-4 h-4 rounded-full bg-white shadow-sm"
+                />
+              </button>
             </div>
           </motion.div>
         )}

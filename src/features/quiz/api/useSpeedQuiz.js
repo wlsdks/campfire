@@ -117,9 +117,11 @@ export function useSpeedQuiz(sessionId, session, { scores, participants, startTi
           const comboMultiplier = getComboMultiplier(nextStreak);
           const boostedPoints = Math.round(reward.points * comboMultiplier);
 
+          // Total never goes below 0 (betting penalty can be negative)
+          const newTotal = Math.max(0, (existingScore.total || 0) + boostedPoints);
           updates[`scores/${participantId}`] = {
             nickname,
-            total: (existingScore.total || 0) + boostedPoints,
+            total: newTotal,
             tickets: (existingScore.tickets || 0) + reward.tickets,
             lastPoints: boostedPoints,
             lastTickets: reward.tickets,

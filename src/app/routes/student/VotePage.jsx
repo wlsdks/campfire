@@ -159,7 +159,12 @@ export default function VotePage({ sessionId }) {
               <h2 className="text-xl font-bold text-slate-900 leading-snug flex-1">
                 {question.title}
               </h2>
-              <Badge variant="primary">{TYPE_LABELS[question.type] || question.type}</Badge>
+              <div className="flex items-center gap-1.5 shrink-0">
+                {question.type === 'quiz' && question.betting && (
+                  <Badge variant="neutral">베팅</Badge>
+                )}
+                <Badge variant="primary">{TYPE_LABELS[question.type] || question.type}</Badge>
+              </div>
             </div>
           </motion.div>
 

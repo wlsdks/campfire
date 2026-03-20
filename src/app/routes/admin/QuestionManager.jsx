@@ -76,7 +76,7 @@ export default function QuestionManager({
   const nextEntry = activeIndex >= 0 ? questionList[activeIndex + 1] : questionList[0];
   const nextQuizEvent = normalizeQuizEvent(pendingEvent);
 
-  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event }) {
+  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting }) {
     try {
       setError(null);
       const qId = generateQuestionId();
@@ -97,6 +97,7 @@ export default function QuestionManager({
         questionData.speedWindowMs = QUIZ_DEFAULTS.speedWindowMs;
         questionData.maxSpeedBonus = QUIZ_DEFAULTS.maxSpeedBonus;
         if (event) questionData.event = event;
+        if (betting) questionData.betting = true;
       }
 
       await set(ref(db, `sessions/${sessionId}/questions/${qId}`), questionData);
@@ -268,10 +269,12 @@ export default function QuestionManager({
           const existingScore = scores[participantId] || {};
           const nextStreak = reward.isCorrect ? (existingScore.streak || 0) + 1 : 0;
           const nickname = participants[participantId]?.nickname || vote.nickname || existingScore.nickname || `참여자 ${participantId.slice(0, 4)}`;
+          // Total never goes below 0 (betting penalty can be negative)
+          const newTotal = Math.max(0, (existingScore.total || 0) + reward.points);
 
           updates[`scores/${participantId}`] = {
             nickname,
-            total: (existingScore.total || 0) + reward.points,
+            total: newTotal,
             tickets: (existingScore.tickets || 0) + reward.tickets,
             lastPoints: reward.points,
             lastTickets: reward.tickets,

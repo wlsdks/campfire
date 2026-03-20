@@ -20,7 +20,7 @@ function CountUp({ value, prefix = '+', suffix = '점' }) {
   return <span ref={ref}>{prefix}{value}{suffix}</span>;
 }
 
-export default function QuizResult({ isCorrect, points, tickets = 0, correctAnswer, event = null }) {
+export default function QuizResult({ isCorrect, points, tickets = 0, correctAnswer, event = null, bet = 1 }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -61,9 +61,21 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
           </div>
         )}
 
-        {(points > 0 || tickets > 0) && (
+        {/* Bet multiplier badge */}
+        {bet > 1 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.18, type: 'spring', stiffness: 300, damping: 26 }}
+            className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold"
+          >
+            {bet}x 베팅
+          </motion.div>
+        )}
+
+        {(points > 0 || points < 0 || tickets > 0) && (
           <div className="flex items-center justify-center gap-6 pt-2">
-            {points > 0 && (
+            {points !== 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -71,12 +83,12 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
                 className="text-center"
               >
                 <p className="text-xs font-medium text-slate-400">점수</p>
-                <p className="mt-0.5 text-2xl font-bold text-slate-900">
-                  <CountUp value={points} />
+                <p className={`mt-0.5 text-2xl font-bold ${points < 0 ? 'text-red-500' : 'text-slate-900'}`}>
+                  <CountUp value={Math.abs(points)} prefix={points < 0 ? '-' : '+'} />
                 </p>
               </motion.div>
             )}
-            {points > 0 && tickets > 0 && (
+            {points !== 0 && tickets > 0 && (
               <motion.div
                 initial={{ opacity: 0, scaleY: 0 }}
                 animate={{ opacity: 1, scaleY: 1 }}

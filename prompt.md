@@ -296,7 +296,6 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 > 최근 10개만 유지. 오래된 것은 삭제.
 
 <!-- 예시: 2026-03-20 01:30 | improve: 학생 투표 화면 터치 타겟 48px로 통일 -->
-2026-03-20 | feat: 질문 보관함 — 대시보드 "질문 보관함" 탭 구현. useQuestionLibrary 훅(Firebase onValue 실시간 구독), QuestionLibraryView(새 질문 생성+검색+유형 필터+삭제), ImportFromLibraryModal(세션에 보관함 질문 다중 선택 가져오기), QuestionList에 BookmarkPlus "보관함에 저장" 버튼. Firebase path: questionLibrary/{adminUid}/{qId}, database.rules.json 규칙 추가+배포. 3개 뷰포트(1280/768/390) 반응형 확인, 콘솔 에러 0
 2026-03-20 | feat: 감정 온도계 — 새 질문 유형 `scale` 구현. ScaleVoter(학생 0~100 슬라이더+프리셋+제출), ScaleChart(강사 평균 히어로+위치바+히스토그램+통계). 10개 파일 QUESTION_TYPES 업데이트(QuestionForm/QuestionList/VizRenderer/VotePage/ClassSummary/CourseEditor/StatsView/ImportFromLibrary/QuestionLibraryView/csv.js). database.rules.json type 정규식에 scale 추가+배포. seed-demo.mjs에 정규분포 기반 makeScaleVotes 헬퍼+데모 질문 2개 추가. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 2026-03-20 | feat: 찬반 토론 — 새 질문 유형 `debate` 구현. DebateVoter(학생 찬성/반대 2버튼+한줄의견50자+실시간비율), DebateChart(강사 VS퍼센트히어로+비율바+의견스트림+전체/찬성/반대필터). 12개 파일 업데이트(QuestionForm/QuestionList/VizRenderer/VotePage/ClassSummary/CourseEditor/StatsView/ImportFromLibrary/QuestionLibraryView/csv.js/database.rules.json/seed-demo.mjs). Swords아이콘. vote값 "for:의견"/"against:의견" 형식. seed-demo에 makeDebateVotes+데모질문2개. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 2026-03-20 | improve: Admin 태블릿 반응형 — <1024px에서 3패널→전폭 중앙+오버레이 드로어. useMediaQuery 훅 신설, AdminPage에 좌/우 드로어 상태 추가, AdminSessionHeader에 List/Users 토글 버튼, RightSidebar에 isDrawer prop. 헤더 컴팩트(세션ID·경과시간 숨김, 버튼 라벨 축소). Framer Motion slide-in+백드롭. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
@@ -305,6 +304,7 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 2026-03-20 | feat: 숨겨진 업적 시스템 — 5종 업적(첫정답/5연속/전문항참여/번개응답/만점왕). useAchievements 훅(기존 votes+scores 순수 계산), AchievementToast(학생 실시간 알림, spring+큐), SessionSummaryCard에 업적 리스트(stagger), AchievementSummary(강사 달성 인원 통계). Firebase 구조 추가 불필요. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 2026-03-20 | feat: 더보기 탭 — 대시보드 마지막 탭 구현. ProfileSection(프로필 수정, Firebase 저장), QuickStats(클래스/참여자/질문 통계), ShortcutsSection(6개 단축키 시각 가이드, KeyBadge UI), AppInfo(버전/플랫폼). MoreView(145줄)+ProfileSection(85줄) 분리. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 2026-03-20 | feat: 스피드 퀴즈 모드 — 퀴즈 2개 이상 세션에서 rapid-fire 자동진행. 강사: QuestionManager에 "스피드 퀴즈" 원클릭 시작/중단 버튼(Zap아이콘), 헤더에 "스피드" 배지, useSpeedQuiz(자동10초타이머→자동정답공개+점수반영→3.5초후자동다음문제→리더보드). 학생: SpeedQuizBanner(진행 N/M+도트), SpeedQuizCombo(연속정답 카운터, 3연속 x1.2배·5연속 x1.5배 콤보 배율). useSpeedQuizStudent(읽기전용). VoteHelpers.jsx 추출(200줄 규칙). Firebase path: speedQuiz(transient). database.rules.json+seed-demo 업데이트. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
+2026-03-20 | feat: 포인트 베팅 — 퀴즈 질문에 베팅 배율 선택 기능. 강사: QuestionForm에 "포인트 베팅" 토글 switch, QuestionList에 "베팅" 배지, VizRenderer에 BetDistribution(1x/2x/3x 분포 3카드). 학생: BetSelector(94줄, 3단계 Shield/Target/Flame), QuizVoter에 bet→options 2단계 흐름, VoteConfirm에 bet 라벨. quiz.js에 BET_OPTIONS+getQuizReward bet 배수/패널티 로직(정답 Nx배, 오답 -30/-60). QuizResult에 bet 배지+음수점수 빨간색. 총점 최소 0. 13개 파일 업데이트. seed-demo에 betting 데모 데이터. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 

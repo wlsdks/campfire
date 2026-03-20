@@ -24,6 +24,7 @@ export function QuizResultFromVote({ question, currentVote }) {
       tickets={reward.tickets}
       correctAnswer={question.correctAnswer}
       event={question.event || null}
+      bet={reward.bet || 1}
     />
   );
 }

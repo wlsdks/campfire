@@ -36,7 +36,7 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
   const questions = template?.questions || {};
   const questionList = Object.entries(questions).sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
 
-  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer }) {
+  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, betting }) {
     const qId = generateQuestionId();
     const questionData = { type, title: title.trim(), order: Object.keys(questions).length + 1 };
     const isChoiceLike = type === 'choice' || type === 'quiz';
@@ -51,6 +51,7 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
       questionData.correctBonusTickets = QUIZ_DEFAULTS.correctBonusTickets;
       questionData.speedWindowMs = QUIZ_DEFAULTS.speedWindowMs;
       questionData.maxSpeedBonus = QUIZ_DEFAULTS.maxSpeedBonus;
+      if (betting) questionData.betting = true;
     }
 
     await addQuestion(qId, questionData);

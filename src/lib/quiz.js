@@ -77,6 +77,16 @@ export function getQuizEventBadges(event) {
   return badges;
 }
 
+/**
+ * Bet multiplier options for point betting.
+ * { multiplier, label, penalty (points lost on wrong answer) }
+ */
+export const BET_OPTIONS = [
+  { multiplier: 1, label: '안전', penalty: 0 },
+  { multiplier: 2, label: '자신', penalty: 30 },
+  { multiplier: 3, label: '올인', penalty: 60 },
+];
+
 export function getQuizReward(question, vote) {
   const isCorrect = vote?.value === question?.correctAnswer;
   const event = normalizeQuizEvent(question?.event);
@@ -85,11 +95,17 @@ export function getQuizReward(question, vote) {
   const correctBonusTickets = (question?.correctBonusTickets ?? QUIZ_DEFAULTS.correctBonusTickets)
     + (event?.correctBonusTickets || 0);
 
+  // Betting multiplier (1x/2x/3x) — only active when question has betting enabled
+  const betEnabled = question?.betting === true;
+  const betMultiplier = betEnabled ? (parseInt(vote?.bet, 10) || 1) : 1;
+  const betOption = BET_OPTIONS.find((b) => b.multiplier === betMultiplier) || BET_OPTIONS[0];
+
   if (!isCorrect) {
     return {
       isCorrect: false,
-      points: 0,
+      points: betEnabled ? -betOption.penalty : 0,
       tickets: vote ? participationTickets : 0,
+      bet: betMultiplier,
     };
   }
 
@@ -105,7 +121,8 @@ export function getQuizReward(question, vote) {
 
   return {
     isCorrect: true,
-    points: Math.round(totalPoints * pointMultiplier),
+    points: Math.round(totalPoints * pointMultiplier * betMultiplier),
     tickets: participationTickets + correctBonusTickets,
+    bet: betMultiplier,
   };
 }

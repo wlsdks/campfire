@@ -159,7 +159,9 @@ export function exportParticipantResponses(session, participants, scores, filena
 
     sorted.forEach((q) => {
       const vote = q.data.votes?.[pid];
-      row.push(vote?.value ?? '');
+      const betSuffix = q.data.betting && vote?.bet && parseInt(vote.bet, 10) > 1
+        ? ` (${vote.bet}x)` : '';
+      row.push(vote?.value ? `${vote.value}${betSuffix}` : '');
     });
 
     if (hasScores) {
