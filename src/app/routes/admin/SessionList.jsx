@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Copy, Trash2 } from 'lucide-react';
 
 function formatDate(timestamp) {
   if (!timestamp) return '';
@@ -14,7 +14,7 @@ function formatDate(timestamp) {
   return `${month}/${day} ${ampm} ${h12}:${minutes}`;
 }
 
-function SessionRow({ session, onClick, onDelete, index }) {
+function SessionRow({ session, onClick, onDelete, onDuplicate, index }) {
   const isSetting = session.status === 'setting';
   const isActive = session.status === 'active';
   const isReviewing = session.status === 'reviewing';
@@ -22,6 +22,11 @@ function SessionRow({ session, onClick, onDelete, index }) {
   function handleDelete(e) {
     e.stopPropagation();
     onDelete?.(session);
+  }
+
+  function handleDuplicate(e) {
+    e.stopPropagation();
+    onDuplicate?.(session);
   }
 
   return (
@@ -59,20 +64,31 @@ function SessionRow({ session, onClick, onDelete, index }) {
       ) : (
         <span className="text-xs text-slate-400 shrink-0">완료</span>
       )}
-      {!isActive && (
-        <button
-          onClick={handleDelete}
-          className="shrink-0 p-1.5 rounded-lg text-slate-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all active:scale-90 max-sm:opacity-60"
-          aria-label="세션 삭제"
-        >
-          <Trash2 size={14} />
-        </button>
-      )}
+      <div className="flex items-center gap-0.5 shrink-0">
+        {session.questionCount > 0 && (
+          <button
+            onClick={handleDuplicate}
+            className="p-1.5 rounded-lg text-slate-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all active:scale-90 max-sm:opacity-60"
+            aria-label="세션 복제"
+          >
+            <Copy size={14} />
+          </button>
+        )}
+        {!isActive && (
+          <button
+            onClick={handleDelete}
+            className="p-1.5 rounded-lg text-slate-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all active:scale-90 max-sm:opacity-60"
+            aria-label="세션 삭제"
+          >
+            <Trash2 size={14} />
+          </button>
+        )}
+      </div>
     </motion.div>
   );
 }
 
-export function CourseGroup({ name, sessions, onSelect, onDelete, startIndex }) {
+export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, startIndex }) {
   const [collapsed, setCollapsed] = useState(false);
 
   const stats = useMemo(() => {
@@ -123,7 +139,7 @@ export function CourseGroup({ name, sessions, onSelect, onDelete, startIndex }) 
       {!collapsed && sessions.length > 0 && (
         <div className="border-t border-slate-100 dark:border-slate-700 divide-y divide-slate-50 dark:divide-slate-700/50">
           {sessions.map((session, i) => (
-            <SessionRow key={session.id} session={session} onClick={() => onSelect(session)} onDelete={onDelete} index={startIndex + i} />
+            <SessionRow key={session.id} session={session} onClick={() => onSelect(session)} onDelete={onDelete} onDuplicate={onDuplicate} index={startIndex + i} />
           ))}
         </div>
       )}
@@ -131,7 +147,7 @@ export function CourseGroup({ name, sessions, onSelect, onDelete, startIndex }) 
   );
 }
 
-export function UngroupedSessions({ sessions, onSelect, onDelete, startIndex }) {
+export function UngroupedSessions({ sessions, onSelect, onDelete, onDuplicate, startIndex }) {
   if (sessions.length === 0) return null;
 
   return (
@@ -142,7 +158,7 @@ export function UngroupedSessions({ sessions, onSelect, onDelete, startIndex }) 
         </div>
         <div className="bg-slate-50/50 dark:bg-slate-800/50 divide-y divide-slate-100 dark:divide-slate-700/50">
           {sessions.map((session, i) => (
-            <SessionRow key={session.id} session={session} onClick={() => onSelect(session)} onDelete={onDelete} index={startIndex + i} />
+            <SessionRow key={session.id} session={session} onClick={() => onSelect(session)} onDelete={onDelete} onDuplicate={onDuplicate} index={startIndex + i} />
           ))}
         </div>
       </div>

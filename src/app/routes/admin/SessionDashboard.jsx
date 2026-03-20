@@ -8,6 +8,8 @@ import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
 import { SuspenseFallback } from '@/components/ui/Skeleton';
 import PinggoMascot from '@/components/ui/PinggoMascot';
+import Toast from '@/components/ui/Toast';
+import { useToast } from '@/hooks/useToast';
 import { CourseGroup, UngroupedSessions } from './SessionList';
 import SessionSearchFilter from './SessionSearchFilter';
 import { Plus, Loader2, LogOut } from 'lucide-react';
@@ -24,12 +26,14 @@ const TABS = [
 ];
 
 export default function SessionDashboard({ onSelectSession, onLogout, adminUser, isMaster, pendingAdmins, pendingCount, approveAdmin, rejectAdmin }) {
-  const { sessions, loading, refresh, deleteSession } = useSessionList();
+  const { sessions, loading, refresh, deleteSession, duplicateSession } = useSessionList();
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [activeTab, setActiveTab] = useState('classes');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [duplicating, setDuplicating] = useState(false);
+  const { toast, showToast } = useToast();
 
   const filteredSessions = useMemo(() => {
     let result = sessions;
@@ -81,6 +85,21 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
   const handleDeleteRequest = useCallback((session) => {
     setDeleteTarget(session);
   }, []);
+
+  const handleDuplicate = useCallback(async (session) => {
+    if (duplicating) return;
+    setDuplicating(true);
+    try {
+      const newId = await duplicateSession(session.id);
+      if (newId) {
+        const name = session.courseName || '세션';
+        showToast(`${name} 복제 완료`);
+        onSelectSession(newId, false);
+      }
+    } finally {
+      setDuplicating(false);
+    }
+  }, [duplicating, duplicateSession, onSelectSession, showToast]);
 
   return (
     <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col">
@@ -163,9 +182,9 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
                   ) : (
                     <div className="space-y-2">
                       {courseGroups.map(([name, list], gi) => (
-                        <CourseGroup key={name} name={name} sessions={list} onSelect={handleSelect} onDelete={handleDeleteRequest} startIndex={gi * 10} />
+                        <CourseGroup key={name} name={name} sessions={list} onSelect={handleSelect} onDelete={handleDeleteRequest} onDuplicate={handleDuplicate} startIndex={gi * 10} />
                       ))}
-                      <UngroupedSessions sessions={ungrouped} onSelect={handleSelect} onDelete={handleDeleteRequest} startIndex={courseGroups.length * 10} />
+                      <UngroupedSessions sessions={ungrouped} onSelect={handleSelect} onDelete={handleDeleteRequest} onDuplicate={handleDuplicate} startIndex={courseGroups.length * 10} />
                     </div>
                   )}
                 </>
@@ -202,6 +221,22 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
 
       <CreateSessionModal open={modalOpen} onClose={() => setModalOpen(false)} onCreated={handleCreated} sessions={sessions} />
       <DeleteSessionModal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} session={deleteTarget} onConfirm={deleteSession} />
+      <Toast message={toast} />
+      <AnimatePresence>
+        {duplicating && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/20 z-40 flex items-center justify-center"
+          >
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-lg px-6 py-4 flex items-center gap-3">
+              <Loader2 size={18} className="animate-spin text-slate-500" />
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-200">복제 중...</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

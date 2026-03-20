@@ -1,6 +1,7 @@
-import { ref, get, remove } from 'firebase/database';
+import { ref, get, remove, set, serverTimestamp } from 'firebase/database';
 import { useState, useEffect, useCallback } from 'react';
 import { db } from '@/lib/firebase';
+import { generateSessionId, generateQuestionId } from '@/lib/utils';
 
 /**
  * Fetches all sessions from Firebase with metadata including course info.
@@ -85,5 +86,79 @@ export function useSessionList() {
     }
   }, []);
 
-  return { sessions, loading, refresh: fetchSessions, deleteSession };
+  /**
+   * Duplicates a session: copies all questions (stripped of votes/runtime data),
+   * same courseName, next roundNumber. Returns newSessionId or null on failure.
+   */
+  const duplicateSession = useCallback(async (sourceSessionId) => {
+    try {
+      // Find the source session metadata from our list
+      const source = sessions.find((s) => s.id === sourceSessionId);
+      if (!source) return null;
+
+      // Determine next round number for this course
+      let nextRound = (source.roundNumber || 0) + 1;
+      if (source.courseName) {
+        const sameCourseSessions = sessions.filter((s) => s.courseName === source.courseName);
+        const maxRound = Math.max(0, ...sameCourseSessions.map((s) => s.roundNumber || 0));
+        nextRound = maxRound + 1;
+      }
+
+      // Fetch source questions from Firebase
+      const sourceSnap = await get(ref(db, `sessions/${sourceSessionId}/questions`));
+      const sourceQuestions = sourceSnap.val();
+
+      const newId = generateSessionId();
+      const sessionData = {
+        status: 'setting',
+        currentQuestion: null,
+        currentMode: 'waiting',
+        createdAt: serverTimestamp(),
+        courseName: source.courseName || null,
+        roundNumber: nextRound,
+      };
+
+      if (sourceQuestions) {
+        const newQuestions = {};
+        Object.values(sourceQuestions)
+          .sort((a, b) => (a.order || 0) - (b.order || 0))
+          .forEach((q, i) => {
+            const newQId = generateQuestionId();
+            const {
+              votes: _v,
+              activatedAt: _a,
+              revealedAt: _r,
+              awardedAt: _w,
+              event: _e,
+              ...rest
+            } = q;
+            newQuestions[newQId] = { ...rest, order: i + 1 };
+          });
+        sessionData.questions = newQuestions;
+      }
+
+      await set(ref(db, `sessions/${newId}`), sessionData);
+
+      // Optimistic update: add to local sessions list
+      setSessions((prev) => [{
+        id: newId,
+        status: 'setting',
+        createdAt: Date.now(),
+        participantCount: 0,
+        questionCount: sourceQuestions ? Object.keys(sourceQuestions).length : 0,
+        activityRate: 0,
+        activeCount: 0,
+        courseName: source.courseName || null,
+        roundNumber: nextRound,
+        courseTemplateId: null,
+      }, ...prev]);
+
+      return newId;
+    } catch (err) {
+      console.error('Failed to duplicate session:', err);
+      return null;
+    }
+  }, [sessions]);
+
+  return { sessions, loading, refresh: fetchSessions, deleteSession, duplicateSession };
 }
