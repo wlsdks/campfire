@@ -1,0 +1,184 @@
+import { ref, set, serverTimestamp } from 'firebase/database';
+import { db } from '@/lib/firebase';
+import { getParticipantId } from '@/lib/participant';
+import { useState, useCallback, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Send } from 'lucide-react';
+import Button from '@/components/ui/Button';
+import VoteConfirm from './VoteConfirm';
+import { useVotes } from '@/hooks/useVotes';
+import { Users } from 'lucide-react';
+
+/** Shows the sentence with the blank filled by the student's answer or a placeholder. */
+function SentencePreview({ title, answer }) {
+  const parts = title.split('___');
+  return (
+    <p className="text-sm text-slate-600 leading-relaxed">
+      {parts.map((part, i) => (
+        <span key={i}>
+          {part}
+          {i < parts.length - 1 && (
+            <span className={`inline-block mx-0.5 px-2 py-0.5 rounded-md text-sm font-semibold border-b-2 ${
+              answer?.trim()
+                ? 'bg-slate-100 text-slate-900 border-slate-400'
+                : 'bg-slate-50 text-slate-300 border-dashed border-slate-300'
+            }`}>
+              {answer?.trim() || '???'}
+            </span>
+          )}
+        </span>
+      ))}
+    </p>
+  );
+}
+
+/** Live answer distribution shown after voting. */
+function AnswerDistribution({ sessionId, questionId, correctAnswer }) {
+  const { voteList, totalVotes } = useVotes(sessionId, questionId);
+
+  const { correctCount, topAnswers } = useMemo(() => {
+    const freq = {};
+    let correct = 0;
+    voteList.forEach((v) => {
+      const val = (v.value || '').trim().toLowerCase();
+      if (!val) return;
+      freq[val] = (freq[val] || 0) + 1;
+      if (correctAnswer && val === correctAnswer.trim().toLowerCase()) correct++;
+    });
+    const sorted = Object.entries(freq)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([answer, count]) => ({ answer, count }));
+    return { correctCount: correct, topAnswers: sorted };
+  }, [voteList, correctAnswer]);
+
+  const correctPct = totalVotes > 0 ? Math.round((correctCount / totalVotes) * 100) : 0;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.4, type: 'spring', stiffness: 300, damping: 28 }}
+      className="w-full rounded-xl border border-slate-200 bg-white p-4 shadow-sm space-y-3"
+    >
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-semibold text-slate-500 tracking-tight">실시간 응답</p>
+        <div className="flex items-center gap-1 text-slate-400">
+          <Users size={12} />
+          <span className="text-xs font-medium">{totalVotes}</span>
+        </div>
+      </div>
+
+      {correctAnswer && totalVotes > 0 && (
+        <div className="space-y-1.5">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-slate-400">정답률</span>
+            <span className="font-semibold text-slate-700">{correctPct}%</span>
+          </div>
+          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+            <motion.div
+              animate={{ width: `${correctPct}%` }}
+              transition={{ type: 'spring', stiffness: 80, damping: 22 }}
+              className="h-full bg-slate-700 rounded-full"
+            />
+          </div>
+        </div>
+      )}
+
+      {topAnswers.length > 0 && (
+        <div className="space-y-1">
+          {topAnswers.map((a, i) => (
+            <div key={a.answer} className="flex items-center gap-2">
+              <span className="text-[10px] font-bold text-slate-300 w-3 text-right">{i + 1}</span>
+              <span className="flex-1 text-xs text-slate-600 truncate">{a.answer}</span>
+              <span className="text-xs text-slate-400 tabular-nums">{a.count}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
+export default function FillBlankVoter({ sessionId, questionId, title, correctAnswer, disabled = false }) {
+  const [answer, setAnswer] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = useCallback(async () => {
+    if (disabled || submitting || !answer.trim()) return;
+    setSubmitting(true);
+    try {
+      const pid = getParticipantId();
+      await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${pid}`), {
+        value: answer.trim(),
+        timestamp: serverTimestamp(),
+      });
+      setSubmitted(true);
+    } catch (err) {
+      console.error('Fill-in-blank vote failed:', err);
+      setSubmitting(false);
+    }
+  }, [sessionId, questionId, answer, disabled, submitting]);
+
+  if (submitted) {
+    return (
+      <div className="space-y-3">
+        <VoteConfirm
+          submittedLabel="답변 제출 완료!"
+          submittedDescription="빈칸 채우기 응답이 기록되었습니다"
+          waitingLabel="결과를 기다리는 중..."
+          waitingDescription="강사가 정답을 공개하면 표시됩니다"
+          selectedAnswer={answer.trim()}
+          selectedAnswerLabel="내 답변"
+        />
+        <AnswerDistribution sessionId={sessionId} questionId={questionId} correctAnswer={correctAnswer} />
+      </div>
+    );
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: 'spring', stiffness: 280, damping: 28 }}
+      className="w-full space-y-4"
+    >
+      {/* Sentence with blank */}
+      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+        <SentencePreview title={title} answer={answer} />
+      </div>
+
+      {/* Answer input */}
+      <div className="space-y-3">
+        <div className="relative">
+          <input
+            type="text"
+            value={answer}
+            onChange={(e) => setAnswer(e.target.value.slice(0, 30))}
+            placeholder="빈칸에 들어갈 답을 입력하세요"
+            aria-label="빈칸 답변"
+            enterKeyHint="done"
+            disabled={disabled}
+            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 pr-16 text-base placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 focus:bg-white transition-all"
+            autoFocus
+          />
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-300 font-medium tabular-nums">
+            {answer.length}/30
+          </span>
+        </div>
+
+        <Button
+          onClick={handleSubmit}
+          variant="primary"
+          size="lg"
+          disabled={!answer.trim() || disabled || submitting}
+          className="w-full"
+        >
+          <Send size={18} />
+          {submitting ? '제출 중...' : '제출하기'}
+        </Button>
+      </div>
+    </motion.div>
+  );
+}

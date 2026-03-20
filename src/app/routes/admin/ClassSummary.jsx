@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react';
-import { ArrowUpDown, BarChart3, Trophy, Circle, Cloud, MessageSquare, Swords, Thermometer, AlertTriangle } from 'lucide-react';
+import { ArrowUpDown, BarChart3, Trophy, Circle, Cloud, MessageSquare, Swords, TextCursorInput, Thermometer, AlertTriangle } from 'lucide-react';
 import AchievementSummary from '@/features/quiz/components/AchievementSummary';
 import ExportMenu from './ExportMenu';
 
@@ -12,6 +12,7 @@ const QTYPE_META = {
   scale: { label: '감정 온도계', icon: Thermometer },
   debate: { label: '찬반 토론', icon: Swords },
   ranking: { label: '순위 맞추기', icon: ArrowUpDown },
+  fillinblank: { label: '빈칸 채우기', icon: TextCursorInput },
 };
 
 function getQuestionInsights(questions, participantCount) {
@@ -26,7 +27,12 @@ function getQuestionInsights(questions, participantCount) {
     let correctCount = 0;
 
     if (hasCorrectAnswer && voteCount > 0) {
-      correctCount = Object.values(votes).filter((v) => v.value === q.correctAnswer).length;
+      const isFillBlank = q.type === 'fillinblank';
+      const normalizedCA = isFillBlank ? q.correctAnswer.trim().toLowerCase() : q.correctAnswer;
+      correctCount = Object.values(votes).filter((v) => {
+        if (isFillBlank) return (v.value || '').trim().toLowerCase() === normalizedCA;
+        return v.value === q.correctAnswer;
+      }).length;
       correctRate = Math.round((correctCount / voteCount) * 100);
     }
 

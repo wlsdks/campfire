@@ -186,6 +186,36 @@ function makeRankingVotes(participantIds, participants, itemCount, voteRatio = 0
   return votes;
 }
 
+/**
+ * Generate fill-in-blank votes. Students type text answers.
+ * correctAnswer is what goes in the blank; some students get it right, some don't.
+ */
+const FILLINBLANK_WRONG_ANSWERS = [
+  // Generic wrong answers for technical questions
+  'null', 'undefined', 'error', '모르겠어요', '?', 'pass',
+];
+
+function makeFillBlankVotes(participantIds, participants, correctAnswer, correctRatio = 0.6, voteRatio = 0.85) {
+  const votes = {};
+  const votingIds = participantIds.filter(() => Math.random() < voteRatio);
+  const wrongAnswers = [...FILLINBLANK_WRONG_ANSWERS].sort(() => Math.random() - 0.5);
+  let wi = 0;
+
+  for (const id of votingIds) {
+    const isCorrect = Math.random() < correctRatio;
+    let value;
+    if (isCorrect) {
+      // Some correct answers have slight variations in casing
+      value = Math.random() < 0.7 ? correctAnswer : correctAnswer.toLowerCase();
+    } else {
+      value = wrongAnswers[wi % wrongAnswers.length];
+      wi++;
+    }
+    votes[id] = { value, nickname: participants[id].nickname };
+  }
+  return votes;
+}
+
 // ─── INTERACTION GENERATORS ───────────────────────────
 
 function mid() { return `m_${uid()}`; }
@@ -451,7 +481,7 @@ const sessions = {};
   const q3a = qid(), q3b = qid(), q3c = qid(), q3d = qid(), q3e = qid();
   const s3 = sid();
   const t3 = now - 2 * HOUR;
-  const q3f = qid(), q3g = qid(), q3h = qid();
+  const q3f = qid(), q3g = qid(), q3h = qid(), q3i = qid();
   const s3Questions = {
     [q3a]: {
       type: 'choice', title: '오늘 수업 난이도는 어땠나요?', order: 1,
@@ -504,6 +534,11 @@ const sessions = {};
       options: ['요구사항 분석', '와이어프레임 설계', '프론트엔드 개발', '백엔드 API 구현', '테스트 및 배포'],
       correctAnswer: '0,1,2,3,4',
       votes: makeRankingVotes(ids3, p3, 5),
+    },
+    [q3i]: {
+      type: 'fillinblank', title: 'HTTP 상태코드 ___는 서버 내부 오류를 의미한다', order: 9,
+      correctAnswer: '500',
+      votes: makeFillBlankVotes(ids3, p3, '500', 0.55),
     },
   };
   sessions[s3] = {
@@ -841,7 +876,7 @@ const sessions = {};
   // Round 2 — active
   const names2 = pickNames(19);
   const { participants: p2, ids: ids2 } = makeParticipants(names2);
-  const q2a = qid(), q2b = qid(), q2c = qid(), q2d = qid(), q2e = qid();
+  const q2a = qid(), q2b = qid(), q2c = qid(), q2d = qid(), q2e = qid(), q2f = qid();
   const s2 = sid();
   const t2 = now - 1 * HOUR;
   const s2UxQuestions = {
@@ -871,6 +906,11 @@ const sessions = {};
       options: ['사용자 조사', '페르소나 정의', '와이어프레임', '프로토타입'],
       correctAnswer: '0,1,2,3',
       votes: makeRankingVotes(ids2, p2, 4),
+    },
+    [q2f]: {
+      type: 'fillinblank', title: 'Jakob Nielsen이 제안한 UI 평가 방법론을 ___이라고 한다', order: 6,
+      correctAnswer: '휴리스틱 평가',
+      votes: makeFillBlankVotes(ids2, p2, '휴리스틱 평가', 0.4),
     },
   };
   sessions[s2] = {

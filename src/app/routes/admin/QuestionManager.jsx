@@ -84,6 +84,9 @@ export default function QuestionManager({
         questionData.options = cleanOptions;
         questionData.correctAnswer = cleanOptions.map((_, i) => String(i)).join(',');
       }
+      if (type === 'fillinblank') {
+        questionData.correctAnswer = correctAnswer?.trim() || '';
+      }
       if (type === 'ox') {
         questionData.correctAnswer = correctAnswer || 'O';
       }

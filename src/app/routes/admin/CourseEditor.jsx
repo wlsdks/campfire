@@ -30,6 +30,9 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
       questionData.options = cleanOptions;
       questionData.correctAnswer = cleanOptions.map((_, i) => String(i)).join(',');
     }
+    if (type === 'fillinblank') {
+      questionData.correctAnswer = correctAnswer?.trim() || '';
+    }
     if (type === 'quiz') {
       questionData.correctAnswer = cleanOptions.includes(correctAnswer) ? correctAnswer : cleanOptions[0];
       questionData.points = QUIZ_DEFAULTS.points;

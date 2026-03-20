@@ -7,6 +7,7 @@ import TextInput from '@/features/voting/components/TextInput';
 import ScaleVoter from '@/features/voting/components/ScaleVoter';
 import DebateVoter from '@/features/voting/components/DebateVoter';
 import RankingVoter from '@/features/voting/components/RankingVoter';
+import FillBlankVoter from '@/features/voting/components/FillBlankVoter';
 import WaitingPage from './WaitingPage';
 import LeaderboardPage from './LeaderboardPage';
 import SessionEndedPage from './SessionEndedPage';
@@ -236,6 +237,15 @@ export default function VotePage({ sessionId }) {
               )}
               {question.type === 'ranking' && (
                 <RankingVoter sessionId={sessionId} questionId={currentQId} options={question.options || []} disabled={timerExpired} />
+              )}
+              {question.type === 'fillinblank' && (
+                <FillBlankVoter
+                  sessionId={sessionId}
+                  questionId={currentQId}
+                  title={question.title}
+                  correctAnswer={question.correctAnswer}
+                  disabled={timerExpired}
+                />
               )}
 
               {/* Time's up overlay */}

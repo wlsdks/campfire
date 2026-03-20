@@ -6,6 +6,7 @@ import QACards from './QACards';
 import ScaleChart from './ScaleChart';
 import DebateChart from './DebateChart';
 import RankingChart from './RankingChart';
+import FillBlankChart from './FillBlankChart';
 import BetDistribution from './BetDistribution';
 import { BarChart3 } from 'lucide-react';
 import { motion } from 'framer-motion';
@@ -15,7 +16,7 @@ import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import { isQuizQuestion } from '@/lib/quiz';
 
-const TYPE_LABELS = { choice: '객관식', ox: 'O/X', wordcloud: '워드클라우드', qna: 'Q&A', quiz: '퀴즈', scale: '감정 온도계', debate: '찬반 토론', ranking: '순위 맞추기' };
+const TYPE_LABELS = { choice: '객관식', ox: 'O/X', wordcloud: '워드클라우드', qna: 'Q&A', quiz: '퀴즈', scale: '감정 온도계', debate: '찬반 토론', ranking: '순위 맞추기', fillinblank: '빈칸 채우기' };
 
 export default memo(function VizRenderer({ sessionId, session }) {
   const currentQId = session?.currentQuestion;
@@ -108,6 +109,15 @@ export default memo(function VizRenderer({ sessionId, session }) {
           {question.type === 'scale' && <ScaleChart sessionId={sessionId} questionId={currentQId} />}
           {question.type === 'debate' && <DebateChart sessionId={sessionId} questionId={currentQId} />}
           {question.type === 'ranking' && <RankingChart sessionId={sessionId} questionId={currentQId} items={question.options || []} />}
+          {question.type === 'fillinblank' && (
+            <FillBlankChart
+              sessionId={sessionId}
+              questionId={currentQId}
+              title={question.title}
+              correctAnswer={question.correctAnswer}
+              revealed={answerRevealed}
+            />
+          )}
           {isQA && <QACards sessionId={sessionId} questionId={currentQId} title={question.title} />}
         </div>
       </ErrorBoundary>

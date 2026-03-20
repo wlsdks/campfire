@@ -67,6 +67,7 @@ const QTYPE_LABELS = {
   scale: '감정 온도계',
   debate: '찬반 토론',
   ranking: '순위 맞추기',
+  fillinblank: '빈칸 채우기',
 };
 
 /**

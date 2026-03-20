@@ -23,6 +23,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
 
   const isChoiceLike = type === 'choice' || type === 'quiz';
   const isRanking = type === 'ranking';
+  const isFillInBlank = type === 'fillinblank';
 
   // For ranking: move item up/down to set correct order
   function moveRankingItem(index, direction) {
@@ -45,6 +46,14 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
     }
     if (isRanking && cleanOptions.length < 3) {
       setLocalError('순위 맞추기는 최소 3개 항목이 필요합니다.');
+      return;
+    }
+    if (isFillInBlank && !title.includes('___')) {
+      setLocalError('빈칸 위치를 ___ (밑줄 3개)로 표시해주세요.');
+      return;
+    }
+    if (isFillInBlank && !correctAnswer.trim()) {
+      setLocalError('정답을 입력해주세요.');
       return;
     }
     if ((type === 'quiz' || type === 'choice') && !correctAnswer) {
@@ -117,7 +126,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
         <textarea
           value={title}
           onChange={(e) => { setTitle(e.target.value); setLocalError(null); }}
-          placeholder="학생들에게 보여줄 질문을 입력하세요"
+          placeholder={isFillInBlank ? 'HTTP 상태코드 ___는 페이지를 찾을 수 없음을 의미한다' : '학생들에게 보여줄 질문을 입력하세요'}
           aria-label="질문 내용"
           rows={3}
           className={`${INPUT} resize-none text-base leading-relaxed`}
@@ -246,6 +255,49 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
                   <Plus size={14} /> 항목 추가
                 </button>
               )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 빈칸 채우기 안내 & 정답 입력 */}
+      <AnimatePresence>
+        {isFillInBlank && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className={GAP}
+          >
+            <div className="rounded-xl border border-slate-200 p-3 space-y-3">
+              <div>
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">빈칸 미리보기</p>
+                <p className="text-sm text-slate-600 leading-relaxed">
+                  {title.includes('___')
+                    ? title.split('___').map((part, i, arr) => (
+                        <span key={i}>
+                          {part}
+                          {i < arr.length - 1 && (
+                            <span className="inline-block mx-1 px-3 py-0.5 bg-slate-100 border border-dashed border-slate-300 rounded-md text-slate-400 text-xs font-medium">
+                              빈칸
+                            </span>
+                          )}
+                        </span>
+                      ))
+                    : <span className="text-slate-300">질문에 ___ 를 포함해주세요</span>
+                  }
+                </p>
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">정답</p>
+                <input
+                  value={correctAnswer}
+                  onChange={(e) => { setCorrectAnswer(e.target.value); setLocalError(null); }}
+                  placeholder="빈칸에 들어갈 정답"
+                  aria-label="빈칸 정답"
+                  className={`${INPUT} py-2.5`}
+                />
+              </div>
             </div>
           </motion.div>
         )}
