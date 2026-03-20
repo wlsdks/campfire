@@ -140,7 +140,7 @@ export default function UrgentQuestionList({ sessionId }) {
               <Button variant="secondary" size="sm" onClick={handleClose}>
                 닫기
               </Button>
-              <Button variant="danger" size="sm" onClick={handleConfirm}>
+              <Button variant="primary" size="sm" onClick={handleConfirm}>
                 확인
               </Button>
             </div>
