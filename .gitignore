@@ -35,3 +35,5 @@ Thumbs.db
 # Debug
 *.local
 screenshots/
+.playwright-mcp/
+*.png
