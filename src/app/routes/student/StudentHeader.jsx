@@ -59,7 +59,7 @@ export default function StudentHeader({ sessionId }) {
         <div className="flex items-center justify-between px-5 py-4 max-w-[620px] mx-auto">
           <div className="flex items-center gap-2.5">
             <PickMascot size="xs" />
-            <span className="font-bold text-lg text-slate-900 dark:text-slate-100">Pick</span>
+            <span className="font-bold text-lg text-slate-900 dark:text-slate-100 tracking-tight">Pick</span>
           </div>
 
           <div className="flex items-center gap-4">

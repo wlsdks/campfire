@@ -188,7 +188,7 @@ export default function VotePage({ sessionId }) {
               </div>
             )}
             <div className="flex items-start justify-between gap-3">
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 leading-snug flex-1">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 leading-snug tracking-tight flex-1">
                 {question.title}
               </h2>
               <div className="flex items-center gap-1.5 shrink-0">

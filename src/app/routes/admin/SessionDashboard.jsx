@@ -120,7 +120,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
         <div className="flex items-center gap-2">
           <PickMascot size="sm" />
           <div>
-            <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">Pick</h1>
+            <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pick</h1>
             <p className="text-slate-400 text-xs">{TABS.find((t) => t.key === activeTab)?.label}</p>
           </div>
         </div>

@@ -91,12 +91,12 @@ export default memo(function ClassSummary({ session, participants, scores, leade
       {/* Top stats */}
       <div className="grid grid-cols-3 gap-3">
         <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 text-center">
-          <p className="text-3xl font-bold text-slate-900 dark:text-slate-100">{participantCount}</p>
-          <p className="text-xs text-slate-400 mt-1">참여자</p>
+          <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{participantCount}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">참여자</p>
         </div>
         <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 text-center">
-          <p className="text-3xl font-bold text-slate-900 dark:text-slate-100">{activityRate}%</p>
-          <p className="text-xs text-slate-400 mt-1">참여율</p>
+          <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{activityRate}%</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">참여율</p>
           <div className="mt-2 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
             <motion.div className="h-full bg-slate-700 dark:bg-slate-300 rounded-full"
               initial={{ width: 0 }} animate={{ width: `${activityRate}%` }}
@@ -106,13 +106,13 @@ export default memo(function ClassSummary({ session, participants, scores, leade
         <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 text-center">
           {avgCorrectRate !== null ? (
             <>
-              <p className="text-3xl font-bold text-slate-900 dark:text-slate-100">{avgCorrectRate}%</p>
-              <p className="text-xs text-slate-400 mt-1">평균 정답률</p>
+              <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{avgCorrectRate}%</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">평균 정답률</p>
             </>
           ) : (
             <>
-              <p className="text-3xl font-bold text-slate-900 dark:text-slate-100">{questionList.length}</p>
-              <p className="text-xs text-slate-400 mt-1">질문</p>
+              <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{questionList.length}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">질문</p>
             </>
           )}
         </div>
