@@ -145,7 +145,7 @@ export const tw = {
 
   // Buttons
   btnBase: 'font-medium rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.97]',
-  btnPrimary: 'bg-indigo-600 hover:bg-indigo-700 text-white focus-visible:ring-indigo-400',
+  btnPrimary: 'bg-slate-900 hover:bg-slate-800 text-white focus-visible:ring-slate-400',
   btnSecondary: 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 focus-visible:ring-slate-300',
   btnGhost: 'hover:bg-slate-100 text-slate-600 focus-visible:ring-slate-300',
   btnDanger: 'bg-red-500 hover:bg-red-600 text-white focus-visible:ring-red-400',

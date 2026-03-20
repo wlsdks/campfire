@@ -2,7 +2,7 @@ import { forwardRef } from 'react';
 import { motion } from 'framer-motion';
 
 const variants = {
-  primary: 'bg-indigo-600 hover:bg-indigo-700 text-white focus-visible:ring-indigo-400 dark:bg-indigo-500 dark:hover:bg-indigo-400 dark:text-white',
+  primary: 'bg-slate-900 hover:bg-slate-800 text-white focus-visible:ring-slate-400 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900',
   secondary: 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 focus-visible:ring-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 dark:border-slate-600',
   ghost: 'hover:bg-slate-100 text-slate-600 focus-visible:ring-slate-300 dark:hover:bg-slate-700 dark:text-slate-300',
   danger: 'bg-red-500 hover:bg-red-600 text-white focus-visible:ring-red-400',
