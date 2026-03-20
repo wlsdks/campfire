@@ -1,7 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Target, Loader2 } from 'lucide-react';
+import { useState, useRef, useEffect, lazy, Suspense } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Target, Loader2, RotateCcw } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import Avatar from '@/components/ui/Avatar';
+
+const ConfettiBurst = lazy(() => import('@/features/quiz/components/ConfettiBurst'));
 // Monochromatic slate segments
 const SEGMENT_COLORS = [
   '#0F172A', '#334155', '#64748B', '#94A3B8',
@@ -74,7 +77,7 @@ export default function Roulette({ participants, onResult }) {
           animate={{ rotate: rotation }}
           transition={{ duration: 4, ease: [0.17, 0.67, 0.12, 0.99] }}
         >
-          <circle cx="100" cy="100" r="98" fill="none" stroke={colors.border} strokeWidth="1.5" />
+          <circle cx="100" cy="100" r="98" fill="none" stroke={"#E2E8F0"} strokeWidth="1.5" />
           {names.map((name, i) => {
             const startAngle = i * segmentAngle;
             const endAngle = startAngle + segmentAngle;
@@ -110,36 +113,50 @@ export default function Roulette({ participants, onResult }) {
               </g>
             );
           })}
-          <circle cx="100" cy="100" r="18" fill="white" stroke={colors.border} strokeWidth="1.5" />
+          <circle cx="100" cy="100" r="18" fill="white" stroke={"#E2E8F0"} strokeWidth="1.5" />
           <text x="100" y="100" fill={'#0F172A'} fontSize="10" fontWeight="bold" fontFamily="'Pretendard', system-ui" textAnchor="middle" dominantBaseline="central">GO</text>
         </motion.svg>
       </div>
 
-      {winner && (
-        <motion.div
-          initial={{ scale: 0, y: 12 }}
-          animate={{ scale: 1, y: 0 }}
-          transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-          className="text-center space-y-1"
-        >
-          <div className="text-4xl font-bold text-slate-900">{winner}</div>
-          <div className="text-slate-500 text-base">당첨되었습니다!</div>
-        </motion.div>
-      )}
-
-      <Button onClick={spin} disabled={spinning || names.length === 0} variant="primary" size="lg">
-        {spinning ? (
-          <span className="flex items-center gap-2">
-            <Loader2 size={20} className="animate-spin" />
-            돌리는 중...
-          </span>
-        ) : (
-          <span className="flex items-center gap-2">
-            <Target size={20} />
-            돌리기
-          </span>
+      <AnimatePresence>
+        {winner && (
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            className="text-center space-y-3"
+          >
+            <Suspense fallback={null}><ConfettiBurst /></Suspense>
+            <Avatar name={winner} size="lg" />
+            <div className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">{winner}</div>
+            <span className="inline-flex items-center px-3 py-1 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-full text-sm font-bold">
+              당첨!
+            </span>
+          </motion.div>
         )}
-      </Button>
+      </AnimatePresence>
+
+      <div className="flex gap-3">
+        {winner && (
+          <Button onClick={() => { setWinner(null); }} variant="secondary" size="lg">
+            <RotateCcw size={18} />
+            다시 돌리기
+          </Button>
+        )}
+        <Button onClick={spin} disabled={spinning || names.length === 0} variant="primary" size="lg">
+          {spinning ? (
+            <span className="flex items-center gap-2">
+              <Loader2 size={20} className="animate-spin" />
+              돌리는 중...
+            </span>
+          ) : (
+            <span className="flex items-center gap-2">
+              <Target size={20} />
+              {winner ? '한 번 더' : '돌리기'}
+            </span>
+          )}
+        </Button>
+      </div>
     </div>
   );
 }
