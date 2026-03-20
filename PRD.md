@@ -101,6 +101,7 @@
 | 제비뽑기 (로터리) | 강사 | ✅ 완료 | 카드 뒤집기 당첨 |
 | 타이머 | 강사 | ✅ 완료 | 15/30/60/커스텀, 헤더 아이콘 팝업 |
 | 학생 타이머 표시 | 학생 | ✅ 완료 | 카운트다운 바 (녹→황→적), 시간 종료 시 투표 잠금 + 안내 오버레이 |
+| 스피드 퀴즈 모드 | 양쪽 | ✅ 완료 | 퀴즈 2개 이상일 때 활성화 가능. 강사: 빠른 진행 카드에서 "스피드 퀴즈" 원클릭 시작/중단, 헤더에 "스피드" 배지. 자동 10초 타이머 → 자동 정답 공개+점수 반영 → 3.5초 후 자동 다음 문제 → 마지막 문제 후 리더보드 자동 표시. 학생: SpeedQuizBanner(문제 진행 N/M + 도트 인디케이터), SpeedQuizCombo(연속 정답 카운터, 3연속 x1.2배·5연속 x1.5배 점수 배율). Firebase path: sessions/{id}/speedQuiz(active/startedAt/totalQuestions). useSpeedQuiz(admin 자동진행 엔진), useSpeedQuizStudent(학생 읽기전용). 3뷰포트(1280/768/390) 확인, 콘솔 에러 0 |
 
 ### 2.8 UI/UX
 
@@ -168,6 +169,7 @@ sessions/
     urgentQuestions/{questionId}: { text, timestamp, read }
     handRaises/{participantId}: { raised, nickname, timestamp }
     timer: { endTime, duration, running, startedAt }
+    speedQuiz: { active, startedAt, totalQuestions }  // transient, removed when speed quiz ends
 
 questionLibrary/{adminUid}/{qId}: { type, title, options[], correctAnswer, points, savedAt, updatedAt }
 

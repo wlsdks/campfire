@@ -414,6 +414,7 @@ const sessions = {};
   const q3a = qid(), q3b = qid(), q3c = qid(), q3d = qid(), q3e = qid();
   const s3 = sid();
   const t3 = now - 2 * HOUR;
+  const q3f = qid(), q3g = qid();
   const s3Questions = {
     [q3a]: {
       type: 'choice', title: '오늘 수업 난이도는 어땠나요?', order: 1,
@@ -442,6 +443,20 @@ const sessions = {};
     [q3e]: {
       type: 'debate', title: 'AI가 프로그래머를 대체할 수 있을까?', order: 5,
       votes: makeDebateVotes(ids3, p3, 0.45),
+    },
+    [q3f]: {
+      type: 'quiz', title: 'Git에서 작업 내용을 임시 저장하는 명령어는?', order: 6,
+      options: ['git save', 'git stash', 'git store', 'git cache'],
+      correctAnswer: 'git stash',
+      points: 100, participationTickets: 1, correctBonusTickets: 2,
+      speedWindowMs: 30000, maxSpeedBonus: 50,
+    },
+    [q3g]: {
+      type: 'quiz', title: 'JavaScript에서 비동기 처리에 사용하는 키워드는?', order: 7,
+      options: ['wait', 'async/await', 'defer', 'delay'],
+      correctAnswer: 'async/await',
+      points: 100, participationTickets: 1, correctBonusTickets: 2,
+      speedWindowMs: 30000, maxSpeedBonus: 50,
     },
   };
   sessions[s3] = {

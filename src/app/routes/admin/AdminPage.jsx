@@ -24,6 +24,7 @@ import ClassSummary from './ClassSummary';
 import RightSidebar from './RightSidebar';
 import PresentationView, { MainContent } from './PresentationView';
 import ModeSwitcher from './ModeSwitcher';
+import { useSpeedQuiz } from '@/features/quiz/api/useSpeedQuiz';
 
 function getAdminUser() {
   try {
@@ -63,6 +64,10 @@ export default function AdminPage() {
   const [chatOpen, setChatOpen] = useState(false);
   const { isRunning: timerRunning, endTime, duration, startTimer, stopTimer } = useTimer(sessionId);
   const { pendingAdmins, pendingCount, approveAdmin, rejectAdmin } = useAdminApprovals();
+
+  const { active: speedQuizActive, startSpeedQuiz, endSpeedQuiz, handleTimerExpire: handleSpeedTimerExpire, quizCount: speedQuizCount } = useSpeedQuiz(
+    sessionId, session, { scores, participants, startTimer, stopTimer }
+  );
 
   const isSetting = session?.status === 'setting';
   const isEnded = session?.status === 'ended';
@@ -305,6 +310,10 @@ export default function AdminPage() {
         onAddClick={effectiveReadOnly ? undefined : handleShowCenterForm}
         onViewQuestion={handleViewQuestion}
         adminUid={adminUser?.uid}
+        speedQuizActive={speedQuizActive}
+        onStartSpeedQuiz={startSpeedQuiz}
+        onEndSpeedQuiz={endSpeedQuiz}
+        speedQuizCount={speedQuizCount}
       />
       {!effectiveReadOnly && (
         <ModeSwitcher
@@ -419,6 +428,7 @@ export default function AdminPage() {
         isTablet={isTablet}
         onLeftDrawer={handleLeftDrawerOpen}
         onRightDrawer={handleRightDrawerOpen}
+        speedQuizActive={speedQuizActive}
       />
 
       {/* Tablet overlay drawers */}

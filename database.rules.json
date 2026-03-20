@@ -152,6 +152,11 @@
           ".write": true
         },
 
+        "speedQuiz": {
+          ".write": true,
+          ".validate": "!newData.exists() || newData.hasChild('active')"
+        },
+
         "scores": {
           ".write": true,
           "$participantId": {

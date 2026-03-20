@@ -3,7 +3,7 @@ import { ref, set, remove, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { generateQuestionId } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
-import { BookmarkPlus, CheckCircle, PanelLeftClose, Play, Plus, Square } from 'lucide-react';
+import { BookmarkPlus, CheckCircle, PanelLeftClose, Play, Plus, Square, Zap } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import {
   QUIZ_DEFAULTS,
@@ -47,6 +47,10 @@ export default function QuestionManager({
   onViewQuestion,
   formOpen = false,
   adminUid,
+  speedQuizActive = false,
+  onStartSpeedQuiz,
+  onEndSpeedQuiz,
+  speedQuizCount = 0,
 }) {
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState(null);
@@ -412,18 +416,46 @@ export default function QuestionManager({
               })}
             </div>
           )}
+          {/* Speed Quiz toggle */}
+          {speedQuizCount >= 2 && (
+            <div>
+              {speedQuizActive ? (
+                <button
+                  onClick={onEndSpeedQuiz}
+                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg bg-slate-900 text-white text-sm font-medium transition-all active:scale-[0.97]"
+                >
+                  <span className="flex items-center gap-2">
+                    <Zap size={14} />
+                    스피드 퀴즈 진행 중
+                  </span>
+                  <span className="text-xs text-white/50">탭하여 중단</span>
+                </button>
+              ) : (
+                <button
+                  onClick={onStartSpeedQuiz}
+                  className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-sm font-medium text-slate-700 transition-all active:scale-[0.97]"
+                >
+                  <span className="flex items-center gap-2">
+                    <Zap size={14} className="text-slate-500" />
+                    스피드 퀴즈
+                  </span>
+                  <span className="text-xs text-slate-400">{speedQuizCount}문제 · 10초씩</span>
+                </button>
+              )}
+            </div>
+          )}
           <div className="grid grid-cols-2 gap-2">
             <Button
               onClick={() => nextEntry && activateQuestion(nextEntry[0])}
               variant="primary"
               size="sm"
-              disabled={!nextEntry}
+              disabled={!nextEntry || speedQuizActive}
             >
               <Play size={14} />
               {currentEntry ? '다음 질문' : '첫 질문 시작'}
               {nextEvent && ' ✦'}
             </Button>
-            <Button onClick={clearActive} variant="secondary" size="sm" disabled={!currentEntry}>
+            <Button onClick={clearActive} variant="secondary" size="sm" disabled={!currentEntry || speedQuizActive}>
               <Square size={14} />
               대기 화면
             </Button>

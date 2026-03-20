@@ -4,7 +4,7 @@ import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import TimerControls from '@/features/timer/components/TimerControls';
 import TimerRing from '@/features/timer/components/TimerRing';
-import { ArrowLeft, Clock, MessageCircle, Users, Monitor, Play, Square, Layers, List, PanelRight } from 'lucide-react';
+import { ArrowLeft, Clock, MessageCircle, Users, Monitor, Play, Square, Layers, List, PanelRight, Zap } from 'lucide-react';
 
 function formatElapsed(ms) {
   const totalSec = Math.floor(ms / 1000);
@@ -60,6 +60,7 @@ export default memo(function AdminSessionHeader({
   isTablet = false,
   onLeftDrawer,
   onRightDrawer,
+  speedQuizActive = false,
 }) {
   const [timerOpen, setTimerOpen] = useState(false);
   const timerRef = useRef(null);
@@ -104,6 +105,16 @@ export default memo(function AdminSessionHeader({
             )}
             {effectiveReadOnly && <Badge variant="neutral">클래스 확인</Badge>}
             {isSetting && <Badge variant="warning" className="py-1 px-2.5 text-xs font-semibold">세팅중</Badge>}
+            {speedQuizActive && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-900 text-white rounded text-[11px] font-bold"
+              >
+                <Zap size={10} />
+                스피드
+              </motion.div>
+            )}
           </div>
           <div className="flex items-center gap-2">
             {!isTablet && (

@@ -11,82 +11,22 @@ import LeaderboardPage from './LeaderboardPage';
 import SessionEndedPage from './SessionEndedPage';
 import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
+import { TYPE_LABELS, QuizResultFromVote, TimerExpiredOverlay } from './VoteHelpers';
 import Badge from '@/components/ui/Badge';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
-import QuizResult from '@/features/quiz/components/QuizResult';
 import { SkeletonCard } from '@/components/ui/Skeleton';
 import TimerCountdown from '@/features/timer/components/TimerCountdown';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, Clock } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useTimer } from '@/features/timer/api/useTimer';
 import { useScores } from '@/features/quiz/api/useScores';
 import { useAchievements } from '@/features/quiz/api/useAchievements';
+import { useSpeedQuizStudent } from '@/features/quiz/api/useSpeedQuizStudent';
 import AchievementToast from '@/features/quiz/components/AchievementToast';
-import { getQuizReward } from '@/lib/quiz';
-
-const TYPE_LABELS = {
-  choice: '객관식',
-  ox: 'O/X',
-  quiz: '퀴즈',
-  wordcloud: '워드클라우드',
-  qna: 'Q&A',
-  scale: '감정 온도계',
-  debate: '찬반 토론',
-};
-
-/** Renders QuizResult from vote data passed by QuizVoter. */
-function QuizResultFromVote({ question, currentVote }) {
-  if (!currentVote) return null;
-  const reward = getQuizReward(question, currentVote);
-  return (
-    <QuizResult
-      isCorrect={reward.isCorrect}
-      points={reward.points}
-      tickets={reward.tickets}
-      correctAnswer={question.correctAnswer}
-      event={question.event || null}
-    />
-  );
-}
-
-/** Timer expired overlay shown when countdown reaches zero. */
-function TimerExpiredOverlay() {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-      className="absolute inset-0 bg-white/80 backdrop-blur-[2px] rounded-xl flex flex-col items-center justify-center gap-2"
-    >
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 22, delay: 0.1 }}
-        className="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center"
-      >
-        <Clock size={22} className="text-white" />
-      </motion.div>
-      <motion.p
-        initial={{ opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="text-lg font-bold text-slate-900"
-      >
-        시간이 종료되었습니다
-      </motion.p>
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="text-sm text-slate-400"
-      >
-        결과를 기다려주세요
-      </motion.p>
-    </motion.div>
-  );
-}
+import SpeedQuizBanner from '@/features/quiz/components/SpeedQuizBanner';
+import SpeedQuizCombo from '@/features/quiz/components/SpeedQuizCombo';
+import { getParticipantId } from '@/lib/participant';
 
 export default function VotePage({ sessionId }) {
   const { session, loading } = useSession(sessionId);
@@ -112,6 +52,23 @@ export default function VotePage({ sessionId }) {
   // Achievement system — computed from existing votes/scores
   const { scores } = useScores(sessionId);
   const { achievements } = useAchievements(session, scores);
+
+  // Speed quiz mode detection
+  const { isSpeedQuiz, totalQuestions: speedQuizTotal } = useSpeedQuizStudent(sessionId);
+  const participantId = getParticipantId();
+  const myStreak = scores[participantId]?.streak || 0;
+
+  // Compute current quiz question index for speed quiz banner
+  const speedQuizIndex = useMemo(() => {
+    if (!isSpeedQuiz) return 0;
+    const currentQId = session?.currentQuestion;
+    const questions = session?.questions || {};
+    const quizQs = Object.entries(questions)
+      .filter(([, q]) => q.type === 'quiz')
+      .sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
+    const idx = currentQId ? quizQs.findIndex(([qId]) => qId === currentQId) : -1;
+    return idx >= 0 ? idx + 1 : 0;
+  }, [isSpeedQuiz, session?.currentQuestion, session?.questions]);
 
   // Compute question progress: "질문 1/3"
   // Must be before all conditional returns to satisfy React hooks rules.
@@ -162,6 +119,19 @@ export default function VotePage({ sessionId }) {
       <StudentHeader sessionId={sessionId} />
 
       <div className="w-full max-w-sm space-y-4">
+          {/* Speed quiz banner */}
+          {isSpeedQuiz && question?.type === 'quiz' && (
+            <SpeedQuizBanner
+              currentIndex={speedQuizIndex}
+              totalQuestions={speedQuizTotal}
+            />
+          )}
+
+          {/* Speed quiz combo counter */}
+          {isSpeedQuiz && question?.type === 'quiz' && myStreak >= 1 && (
+            <SpeedQuizCombo streak={myStreak} />
+          )}
+
           {/* Question header */}
           <motion.div
             key={`header-${currentQId}`}
