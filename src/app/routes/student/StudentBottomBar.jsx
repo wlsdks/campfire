@@ -179,7 +179,7 @@ export default function StudentBottomBar({ sessionId }) {
               className={`h-14 rounded-xl font-medium text-sm transition-all flex flex-col items-center justify-center gap-0.5 ${
                 isRaised
                   ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
-                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700'
+                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 active:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 dark:active:bg-slate-600'
               }`}
             >
               <Hand size={20} />
@@ -188,7 +188,7 @@ export default function StudentBottomBar({ sessionId }) {
             <motion.button
               whileTap={{ scale: 0.96 }}
               onClick={() => setShowQuestionInput(true)}
-              className="h-14 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 transition-all flex flex-col items-center justify-center gap-0.5"
+              className="h-14 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 active:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 dark:active:bg-slate-600 transition-all flex flex-col items-center justify-center gap-0.5"
             >
               <MessageCircle size={20} />
               <span className="text-[11px]">긴급</span>
@@ -196,7 +196,7 @@ export default function StudentBottomBar({ sessionId }) {
             <motion.button
               whileTap={{ scale: 0.96 }}
               onClick={handleOpenQA}
-              className="h-14 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 transition-all flex flex-col items-center justify-center gap-0.5 relative"
+              className="h-14 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 active:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 dark:active:bg-slate-600 transition-all flex flex-col items-center justify-center gap-0.5 relative"
             >
               <HelpCircle size={20} />
               <span className="text-[11px]">질문</span>
@@ -207,7 +207,7 @@ export default function StudentBottomBar({ sessionId }) {
             <motion.button
               whileTap={{ scale: 0.96 }}
               onClick={handleOpenChat}
-              className="h-14 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 transition-all flex flex-col items-center justify-center gap-0.5 relative"
+              className="h-14 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 active:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 dark:active:bg-slate-600 transition-all flex flex-col items-center justify-center gap-0.5 relative"
             >
               <MessageSquare size={20} />
               <span className="text-[11px]">채팅</span>
