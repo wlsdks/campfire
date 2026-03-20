@@ -4,11 +4,13 @@ import { db } from '@/lib/firebase';
 
 export function useRecentQuestions(sessions) {
   const [questions, setQuestions] = useState([]);
+  const [difficultQuestions, setDifficultQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!sessions || sessions.length === 0) {
       setQuestions([]);
+      setDifficultQuestions([]);
       setLoading(false);
       return;
     }
@@ -27,30 +29,65 @@ export function useRecentQuestions(sessions) {
           const data = snap.val();
           if (!data) continue;
 
+          const participantSnap = await get(ref(db, `sessions/${s.id}/participants`));
+          const participantCount = participantSnap.val() ? Object.keys(participantSnap.val()).length : 0;
+
           Object.entries(data).forEach(([qId, q]) => {
-            const responseCount = q.votes ? Object.keys(q.votes).length : 0;
+            const votes = q.votes || {};
+            const responseCount = Object.keys(votes).length;
+            const hasCorrectAnswer = Boolean(q.correctAnswer);
+            let correctRate = null;
+            let correctCount = 0;
+
+            if (hasCorrectAnswer && responseCount > 0) {
+              const isFillBlank = q.type === 'fillinblank';
+              const normalizedCA = isFillBlank ? q.correctAnswer.trim().toLowerCase() : q.correctAnswer;
+              correctCount = Object.values(votes).filter((v) => {
+                if (isFillBlank) return (v.value || '').trim().toLowerCase() === normalizedCA;
+                return v.value === q.correctAnswer;
+              }).length;
+              correctRate = Math.round((correctCount / responseCount) * 100);
+            }
+
             allQuestions.push({
               qId,
               sessionId: s.id,
               title: q.title || '제목 없음',
               type: q.type || 'choice',
               courseName: s.courseName,
+              roundNumber: s.roundNumber,
               responseCount,
+              participantCount,
               order: q.order || 0,
               createdAt: s.createdAt || 0,
+              hasCorrectAnswer,
+              correctRate,
+              correctCount,
             });
           });
         }
 
-        // Sort by session date (newest first), then by order
-        allQuestions.sort((a, b) => b.createdAt - a.createdAt || a.order - b.order);
+        // Recent: sort by session date (newest first), then by order
+        const recent = [...allQuestions]
+          .sort((a, b) => b.createdAt - a.createdAt || a.order - b.order)
+          .slice(0, 10);
+
+        // Difficult: graded questions with lowest correct rate, minimum 3 responses
+        const difficult = allQuestions
+          .filter((q) => q.hasCorrectAnswer && q.correctRate !== null && q.responseCount >= 3)
+          .sort((a, b) => a.correctRate - b.correctRate || b.responseCount - a.responseCount)
+          .slice(0, 5);
 
         if (!cancelled) {
-          setQuestions(allQuestions.slice(0, 10));
+          setQuestions(recent);
+          setDifficultQuestions(difficult);
         }
       } catch (err) {
         console.error('Failed to fetch recent questions:', err);
-        if (!cancelled) setQuestions([]);
+        if (!cancelled) {
+          setQuestions([]);
+          setDifficultQuestions([]);
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -60,5 +97,5 @@ export function useRecentQuestions(sessions) {
     return () => { cancelled = true; };
   }, [sessions]);
 
-  return { questions, loading };
+  return { questions, difficultQuestions, loading };
 }
