@@ -18,6 +18,7 @@ export default function CenterContent({
   participants,
   scores,
   count,
+  teamScores,
 }) {
   return (
     <AnimatePresence mode="wait">
@@ -76,6 +77,7 @@ export default function CenterContent({
               onlineList={onlineList}
               leaderboard={leaderboard}
               drawParticipants={drawParticipants}
+              teamScores={teamScores}
             />
           )}
         </motion.div>

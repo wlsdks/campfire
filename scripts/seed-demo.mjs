@@ -550,6 +550,7 @@ const sessions = {};
     handRaises: makeHandRaises(ids3, p3, t3 + 10 * 60000),
     urgentQuestions: makeUrgentQuestions(t3 + 10 * 60000, 2),
     scores: makeScores(ids3, p3, s3Questions),
+    teamBattle: makeTeamBattle(ids3, 3),
   };
 }
 
@@ -957,6 +958,32 @@ const sessions = {};
         type: 'scale', title: '클라우드 전환에 대한 조직의 준비도는?', order: 5,
       },
     },
+  };
+}
+
+/**
+ * Generate team battle data for an active session.
+ * Assigns participants into N teams.
+ */
+function makeTeamBattle(participantIds, teamCount = 2) {
+  const shuffled = [...participantIds].sort(() => Math.random() - 0.5);
+  const teams = {};
+  const NAMES = ['Alpha', 'Bravo', 'Charlie', 'Delta'];
+  for (let i = 0; i < teamCount; i++) {
+    teams[`team${i}`] = {
+      name: NAMES[i],
+      members: {},
+    };
+  }
+  shuffled.forEach((pid, idx) => {
+    const teamKey = `team${idx % teamCount}`;
+    teams[teamKey].members[pid] = true;
+  });
+  return {
+    active: true,
+    teamCount,
+    teams,
+    startedAt: Date.now(),
   };
 }
 

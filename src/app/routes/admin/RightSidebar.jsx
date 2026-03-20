@@ -6,6 +6,7 @@ import QRCode from '@/components/ui/QRCode';
 import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
 import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
+import TeamScoreboard from '@/features/teams/components/TeamScoreboard';
 import Button from '@/components/ui/Button';
 
 function RightPanelAccordion({ title, count, defaultOpen = false, children }) {
@@ -44,7 +45,7 @@ function RightPanelAccordion({ title, count, defaultOpen = false, children }) {
   );
 }
 
-function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard, voteCounts, studentUrl }) {
+function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard, voteCounts, studentUrl, teamScores }) {
   const [copied, setCopied] = useState(false);
 
   async function copyStudentLink() {
@@ -89,6 +90,13 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
       {/* Hand raises & urgent questions */}
       <HandRaiseList sessionId={sessionId} />
       <UrgentQuestionList sessionId={sessionId} />
+
+      {/* Team scoreboard accordion */}
+      {teamScores && teamScores.length > 0 && (
+        <RightPanelAccordion title="팀 대항전" count={teamScores.length} defaultOpen>
+          <TeamScoreboard teamScores={teamScores} title={null} />
+        </RightPanelAccordion>
+      )}
 
       {/* Leaderboard accordion */}
       {leaderboard.length > 0 && (
@@ -174,6 +182,7 @@ export default memo(function RightSidebar({
   studentUrl,
   sidebarCollapsed,
   isDrawer = false,
+  teamScores,
 }) {
   const content = effectiveReadOnly ? (
     <ReadOnlyRightSidebar
@@ -191,6 +200,7 @@ export default memo(function RightSidebar({
       leaderboard={leaderboard}
       voteCounts={voteCounts}
       studentUrl={studentUrl}
+      teamScores={teamScores}
     />
   );
 

@@ -29,6 +29,8 @@ import AchievementToast from '@/features/quiz/components/AchievementToast';
 import SpeedQuizBanner from '@/features/quiz/components/SpeedQuizBanner';
 import SpeedQuizCombo from '@/features/quiz/components/SpeedQuizCombo';
 import StreakBadge from '@/features/quiz/components/StreakBadge';
+import TeamBadge from '@/features/teams/components/TeamBadge';
+import { useMyTeam } from '@/features/teams/api/useTeamBattle';
 import { getParticipantId } from '@/lib/participant';
 
 export default function VotePage({ sessionId }) {
@@ -60,6 +62,9 @@ export default function VotePage({ sessionId }) {
   const { isSpeedQuiz, totalQuestions: speedQuizTotal } = useSpeedQuizStudent(sessionId);
   const participantId = getParticipantId();
   const myStreak = scores[participantId]?.streak || 0;
+
+  // Team battle
+  const { isActive: teamActive, myTeam } = useMyTeam(sessionId, participantId);
 
   // Compute current quiz question index for speed quiz banner
   const speedQuizIndex = useMemo(() => {
@@ -133,6 +138,11 @@ export default function VotePage({ sessionId }) {
           {/* Speed quiz combo counter */}
           {isSpeedQuiz && question?.type === 'quiz' && myStreak >= 1 && (
             <SpeedQuizCombo streak={myStreak} />
+          )}
+
+          {/* Team badge */}
+          {teamActive && myTeam && (
+            <TeamBadge teamName={myTeam.name} teamColors={myTeam.colors} memberCount={myTeam.memberCount} />
           )}
 
           {/* Streak badge — shown on regular quiz (non-speed) when 3+ streak */}

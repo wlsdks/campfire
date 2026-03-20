@@ -1,9 +1,9 @@
 import { memo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Target, Ticket, Trophy, X, ChevronDown } from 'lucide-react';
+import { Target, Ticket, Trophy, Swords, X, ChevronDown } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
-export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTickets, leaderboard, modeOpen, onToggle, onSwitchMode }) {
+export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTickets, leaderboard, modeOpen, onToggle, onSwitchMode, teamBattleActive = false }) {
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTic
           <p className="text-slate-500 text-sm font-semibold">모드 전환</p>
           {isSpecialMode && (
             <span className="text-xs font-medium text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">
-              {currentMode === 'roulette' ? '돌림판' : currentMode === 'lottery' ? '제비뽑기' : '리더보드'}
+              {currentMode === 'roulette' ? '돌림판' : currentMode === 'lottery' ? '제비뽑기' : currentMode === 'teamBattle' ? '팀 스코어보드' : '리더보드'}
             </span>
           )}
         </div>
@@ -44,6 +44,7 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTic
                 { mode: 'roulette', label: '돌림판', icon: Target },
                 { mode: 'lottery', label: totalTickets > 0 ? '보상 추첨' : '제비뽑기', icon: Ticket },
                 ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
+                ...(teamBattleActive ? [{ mode: 'teamBattle', label: '팀 스코어보드', icon: Swords }] : []),
               ].map(({ mode, label, icon: Icon }) => {
                 const isActive = currentMode === mode;
                 return isActive ? (

@@ -7,6 +7,7 @@ import { useScores } from '@/features/quiz/api/useScores';
 import { useAdminApprovals } from '@/features/session/api/useAdminApprovals';
 import { useTimer } from '@/features/timer/api/useTimer';
 import { useSpeedQuiz } from '@/features/quiz/api/useSpeedQuiz';
+import { useTeamBattle, useTeamScores } from '@/features/teams/api/useTeamBattle';
 import { useQuestionActions } from '@/hooks/useQuestionActions';
 
 function getAdminUser() {
@@ -57,6 +58,9 @@ export function useAdminSession() {
   const { active: speedQuizActive, startSpeedQuiz, endSpeedQuiz, quizCount: speedQuizCount } = useSpeedQuiz(
     sessionId, session, { scores, participants, startTimer, stopTimer }
   );
+
+  const { isActive: teamBattleActive, teamCount: teamBattleCount, teams, startTeamBattle, endTeamBattle } = useTeamBattle(sessionId);
+  const teamScores = useTeamScores(teams, scores);
 
   const { handleSubmit: submitQuestion } = useQuestionActions(sessionId, session?.questions || {}, session?.currentQuestion, scores, participants);
 
@@ -165,6 +169,8 @@ export function useAdminSession() {
     timerRunning, endTime, duration, startTimer, stopTimer,
     // Speed quiz
     speedQuizActive, startSpeedQuiz, endSpeedQuiz, speedQuizCount,
+    // Team battle
+    teamBattleActive, teamBattleCount, teams, teamScores, startTeamBattle, endTeamBattle,
     // UI state
     presentMode, chatOpen, sidebarCollapsed, showCenterForm, modeOpen,
     leftDrawerOpen, rightDrawerOpen,

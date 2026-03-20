@@ -14,6 +14,7 @@ import PresentationView from './PresentationView';
 import ModeSwitcher from './ModeSwitcher';
 import TabletDrawers from './TabletDrawers';
 import CenterContent from './CenterContent';
+import TeamBattleControl from '@/features/teams/components/TeamBattleControl';
 
 export default function AdminPage() {
   const s = useAdminSession();
@@ -32,12 +33,13 @@ export default function AdminPage() {
   if (!s.session) { s.handleBack(); return null; }
 
   const currentMode = s.session?.currentMode;
-  const isSpecialMode = ['roulette', 'lottery', 'leaderboard'].includes(currentMode);
+  const isSpecialMode = ['roulette', 'lottery', 'leaderboard', 'teamBattle'].includes(currentMode);
 
   if (s.presentMode) {
     return (
       <PresentationView sessionId={s.sessionId} session={s.session} currentMode={currentMode} onlineList={s.onlineList}
-        leaderboard={s.leaderboard} drawParticipants={s.drawParticipants} studentUrl={s.studentUrl} count={s.count} onExit={s.handleExitPresent} />
+        leaderboard={s.leaderboard} drawParticipants={s.drawParticipants} studentUrl={s.studentUrl} count={s.count} onExit={s.handleExitPresent}
+        teamScores={s.teamScores} />
     );
   }
 
@@ -52,8 +54,18 @@ export default function AdminPage() {
         speedQuizActive={s.speedQuizActive} onStartSpeedQuiz={s.startSpeedQuiz} onEndSpeedQuiz={s.endSpeedQuiz} speedQuizCount={s.speedQuizCount}
       />
       {!s.effectiveReadOnly && (
-        <ModeSwitcher currentMode={currentMode} isSpecialMode={isSpecialMode} totalTickets={s.totalTickets}
-          leaderboard={s.leaderboard} modeOpen={s.modeOpen} onToggle={s.handleModeToggle} onSwitchMode={s.switchMode} />
+        <>
+          <TeamBattleControl
+            isActive={s.teamBattleActive}
+            teamCount={s.teamBattleCount}
+            participantCount={s.count}
+            onStart={(count) => s.startTeamBattle(s.onlineList.map((p) => p.id), count)}
+            onEnd={s.endTeamBattle}
+          />
+          <ModeSwitcher currentMode={currentMode} isSpecialMode={isSpecialMode} totalTickets={s.totalTickets}
+            leaderboard={s.leaderboard} modeOpen={s.modeOpen} onToggle={s.handleModeToggle} onSwitchMode={s.switchMode}
+            teamBattleActive={s.teamBattleActive} />
+        </>
       )}
     </>
   );
@@ -68,7 +80,8 @@ export default function AdminPage() {
         questionProgress={s.questionProgress} count={s.count} totalTickets={s.totalTickets} chatOpen={s.chatOpen} onChatToggle={s.handleChatToggle}
         timerRunning={s.timerRunning} endTime={s.endTime} duration={s.duration} onTimerStart={s.startTimer} onTimerStop={s.stopTimer}
         onBack={s.handleBack} onStartSession={s.handleStartSession} onEndSession={s.handleEndSession} onPresentMode={s.handlePresentMode}
-        isTablet={isTablet} onLeftDrawer={s.handleLeftDrawerOpen} onRightDrawer={s.handleRightDrawerOpen} speedQuizActive={s.speedQuizActive} />
+        isTablet={isTablet} onLeftDrawer={s.handleLeftDrawerOpen} onRightDrawer={s.handleRightDrawerOpen}
+        speedQuizActive={s.speedQuizActive} teamBattleActive={s.teamBattleActive} />
 
       {isTablet && (
         <TabletDrawers leftOpen={s.leftDrawerOpen} rightOpen={s.rightDrawerOpen}
@@ -77,7 +90,8 @@ export default function AdminPage() {
           rightContent={
             <RightSidebar session={s.session} sessionId={s.sessionId} effectiveReadOnly={s.effectiveReadOnly}
               participants={s.participants} onlineList={s.onlineList} count={s.count} leaderboard={s.leaderboard}
-              voteCounts={s.voteCounts} studentUrl={s.studentUrl} sidebarCollapsed={false} isDrawer />
+              voteCounts={s.voteCounts} studentUrl={s.studentUrl} sidebarCollapsed={false} isDrawer
+              teamScores={s.teamScores} />
           } />
       )}
 
@@ -107,13 +121,15 @@ export default function AdminPage() {
           <CenterContent showCenterForm={s.showCenterForm} onHideCenterForm={s.handleHideCenterForm} onCenterFormSubmit={s.handleCenterFormSubmit}
             effectiveReadOnly={s.effectiveReadOnly} session={s.session} currentMode={currentMode} sessionId={s.sessionId}
             onlineList={s.onlineList} leaderboard={s.leaderboard} drawParticipants={s.drawParticipants}
-            participants={s.participants} scores={s.scores} count={s.count} />
+            participants={s.participants} scores={s.scores} count={s.count}
+            teamScores={s.teamScores} />
         </div>
 
         {!isTablet && (
           <RightSidebar session={s.session} sessionId={s.sessionId} effectiveReadOnly={s.effectiveReadOnly}
             participants={s.participants} onlineList={s.onlineList} count={s.count} leaderboard={s.leaderboard}
-            voteCounts={s.voteCounts} studentUrl={s.studentUrl} sidebarCollapsed={s.sidebarCollapsed} />
+            voteCounts={s.voteCounts} studentUrl={s.studentUrl} sidebarCollapsed={s.sidebarCollapsed}
+            teamScores={s.teamScores} />
         )}
       </div>
     </div>

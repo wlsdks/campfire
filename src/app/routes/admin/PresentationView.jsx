@@ -11,6 +11,7 @@ import UrgentQuestionList from '@/features/questions/components/UrgentQuestionLi
 import Badge from '@/components/ui/Badge';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
+import TeamScoreboard from '@/features/teams/components/TeamScoreboard';
 
 function PresentEmptyState({ sessionId, studentUrl, count }) {
   return (
@@ -112,11 +113,14 @@ function PresentQROverlay({ sessionId, studentUrl, count }) {
   );
 }
 
-function MainContent({ currentMode, sessionId, session, onlineList, leaderboard, drawParticipants, presentMode, studentUrl, count }) {
+function MainContent({ currentMode, sessionId, session, onlineList, leaderboard, drawParticipants, presentMode, studentUrl, count, teamScores }) {
   if (currentMode === 'roulette') return <Roulette participants={onlineList} />;
   if (currentMode === 'lottery') return <Lottery participants={drawParticipants} />;
   if (currentMode === 'leaderboard') {
     return <Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" />;
+  }
+  if (currentMode === 'teamBattle') {
+    return <TeamScoreboard teamScores={teamScores || []} />;
   }
 
   const currentQId = session?.currentQuestion;
@@ -131,7 +135,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
 
 export { MainContent };
 
-export default function PresentationView({ sessionId, session, currentMode, onlineList, leaderboard, drawParticipants, studentUrl, count, onExit }) {
+export default function PresentationView({ sessionId, session, currentMode, onlineList, leaderboard, drawParticipants, studentUrl, count, onExit, teamScores }) {
   const exitPresent = useCallback(() => onExit(), [onExit]);
 
   useEffect(() => {
@@ -159,6 +163,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
           presentMode
           studentUrl={studentUrl}
           count={count}
+          teamScores={teamScores}
         />
       </div>
       <PresentQROverlay sessionId={sessionId} studentUrl={studentUrl} count={count} />

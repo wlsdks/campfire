@@ -105,6 +105,7 @@
 | 타이머 | 강사 | ✅ 완료 | 15/30/60/커스텀, 헤더 아이콘 팝업 |
 | 학생 타이머 표시 | 학생 | ✅ 완료 | 카운트다운 바 (녹→황→적), 시간 종료 시 투표 잠금 + 안내 오버레이 |
 | 스피드 퀴즈 모드 | 양쪽 | ✅ 완료 | 퀴즈 2개 이상일 때 활성화 가능. 강사: 빠른 진행 카드에서 "스피드 퀴즈" 원클릭 시작/중단, 헤더에 "스피드" 배지. 자동 10초 타이머 → 자동 정답 공개+점수 반영 → 3.5초 후 자동 다음 문제 → 마지막 문제 후 리더보드 자동 표시. 학생: SpeedQuizBanner(문제 진행 N/M + 도트 인디케이터), SpeedQuizCombo(연속 정답 카운터, 3연속 x1.2배·5연속 x1.5배 점수 배율). Firebase path: sessions/{id}/speedQuiz(active/startedAt/totalQuestions). useSpeedQuiz(admin 자동진행 엔진), useSpeedQuizStudent(학생 읽기전용). 3뷰포트(1280/768/390) 확인, 콘솔 에러 0 |
+| 팀 대항전 | 양쪽 | ✅ 완료 | 참여자를 2~4팀으로 자동 배정하여 팀별 점수 경쟁. 강사: 좌측 사이드바 TeamBattleControl 아코디언에서 팀 수(2/3/4) 선택 후 "팀 배정 시작" (최소 4명 필요). 헤더에 "팀전" 배지(bg-slate-700). ModeSwitcher에 "팀 스코어보드" 모드 추가. 중앙 TeamScoreboard: 팀별 총점/평균/인원 바 차트, Crown 아이콘 선두 팀, 점수차 안내 텍스트. 우측 패널에 팀 대항전 아코디언(기본 펼침). 발표 모드에서도 팀 스코어보드 표시. 학생: VotePage에 TeamBadge(팀 이름+인원 pill), LeaderboardPage에 팀 스코어보드+내 팀 배지. Firebase path: sessions/{id}/teamBattle(active/teamCount/teams/{teamN}/{name,members}). 개별 퀴즈 점수가 팀 총점에 실시간 합산(useTeamScores). seed-demo에 3팀 팀 배틀 데모 데이터. database.rules.json 업데이트. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0 |
 | 포인트 베팅 | 양쪽 | ✅ 완료 | 퀴즈 질문에 베팅 활성화 가능. 강사: QuestionForm에서 "포인트 베팅" 토글(switch UI). 활성화된 질문은 QuestionList에 "베팅" 배지 표시. 중앙 시각화에 BetDistribution(1x/2x/3x 분포 3카드). 학생: 답안 선택 전 BetSelector 단계 — 1x 안전(패널티 0), 2x 자신(정답 2배/오답 -30점), 3x 올인(정답 3배/오답 -60점). 선택 후 퀴즈 옵션 표시. VoteConfirm에 "내 답안 (Nx 라벨)" 표시. QuizResult에 베팅 배지 + 손실 시 빨간색 점수 표시. 총점 최소 0(음수 방지). Firebase votes에 bet 필드 추가. quiz.js getQuizReward에 bet 배수/패널티 로직. CSV 내보내기에 베팅 정보 포함. seed-demo에 betting 데모 데이터 추가. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0 |
 
 ### 2.8 UI/UX
@@ -174,6 +175,7 @@ sessions/
     handRaises/{participantId}: { raised, nickname, timestamp }
     timer: { endTime, duration, running, startedAt }
     speedQuiz: { active, startedAt, totalQuestions }  // transient, removed when speed quiz ends
+    teamBattle: { active, teamCount, startedAt, teams/{ team0: { name, members/{pid: true} }, ... } }  // transient, removed when team battle ends
 
 questionLibrary/{adminUid}/{qId}: { type, title, options[], correctAnswer, points, savedAt, updatedAt }
 
