@@ -175,12 +175,12 @@ export default function VotePage({ sessionId }) {
           >
             {questionProgress && (
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-xs font-medium text-slate-400">
+                <span className="text-xs font-medium text-slate-400 tabular-nums">
                   질문 {questionProgress.current}/{questionProgress.total}
                 </span>
-                <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
+                <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                   <motion.div
-                    className="h-full bg-slate-300 rounded-full"
+                    className="h-full bg-slate-300 dark:bg-slate-500 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${(questionProgress.current / questionProgress.total) * 100}%` }}
                     transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.15 }}
