@@ -126,7 +126,7 @@ export default function WaitingPage({ sessionId, pendingEvent = null }) {
 
         {/* Quiz event banner */}
         {pendingEvent && (
-          <div className="pt-1 max-w-sm mx-auto">
+          <div className="pt-1 max-w-lg mx-auto">
             <QuizEventBanner event={pendingEvent} state="pending" />
           </div>
         )}

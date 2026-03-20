@@ -76,7 +76,7 @@ export default function JoinPage({ sessionId, onJoin }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         onSubmit={handleJoin}
-        className="w-full max-w-sm"
+        className="w-full max-w-lg"
       >
         <Card className="p-8 space-y-7">
           {/* Header */}
