@@ -197,7 +197,7 @@ export default function AdminPage() {
     }
   }, [sessionId, handleBack]);
 
-  const handleCenterFormSubmit = useCallback(async ({ type, title, options: cleanOptions, correctAnswer, betting }) => {
+  const handleCenterFormSubmit = useCallback(async ({ type, title, options: cleanOptions, correctAnswer, points, event, betting }) => {
     try {
       const qId = generateQuestionId();
       const questions = session?.questions || {};
@@ -206,14 +206,22 @@ export default function AdminPage() {
 
       if (isChoiceLike) {
         questionData.options = cleanOptions;
+        questionData.correctAnswer = cleanOptions.includes(correctAnswer) ? correctAnswer : cleanOptions[0];
+      }
+      if (type === 'ranking') {
+        questionData.options = cleanOptions;
+        questionData.correctAnswer = cleanOptions.map((_, i) => String(i)).join(',');
+      }
+      if (type === 'ox') {
+        questionData.correctAnswer = correctAnswer || 'O';
       }
       if (type === 'quiz') {
-        questionData.correctAnswer = cleanOptions.includes(correctAnswer) ? correctAnswer : cleanOptions[0];
-        questionData.points = QUIZ_DEFAULTS.points;
+        questionData.points = points || QUIZ_DEFAULTS.points;
         questionData.participationTickets = QUIZ_DEFAULTS.participationTickets;
         questionData.correctBonusTickets = QUIZ_DEFAULTS.correctBonusTickets;
         questionData.speedWindowMs = QUIZ_DEFAULTS.speedWindowMs;
         questionData.maxSpeedBonus = QUIZ_DEFAULTS.maxSpeedBonus;
+        if (event) questionData.event = event;
         if (betting) questionData.betting = true;
       }
 
