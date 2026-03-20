@@ -171,8 +171,8 @@ export default memo(function QuestionList({
               {questionList.length === 0 && (
                 <div className="flex flex-col items-center text-center py-6 space-y-2">
                   <PinggoMascot size="sm" mood="waiting" />
-                  <p className="text-slate-400 text-sm font-medium">아직 질문이 없습니다</p>
-                  <p className="text-slate-300 text-xs">위의 + 추가 버튼으로 첫 질문을 만들어보세요</p>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">아직 질문이 없습니다</p>
+                  <p className="text-slate-400 dark:text-slate-500 text-xs">위의 + 추가 버튼으로 첫 질문을 만들어보세요</p>
                 </div>
               )}
             </div>

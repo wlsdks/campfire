@@ -77,7 +77,7 @@ function ShortcutsSection() {
         <Keyboard size={18} className="text-slate-400" />
         <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">키보드 단축키</h3>
       </div>
-      <p className="text-xs text-slate-400 mb-5">세션 진행 중 키보드로 빠르게 수업을 진행하세요. 입력 필드에 포커스 시 비활성화됩니다.</p>
+      <p className="text-xs text-slate-500 dark:text-slate-400 mb-5">세션 진행 중 키보드로 빠르게 수업을 진행하세요. 입력 필드에 포커스 시 비활성화됩니다.</p>
       <div className="space-y-5">
         {SHORTCUTS.map(({ group, items }) => (
           <div key={group}>
@@ -127,7 +127,7 @@ function QuickStats({ sessions }) {
       <div className="grid grid-cols-2 gap-4">
         {items.map((item) => (
           <div key={item.label}>
-            <p className="text-xs text-slate-400 mb-1">{item.label}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{item.label}</p>
             <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{item.value}<span className="text-xs text-slate-400 font-normal ml-0.5">{item.suffix}</span></p>
           </div>
         ))}

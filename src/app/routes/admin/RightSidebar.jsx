@@ -70,7 +70,7 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
       <div className="flex items-center gap-2">
         <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
         <span className="text-slate-900 dark:text-slate-100 font-bold text-lg">{count}</span>
-        <span className="text-slate-400 text-sm">명 접속 중</span>
+        <span className="text-slate-500 dark:text-slate-400 text-sm">명 접속 중</span>
       </div>
 
       {activeQ && (
