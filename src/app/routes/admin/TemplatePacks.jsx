@@ -1,17 +1,11 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Download, Check, Snowflake, ClipboardList, Users, Code, Lightbulb, Package } from 'lucide-react';
+import { ChevronDown, ChevronRight, Download, Check, Snowflake, ClipboardList, Users, Code, Lightbulb, Package } from 'lucide-react';
 import { TEMPLATE_PACKS } from '@/lib/template-packs';
 import { QUESTION_TYPES } from '@/lib/question-types';
 import Button from '@/components/ui/Button';
 
-const ICON_MAP = {
-  Snowflake,
-  ClipboardList,
-  Users,
-  Code,
-  Lightbulb,
-};
+const ICON_MAP = { Snowflake, ClipboardList, Users, Code, Lightbulb };
 
 function PackQuestionPreview({ question, index }) {
   const qType = QUESTION_TYPES.find((t) => t.value === question.type);
@@ -19,12 +13,12 @@ function PackQuestionPreview({ question, index }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 4 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.15, delay: index * 0.04 }}
-      className="flex items-start gap-2.5 py-2"
+      initial={{ opacity: 0, x: -8 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.2, delay: index * 0.05, ease: 'easeOut' }}
+      className="flex items-start gap-3 py-2.5"
     >
-      <span className="text-xs font-bold text-slate-300 dark:text-slate-600 mt-0.5 w-4 shrink-0 text-center">
+      <span className="w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[10px] font-bold text-slate-400 shrink-0 mt-0.5">
         {index + 1}
       </span>
       <div className="flex-1 min-w-0">
@@ -38,73 +32,71 @@ function PackQuestionPreview({ question, index }) {
   );
 }
 
-function PackCard({ pack, onImport, imported }) {
+function PackCard({ pack, onImport, imported, index }) {
   const [expanded, setExpanded] = useState(false);
   const typeLabels = [...new Set(pack.questions.map((q) => q.type))];
   const PackIcon = ICON_MAP[pack.icon] || Package;
 
   return (
-    <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden transition-shadow hover:shadow-sm">
-      {/* Header */}
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, delay: index * 0.06, ease: 'easeOut' }}
+      className={`rounded-xl border overflow-hidden transition-all duration-200 ${
+        expanded
+          ? 'border-slate-300 dark:border-slate-600 shadow-md'
+          : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:-translate-y-0.5 hover:shadow-md'
+      }`}
+    >
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full text-left px-4 py-3.5 flex items-start gap-3 active:bg-slate-50 dark:active:bg-slate-700 transition-colors"
+        className="w-full text-left px-4 py-4 flex items-center gap-3 active:bg-slate-50 dark:active:bg-slate-700 transition-colors bg-white dark:bg-slate-800"
       >
-        <PackIcon size={18} className="text-slate-400 mt-0.5 shrink-0" />
+        <div className="w-9 h-9 rounded-lg bg-slate-50 dark:bg-slate-700 flex items-center justify-center shrink-0">
+          <PackIcon size={18} className="text-slate-500 dark:text-slate-400" />
+        </div>
         <div className="flex-1 min-w-0">
           <p className="text-slate-900 dark:text-slate-100 text-sm font-semibold">{pack.name}</p>
-          <p className="text-slate-400 text-xs mt-0.5 leading-relaxed">{pack.description}</p>
-          <div className="flex flex-wrap gap-1 mt-2">
-            {typeLabels.map((t) => {
-              const qt = QUESTION_TYPES.find((x) => x.value === t);
-              return (
-                <span key={t} className="text-[10px] px-1.5 py-0.5 rounded-md bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 font-medium">
-                  {qt?.label}
-                </span>
-              );
-            })}
-            <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-slate-50 dark:bg-slate-700 text-slate-400">
-              {pack.questions.length}개
-            </span>
-          </div>
+          <p className="text-slate-400 text-xs mt-0.5">{pack.questions.length}개 질문 · {typeLabels.length}가지 유형</p>
         </div>
         <motion.div
-          animate={{ rotate: expanded ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-          className="text-slate-300 dark:text-slate-500 mt-1 shrink-0"
+          animate={{ rotate: expanded ? 90 : 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+          className="text-slate-300 dark:text-slate-500 shrink-0"
         >
-          <ChevronDown size={16} />
+          <ChevronRight size={16} />
         </motion.div>
       </button>
 
-      {/* Expanded: question preview + import button */}
       <AnimatePresence>
         {expanded && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
+            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-4 border-t border-slate-100 dark:border-slate-700">
-              <div className="divide-y divide-slate-50 dark:divide-slate-700">
+            <div className="px-4 pb-4 bg-slate-50/50 dark:bg-slate-800/50">
+              <p className="text-xs text-slate-400 py-2 leading-relaxed">{pack.description}</p>
+              <div className="divide-y divide-slate-100 dark:divide-slate-700/50">
                 {pack.questions.map((q, i) => (
                   <PackQuestionPreview key={i} question={q} index={i} />
                 ))}
               </div>
               <div className="pt-3">
                 {imported ? (
-                  <div className="flex items-center justify-center gap-1.5 py-2 text-sm text-slate-400 font-medium">
-                    <Check size={14} />
+                  <motion.div
+                    initial={{ scale: 0.9 }}
+                    animate={{ scale: 1 }}
+                    className="flex items-center justify-center gap-1.5 py-2.5 text-sm text-slate-400 font-medium"
+                  >
+                    <Check size={16} />
                     추가 완료
-                  </div>
+                  </motion.div>
                 ) : (
                   <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onImport(pack);
-                    }}
+                    onClick={(e) => { e.stopPropagation(); onImport(pack); }}
                     variant="primary"
                     size="sm"
                     className="w-full"
@@ -118,7 +110,7 @@ function PackCard({ pack, onImport, imported }) {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }
 
@@ -140,11 +132,11 @@ export default function TemplatePacks({ onImportPack }) {
         <div className="flex items-center gap-2">
           <Package size={14} className="text-slate-400" />
           <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300">템플릿 팩</h3>
-          <span className="text-xs text-slate-400">{TEMPLATE_PACKS.length}개</span>
+          <span className="text-[11px] text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded-full">{TEMPLATE_PACKS.length}</span>
         </div>
         <motion.div
           animate={{ rotate: sectionOpen ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           className="text-slate-300 dark:text-slate-500"
         >
           <ChevronDown size={14} />
@@ -156,17 +148,12 @@ export default function TemplatePacks({ onImportPack }) {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
+            transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
             className="overflow-hidden"
           >
-            <div className="space-y-2">
-              {TEMPLATE_PACKS.map((pack) => (
-                <PackCard
-                  key={pack.id}
-                  pack={pack}
-                  onImport={handleImport}
-                  imported={imported.has(pack.id)}
-                />
+            <div className="space-y-2.5">
+              {TEMPLATE_PACKS.map((pack, i) => (
+                <PackCard key={pack.id} pack={pack} onImport={handleImport} imported={imported.has(pack.id)} index={i} />
               ))}
             </div>
           </motion.div>
