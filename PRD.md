@@ -1,7 +1,7 @@
 # Pick PRD (Product Requirements Document)
 
 > 실시간 강의 참여 플랫폼. 강사와 학생의 상호작용이 핵심.
-> 이 문서는 매 개선 사이클마다 업데이트됨. (59차 사이클 기준 최종 업데이트)
+> 이 문서는 매 개선 사이클마다 업데이트됨. (2026-03-21 기준 최신 업데이트)
 
 ---
 
@@ -142,8 +142,9 @@
 
 | 기능 | 대상 | 상태 | 설명 |
 |------|------|------|------|
-| 돌림판 (룰렛) | 강사 | 완료 | 참여자 중 무작위 선택 |
-| 제비뽑기 (로터리) | 강사 | 완료 | 카드 뒤집기 당첨 |
+| 돌림판 (룰렛) | 강사 | 완료 | 참여자 중 무작위 선택. 컨페티+아바타 결과 발표 |
+| 제비뽑기 (로터리) | 강사 | 완료 | 카드 뒤집기 당첨. 아바타+컨페티+리셋 |
+| 경품 추첨 | 강사 | 완료 | N명 랜덤 추첨. 슬롯머신→당첨 발표+컨페티. 1/2-3/4+ 레이아웃 |
 | 타이머 | 강사 | 완료 | 15/30/60/커스텀, 헤더 아이콘 팝업 |
 | 학생 타이머 | 학생 | 완료 | 카운트다운 바 (녹→황→적), 시간 종료 시 투표 잠금 + 안내 오버레이 |
 
@@ -165,6 +166,15 @@
 | 에러 바운더리 | 전체 | 완료 | 라우트+시각화+투표 레벨 세분화, 한국어 복구 UI |
 | PWA 매니페스트 | 학생 | 완료 | 홈 화면 추가, 서비스워커, Apple 메타태그 |
 | Admin 빈 상태 | 강사 | 완료 | 마스코트 + 단계별 안내 |
+| 긴급 질문 모달 | 강사 | 완료 | 클릭→중앙 팝업→확인(삭제)/닫기(읽음). MessageCircle 아이콘 |
+| 수업 질문 모달 | 강사 | 완료 | 클릭→팝업→답변완료/닫기. HelpCircle 아이콘, 좋아요 수 |
+| 질문 reviewing 알림 | 학생 | 완료 | 강사가 질문 확인 중→학생 "강사가 확인하고 있어요" 배너 |
+| 아코디언 흔들림 | 강사 | 완료 | 새 질문/손들기 수신 시 헤더 x축 shake 0.5s |
+| 채팅 아바타 UI | 양쪽 | 완료 | KakaoTalk 스타일 아바타+이름+버블+시간 |
+| 채팅 스마트 스크롤 | 양쪽 | 완료 | 하단 100px 내→자동 스크롤, 위 스크롤 시 유지 |
+| 복사 세션코드 | 학생 | 완료 | 대기 화면 세션코드 터치→클립보드 복사+체크 피드백 |
+| 대기 팁 아이콘 | 학생 | 완료 | 순환 팁에 contextual 아이콘 (Zap/Hand/MessageSquare 등) |
+| 사자 마스코트 | 전체 | 완료 | PickMascot — 뭉글뭉글 갈기, 눈 깜빡임. xs/sm/md/lg 사이즈 |
 
 ### 3.11 다크 모드
 
@@ -389,7 +399,7 @@ src/
   features/                  — 비즈니스 기능 (12개 도메인)
     chat/                    — ChatPanel, useChat
     class-questions/         — ClassQAPanel, ClassQuestionList, useClassQuestions
-    games/                   — Roulette, Lottery
+    games/                   — Roulette, Lottery, PrizeDraw
     hand-raise/              — HandRaiseList, useHandRaises
     participants/            — ParticipantList, JoinToast, useParticipants
     questions/               — UrgentQuestionList, useUrgentQuestions
