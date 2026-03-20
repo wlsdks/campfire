@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BarChart3, Circle, Cloud, MessageSquare, Plus, Trophy, Trash2, Check, AlertCircle } from 'lucide-react';
+import { BarChart3, Circle, Cloud, MessageSquare, Plus, Trophy, Trash2, Check, AlertCircle, Thermometer } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { QUIZ_DEFAULTS, QUIZ_EVENT_PRESETS } from '@/lib/quiz';
 
@@ -10,6 +10,7 @@ const QUESTION_TYPES = [
   { value: 'ox', label: 'O/X', icon: Circle },
   { value: 'wordcloud', label: '워드클라우드', icon: Cloud },
   { value: 'qna', label: 'Q&A', icon: MessageSquare },
+  { value: 'scale', label: '온도계', icon: Thermometer },
 ];
 
 const OPTION_LABELS = ['A', 'B', 'C', 'D', 'E'];

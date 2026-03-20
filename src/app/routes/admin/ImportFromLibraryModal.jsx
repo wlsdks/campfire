@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BarChart3, Circle, Cloud, MessageSquare, Trophy, Search, X, Check, BookmarkPlus } from 'lucide-react';
+import { BarChart3, Circle, Cloud, MessageSquare, Thermometer, Trophy, Search, X, Check, BookmarkPlus } from 'lucide-react';
 import { useQuestionLibrary } from '@/features/questions/api/useQuestionLibrary';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
@@ -11,6 +11,7 @@ const QUESTION_TYPES = [
   { value: 'ox', label: 'O/X', icon: Circle },
   { value: 'wordcloud', label: '워드클라우드', icon: Cloud },
   { value: 'qna', label: 'Q&A', icon: MessageSquare },
+  { value: 'scale', label: '감정 온도계', icon: Thermometer },
 ];
 
 function PickableCard({ question, selected, onToggle }) {

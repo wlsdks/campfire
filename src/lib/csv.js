@@ -64,6 +64,7 @@ const QTYPE_LABELS = {
   ox: 'O/X',
   wordcloud: '워드클라우드',
   qna: 'Q&A',
+  scale: '감정 온도계',
 };
 
 /**

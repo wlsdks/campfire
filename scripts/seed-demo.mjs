@@ -85,6 +85,25 @@ function makeQuizVotesWithTimestamp(participantIds, participants, options, weigh
   return votes;
 }
 
+/**
+ * Generate scale votes (0-100 numeric values stored as strings).
+ * Uses a normal-ish distribution around a center value.
+ */
+function makeScaleVotes(participantIds, participants, center = 60, spread = 25, voteRatio = 0.85) {
+  const votes = {};
+  const votingIds = participantIds.filter(() => Math.random() < voteRatio);
+  for (const id of votingIds) {
+    // Box-Muller normal distribution, clamped to 0-100
+    const u1 = Math.random() || 0.001;
+    const u2 = Math.random();
+    const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+    const raw = center + z * spread;
+    const value = Math.max(0, Math.min(100, Math.round(raw)));
+    votes[id] = { value: String(value), nickname: participants[id].nickname };
+  }
+  return votes;
+}
+
 // ─── INTERACTION GENERATORS ───────────────────────────
 
 function mid() { return `m_${uid()}`; }
@@ -341,7 +360,7 @@ const sessions = {};
   // Round 3 — active (진행 중)
   const names3 = pickNames(18);
   const { participants: p3, ids: ids3 } = makeParticipants(names3);
-  const q3a = qid(), q3b = qid(), q3c = qid();
+  const q3a = qid(), q3b = qid(), q3c = qid(), q3d = qid();
   const s3 = sid();
   const t3 = now - 2 * HOUR;
   const s3Questions = {
@@ -364,6 +383,10 @@ const sessions = {};
       type: 'ox', title: 'CSS Flexbox에서 기본 방향은 row이다', order: 3,
       correctAnswer: 'O',
       votes: makeWeightedVotes(ids3, p3, ['O', 'X'], [10, 3]),
+    },
+    [q3d]: {
+      type: 'scale', title: 'AI 도구 활용 능력에 대한 자신감은?', order: 4,
+      votes: makeScaleVotes(ids3, p3, 62, 20),
     },
   };
   sessions[s3] = {
@@ -762,6 +785,9 @@ const sessions = {};
       },
       [qid()]: {
         type: 'wordcloud', title: '클라우드의 장점은?', order: 4,
+      },
+      [qid()]: {
+        type: 'scale', title: '클라우드 전환에 대한 조직의 준비도는?', order: 5,
       },
     },
   };

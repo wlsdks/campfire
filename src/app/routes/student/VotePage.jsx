@@ -4,6 +4,7 @@ import ChoiceVoter from '@/features/voting/components/ChoiceVoter';
 import OXVoter from '@/features/voting/components/OXVoter';
 import QuizVoter from '@/features/voting/components/QuizVoter';
 import TextInput from '@/features/voting/components/TextInput';
+import ScaleVoter from '@/features/voting/components/ScaleVoter';
 import WaitingPage from './WaitingPage';
 import LeaderboardPage from './LeaderboardPage';
 import StudentHeader from './StudentHeader';
@@ -25,6 +26,7 @@ const TYPE_LABELS = {
   quiz: '퀴즈',
   wordcloud: '워드클라우드',
   qna: 'Q&A',
+  scale: '감정 온도계',
 };
 
 /** Renders QuizResult from vote data passed by QuizVoter. */
@@ -228,6 +230,9 @@ export default function VotePage({ sessionId }) {
               )}
               {question.type === 'qna' && (
                 <TextInput sessionId={sessionId} questionId={currentQId} type="qna" placeholder="질문을 입력하세요" maxLength={200} disabled={timerExpired} />
+              )}
+              {question.type === 'scale' && (
+                <ScaleVoter sessionId={sessionId} questionId={currentQId} disabled={timerExpired} />
               )}
 
               {/* Time's up overlay */}

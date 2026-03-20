@@ -296,7 +296,6 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 > 최근 10개만 유지. 오래된 것은 삭제.
 
 <!-- 예시: 2026-03-20 01:30 | improve: 학생 투표 화면 터치 타겟 48px로 통일 -->
-2026-03-20 | improve: 디자인 토큰 감사 — Anti-AI 체크리스트 기반 전수 조사. design-tokens.js의 stale 레시피(btnPrimary/badgePrimary/avatar) indigo→slate 동기화, Avatar bg-indigo-100→bg-slate-100, Lottery 레인보우 카드→슬레이트 모노크로매틱, AdminSessionHeader 세팅중 배지 amber→slate, SessionDashboard 세팅 상태 amber→slate, QuizEventBanner/Roulette/Leaderboard/QuestionManager 장식적 색상 제거. 허용 유지: Radio 아이콘(indigo), BarChart/OXBattle 브랜드(indigo gradient), 타이머 기능색(amber/red), 접속 상태(emerald), 리액션 피드백(각 고유색)
 2026-03-20 | improve: 성능 최적화 감사 — React.memo 14개 컴포넌트 적용. useVotes/useParticipants/useScores 3개 훅의 파생값 useMemo/useCallback으로 안정화. AdminPage 콜백 12개 useCallback으로 감싸서 하위 memo 컴포넌트가 불필요하게 리렌더되지 않도록
 2026-03-20 | improve: 접근성 감사 — 전체 앱 aria 속성 감사 및 적용. aria-label, role, aria-expanded, aria-pressed, focus-visible, aria-hidden, group role 일괄 적용
 2026-03-20 | improve: 학생 질문 진행 표시 — VotePage 질문 헤더에 "질문 1/3" 텍스트 + 슬레이트 진행 바 추가
@@ -306,6 +305,7 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 2026-03-20 | feat: CSV 내보내기 — ClassSummary에서 질문 결과/참여자별 응답 CSV 다운로드. UTF-8 BOM 포함
 2026-03-20 | feat: PWA 매니페스트 — manifest.json + 서비스워커 + Apple 메타태그 + InstallPrompt
 2026-03-20 | feat: 질문 보관함 — 대시보드 "질문 보관함" 탭 구현. useQuestionLibrary 훅(Firebase onValue 실시간 구독), QuestionLibraryView(새 질문 생성+검색+유형 필터+삭제), ImportFromLibraryModal(세션에 보관함 질문 다중 선택 가져오기), QuestionList에 BookmarkPlus "보관함에 저장" 버튼. Firebase path: questionLibrary/{adminUid}/{qId}, database.rules.json 규칙 추가+배포. 3개 뷰포트(1280/768/390) 반응형 확인, 콘솔 에러 0
+2026-03-20 | feat: 감정 온도계 — 새 질문 유형 `scale` 구현. ScaleVoter(학생 0~100 슬라이더+프리셋+제출), ScaleChart(강사 평균 히어로+위치바+히스토그램+통계). 10개 파일 QUESTION_TYPES 업데이트(QuestionForm/QuestionList/VizRenderer/VotePage/ClassSummary/CourseEditor/StatsView/ImportFromLibrary/QuestionLibraryView/csv.js). database.rules.json type 정규식에 scale 추가+배포. seed-demo.mjs에 정규분포 기반 makeScaleVotes 헬퍼+데모 질문 2개 추가. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 

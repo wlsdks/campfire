@@ -37,7 +37,8 @@ export function isQuizQuestion(question) {
 }
 
 export function getQuestionMode(question) {
-  return isQuizQuestion(question) ? 'quiz' : 'poll';
+  if (isQuizQuestion(question)) return 'quiz';
+  return 'poll';
 }
 
 export function getQuizEventPreset(eventId) {
