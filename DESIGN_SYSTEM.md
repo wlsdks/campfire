@@ -129,6 +129,11 @@ html.dark {
 - 모든 레이아웃: AdminPage 3패널, SessionDashboard, VotePage, WaitingPage, JoinPage
 - 모든 기능 컴포넌트: QuestionManager, ChatPanel, SessionList, Leaderboard 등
 - 드로어, 에러바운더리, 연결배너 등
+- 세션 헤더: AdminSessionHeader 전체 (버튼/뱃지/타이머 팝업)
+- 질문 관리: QuestionList, QuickProgressCard, QuestionForm, QuestionFormSections
+- 시각화: BarChart, OXBattle, QACards, ScaleChart, DebateChart, RankingChart, FillBlankChart, BetDistribution
+- 아코디언: EventBooster, ModeSwitcher, HandRaiseList, UrgentQuestionList, ClassQuestionList
+- 기타: CenterContent, ExportMenu, TimerControls, ParticipantList, ClassSummary
 
 ---
 

@@ -26,12 +26,12 @@ export default function UrgentQuestionList({ sessionId }) {
   }
 
   return (
-    <div className="rounded-xl border border-slate-200 overflow-hidden">
+    <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors"
+        className="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors"
       >
-        <span className="text-sm font-semibold text-slate-600 flex items-center gap-1.5">
+        <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
           <AlertCircle size={14} className="text-slate-400" />
           긴급 질문
           {unreadCount > 0 && (
@@ -73,14 +73,14 @@ export default function UrgentQuestionList({ sessionId }) {
                     role="button"
                     aria-label={q.read ? '읽은 질문' : '읽지 않은 질문 -- 클릭하여 읽음 처리'}
                     className={`p-2.5 rounded-lg text-sm transition-colors cursor-pointer ${
-                      q.read ? 'bg-slate-50' : 'bg-slate-100 hover:bg-slate-50'
+                      q.read ? 'bg-slate-50 dark:bg-slate-800' : 'bg-slate-100 dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600'
                     }`}
                     onClick={() => !q.read && markRead(q.id)}
                   >
                     <div className="flex items-start gap-2">
                       {!q.read && <div className="w-1.5 h-1.5 rounded-full bg-slate-900 mt-1.5 shrink-0" />}
                       <div className="flex-1 min-w-0">
-                        <p className="text-slate-700 leading-relaxed">{q.text}</p>
+                        <p className="text-slate-700 dark:text-slate-200 leading-relaxed">{q.text}</p>
                         <div className="flex justify-between items-center mt-1.5">
                           <span className="text-slate-400 text-xs">익명</span>
                           <button

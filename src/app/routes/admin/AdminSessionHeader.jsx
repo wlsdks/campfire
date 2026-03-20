@@ -98,7 +98,7 @@ export default memo(function AdminSessionHeader({
         {isTablet && onLeftDrawer && (
           <button
             onClick={onLeftDrawer}
-            className="p-2 -ml-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all active:scale-90"
+            className="p-2 -ml-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all active:scale-90"
             aria-label="질문 목록 열기"
           >
             <List size={22} />
@@ -106,7 +106,7 @@ export default memo(function AdminSessionHeader({
         )}
         <button
           onClick={onBack}
-          className={`p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all active:scale-90 ${isTablet ? '' : '-ml-2'}`}
+          className={`p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all active:scale-90 ${isTablet ? '' : '-ml-2'}`}
           aria-label="클래스 목록으로"
         >
           <ArrowLeft size={isTablet ? 20 : 22} />
@@ -117,13 +117,13 @@ export default memo(function AdminSessionHeader({
               {session?.courseName || 'Pinggo'}
             </span>
             {session?.roundNumber && (
-              <span className="text-sm font-medium text-slate-500 shrink-0">{session.roundNumber}차</span>
+              <span className="text-sm font-medium text-slate-500 dark:text-slate-400 shrink-0">{session.roundNumber}차</span>
             )}
             {isReviewing && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-800 text-white rounded text-[11px] font-bold"
+                className="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-800 dark:bg-slate-600 text-white rounded text-[11px] font-bold"
               >
                 <MessageSquareDot size={10} />
                 질문 받기 중
@@ -135,7 +135,7 @@ export default memo(function AdminSessionHeader({
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-900 text-white rounded text-[11px] font-bold"
+                className="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-900 dark:bg-slate-600 text-white rounded text-[11px] font-bold"
               >
                 <Zap size={10} />
                 스피드
@@ -154,7 +154,7 @@ export default memo(function AdminSessionHeader({
           </div>
           <div className="flex items-center gap-2">
             {!isTablet && (
-              <span className="text-xs text-slate-400">세션 <span className="font-mono">{sessionId}</span></span>
+              <span className="text-xs text-slate-400 dark:text-slate-500">세션 <span className="font-mono">{sessionId}</span></span>
             )}
             {questionProgress && (
               <span className="inline-flex items-center gap-1 text-xs text-slate-400">
@@ -162,8 +162,8 @@ export default memo(function AdminSessionHeader({
                 <Layers size={12} className="text-slate-300" />
                 {questionProgress.current ? (
                   <span>
-                    <span className="font-semibold text-slate-600">{questionProgress.current}</span>
-                    <span className="text-slate-300">/{questionProgress.total}</span>
+                    <span className="font-semibold text-slate-600 dark:text-slate-300">{questionProgress.current}</span>
+                    <span className="text-slate-300 dark:text-slate-500">/{questionProgress.total}</span>
                   </span>
                 ) : (
                   <span>{questionProgress.total}개</span>
@@ -184,7 +184,7 @@ export default memo(function AdminSessionHeader({
         {!effectiveReadOnly && (
           <button
             onClick={onChatToggle}
-            className="flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all active:scale-95"
+            className="flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95"
             aria-label={chatOpen ? '채팅 닫기' : '채팅 열기'}
             aria-pressed={chatOpen}
           >
@@ -198,7 +198,7 @@ export default memo(function AdminSessionHeader({
             <button
               onClick={() => setTimerOpen(!timerOpen)}
               className={`flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg transition-all active:scale-95 ${
-                timerRunning ? 'text-slate-900' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
+                timerRunning ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700'
               }`}
               aria-label={timerRunning ? '타이머 진행 중 - 설정 열기' : '타이머 설정'}
               aria-expanded={timerOpen}
@@ -232,11 +232,11 @@ export default memo(function AdminSessionHeader({
         {isTablet && onRightDrawer ? (
           <button
             onClick={onRightDrawer}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all active:scale-95"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95"
             aria-label="참여자 패널 열기"
           >
             <Users size={18} />
-            <span className="text-sm font-semibold text-slate-600">{count}</span>
+            <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">{count}</span>
           </button>
         ) : (
           <Badge variant="neutral" className="py-2 px-3.5 text-sm">

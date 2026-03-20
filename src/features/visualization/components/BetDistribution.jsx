@@ -43,10 +43,10 @@ export default memo(function BetDistribution({ sessionId, questionId }) {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.35 + multiplier * 0.06 }}
-              className="flex-1 rounded-xl border border-slate-100 bg-white p-3 text-center"
+              className="flex-1 rounded-xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-3 text-center"
             >
               <Icon size={16} className="text-slate-400 mx-auto mb-1.5" />
-              <p className="text-lg font-bold text-slate-900">{count}</p>
+              <p className="text-lg font-bold text-slate-900 dark:text-slate-100">{count}</p>
               <p className="text-xs text-slate-400">{label}</p>
               <p className="text-[10px] text-slate-300 mt-0.5">{pct}%</p>
             </motion.div>

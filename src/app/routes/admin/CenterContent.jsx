@@ -34,15 +34,15 @@ export default function CenterContent({
           transition={{ duration: 0.2 }}
           className="w-full max-w-2xl mx-auto"
         >
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 lg:p-8">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-6 lg:p-8">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-slate-900">새 질문 추가</h2>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">새 질문 추가</h2>
                 <p className="text-slate-400 text-sm mt-1">질문을 작성하고 추가하세요</p>
               </div>
               <button
                 onClick={onHideCenterForm}
-                className="p-2 rounded-lg text-slate-300 hover:text-slate-600 hover:bg-slate-100 transition-all active:scale-90"
+                className="p-2 rounded-lg text-slate-300 hover:text-slate-600 hover:bg-slate-100 dark:text-slate-500 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all active:scale-90"
                 aria-label="취소"
               >
                 <X size={20} />

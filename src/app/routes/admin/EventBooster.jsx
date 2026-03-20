@@ -17,15 +17,15 @@ export default function EventBooster({ nextQuizEvent, onArmEvent, onClearEvent }
   const hasActive = Boolean(nextQuizEvent);
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
+    <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-3 py-2.5 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors"
+        className="w-full flex items-center justify-between px-3 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors"
       >
         <div className="flex items-center gap-2">
           <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">이벤트 부스터</p>
           {hasActive && (
-            <span className="text-xs font-medium text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">
+            <span className="text-xs font-medium text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">
               {nextQuizEvent.label}
             </span>
           )}
@@ -53,11 +53,11 @@ export default function EventBooster({ nextQuizEvent, onArmEvent, onClearEvent }
                     onClick={() => handleToggle(preset)}
                     className={`w-full rounded-lg border px-3 py-2.5 text-left transition-all active:scale-[0.98] ${
                       isSelected
-                        ? 'border-slate-400 bg-slate-50'
-                        : 'border-slate-200 bg-white hover:bg-slate-50'
+                        ? 'border-slate-400 dark:border-slate-500 bg-slate-50 dark:bg-slate-700'
+                        : 'border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700'
                     }`}
                   >
-                    <p className="text-sm font-semibold text-slate-900">
+                    <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                       {preset.label}
                     </p>
                     <p className={`text-xs leading-relaxed ${isSelected ? 'text-slate-600' : 'text-slate-400'}`}>

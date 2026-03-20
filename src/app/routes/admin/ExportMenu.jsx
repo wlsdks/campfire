@@ -40,10 +40,10 @@ export default function ExportMenu({ session, participants, scores }) {
         <ChevronDown size={14} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
-        <div className="absolute right-0 top-full mt-1.5 bg-white rounded-xl border border-slate-200 shadow-lg py-1 z-30 w-56">
+        <div className="absolute right-0 top-full mt-1.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg py-1 z-30 w-56">
           <button
             onClick={handleQuestionExport}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors text-left"
+            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-left"
           >
             <FileSpreadsheet size={16} className="text-slate-400 shrink-0" />
             <div>
@@ -53,7 +53,7 @@ export default function ExportMenu({ session, participants, scores }) {
           </button>
           <button
             onClick={handleParticipantExport}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors text-left"
+            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-left"
           >
             <Users size={16} className="text-slate-400 shrink-0" />
             <div>

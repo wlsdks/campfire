@@ -31,12 +31,12 @@ export default function HandRaiseList({ sessionId }) {
   }
 
   return (
-    <div className="rounded-xl border border-slate-200 overflow-hidden">
+    <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors"
+        className="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors"
       >
-        <span className="text-sm font-semibold text-slate-600 flex items-center gap-1.5">
+        <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
           <Hand size={14} className="text-slate-400" />
           손들기
           {count > 0 && (
@@ -88,7 +88,7 @@ export default function HandRaiseList({ sessionId }) {
                     exit={{ opacity: 0, x: -12 }}
                     className="flex items-center justify-between text-sm py-1"
                   >
-                    <span className="text-slate-700">
+                    <span className="text-slate-700 dark:text-slate-200">
                       <span className="text-slate-400 mr-2 text-xs">{i + 1}.</span>
                       {p.nickname}
                     </span>

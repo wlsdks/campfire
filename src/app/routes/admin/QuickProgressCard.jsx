@@ -6,7 +6,7 @@ import { QUIZ_EVENT_PRESETS, isQuizQuestion } from '@/lib/quiz';
 function KeyHint({ keys, label }) {
   return (
     <span className="inline-flex items-center gap-1 text-[10px] text-slate-400">
-      <kbd className="px-1 py-0.5 bg-slate-100 rounded text-[10px] font-mono text-slate-500 border border-slate-200 leading-none">
+      <kbd className="px-1 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-[10px] font-mono text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-600 leading-none">
         {keys}
       </kbd>
       {label}
@@ -39,10 +39,10 @@ export default function QuickProgressCard({
   }
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 space-y-3 shadow-sm">
+    <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 space-y-3 shadow-sm">
       <div className="space-y-1.5">
         <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">빠른 진행</p>
-        <p className="text-slate-900 text-base font-semibold">
+        <p className="text-slate-900 dark:text-slate-100 text-base font-semibold">
           {currentEntry
             ? `${activeIndex + 1}/${questionList.length}번째 질문 진행 중`
             : `질문 ${questionList.length}개 준비됨`}
@@ -53,7 +53,7 @@ export default function QuickProgressCard({
             : '아직 활성화된 질문이 없습니다. 첫 질문을 바로 시작할 수 있습니다.'}
         </p>
         {currentEntry?.[1]?.type === 'quiz' && (
-          <p className="text-slate-500 text-xs font-medium">
+          <p className="text-slate-500 dark:text-slate-400 text-xs font-medium">
             {currentEntry[1].revealedAt
               ? '정답 공개가 완료되었습니다. 리더보드로 이어서 보여줄 수 있습니다.'
               : '정답 공개 전까지 답안을 모으는 중입니다.'}
@@ -72,7 +72,7 @@ export default function QuickProgressCard({
                 className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all active:scale-[0.96] ${
                   isSelected
                     ? 'bg-slate-900 text-white'
-                    : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
+                    : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
                 }`}
               >
                 {preset.label}
@@ -98,7 +98,7 @@ export default function QuickProgressCard({
           ) : (
             <button
               onClick={onStartSpeedQuiz}
-              className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-sm font-medium text-slate-700 transition-all active:scale-[0.97]"
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-sm font-medium text-slate-700 dark:text-slate-200 transition-all active:scale-[0.97]"
             >
               <span className="flex items-center gap-2">
                 <Zap size={14} className="text-slate-500" />
@@ -127,7 +127,7 @@ export default function QuickProgressCard({
       </div>
       {nextEntry && currentEntry && (
         <p className="text-slate-400 text-xs">
-          다음 예정: <span className="text-slate-600">{nextEntry[1].title}</span>
+          다음 예정: <span className="text-slate-600 dark:text-slate-300">{nextEntry[1].title}</span>
         </p>
       )}
       {/* Keyboard shortcut hints */}

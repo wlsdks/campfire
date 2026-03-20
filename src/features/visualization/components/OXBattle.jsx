@@ -46,7 +46,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
             key={`o-${oCount}`}
             initial={{ scale: 1.15 }}
             animate={{ scale: 1 }}
-            className={`text-3xl font-bold ${oCorrect ? 'text-indigo-700' : 'text-slate-900'}`}
+            className={`text-3xl font-bold ${oCorrect ? 'text-indigo-700 dark:text-indigo-400' : 'text-slate-900 dark:text-slate-100'}`}
           >
             {oCount}
           </motion.div>
@@ -85,7 +85,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
             key={`x-${xCount}`}
             initial={{ scale: 1.15 }}
             animate={{ scale: 1 }}
-            className={`text-3xl font-bold ${xCorrect ? 'text-slate-800' : 'text-slate-900'}`}
+            className={`text-3xl font-bold ${xCorrect ? 'text-slate-800 dark:text-slate-200' : 'text-slate-900 dark:text-slate-100'}`}
           >
             {xCount}
           </motion.div>
@@ -95,7 +95,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
 
       {/* Progress bar */}
       <div className="space-y-2.5">
-        <div className="h-8 bg-slate-100 rounded-full overflow-hidden flex">
+        <div className="h-8 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden flex">
           <motion.div
             animate={{ width: `${oPct}%` }}
             transition={{ type: 'spring', stiffness: 60, damping: 22 }}
@@ -110,7 +110,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
         <div className="flex justify-between text-base font-bold">
           <span className="text-indigo-600">{Math.round(oPct)}%</span>
           <span className="text-slate-300 text-sm">총 {totalVotes}명</span>
-          <span className="text-slate-600">{Math.round(xPct)}%</span>
+          <span className="text-slate-600 dark:text-slate-300">{Math.round(xPct)}%</span>
         </div>
       </div>
     </div>

@@ -13,15 +13,15 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTic
   }, [modeOpen]);
 
   return (
-    <div ref={containerRef} className="mt-3 rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+    <div ref={containerRef} className="mt-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden shadow-sm">
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors"
       >
         <div className="flex items-center gap-2">
-          <p className="text-slate-500 text-sm font-semibold">모드 전환</p>
+          <p className="text-slate-500 dark:text-slate-400 text-sm font-semibold">모드 전환</p>
           {isSpecialMode && (
-            <span className="text-xs font-medium text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded">
+            <span className="text-xs font-medium text-slate-600 dark:text-slate-200 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">
               {currentMode === 'roulette' ? '돌림판' : currentMode === 'lottery' ? '제비뽑기' : currentMode === 'teamBattle' ? '팀 스코어보드' : '리더보드'}
             </span>
           )}

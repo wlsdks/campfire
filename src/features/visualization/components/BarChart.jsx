@@ -43,7 +43,7 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
                 ? 'bg-indigo-400'
                 : 'bg-indigo-300';
 
-        const countColor = count > 0 && rank === 0 ? 'text-slate-900' : 'text-slate-500';
+        const countColor = count > 0 && rank === 0 ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500 dark:text-slate-400';
 
         return (
           <motion.div
@@ -51,7 +51,7 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08, duration: 0.3, ease: 'easeOut' }}
-            className={`space-y-1.5 ${isCorrect ? 'rounded-lg ring-2 ring-indigo-500/30 p-3 -mx-3 bg-indigo-50/30' : ''}`}
+            className={`space-y-1.5 ${isCorrect ? 'rounded-lg ring-2 ring-indigo-500/30 p-3 -mx-3 bg-indigo-50/30 dark:bg-indigo-950/30' : ''}`}
           >
             <div className="flex justify-between items-baseline gap-2">
               <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -60,7 +60,7 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
                     <Check size={12} strokeWidth={3} />
                   </span>
                 )}
-                <span className={`font-medium text-base truncate ${isCorrect ? 'text-indigo-700 font-semibold' : isWrong ? 'text-slate-400' : 'text-slate-700'}`}>
+                <span className={`font-medium text-base truncate ${isCorrect ? 'text-indigo-700 dark:text-indigo-400 font-semibold' : isWrong ? 'text-slate-400' : 'text-slate-700 dark:text-slate-200'}`}>
                   {option}
                 </span>
               </div>
@@ -78,7 +78,7 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
                 </span>
               </div>
             </div>
-            <div className={`h-8 ${isWrong ? 'bg-slate-50' : 'bg-slate-100'} rounded-lg overflow-hidden`}>
+            <div className={`h-8 ${isWrong ? 'bg-slate-50 dark:bg-slate-800' : 'bg-slate-100 dark:bg-slate-700'} rounded-lg overflow-hidden`}>
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.max(pct, count > 0 ? 2 : 0)}%` }}
@@ -89,8 +89,8 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
           </motion.div>
         );
       })}
-      <div className="text-center text-slate-400 text-sm mt-4 pt-4 border-t border-slate-100">
-        총 <span className="text-slate-600 font-semibold">{totalVotes}</span>명 투표
+      <div className="text-center text-slate-400 text-sm mt-4 pt-4 border-t border-slate-100 dark:border-slate-700">
+        총 <span className="text-slate-600 dark:text-slate-300 font-semibold">{totalVotes}</span>명 투표
       </div>
     </div>
   );

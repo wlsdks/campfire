@@ -7,7 +7,7 @@ import { Check, X } from 'lucide-react';
 function SentenceDisplay({ title, correctAnswer, revealed }) {
   const parts = title.split('___');
   return (
-    <p className="text-lg text-slate-700 leading-relaxed text-center">
+    <p className="text-lg text-slate-700 dark:text-slate-200 leading-relaxed text-center">
       {parts.map((part, i) => (
         <span key={i}>
           {part}
@@ -18,8 +18,8 @@ function SentenceDisplay({ title, correctAnswer, revealed }) {
               transition={{ type: 'spring', stiffness: 300, damping: 22, delay: 0.2 }}
               className={`inline-block mx-1 px-3 py-1 rounded-lg text-lg font-bold border-b-2 ${
                 revealed
-                  ? 'bg-slate-100 text-slate-900 border-slate-500'
-                  : 'bg-slate-50 text-slate-300 border-dashed border-slate-300'
+                  ? 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100 border-slate-500'
+                  : 'bg-slate-50 dark:bg-slate-700 text-slate-300 border-dashed border-slate-300 dark:border-slate-500'
               }`}
             >
               {revealed ? correctAnswer : '???'}
@@ -82,7 +82,7 @@ export default memo(function FillBlankChart({ sessionId, questionId, title, corr
             initial={{ scale: 1.2 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', stiffness: 400, damping: 22 }}
-            className="text-5xl font-black text-slate-900 tabular-nums"
+            className="text-5xl font-black text-slate-900 dark:text-slate-100 tabular-nums"
           >
             {correctPct}%
           </motion.p>
@@ -113,7 +113,7 @@ export default memo(function FillBlankChart({ sessionId, questionId, title, corr
                   className="flex items-center gap-3"
                 >
                   <div className="flex-1 min-w-0">
-                    <div className="relative h-9 bg-slate-100 rounded-lg overflow-hidden">
+                    <div className="relative h-9 bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden">
                       <motion.div
                         animate={{ width: `${widthPct}%` }}
                         transition={{ type: 'spring', stiffness: 80, damping: 22 }}
@@ -129,7 +129,7 @@ export default memo(function FillBlankChart({ sessionId, questionId, title, corr
                           <X size={14} className="text-slate-400 shrink-0" />
                         )}
                         <span className={`text-sm font-medium truncate ${
-                          revealed && a.isCorrect ? 'text-white' : 'text-slate-700'
+                          revealed && a.isCorrect ? 'text-white' : 'text-slate-700 dark:text-slate-200'
                         }`}>
                           {a.answer}
                         </span>
@@ -147,8 +147,8 @@ export default memo(function FillBlankChart({ sessionId, questionId, title, corr
       )}
 
       {/* Total */}
-      <div className="text-center text-slate-400 text-sm pt-2 border-t border-slate-100">
-        <span className="text-slate-600 font-semibold">{totalVotes}</span>명 응답
+      <div className="text-center text-slate-400 text-sm pt-2 border-t border-slate-100 dark:border-slate-700">
+        <span className="text-slate-600 dark:text-slate-300 font-semibold">{totalVotes}</span>명 응답
       </div>
     </div>
   );

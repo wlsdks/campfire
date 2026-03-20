@@ -32,16 +32,16 @@ function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, o
       {...(!readOnly ? { ...attributes, ...listeners } : {})}
       onClick={readOnly && onView ? () => onView(qId) : undefined}
       className={`p-3 rounded-xl border transition-all touch-none ${
-        isDragging ? 'shadow-lg opacity-80 scale-[1.03] bg-white border-slate-300 cursor-grabbing' :
+        isDragging ? 'shadow-lg opacity-80 scale-[1.03] bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-500 cursor-grabbing' :
         readOnly
-          ? `bg-white ${currentQuestion === qId ? 'border-slate-400 shadow-sm' : 'border-slate-200 hover:border-slate-300 cursor-pointer'}`
-          : isActive ? 'bg-white border-slate-300 shadow-sm cursor-grab' : 'bg-white border-slate-200 hover:border-slate-300 cursor-grab'
+          ? `bg-white dark:bg-slate-800 ${currentQuestion === qId ? 'border-slate-400 dark:border-slate-500 shadow-sm' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 cursor-pointer'}`
+          : isActive ? 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-500 shadow-sm cursor-grab' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 cursor-grab'
       }`}
     >
       <div className="flex items-start gap-2">
         {/* Drag indicator */}
         {!readOnly && (
-          <div className="shrink-0 -ml-1 text-slate-200 pt-0.5">
+          <div className="shrink-0 -ml-1 text-slate-200 dark:text-slate-600 pt-0.5">
             <GripVertical size={14} />
           </div>
         )}
@@ -57,7 +57,7 @@ function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, o
             {isQuiz && q.event && <Badge variant="neutral">{q.event.label || '이벤트'}</Badge>}
             {isQuiz && q.revealedAt && <Badge variant="neutral">정답 공개</Badge>}
           </div>
-          <span className="text-slate-700 text-sm leading-snug">{q.title}</span>
+          <span className="text-slate-700 dark:text-slate-200 text-sm leading-snug">{q.title}</span>
           {readOnly && q.votes && (
             <span className="text-slate-400 text-xs ml-1">({Object.keys(q.votes).length}명 응답)</span>
           )}
@@ -66,35 +66,35 @@ function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, o
         {!readOnly && (
           <div className="flex gap-1 shrink-0" onPointerDown={stopDrag}>
             {!isActive ? (
-              <button onClick={() => onActivate(qId)} className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all active:scale-90" aria-label="질문 활성화">
+              <button onClick={() => onActivate(qId)} className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 dark:bg-slate-600 dark:hover:bg-slate-500 text-white transition-all active:scale-90" aria-label="질문 활성화">
                 <Play size={12} />
               </button>
             ) : (
               <>
                 {isQuiz && !q.revealedAt && (
-                  <button onClick={() => onReveal(qId)} className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all active:scale-90" aria-label="정답 공개">
+                  <button onClick={() => onReveal(qId)} className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 dark:bg-slate-600 dark:hover:bg-slate-500 text-white transition-all active:scale-90" aria-label="정답 공개">
                     <Check size={12} />
                   </button>
                 )}
                 {isQuiz && q.revealedAt && (
-                  <button onClick={onShowLeaderboard} className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 text-white transition-all active:scale-90" aria-label="리더보드 보기">
+                  <button onClick={onShowLeaderboard} className="p-1.5 rounded-md bg-slate-800 hover:bg-slate-900 dark:bg-slate-600 dark:hover:bg-slate-500 text-white transition-all active:scale-90" aria-label="리더보드 보기">
                     <Trophy size={12} />
                   </button>
                 )}
-                <button onClick={onClearActive} className="p-1.5 rounded-md bg-slate-200 text-slate-500 hover:bg-slate-300 transition-all active:scale-90" aria-label="질문 중지">
+                <button onClick={onClearActive} className="p-1.5 rounded-md bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-500 transition-all active:scale-90" aria-label="질문 중지">
                   <Square size={12} />
                 </button>
               </>
             )}
             {onSaveToLibrary && (
-              <button onClick={() => onSaveToLibrary(qId)} className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-600 transition-all active:scale-90" aria-label="보관함에 저장">
+              <button onClick={() => onSaveToLibrary(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-all active:scale-90" aria-label="보관함에 저장">
                 <BookmarkPlus size={12} />
               </button>
             )}
-            <button onClick={() => onDuplicate(qId)} className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-600 transition-all active:scale-90" aria-label="질문 복제">
+            <button onClick={() => onDuplicate(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-all active:scale-90" aria-label="질문 복제">
               <Copy size={12} />
             </button>
-            <button onClick={() => onDelete(qId)} className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-700 transition-all active:scale-90" aria-label="질문 삭제">
+            <button onClick={() => onDelete(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-700 dark:hover:text-slate-200 transition-all active:scale-90" aria-label="질문 삭제">
               <Trash2 size={12} />
             </button>
           </div>
@@ -120,14 +120,14 @@ export default memo(function QuestionList({
   }
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white overflow-hidden">
+    <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden">
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="w-full flex items-center justify-between px-4 py-3 text-left bg-slate-50 hover:bg-slate-100 active:bg-slate-200/60 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 text-left bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 active:bg-slate-200/60 dark:active:bg-slate-600 transition-colors"
       >
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-slate-700">추가된 문항 {questionList.length}개</span>
-          {activeCount > 0 && <span className="w-1.5 h-1.5 rounded-full bg-slate-700 animate-pulse" />}
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">추가된 문항 {questionList.length}개</span>
+          {activeCount > 0 && <span className="w-1.5 h-1.5 rounded-full bg-slate-700 dark:bg-slate-300 animate-pulse" />}
         </div>
         <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ duration: 0.2 }}>
           <ChevronDown size={14} className="text-slate-400" />

@@ -24,14 +24,14 @@ function DetailModal({ item, onClose }) {
         initial={{ opacity: 0, scale: 0.95, y: 8 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 8 }}
-        className="bg-white rounded-2xl shadow-lg p-6 w-full max-w-md"
+        className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-6 w-full max-w-md"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-2">
             <Avatar name={item.nickname || '익명'} size="sm" />
             <div>
-              <p className="text-sm font-medium text-slate-700">{item.nickname || '익명'}</p>
+              <p className="text-sm font-medium text-slate-700 dark:text-slate-200">{item.nickname || '익명'}</p>
               <p className="text-xs text-slate-400">{formatTime(item.timestamp)}</p>
             </div>
           </div>
@@ -39,7 +39,7 @@ function DetailModal({ item, onClose }) {
             <X size={18} />
           </button>
         </div>
-        <p className="text-base text-slate-800 leading-relaxed">{item.value}</p>
+        <p className="text-base text-slate-800 dark:text-slate-100 leading-relaxed">{item.value}</p>
       </motion.div>
     </motion.div>
   );
@@ -58,7 +58,7 @@ export default memo(function QACards({ sessionId, questionId, title }) {
       <div className="w-full max-w-4xl mx-auto">
         {/* Question header */}
         <div className="mb-6">
-          {title && <h2 className="text-2xl font-bold text-slate-900 mb-1">{title}</h2>}
+          {title && <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-1">{title}</h2>}
           <div className="flex items-center gap-3 text-sm text-slate-400">
             <span className="flex items-center gap-1">
               <Users size={14} />
@@ -76,16 +76,16 @@ export default memo(function QACards({ sessionId, questionId, title }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.03, type: 'spring', stiffness: 300, damping: 26 }}
               onClick={() => setSelected(vote)}
-              className="w-full text-left rounded-xl border border-slate-200 bg-white px-4 py-3.5 hover:border-slate-300 hover:shadow-sm transition-all group"
+              className="w-full text-left rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm transition-all group"
             >
               <div className="flex items-center gap-3">
                 <Avatar name={vote.nickname || '익명'} size="sm" />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
-                    <span className="text-xs font-medium text-slate-500">{vote.nickname || '익명'}</span>
+                    <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{vote.nickname || '익명'}</span>
                     <span className="text-xs text-slate-300">{formatTime(vote.timestamp)}</span>
                   </div>
-                  <p className="text-sm text-slate-700 leading-relaxed line-clamp-2">{vote.value}</p>
+                  <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed line-clamp-2">{vote.value}</p>
                 </div>
               </div>
             </motion.button>

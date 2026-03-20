@@ -16,7 +16,7 @@ export default memo(function ParticipantList({ participants, voteCounts }) {
               initial={{ opacity: 0, x: 12 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -12 }}
-              className="flex items-center gap-2.5 text-sm text-slate-600 py-1.5 px-2 rounded-lg hover:bg-slate-50 transition-colors"
+              className="flex items-center gap-2.5 text-sm text-slate-600 dark:text-slate-300 py-1.5 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
               <Avatar name={p.nickname} size="sm" />
               <span className="truncate flex-1">{p.nickname}</span>

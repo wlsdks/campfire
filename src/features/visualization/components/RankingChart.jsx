@@ -73,17 +73,17 @@ export default memo(function RankingChart({ sessionId, questionId, items = [] })
           initial={{ scale: 1.1, opacity: 0.7 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-          className="text-5xl font-bold text-slate-900 tabular-nums"
+          className="text-5xl font-bold text-slate-900 dark:text-slate-100 tabular-nums"
         >
           {analysis.avgScore}%
         </motion.p>
         <p className="text-sm text-slate-400">평균 정확도</p>
         <div className="flex items-center justify-center gap-4 mt-2">
           <span className="text-xs text-slate-500">
-            <span className="font-semibold text-slate-700">{analysis.totalVoters}</span>명 응답
+            <span className="font-semibold text-slate-700 dark:text-slate-200">{analysis.totalVoters}</span>명 응답
           </span>
-          <span className="text-xs text-slate-500">
-            <span className="font-semibold text-slate-700">{analysis.perfectCount}</span>명 전부 정답
+          <span className="text-xs text-slate-500 dark:text-slate-400">
+            <span className="font-semibold text-slate-700 dark:text-slate-200">{analysis.perfectCount}</span>명 전부 정답
           </span>
         </div>
       </div>
@@ -99,19 +99,19 @@ export default memo(function RankingChart({ sessionId, questionId, items = [] })
             className="flex items-center gap-3"
           >
             {/* Position number */}
-            <span className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500 shrink-0">
+            <span className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-500 dark:text-slate-300 shrink-0">
               {pos.position}
             </span>
 
             {/* Item name + bar */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-sm font-medium text-slate-700 truncate">{pos.item}</span>
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{pos.item}</span>
                 <span className="text-xs tabular-nums text-slate-400 shrink-0 ml-2">
                   {pos.correct}/{pos.total}
                 </span>
               </div>
-              <div className="h-6 bg-slate-100 rounded-lg overflow-hidden relative">
+              <div className="h-6 bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden relative">
                 <motion.div
                   className="h-full rounded-lg"
                   style={{
@@ -147,12 +147,12 @@ export default memo(function RankingChart({ sessionId, questionId, items = [] })
       </div>
 
       {/* Correct order reference */}
-      <div className="rounded-xl bg-slate-50 border border-slate-100 px-4 py-3">
+      <div className="rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 px-4 py-3">
         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">정답 순서</p>
         <div className="flex flex-wrap gap-1.5">
           {items.map((item, i) => (
-            <span key={i} className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-white border border-slate-200 text-xs text-slate-600">
-              <span className="font-bold text-slate-500">{i + 1}.</span> {item}
+            <span key={i} className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs text-slate-600 dark:text-slate-300">
+              <span className="font-bold text-slate-500 dark:text-slate-400">{i + 1}.</span> {item}
             </span>
           ))}
         </div>

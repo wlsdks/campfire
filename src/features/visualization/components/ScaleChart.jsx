@@ -74,7 +74,7 @@ export default memo(function ScaleChart({ sessionId, questionId }) {
           initial={{ scale: 1.2 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 400, damping: 22 }}
-          className="text-6xl font-bold text-slate-900 tabular-nums"
+          className="text-6xl font-bold text-slate-900 dark:text-slate-100 tabular-nums"
         >
           {stats.count > 0 ? stats.avg : '--'}
         </motion.p>
@@ -90,9 +90,9 @@ export default memo(function ScaleChart({ sessionId, questionId }) {
           className="relative"
         >
           {/* Track */}
-          <div className="h-3 bg-slate-100 rounded-full overflow-hidden relative">
+          <div className="h-3 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden relative">
             <motion.div
-              className="h-full bg-slate-700 rounded-full"
+              className="h-full bg-slate-700 dark:bg-slate-300 rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${stats.avg}%` }}
               transition={{ type: 'spring', stiffness: 80, damping: 22 }}
@@ -175,23 +175,23 @@ export default memo(function ScaleChart({ sessionId, questionId }) {
           className="flex justify-center gap-6"
         >
           <div className="text-center">
-            <p className="text-lg font-bold text-slate-700 tabular-nums">{stats.median}</p>
+            <p className="text-lg font-bold text-slate-700 dark:text-slate-200 tabular-nums">{stats.median}</p>
             <p className="text-[10px] text-slate-400">중앙값</p>
           </div>
           <div className="text-center">
-            <p className="text-lg font-bold text-slate-700 tabular-nums">{stats.min}</p>
+            <p className="text-lg font-bold text-slate-700 dark:text-slate-200 tabular-nums">{stats.min}</p>
             <p className="text-[10px] text-slate-400">최솟값</p>
           </div>
           <div className="text-center">
-            <p className="text-lg font-bold text-slate-700 tabular-nums">{stats.max}</p>
+            <p className="text-lg font-bold text-slate-700 dark:text-slate-200 tabular-nums">{stats.max}</p>
             <p className="text-[10px] text-slate-400">최댓값</p>
           </div>
         </motion.div>
       )}
 
       {/* Total count */}
-      <div className="text-center text-slate-400 text-sm pt-2 border-t border-slate-100">
-        총 <span className="text-slate-600 font-semibold">{totalVotes}</span>명 응답
+      <div className="text-center text-slate-400 text-sm pt-2 border-t border-slate-100 dark:border-slate-700">
+        총 <span className="text-slate-600 dark:text-slate-300 font-semibold">{totalVotes}</span>명 응답
       </div>
     </div>
   );
