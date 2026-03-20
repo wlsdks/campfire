@@ -325,6 +325,7 @@ function makeUrgentQuestions(sessionStart, questionCount = 3) {
       text: shuffled[i],
       timestamp: sessionStart + Math.floor((timeSpan * (i + 1)) / (count + 1)),
       read: i < Math.floor(count / 2), // older ones are read
+      reviewing: false,
     };
   }
   return urgentQuestions;
