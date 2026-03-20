@@ -92,13 +92,13 @@ font-family: 'Pretendard', 'Inter', -apple-system, system-ui, sans-serif;
 
 ### Component Patterns (Tailwind recipes — use these exactly)
 ```
-Button Primary:   bg-orange-600 hover:bg-orange-700 text-white font-medium py-2.5 px-5 rounded-lg transition-colors
-                  dark: dark:bg-orange-500 dark:hover:bg-orange-400
+Button Primary:   bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-5 rounded-lg transition-colors
+                  dark: dark:bg-indigo-500 dark:hover:bg-indigo-400
 Button Secondary: bg-white hover:bg-slate-50 text-slate-700 font-medium py-2.5 px-5 rounded-lg border border-slate-200 transition-colors
 Button Ghost:     hover:bg-slate-100 text-slate-600 font-medium py-2.5 px-5 rounded-lg transition-colors
 Button Danger:    bg-red-500 hover:bg-red-600 text-white font-medium py-2.5 px-5 rounded-lg transition-colors
 
-Input:            w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all
+Input:            w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all
 Input Error:      + border-red-400 focus:ring-red-500/20 focus:border-red-500
 
 Card:             bg-white rounded-xl shadow-sm border border-slate-100 p-5
@@ -184,10 +184,8 @@ Reference: Toss (토스), Linear, Notion, Vercel — restrained, dark CTA, monoc
 작업 전 아래 항목을 하나씩 확인한다. 하나라도 해당되면 수정한다.
 
 ```
-□ 인디고/보라 CTA 버튼을 사용하고 있는가?
-  → bg-indigo-600은 AI 기본값. bg-orange-600 사용할 것
 □ 한 화면에 3가지 이상 색상이 보이는가?
-  → 슬레이트 + 브랜드(orange) 최대 2색. 그 외 색상 제거
+  → 슬레이트 + 브랜드(indigo) 최대 2색. 그 외 색상 제거
 □ 왼쪽에 컬러 악센트 바(border-l-3)가 있는가?
   → 제거. ring-1 또는 bg 변경으로 대체
 □ 아이콘이 색상 원형 배경 안에 있는가? (bg-XXX-100 rounded-XX)
@@ -208,30 +206,30 @@ Reference: Toss (토스), Linear, Notion, Vercel — restrained, dark CTA, monoc
 
 ### 우리 앱의 색상 체계 (확정)
 ```
-브랜드 CTA:      bg-orange-600 (#EA580C)
-CTA hover:       hover:bg-orange-700 (#C2410C)
-CTA dark mode:   dark:bg-orange-500 (#F97316)
+브랜드 CTA:      bg-indigo-600 (#4F46E5)
+CTA hover:       hover:bg-indigo-700 (#4338CA)
+CTA dark mode:   dark:bg-indigo-500 (#6366F1)
 배지 primary:    bg-slate-100 text-slate-700
 배지 neutral:    bg-slate-50 text-slate-500
 배지 error:      bg-red-50 text-red-700
 
-브랜드 아이콘:   text-orange-600 (Radio 아이콘)
-Input focus:     focus:ring-orange-500/20 focus:border-orange-500
-활성/선택 상태:  bg-orange-600 (탭, 토글, 선택지)
+브랜드 아이콘:   text-indigo-600 (Radio 아이콘)
+Input focus:     focus:ring-indigo-500/20 focus:border-indigo-500
+활성/선택 상태:  bg-indigo-600 (탭, 토글, 선택지)
 그 외 모든 UI:   slate-50 ~ slate-900 범위
 
-절대 사용 금지:  bg-indigo-600 (AI default), bg-amber-50 (장식), bg-emerald-50 (장식)
+절대 사용 금지:  bg-amber-50 (장식), bg-emerald-50 (장식)
 ```
 
 ### AI Default vs Human-Crafted 비교표
 | 요소 | AI 기본값 (피할 것) | Human 디자인 (우리) |
 |------|-------------------|-------------------|
-| CTA 버튼 | `bg-indigo-600` | `bg-orange-600` |
+| CTA 버튼 | `bg-indigo-600` | `bg-indigo-600` |
 | 배지 | `bg-indigo-50 text-indigo-700` | `bg-slate-100 text-slate-700` |
 | 아이콘 | Sparkles in colored circle | Radio icon, bare |
 | 카드 좌측 | `border-l-3 border-indigo-500` | `ring-1` or bg change |
 | 선택지 색상 | A=인디고 B=에메랄드 C=앰버 D=바이올렛 | 전부 slate 모노크로매틱 |
-| 바 차트 | 5색 레인보우 | Teal 그라데이션 (브랜드) |
+| 바 차트 | 5색 레인보우 | 인디고 그라데이션 (브랜드) |
 | 빈 상태 | Sparkles + "데이터 없음" | 마스코트 + 도움말 텍스트 |
 | 레이아웃 | 3열 대칭 그리드 | 비대칭, 콘텐츠 중심 |
 | 폰트 | Inter only, 균일 weight | Pretendard, 명확한 위계 |

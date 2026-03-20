@@ -24,11 +24,11 @@ export const REACTIONS = [
     icon: Flame,
     label: '불꽃',
     buttonClass: SHARED_BUTTON,
-    activeClass: 'border-orange-300 bg-orange-50 text-orange-600 shadow-sm',
-    bubbleBg: 'bg-orange-50',
-    bubbleBorder: 'border-orange-200/60',
-    bubbleIcon: 'text-orange-600',
-    accentColor: '#EA580C', // orange-600
+    activeClass: 'border-indigo-300 bg-indigo-50 text-indigo-600 shadow-sm',
+    bubbleBg: 'bg-indigo-50',
+    bubbleBorder: 'border-indigo-200/60',
+    bubbleIcon: 'text-indigo-600',
+    accentColor: '#4F46E5', // indigo-600
   },
   {
     type: 'heart',
