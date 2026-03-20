@@ -146,74 +146,54 @@ export default function IdleMascot() {
         {/* Body group -- tilts */}
         <motion.g
           animate={body}
-          style={{ transformOrigin: '60px 62px' }}
+          style={{ transformOrigin: '60px 60px' }}
         >
-          {/* Mane — warm golden ring behind head */}
-          <circle cx="60" cy="62" r="42" fill="#D97706" />
-          {/* Mane texture — subtle rays */}
-          {[0, 45, 90, 135, 180, 225, 270, 315].map((deg) => (
-            <ellipse
-              key={deg}
-              cx="60"
-              cy="20"
-              rx="6"
-              ry="10"
-              fill="#B45309"
-              opacity="0.3"
-              transform={`rotate(${deg} 60 62)`}
-            />
-          ))}
+          {/* Mane — simple soft circle */}
+          <circle cx="60" cy="60" r="44" fill="#FBBF24" />
 
-          {/* Face — round warm circle */}
-          <circle cx="60" cy="65" r="30" fill="#F59E0B" />
-
-          {/* Inner face — lighter */}
-          <ellipse cx="60" cy="68" rx="22" ry="18" fill="#FCD34D" opacity="0.5" />
+          {/* Face */}
+          <circle cx="60" cy="63" r="32" fill="#FDE68A" />
 
           {/* Left ear */}
-          <motion.g animate={leftEar} style={{ transformOrigin: '35px 38px' }}>
-            <circle cx="35" cy="38" r="10" fill="#D97706" />
-            <circle cx="35" cy="38" r="6" fill="#FBBF24" />
+          <motion.g animate={leftEar} style={{ transformOrigin: '30px 35px' }}>
+            <circle cx="30" cy="35" r="12" fill="#FBBF24" />
+            <circle cx="30" cy="35" r="7" fill="#FDE68A" />
           </motion.g>
 
           {/* Right ear */}
-          <motion.g animate={rightEar} style={{ transformOrigin: '85px 38px' }}>
-            <circle cx="85" cy="38" r="10" fill="#D97706" />
-            <circle cx="85" cy="38" r="6" fill="#FBBF24" />
+          <motion.g animate={rightEar} style={{ transformOrigin: '90px 35px' }}>
+            <circle cx="90" cy="35" r="12" fill="#FBBF24" />
+            <circle cx="90" cy="35" r="7" fill="#FDE68A" />
           </motion.g>
 
           {/* Eyes group -- translates for look L/R */}
           <motion.g animate={eyes}>
             {/* Blink group -- scaleY for blink */}
-            <motion.g animate={blink} style={{ transformOrigin: '60px 62px' }}>
-              <ellipse cx="50" cy="62" rx="4" ry="4.5" fill="#1E293B" />
-              <ellipse cx="70" cy="62" rx="4" ry="4.5" fill="#1E293B" />
+            <motion.g animate={blink} style={{ transformOrigin: '60px 58px' }}>
+              <ellipse cx="48" cy="58" rx="5" ry="5.5" fill="#1E293B" />
+              <ellipse cx="72" cy="58" rx="5" ry="5.5" fill="#1E293B" />
             </motion.g>
           </motion.g>
 
-          {/* Eye shines (outside blink group so they don't squish) */}
-          <circle cx="48" cy="60" r="1.5" fill="white" />
-          <circle cx="68" cy="60" r="1.5" fill="white" />
+          {/* Eye shines */}
+          <circle cx="46" cy="56" r="2" fill="white" />
+          <circle cx="70" cy="56" r="2" fill="white" />
 
           {/* Nose */}
-          <ellipse cx="60" cy="72" rx="4" ry="3" fill="#92400E" />
+          <ellipse cx="60" cy="66" rx="3.5" ry="2.5" fill="#D97706" />
 
           {/* Mouth */}
           <motion.path
-            d="M52 78 Q60 84 68 78"
-            stroke="#92400E" strokeWidth="2" strokeLinecap="round" fill="none"
+            d="M53 71 Q60 77 67 71"
+            stroke="#D97706" strokeWidth="2" strokeLinecap="round" fill="none"
             initial={{ pathLength: 0 }}
             animate={{ pathLength: 1 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           />
 
-          {/* Whiskers — left */}
-          <line x1="32" y1="68" x2="44" y2="70" stroke="#D97706" strokeWidth="1.2" strokeLinecap="round" opacity="0.5" />
-          <line x1="33" y1="74" x2="44" y2="74" stroke="#D97706" strokeWidth="1.2" strokeLinecap="round" opacity="0.5" />
-
-          {/* Whiskers — right */}
-          <line x1="76" y1="70" x2="88" y2="68" stroke="#D97706" strokeWidth="1.2" strokeLinecap="round" opacity="0.5" />
-          <line x1="76" y1="74" x2="87" y2="74" stroke="#D97706" strokeWidth="1.2" strokeLinecap="round" opacity="0.5" />
+          {/* Cheeks */}
+          <circle cx="39" cy="67" r="5" fill="#FBBF24" opacity="0.4" />
+          <circle cx="81" cy="67" r="5" fill="#FBBF24" opacity="0.4" />
         </motion.g>
       </motion.svg>
     </motion.div>
