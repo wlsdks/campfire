@@ -9,40 +9,8 @@ import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
 import QuestionLibraryView from './QuestionLibraryView';
 import MoreView from './MoreView';
-import { Plus, Loader2, Users, MessageSquare, LogOut, ChevronDown, ChevronUp, Archive, MoreHorizontal } from 'lucide-react';
-
-function PinggoMascotSmall() {
-  return (
-    <motion.svg
-      width="48"
-      height="48"
-      viewBox="0 0 120 120"
-      fill="none"
-      animate={{ y: [0, -3, 0] }}
-      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-    >
-      <motion.circle cx="60" cy="68" r="32" fill="#4F46E5" />
-      <motion.ellipse cx="60" cy="62" rx="24" ry="20" fill="#818CF8" opacity="0.3" />
-      <motion.ellipse
-        cx="50" cy="65" rx="4" ry="4.5" fill="white"
-        animate={{ scaleY: [1, 1, 0.1, 1, 1] }}
-        transition={{ duration: 4, repeat: Infinity, times: [0, 0.45, 0.5, 0.55, 1] }}
-      />
-      <motion.ellipse
-        cx="70" cy="65" rx="4" ry="4.5" fill="white"
-        animate={{ scaleY: [1, 1, 0.1, 1, 1] }}
-        transition={{ duration: 4, repeat: Infinity, times: [0, 0.45, 0.5, 0.55, 1] }}
-      />
-      <motion.path d="M52 76 Q60 82 68 76" stroke="white" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-      <motion.line x1="60" y1="36" x2="60" y2="24" stroke="#4F46E5" strokeWidth="3" strokeLinecap="round" />
-      <motion.circle
-        cx="60" cy="21" r="5" fill="#06B6D4"
-        animate={{ scale: [1, 1.2, 1] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-      />
-    </motion.svg>
-  );
-}
+import PinggoMascot from '@/components/ui/PinggoMascot';
+import { Plus, Loader2, LogOut, ChevronDown, ChevronUp } from 'lucide-react';
 
 function formatDate(timestamp) {
   if (!timestamp) return '';
@@ -254,7 +222,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
       {/* Header */}
       <div className="bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <PinggoMascotSmall />
+          <PinggoMascot size="sm" />
           <div>
             <h1 className="text-lg font-bold text-slate-900">Pinggo</h1>
             <p className="text-slate-400 text-xs">{TABS.find((t) => t.key === activeTab)?.label}</p>

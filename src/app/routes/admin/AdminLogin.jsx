@@ -6,155 +6,7 @@ import { db } from '@/lib/firebase';
 import { hashPassword, generateId } from '@/lib/auth';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-
-function PinggoMascot() {
-  return (
-    <motion.svg
-      width="120"
-      height="120"
-      viewBox="0 0 120 120"
-      fill="none"
-      aria-hidden="true"
-      initial={{ y: 0 }}
-      animate={{ y: [0, -6, 0] }}
-      transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-    >
-      {/* Body */}
-      <motion.circle
-        cx="60"
-        cy="68"
-        r="32"
-        fill="#4F46E5"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.2 }}
-      />
-
-      {/* Face highlight */}
-      <motion.ellipse
-        cx="60"
-        cy="62"
-        rx="24"
-        ry="20"
-        fill="#818CF8"
-        opacity="0.3"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: 'spring', stiffness: 260, damping: 20, delay: 0.3 }}
-      />
-
-      {/* Left eye */}
-      <motion.ellipse
-        cx="50"
-        cy="65"
-        rx="4"
-        ry="4.5"
-        fill="white"
-        initial={{ scaleY: 1 }}
-        animate={{ scaleY: [1, 1, 0.1, 1, 1] }}
-        transition={{ duration: 4, repeat: Infinity, times: [0, 0.45, 0.5, 0.55, 1] }}
-      />
-
-      {/* Right eye */}
-      <motion.ellipse
-        cx="70"
-        cy="65"
-        rx="4"
-        ry="4.5"
-        fill="white"
-        initial={{ scaleY: 1 }}
-        animate={{ scaleY: [1, 1, 0.1, 1, 1] }}
-        transition={{ duration: 4, repeat: Infinity, times: [0, 0.45, 0.5, 0.55, 1] }}
-      />
-
-      {/* Smile */}
-      <motion.path
-        d="M52 76 Q60 82 68 76"
-        stroke="white"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-        fill="none"
-        initial={{ pathLength: 0 }}
-        animate={{ pathLength: 1 }}
-        transition={{ duration: 0.6, delay: 0.5 }}
-      />
-
-      {/* Antenna stick */}
-      <motion.line
-        x1="60"
-        y1="36"
-        x2="60"
-        y2="24"
-        stroke="#4F46E5"
-        strokeWidth="3"
-        strokeLinecap="round"
-        initial={{ scaleY: 0 }}
-        animate={{ scaleY: 1 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 15, delay: 0.4 }}
-        style={{ transformOrigin: '60px 36px' }}
-      />
-
-      {/* Antenna ball */}
-      <motion.circle
-        cx="60"
-        cy="21"
-        r="5"
-        fill="#06B6D4"
-        initial={{ scale: 0 }}
-        animate={{ scale: [1, 1.2, 1] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut', delay: 0.6 }}
-      />
-
-      {/* Signal wave 1 */}
-      <motion.path
-        d="M76 18 Q82 10 76 2"
-        stroke="#06B6D4"
-        strokeWidth="2"
-        strokeLinecap="round"
-        fill="none"
-        initial={{ opacity: 0, pathLength: 0 }}
-        animate={{ opacity: [0, 0.6, 0], pathLength: [0, 1, 1] }}
-        transition={{ duration: 2, repeat: Infinity, delay: 0.8 }}
-      />
-
-      {/* Signal wave 2 */}
-      <motion.path
-        d="M84 22 Q92 10 84 -2"
-        stroke="#06B6D4"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        fill="none"
-        initial={{ opacity: 0, pathLength: 0 }}
-        animate={{ opacity: [0, 0.4, 0], pathLength: [0, 1, 1] }}
-        transition={{ duration: 2, repeat: Infinity, delay: 1.2 }}
-      />
-
-      {/* Left cheek blush */}
-      <motion.circle
-        cx="43"
-        cy="74"
-        r="5"
-        fill="#EC4899"
-        opacity="0.2"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.7 }}
-      />
-
-      {/* Right cheek blush */}
-      <motion.circle
-        cx="77"
-        cy="74"
-        r="5"
-        fill="#EC4899"
-        opacity="0.2"
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ delay: 0.7 }}
-      />
-    </motion.svg>
-  );
-}
+import PinggoMascot from '@/components/ui/PinggoMascot';
 
 const inputClass = (hasError, isFocused) =>
   `w-full bg-slate-50 border-2 rounded-xl px-4 py-3.5 text-base placeholder:text-slate-300 focus:outline-none focus:bg-white transition-all duration-200 ${
@@ -239,7 +91,7 @@ function LoginView({ onLogin, onSwitchToRegister }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: 'spring', stiffness: 200, damping: 18 }}
         >
-          <PinggoMascot />
+          <PinggoMascot size="lg" />
         </motion.div>
 
         {/* Title */}
@@ -467,7 +319,7 @@ function RegisterView({ onLogin, onSwitchToLogin }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: 'spring', stiffness: 200, damping: 18 }}
           >
-            <PinggoMascot />
+            <PinggoMascot size="lg" />
           </motion.div>
 
           <div className="text-center space-y-3">
@@ -520,7 +372,7 @@ function RegisterView({ onLogin, onSwitchToLogin }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: 'spring', stiffness: 200, damping: 18 }}
         >
-          <PinggoMascot />
+          <PinggoMascot size="lg" />
         </motion.div>
 
         {/* Title */}

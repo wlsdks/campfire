@@ -3,17 +3,8 @@ import { motion } from 'framer-motion';
 import { ref, get } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import EmptyState from '@/components/ui/EmptyState';
-import { BarChart3, Circle, Cloud, MessageSquare, Swords, Thermometer, Trophy, Users, Layers, TrendingUp, Loader2 } from 'lucide-react';
-
-const QUESTION_TYPE_MAP = {
-  choice: { label: '객관식', icon: BarChart3 },
-  quiz: { label: '퀴즈', icon: Trophy },
-  ox: { label: 'O/X', icon: Circle },
-  wordcloud: { label: '워드클라우드', icon: Cloud },
-  qna: { label: 'Q&A', icon: MessageSquare },
-  scale: { label: '감정 온도계', icon: Thermometer },
-  debate: { label: '찬반 토론', icon: Swords },
-};
+import { MessageSquare, Users, Loader2 } from 'lucide-react';
+import { QUESTION_TYPE_MAP } from '@/lib/question-types';
 
 const stagger = {
   container: { animate: { transition: { staggerChildren: 0.04 } } },

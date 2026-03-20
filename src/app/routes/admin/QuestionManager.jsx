@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { ref, set, remove, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { generateQuestionId } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
-import { BookmarkPlus, CheckCircle, PanelLeftClose, Play, Plus, Square, Zap } from 'lucide-react';
+import { BookmarkPlus, PanelLeftClose, Play, Plus, Square, Zap } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import Toast from '@/components/ui/Toast';
+import { useToast } from '@/hooks/useToast';
 import {
   QUIZ_DEFAULTS,
   QUIZ_EVENT_PRESETS,
@@ -54,21 +56,10 @@ export default function QuestionManager({
 }) {
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState(null);
-  const [toast, setToast] = useState(null);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const { saveQuestion: saveToLibrary } = useQuestionLibrary(adminUid);
   const [nextEvent, setNextEvent] = useState(null);
-  const toastTimerRef = useRef(null);
-
-  useEffect(() => () => {
-    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
-  }, []);
-
-  const showToast = useCallback((message) => {
-    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
-    setToast(message);
-    toastTimerRef.current = setTimeout(() => setToast(null), 2000);
-  }, []);
+  const { toast, showToast } = useToast();
 
   const questionList = Object.entries(questions || {}).sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
   const activeIndex = questionList.findIndex(([qId]) => qId === currentQuestion);
@@ -535,21 +526,7 @@ export default function QuestionManager({
         />
       )}
 
-      <AnimatePresence>
-        {toast && (
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 12 }}
-            role="status"
-            aria-live="polite"
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-2.5 rounded-lg shadow-lg text-sm flex items-center gap-2 z-50"
-          >
-            <CheckCircle size={16} className="text-emerald-400 shrink-0" />
-            {toast}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <Toast message={toast} />
     </div>
   );
 }

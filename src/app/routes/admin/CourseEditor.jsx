@@ -1,37 +1,19 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowDown, ArrowLeft, ArrowUp, BarChart3, Circle, Cloud, Copy, MessageSquare, Plus, Swords, Thermometer, Trash2, Trophy, CheckCircle } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowUp, BarChart3, Copy, MessageSquare, Plus, Trash2 } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import Toast from '@/components/ui/Toast';
 import { useCourseTemplate } from '@/features/session/api/useCourseTemplate';
 import { generateQuestionId } from '@/lib/utils';
 import { QUIZ_DEFAULTS } from '@/lib/quiz';
+import { QUESTION_TYPES } from '@/lib/question-types';
+import { useToast } from '@/hooks/useToast';
 import QuestionForm from './QuestionForm';
-
-const QUESTION_TYPES = [
-  { value: 'choice', label: '객관식', icon: BarChart3 },
-  { value: 'quiz', label: '퀴즈', icon: Trophy },
-  { value: 'ox', label: 'O/X', icon: Circle },
-  { value: 'wordcloud', label: '워드클라우드', icon: Cloud },
-  { value: 'qna', label: 'Q&A', icon: MessageSquare },
-  { value: 'scale', label: '감정 온도계', icon: Thermometer },
-  { value: 'debate', label: '찬반 토론', icon: Swords },
-];
 
 export default function CourseEditor({ courseId, courseName, onBack }) {
   const { template, loading, addQuestion, deleteQuestion, duplicateQuestion, swapQuestionOrder, refresh } = useCourseTemplate(courseId);
   const [showForm, setShowForm] = useState(false);
-  const [toast, setToast] = useState(null);
-  const toastTimerRef = useRef(null);
-
-  useEffect(() => () => {
-    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
-  }, []);
-
-  const showToast = useCallback((message) => {
-    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
-    setToast(message);
-    toastTimerRef.current = setTimeout(() => setToast(null), 2000);
-  }, []);
+  const { toast, showToast } = useToast();
 
   const questions = template?.questions || {};
   const questionList = Object.entries(questions).sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
@@ -242,22 +224,7 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
         </div>
       </div>
 
-      {/* Toast */}
-      <AnimatePresence>
-        {toast && (
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 12 }}
-            role="status"
-            aria-live="polite"
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-2.5 rounded-lg shadow-lg text-sm flex items-center gap-2 z-50"
-          >
-            <CheckCircle size={16} className="text-emerald-400 shrink-0" />
-            {toast}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <Toast message={toast} />
     </div>
   );
 }
