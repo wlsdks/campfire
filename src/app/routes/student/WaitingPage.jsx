@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users } from 'lucide-react';
+import { Users, Zap, Hand, MessageSquare, Trophy, Heart, Copy, Check } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
@@ -11,14 +11,14 @@ import { getNickname } from '@/lib/participant';
 import ReviewingBanner from '@/components/ui/ReviewingBanner';
 
 const TIPS = [
-  '강사가 질문을 활성화하면 자동으로 전환됩니다',
-  '하단 바에서 손들기, 긴급 질문을 보낼 수 있어요',
-  '채팅으로 다른 학생들과 소통해보세요',
-  '퀴즈에서 빠르게 답하면 보너스 점수를 받을 수 있어요',
-  '리액션으로 수업에 참여해보세요',
+  { text: '강사가 질문을 활성화하면 자동으로 전환됩니다', icon: Zap },
+  { text: '하단 바에서 손들기, 긴급 질문을 보낼 수 있어요', icon: Hand },
+  { text: '채팅으로 다른 학생들과 소통해보세요', icon: MessageSquare },
+  { text: '퀴즈에서 빠르게 답하면 보너스 점수를 받을 수 있어요', icon: Trophy },
+  { text: '리액션으로 수업에 참여해보세요', icon: Heart },
 ];
 
-/** Rotating tips with crossfade animation. */
+/** Rotating tips with icon and crossfade animation. */
 function RotatingTip() {
   const [index, setIndex] = useState(0);
 
@@ -29,21 +29,59 @@ function RotatingTip() {
     return () => clearInterval(interval);
   }, []);
 
+  const tip = TIPS[index];
+  const Icon = tip.icon;
+
   return (
     <div className="relative h-10 flex items-center justify-center overflow-hidden">
       <AnimatePresence mode="wait">
-        <motion.p
+        <motion.div
           key={index}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
-          className="text-slate-500 dark:text-slate-400 text-sm text-center absolute px-4"
+          className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm text-center absolute px-4"
         >
-          {TIPS[index]}
-        </motion.p>
+          <Icon size={14} className="text-slate-400 shrink-0" />
+          <span>{tip.text}</span>
+        </motion.div>
       </AnimatePresence>
     </div>
+  );
+}
+
+/** Session code badge with copy-to-clipboard. */
+function CopyableCode({ code }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { /* clipboard not available */ }
+  }, [code]);
+
+  return (
+    <button
+      onClick={handleCopy}
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-all active:scale-[0.96]"
+      aria-label="세션 코드 복사"
+    >
+      {code}
+      <AnimatePresence mode="wait">
+        {copied ? (
+          <motion.span key="check" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }}>
+            <Check size={12} className="text-emerald-500" />
+          </motion.span>
+        ) : (
+          <motion.span key="copy" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }}>
+            <Copy size={12} />
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </button>
   );
 }
 
@@ -113,7 +151,7 @@ export default function WaitingPage({ sessionId, pendingEvent = null }) {
           transition={{ delay: 0.35, duration: 0.35, ease: 'easeOut' }}
           className="flex items-center justify-center"
         >
-          <Badge variant="neutral">{sessionId}</Badge>
+          <CopyableCode code={sessionId} />
         </motion.div>
 
         {/* Rotating tips */}
