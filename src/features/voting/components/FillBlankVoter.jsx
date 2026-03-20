@@ -20,8 +20,8 @@ function SentencePreview({ title, answer }) {
           {i < parts.length - 1 && (
             <span className={`inline-block mx-0.5 px-2 py-0.5 rounded-md text-sm font-semibold border-b-2 ${
               answer?.trim()
-                ? 'bg-slate-100 text-slate-900 border-slate-400'
-                : 'bg-slate-50 text-slate-300 border-dashed border-slate-300'
+                ? 'bg-slate-100 text-slate-900 border-slate-400 dark:bg-slate-700 dark:text-slate-100 dark:border-slate-500'
+                : 'bg-slate-50 text-slate-300 border-dashed border-slate-300 dark:bg-slate-700 dark:text-slate-500 dark:border-slate-500'
             }`}>
               {answer?.trim() || '???'}
             </span>
@@ -59,7 +59,7 @@ function AnswerDistribution({ sessionId, questionId, correctAnswer }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4, type: 'spring', stiffness: 300, damping: 25 }}
-      className="w-full rounded-xl border border-slate-200 bg-white p-4 shadow-sm space-y-3"
+      className="w-full rounded-xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 p-4 shadow-sm space-y-3"
     >
       <div className="flex items-center justify-between">
         <p className="text-xs font-semibold text-slate-500 tracking-tight">실시간 응답</p>
@@ -145,7 +145,7 @@ export default function FillBlankVoter({ sessionId, questionId, title, correctAn
       className="w-full space-y-4"
     >
       {/* Sentence with blank */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+      <div className="rounded-xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 p-4 shadow-sm">
         <SentencePreview title={title} answer={answer} />
       </div>
 
@@ -160,7 +160,7 @@ export default function FillBlankVoter({ sessionId, questionId, title, correctAn
             aria-label="빈칸 답변"
             enterKeyHint="done"
             disabled={disabled}
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 pr-16 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all"
+            className="w-full bg-slate-50 border border-slate-200 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-500 rounded-xl px-4 py-3.5 pr-16 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all"
             autoFocus
           />
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-300 font-medium tabular-nums">

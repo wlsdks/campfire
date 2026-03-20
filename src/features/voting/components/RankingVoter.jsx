@@ -42,16 +42,16 @@ function SortableRankItem({ id, label, position }) {
       style={style}
       {...attributes}
       {...listeners}
-      className={`flex items-center gap-3 px-4 py-3.5 rounded-xl border bg-white touch-none transition-all ${
+      className={`flex items-center gap-3 px-4 py-3.5 rounded-xl border bg-white dark:bg-slate-800 touch-none transition-all ${
         isDragging
           ? 'shadow-lg border-slate-300 scale-[1.02] cursor-grabbing'
-          : 'border-slate-200 hover:border-slate-300 cursor-grab active:scale-[0.98]'
+          : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 cursor-grab active:scale-[0.98]'
       }`}
     >
-      <span className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500 shrink-0">
+      <span className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0">
         {position}
       </span>
-      <span className="flex-1 text-sm font-medium text-slate-800 leading-snug select-none">{label}</span>
+      <span className="flex-1 text-sm font-medium text-slate-800 dark:text-slate-200 leading-snug select-none">{label}</span>
       <GripVertical size={16} className="text-slate-300 shrink-0" />
     </div>
   );
@@ -119,7 +119,7 @@ export default function RankingVoter({ sessionId, questionId, options = [], disa
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-      className="w-full rounded-xl border border-slate-200 bg-white p-4 shadow-sm space-y-4"
+      className="w-full rounded-xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 p-4 shadow-sm space-y-4"
     >
       <p className="text-xs text-slate-400 text-center">
         드래그하여 올바른 순서로 배열하세요

@@ -28,7 +28,7 @@ export default function BetSelector({ onSelect }) {
       className="w-full space-y-4"
     >
       <div className="text-center space-y-1">
-        <p className="text-lg font-bold text-slate-900">포인트 베팅</p>
+        <p className="text-lg font-bold text-slate-900 dark:text-slate-100">포인트 베팅</p>
         <p className="text-sm text-slate-400">자신감에 따라 배율을 선택하세요</p>
       </div>
 
@@ -59,11 +59,11 @@ export default function BetSelector({ onSelect }) {
               className={`w-full flex items-center gap-4 px-4 py-4 rounded-xl border transition-all ${
                 isSelected
                   ? 'bg-slate-900 text-white border-slate-900 dark:bg-slate-100 dark:text-slate-900 dark:border-slate-100'
-                  : 'bg-white text-slate-800 border-slate-200 hover:bg-slate-50'
+                  : 'bg-white text-slate-800 border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-700'
               } ${isDisabled ? 'cursor-not-allowed' : ''}`}
             >
               <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${
-                isSelected ? 'bg-white/15' : 'bg-slate-100'
+                isSelected ? 'bg-white/15' : 'bg-slate-100 dark:bg-slate-700'
               }`}>
                 <Icon size={20} className={isSelected ? 'text-white' : 'text-slate-500'} />
               </div>

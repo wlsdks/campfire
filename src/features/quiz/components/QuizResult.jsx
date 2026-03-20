@@ -26,7 +26,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-      className="w-full rounded-xl border border-slate-200 bg-white px-5 py-8 shadow-sm overflow-hidden relative"
+      className="w-full rounded-xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 px-5 py-8 shadow-sm overflow-hidden relative"
     >
       {isCorrect && <ConfettiBurst />}
       <div className="flex flex-col items-center gap-4 relative z-[1]">
@@ -44,7 +44,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
         </div>
 
         <div className="space-y-1 text-center">
-          <p className={`text-2xl font-bold ${isCorrect ? 'text-slate-900' : 'text-slate-500'}`}>
+          <p className={`text-2xl font-bold ${isCorrect ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500'}`}>
             {isCorrect ? '정답!' : '오답'}
           </p>
           <p className="text-sm text-slate-400">
@@ -77,7 +77,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
         )}
 
         {!isCorrect && correctAnswer && (
-          <div className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center">
+          <div className="w-full rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-700 dark:border-slate-600 px-4 py-3 text-center">
             <p className="text-xs font-medium text-slate-400">정답</p>
             <p className="mt-1 text-base font-semibold text-slate-800">{correctAnswer}</p>
           </div>
@@ -105,7 +105,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
                 className="text-center"
               >
                 <p className="text-xs font-medium text-slate-400">점수</p>
-                <p className={`mt-0.5 text-2xl font-bold ${points < 0 ? 'text-red-500' : 'text-slate-900'}`}>
+                <p className={`mt-0.5 text-2xl font-bold ${points < 0 ? 'text-red-500' : 'text-slate-900 dark:text-slate-100'}`}>
                   <CountUp value={Math.abs(points)} prefix={points < 0 ? '-' : '+'} />
                 </p>
               </motion.div>
@@ -129,14 +129,14 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
                   <Ticket size={12} />
                   티켓
                 </p>
-                <p className="mt-0.5 text-2xl font-bold text-slate-900">{tickets}장</p>
+                <p className="mt-0.5 text-2xl font-bold text-slate-900 dark:text-slate-100">{tickets}장</p>
               </motion.div>
             )}
           </div>
         )}
 
         {event && (
-          <div className="w-full border-t border-slate-100 pt-4">
+          <div className="w-full border-t border-slate-100 dark:border-slate-700 pt-4">
             <QuizEventBanner event={event} state="result" compact />
           </div>
         )}

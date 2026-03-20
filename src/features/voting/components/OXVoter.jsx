@@ -49,9 +49,9 @@ export default function OXVoter({ sessionId, questionId, disabled = false }) {
         whileTap={{ scale: 0.95 }}
         onClick={() => handleVote('O')}
         disabled={selected !== null || disabled}
-        className={`flex-1 py-12 rounded-xl bg-slate-50 hover:bg-slate-100 border transition-all flex flex-col items-center gap-2 ${selected === 'O' ? 'ring-2 ring-slate-400 border-slate-300' : 'border-slate-200'} ${(selected !== null && selected !== 'O') || disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
+        className={`flex-1 py-12 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border transition-all flex flex-col items-center gap-2 ${selected === 'O' ? 'ring-2 ring-slate-400 border-slate-300' : 'border-slate-200 dark:border-slate-700'} ${(selected !== null && selected !== 'O') || disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
       >
-        <span className="text-5xl font-black text-slate-900">O</span>
+        <span className="text-5xl font-black text-slate-900 dark:text-slate-100">O</span>
         <span className="text-sm font-medium text-slate-400">맞아요</span>
       </motion.button>
       <motion.button
@@ -61,9 +61,9 @@ export default function OXVoter({ sessionId, questionId, disabled = false }) {
         whileTap={{ scale: 0.95 }}
         onClick={() => handleVote('X')}
         disabled={selected !== null || disabled}
-        className={`flex-1 py-12 rounded-xl bg-slate-50 hover:bg-slate-100 border transition-all flex flex-col items-center gap-2 ${selected === 'X' ? 'ring-2 ring-slate-400 border-slate-300' : 'border-slate-200'} ${(selected !== null && selected !== 'X') || disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
+        className={`flex-1 py-12 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border transition-all flex flex-col items-center gap-2 ${selected === 'X' ? 'ring-2 ring-slate-400 border-slate-300' : 'border-slate-200 dark:border-slate-700'} ${(selected !== null && selected !== 'X') || disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
       >
-        <span className="text-5xl font-black text-slate-900">X</span>
+        <span className="text-5xl font-black text-slate-900 dark:text-slate-100">X</span>
         <span className="text-sm font-medium text-slate-400">아니에요</span>
       </motion.button>
     </div>

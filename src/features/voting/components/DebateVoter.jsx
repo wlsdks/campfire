@@ -32,7 +32,7 @@ function DebateLiveRatio({ sessionId, questionId, mySide }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4, type: 'spring', stiffness: 300, damping: 25 }}
-      className="w-full rounded-xl border border-slate-200 bg-white p-4 shadow-sm space-y-3"
+      className="w-full rounded-xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 p-4 shadow-sm space-y-3"
     >
       <div className="flex items-center justify-between">
         <p className="text-xs font-semibold text-slate-500 tracking-tight">실시간 결과</p>
@@ -57,11 +57,11 @@ function DebateLiveRatio({ sessionId, questionId, mySide }) {
           />
         </div>
         <div className="flex justify-between text-xs">
-          <span className={`font-semibold ${mySide === 'for' ? 'text-slate-900' : 'text-slate-500'}`}>
+          <span className={`font-semibold ${mySide === 'for' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500'}`}>
             찬성 {forPct}%
             {mySide === 'for' && <span className="text-slate-400 font-normal ml-1">(나)</span>}
           </span>
-          <span className={`font-semibold ${mySide === 'against' ? 'text-slate-900' : 'text-slate-500'}`}>
+          <span className={`font-semibold ${mySide === 'against' ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500'}`}>
             반대 {againstPct}%
             {mySide === 'against' && <span className="text-slate-400 font-normal ml-1">(나)</span>}
           </span>
@@ -127,7 +127,7 @@ export default function DebateVoter({ sessionId, questionId, disabled = false })
           className={`flex-1 py-6 rounded-xl border transition-all flex flex-col items-center gap-1.5 ${
             side === 'for'
               ? 'bg-slate-900 text-white border-slate-900 shadow-sm dark:bg-slate-100 dark:text-slate-900 dark:border-slate-100'
-              : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-600'
+              : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-600 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-700 dark:text-slate-300'
           } ${disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
         >
           <span className="text-3xl font-black">찬성</span>
@@ -140,7 +140,7 @@ export default function DebateVoter({ sessionId, questionId, disabled = false })
           className={`flex-1 py-6 rounded-xl border transition-all flex flex-col items-center gap-1.5 ${
             side === 'against'
               ? 'bg-slate-900 text-white border-slate-900 shadow-sm dark:bg-slate-100 dark:text-slate-900 dark:border-slate-100'
-              : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-600'
+              : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-600 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-700 dark:text-slate-300'
           } ${disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
         >
           <span className="text-3xl font-black">반대</span>
@@ -158,7 +158,7 @@ export default function DebateVoter({ sessionId, questionId, disabled = false })
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             className="overflow-hidden space-y-3"
           >
-            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm space-y-3">
+            <div className="rounded-xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 p-4 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
                 <p className="text-xs font-semibold text-slate-400">한 줄 의견 <span className="font-normal">(선택)</span></p>
                 <span className="text-[11px] text-slate-300 tabular-nums">{opinion.length}/50</span>
@@ -170,7 +170,7 @@ export default function DebateVoter({ sessionId, questionId, disabled = false })
                 placeholder="이유를 한 줄로 적어주세요"
                 aria-label="한 줄 의견"
                 enterKeyHint="done"
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-slate-400 transition-colors"
+                className="w-full bg-slate-50 border border-slate-200 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-500 rounded-lg px-4 py-3 text-sm placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-slate-400 transition-colors"
               />
             </div>
 

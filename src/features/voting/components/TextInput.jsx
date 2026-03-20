@@ -15,7 +15,7 @@ function SubmitConfirm({ type, value }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-      className="w-full rounded-xl border border-slate-200 bg-white px-5 py-8 shadow-sm"
+      className="w-full rounded-xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 px-5 py-8 shadow-sm"
     >
       <div className="flex flex-col items-center gap-4">
         <motion.div
@@ -29,7 +29,7 @@ function SubmitConfirm({ type, value }) {
         </motion.div>
 
         <div className="space-y-1 text-center">
-          <p className="text-xl font-bold text-slate-900">
+          <p className="text-xl font-bold text-slate-900 dark:text-slate-100">
             {isQnA ? '질문이 전달되었습니다' : '단어가 등록되었습니다'}
           </p>
           <p className="text-sm text-slate-400">
@@ -44,7 +44,7 @@ function SubmitConfirm({ type, value }) {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center w-full"
+            className="rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-700 dark:border-slate-600 px-4 py-3 text-center w-full"
           >
             <p className="text-xs font-medium text-slate-400 mb-1">내가 {isQnA ? '보낸 질문' : '입력한 단어'}</p>
             <p className="text-sm font-medium text-slate-700">{value}</p>
@@ -97,7 +97,7 @@ export default function TextInput({ sessionId, questionId, type = 'wordcloud', p
           placeholder={placeholder || '입력해주세요'}
           aria-label={type === 'qna' ? '질문 입력' : '단어 입력'}
           maxLength={maxLength}
-          className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 pr-16 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all"
+          className="w-full bg-slate-50 border border-slate-200 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-500 rounded-xl px-4 py-3.5 pr-16 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all"
           autoFocus
         />
         <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-300 font-medium">

@@ -32,7 +32,7 @@ export default memo(function StudentLiveResults({ sessionId, questionId, options
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4, type: 'spring', stiffness: 300, damping: 25 }}
-      className="w-full rounded-xl border border-slate-200 bg-white p-4 shadow-sm space-y-3"
+      className="w-full rounded-xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 p-4 shadow-sm space-y-3"
     >
       <div className="flex items-center justify-between">
         <p className="text-xs font-semibold text-slate-500 tracking-tight">
@@ -57,7 +57,7 @@ export default memo(function StudentLiveResults({ sessionId, questionId, options
                 <span
                   className={`text-sm truncate ${
                     isMine
-                      ? 'font-semibold text-slate-900'
+                      ? 'font-semibold text-slate-900 dark:text-slate-100'
                       : 'font-medium text-slate-500'
                   }`}
                 >
@@ -70,7 +70,7 @@ export default memo(function StudentLiveResults({ sessionId, questionId, options
                 </span>
                 <span
                   className={`text-xs tabular-nums shrink-0 ${
-                    isMine ? 'font-bold text-slate-900' : 'font-medium text-slate-400'
+                    isMine ? 'font-bold text-slate-900 dark:text-slate-100' : 'font-medium text-slate-400'
                   }`}
                 >
                   {formatPercent(count, totalVotes)}

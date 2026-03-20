@@ -64,7 +64,7 @@ export default function ScaleVoter({ sessionId, questionId, disabled = false }) 
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-      className="w-full rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-5"
+      className="w-full rounded-xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 p-5 shadow-sm space-y-5"
     >
       {/* Big centered value display */}
       <div className="text-center">
@@ -73,7 +73,7 @@ export default function ScaleVoter({ sessionId, questionId, disabled = false }) 
           initial={{ scale: 1.15, opacity: 0.7 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 400, damping: 22 }}
-          className="text-5xl font-bold text-slate-900 tabular-nums"
+          className="text-5xl font-bold text-slate-900 dark:text-slate-100 tabular-nums"
         >
           {value}
         </motion.p>
@@ -146,7 +146,7 @@ export default function ScaleVoter({ sessionId, questionId, disabled = false }) 
             className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.96] ${
               value === v
                 ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
-                : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
+                : 'bg-slate-50 text-slate-500 hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600'
             }`}
           >
             {v}

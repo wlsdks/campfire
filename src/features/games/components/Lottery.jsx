@@ -105,16 +105,16 @@ export default function Lottery({ participants, onResult }) {
       {/* Count selector */}
       <div className="flex items-center gap-3">
         <span className="text-slate-500 text-sm font-medium">추첨 인원</span>
-        <div className="flex items-center bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
-          <button onClick={() => setCount(Math.max(1, count - 1))} className="px-2.5 py-2 text-slate-400 hover:bg-slate-50 transition-colors">
+        <div className="flex items-center bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+          <button onClick={() => setCount(Math.max(1, count - 1))} className="px-2.5 py-2 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
             <Minus size={14} />
           </button>
           <input
             type="number" min={1} max={eligibleParticipants.length} value={count}
             onChange={(e) => setCount(Math.max(1, Math.min(eligibleParticipants.length, Number(e.target.value))))}
-            className="w-12 py-2 bg-transparent text-slate-900 text-center font-bold text-sm focus:outline-none"
+            className="w-12 py-2 bg-transparent text-slate-900 dark:text-slate-100 dark:bg-transparent text-center font-bold text-sm focus:outline-none"
           />
-          <button onClick={() => setCount(Math.min(eligibleParticipants.length, count + 1))} className="px-2.5 py-2 text-slate-400 hover:bg-slate-50 transition-colors">
+          <button onClick={() => setCount(Math.min(eligibleParticipants.length, count + 1))} className="px-2.5 py-2 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
             <Plus size={14} />
           </button>
         </div>

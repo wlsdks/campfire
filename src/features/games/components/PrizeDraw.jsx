@@ -43,7 +43,7 @@ const SlotReel = memo(function SlotReel({ names, running, finalName }) {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -24, opacity: 0 }}
           transition={{ duration: running ? 0.05 : 0.3 }}
-          className="text-3xl font-bold text-slate-900 tracking-tight block"
+          className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight block"
         >
           {displayName}
         </motion.span>
@@ -65,14 +65,14 @@ function WinnerCard({ winner, index, total }) {
         damping: 25,
         delay: index * 0.08,
       }}
-      className="relative bg-white rounded-2xl shadow-xl p-8 flex flex-col items-center gap-3"
+      className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 flex flex-col items-center gap-3"
       data-sound="winner-reveal"
     >
       <ConfettiBurst />
-      <div className="w-16 h-16 rounded-full bg-slate-100 text-slate-900 flex items-center justify-center text-2xl font-bold">
+      <div className="w-16 h-16 rounded-full bg-slate-100 text-slate-900 dark:bg-slate-700 dark:text-slate-100 flex items-center justify-center text-2xl font-bold">
         {initial}
       </div>
-      <span className="text-3xl font-bold text-slate-900 tracking-tight">
+      <span className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
         {winner.nickname}
       </span>
       <span className="bg-slate-900 text-white px-3 py-1 rounded-full text-sm font-bold">
@@ -128,7 +128,7 @@ export default function PrizeDraw({ participants, onResult }) {
       <div className="flex flex-col items-center justify-center gap-4 py-16">
         <Gift size={36} className="text-slate-400" />
         <div className="text-center space-y-1">
-          <h3 className="text-xl font-bold text-slate-900">경품 추첨</h3>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">경품 추첨</h3>
           <p className="text-slate-400 text-sm">참여자가 접속하면 시작할 수 있어요</p>
         </div>
       </div>
@@ -145,10 +145,10 @@ export default function PrizeDraw({ participants, onResult }) {
           className="flex items-center gap-3"
         >
           <span className="text-slate-500 text-sm font-medium">추첨 인원</span>
-          <div className="flex items-center bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+          <div className="flex items-center bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
             <button
               onClick={() => setCount(Math.max(1, count - 1))}
-              className="px-2.5 py-2 text-slate-400 hover:bg-slate-50 transition-colors"
+              className="px-2.5 py-2 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
               <Minus size={14} />
             </button>
@@ -158,11 +158,11 @@ export default function PrizeDraw({ participants, onResult }) {
               max={names.length}
               value={count}
               onChange={(e) => setCount(Math.max(1, Math.min(names.length, Number(e.target.value) || 1)))}
-              className="w-12 py-2 bg-transparent text-slate-900 text-center font-bold text-sm focus:outline-none"
+              className="w-12 py-2 bg-transparent text-slate-900 dark:text-slate-100 text-center font-bold text-sm focus:outline-none"
             />
             <button
               onClick={() => setCount(Math.min(names.length, count + 1))}
-              className="px-2.5 py-2 text-slate-400 hover:bg-slate-50 transition-colors"
+              className="px-2.5 py-2 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
               <Plus size={14} />
             </button>
@@ -176,7 +176,7 @@ export default function PrizeDraw({ participants, onResult }) {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-white rounded-2xl shadow-xl p-10 w-full text-center"
+          className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-10 w-full text-center"
           data-sound="slot-spin"
         >
           <p className="text-slate-400 text-sm mb-4 font-medium">추첨 중...</p>
