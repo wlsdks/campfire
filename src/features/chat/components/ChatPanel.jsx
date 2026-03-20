@@ -160,12 +160,12 @@ export default function ChatPanel({ sessionId, senderName, senderType, open, onC
                 placeholder="메시지를 입력하세요"
                 aria-label="채팅 메시지"
                 maxLength={MAX_LENGTH}
-                className="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:border-orange-500 focus:bg-white dark:focus:bg-slate-600 transition-all"
+                className="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-600 transition-all"
               />
               <button
                 onClick={handleSend}
                 disabled={!inputText.trim() || !canSend || sending}
-                className="flex items-center justify-center w-10 h-10 rounded-xl bg-orange-600 dark:bg-orange-500 text-white disabled:opacity-30 hover:bg-orange-700 dark:hover:bg-orange-400 transition-colors shrink-0"
+                className="flex items-center justify-center w-10 h-10 rounded-xl bg-indigo-600 dark:bg-indigo-500 text-white disabled:opacity-30 hover:bg-indigo-700 dark:hover:bg-indigo-400 transition-colors shrink-0"
                 aria-label="메시지 보내기"
               >
                 <Send size={16} />

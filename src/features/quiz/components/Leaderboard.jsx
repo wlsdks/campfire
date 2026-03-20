@@ -44,7 +44,7 @@ function RankChange({ delta }) {
 }
 
 const PODIUM_STYLES = [
-  'bg-orange-600 dark:bg-orange-500 text-white border-orange-600 dark:border-orange-500',
+  'bg-indigo-600 dark:bg-indigo-500 text-white border-indigo-600 dark:border-indigo-500',
   'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-600',
   'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600',
 ];

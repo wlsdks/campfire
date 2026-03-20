@@ -160,7 +160,7 @@ export default function FillBlankVoter({ sessionId, questionId, title, correctAn
             aria-label="빈칸 답변"
             enterKeyHint="done"
             disabled={disabled}
-            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 pr-16 text-base placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all"
+            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 pr-16 text-base placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-all"
             autoFocus
           />
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-300 font-medium tabular-nums">

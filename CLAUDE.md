@@ -43,17 +43,17 @@ src/
 
 ## Design System
 
-### Brand Color: Orange (#EA580C / orange-600)
-- CTA buttons: `bg-orange-600 hover:bg-orange-700`
-- Dark mode CTA: `dark:bg-orange-500 dark:hover:bg-orange-400`
-- Input focus: `focus:ring-orange-500/20 focus:border-orange-500`
-- Selected/active states: `bg-orange-600`
+### Brand Color: Indigo (#4F46E5 / indigo-600)
+- CTA buttons: `bg-indigo-600 hover:bg-indigo-700`
+- Dark mode CTA: `dark:bg-indigo-500 dark:hover:bg-indigo-400`
+- Input focus: `focus:ring-indigo-500/20 focus:border-indigo-500`
+- Selected/active states: `bg-indigo-600`
 - Keep slate for text, cards, borders, backgrounds
 
 ### Colors (design-tokens.js)
 ```
-Brand:          #EA580C (Orange-600)     Brand Hover: #C2410C (Orange-700)
-Brand Light:    #F97316 (Orange-500)     — dark mode CTA
+Brand:          #4F46E5 (Indigo-600)     Brand Hover: #4338CA (Indigo-700)
+Brand Light:    #6366F1 (Indigo-500)     — dark mode CTA
 
 Success:        #10B981 (Emerald-500)    Warning:        #F59E0B (Amber-500)
 Error:          #EF4444 (Red-500)
@@ -64,7 +64,7 @@ Border:         #E2E8F0 (Slate-200)     Border Light: #F1F5F9
 Text Primary:   #0F172A (Slate-900)     Text Secondary: #475569 (Slate-600)
 Text Muted:     #94A3B8 (Slate-400)     Text Inverse:   #FFFFFF
 
-Chart bars:     Orange gradient (#EA580C → #FB923C → #FDBA74)
+Chart bars:     Indigo gradient (#4F46E5 → #818CF8 → #A5B4FC)
 ```
 **Rule**: MAX 2-3 colors per screen. All colors from tokens only. No random hex values.
 

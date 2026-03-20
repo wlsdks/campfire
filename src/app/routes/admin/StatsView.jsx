@@ -151,7 +151,7 @@ function QuestionsTab({ questions, difficultQuestions, questionsLoading, courseN
             onClick={() => setCourseFilter('all')}
             className={`px-3 py-1 rounded-lg text-xs font-medium transition-all active:scale-[0.96] whitespace-nowrap shrink-0 ${
               courseFilter === 'all'
-                ? 'bg-orange-600 dark:bg-orange-500 text-white'
+                ? 'bg-indigo-600 dark:bg-indigo-500 text-white'
                 : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-600'
             }`}
           >
@@ -163,7 +163,7 @@ function QuestionsTab({ questions, difficultQuestions, questionsLoading, courseN
               onClick={() => setCourseFilter(name)}
               className={`px-3 py-1 rounded-lg text-xs font-medium transition-all active:scale-[0.96] whitespace-nowrap shrink-0 ${
                 courseFilter === name
-                  ? 'bg-orange-600 dark:bg-orange-500 text-white'
+                  ? 'bg-indigo-600 dark:bg-indigo-500 text-white'
                   : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-600'
               }`}
             >

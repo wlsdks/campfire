@@ -62,7 +62,7 @@ export function CorrectAnswerSection({ options, correctAnswer, setCorrectAnswer,
           return (
             <button key={option} onClick={() => { setCorrectAnswer(option); setLocalError(null); }}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.96] flex items-center gap-1.5 ${
-                isCorrect ? 'bg-orange-600 dark:bg-orange-500 text-white' : 'bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600'}`}>
+                isCorrect ? 'bg-indigo-600 dark:bg-indigo-500 text-white' : 'bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600'}`}>
               {isCorrect && <Check size={14} />}
               <span className="font-bold">{OPTION_LABELS[i]}</span>{option}
             </button>
@@ -172,7 +172,7 @@ export function OXAnswerSection({ correctAnswer, setCorrectAnswer, setLocalError
           return (
             <button key={val} onClick={() => { setCorrectAnswer(val); setLocalError(null); }}
               className={`flex-1 py-3 rounded-lg text-lg font-bold transition-all active:scale-[0.96] flex items-center justify-center gap-2 ${
-                isCorrect ? 'bg-orange-600 dark:bg-orange-500 text-white' : 'bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600'}`}>
+                isCorrect ? 'bg-indigo-600 dark:bg-indigo-500 text-white' : 'bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600'}`}>
               {isCorrect && <Check size={16} />}{val}
             </button>
           );
@@ -196,7 +196,7 @@ export function QuizSettingsSection({ points, setPoints, event, setEvent, bettin
           {[50, 100, 200, 500].map((v) => (
             <button key={v} onClick={() => setPoints(v)}
               className={`flex-1 py-1.5 rounded-lg text-sm font-medium transition-all active:scale-[0.96] ${
-                points === v ? 'bg-orange-600 dark:bg-orange-500 text-white' : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600'}`}>
+                points === v ? 'bg-indigo-600 dark:bg-indigo-500 text-white' : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600'}`}>
               {v}점
             </button>
           ))}
@@ -213,7 +213,7 @@ export function QuizSettingsSection({ points, setPoints, event, setEvent, bettin
             return (
               <button key={preset.id} onClick={() => setEvent(isSelected ? null : preset)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all active:scale-[0.96] ${
-                  isSelected ? 'bg-orange-600 dark:bg-orange-500 text-white' : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600'}`}>
+                  isSelected ? 'bg-indigo-600 dark:bg-indigo-500 text-white' : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600'}`}>
                 {preset.label}
               </button>
             );
@@ -230,7 +230,7 @@ export function QuizSettingsSection({ points, setPoints, event, setEvent, bettin
             <p className="text-[11px] text-slate-300 mt-0.5">학생이 배율을 선택 (1x/2x/3x)</p>
           </div>
           <button onClick={() => setBetting(!betting)}
-            className={`relative w-11 h-6 rounded-full transition-colors ${betting ? 'bg-orange-600 dark:bg-orange-500' : 'bg-slate-200 dark:bg-slate-600'}`}
+            className={`relative w-11 h-6 rounded-full transition-colors ${betting ? 'bg-indigo-600 dark:bg-indigo-500' : 'bg-slate-200 dark:bg-slate-600'}`}
             role="switch" aria-checked={betting} aria-label="포인트 베팅 활성화">
             <motion.div animate={{ x: betting ? 20 : 2 }}
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}

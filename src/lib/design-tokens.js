@@ -4,11 +4,11 @@
 
 // ─── Colors ──────────────────────────────────────────
 export const colors = {
-  // Brand — Hermes orange
-  brand: '#EA580C',
-  brandHover: '#C2410C',
-  brandLight: '#F97316',
-  brandAccent: '#EA580C',
+  // Brand — Indigo
+  brand: '#4F46E5',          // indigo-600
+  brandHover: '#4338CA',     // indigo-700
+  brandLight: '#6366F1',     // indigo-500 (dark mode)
+  brandAccent: '#4F46E5',    // indigo-600
 
   // Functional (status only, not decorative)
   success: '#10B981',        // emerald-500
@@ -35,17 +35,17 @@ export const colors = {
     inverse: '#FFFFFF',
   },
 
-  // Bar chart (orange gradient)
+  // Bar chart (indigo gradient)
   chart: {
-    bar1: '#EA580C',
-    bar2: '#FB923C',
-    bar3: '#FDBA74',
+    bar1: '#4F46E5',         // indigo-600
+    bar2: '#818CF8',         // indigo-400
+    bar3: '#A5B4FC',         // indigo-300
     barWrong: '#CBD5E1',
   },
 
   // OX Battle
   ox: {
-    o: '#EA580C',
+    o: '#4F46E5',            // indigo-600
     x: '#94A3B8',
   },
 };
@@ -145,7 +145,7 @@ export const tw = {
 
   // Buttons
   btnBase: 'font-medium rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.97]',
-  btnPrimary: 'bg-orange-600 hover:bg-orange-700 text-white focus-visible:ring-orange-400',
+  btnPrimary: 'bg-indigo-600 hover:bg-indigo-700 text-white focus-visible:ring-indigo-400',
   btnSecondary: 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 focus-visible:ring-slate-300',
   btnGhost: 'hover:bg-slate-100 text-slate-600 focus-visible:ring-slate-300',
   btnDanger: 'bg-red-500 hover:bg-red-600 text-white focus-visible:ring-red-400',
@@ -154,7 +154,7 @@ export const tw = {
   btnLg: 'py-3 px-6 text-lg',
 
   // Inputs
-  input: 'w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all',
+  input: 'w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all',
   inputError: 'border-red-400 focus:ring-red-500/20 focus:border-red-500',
 
   // Badges

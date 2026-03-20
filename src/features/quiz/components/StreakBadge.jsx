@@ -32,7 +32,7 @@ export default memo(function StreakBadge({ streak = 0, compact = false }) {
               compact ? 'px-2.5 py-1' : 'px-3.5 py-1.5'
             } ${
               isHot
-                ? 'bg-orange-600 text-white border-orange-700'
+                ? 'bg-indigo-600 text-white border-indigo-700'
                 : 'bg-white text-slate-700 border-slate-200'
             }`}
           >

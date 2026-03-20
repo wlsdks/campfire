@@ -31,11 +31,11 @@ body {
 
 /* Focus visible for accessibility */
 :focus-visible {
-  outline: 2px solid #EA580C;
+  outline: 2px solid #4F46E5;
   outline-offset: 2px;
 }
 .dark :focus-visible {
-  outline-color: #FB923C;
+  outline-color: #818CF8;
 }
 
 /* Reduced motion support */

@@ -290,7 +290,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
                     </p>
                     <p className="text-xs text-slate-400">질문 목록을 복사하여 새 클래스에 추가합니다</p>
                   </div>
-                  <div className={`w-9 h-5 rounded-full transition-colors relative ${duplicateEnabled ? 'bg-orange-600' : 'bg-slate-200'}`}>
+                  <div className={`w-9 h-5 rounded-full transition-colors relative ${duplicateEnabled ? 'bg-indigo-600' : 'bg-slate-200'}`}>
                     <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-all ${duplicateEnabled ? 'left-4' : 'left-0.5'}`} />
                   </div>
                 </button>

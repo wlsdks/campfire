@@ -146,7 +146,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
                 {activeTab === tab.key && (
                   <motion.div
                     layoutId="tab-indicator"
-                    className="absolute inset-0 bg-orange-600 dark:bg-orange-500 rounded-lg"
+                    className="absolute inset-0 bg-indigo-600 dark:bg-indigo-500 rounded-lg"
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                   />
                 )}

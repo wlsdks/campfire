@@ -144,7 +144,7 @@ export default function RankingVoter({ sessionId, questionId, options = [], disa
         whileTap={{ scale: 0.97 }}
         onClick={handleSubmit}
         disabled={disabled || submitting}
-        className="w-full py-3 rounded-lg bg-orange-600 hover:bg-orange-700 text-white font-medium text-base transition-colors disabled:opacity-50 active:scale-[0.97]"
+        className="w-full py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-base transition-colors disabled:opacity-50 active:scale-[0.97]"
       >
         {submitting ? '제출 중...' : '이 순서로 제출'}
       </motion.button>
