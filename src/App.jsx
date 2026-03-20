@@ -118,12 +118,8 @@ function App() {
       <Routes>
         <Route path="/" element={
           <ErrorBoundary scope="student">
-            <div className="min-h-dvh bg-slate-100 dark:bg-slate-950 flex justify-center">
-              <div className="w-full max-w-[480px] bg-white dark:bg-slate-900 min-h-dvh relative shadow-xl sm:border-x sm:border-slate-200 dark:sm:border-slate-800">
-                <StudentRouter />
-                <InstallPrompt />
-              </div>
-            </div>
+            <StudentRouter />
+            <InstallPrompt />
           </ErrorBoundary>
         } />
         <Route path="/admin" element={

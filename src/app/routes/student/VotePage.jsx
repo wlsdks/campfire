@@ -97,8 +97,8 @@ export default function VotePage({ sessionId }) {
 
   if (loading) {
     return (
-      <div className="min-h-dvh flex items-center justify-center p-4">
-        <div className="w-full space-y-4">
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
+        <div className="w-full max-w-xl space-y-4">
           <div className="flex items-center justify-center gap-2 text-slate-400">
             <Loader2 size={18} className="animate-spin" />
             <span className="text-sm">불러오는 중...</span>
@@ -137,10 +137,10 @@ export default function VotePage({ sessionId }) {
   if (!question) return <WaitingPage sessionId={sessionId} pendingEvent={session?.pendingEvent || null} />;
 
   return (
-    <div className="min-h-dvh flex flex-col items-center justify-center px-5 pb-40 pt-16">
+    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center px-5 pb-40 pt-16">
       <StudentHeader sessionId={sessionId} />
 
-      <div className="w-full space-y-5">
+      <div className="w-full max-w-xl space-y-5">
           {/* Speed quiz banner */}
           {isSpeedQuiz && question?.type === 'quiz' && (
             <SpeedQuizBanner
