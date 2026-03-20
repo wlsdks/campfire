@@ -168,7 +168,7 @@ export default function StudentBottomBar({ sessionId }) {
         role="toolbar"
         aria-label="참여 도구"
         className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 z-30">
-        <div className="max-w-xl mx-auto px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+        <div className="px-8 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
         <ReactionBar sessionId={sessionId} />
         <div className="mt-3 pt-3">
           <div className="grid grid-cols-4 gap-2.5">
@@ -176,7 +176,7 @@ export default function StudentBottomBar({ sessionId }) {
               whileTap={{ scale: 0.95 }}
               onClick={toggleHand}
               aria-pressed={isRaised}
-              className={`h-14 rounded-xl font-medium text-sm transition-all flex flex-col items-center justify-center gap-0.5 ${
+              className={`h-16 rounded-xl font-medium text-sm transition-all flex flex-col items-center justify-center gap-0.5 ${
                 isRaised
                   ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
                   : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700'
@@ -188,7 +188,7 @@ export default function StudentBottomBar({ sessionId }) {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowQuestionInput(true)}
-              className="h-14 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 transition-all flex flex-col items-center justify-center gap-0.5"
+              className="h-16 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 transition-all flex flex-col items-center justify-center gap-0.5"
             >
               <MessageCircle size={20} />
               <span className="text-[11px]">긴급</span>
@@ -196,7 +196,7 @@ export default function StudentBottomBar({ sessionId }) {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={handleOpenQA}
-              className="h-14 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 transition-all flex flex-col items-center justify-center gap-0.5 relative"
+              className="h-16 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 transition-all flex flex-col items-center justify-center gap-0.5 relative"
             >
               <HelpCircle size={20} />
               <span className="text-[11px]">질문</span>
@@ -207,7 +207,7 @@ export default function StudentBottomBar({ sessionId }) {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={handleOpenChat}
-              className="h-14 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 transition-all flex flex-col items-center justify-center gap-0.5 relative"
+              className="h-16 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 transition-all flex flex-col items-center justify-center gap-0.5 relative"
             >
               <MessageSquare size={20} />
               <span className="text-[11px]">채팅</span>
