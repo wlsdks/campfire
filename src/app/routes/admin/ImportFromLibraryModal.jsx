@@ -1,0 +1,190 @@
+import { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { BarChart3, Circle, Cloud, MessageSquare, Trophy, Search, X, Check, BookmarkPlus } from 'lucide-react';
+import { useQuestionLibrary } from '@/features/questions/api/useQuestionLibrary';
+import Modal from '@/components/ui/Modal';
+import Button from '@/components/ui/Button';
+
+const QUESTION_TYPES = [
+  { value: 'choice', label: '객관식', icon: BarChart3 },
+  { value: 'quiz', label: '퀴즈', icon: Trophy },
+  { value: 'ox', label: 'O/X', icon: Circle },
+  { value: 'wordcloud', label: '워드클라우드', icon: Cloud },
+  { value: 'qna', label: 'Q&A', icon: MessageSquare },
+];
+
+function PickableCard({ question, selected, onToggle }) {
+  const qType = QUESTION_TYPES.find((t) => t.value === question.type);
+  const Icon = qType?.icon || MessageSquare;
+
+  return (
+    <button
+      onClick={onToggle}
+      className={`w-full text-left p-3 rounded-xl border transition-all active:scale-[0.98] ${
+        selected
+          ? 'border-slate-400 bg-slate-50 shadow-sm'
+          : 'border-slate-200 hover:border-slate-300'
+      }`}
+    >
+      <div className="flex items-start gap-2.5">
+        <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
+          selected ? 'bg-slate-900 border-slate-900' : 'border-slate-300'
+        }`}>
+          {selected && <Check size={12} className="text-white" />}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <Icon size={12} className="text-slate-400" />
+            <span className="text-xs font-medium text-slate-400">{qType?.label}</span>
+          </div>
+          <p className="text-slate-800 text-sm leading-relaxed">{question.title}</p>
+          {question.options && (
+            <div className="flex flex-wrap gap-1 mt-1.5">
+              {question.options.map((opt, i) => (
+                <span
+                  key={i}
+                  className={`text-[11px] px-1.5 py-0.5 rounded-md ${
+                    question.correctAnswer === opt
+                      ? 'bg-slate-900 text-white'
+                      : 'bg-slate-50 text-slate-500'
+                  }`}
+                >
+                  {opt}
+                </span>
+              ))}
+            </div>
+          )}
+          {question.type === 'ox' && question.correctAnswer && (
+            <div className="flex gap-1 mt-1.5">
+              {['O', 'X'].map((v) => (
+                <span
+                  key={v}
+                  className={`text-[11px] px-2 py-0.5 rounded-md font-semibold ${
+                    question.correctAnswer === v
+                      ? 'bg-slate-900 text-white'
+                      : 'bg-slate-50 text-slate-400'
+                  }`}
+                >
+                  {v}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </button>
+  );
+}
+
+export default function ImportFromLibraryModal({ open, onClose, adminUid, onImport }) {
+  const { questions, loading } = useQuestionLibrary(adminUid);
+  const [selected, setSelected] = useState(new Set());
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filtered = useMemo(() => {
+    if (!searchQuery.trim()) return questions;
+    const query = searchQuery.toLowerCase();
+    return questions.filter((q) => {
+      const inTitle = q.title?.toLowerCase().includes(query);
+      const inOptions = q.options?.some((o) => o.toLowerCase().includes(query));
+      return inTitle || inOptions;
+    });
+  }, [questions, searchQuery]);
+
+  function toggleSelect(qId) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(qId)) next.delete(qId);
+      else next.add(qId);
+      return next;
+    });
+  }
+
+  function handleImport() {
+    const selectedQuestions = questions.filter((q) => selected.has(q.id));
+    onImport(selectedQuestions);
+    setSelected(new Set());
+    setSearchQuery('');
+    onClose();
+  }
+
+  function handleClose() {
+    setSelected(new Set());
+    setSearchQuery('');
+    onClose();
+  }
+
+  return (
+    <Modal open={open} onClose={handleClose} ariaLabel="보관함에서 질문 가져오기">
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-lg font-bold text-slate-900">보관함에서 가져오기</h2>
+          <p className="text-slate-400 text-xs mt-0.5">저장된 질문을 선택하여 추가하세요</p>
+        </div>
+
+        {questions.length > 3 && (
+          <div className="relative">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="질문 검색..."
+              aria-label="보관함 질문 검색"
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-8 py-2 text-sm placeholder:text-slate-300 focus:outline-none focus:bg-white focus:border-slate-400 transition-colors"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500"
+                aria-label="검색어 지우기"
+              >
+                <X size={12} />
+              </button>
+            )}
+          </div>
+        )}
+
+        <div className="max-h-[50vh] overflow-y-auto space-y-1.5 -mx-1 px-1">
+          {loading ? (
+            <div className="text-center py-8 text-slate-400 text-sm">불러오는 중...</div>
+          ) : filtered.length === 0 ? (
+            <div className="text-center py-8 space-y-1">
+              <BookmarkPlus size={20} className="text-slate-300 mx-auto" />
+              <p className="text-slate-400 text-sm">
+                {questions.length === 0 ? '저장된 질문이 없습니다' : '일치하는 질문이 없습니다'}
+              </p>
+              <p className="text-slate-300 text-xs">
+                {questions.length === 0 ? '질문 보관함 탭에서 먼저 질문을 저장하세요' : '검색어를 변경해보세요'}
+              </p>
+            </div>
+          ) : (
+            filtered.map((q) => (
+              <PickableCard
+                key={q.id}
+                question={q}
+                selected={selected.has(q.id)}
+                onToggle={() => toggleSelect(q.id)}
+              />
+            ))
+          )}
+        </div>
+
+        <div className="flex gap-2 pt-1">
+          <Button onClick={handleClose} variant="secondary" size="md" className="flex-1">
+            취소
+          </Button>
+          <Button
+            onClick={handleImport}
+            variant="primary"
+            size="md"
+            className="flex-1"
+            disabled={selected.size === 0}
+          >
+            {selected.size > 0 ? `${selected.size}개 추가` : '선택하세요'}
+          </Button>
+        </div>
+      </div>
+    </Modal>
+  );
+}

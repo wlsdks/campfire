@@ -31,6 +31,20 @@
         }
       }
     },
+    "questionLibrary": {
+      ".read": true,
+      ".write": true,
+      "$adminUid": {
+        "$qId": {
+          ".validate": "newData.hasChild('title') && newData.hasChild('type')",
+          "title": { ".validate": "newData.isString() && newData.val().length <= 500" },
+          "type": { ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna)$/)" },
+          "savedAt": { ".validate": "newData.isNumber()" },
+          "updatedAt": { ".validate": "newData.isNumber()" },
+          "$other": { ".validate": true }
+        }
+      }
+    },
     "sessions": {
       ".read": true,
       "$sessionId": {

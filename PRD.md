@@ -54,6 +54,7 @@
 | 질문 복제/삭제 | 강사 | ✅ 완료 | 기존 질문 관리 |
 | 질문 순서 변경 | 강사 | ✅ 완료 | 위/아래 화살표로 질문 순서 조정, 강의 템플릿 편집에서도 동일 |
 | CSV 내보내기 | 강사 | ✅ 완료 | 완료 세션의 질문 결과(응답률/정답률/분포) 및 참여자별 응답(답변/점수/티켓) CSV 다운로드. BOM 포함 Excel 호환 |
+| 질문 보관함 | 강사 | ✅ 완료 | 자주 쓰는 질문을 보관함에 저장/재사용. 대시보드 "질문 보관함" 탭에서 새 질문 생성, 검색, 유형별 필터. 세션 내 질문에서 보관함으로 저장(BookmarkPlus), 보관함에서 세션으로 가져오기(ImportFromLibraryModal). Firebase path: questionLibrary/{adminUid}/{qId} |
 | 실시간 투표 | 학생 | ✅ 완료 | 활성화된 질문에 실시간 참여 |
 | 투표 확인 애니메이션 | 학생 | ✅ 완료 | 투표 후 체크 애니메이션 + 선택한 답변 표시 |
 | 학생 실시간 결과 | 학생 | ✅ 완료 | 투표 후 객관식/OX 실시간 분포 미니 차트 (퀴즈 제외) |
@@ -136,7 +137,7 @@
 | 세션 종료 2단계 | 강사 | 높음 | 질문받기(14일) → 완전종료 |
 | ~~학생 채팅 접근~~ | 학생 | ~~높음~~ ✅ | 학생 하단바에서 채팅 참여 (닉네임 표시, 읽지 않은 메시지 알림) |
 | 수업 결과 리포트 | 강사 | 중간 | 질문별 정답률 ✅ 완료, CSV 내보내기 ✅ 완료, 학생별 참여도 분석은 추가 개발 필요 |
-| 질문 보관함 | 강사 | 중간 | 자주 쓰는 질문 저장/재사용 |
+| ~~질문 보관함~~ | 강사 | ~~중간~~ ✅ | 자주 쓰는 질문 저장/재사용. 대시보드 "질문 보관함" 탭에서 관리 |
 
 ---
 
@@ -160,6 +161,8 @@ sessions/
     urgentQuestions/{questionId}: { text, timestamp, read }
     handRaises/{participantId}: { raised, nickname, timestamp }
     timer: { endTime, duration, running, startedAt }
+
+questionLibrary/{adminUid}/{qId}: { type, title, options[], correctAnswer, points, savedAt, updatedAt }
 
 admins/{uid}: { username, passwordHash, displayName, role, approved }
 courseTemplates/{courseId}: { name, questions/... }

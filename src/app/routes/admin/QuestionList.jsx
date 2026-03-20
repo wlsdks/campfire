@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical, BarChart3, Check, ChevronDown, Circle, Cloud, Copy, MessageSquare, Play, Square, Trash2, Trophy } from 'lucide-react';
+import { GripVertical, BarChart3, BookmarkPlus, Check, ChevronDown, Circle, Cloud, Copy, MessageSquare, Play, Square, Trash2, Trophy } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import PinggoMascot from '@/components/ui/PinggoMascot';
 import { isQuizQuestion } from '@/lib/quiz';
@@ -16,7 +16,7 @@ const QUESTION_TYPES = [
   { value: 'qna', label: 'Q&A', icon: MessageSquare },
 ];
 
-function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, onReveal, onShowLeaderboard, onClearActive, onDuplicate, onDelete }) {
+function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, onReveal, onShowLeaderboard, onClearActive, onDuplicate, onDelete, onSaveToLibrary }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: qId });
   const qType = QUESTION_TYPES.find((t) => t.value === q.type);
   const Icon = qType?.icon || MessageSquare;
@@ -92,6 +92,11 @@ function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, o
                 </button>
               </>
             )}
+            {onSaveToLibrary && (
+              <button onClick={() => onSaveToLibrary(qId)} className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-600 transition-all active:scale-90" aria-label="보관함에 저장">
+                <BookmarkPlus size={12} />
+              </button>
+            )}
             <button onClick={() => onDuplicate(qId)} className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-600 transition-all active:scale-90" aria-label="질문 복제">
               <Copy size={12} />
             </button>
@@ -107,7 +112,7 @@ function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, o
 
 export default memo(function QuestionList({
   questionList, currentQuestion, onActivate, onReveal, onShowLeaderboard, onClearActive,
-  onDuplicate, onDelete, readOnly = false, onView, onReorder,
+  onDuplicate, onDelete, readOnly = false, onView, onReorder, onSaveToLibrary,
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const activeCount = questionList.filter(([qId]) => qId === currentQuestion).length;
@@ -153,6 +158,7 @@ export default memo(function QuestionList({
                         key={qId} qId={qId} q={q} currentQuestion={currentQuestion} readOnly={readOnly}
                         onActivate={onActivate} onReveal={onReveal} onShowLeaderboard={onShowLeaderboard}
                         onClearActive={onClearActive} onDuplicate={onDuplicate} onDelete={onDelete}
+                        onSaveToLibrary={onSaveToLibrary}
                       />
                     ))}
                   </SortableContext>
@@ -163,6 +169,7 @@ export default memo(function QuestionList({
                     key={qId} qId={qId} q={q} currentQuestion={currentQuestion} readOnly={readOnly}
                     onView={onView} onActivate={onActivate} onReveal={onReveal} onShowLeaderboard={onShowLeaderboard}
                     onClearActive={onClearActive} onDuplicate={onDuplicate} onDelete={onDelete}
+                    onSaveToLibrary={onSaveToLibrary}
                   />
                 ))
               )}

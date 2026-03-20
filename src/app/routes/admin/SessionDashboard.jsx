@@ -7,6 +7,7 @@ import StatsView from './StatsView';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
+import QuestionLibraryView from './QuestionLibraryView';
 import { Plus, Loader2, Users, MessageSquare, LogOut, ChevronDown, ChevronUp, Archive, MoreHorizontal } from 'lucide-react';
 
 function PinggoMascotSmall() {
@@ -393,14 +394,8 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="flex items-center justify-center min-h-[60vh]"
             >
-              <EmptyState
-                title="준비 중입니다"
-                description="질문을 저장하고 재사용할 수 있는 보관함이 추가될 예정입니다"
-                mascotSize="md"
-                mood="thinking"
-              />
+              <QuestionLibraryView adminUid={adminUser?.uid} />
             </motion.div>
           )}
 

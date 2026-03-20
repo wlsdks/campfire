@@ -3,7 +3,7 @@ import { ref, set, remove, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { generateQuestionId } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
-import { CheckCircle, PanelLeftClose, Play, Plus, Square } from 'lucide-react';
+import { BookmarkPlus, CheckCircle, PanelLeftClose, Play, Plus, Square } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import {
   QUIZ_DEFAULTS,
@@ -14,8 +14,10 @@ import {
   normalizeQuizEvent,
 } from '@/lib/quiz';
 import { useAdminKeyboardShortcuts } from '@/hooks/useAdminKeyboardShortcuts';
+import { useQuestionLibrary } from '@/features/questions/api/useQuestionLibrary';
 import QuestionForm from './QuestionForm';
 import QuestionList from './QuestionList';
+import ImportFromLibraryModal from './ImportFromLibraryModal';
 
 function KeyHint({ keys, label }) {
   return (
@@ -44,10 +46,13 @@ export default function QuestionManager({
   readOnly = false,
   onViewQuestion,
   formOpen = false,
+  adminUid,
 }) {
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState(null);
   const [toast, setToast] = useState(null);
+  const [libraryOpen, setLibraryOpen] = useState(false);
+  const { saveQuestion: saveToLibrary } = useQuestionLibrary(adminUid);
   const [nextEvent, setNextEvent] = useState(null);
   const toastTimerRef = useRef(null);
 
@@ -209,6 +214,36 @@ export default function QuestionManager({
     }
   }
 
+  async function importFromLibrary(libraryQuestions) {
+    if (!libraryQuestions || libraryQuestions.length === 0) return;
+    try {
+      const updates = {};
+      const currentCount = questionList.length;
+      libraryQuestions.forEach((lq, i) => {
+        const newId = generateQuestionId();
+        const { id: _id, savedAt: _s, updatedAt: _u, tag: _t, ...questionData } = lq;
+        updates[`questions/${newId}`] = {
+          ...questionData,
+          order: currentCount + i + 1,
+        };
+      });
+      await update(ref(db, `sessions/${sessionId}`), updates);
+      showToast(`${libraryQuestions.length}개 질문이 추가되었습니다`);
+    } catch {
+      setError('보관함에서 질문 가져오기에 실패했습니다.');
+    }
+  }
+
+  async function handleSaveToLibrary(qId) {
+    const question = questions?.[qId];
+    if (!question || !adminUid) return;
+    const { votes: _v, activatedAt: _a, revealedAt: _r, awardedAt: _aw, event: _e, order: _o, ...rest } = question;
+    const saved = await saveToLibrary(rest);
+    if (saved) {
+      showToast('보관함에 저장되었습니다');
+    }
+  }
+
   async function revealQuiz(qId) {
     const question = questions?.[qId];
     if (!isQuizQuestion(question)) return;
@@ -297,6 +332,15 @@ export default function QuestionManager({
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-bold text-slate-900">질문 목록</h2>
         <div className="flex items-center gap-1.5">
+          {!readOnly && adminUid && (
+            <Button
+              onClick={() => setLibraryOpen(true)}
+              variant="ghost"
+              size="sm"
+            >
+              <BookmarkPlus size={14} /> 보관함
+            </Button>
+          )}
           {!readOnly && (
             <Button
               onClick={() => {
@@ -444,7 +488,17 @@ export default function QuestionManager({
         onMoveDown={(qId) => moveQuestion(qId, 'down')}
         readOnly={readOnly}
         onView={readOnly ? onViewQuestion : undefined}
+        onSaveToLibrary={!readOnly && adminUid ? handleSaveToLibrary : undefined}
       />
+
+      {!readOnly && adminUid && (
+        <ImportFromLibraryModal
+          open={libraryOpen}
+          onClose={() => setLibraryOpen(false)}
+          adminUid={adminUid}
+          onImport={importFromLibrary}
+        />
+      )}
 
       <AnimatePresence>
         {toast && (

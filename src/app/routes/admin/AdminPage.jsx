@@ -351,6 +351,7 @@ export default function AdminPage() {
               formOpen={showCenterForm}
               onAddClick={effectiveReadOnly ? undefined : handleShowCenterForm}
               onViewQuestion={handleViewQuestion}
+              adminUid={adminUser?.uid}
             />
 
             {!effectiveReadOnly && (

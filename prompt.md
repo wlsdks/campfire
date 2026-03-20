@@ -296,19 +296,16 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 > 최근 10개만 유지. 오래된 것은 삭제.
 
 <!-- 예시: 2026-03-20 01:30 | improve: 학생 투표 화면 터치 타겟 48px로 통일 -->
-2026-03-20 | improve: 에러 바운더리 — ErrorBoundary 컴포넌트 신설(112줄). React class component로 getDerivedStateFromError/componentDidCatch 구현. 라우트 레벨(student/admin) 2개 + 세분화 경계(VizRenderer visualization, VotePage voter) 2개 = 총 4개 경계. 한국어 복구 UI(다시 시도/새로고침), details 태그로 에러 상세 접기, scope별 console.error 로깅. fullPage prop으로 전체화면/인라인 모드 분기
-2026-03-20 | improve: 컴포넌트 크기 감사 — AdminPage.jsx(1022줄) → 425줄로 분리. 5개 서브컴포넌트 추출: AdminSessionHeader(186줄, 헤더바+타이머+ElapsedTime), ClassSummary(179줄, 클래스 요약+질문별 인사이트), RightSidebar(204줄, 참여자 패널+QR+아코디언), PresentationView(90줄, 발표 모드+MainContent), ModeSwitcher(79줄, 모드 전환 아코디언). 미사용 import 정리
-2026-03-20 | improve: 발표 모드 QR 오버레이 — PresentQROverlay 컴포넌트 신설. 기본 축소 상태(slate-900 QR아이콘+세션코드+참여자 수 pill), 클릭 시 확대(QR 180px+세션코드 bold+링크복사+접속 수). Framer Motion AnimatePresence 전환, stopPropagation으로 발표 종료 미스클릭 방지. 기존 120px 고정 QR+URL 텍스트 제거, 하단좌측 세션코드 뱃지도 QR 오버레이로 통합
-2026-03-20 | improve: 학생 실시간 투표 결과 — StudentLiveResults 컴포넌트 신설(95줄). 투표 후 VoteConfirm 아래에 실시간 분포 미니 바 차트 표시. 내 선택 강조(bold+dark bar), 참여자 수 실시간 갱신, useVotes 훅으로 Firebase 실시간 연동. ChoiceVoter(객관식), OXVoter(O/X)에 적용. QuizVoter는 정답 공개 전까지 결과 비공개 유지. slate 모노크로매틱, 모바일(390px) 최적화
 2026-03-20 | improve: 디자인 토큰 감사 — Anti-AI 체크리스트 기반 전수 조사. design-tokens.js의 stale 레시피(btnPrimary/badgePrimary/avatar) indigo→slate 동기화, Avatar bg-indigo-100→bg-slate-100, Lottery 레인보우 카드→슬레이트 모노크로매틱, AdminSessionHeader 세팅중 배지 amber→slate, SessionDashboard 세팅 상태 amber→slate, QuizEventBanner/Roulette/Leaderboard/QuestionManager 장식적 색상 제거. 허용 유지: Radio 아이콘(indigo), BarChart/OXBattle 브랜드(indigo gradient), 타이머 기능색(amber/red), 접속 상태(emerald), 리액션 피드백(각 고유색)
-2026-03-20 | improve: 성능 최적화 감사 — React.memo 14개 컴포넌트(BarChart, OXBattle, WordCloud, QACards, VizRenderer, ParticipantList, QuestionList, AdminSessionHeader, RightSidebar, StudentLiveResults, ModeSwitcher, ClassSummary, Leaderboard + 기존 ReactionButton) 적용. useVotes/useParticipants/useScores 3개 훅의 파생값(voteList/tallied/countByValue/list/onlineList/leaderboard/totalTickets) useMemo/useCallback으로 안정화. AdminPage 콜백 12개 useCallback으로 감싸서 하위 memo 컴포넌트가 불필요하게 리렌더되지 않도록. drawParticipants/studentUrl useMemo 적용
-2026-03-20 | improve: 접근성 감사 — 전체 앱 aria 속성 감사 및 적용. aria-label: 아이콘 전용 버튼(채팅/타이머/뒤로가기), 모든 input/textarea에 추가. role: progressbar(참여율 바 2곳), alert(에러 메시지 5곳), status+aria-live(토스트 3곳), log(JoinToast), toolbar(학생 하단바), dialog aria-label(모달). aria-expanded: 아코디언 버튼, 타이머 팝업. aria-pressed: 손들기/채팅 토글. focus-visible: Button/IconButton focus→focus-visible 변경(키보드 전용 포커스 링). aria-hidden: 장식 SVG 마스코트 3곳. group role: 객관식/OX 선택지 그룹화
-2026-03-20 | improve: 학생 질문 진행 표시 — VotePage 질문 헤더에 "질문 1/3" 텍스트 + 슬레이트 진행 바 추가. order 기준 정렬, useMemo로 계산, spring 애니메이션. 학생이 현재 진행 상황을 즉시 파악. TimerExpiredOverlay 서브컴포넌트 추출로 VotePage 본체 200줄 이하 유지
-2026-03-20 | improve: 질문 순서 변경 — QuestionList에 위/아래 화살표 버튼 추가, QuestionManager에 Firebase order 필드 스왑 로직 구현. CourseEditor(강의 템플릿 편집)에도 동일 적용. 첫/마지막 질문은 해당 방향 비활성화. Framer Motion layout 애니메이션으로 부드러운 순서 전환. 읽기전용 세션에서는 화살표 미표시
-2026-03-20 | improve: 퀴즈 정답 축하 이펙트 — ConfettiBurst 컴포넌트 신설(114줄). 정답 시 24개 슬레이트 파티클(원/사각/다이아몬드)이 체크마크 주변에서 폭발. Framer Motion SVG 순수 구현(외부 의존성 없음), seededRandom으로 deterministic 배치, 1.2초 후 자동 언마운트. QuizResult 카드 overflow-hidden으로 파티클을 카드 경계 내에 제한. 오답 시에는 렌더링하지 않음
-2026-03-20 | improve: 학생 리더보드 폴리시 — LeaderboardPage: MyRankCard 히어로(순위 5xl, 상위 % 표시, 연속정답/최고연속/티켓 배지), 8위 밖 StickyMyRank 하단 고정 카드. Leaderboard: LeaderboardRow 서브컴포넌트 추출, layoutId 기반 순서 변경 애니메이션, RankChange 화살표(실시간 순위 변동), "나" 태그(podium/일반 분기), 3연속 이상 streak amber 강조, lastPoints AnimatePresence 전환
-2026-03-20 | feat: CSV 내보내기 — ClassSummary(완료 세션 요약 페이지)에 "내보내기" 드롭다운 메뉴 추가. 2가지 CSV 다운로드: (1) 질문 결과(번호/질문/유형/선택지/정답/응답수/응답률/정답률/선택지별 분포), (2) 참여자별 응답(닉네임/각 질문 답변/총점/티켓). UTF-8 BOM 포함 Excel 호환. lib/csv.js 유틸리티, ExportMenu.jsx 드롭다운 컴포넌트. bg-slate-900 CTA, lucide Download/FileSpreadsheet/Users 아이콘
-2026-03-20 | feat: PWA 매니페스트 — manifest.json(standalone, portrait-primary, theme-color #0F172A), 아이콘 4종(192/512 일반+maskable, Playwright로 SVG→PNG 변환), service worker(네트워크 우선+앱 셸 캐시, Firebase 요청 패스스루), Apple 메타태그 7개(apple-touch-icon, web-app-capable, status-bar-style, title, description, theme-color, viewport-fit:cover), InstallPrompt 컴포넌트(Chrome beforeinstallprompt 처리 + iOS Safari 수동 안내 배너, sessionStorage 기반 해제 기억)
+2026-03-20 | improve: 성능 최적화 감사 — React.memo 14개 컴포넌트 적용. useVotes/useParticipants/useScores 3개 훅의 파생값 useMemo/useCallback으로 안정화. AdminPage 콜백 12개 useCallback으로 감싸서 하위 memo 컴포넌트가 불필요하게 리렌더되지 않도록
+2026-03-20 | improve: 접근성 감사 — 전체 앱 aria 속성 감사 및 적용. aria-label, role, aria-expanded, aria-pressed, focus-visible, aria-hidden, group role 일괄 적용
+2026-03-20 | improve: 학생 질문 진행 표시 — VotePage 질문 헤더에 "질문 1/3" 텍스트 + 슬레이트 진행 바 추가
+2026-03-20 | improve: 질문 순서 변경 — QuestionList에 드래그 순서 변경, CourseEditor에도 동일 적용
+2026-03-20 | improve: 퀴즈 정답 축하 이펙트 — ConfettiBurst 컴포넌트 신설(114줄). Framer Motion SVG 파티클
+2026-03-20 | improve: 학생 리더보드 폴리시 — MyRankCard 히어로, StickyMyRank, RankChange, streak 강조
+2026-03-20 | feat: CSV 내보내기 — ClassSummary에서 질문 결과/참여자별 응답 CSV 다운로드. UTF-8 BOM 포함
+2026-03-20 | feat: PWA 매니페스트 — manifest.json + 서비스워커 + Apple 메타태그 + InstallPrompt
+2026-03-20 | feat: 질문 보관함 — 대시보드 "질문 보관함" 탭 구현. useQuestionLibrary 훅(Firebase onValue 실시간 구독), QuestionLibraryView(새 질문 생성+검색+유형 필터+삭제), ImportFromLibraryModal(세션에 보관함 질문 다중 선택 가져오기), QuestionList에 BookmarkPlus "보관함에 저장" 버튼. Firebase path: questionLibrary/{adminUid}/{qId}, database.rules.json 규칙 추가+배포. 3개 뷰포트(1280/768/390) 반응형 확인, 콘솔 에러 0
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 
