@@ -133,8 +133,24 @@
             },
             "timestamp": {
               ".validate": "newData.isNumber()"
+            },
+            "read": {
+              ".validate": "newData.isBoolean()"
+            },
+            "reviewing": {
+              ".validate": "newData.isBoolean()"
             }
           }
+        },
+
+        "timerEnd": {
+          ".write": true,
+          ".validate": "newData.isNumber() || !newData.exists()"
+        },
+
+        "timerDuration": {
+          ".write": true,
+          ".validate": "newData.isNumber()"
         },
 
         "classQuestions": {
