@@ -94,7 +94,7 @@ function ErrorFallback({ fullPage, errorMessage, onRetry, onReload }) {
         <div className="flex items-center justify-center gap-3">
           <button
             onClick={onRetry}
-            className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-400 text-white font-medium py-2.5 px-5 rounded-lg transition-colors text-sm"
+            className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-900 font-medium py-2.5 px-5 rounded-lg transition-colors text-sm"
           >
             <RefreshCw size={15} />
             다시 시도

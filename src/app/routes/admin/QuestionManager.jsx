@@ -90,7 +90,7 @@ export default function QuestionManager({
             <button onClick={onCollapse}
               className="p-2 rounded-lg text-slate-300 hover:text-slate-600 hover:bg-slate-100 transition-all active:scale-90"
               title="패널 접기" aria-label="사이드바 접기">
-              <PanelLeftClose size={36} />
+              <PanelLeftClose size={18} />
             </button>
           )}
         </div>

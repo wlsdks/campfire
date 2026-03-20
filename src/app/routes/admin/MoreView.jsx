@@ -32,7 +32,7 @@ function ThemeSection() {
             onClick={() => setTheme(key)}
             className={`flex flex-col items-center gap-2 py-3 px-2 rounded-xl text-sm font-medium transition-all active:scale-[0.97] ${
               theme === key
-                ? 'bg-indigo-600 dark:bg-indigo-500 text-white'
+                ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
                 : 'bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600'
             }`}
           >

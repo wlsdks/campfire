@@ -47,7 +47,7 @@ function LibraryQuestionCard({ question, onDelete, index }) {
                   key={i}
                   className={`text-xs px-2 py-0.5 rounded-md ${
                     question.correctAnswer === opt
-                      ? 'bg-indigo-600 dark:bg-indigo-500 text-white'
+                      ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
                       : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
                   }`}
                 >
@@ -63,7 +63,7 @@ function LibraryQuestionCard({ question, onDelete, index }) {
                   key={v}
                   className={`text-xs px-2.5 py-0.5 rounded-md font-semibold ${
                     question.correctAnswer === v
-                      ? 'bg-indigo-600 dark:bg-indigo-500 text-white'
+                      ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
                       : 'bg-slate-50 dark:bg-slate-700 text-slate-400'
                   }`}
                 >
@@ -240,7 +240,7 @@ export default function QuestionLibraryView({ adminUid }) {
                   onClick={() => setTypeFilter(f.value)}
                   className={`px-3 py-1 rounded-lg text-xs font-medium transition-all active:scale-[0.96] whitespace-nowrap shrink-0 ${
                     isSelected
-                      ? 'bg-indigo-600 dark:bg-indigo-500 text-white'
+                      ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
                       : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-600'
                   }`}
                 >

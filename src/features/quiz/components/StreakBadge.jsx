@@ -32,8 +32,8 @@ export default memo(function StreakBadge({ streak = 0, compact = false }) {
               compact ? 'px-2.5 py-1' : 'px-3.5 py-1.5'
             } ${
               isHot
-                ? 'bg-indigo-600 text-white border-indigo-700'
-                : 'bg-white text-slate-700 border-slate-200'
+                ? 'bg-slate-900 text-white border-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:border-slate-200'
+                : 'bg-white text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700'
             }`}
           >
             <motion.div

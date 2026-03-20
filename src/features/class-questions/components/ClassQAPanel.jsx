@@ -56,7 +56,7 @@ function QuestionCard({ q, participantId, onUpvote }) {
             aria-pressed={!!hasUpvoted}
             className={`flex items-center gap-0.5 px-2 py-1 rounded-lg text-xs font-medium transition-all ${
               hasUpvoted
-                ? 'bg-indigo-600 dark:bg-indigo-500 text-white'
+                ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
                 : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
             }`}
           >
@@ -196,12 +196,12 @@ export default function ClassQAPanel({ sessionId, open, onClose, onNewQuestion }
                 placeholder="질문을 입력하세요"
                 aria-label="수업 질문 입력"
                 maxLength={MAX_LENGTH}
-                className="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:border-indigo-500 dark:focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-600 transition-all"
+                className="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 focus:bg-white dark:focus:bg-slate-600 transition-all"
               />
               <button
                 onClick={handlePost}
                 disabled={!inputText.trim() || !canPost || posting}
-                className="flex items-center justify-center w-10 h-10 rounded-xl bg-indigo-600 dark:bg-indigo-500 text-white disabled:opacity-30 hover:bg-indigo-700 dark:hover:bg-indigo-400 transition-colors shrink-0"
+                className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 disabled:opacity-30 hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors shrink-0"
                 aria-label="질문 보내기"
               >
                 <Send size={16} />

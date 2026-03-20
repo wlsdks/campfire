@@ -31,7 +31,7 @@ export default function ExportMenu({ session, participants, scores }) {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setOpen((p) => !p)}
-        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors active:scale-[0.97]"
+        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-900 text-sm font-medium transition-colors active:scale-[0.97]"
         aria-expanded={open}
         aria-label="CSV 내보내기"
       >
