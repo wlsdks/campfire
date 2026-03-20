@@ -47,7 +47,7 @@ export default function QuickProgressCard({
             ? `${activeIndex + 1}/${questionList.length}번째 질문 진행 중`
             : `질문 ${questionList.length}개 준비됨`}
         </p>
-        <p className="text-slate-400 text-sm leading-relaxed">
+        <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
           {currentEntry
             ? currentEntry[1].title
             : '아직 활성화된 질문이 없습니다. 첫 질문을 바로 시작할 수 있습니다.'}

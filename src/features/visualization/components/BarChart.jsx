@@ -24,7 +24,7 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
   }, [counts]);
 
   return (
-    <div className="space-y-4 w-full max-w-xl mx-auto px-8">
+    <div className="space-y-4 w-full max-w-xl mx-auto px-4">
       {options.map((option, i) => {
         const count = counts[i];
         const pct = totalVotes > 0 ? (count / totalVotes) * 100 : 0;

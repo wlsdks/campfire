@@ -48,10 +48,10 @@ export default function EmptyState({
               transition={{ duration: 0.25, delay: 0.15 + i * 0.06 }}
               className="flex items-start gap-2.5 text-left"
             >
-              <span className="text-xs font-bold text-slate-300 mt-0.5 w-4 shrink-0 text-center">
+              <span className="text-xs font-bold text-slate-400 mt-0.5 w-4 shrink-0 text-center">
                 {i + 1}
               </span>
-              <span className="text-sm text-slate-400 leading-relaxed">{step}</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{step}</span>
             </motion.div>
           ))}
         </div>
