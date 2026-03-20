@@ -108,7 +108,7 @@ export default function RegisterView({ onLogin, onSwitchToLogin }) {
               <UserPlus size={24} className="text-slate-600 dark:text-slate-300" />
             </motion.div>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">가입 완료!</h2>
-            <p className="text-slate-400 text-sm leading-relaxed">
+            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
               관리자 승인 후 이용 가능합니다.<br />잠시만 기다려주세요.
             </p>
           </div>
@@ -135,7 +135,7 @@ export default function RegisterView({ onLogin, onSwitchToLogin }) {
           initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pick</h1>
-          <p className="text-slate-400 text-sm">관리자 회원가입</p>
+          <p className="text-slate-500 dark:text-slate-400 text-sm">관리자 회원가입</p>
         </motion.div>
 
         <motion.div className="space-y-3" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}

@@ -69,8 +69,8 @@ function StudentRouter() {
             transition={{ duration: 0.4, delay: 0.25 }}
             className="space-y-2"
           >
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pick</h1>
-            <p className="text-slate-400 text-sm leading-relaxed">
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pick</h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
               강사가 공유한 링크 또는 QR코드를<br />통해 접속해주세요
             </p>
           </motion.div>

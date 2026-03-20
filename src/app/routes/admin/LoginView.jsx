@@ -94,7 +94,7 @@ export default function LoginView({ onLogin, onSwitchToRegister }) {
           initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}>
           <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pick</h1>
-          <p className="text-slate-400 text-sm">관리자 로그인</p>
+          <p className="text-slate-500 dark:text-slate-400 text-sm">관리자 로그인</p>
         </motion.div>
 
         <motion.div className="space-y-4"

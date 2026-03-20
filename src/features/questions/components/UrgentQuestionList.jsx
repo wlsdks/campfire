@@ -4,10 +4,13 @@ import { db } from '@/lib/firebase';
 import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, Trash2, ChevronDown } from 'lucide-react';
+import Modal from '@/components/ui/Modal';
+import Button from '@/components/ui/Button';
 
 export default function UrgentQuestionList({ sessionId }) {
   const { questionList, unreadCount } = useUrgentQuestions(sessionId);
   const [collapsed, setCollapsed] = useState(false);
+  const [selectedQuestion, setSelectedQuestion] = useState(null);
 
   async function markRead(questionId) {
     try {
@@ -25,6 +28,24 @@ export default function UrgentQuestionList({ sessionId }) {
     }
   }
 
+  function handleQuestionClick(q) {
+    setSelectedQuestion(q);
+  }
+
+  function handleConfirm() {
+    if (selectedQuestion) {
+      dismissOne(selectedQuestion.id);
+      setSelectedQuestion(null);
+    }
+  }
+
+  function handleClose() {
+    if (selectedQuestion && !selectedQuestion.read) {
+      markRead(selectedQuestion.id);
+    }
+    setSelectedQuestion(null);
+  }
+
   return (
     <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
       <button
@@ -39,7 +60,7 @@ export default function UrgentQuestionList({ sessionId }) {
               key={unreadCount}
               initial={{ scale: 1.3 }}
               animate={{ scale: 1 }}
-              className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-slate-900 text-white text-[10px] font-bold"
+              className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold animate-pulse"
             >
               {unreadCount}
             </motion.span>
@@ -61,7 +82,7 @@ export default function UrgentQuestionList({ sessionId }) {
           >
             <div className="px-3.5 pb-3 space-y-1.5">
               {questionList.length === 0 && (
-                <p className="text-slate-300 text-xs py-1">수신된 질문이 없습니다</p>
+                <p className="text-slate-400 dark:text-slate-500 text-xs py-1">수신된 질문이 없습니다</p>
               )}
               <AnimatePresence>
                 {questionList.map((q) => (
@@ -71,14 +92,16 @@ export default function UrgentQuestionList({ sessionId }) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
                     role="button"
-                    aria-label={q.read ? '읽은 질문' : '읽지 않은 질문 -- 클릭하여 읽음 처리'}
+                    aria-label={q.read ? '읽은 질문' : '읽지 않은 질문 -- 클릭하여 확인'}
                     className={`p-2.5 rounded-lg text-sm transition-colors cursor-pointer ${
-                      q.read ? 'bg-slate-50 dark:bg-slate-800' : 'bg-slate-100 dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600'
+                      q.read
+                        ? 'bg-slate-50 dark:bg-slate-800 opacity-60'
+                        : 'bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 shadow-sm hover:shadow-md'
                     }`}
-                    onClick={() => !q.read && markRead(q.id)}
+                    onClick={() => handleQuestionClick(q)}
                   >
                     <div className="flex items-start gap-2">
-                      {!q.read && <div className="w-1.5 h-1.5 rounded-full bg-slate-900 mt-1.5 shrink-0" />}
+                      {!q.read && <div className="w-2 h-2 rounded-full bg-red-500 mt-1.5 shrink-0" />}
                       <div className="flex-1 min-w-0">
                         <p className="text-slate-700 dark:text-slate-200 leading-relaxed">{q.text}</p>
                         <div className="flex justify-between items-center mt-1.5">
@@ -100,6 +123,30 @@ export default function UrgentQuestionList({ sessionId }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <Modal
+        open={!!selectedQuestion}
+        onClose={handleClose}
+        ariaLabel="긴급 질문 확인"
+      >
+        {selectedQuestion && (
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-1">긴급 질문</h3>
+            <p className="text-xs text-slate-400 mb-4">익명</p>
+            <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed mb-6">
+              {selectedQuestion.text}
+            </p>
+            <div className="flex gap-3 justify-end">
+              <Button variant="secondary" size="sm" onClick={handleClose}>
+                닫기
+              </Button>
+              <Button variant="danger" size="sm" onClick={handleConfirm}>
+                확인
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }
