@@ -96,7 +96,7 @@ export default function JoinPage({ sessionId, onJoin }) {
                 {courseName || '닉네임을 정하고 참여하세요'}
               </p>
             </div>
-            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white text-slate-400 border border-slate-200">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-white dark:bg-slate-800 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700">
               {sessionId}
             </span>
           </div>

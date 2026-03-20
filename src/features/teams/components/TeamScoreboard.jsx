@@ -42,7 +42,7 @@ function TeamBar({ team, rank, maxScore, isLeading }) {
           {isLeading && rank === 0 && team.totalScore > 0 && (
             <Crown size={16} className="text-slate-600" />
           )}
-          <span className={`text-sm font-bold ${isLeading && rank === 0 ? 'text-slate-900' : 'text-slate-700'}`}>
+          <span className={`text-sm font-bold ${isLeading && rank === 0 ? 'text-slate-900 dark:text-slate-100' : 'text-slate-700 dark:text-slate-200'}`}>
             {team.name}
           </span>
           <span className="text-xs text-slate-400 flex items-center gap-1">
@@ -50,7 +50,7 @@ function TeamBar({ team, rank, maxScore, isLeading }) {
           </span>
         </div>
         <div className="text-right">
-          <span className={`text-lg font-bold tabular-nums ${isLeading && rank === 0 ? 'text-slate-900' : 'text-slate-600'}`}>
+          <span className={`text-lg font-bold tabular-nums ${isLeading && rank === 0 ? 'text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-300'}`}>
             <AnimatedNumber value={team.totalScore} />
           </span>
           <span className="text-xs text-slate-400 ml-1">점</span>
@@ -94,7 +94,7 @@ export default memo(function TeamScoreboard({ teamScores, title = '팀 대항전
           className="flex items-center gap-2"
         >
           <Trophy size={20} className="text-slate-500" />
-          <h3 className="text-lg font-bold text-slate-900">{title}</h3>
+          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">{title}</h3>
         </motion.div>
       )}
 

@@ -79,16 +79,16 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
 
   if (loading) {
     return (
-      <div className="min-h-dvh bg-slate-50 flex items-center justify-center">
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
         <div className="text-slate-400 text-sm">불러오는 중...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-dvh bg-slate-50 flex flex-col">
+    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shrink-0">
+      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6 py-4 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
@@ -98,7 +98,7 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
             <ArrowLeft size={20} />
           </button>
           <div>
-            <h1 className="font-bold text-slate-900 text-lg">{courseName || '강의 편집'}</h1>
+            <h1 className="font-bold text-slate-900 dark:text-slate-100 text-lg">{courseName || '강의 편집'}</h1>
             <p className="text-slate-400 text-xs">질문 템플릿 편집</p>
           </div>
         </div>
@@ -108,7 +108,7 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
       <div className="flex-1 max-w-2xl mx-auto w-full px-6 py-8 space-y-4">
         {/* Add button */}
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-slate-900">질문 목록</h2>
+          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">질문 목록</h2>
           <Button onClick={() => setShowForm(!showForm)} variant={showForm ? 'ghost' : 'primary'} size="sm">
             {showForm ? '취소' : <><Plus size={14} /> 추가</>}
           </Button>
@@ -138,7 +138,7 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.25, delay: index * 0.03 }}
-                className="p-3 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition-all"
+                className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 transition-all"
               >
                 <div className="flex items-start gap-2">
                   {/* Reorder buttons */}
@@ -188,7 +188,7 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
                             className={`text-xs px-2 py-0.5 rounded-md ${
                               q.correctAnswer === opt
                                 ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
-                                : 'bg-slate-50 text-slate-500'
+                                : 'bg-slate-50 text-slate-500 dark:bg-slate-700 dark:text-slate-400'
                             }`}
                           >
                             {opt}

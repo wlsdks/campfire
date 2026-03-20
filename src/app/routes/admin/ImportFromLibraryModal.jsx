@@ -14,8 +14,8 @@ function PickableCard({ question, selected, onToggle }) {
       onClick={onToggle}
       className={`w-full text-left p-3 rounded-xl border transition-all active:scale-[0.98] ${
         selected
-          ? 'border-slate-400 bg-slate-50 shadow-sm'
-          : 'border-slate-200 hover:border-slate-300'
+          ? 'border-slate-400 bg-slate-50 dark:bg-slate-700 dark:border-slate-500 shadow-sm'
+          : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
       }`}
     >
       <div className="flex items-start gap-2.5">
@@ -29,7 +29,7 @@ function PickableCard({ question, selected, onToggle }) {
             <Icon size={12} className="text-slate-400" />
             <span className="text-xs font-medium text-slate-400">{qType?.label}</span>
           </div>
-          <p className="text-slate-800 text-sm leading-relaxed">{question.title}</p>
+          <p className="text-slate-800 dark:text-slate-200 text-sm leading-relaxed">{question.title}</p>
           {question.options && (
             <div className="flex flex-wrap gap-1 mt-1.5">
               {question.options.map((opt, i) => (
@@ -38,7 +38,7 @@ function PickableCard({ question, selected, onToggle }) {
                   className={`text-[11px] px-1.5 py-0.5 rounded-md ${
                     question.correctAnswer === opt
                       ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
-                      : 'bg-slate-50 text-slate-500'
+                      : 'bg-slate-50 text-slate-500 dark:bg-slate-700 dark:text-slate-400'
                   }`}
                 >
                   {opt}
@@ -54,7 +54,7 @@ function PickableCard({ question, selected, onToggle }) {
                   className={`text-[11px] px-2 py-0.5 rounded-md font-semibold ${
                     question.correctAnswer === v
                       ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
-                      : 'bg-slate-50 text-slate-400'
+                      : 'bg-slate-50 text-slate-400 dark:bg-slate-700 dark:text-slate-500'
                   }`}
                 >
                   {v}
@@ -110,7 +110,7 @@ export default function ImportFromLibraryModal({ open, onClose, adminUid, onImpo
     <Modal open={open} onClose={handleClose} ariaLabel="보관함에서 질문 가져오기">
       <div className="space-y-4">
         <div>
-          <h2 className="text-lg font-bold text-slate-900">보관함에서 가져오기</h2>
+          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">보관함에서 가져오기</h2>
           <p className="text-slate-400 text-xs mt-0.5">저장된 질문을 선택하여 추가하세요</p>
         </div>
 
@@ -123,7 +123,7 @@ export default function ImportFromLibraryModal({ open, onClose, adminUid, onImpo
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="질문 검색..."
               aria-label="보관함 질문 검색"
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-8 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-slate-400 transition-colors"
+              className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg pl-9 pr-8 py-2 text-sm dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-600 focus:border-slate-400 transition-colors"
             />
             {searchQuery && (
               <button

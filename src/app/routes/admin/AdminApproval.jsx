@@ -36,7 +36,7 @@ function PendingAdminRow({ admin, onApprove, onReject, index }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8, height: 0, marginBottom: 0 }}
       transition={{ duration: 0.25, delay: index * 0.05 }}
-      className="flex items-center justify-between p-4 rounded-xl bg-slate-50"
+      className="flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-700"
     >
       <div className="flex items-center gap-3 min-w-0">
         <div className="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center shrink-0">
@@ -45,7 +45,7 @@ function PendingAdminRow({ admin, onApprove, onReject, index }) {
           </span>
         </div>
         <div className="min-w-0">
-          <p className="font-semibold text-slate-900 text-sm truncate">
+          <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm truncate">
             {admin.displayName || admin.username}
           </p>
           <div className="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
@@ -143,7 +143,7 @@ export default function AdminApproval({ pendingAdmins, pendingCount, approveAdmi
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <ShieldCheck size={20} className="text-slate-700" />
-              <h2 className="font-bold text-lg text-slate-900">관리자 승인</h2>
+              <h2 className="font-bold text-lg text-slate-900 dark:text-slate-100">관리자 승인</h2>
               {pendingCount > 0 && (
                 <Badge variant="error">{pendingCount}명 대기</Badge>
               )}
