@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useRef, lazy, Suspense } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import { useSessionList } from '@/features/session/api/useSessionList';
 import CreateSessionModal from './CreateSessionModal';
 import DeleteSessionModal from './DeleteSessionModal';
@@ -133,15 +133,24 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
       {/* Content */}
       <div ref={contentRef} className="flex-1 max-w-2xl mx-auto w-full px-6 max-sm:px-4 py-6 space-y-3 overflow-y-auto">
         {/* Tab bar */}
-        <div className="flex gap-1 mb-3">
-          {TABS.map((tab) => (
-            <button key={tab.key} onClick={() => handleTabChange(tab.key)}
-              className={`px-4 max-sm:px-3 py-1.5 text-sm font-medium rounded-lg transition-all active:scale-[0.97] whitespace-nowrap ${
-                activeTab === tab.key ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-slate-500 border border-slate-200 dark:border-slate-700 hover:text-slate-700 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800'}`}>
-              {tab.label}
-            </button>
-          ))}
-        </div>
+        <LayoutGroup>
+          <div className="flex gap-1 mb-3 relative">
+            {TABS.map((tab) => (
+              <button key={tab.key} onClick={() => handleTabChange(tab.key)}
+                className={`relative px-4 max-sm:px-3 py-1.5 text-sm font-medium rounded-lg transition-colors duration-200 active:scale-[0.97] whitespace-nowrap ${
+                  activeTab === tab.key ? 'text-white dark:text-slate-900' : 'text-slate-500 border border-slate-200 dark:border-slate-700 hover:text-slate-700 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800'}`}>
+                {activeTab === tab.key && (
+                  <motion.div
+                    layoutId="tab-indicator"
+                    className="absolute inset-0 bg-slate-900 dark:bg-slate-100 rounded-lg"
+                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{tab.label}</span>
+              </button>
+            ))}
+          </div>
+        </LayoutGroup>
 
           {activeTab === 'classes' && (
             <motion.div key="classes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className="space-y-3">
@@ -192,9 +201,9 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
                   ) : (
                     <div className="space-y-2">
                       {courseGroups.map(([name, list], gi) => (
-                        <CourseGroup key={name} name={name} sessions={list} onSelect={handleSelect} onDelete={handleDeleteRequest} onDuplicate={handleDuplicate} startIndex={gi * 10} />
+                        <CourseGroup key={name} name={name} sessions={list} onSelect={handleSelect} onDelete={handleDeleteRequest} onDuplicate={handleDuplicate} startIndex={gi * 10} groupIndex={gi} />
                       ))}
-                      <UngroupedSessions sessions={ungrouped} onSelect={handleSelect} onDelete={handleDeleteRequest} onDuplicate={handleDuplicate} startIndex={courseGroups.length * 10} />
+                      <UngroupedSessions sessions={ungrouped} onSelect={handleSelect} onDelete={handleDeleteRequest} onDuplicate={handleDuplicate} startIndex={courseGroups.length * 10} groupIndex={courseGroups.length} />
                     </div>
                   )}
                 </>
