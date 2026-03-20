@@ -15,7 +15,7 @@ export const TYPE_LABELS = {
 };
 
 /** Renders QuizResult from vote data passed by QuizVoter. */
-export function QuizResultFromVote({ question, currentVote }) {
+export function QuizResultFromVote({ question, currentVote, streak = 0 }) {
   if (!currentVote) return null;
   const reward = getQuizReward(question, currentVote);
   return (
@@ -26,6 +26,7 @@ export function QuizResultFromVote({ question, currentVote }) {
       correctAnswer={question.correctAnswer}
       event={question.event || null}
       bet={reward.bet || 1}
+      streak={reward.isCorrect ? streak : 0}
     />
   );
 }

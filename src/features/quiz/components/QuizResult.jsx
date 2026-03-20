@@ -1,6 +1,6 @@
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import { useEffect, useRef } from 'react';
-import { Check, Ticket, X } from 'lucide-react';
+import { Check, Ticket, X, Flame } from 'lucide-react';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import ConfettiBurst from './ConfettiBurst';
 
@@ -20,7 +20,7 @@ function CountUp({ value, prefix = '+', suffix = '점' }) {
   return <span ref={ref}>{prefix}{value}{suffix}</span>;
 }
 
-export default function QuizResult({ isCorrect, points, tickets = 0, correctAnswer, event = null, bet = 1 }) {
+export default function QuizResult({ isCorrect, points, tickets = 0, correctAnswer, event = null, bet = 1, streak = 0 }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -49,10 +49,32 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
           </p>
           <p className="text-sm text-slate-400">
             {isCorrect
-              ? '다음 라운드도 이어서 참여해보세요'
+              ? streak >= 3 ? '연승 행진 중! 계속 이어가세요' : '다음 라운드도 이어서 참여해보세요'
               : '다음 문제에서 만회할 수 있습니다'}
           </p>
         </div>
+
+        {/* Streak fire badge — shown when 3+ consecutive correct */}
+        {isCorrect && streak >= 3 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.6 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.15, type: 'spring', stiffness: 400, damping: 20 }}
+            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border shadow-sm ${
+              streak >= 5
+                ? 'bg-slate-900 text-white border-slate-800'
+                : 'bg-white text-slate-700 border-slate-200'
+            }`}
+          >
+            <motion.div
+              animate={{ rotate: [-4, 4, -4], scale: [1, 1.15, 1] }}
+              transition={{ repeat: Infinity, duration: streak >= 5 ? 0.5 : 0.8, ease: 'easeInOut' }}
+            >
+              <Flame size={15} className={streak >= 5 ? 'text-white' : 'text-slate-500'} />
+            </motion.div>
+            <span className="font-bold text-sm tabular-nums">{streak}연속 정답!</span>
+          </motion.div>
+        )}
 
         {!isCorrect && correctAnswer && (
           <div className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center">

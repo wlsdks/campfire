@@ -27,6 +27,7 @@ import { useSpeedQuizStudent } from '@/features/quiz/api/useSpeedQuizStudent';
 import AchievementToast from '@/features/quiz/components/AchievementToast';
 import SpeedQuizBanner from '@/features/quiz/components/SpeedQuizBanner';
 import SpeedQuizCombo from '@/features/quiz/components/SpeedQuizCombo';
+import StreakBadge from '@/features/quiz/components/StreakBadge';
 import { getParticipantId } from '@/lib/participant';
 
 export default function VotePage({ sessionId }) {
@@ -133,6 +134,11 @@ export default function VotePage({ sessionId }) {
             <SpeedQuizCombo streak={myStreak} />
           )}
 
+          {/* Streak badge — shown on regular quiz (non-speed) when 3+ streak */}
+          {!isSpeedQuiz && question?.type === 'quiz' && myStreak >= 3 && (
+            <StreakBadge streak={myStreak} />
+          )}
+
           {/* Question header */}
           <motion.div
             key={`header-${currentQId}`}
@@ -209,7 +215,7 @@ export default function VotePage({ sessionId }) {
                   question={question}
                   disabled={timerExpired}
                   renderResult={(currentVote) => (
-                    <QuizResultFromVote question={question} currentVote={currentVote} />
+                    <QuizResultFromVote question={question} currentVote={currentVote} streak={myStreak} />
                   )}
                 />
               )}
