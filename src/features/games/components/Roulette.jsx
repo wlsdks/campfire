@@ -2,11 +2,10 @@ import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Target, Loader2 } from 'lucide-react';
 import Button from '@/components/ui/Button';
-import { colors } from '@/lib/design-tokens';
-
+// Monochromatic slate segments
 const SEGMENT_COLORS = [
-  colors.vote.A, colors.vote.B, colors.vote.C, colors.vote.D,
-  colors.vote.E, colors.primary.light, colors.accent.DEFAULT, colors.primary.dark,
+  '#0F172A', '#334155', '#64748B', '#94A3B8',
+  '#1E293B', '#475569', '#CBD5E1', '#334155',
 ];
 
 function getSpinResult(nameCount, segmentAngle) {
@@ -66,7 +65,7 @@ export default function Roulette({ participants, onResult }) {
       <div className="relative w-full max-w-[320px] aspect-square mx-auto">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-0.5 z-10 drop-shadow">
           <svg width="24" height="20" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 20L0 0H24L12 20Z" fill={colors.primary.DEFAULT} />
+            <path d="M12 20L0 0H24L12 20Z" fill={'#0F172A'} />
           </svg>
         </div>
         <motion.svg
@@ -112,7 +111,7 @@ export default function Roulette({ participants, onResult }) {
             );
           })}
           <circle cx="100" cy="100" r="18" fill="white" stroke={colors.border} strokeWidth="1.5" />
-          <text x="100" y="100" fill={colors.primary.DEFAULT} fontSize="10" fontWeight="bold" fontFamily="'Pretendard', system-ui" textAnchor="middle" dominantBaseline="central">GO</text>
+          <text x="100" y="100" fill={'#0F172A'} fontSize="10" fontWeight="bold" fontFamily="'Pretendard', system-ui" textAnchor="middle" dominantBaseline="central">GO</text>
         </motion.svg>
       </div>
 
