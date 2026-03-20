@@ -144,7 +144,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
             className="space-y-5"
           >
             <div>
-              <h2 className="text-xl font-bold text-slate-900">새 클래스 등록</h2>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">새 클래스 등록</h2>
               <p className="text-slate-400 text-sm mt-1">강의를 선택하세요</p>
             </div>
 
@@ -160,7 +160,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
                       <BookOpen size={18} className="text-slate-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-slate-900 text-sm">{course.name}</p>
+                      <p className="font-medium text-slate-900 dark:text-slate-100 text-sm">{course.name}</p>
                       <p className="text-slate-400 text-xs">{course.count}개 차수 진행</p>
                     </div>
                   </div>
@@ -191,7 +191,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
             className="space-y-5"
           >
             <div>
-              <h2 className="text-xl font-bold text-slate-900">새 강의</h2>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">새 강의</h2>
               <p className="text-slate-400 text-sm mt-1">강의 이름을 입력하세요</p>
             </div>
 
@@ -233,14 +233,14 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
             className="space-y-5"
           >
             <div>
-              <h2 className="text-xl font-bold text-slate-900">클래스 확인</h2>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">클래스 확인</h2>
               <p className="text-slate-400 text-sm mt-1">정보를 확인하고 등록하세요</p>
             </div>
 
-            <div className="bg-slate-50 rounded-xl p-4 space-y-3">
+            <div className="bg-slate-50 dark:bg-slate-700/50 rounded-xl p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <span className="text-slate-500 text-sm">강의</span>
-                <span className="font-medium text-slate-900 text-sm">{selectedCourse}</span>
+                <span className="font-medium text-slate-900 dark:text-slate-100 text-sm">{selectedCourse}</span>
               </div>
               <div className="border-t border-slate-200" />
               <div className="flex items-center justify-between">
@@ -252,7 +252,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
                   >
                     -
                   </button>
-                  <span className="font-bold text-slate-900 text-lg w-10 text-center">{roundNumber}</span>
+                  <span className="font-bold text-slate-900 dark:text-slate-100 text-lg w-10 text-center">{roundNumber}</span>
                   <button
                     onClick={() => setRoundNumber(roundNumber + 1)}
                     className="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-100 transition-all active:scale-90 text-sm font-medium"
