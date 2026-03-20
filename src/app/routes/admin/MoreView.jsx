@@ -1,12 +1,49 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import ProfileSection from './ProfileSection';
-import { Keyboard, Info, ArrowRight, ArrowLeft, Trophy } from 'lucide-react';
+import { Keyboard, Info, ArrowRight, ArrowLeft, Trophy, Sun, Moon, Monitor } from 'lucide-react';
+import { useTheme } from '@/hooks/useTheme';
 
 const stagger = {
   container: { animate: { transition: { staggerChildren: 0.04 } } },
   item: { initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } } },
 };
+
+// ─── Theme Switcher ──────────────────────────────────
+const THEME_OPTIONS = [
+  { key: 'light', label: '라이트', icon: Sun },
+  { key: 'dark', label: '다크', icon: Moon },
+  { key: 'system', label: '시스템', icon: Monitor },
+];
+
+function ThemeSection() {
+  const { theme, setTheme } = useTheme();
+
+  return (
+    <motion.div variants={stagger.item} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
+      <div className="flex items-center gap-3 mb-5">
+        <Moon size={18} className="text-slate-400" />
+        <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">화면 테마</h3>
+      </div>
+      <div className="grid grid-cols-3 gap-2">
+        {THEME_OPTIONS.map(({ key, label, icon: Icon }) => (
+          <button
+            key={key}
+            onClick={() => setTheme(key)}
+            className={`flex flex-col items-center gap-2 py-3 px-2 rounded-xl text-sm font-medium transition-all active:scale-[0.97] ${
+              theme === key
+                ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
+                : 'bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600'
+            }`}
+          >
+            <Icon size={18} />
+            {label}
+          </button>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
 
 // ─── Keyboard Shortcuts Guide ────────────────────────
 const SHORTCUTS = [
@@ -27,7 +64,7 @@ const SHORTCUTS = [
 function KeyBadge({ children }) {
   const isIcon = typeof children !== 'string';
   return (
-    <span className={`inline-flex items-center justify-center ${isIcon ? 'w-7' : 'min-w-[28px] px-2'} h-7 bg-slate-100 border border-slate-200 rounded-lg text-xs font-mono font-semibold text-slate-600 shadow-[0_1px_0_0_rgba(0,0,0,0.05)]`}>
+    <span className={`inline-flex items-center justify-center ${isIcon ? 'w-7' : 'min-w-[28px] px-2'} h-7 bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg text-xs font-mono font-semibold text-slate-600 dark:text-slate-300 shadow-[0_1px_0_0_rgba(0,0,0,0.05)]`}>
       {children}
     </span>
   );
@@ -35,10 +72,10 @@ function KeyBadge({ children }) {
 
 function ShortcutsSection() {
   return (
-    <motion.div variants={stagger.item} className="bg-white rounded-2xl border border-slate-200 p-6">
+    <motion.div variants={stagger.item} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
       <div className="flex items-center gap-3 mb-5">
         <Keyboard size={18} className="text-slate-400" />
-        <h3 className="text-sm font-bold text-slate-900">키보드 단축키</h3>
+        <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">키보드 단축키</h3>
       </div>
       <p className="text-xs text-slate-400 mb-5">세션 진행 중 키보드로 빠르게 수업을 진행하세요. 입력 필드에 포커스 시 비활성화됩니다.</p>
       <div className="space-y-5">
@@ -48,7 +85,7 @@ function ShortcutsSection() {
             <div className="space-y-2">
               {items.map((sc) => (
                 <div key={sc.label} className="flex items-center justify-between py-1.5">
-                  <span className="text-sm text-slate-600">{sc.label}</span>
+                  <span className="text-sm text-slate-600 dark:text-slate-300">{sc.label}</span>
                   <KeyBadge>{sc.key}</KeyBadge>
                 </div>
               ))}
@@ -82,16 +119,16 @@ function QuickStats({ sessions }) {
   ];
 
   return (
-    <motion.div variants={stagger.item} className="bg-white rounded-2xl border border-slate-200 p-6">
+    <motion.div variants={stagger.item} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
       <div className="flex items-center gap-3 mb-5">
         <Trophy size={18} className="text-slate-400" />
-        <h3 className="text-sm font-bold text-slate-900">나의 활동</h3>
+        <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">나의 활동</h3>
       </div>
       <div className="grid grid-cols-2 gap-4">
         {items.map((item) => (
           <div key={item.label}>
             <p className="text-xs text-slate-400 mb-1">{item.label}</p>
-            <p className="text-xl font-bold text-slate-900">{item.value}<span className="text-xs text-slate-400 font-normal ml-0.5">{item.suffix}</span></p>
+            <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{item.value}<span className="text-xs text-slate-400 font-normal ml-0.5">{item.suffix}</span></p>
           </div>
         ))}
       </div>
@@ -102,30 +139,30 @@ function QuickStats({ sessions }) {
 // ─── App Info ────────────────────────────────────────
 function AppInfo() {
   return (
-    <motion.div variants={stagger.item} className="bg-white rounded-2xl border border-slate-200 p-6">
+    <motion.div variants={stagger.item} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
       <div className="flex items-center gap-3 mb-5">
         <Info size={18} className="text-slate-400" />
-        <h3 className="text-sm font-bold text-slate-900">앱 정보</h3>
+        <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">앱 정보</h3>
       </div>
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-slate-500">버전</span>
-          <span className="text-sm font-mono text-slate-600">1.0.0</span>
+          <span className="text-sm text-slate-500 dark:text-slate-400">버전</span>
+          <span className="text-sm font-mono text-slate-600 dark:text-slate-300">1.0.0</span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-sm text-slate-500">플랫폼</span>
-          <span className="text-sm text-slate-600">웹 (PWA)</span>
+          <span className="text-sm text-slate-500 dark:text-slate-400">플랫폼</span>
+          <span className="text-sm text-slate-600 dark:text-slate-300">웹 (PWA)</span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-sm text-slate-500">지원 유형</span>
+          <span className="text-sm text-slate-500 dark:text-slate-400">지원 유형</span>
           <div className="flex gap-1.5">
             {['객관식', 'O/X', '퀴즈', '+4'].map((t) => (
-              <span key={t} className="px-2 py-0.5 bg-slate-50 text-slate-500 text-xs rounded-full font-medium">{t}</span>
+              <span key={t} className="px-2 py-0.5 bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 text-xs rounded-full font-medium">{t}</span>
             ))}
           </div>
         </div>
-        <div className="pt-3 border-t border-slate-100">
-          <p className="text-xs text-slate-300 text-center">Pinggo &mdash; 실시간 강의 참여 플랫폼</p>
+        <div className="pt-3 border-t border-slate-100 dark:border-slate-700">
+          <p className="text-xs text-slate-300 dark:text-slate-500 text-center">Pinggo &mdash; 실시간 강의 참여 플랫폼</p>
         </div>
       </div>
     </motion.div>
@@ -137,6 +174,7 @@ export default function MoreView({ adminUser, sessions }) {
   return (
     <motion.div variants={stagger.container} initial="initial" animate="animate" className="space-y-4">
       <ProfileSection adminUser={adminUser} />
+      <ThemeSection />
       <QuickStats sessions={sessions} />
       <ShortcutsSection />
       <AppInfo />

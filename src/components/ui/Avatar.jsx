@@ -8,7 +8,7 @@ export default function Avatar({ name = '', size = 'md', className = '' }) {
   const initial = name.charAt(0).toUpperCase() || '?';
 
   return (
-    <div className={`rounded-full bg-slate-100 text-slate-700 flex items-center justify-center font-semibold ${sizes[size]} ${className}`}>
+    <div className={`rounded-full bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-200 flex items-center justify-center font-semibold ${sizes[size]} ${className}`}>
       {initial}
     </div>
   );

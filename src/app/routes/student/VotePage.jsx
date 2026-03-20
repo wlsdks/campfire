@@ -97,7 +97,7 @@ export default function VotePage({ sessionId }) {
 
   if (loading) {
     return (
-      <div className="min-h-dvh bg-slate-50 flex items-center justify-center p-4">
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
         <div className="w-full max-w-sm space-y-4">
           <div className="flex items-center justify-center gap-2 text-slate-400">
             <Loader2 size={18} className="animate-spin" />
@@ -137,7 +137,7 @@ export default function VotePage({ sessionId }) {
   if (!question) return <WaitingPage sessionId={sessionId} pendingEvent={session?.pendingEvent || null} />;
 
   return (
-    <div className="min-h-dvh bg-slate-50 flex flex-col items-center justify-center p-4 pb-36 pt-16">
+    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center p-4 pb-36 pt-16">
       <StudentHeader sessionId={sessionId} />
 
       <div className="w-full max-w-sm space-y-4">
@@ -170,7 +170,7 @@ export default function VotePage({ sessionId }) {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-            className="bg-white rounded-xl shadow-sm border border-slate-200 p-5"
+            className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5"
           >
             {questionProgress && (
               <div className="flex items-center gap-2 mb-3">
@@ -188,7 +188,7 @@ export default function VotePage({ sessionId }) {
               </div>
             )}
             <div className="flex items-start justify-between gap-3">
-              <h2 className="text-xl font-bold text-slate-900 leading-snug flex-1">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 leading-snug flex-1">
                 {question.title}
               </h2>
               <div className="flex items-center gap-1.5 shrink-0">

@@ -37,15 +37,15 @@ export default function ProfileSection({ adminUser }) {
   const cancelEdit = () => { setEditing(false); setDisplayName(adminUser?.displayName || ''); setError(''); };
 
   return (
-    <motion.div variants={itemVariant} className="bg-white rounded-2xl border border-slate-200 p-6">
+    <motion.div variants={itemVariant} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
       <div className="flex items-center gap-3 mb-5">
         <User size={18} className="text-slate-400" />
-        <h3 className="text-sm font-bold text-slate-900">프로필</h3>
+        <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">프로필</h3>
       </div>
       <div className="space-y-4">
         <div>
           <label className="text-xs text-slate-400 font-medium block mb-1.5">아이디</label>
-          <p className="text-sm text-slate-600 font-medium">{adminUser?.username || '—'}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">{adminUser?.username || '—'}</p>
         </div>
         <div>
           <label className="text-xs text-slate-400 font-medium block mb-1.5">표시 이름</label>
@@ -66,7 +66,7 @@ export default function ProfileSection({ adminUser }) {
               </motion.div>
             ) : (
               <motion.div key="display" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="flex items-center gap-3">
-                <p className="text-sm text-slate-700 font-medium flex-1">{adminUser?.displayName || '—'}</p>
+                <p className="text-sm text-slate-700 dark:text-slate-200 font-medium flex-1">{adminUser?.displayName || '—'}</p>
                 <button onClick={() => setEditing(true)} className="text-xs text-slate-400 hover:text-slate-700 transition-colors px-2.5 py-1 rounded-lg hover:bg-slate-50">수정</button>
                 <AnimatePresence>
                   {saved && <motion.span initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="text-xs text-emerald-600 flex items-center gap-0.5"><Check size={12} />저장됨</motion.span>}
@@ -77,7 +77,7 @@ export default function ProfileSection({ adminUser }) {
         </div>
         <div>
           <label className="text-xs text-slate-400 font-medium block mb-1.5">역할</label>
-          <p className="text-sm text-slate-600 font-medium">{adminUser?.role === 'master' ? '마스터 관리자' : '강사'}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">{adminUser?.role === 'master' ? '마스터 관리자' : '강사'}</p>
         </div>
       </div>
     </motion.div>

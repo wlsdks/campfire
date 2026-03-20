@@ -12,14 +12,14 @@ import Button from '@/components/ui/Button';
 function RightPanelAccordion({ title, count, defaultOpen = false, children }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="rounded-xl border border-slate-200 overflow-hidden">
+    <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-3 py-2.5 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors"
+        className="w-full flex items-center justify-between px-3 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors"
         aria-expanded={open}
       >
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-slate-600">{title}</span>
+          <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">{title}</span>
           {count > 0 && <span className="text-xs text-slate-400">{count}</span>}
         </div>
         <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
@@ -68,17 +68,17 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
     <>
       <div className="flex items-center gap-2">
         <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-        <span className="text-slate-900 font-bold text-lg">{count}</span>
+        <span className="text-slate-900 dark:text-slate-100 font-bold text-lg">{count}</span>
         <span className="text-slate-400 text-sm">명 접속 중</span>
       </div>
 
       {activeQ && (
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-slate-500 text-xs font-medium">참여율</span>
-            <span className="text-slate-600 text-xs font-semibold">{voted}/{total}명 투표</span>
+            <span className="text-slate-500 dark:text-slate-400 text-xs font-medium">참여율</span>
+            <span className="text-slate-600 dark:text-slate-300 text-xs font-semibold">{voted}/{total}명 투표</span>
           </div>
-          <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`참여율 ${pct}%`}>
+          <div className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`참여율 ${pct}%`}>
             <div
               className="h-full bg-slate-700 rounded-full transition-all duration-500"
               style={{ width: `${pct}%` }}
@@ -141,16 +141,16 @@ function ReadOnlyRightSidebar({ session, participants, leaderboard, voteCounts }
     <>
       <div className="flex items-center gap-2">
         <Users size={16} className="text-slate-400" />
-        <span className="text-slate-900 font-bold text-lg">{allParticipants}</span>
+        <span className="text-slate-900 dark:text-slate-100 font-bold text-lg">{allParticipants}</span>
         <span className="text-slate-400 text-sm">명 참여</span>
       </div>
 
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
-          <span className="text-slate-500 text-xs font-medium">참여율</span>
-          <span className="text-slate-600 text-xs font-semibold">{activeCount}/{allParticipants}명 활동</span>
+          <span className="text-slate-500 dark:text-slate-400 text-xs font-medium">참여율</span>
+          <span className="text-slate-600 dark:text-slate-300 text-xs font-semibold">{activeCount}/{allParticipants}명 활동</span>
         </div>
-        <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`참여율 ${pct}%`}>
+        <div className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`참여율 ${pct}%`}>
           <div
             className="h-full bg-slate-500 rounded-full transition-all duration-500"
             style={{ width: `${pct}%` }}
@@ -211,7 +211,7 @@ export default memo(function RightSidebar({
     <motion.div
       animate={{ width: sidebarCollapsed ? 0 : '28%', minWidth: sidebarCollapsed ? 0 : 280 }}
       transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-      className="border-l border-slate-200 bg-white overflow-hidden shrink-0 min-w-0 max-w-[460px] h-full"
+      className="border-l border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden shrink-0 min-w-0 max-w-[460px] h-full"
     >
       <div className="min-w-[280px] p-5 space-y-3 overflow-y-auto h-full scrollbar-hide">
         {content}

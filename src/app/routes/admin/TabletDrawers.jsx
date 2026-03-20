@@ -28,13 +28,13 @@ export default function TabletDrawers({
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-              className="fixed inset-y-0 left-0 z-50 w-[340px] max-w-[85vw] bg-white shadow-xl overflow-hidden flex flex-col"
+              className="fixed inset-y-0 left-0 z-50 w-[340px] max-w-[85vw] bg-white dark:bg-slate-800 shadow-xl overflow-hidden flex flex-col"
             >
-              <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100 shrink-0">
-                <span className="text-sm font-bold text-slate-900">질문 관리</span>
+              <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100 dark:border-slate-700 shrink-0">
+                <span className="text-sm font-bold text-slate-900 dark:text-slate-100">질문 관리</span>
                 <button
                   onClick={onCloseLeft}
-                  className="p-2 -mr-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all active:scale-90"
+                  className="p-2 -mr-2 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all active:scale-90"
                   aria-label="닫기"
                 >
                   <X size={18} />
@@ -65,13 +65,13 @@ export default function TabletDrawers({
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ duration: 0.25, ease: [0.4, 0, 0.2, 1] }}
-              className="fixed inset-y-0 right-0 z-50 w-[340px] max-w-[85vw] bg-white shadow-xl overflow-hidden flex flex-col"
+              className="fixed inset-y-0 right-0 z-50 w-[340px] max-w-[85vw] bg-white dark:bg-slate-800 shadow-xl overflow-hidden flex flex-col"
             >
-              <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100 shrink-0">
-                <span className="text-sm font-bold text-slate-900">참여자 · 상호작용</span>
+              <div className="flex items-center justify-between px-5 py-3 border-b border-slate-100 dark:border-slate-700 shrink-0">
+                <span className="text-sm font-bold text-slate-900 dark:text-slate-100">참여자 · 상호작용</span>
                 <button
                   onClick={onCloseRight}
-                  className="p-2 -mr-2 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all active:scale-90"
+                  className="p-2 -mr-2 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all active:scale-90"
                   aria-label="닫기"
                 >
                   <X size={18} />

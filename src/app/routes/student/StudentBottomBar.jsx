@@ -86,8 +86,8 @@ export default function StudentBottomBar({ sessionId }) {
       <Modal open={showQuestionInput} onClose={() => setShowQuestionInput(false)} ariaLabel="익명 긴급 질문">
         <form onSubmit={submitUrgentQuestion} className="space-y-4">
           <div className="text-center space-y-1">
-            <MessageCircle size={24} className="text-slate-900 mx-auto mb-2" />
-            <p className="text-slate-900 font-bold text-lg">익명 긴급 질문</p>
+            <MessageCircle size={24} className="text-slate-900 dark:text-slate-100 mx-auto mb-2" />
+            <p className="text-slate-900 dark:text-slate-100 font-bold text-lg">익명 긴급 질문</p>
             <p className="text-slate-400 text-xs">이름이 표시되지 않습니다</p>
           </div>
           <textarea
@@ -97,7 +97,7 @@ export default function StudentBottomBar({ sessionId }) {
             aria-label="긴급 질문 내용"
             maxLength={300}
             rows={3}
-            className="w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-400 resize-none transition-all"
+            className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-4 py-3 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900/10 dark:focus:ring-slate-400/20 focus:border-slate-400 resize-none transition-all"
             autoFocus
           />
           <Button type="submit" variant="primary" size="lg" disabled={!questionText.trim()} className="w-full">
@@ -147,7 +147,7 @@ export default function StudentBottomBar({ sessionId }) {
         transition={{ type: 'spring', stiffness: 260, damping: 28, delay: 0.1 }}
         role="toolbar"
         aria-label="참여 도구"
-        className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-30">
+        className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 z-30">
         <div className="max-w-lg mx-auto px-4 pt-2 pb-[calc(0.625rem+env(safe-area-inset-bottom))]">
         <ReactionBar sessionId={sessionId} />
         <div className="border-t border-slate-100 mt-2 pt-2">
@@ -158,8 +158,8 @@ export default function StudentBottomBar({ sessionId }) {
               aria-pressed={isRaised}
               className={`h-11 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-1.5 ${
                 isRaised
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-slate-50 text-slate-600 hover:bg-slate-100'
+                  ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
+                  : 'bg-slate-50 text-slate-600 hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600'
               }`}
             >
               <Hand size={16} />
@@ -168,7 +168,7 @@ export default function StudentBottomBar({ sessionId }) {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowQuestionInput(true)}
-              className="h-11 rounded-lg bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 transition-all flex items-center justify-center gap-1.5"
+              className="h-11 rounded-lg bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-1.5"
             >
               <MessageCircle size={16} />
               긴급 질문
@@ -176,7 +176,7 @@ export default function StudentBottomBar({ sessionId }) {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={handleOpenChat}
-              className="h-11 rounded-lg bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 transition-all flex items-center justify-center gap-1.5 relative"
+              className="h-11 rounded-lg bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-1.5 relative"
             >
               <MessageSquare size={16} />
               채팅

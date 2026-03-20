@@ -60,13 +60,13 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
   }
 
   return (
-    <div className="min-h-dvh bg-slate-50 flex flex-col">
+    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col">
       {/* Header */}
-      <div className="bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between">
+      <div className="bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <PinggoMascot size="sm" />
           <div>
-            <h1 className="text-lg font-bold text-slate-900">Pinggo</h1>
+            <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">Pinggo</h1>
             <p className="text-slate-400 text-xs">{TABS.find((t) => t.key === activeTab)?.label}</p>
           </div>
         </div>
@@ -85,7 +85,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
           {TABS.map((tab) => (
             <button key={tab.key} onClick={() => setActiveTab(tab.key)}
               className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all active:scale-[0.97] ${
-                activeTab === tab.key ? 'bg-slate-900 text-white' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}`}>
+                activeTab === tab.key ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800'}`}>
               {tab.label}
             </button>
           ))}

@@ -52,7 +52,7 @@ export default function VoteConfirm({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 280, damping: 28 }}
-      className="w-full rounded-xl border border-slate-200 bg-white px-5 py-8 shadow-sm"
+      className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 py-8 shadow-sm"
     >
       <div className="flex flex-col items-center gap-4">
         <AnimatedCheck />
@@ -63,7 +63,7 @@ export default function VoteConfirm({
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="text-xl font-bold text-slate-900"
+            className="text-xl font-bold text-slate-900 dark:text-slate-100"
           >
             {waiting ? waitingLabel : submittedLabel}
           </motion.p>
@@ -77,10 +77,10 @@ export default function VoteConfirm({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.3, ease: 'easeOut' }}
-            className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-center w-full"
+            className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700 px-4 py-3 text-center w-full"
           >
             <p className="text-xs font-medium text-slate-400 mb-1">{selectedAnswerLabel}</p>
-            <p className="text-sm font-medium text-slate-700">{selectedAnswer}</p>
+            <p className="text-sm font-medium text-slate-700 dark:text-slate-200">{selectedAnswer}</p>
           </motion.div>
         )}
       </div>

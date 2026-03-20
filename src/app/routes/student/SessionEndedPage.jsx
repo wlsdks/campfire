@@ -5,7 +5,7 @@ import SessionSummaryCard from '@/features/session/components/SessionSummaryCard
 
 export default function SessionEndedPage({ sessionId, session, reviewing = false }) {
   return (
-    <div className={`min-h-dvh bg-slate-50 flex flex-col items-center justify-center p-4 pt-16 ${reviewing ? 'pb-36' : 'pb-8'}`}>
+    <div className={`min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center p-4 pt-16 ${reviewing ? 'pb-36' : 'pb-8'}`}>
       <StudentHeader sessionId={sessionId} />
 
       <motion.div

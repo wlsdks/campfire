@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Dark mode: class-based strategy */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Base font */
 html {
   font-family: 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
@@ -11,6 +14,12 @@ html {
   background: #F8FAFC;
 }
 
+html.dark {
+  color: #E2E8F0;
+  background: #0F172A;
+  color-scheme: dark;
+}
+
 /* Korean body text needs more breathing room */
 body {
   line-height: 1.7;
@@ -20,6 +29,7 @@ body {
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 3px; }
+.dark ::-webkit-scrollbar-thumb { background: #334155; }
 
 /* Hide scrollbar utility */
 .scrollbar-hide::-webkit-scrollbar { display: none; }
@@ -29,6 +39,9 @@ body {
 :focus-visible {
   outline: 2px solid #4F46E5;
   outline-offset: 2px;
+}
+.dark :focus-visible {
+  outline-color: #818CF8;
 }
 
 /* Reduced motion support */

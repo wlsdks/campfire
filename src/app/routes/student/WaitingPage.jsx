@@ -51,7 +51,7 @@ export default function WaitingPage({ sessionId, pendingEvent = null }) {
   const nickname = getNickname();
 
   return (
-    <div className="min-h-dvh bg-slate-50 flex flex-col items-center justify-center p-4 pb-32 pt-16">
+    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center p-4 pb-32 pt-16">
       <StudentHeader sessionId={sessionId} />
 
       <motion.div
@@ -72,7 +72,7 @@ export default function WaitingPage({ sessionId, pendingEvent = null }) {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.35, ease: 'easeOut' }}
-              className="text-slate-900 text-xl font-bold"
+              className="text-slate-900 dark:text-slate-100 text-xl font-bold"
             >
               {nickname}님, 준비 완료!
             </motion.p>
@@ -95,10 +95,10 @@ export default function WaitingPage({ sessionId, pendingEvent = null }) {
             transition={{ delay: 0.3, duration: 0.35, ease: 'easeOut' }}
             className="flex items-center justify-center gap-2"
           >
-            <div className="flex items-center gap-2 bg-white rounded-xl px-4 py-2.5 border border-slate-100 shadow-sm">
+            <div className="flex items-center gap-2 bg-white dark:bg-slate-800 rounded-xl px-4 py-2.5 border border-slate-100 dark:border-slate-700 shadow-sm">
               <Users size={16} className="text-slate-400" />
-              <span className="text-slate-700 text-sm font-medium">
-                <span className="text-slate-900 text-lg font-bold tabular-nums">{count}</span>
+              <span className="text-slate-700 dark:text-slate-300 text-sm font-medium">
+                <span className="text-slate-900 dark:text-slate-100 text-lg font-bold tabular-nums">{count}</span>
                 <span className="ml-0.5">명 참여 중</span>
               </span>
             </div>

@@ -70,7 +70,7 @@ export default function JoinPage({ sessionId, onJoin }) {
   }
 
   return (
-    <div className="min-h-dvh bg-slate-50 flex flex-col items-center justify-start px-5 pt-[20vh]">
+    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-start px-5 pt-[20vh]">
       <motion.form
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -90,7 +90,7 @@ export default function JoinPage({ sessionId, onJoin }) {
               <Radio size={26} className="text-indigo-500" />
             </motion.div>
             <div>
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Pinggo</h1>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pinggo</h1>
               <p className={`text-sm mt-1 ${courseName ? 'text-slate-500 font-medium' : 'text-slate-400'}`}>
                 {courseName || '닉네임을 정하고 참여하세요'}
               </p>
@@ -115,10 +115,10 @@ export default function JoinPage({ sessionId, onJoin }) {
                     initial={{ scale: 0.9 }}
                     animate={{ scale: 1 }}
                     transition={{ type: 'spring', stiffness: 300, damping: 26 }}
-                    className="flex items-center gap-2.5 bg-slate-50 rounded-full py-1.5 pl-1.5 pr-4"
+                    className="flex items-center gap-2.5 bg-slate-50 dark:bg-slate-700 rounded-full py-1.5 pl-1.5 pr-4"
                   >
                     <Avatar name={trimmed} size="md" />
-                    <span className="text-sm font-medium text-slate-700">{trimmed}</span>
+                    <span className="text-sm font-medium text-slate-700 dark:text-slate-200">{trimmed}</span>
                   </motion.div>
                 </div>
               </motion.div>
@@ -143,10 +143,10 @@ export default function JoinPage({ sessionId, onJoin }) {
               maxLength={NICKNAME_MAX}
               autoComplete="off"
               enterKeyHint="go"
-              className={`w-full bg-slate-50 border rounded-xl px-4 py-3.5 text-base text-center font-medium placeholder:text-slate-300 placeholder:font-normal focus:outline-none focus:ring-2 focus:bg-white transition-all ${
+              className={`w-full bg-slate-50 dark:bg-slate-700 border rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 text-center font-medium placeholder:text-slate-300 dark:placeholder:text-slate-500 placeholder:font-normal focus:outline-none focus:ring-2 focus:bg-white dark:focus:bg-slate-600 transition-all ${
                 tooShort || error
                   ? 'border-red-300 focus:ring-red-500/15 focus:border-red-400'
-                  : 'border-slate-200 focus:ring-slate-900/8 focus:border-slate-400'
+                  : 'border-slate-200 dark:border-slate-600 focus:ring-slate-900/8 dark:focus:ring-slate-400/20 focus:border-slate-400'
               }`}
             />
             <div className="flex items-center justify-between px-1">

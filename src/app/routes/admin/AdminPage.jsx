@@ -26,7 +26,7 @@ export default function AdminPage() {
       pendingAdmins={s.pendingAdmins} pendingCount={s.pendingCount} approveAdmin={s.approveAdmin} rejectAdmin={s.rejectAdmin} />
   );
   if (s.loading) return (
-    <div className="min-h-dvh bg-slate-50 flex items-center justify-center">
+    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
       <div className="flex items-center gap-2 text-slate-400"><Loader2 size={20} className="animate-spin" /><span>불러오는 중...</span></div>
     </div>
   );
@@ -71,7 +71,7 @@ export default function AdminPage() {
   );
 
   return (
-    <div className="h-dvh bg-slate-50 flex flex-col overflow-hidden">
+    <div className="h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col overflow-hidden">
       <JoinToast sessionId={s.sessionId} />
       <ReactionOverlay sessionId={s.sessionId} />
       <ChatPanel sessionId={s.sessionId} senderName={s.adminUser?.displayName || '강사'} senderType="instructor" open={s.chatOpen} onClose={s.handleChatClose} />
@@ -102,7 +102,7 @@ export default function AdminPage() {
             {s.sidebarCollapsed && (
               <motion.button initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -8 }}
                 transition={{ duration: 0.15 }} onClick={s.handleCollapseOpen}
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white border border-slate-200 border-l-0 rounded-r-xl p-3 shadow-md text-slate-400 hover:text-slate-700 transition-all active:scale-95"
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 border-l-0 rounded-r-xl p-3 shadow-md text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-all active:scale-95"
                 aria-label="사이드바 열기">
                 <PanelLeftOpen size={22} />
               </motion.button>
@@ -113,7 +113,7 @@ export default function AdminPage() {
         {!isTablet && (
           <motion.div animate={{ width: s.sidebarCollapsed ? 0 : '28%', minWidth: s.sidebarCollapsed ? 0 : 280 }}
             transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
-            className="border-r border-slate-200 bg-white overflow-hidden shrink-0 min-w-0 max-w-[460px] h-full">
+            className="border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden shrink-0 min-w-0 max-w-[460px] h-full">
             <div className="min-w-[280px] p-5 overflow-y-auto h-full scrollbar-hide">{leftSidebarContent}</div>
           </motion.div>
         )}

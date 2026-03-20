@@ -9,12 +9,12 @@ import Button from '@/components/ui/Button';
 import PinggoMascot from '@/components/ui/PinggoMascot';
 
 const inputClass = (hasError, isFocused) =>
-  `w-full bg-slate-50 border-2 rounded-xl px-4 py-3.5 text-base placeholder:text-slate-300 focus:outline-none focus:bg-white transition-all duration-200 ${
+  `w-full bg-slate-50 dark:bg-slate-700 border-2 rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:bg-white dark:focus:bg-slate-600 transition-all duration-200 ${
     hasError
       ? 'border-red-300 focus:border-red-400 focus:shadow-[0_0_0_3px_rgba(239,68,68,0.1)]'
       : isFocused
         ? 'border-slate-400 shadow-[0_0_0_3px_rgba(15,23,42,0.06)]'
-        : 'border-slate-200'
+        : 'border-slate-200 dark:border-slate-600'
   }`;
 
 export default function LoginView({ onLogin, onSwitchToRegister }) {
@@ -93,7 +93,7 @@ export default function LoginView({ onLogin, onSwitchToRegister }) {
         <motion.div className="text-center space-y-1"
           initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Pinggo</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pinggo</h1>
           <p className="text-slate-400 text-sm">관리자 로그인</p>
         </motion.div>
 
@@ -135,13 +135,13 @@ export default function LoginView({ onLogin, onSwitchToRegister }) {
           transition={{ duration: 0.4, delay: 0.6 }}>
           <button type="button" onClick={onSwitchToRegister}
             className="text-sm text-slate-400 hover:text-slate-600 transition-colors">
-            계정이 없으신가요? <span className="font-medium text-slate-700">회원가입</span>
+            계정이 없으신가요? <span className="font-medium text-slate-700 dark:text-slate-200">회원가입</span>
           </button>
         </motion.div>
 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.7 }}>
-          <div className="border-t border-slate-100 pt-4">
+          <div className="border-t border-slate-100 dark:border-slate-700 pt-4">
             <button type="button"
               onClick={async () => {
                 setSubmitting(true);

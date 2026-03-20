@@ -7,10 +7,10 @@ const sizes = {
 };
 
 const variants = {
-  ghost: 'hover:bg-slate-100 text-slate-500 hover:text-slate-700',
-  subtle: 'bg-slate-50 hover:bg-slate-100 text-slate-600',
-  primary: 'bg-slate-100 hover:bg-slate-200 text-slate-700',
-  danger: 'hover:bg-slate-200 text-slate-400 hover:text-slate-700',
+  ghost: 'hover:bg-slate-100 text-slate-500 hover:text-slate-700 dark:hover:bg-slate-700 dark:text-slate-400 dark:hover:text-slate-200',
+  subtle: 'bg-slate-50 hover:bg-slate-100 text-slate-600 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300',
+  primary: 'bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-200',
+  danger: 'hover:bg-slate-200 text-slate-400 hover:text-slate-700 dark:hover:bg-slate-700 dark:text-slate-500 dark:hover:text-slate-200',
 };
 
 export default function IconButton({

@@ -81,7 +81,7 @@ export default function Modal({ open, onClose, children, className = '', ariaLab
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 8 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
-            className={`bg-white rounded-2xl shadow-lg p-6 w-full max-w-md outline-none ${className}`}
+            className={`bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-6 w-full max-w-md outline-none ${className}`}
           >
             {children}
           </motion.div>

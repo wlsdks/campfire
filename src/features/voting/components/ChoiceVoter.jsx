@@ -7,11 +7,11 @@ import VoteConfirm from './VoteConfirm';
 import StudentLiveResults from './StudentLiveResults';
 
 const OPTION_STYLES = [
-  { bg: 'bg-white hover:bg-slate-50', text: 'text-slate-800', badge: 'bg-slate-800', letter: 'A' },
-  { bg: 'bg-white hover:bg-slate-50', text: 'text-slate-800', badge: 'bg-slate-700', letter: 'B' },
-  { bg: 'bg-white hover:bg-slate-50', text: 'text-slate-800', badge: 'bg-slate-600', letter: 'C' },
-  { bg: 'bg-white hover:bg-slate-50', text: 'text-slate-800', badge: 'bg-slate-500', letter: 'D' },
-  { bg: 'bg-white hover:bg-slate-50', text: 'text-slate-800', badge: 'bg-slate-500', letter: 'E' },
+  { bg: 'bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700', text: 'text-slate-800 dark:text-slate-200', badge: 'bg-slate-800 dark:bg-slate-200 dark:text-slate-900', letter: 'A' },
+  { bg: 'bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700', text: 'text-slate-800 dark:text-slate-200', badge: 'bg-slate-700 dark:bg-slate-300 dark:text-slate-900', letter: 'B' },
+  { bg: 'bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700', text: 'text-slate-800 dark:text-slate-200', badge: 'bg-slate-600 dark:bg-slate-400 dark:text-slate-900', letter: 'C' },
+  { bg: 'bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700', text: 'text-slate-800 dark:text-slate-200', badge: 'bg-slate-500', letter: 'D' },
+  { bg: 'bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700', text: 'text-slate-800 dark:text-slate-200', badge: 'bg-slate-500', letter: 'E' },
 ];
 
 export default function ChoiceVoter({ sessionId, questionId, options, disabled = false }) {
@@ -73,7 +73,7 @@ export default function ChoiceVoter({ sessionId, questionId, options, disabled =
             whileTap={!hasSelection ? { scale: 0.97 } : undefined}
             onClick={() => handleVote(option)}
             disabled={hasSelection || disabled}
-            className={`w-full py-3.5 px-4 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${isSelected ? 'ring-2 ring-slate-400 border-slate-300 bg-slate-50' : 'border-slate-200'} ${hasSelection && !isSelected ? 'cursor-not-allowed' : ''} transition-colors flex items-center gap-3`}
+            className={`w-full py-3.5 px-4 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${isSelected ? 'ring-2 ring-slate-400 border-slate-300 bg-slate-50 dark:bg-slate-700' : 'border-slate-200 dark:border-slate-700'} ${hasSelection && !isSelected ? 'cursor-not-allowed' : ''} transition-colors flex items-center gap-3`}
           >
             <span className={`w-8 h-8 rounded-lg ${style.badge} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
               {style.letter}

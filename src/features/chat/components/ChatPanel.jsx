@@ -29,8 +29,8 @@ function ChatMessage({ msg, isOwn }) {
       <div
         className={`px-3.5 py-2 text-sm leading-relaxed ${
           isOwn
-            ? 'bg-slate-900 text-white rounded-2xl rounded-br-md'
-            : 'bg-slate-100 text-slate-800 rounded-2xl rounded-bl-md'
+            ? 'bg-slate-900 dark:bg-slate-200 text-white dark:text-slate-900 rounded-2xl rounded-br-md'
+            : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-2xl rounded-bl-md'
         }`}
       >
         {msg.text}
@@ -96,12 +96,12 @@ export default function ChatPanel({ sessionId, senderName, senderType, open, onC
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 12 }}
             transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-            className="fixed inset-4 sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-[420px] sm:h-[600px] bg-white rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden"
+            className="fixed inset-4 sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-[420px] sm:h-[600px] bg-white dark:bg-slate-800 rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 shrink-0">
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100 dark:border-slate-700 shrink-0">
               <div className="flex items-center gap-2">
-                <span className="font-bold text-slate-900">채팅</span>
+                <span className="font-bold text-slate-900 dark:text-slate-100">채팅</span>
                 {messages.length > 0 && (
                   <span className="text-xs text-slate-400">{messages.length}개</span>
                 )}
@@ -145,7 +145,7 @@ export default function ChatPanel({ sessionId, senderName, senderType, open, onC
             </div>
 
             {/* Input */}
-            <div className="flex items-center gap-2 px-4 py-3 border-t border-slate-100 shrink-0">
+            <div className="flex items-center gap-2 px-4 py-3 border-t border-slate-100 dark:border-slate-700 shrink-0">
               <input
                 ref={inputRef}
                 type="text"
@@ -160,12 +160,12 @@ export default function ChatPanel({ sessionId, senderName, senderType, open, onC
                 placeholder="메시지를 입력하세요"
                 aria-label="채팅 메시지"
                 maxLength={MAX_LENGTH}
-                className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 text-sm placeholder:text-slate-300 focus:outline-none focus:border-slate-400 focus:bg-white transition-all"
+                className="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 focus:bg-white dark:focus:bg-slate-600 transition-all"
               />
               <button
                 onClick={handleSend}
                 disabled={!inputText.trim() || !canSend || sending}
-                className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 text-white disabled:opacity-30 hover:bg-slate-800 transition-colors shrink-0"
+                className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 disabled:opacity-30 hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors shrink-0"
                 aria-label="메시지 보내기"
               >
                 <Send size={16} />

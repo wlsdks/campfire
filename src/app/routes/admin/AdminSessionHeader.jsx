@@ -92,7 +92,7 @@ export default memo(function AdminSessionHeader({
   }, [timerOpen]);
 
   return (
-    <div className={`bg-white border-b border-slate-200 flex items-center justify-between shrink-0 ${isTablet ? 'px-3 py-3' : 'px-6 py-4'}`}>
+    <div className={`bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between shrink-0 ${isTablet ? 'px-3 py-3' : 'px-6 py-4'}`}>
       <div className="flex items-center gap-2 lg:gap-3 min-w-0">
         {/* Tablet: questions drawer toggle */}
         {isTablet && onLeftDrawer && (
@@ -113,7 +113,7 @@ export default memo(function AdminSessionHeader({
         </button>
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-900 truncate">
+            <span className="font-bold text-slate-900 dark:text-slate-100 truncate">
               {session?.courseName || 'Pinggo'}
             </span>
             {session?.roundNumber && (
@@ -219,7 +219,7 @@ export default memo(function AdminSessionHeader({
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -4, scale: 0.95 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute right-0 top-full mt-2 bg-white rounded-2xl border border-slate-200 shadow-xl p-4 z-50 w-72"
+                  className="absolute right-0 top-full mt-2 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xl p-4 z-50 w-72"
                 >
                   <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">타이머 설정</p>
                   <TimerControls isRunning={timerRunning} onStart={(s) => { onTimerStart(s); setTimerOpen(false); }} onStop={onTimerStop} />

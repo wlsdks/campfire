@@ -70,7 +70,7 @@ export default function QuestionManager({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-slate-900">질문 목록</h2>
+        <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">질문 목록</h2>
         <div className="flex items-center gap-1.5">
           {!readOnly && adminUid && (
             <Button onClick={() => setLibraryOpen(true)} variant="ghost" size="sm">
@@ -115,12 +115,12 @@ export default function QuestionManager({
       {questionList.length > 0 && readOnly && (
         <button
           onClick={() => onViewQuestion?.('__summary__')}
-          className={`w-full rounded-xl border bg-white p-3 space-y-1 shadow-sm text-left transition-all active:scale-[0.98] ${
-            !currentQuestion ? 'border-slate-400 shadow-md' : 'border-slate-200 hover:border-slate-300'
+          className={`w-full rounded-xl border bg-white dark:bg-slate-800 p-3 space-y-1 shadow-sm text-left transition-all active:scale-[0.98] ${
+            !currentQuestion ? 'border-slate-400 shadow-md' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
           }`}
         >
           <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">수업 요약</p>
-          <p className="text-slate-900 text-sm font-medium">
+          <p className="text-slate-900 dark:text-slate-100 text-sm font-medium">
             질문 {questionList.length}개 · {completedCount}개 진행 완료
           </p>
         </button>
