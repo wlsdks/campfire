@@ -33,7 +33,7 @@ export default function AdminPage() {
   if (!s.session) { s.handleBack(); return null; }
 
   const currentMode = s.session?.currentMode;
-  const isSpecialMode = ['roulette', 'lottery', 'leaderboard', 'teamBattle'].includes(currentMode);
+  const isSpecialMode = ['roulette', 'lottery', 'prizeDraw', 'leaderboard', 'teamBattle'].includes(currentMode);
 
   if (s.presentMode) {
     return (
