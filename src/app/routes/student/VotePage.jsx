@@ -32,11 +32,15 @@ import StreakBadge from '@/features/quiz/components/StreakBadge';
 import TeamBadge from '@/features/teams/components/TeamBadge';
 import { useMyTeam } from '@/features/teams/api/useTeamBattle';
 import { getParticipantId } from '@/lib/participant';
+import { useQuestionChime } from '@/hooks/useQuestionChime';
 
 export default function VotePage({ sessionId }) {
   const { session, loading } = useSession(sessionId);
   const { isRunning: timerRunning, endTime, duration } = useTimer(sessionId);
   const [timerExpired, setTimerExpired] = useState(false);
+
+  // Play chime when a new question activates
+  useQuestionChime(session?.currentQuestion);
 
   const handleTimerExpire = useCallback(() => {
     setTimerExpired(true);

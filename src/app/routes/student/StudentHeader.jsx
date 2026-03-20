@@ -1,6 +1,6 @@
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
-import { useEffect, useRef } from 'react';
-import { Radio, Trophy } from 'lucide-react';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { Radio, Trophy, Volume2, VolumeOff } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
 import ConnectionBanner from '@/components/ui/ConnectionBanner';
 import { useScores } from '@/features/quiz/api/useScores';
@@ -34,6 +34,18 @@ export default function StudentHeader({ sessionId }) {
   const myScore = scores[getParticipantId()];
   const totalScore = myScore?.total || 0;
 
+  // Sound mute toggle
+  const [muted, setMuted] = useState(
+    () => localStorage.getItem('pinggo_sound_muted') === 'true'
+  );
+  const toggleMute = useCallback(() => {
+    setMuted((prev) => {
+      const next = !prev;
+      localStorage.setItem('pinggo_sound_muted', String(next));
+      return next;
+    });
+  }, []);
+
   return (
     <>
       <motion.header
@@ -62,6 +74,18 @@ export default function StudentHeader({ sessionId }) {
                 <HeaderScore value={totalScore} />
               </motion.span>
             )}
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={toggleMute}
+              aria-label={muted ? '알림음 켜기' : '알림음 끄기'}
+              aria-pressed={!muted}
+              className="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+            >
+              {muted
+                ? <VolumeOff size={16} />
+                : <Volume2 size={16} />
+              }
+            </motion.button>
             <Avatar name={nickname} size="sm" />
           </div>
         </div>
