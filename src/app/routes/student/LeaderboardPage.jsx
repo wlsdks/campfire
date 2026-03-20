@@ -28,11 +28,11 @@ function MyRankCard({ rank, entry, total }) {
       {/* Rank number hero */}
       <div className="text-center mb-4">
         <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
+          initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 22, delay: 0.1 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 22, delay: 0.15 }}
         >
-          <span className="text-5xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">{rank}</span>
+          <span className="text-5xl font-bold text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{rank}</span>
           <span className="text-lg font-bold text-slate-400 ml-0.5">위</span>
         </motion.div>
         {total > 1 && (
