@@ -168,7 +168,7 @@ export default function StudentBottomBar({ sessionId }) {
         role="toolbar"
         aria-label="참여 도구"
         className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 z-30">
-        <div className="max-w-xl mx-auto px-4 pt-2 pb-[calc(0.625rem+env(safe-area-inset-bottom))]">
+        <div className="max-w-xl mx-auto px-6 pt-2 pb-[calc(0.625rem+env(safe-area-inset-bottom))]">
         <ReactionBar sessionId={sessionId} />
         <div className="border-t border-slate-100 dark:border-slate-700 mt-2 pt-2">
           <div className="grid grid-cols-4 gap-1.5">
