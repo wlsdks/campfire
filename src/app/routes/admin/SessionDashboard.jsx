@@ -29,7 +29,10 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
   const { sessions, loading, refresh, deleteSession, duplicateSession } = useSessionList();
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
-  const [activeTab, setActiveTab] = useState('classes');
+  const [activeTab, setActiveTab] = useState(() => {
+    const hash = window.location.hash.replace('#', '');
+    return ['classes', 'history', 'library', 'more'].includes(hash) ? hash : 'classes';
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [duplicating, setDuplicating] = useState(false);
@@ -38,6 +41,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
 
   const handleTabChange = useCallback((key) => {
     setActiveTab(key);
+    window.location.hash = key;
     if (contentRef.current) {
       contentRef.current.scrollTo({ top: 0 });
     }

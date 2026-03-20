@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronRight, Download, Check, Snowflake, ClipboardList, Users, Code, Lightbulb, Package } from 'lucide-react';
 import { TEMPLATE_PACKS } from '@/lib/template-packs';
@@ -117,6 +117,18 @@ function PackCard({ pack, onImport, imported, index }) {
 export default function TemplatePacks({ onImportPack }) {
   const [imported, setImported] = useState(new Set());
   const [sectionOpen, setSectionOpen] = useState(false);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (sectionOpen && containerRef.current) {
+      setTimeout(() => {
+        const scrollParent = containerRef.current.closest('[class*="overflow"]');
+        if (scrollParent) {
+          scrollParent.scrollTo({ top: scrollParent.scrollHeight, behavior: 'smooth' });
+        }
+      }, 300);
+    }
+  }, [sectionOpen]);
 
   function handleImport(pack) {
     onImportPack(pack.questions);
@@ -124,7 +136,7 @@ export default function TemplatePacks({ onImportPack }) {
   }
 
   return (
-    <div className="space-y-3">
+    <div ref={containerRef} className="space-y-3">
       <button
         onClick={() => setSectionOpen(!sectionOpen)}
         className="w-full flex items-center justify-between py-2 group"
