@@ -53,8 +53,8 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
     <div>
       {/* 질문 유형 */}
       <div>
-        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">질문 유형</p>
-        <div className="flex gap-1.5">
+        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">질문 유형</p>
+        <div className="grid grid-cols-5 gap-1.5">
           {QUESTION_TYPES.map((t) => {
             const Icon = t.icon;
             const selected = type === t.value;
@@ -64,11 +64,11 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
                   setType(t.value); setLocalError(null);
                   if (t.value === 'ranking' && options.length < 3) setOptions(['', '', '']);
                 }}
-                className={`flex-1 flex flex-col items-center justify-center gap-1.5 py-4 rounded-lg border transition-all active:scale-[0.96] ${
+                className={`flex flex-col items-center justify-center gap-1 py-3 rounded-lg border transition-all duration-150 active:scale-[0.96] ${
                   selected ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 border-slate-900 dark:border-slate-100 shadow-sm'
                     : 'text-slate-400 border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-slate-300'}`}>
-                <Icon size={22} strokeWidth={selected ? 2 : 1.6} />
-                <span className="text-xs font-medium">{t.label}</span>
+                <Icon size={20} strokeWidth={selected ? 2 : 1.6} />
+                <span className="text-[11px] font-medium leading-tight">{t.label}</span>
               </button>
             );
           })}
