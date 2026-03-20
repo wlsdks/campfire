@@ -164,7 +164,7 @@ export default memo(function ClassSummary({ session, participants, scores, leade
               const Icon = meta.icon;
               return (
                 <div key={q.id} className="px-4 py-3 flex items-center gap-3">
-                  <span className="text-xs font-semibold text-slate-300 w-5 text-right shrink-0">{i + 1}</span>
+                  <span className="text-xs font-semibold text-slate-400 w-5 text-right shrink-0">{i + 1}</span>
                   <Icon size={14} className="text-slate-400 shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm text-slate-700 dark:text-slate-200 truncate">{q.title}</p>
@@ -192,7 +192,7 @@ export default memo(function ClassSummary({ session, participants, scores, leade
                         transition={{ type: 'spring', stiffness: 80, damping: 20, delay: 0.1 + i * 0.05 }}
                       />
                     </div>
-                    <p className="text-[10px] text-slate-300 dark:text-slate-500 text-right mt-0.5">{q.responseRate}%</p>
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500 text-right mt-0.5">{q.responseRate}%</p>
                   </div>
                 </div>
               );

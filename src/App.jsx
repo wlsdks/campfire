@@ -80,7 +80,7 @@ function StudentRouter() {
             transition={{ delay: 0.45 }}
             className="flex items-center justify-center gap-2"
           >
-            <span className="text-xs text-slate-300 dark:text-slate-500">실시간 강의 참여 플랫폼</span>
+            <span className="text-xs text-slate-400 dark:text-slate-500">실시간 강의 참여 플랫폼</span>
           </motion.div>
         </motion.div>
       </div>

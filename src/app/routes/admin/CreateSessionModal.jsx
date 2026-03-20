@@ -202,7 +202,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
               onKeyDown={(e) => e.key === 'Enter' && handleNewCourseSubmit()}
               placeholder="예: 바이브 코딩 기초편"
               aria-label="강의 이름"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base placeholder:text-slate-300 focus:outline-none focus:bg-white focus:border-slate-400 transition-all"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-base placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-slate-400 transition-all"
               autoFocus
             />
 

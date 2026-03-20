@@ -91,7 +91,7 @@ export default function HandRaiseList({ sessionId }) {
                 </div>
               )}
               {count === 0 && (
-                <p className="text-slate-300 text-xs py-1">손든 학생이 없습니다</p>
+                <p className="text-slate-400 text-xs py-1">손든 학생이 없습니다</p>
               )}
               <AnimatePresence>
                 {raisedList.map((p, i) => (

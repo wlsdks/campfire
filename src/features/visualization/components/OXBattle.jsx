@@ -109,7 +109,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
         </div>
         <div className="flex justify-between text-base font-bold">
           <span className="text-indigo-600">{Math.round(oPct)}%</span>
-          <span className="text-slate-300 text-sm">총 {totalVotes}명</span>
+          <span className="text-slate-400 text-sm">총 {totalVotes}명</span>
           <span className="text-slate-600 dark:text-slate-300">{Math.round(xPct)}%</span>
         </div>
       </div>

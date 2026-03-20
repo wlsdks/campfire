@@ -151,8 +151,8 @@ export default function Lottery({ participants, onResult }) {
 
         {winners.length === 0 && !revealing && (
           <div className="text-center space-y-2">
-            <Ticket size={28} className="text-slate-300 mx-auto" />
-            <p className="text-slate-300 text-base">추첨 버튼을 눌러주세요</p>
+            <Ticket size={28} className="text-slate-400 mx-auto" />
+            <p className="text-slate-400 text-base">추첨 버튼을 눌러주세요</p>
           </div>
         )}
 

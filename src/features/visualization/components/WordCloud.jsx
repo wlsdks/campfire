@@ -49,8 +49,8 @@ export default memo(function WordCloud({ sessionId, questionId }) {
         </AnimatePresence>
         {words.length === 0 && (
           <div className="text-center space-y-2">
-            <Cloud size={28} className="text-slate-300 mx-auto" />
-            <p className="text-slate-300 text-base">아직 입력이 없습니다</p>
+            <Cloud size={28} className="text-slate-400 mx-auto" />
+            <p className="text-slate-400 text-base">아직 입력이 없습니다</p>
           </div>
         )}
       </div>

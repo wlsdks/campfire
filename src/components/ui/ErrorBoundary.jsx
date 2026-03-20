@@ -81,7 +81,7 @@ function ErrorFallback({ fullPage, errorMessage, onRetry, onReload }) {
         {/* Error detail (dev only — collapsed) */}
         {errorMessage && (
           <details className="mb-6 text-left">
-            <summary className="text-xs text-slate-300 cursor-pointer hover:text-slate-400 transition-colors">
+            <summary className="text-xs text-slate-400 cursor-pointer hover:text-slate-500 transition-colors">
               오류 상세
             </summary>
             <pre className="mt-2 text-xs text-slate-400 bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-lg p-3 overflow-x-auto whitespace-pre-wrap break-words">

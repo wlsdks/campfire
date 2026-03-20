@@ -124,7 +124,7 @@ export default function ImportFromLibraryModal({ open, onClose, adminUid, onImpo
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="질문 검색..."
               aria-label="보관함 질문 검색"
-              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-8 py-2 text-sm placeholder:text-slate-300 focus:outline-none focus:bg-white focus:border-slate-400 transition-colors"
+              className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-9 pr-8 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-slate-400 transition-colors"
             />
             {searchQuery && (
               <button
@@ -143,11 +143,11 @@ export default function ImportFromLibraryModal({ open, onClose, adminUid, onImpo
             <div className="text-center py-8 text-slate-400 text-sm">불러오는 중...</div>
           ) : filtered.length === 0 ? (
             <div className="text-center py-8 space-y-1">
-              <BookmarkPlus size={20} className="text-slate-300 mx-auto" />
+              <BookmarkPlus size={20} className="text-slate-400 mx-auto" />
               <p className="text-slate-400 text-sm">
                 {questions.length === 0 ? '저장된 질문이 없습니다' : '일치하는 질문이 없습니다'}
               </p>
-              <p className="text-slate-300 text-xs">
+              <p className="text-slate-400 text-xs">
                 {questions.length === 0 ? '질문 보관함 탭에서 먼저 질문을 저장하세요' : '검색어를 변경해보세요'}
               </p>
             </div>

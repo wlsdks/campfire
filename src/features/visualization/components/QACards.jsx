@@ -97,7 +97,7 @@ export default memo(function QACards({ sessionId, questionId, title }) {
             <MessageSquare size={32} className="text-slate-200 mx-auto" />
             <div>
               <p className="text-slate-400 text-sm">아직 응답이 없습니다</p>
-              <p className="text-slate-300 text-xs mt-1">학생들이 답변하면 여기에 표시됩니다</p>
+              <p className="text-slate-400 text-xs mt-1">학생들이 답변하면 여기에 표시됩니다</p>
             </div>
           </div>
         )}

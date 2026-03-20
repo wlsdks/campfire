@@ -31,7 +31,7 @@ export default memo(function ParticipantList({ participants, voteCounts }) {
         <div className="flex flex-col items-center text-center py-5 space-y-2">
           <PickMascot size="xs" mood="waiting" />
           <p className="text-slate-400 text-sm font-medium">아직 참여자가 없습니다</p>
-          <p className="text-slate-300 text-xs leading-relaxed">아래 QR코드를 공유하여<br />학생을 초대하세요</p>
+          <p className="text-slate-400 text-xs leading-relaxed">아래 QR코드를 공유하여<br />학생을 초대하세요</p>
         </div>
       )}
     </div>

@@ -170,7 +170,7 @@ export default function DebateVoter({ sessionId, questionId, disabled = false })
                 placeholder="이유를 한 줄로 적어주세요"
                 aria-label="한 줄 의견"
                 enterKeyHint="done"
-                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm placeholder:text-slate-300 focus:outline-none focus:bg-white focus:border-slate-400 transition-colors"
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-slate-400 transition-colors"
               />
             </div>
 

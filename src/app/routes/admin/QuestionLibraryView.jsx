@@ -217,7 +217,7 @@ export default function QuestionLibraryView({ adminUid }) {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="질문 검색..."
               aria-label="질문 검색"
-              className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-9 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors"
+              className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-9 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors"
             />
             {searchQuery && (
               <button
@@ -285,9 +285,9 @@ export default function QuestionLibraryView({ adminUid }) {
               animate={{ opacity: 1 }}
               className="text-center py-10 space-y-1"
             >
-              <Search size={20} className="text-slate-300 dark:text-slate-600 mx-auto" />
+              <Search size={20} className="text-slate-400 dark:text-slate-600 mx-auto" />
               <p className="text-slate-400 text-sm">일치하는 질문이 없습니다</p>
-              <p className="text-slate-300 dark:text-slate-500 text-xs">검색어나 필터를 변경해보세요</p>
+              <p className="text-slate-400 dark:text-slate-500 text-xs">검색어나 필터를 변경해보세요</p>
             </motion.div>
           )}
         </div>

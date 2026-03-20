@@ -9,7 +9,7 @@ import Button from '@/components/ui/Button';
 import PickMascot from '@/components/ui/PickMascot';
 
 const inputClass = (hasError, isFocused) =>
-  `w-full bg-slate-50 dark:bg-slate-700 border-2 rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:bg-white dark:focus:bg-slate-600 transition-all duration-200 ${
+  `w-full bg-slate-50 dark:bg-slate-700 border-2 rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:bg-white dark:focus:bg-slate-600 transition-all duration-200 ${
     hasError
       ? 'border-red-300 focus:border-red-400 focus:shadow-[0_0_0_3px_rgba(239,68,68,0.1)]'
       : isFocused

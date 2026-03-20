@@ -5,7 +5,7 @@ import { QUIZ_DEFAULTS, QUIZ_EVENT_PRESETS } from '@/lib/quiz';
 const OPTION_LABELS = ['A', 'B', 'C', 'D', 'E'];
 const RANKING_LABELS = ['1', '2', '3', '4', '5', '6'];
 const GAP = 'pt-4';
-const INPUT = 'w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors';
+const INPUT = 'w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors';
 
 export function ChoiceOptionsSection({ options, setOptions, correctAnswer, setCorrectAnswer, setLocalError }) {
   function removeOption(index) {
@@ -92,7 +92,7 @@ export function RankingOptionsSection({ options, setOptions, setLocalError }) {
       exit={{ opacity: 0, height: 0 }} className={GAP}>
       <div className="flex items-baseline gap-2 mb-2">
         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">정답 순서</p>
-        <span className="text-[11px] text-slate-300">아래 순서가 정답입니다. 화살표로 조정하세요</span>
+        <span className="text-[11px] text-slate-400">아래 순서가 정답입니다. 화살표로 조정하세요</span>
       </div>
       <div className="rounded-xl border border-slate-200 dark:border-slate-600 p-3 space-y-2">
         {options.map((opt, i) => (
@@ -146,7 +146,7 @@ export function FillBlankSection({ title, correctAnswer, setCorrectAnswer, setLo
                     )}
                   </span>
                 ))
-              : <span className="text-slate-300">질문에 ___ 를 포함해주세요</span>}
+              : <span className="text-slate-400">질문에 ___ 를 포함해주세요</span>}
           </p>
         </div>
         <div>
@@ -190,7 +190,7 @@ export function QuizSettingsSection({ points, setPoints, event, setEvent, bettin
         exit={{ opacity: 0, height: 0 }} className={GAP}>
         <div className="flex items-baseline gap-2 mb-2">
           <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">점수 설정</p>
-          <span className="text-[11px] text-slate-300">(+속도 보너스 최대 {QUIZ_DEFAULTS.maxSpeedBonus}점)</span>
+          <span className="text-[11px] text-slate-400">(+속도 보너스 최대 {QUIZ_DEFAULTS.maxSpeedBonus}점)</span>
         </div>
         <div className="flex gap-1.5">
           {[50, 100, 200, 500].map((v) => (
@@ -227,7 +227,7 @@ export function QuizSettingsSection({ points, setPoints, event, setEvent, bettin
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">포인트 베팅</p>
-            <p className="text-[11px] text-slate-300 mt-0.5">학생이 배율을 선택 (1x/2x/3x)</p>
+            <p className="text-[11px] text-slate-400 mt-0.5">학생이 배율을 선택 (1x/2x/3x)</p>
           </div>
           <button onClick={() => setBetting(!betting)}
             className={`relative w-11 h-6 rounded-full transition-colors ${betting ? 'bg-slate-900 dark:bg-slate-100' : 'bg-slate-200 dark:bg-slate-600'}`}

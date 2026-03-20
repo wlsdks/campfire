@@ -31,8 +31,8 @@ function ElapsedTime({ startedAt, createdAt, status }) {
 
   return (
     <span className="inline-flex items-center gap-1 text-xs text-slate-400">
-      <span className="text-slate-200">&middot;</span>
-      <Clock size={12} className="text-slate-300" />
+      <span className="text-slate-300">&middot;</span>
+      <Clock size={12} className="text-slate-400" />
       <span>{formatElapsed(elapsed)}</span>
     </span>
   );
@@ -44,8 +44,8 @@ function ReviewingCountdown({ reviewingUntil }) {
   if (days <= 0) return null;
   return (
     <span className="inline-flex items-center gap-1 text-xs text-slate-400">
-      <span className="text-slate-200">&middot;</span>
-      <MessageSquareDot size={12} className="text-slate-300" />
+      <span className="text-slate-300">&middot;</span>
+      <MessageSquareDot size={12} className="text-slate-400" />
       <span>{days}일 후 자동 종료</span>
     </span>
   );
@@ -158,12 +158,12 @@ export default memo(function AdminSessionHeader({
             )}
             {questionProgress && (
               <span className="inline-flex items-center gap-1 text-xs text-slate-400">
-                {!isTablet && <span className="text-slate-200">&middot;</span>}
-                <Layers size={12} className="text-slate-300" />
+                {!isTablet && <span className="text-slate-300">&middot;</span>}
+                <Layers size={12} className="text-slate-400" />
                 {questionProgress.current ? (
                   <span>
                     <span className="font-semibold text-slate-600 dark:text-slate-300">{questionProgress.current}</span>
-                    <span className="text-slate-300 dark:text-slate-500">/{questionProgress.total}</span>
+                    <span className="text-slate-400 dark:text-slate-500">/{questionProgress.total}</span>
                   </span>
                 ) : (
                   <span>{questionProgress.total}개</span>

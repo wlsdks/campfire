@@ -116,7 +116,7 @@ export default memo(function DebateChart({ sessionId, questionId }) {
         </div>
         <div className="flex justify-between text-sm font-semibold">
           <span className="text-slate-700 dark:text-slate-200">{forPct}%</span>
-          <span className="text-slate-300 text-xs font-normal">총 {totalVotes}명</span>
+          <span className="text-slate-400 text-xs font-normal">총 {totalVotes}명</span>
           <span className="text-slate-500">{againstPct}%</span>
         </div>
       </motion.div>
@@ -186,7 +186,7 @@ export default memo(function DebateChart({ sessionId, questionId }) {
             </AnimatePresence>
 
             {filteredOpinions.length === 0 && (
-              <p className="text-center text-xs text-slate-300 py-4">
+              <p className="text-center text-xs text-slate-400 py-4">
                 {filter === 'all' ? '아직 작성된 의견이 없습니다' : `${filter === 'for' ? '찬성' : '반대'} 의견이 없습니다`}
               </p>
             )}

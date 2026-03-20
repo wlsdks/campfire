@@ -48,7 +48,7 @@ export default memo(function BetDistribution({ sessionId, questionId }) {
               <Icon size={16} className="text-slate-400 mx-auto mb-1.5" />
               <p className="text-lg font-bold text-slate-900 dark:text-slate-100">{count}</p>
               <p className="text-xs text-slate-400">{label}</p>
-              <p className="text-[10px] text-slate-300 mt-0.5">{pct}%</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">{pct}%</p>
             </motion.div>
           );
         })}

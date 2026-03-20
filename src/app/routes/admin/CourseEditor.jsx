@@ -223,9 +223,9 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
 
           {questionList.length === 0 && !showForm && (
             <div className="text-center py-12 space-y-1.5">
-              <BarChart3 size={24} className="text-slate-300 mx-auto" />
+              <BarChart3 size={24} className="text-slate-400 mx-auto" />
               <p className="text-slate-400 text-sm">아직 템플릿 질문이 없습니다</p>
-              <p className="text-slate-300 text-xs">위의 + 추가 버튼으로 질문을 만드세요</p>
+              <p className="text-slate-400 text-xs">위의 + 추가 버튼으로 질문을 만드세요</p>
             </div>
           )}
         </div>

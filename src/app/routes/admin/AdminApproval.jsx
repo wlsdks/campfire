@@ -159,7 +159,7 @@ export default function AdminApproval({ pendingAdmins, pendingCount, approveAdmi
           {/* List */}
           {pendingAdmins.length === 0 ? (
             <div className="text-center py-8">
-              <ShieldCheck size={32} className="text-slate-300 mx-auto mb-3" />
+              <ShieldCheck size={32} className="text-slate-400 mx-auto mb-3" />
               <p className="text-slate-400 text-sm">대기 중인 승인 요청이 없습니다</p>
             </div>
           ) : (

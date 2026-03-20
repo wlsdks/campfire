@@ -134,7 +134,7 @@ export default function TemplatePacks({ onImportPack }) {
       <div className="flex items-center gap-2 pt-2">
         <Package size={14} className="text-slate-400" />
         <h3 className="text-sm font-semibold text-slate-600 dark:text-slate-300">템플릿 팩</h3>
-        <span className="text-[11px] text-slate-300 dark:text-slate-500">바로 사용할 수 있는 질문 모음</span>
+        <span className="text-[11px] text-slate-400 dark:text-slate-500">바로 사용할 수 있는 질문 모음</span>
       </div>
       <div className="space-y-2.5">
         {TEMPLATE_PACKS.map((pack, i) => (

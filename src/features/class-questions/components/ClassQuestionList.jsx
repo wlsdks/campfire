@@ -88,7 +88,7 @@ function ClassQuestionList({ sessionId }) {
           >
             <div className="px-3.5 pb-3 space-y-1.5">
               {questions.length === 0 && (
-                <p className="text-slate-300 dark:text-slate-500 text-xs py-1">
+                <p className="text-slate-400 dark:text-slate-500 text-xs py-1">
                   학생 질문이 없습니다
                 </p>
               )}
