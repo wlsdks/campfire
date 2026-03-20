@@ -34,7 +34,7 @@ function TeamBar({ team, rank, maxScore, isLeading }) {
     <motion.div
       initial={{ opacity: 0, x: -20 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: rank * 0.08, type: 'spring', stiffness: 300, damping: 28 }}
+      transition={{ delay: rank * 0.08, type: 'spring', stiffness: 300, damping: 25 }}
       className="space-y-2"
     >
       <div className="flex items-center justify-between">
@@ -61,7 +61,7 @@ function TeamBar({ team, rank, maxScore, isLeading }) {
           className={`h-full rounded-lg ${team.colors.bar}`}
           initial={{ width: 0 }}
           animate={{ width: `${widthPct}%` }}
-          transition={{ type: 'spring', stiffness: 200, damping: 25, delay: rank * 0.08 + 0.15 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 20, delay: rank * 0.08 + 0.15 }}
         />
       </div>
       <p className="text-xs text-slate-400">

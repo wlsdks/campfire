@@ -101,12 +101,13 @@ export const shadows = {
 
 // ─── Motion ──────────────────────────────────────────
 export const motion = {
-  // Spring presets
+  // Spring presets — use ONLY these values across all files
   spring: {
     default: { type: 'spring', stiffness: 300, damping: 25 },
     gentle: { type: 'spring', stiffness: 200, damping: 20 },
     bouncy: { type: 'spring', stiffness: 400, damping: 22 },
     stiff: { type: 'spring', stiffness: 500, damping: 30 },
+    smooth: { type: 'spring', stiffness: 80, damping: 20 },  // progress bars, data viz
   },
   // Duration presets
   duration: {
@@ -123,9 +124,13 @@ export const motion = {
     in: [0.4, 0, 1, 1],
     out: [0, 0, 0.2, 1],
   },
+  // Entry y-offset presets
+  offset: { sm: 8, md: 12, lg: 20 },
   // Entry animations
   fadeIn: { initial: { opacity: 0 }, animate: { opacity: 1 } },
   slideUp: { initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0 } },
+  slideUpSm: { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 } },
+  slideUpLg: { initial: { opacity: 0, y: 20 }, animate: { opacity: 1, y: 0 } },
   slideDown: { initial: { opacity: 0, y: -12 }, animate: { opacity: 1, y: 0 } },
   scaleIn: { initial: { opacity: 0, scale: 0.95 }, animate: { opacity: 1, scale: 1 } },
   // Stagger

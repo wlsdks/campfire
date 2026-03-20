@@ -63,7 +63,7 @@ export default function ScaleVoter({ sessionId, questionId, disabled = false }) 
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 280, damping: 28 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className="w-full rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-5"
     >
       {/* Big centered value display */}
@@ -72,7 +72,7 @@ export default function ScaleVoter({ sessionId, questionId, disabled = false }) 
           key={value}
           initial={{ scale: 1.15, opacity: 0.7 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 22 }}
           className="text-5xl font-bold text-slate-900 tabular-nums"
         >
           {value}
@@ -89,7 +89,7 @@ export default function ScaleVoter({ sessionId, questionId, disabled = false }) 
               className={`h-full rounded-full ${getScaleColor(value)}`}
               initial={{ width: '50%' }}
               animate={{ width: `${value}%` }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             />
           </div>
 
@@ -113,7 +113,7 @@ export default function ScaleVoter({ sessionId, questionId, disabled = false }) 
             style={{ left: `calc(${value}% - 10px)` }}
             initial={false}
             animate={{ left: `calc(${value}% - 10px)` }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           >
             <div className={`w-5 h-5 rounded-full ${getScaleColor(value)} ring-2 ring-white shadow-md`} />
           </motion.div>

@@ -28,7 +28,7 @@ function StatItem({ icon: Icon, label, value, delay = 0 }) {
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 28, delay }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25, delay }}
       className="flex flex-col items-center gap-1 flex-1 min-w-0"
     >
       <Icon size={16} className="text-slate-400" />
@@ -45,7 +45,7 @@ function AchievementItem({ achievement, index }) {
     <motion.div
       initial={{ opacity: 0, x: -8 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 26, delay: 0.5 + index * 0.08 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.5 + index * 0.08 }}
       className="flex items-center gap-2.5 py-2"
     >
       <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center shrink-0">
@@ -108,7 +108,7 @@ export default function SessionSummaryCard({ session, sessionId, reviewing = fal
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ type: 'spring', stiffness: 280, damping: 28 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden"
       >
         {/* Header */}

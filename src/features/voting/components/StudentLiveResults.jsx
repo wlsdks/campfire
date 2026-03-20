@@ -29,9 +29,9 @@ export default memo(function StudentLiveResults({ sessionId, questionId, options
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.4, type: 'spring', stiffness: 300, damping: 28 }}
+      transition={{ delay: 0.4, type: 'spring', stiffness: 300, damping: 25 }}
       className="w-full rounded-xl border border-slate-200 bg-white p-4 shadow-sm space-y-3"
     >
       <div className="flex items-center justify-between">
@@ -80,7 +80,7 @@ export default memo(function StudentLiveResults({ sessionId, questionId, options
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.max(barWidth, count > 0 ? 3 : 0)}%` }}
-                  transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+                  transition={{ type: 'spring', stiffness: 80, damping: 20 }}
                   className={`h-full rounded-full ${
                     isMine ? 'bg-slate-800' : 'bg-slate-300'
                   }`}

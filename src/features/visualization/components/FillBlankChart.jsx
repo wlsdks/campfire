@@ -15,7 +15,7 @@ function SentenceDisplay({ title, correctAnswer, revealed }) {
             <motion.span
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 22, delay: 0.2 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.2 }}
               className={`inline-block mx-1 px-3 py-1 rounded-lg text-lg font-bold border-b-2 ${
                 revealed
                   ? 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100 border-slate-500'
@@ -109,14 +109,14 @@ export default memo(function FillBlankChart({ sessionId, questionId, title, corr
                   layout
                   initial={{ opacity: 0, x: -12 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 28, delay: i * 0.04 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 25, delay: i * 0.05 }}
                   className="flex items-center gap-3"
                 >
                   <div className="flex-1 min-w-0">
                     <div className="relative h-9 bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden">
                       <motion.div
                         animate={{ width: `${widthPct}%` }}
-                        transition={{ type: 'spring', stiffness: 80, damping: 22 }}
+                        transition={{ type: 'spring', stiffness: 80, damping: 20 }}
                         className={`absolute inset-y-0 left-0 rounded-lg ${
                           revealed && a.isCorrect ? 'bg-slate-800' : 'bg-slate-300'
                         }`}

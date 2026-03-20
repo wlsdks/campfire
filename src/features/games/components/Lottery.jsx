@@ -135,7 +135,7 @@ export default function Lottery({ participants, onResult }) {
               key={winner.id}
               initial={{ rotateY: 180, opacity: 0, scale: 0.5 }}
               animate={{ rotateY: 0, opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, type: 'spring', stiffness: 150, damping: 15 }}
+              transition={{ duration: 0.6, type: 'spring', stiffness: 200, damping: 20 }}
               className={`w-32 h-40 ${CARD_COLORS[i % CARD_COLORS.length]} rounded-xl flex flex-col items-center justify-center shadow-md`}
               style={{ perspective: 1000 }}
             >

@@ -147,7 +147,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
                   <motion.div
                     layoutId="tab-indicator"
                     className="absolute inset-0 bg-slate-900 dark:bg-slate-100 rounded-lg"
-                    transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 22 }}
                   />
                 )}
                 <span className="relative z-10">{tab.label}</span>

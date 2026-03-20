@@ -164,7 +164,7 @@ export default function StudentBottomBar({ sessionId }) {
       <motion.div
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 260, damping: 28, delay: 0.1 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
         role="toolbar"
         aria-label="참여 도구"
         className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 z-30">
@@ -173,7 +173,7 @@ export default function StudentBottomBar({ sessionId }) {
         <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
           <div className="grid grid-cols-4 gap-2.5">
             <motion.button
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.96 }}
               onClick={toggleHand}
               aria-pressed={isRaised}
               className={`h-14 rounded-xl font-medium text-sm transition-all flex flex-col items-center justify-center gap-0.5 ${
@@ -186,7 +186,7 @@ export default function StudentBottomBar({ sessionId }) {
               <span className="text-[11px]">{isRaised ? '내리기' : '손들기'}</span>
             </motion.button>
             <motion.button
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.96 }}
               onClick={() => setShowQuestionInput(true)}
               className="h-14 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 transition-all flex flex-col items-center justify-center gap-0.5"
             >
@@ -194,7 +194,7 @@ export default function StudentBottomBar({ sessionId }) {
               <span className="text-[11px]">긴급</span>
             </motion.button>
             <motion.button
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.96 }}
               onClick={handleOpenQA}
               className="h-14 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 transition-all flex flex-col items-center justify-center gap-0.5 relative"
             >
@@ -205,7 +205,7 @@ export default function StudentBottomBar({ sessionId }) {
               )}
             </motion.button>
             <motion.button
-              whileTap={{ scale: 0.95 }}
+              whileTap={{ scale: 0.96 }}
               onClick={handleOpenChat}
               className="h-14 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 transition-all flex flex-col items-center justify-center gap-0.5 relative"
             >

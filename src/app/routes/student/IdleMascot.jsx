@@ -31,7 +31,7 @@ export default function IdleMascot() {
   const runAction = useCallback(async (action) => {
     if (busyRef.current) return;
     busyRef.current = true;
-    const s = { type: 'spring', stiffness: 300, damping: 24 };
+    const s = { type: 'spring', stiffness: 300, damping: 25 };
 
     try {
       switch (action) {
@@ -131,7 +131,7 @@ export default function IdleMascot() {
       animate={{ opacity: 1, scale: 1 }}
       transition={{
         opacity: { duration: 0.4, ease: 'easeOut' },
-        scale: { type: 'spring', stiffness: 260, damping: 22 },
+        scale: { type: 'spring', stiffness: 300, damping: 25 },
       }}
     >
       <motion.svg

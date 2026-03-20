@@ -75,7 +75,7 @@ export default function JoinPage({ sessionId, onJoin }) {
       <motion.form
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         onSubmit={handleJoin}
         className="w-full max-w-xl"
       >
@@ -85,7 +85,7 @@ export default function JoinPage({ sessionId, onJoin }) {
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 24, delay: 0.1 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
               className="flex justify-center mb-1"
             >
               <PickMascot size="sm" />
@@ -108,14 +108,14 @@ export default function JoinPage({ sessionId, onJoin }) {
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
                 exit={{ opacity: 0, height: 0 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                 className="overflow-hidden"
               >
                 <div className="flex justify-center pb-1">
                   <motion.div
                     initial={{ scale: 0.9 }}
                     animate={{ scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 26 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                     className="flex items-center gap-2.5 bg-slate-50 dark:bg-slate-700 rounded-full py-1.5 pl-1.5 pr-4"
                   >
                     <Avatar name={trimmed} size="md" />

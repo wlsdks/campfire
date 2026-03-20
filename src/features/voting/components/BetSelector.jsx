@@ -24,7 +24,7 @@ export default function BetSelector({ onSelect }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -12 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className="w-full space-y-4"
     >
       <div className="text-center space-y-1">
@@ -48,10 +48,10 @@ export default function BetSelector({ onSelect }) {
                 scale: isSelected ? 0.97 : 1,
               }}
               transition={{
-                delay: index * 0.06,
+                delay: index * 0.05,
                 type: 'spring',
                 stiffness: 300,
-                damping: 26,
+                damping: 25,
               }}
               whileTap={{ scale: 0.96 }}
               onClick={() => handleSelect(option.multiplier)}

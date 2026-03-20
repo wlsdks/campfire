@@ -95,7 +95,7 @@ export default memo(function ScaleChart({ sessionId, questionId }) {
               className="h-full bg-slate-700 dark:bg-slate-300 rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${stats.avg}%` }}
-              transition={{ type: 'spring', stiffness: 80, damping: 22 }}
+              transition={{ type: 'spring', stiffness: 80, damping: 20 }}
             />
           </div>
           {/* Edge labels */}
@@ -138,7 +138,7 @@ export default memo(function ScaleChart({ sessionId, questionId }) {
                     <motion.span
                       initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.04 }}
+                      transition={{ delay: i * 0.05 }}
                       className="text-[10px] font-semibold text-slate-500 tabular-nums"
                     >
                       {count}
@@ -147,7 +147,7 @@ export default memo(function ScaleChart({ sessionId, questionId }) {
                   <motion.div
                     initial={{ height: 0 }}
                     animate={{ height: `${Math.max(heightPct, count > 0 ? 8 : 2)}%` }}
-                    transition={{ type: 'spring', stiffness: 100, damping: 18, delay: i * 0.04 }}
+                    transition={{ type: 'spring', stiffness: 80, damping: 20, delay: i * 0.05 }}
                     className={`w-full rounded-t-md ${count > 0 ? getBarColor(i) : 'bg-slate-100'}`}
                     style={{ minHeight: count > 0 ? '4px' : '2px' }}
                   />

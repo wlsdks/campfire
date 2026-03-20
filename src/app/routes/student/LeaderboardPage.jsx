@@ -22,7 +22,7 @@ function MyRankCard({ rank, entry, total }) {
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm p-5"
     >
       {/* Rank number hero */}
@@ -30,7 +30,7 @@ function MyRankCard({ rank, entry, total }) {
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: 'spring', stiffness: 340, damping: 22, delay: 0.1 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 22, delay: 0.1 }}
         >
           <span className="text-5xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">{rank}</span>
           <span className="text-lg font-bold text-slate-400 ml-0.5">위</span>
@@ -82,7 +82,7 @@ function StickyMyRank({ rank, entry, total }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 26 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           className="fixed bottom-[120px] left-1/2 -translate-x-1/2 z-20 w-[calc(100%-2rem)] max-w-xl"
         >
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md px-4 py-3 flex items-center gap-3">
@@ -134,7 +134,7 @@ export default function LeaderboardPage({ sessionId }) {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm p-4"
           >
             <TeamScoreboard teamScores={teamScores} title="팀 대항전" />

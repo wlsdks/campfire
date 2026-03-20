@@ -25,7 +25,7 @@ export default memo(function SpeedQuizCombo({ streak = 0 }) {
             key={streak}
             initial={{ scale: 1.15 }}
             animate={{ scale: 1 }}
-            transition={{ type: 'spring', stiffness: 500, damping: 18 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border shadow-sm ${
               combo.level >= 3
                 ? 'bg-slate-900 text-white border-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:border-slate-200'

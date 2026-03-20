@@ -56,9 +56,9 @@ function AnswerDistribution({ sessionId, questionId, correctAnswer }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.4, type: 'spring', stiffness: 300, damping: 28 }}
+      transition={{ delay: 0.4, type: 'spring', stiffness: 300, damping: 25 }}
       className="w-full rounded-xl border border-slate-200 bg-white p-4 shadow-sm space-y-3"
     >
       <div className="flex items-center justify-between">
@@ -78,7 +78,7 @@ function AnswerDistribution({ sessionId, questionId, correctAnswer }) {
           <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
             <motion.div
               animate={{ width: `${correctPct}%` }}
-              transition={{ type: 'spring', stiffness: 80, damping: 22 }}
+              transition={{ type: 'spring', stiffness: 80, damping: 20 }}
               className="h-full bg-slate-700 rounded-full"
             />
           </div>
@@ -141,7 +141,7 @@ export default function FillBlankVoter({ sessionId, questionId, title, correctAn
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 280, damping: 28 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className="w-full space-y-4"
     >
       {/* Sentence with blank */}

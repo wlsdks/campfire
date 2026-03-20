@@ -118,7 +118,7 @@ export default function RankingVoter({ sessionId, questionId, options = [], disa
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 280, damping: 28 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className="w-full rounded-xl border border-slate-200 bg-white p-4 shadow-sm space-y-4"
     >
       <p className="text-xs text-slate-400 text-center">

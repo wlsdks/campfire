@@ -27,7 +27,7 @@ export default memo(function StreakBadge({ streak = 0, compact = false }) {
             key={streak}
             initial={{ scale: 1.2 }}
             animate={{ scale: 1 }}
-            transition={{ type: 'spring', stiffness: 500, damping: 18 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
             className={`inline-flex items-center gap-1.5 rounded-full border shadow-sm ${
               compact ? 'px-2.5 py-1' : 'px-3.5 py-1.5'
             } ${

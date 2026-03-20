@@ -168,9 +168,9 @@ export default function VotePage({ sessionId }) {
           {/* Question header */}
           <motion.div
             key={`header-${currentQId}`}
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6"
           >
             {questionProgress && (
@@ -183,7 +183,7 @@ export default function VotePage({ sessionId }) {
                     className="h-full bg-slate-300 rounded-full"
                     initial={{ width: 0 }}
                     animate={{ width: `${(questionProgress.current / questionProgress.total) * 100}%` }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 30, delay: 0.15 }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.15 }}
                   />
                 </div>
               </div>
@@ -214,9 +214,9 @@ export default function VotePage({ sessionId }) {
 
           {question.type === 'quiz' && question.event && (
             <motion.div
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 28, delay: 0.04 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.04 }}
             >
               <QuizEventBanner event={question.event} state={question.revealedAt ? 'result' : 'active'} />
             </motion.div>
@@ -226,9 +226,9 @@ export default function VotePage({ sessionId }) {
           <ErrorBoundary scope="voter" fullPage={false}>
             <motion.div
               key={`voter-${currentQId}`}
-              initial={{ opacity: 0, y: 14 }}
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ type: 'spring', stiffness: 280, damping: 28, delay: 0.08 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.08 }}
               className="relative"
             >
               {question.type === 'choice' && (

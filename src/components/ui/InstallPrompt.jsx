@@ -62,10 +62,10 @@ export default function InstallPrompt() {
     <AnimatePresence>
       {showBanner && (
         <motion.div
-          initial={{ opacity: 0, y: 60 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 60 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+          exit={{ opacity: 0, y: 20 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           className="fixed bottom-20 left-4 right-4 z-40 bg-slate-900 text-white rounded-xl shadow-lg p-4 flex items-center gap-3 max-w-md mx-auto"
         >
           <div className="flex-shrink-0 w-9 h-9 bg-white/10 rounded-lg flex items-center justify-center">

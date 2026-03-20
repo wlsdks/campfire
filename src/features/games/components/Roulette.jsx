@@ -119,7 +119,7 @@ export default function Roulette({ participants, onResult }) {
         <motion.div
           initial={{ scale: 0, y: 12 }}
           animate={{ scale: 1, y: 0 }}
-          transition={{ type: 'spring', stiffness: 250, damping: 18 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 20 }}
           className="text-center space-y-1"
         >
           <div className="text-4xl font-bold text-slate-900">{winner}</div>

@@ -11,7 +11,7 @@ export default function CelebrationMascot() {
       aria-hidden="true"
       initial={{ opacity: 0, scale: 0.7 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 22, delay: 0.1 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
     >
       {/* Body */}
       <circle cx="60" cy="68" r="32" fill="#1E293B" />

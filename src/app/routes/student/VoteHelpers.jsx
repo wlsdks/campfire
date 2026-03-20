@@ -45,7 +45,7 @@ export function TimerExpiredOverlay() {
       <motion.div
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 22, delay: 0.1 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
         className="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center"
       >
         <Clock size={22} className="text-white" />

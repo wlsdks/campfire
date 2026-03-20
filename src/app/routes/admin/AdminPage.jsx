@@ -102,7 +102,7 @@ export default function AdminPage() {
             {s.sidebarCollapsed && (
               <motion.button initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -8 }}
                 transition={{ duration: 0.15 }} onClick={s.handleCollapseOpen}
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 border-l-0 rounded-r-xl p-3 shadow-md text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-all active:scale-95"
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 border-l-0 rounded-r-xl p-3 shadow-md text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-all active:scale-[0.96]"
                 aria-label="사이드바 열기">
                 <PanelLeftOpen size={22} />
               </motion.button>

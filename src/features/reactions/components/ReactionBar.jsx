@@ -52,7 +52,7 @@ const ReactionButton = memo(function ReactionButton({ reaction, isFlash, onTap }
   return (
     <div className="relative">
       <motion.button
-        whileTap={{ scale: 0.8 }}
+        whileTap={{ scale: 0.9 }}
         animate={isFlash ? {
           scale: [1, 1.15, 1],
           rotate: [0, -6, 6, 0],

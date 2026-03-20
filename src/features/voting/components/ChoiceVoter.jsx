@@ -67,7 +67,7 @@ export default function ChoiceVoter({ sessionId, questionId, options, disabled =
               scale: isSelected ? [0.97, 1.02, 1] : 1,
             }}
             transition={isSelected
-              ? { scale: { type: 'spring', stiffness: 400, damping: 15 }, opacity: { duration: 0.2 } }
+              ? { scale: { type: 'spring', stiffness: 400, damping: 22 }, opacity: { duration: 0.2 } }
               : { delay: hasSelection ? 0 : i * 0.05, duration: 0.25, ease: 'easeOut' }
             }
             whileTap={!hasSelection ? { scale: 0.97 } : undefined}

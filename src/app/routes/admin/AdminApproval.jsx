@@ -35,7 +35,7 @@ function PendingAdminRow({ admin, onApprove, onReject, index }) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8, height: 0, marginBottom: 0 }}
-      transition={{ duration: 0.25, delay: index * 0.04 }}
+      transition={{ duration: 0.25, delay: index * 0.05 }}
       className="flex items-center justify-between p-4 rounded-xl bg-slate-50"
     >
       <div className="flex items-center gap-3 min-w-0">
@@ -126,7 +126,7 @@ export default function AdminApproval({ pendingAdmins, pendingCount, approveAdmi
       {/* Trigger button */}
       <button
         onClick={() => setOpen(true)}
-        className="relative flex items-center gap-1.5 text-slate-400 hover:text-slate-600 text-sm transition-all active:scale-95"
+        className="relative flex items-center gap-1.5 text-slate-400 hover:text-slate-600 text-sm transition-all active:scale-[0.96]"
         aria-label="관리자 승인 관리"
       >
         <ShieldCheck size={18} />

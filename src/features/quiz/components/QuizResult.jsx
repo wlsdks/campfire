@@ -25,7 +25,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 280, damping: 28 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className="w-full rounded-xl border border-slate-200 bg-white px-5 py-8 shadow-sm overflow-hidden relative"
     >
       {isCorrect && <ConfettiBurst />}
@@ -34,7 +34,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.12, type: 'spring', stiffness: 340, damping: 22 }}
+            transition={{ delay: 0.12, type: 'spring', stiffness: 400, damping: 22 }}
           >
             {isCorrect
               ? <Check size={36} className="text-slate-800" strokeWidth={2.5} />
@@ -59,7 +59,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
           <motion.div
             initial={{ opacity: 0, scale: 0.6 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.15, type: 'spring', stiffness: 400, damping: 20 }}
+            transition={{ delay: 0.15, type: 'spring', stiffness: 400, damping: 22 }}
             className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border shadow-sm ${
               streak >= 5
                 ? 'bg-slate-900 text-white border-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:border-slate-200'
@@ -88,7 +88,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.18, type: 'spring', stiffness: 300, damping: 26 }}
+            transition={{ delay: 0.18, type: 'spring', stiffness: 300, damping: 25 }}
             className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold"
           >
             {bet}x 베팅
@@ -99,9 +99,9 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
           <div className="flex items-center justify-center gap-6 pt-2">
             {points !== 0 && (
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25, type: 'spring', stiffness: 300, damping: 26 }}
+                transition={{ delay: 0.25, type: 'spring', stiffness: 300, damping: 25 }}
                 className="text-center"
               >
                 <p className="text-xs font-medium text-slate-400">점수</p>
@@ -120,9 +120,9 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
             )}
             {tickets > 0 && (
               <motion.div
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.32, type: 'spring', stiffness: 300, damping: 26 }}
+                transition={{ delay: 0.32, type: 'spring', stiffness: 300, damping: 25 }}
                 className="text-center"
               >
                 <p className="text-xs font-medium text-slate-400 flex items-center justify-center gap-1">

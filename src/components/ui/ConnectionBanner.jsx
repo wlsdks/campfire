@@ -17,7 +17,7 @@ export default function ConnectionBanner() {
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
-          transition={{ type: 'spring', stiffness: 340, damping: 28 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           className="fixed top-14 left-0 right-0 z-10"
         >
           <div

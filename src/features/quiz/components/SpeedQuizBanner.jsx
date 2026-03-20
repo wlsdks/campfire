@@ -11,7 +11,7 @@ export default memo(function SpeedQuizBanner({ currentIndex, totalQuestions }) {
     <motion.div
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 26 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className="bg-slate-900 text-white rounded-xl px-4 py-3 flex items-center justify-between"
     >
       <div className="flex items-center gap-2">

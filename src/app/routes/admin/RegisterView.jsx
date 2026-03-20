@@ -98,12 +98,12 @@ export default function RegisterView({ onLogin, onSwitchToLogin }) {
         <Card className="p-8 space-y-5 overflow-visible">
           <motion.div className="flex justify-center -mt-20 mb-2"
             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ type: 'spring', stiffness: 200, damping: 18 }}>
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}>
             <PickMascot size="lg" />
           </motion.div>
           <div className="text-center space-y-3">
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 20, delay: 0.2 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.2 }}
               className="w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mx-auto">
               <UserPlus size={24} className="text-slate-600 dark:text-slate-300" />
             </motion.div>
@@ -127,7 +127,7 @@ export default function RegisterView({ onLogin, onSwitchToLogin }) {
       <Card className="p-8 space-y-5 overflow-visible">
         <motion.div className="flex justify-center -mt-20 mb-2"
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ type: 'spring', stiffness: 200, damping: 18 }}>
+          transition={{ type: 'spring', stiffness: 200, damping: 20 }}>
           <PickMascot size="lg" />
         </motion.div>
 

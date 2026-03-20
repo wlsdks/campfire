@@ -50,9 +50,9 @@ export default function StudentHeader({ sessionId }) {
   return (
     <>
       <motion.header
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         aria-label="Pick 학생 헤더"
         className="fixed top-0 left-0 right-0 z-20 bg-white/92 dark:bg-slate-800/92 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700"
       >
@@ -68,7 +68,7 @@ export default function StudentHeader({ sessionId }) {
                 key="score"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                 className="text-sm font-medium text-slate-500 flex items-center gap-1"
               >
                 <Trophy size={14} className="text-slate-500" />

@@ -29,9 +29,9 @@ function DebateLiveRatio({ sessionId, questionId, mySide }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.4, type: 'spring', stiffness: 300, damping: 28 }}
+      transition={{ delay: 0.4, type: 'spring', stiffness: 300, damping: 25 }}
       className="w-full rounded-xl border border-slate-200 bg-white p-4 shadow-sm space-y-3"
     >
       <div className="flex items-center justify-between">
@@ -47,12 +47,12 @@ function DebateLiveRatio({ sessionId, questionId, mySide }) {
         <div className="h-3 bg-slate-100 rounded-full overflow-hidden flex">
           <motion.div
             animate={{ width: `${forPct}%` }}
-            transition={{ type: 'spring', stiffness: 80, damping: 22 }}
+            transition={{ type: 'spring', stiffness: 80, damping: 20 }}
             className="bg-slate-800 h-full rounded-l-full"
           />
           <motion.div
             animate={{ width: `${againstPct}%` }}
-            transition={{ type: 'spring', stiffness: 80, damping: 22 }}
+            transition={{ type: 'spring', stiffness: 80, damping: 20 }}
             className="bg-slate-300 h-full rounded-r-full"
           />
         </div>
@@ -115,7 +115,7 @@ export default function DebateVoter({ sessionId, questionId, disabled = false })
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 280, damping: 28 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className="w-full space-y-3"
     >
       {/* Side selection */}
@@ -155,7 +155,7 @@ export default function DebateVoter({ sessionId, questionId, disabled = false })
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             className="overflow-hidden space-y-3"
           >
             <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm space-y-3">

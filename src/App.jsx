@@ -50,15 +50,15 @@ function StudentRouter() {
     return (
       <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           className="text-center space-y-5 max-w-xs"
         >
           <motion.div
             initial={{ scale: 0.85, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 260, damping: 22, delay: 0.1 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
             className="flex justify-center"
           >
             <PickMascot size="lg" mood="waiting" />

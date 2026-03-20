@@ -35,7 +35,7 @@ export default memo(function WordCloud({ sessionId, questionId }) {
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ type: 'spring', stiffness: 250, damping: 18, delay: i * 0.03 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 20, delay: i * 0.03 }}
               style={{
                 fontSize: getFontSize(word.count),
                 color: COLORS[i % COLORS.length],

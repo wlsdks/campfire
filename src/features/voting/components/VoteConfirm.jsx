@@ -8,7 +8,7 @@ function AnimatedCheck() {
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 22 }}
         className="absolute inset-0 bg-slate-900 dark:bg-slate-100 rounded-full"
       />
       {/* White checkmark draws */}
@@ -51,7 +51,7 @@ export default function VoteConfirm({
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 280, damping: 28 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 py-8 shadow-sm"
     >
       <div className="flex flex-col items-center gap-4">

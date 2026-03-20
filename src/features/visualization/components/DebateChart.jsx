@@ -105,12 +105,12 @@ export default memo(function DebateChart({ sessionId, questionId }) {
         <div className="h-6 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden flex">
           <motion.div
             animate={{ width: `${forPct}%` }}
-            transition={{ type: 'spring', stiffness: 60, damping: 22 }}
+            transition={{ type: 'spring', stiffness: 80, damping: 20 }}
             className="bg-slate-800 h-full rounded-l-full"
           />
           <motion.div
             animate={{ width: `${againstPct}%` }}
-            transition={{ type: 'spring', stiffness: 60, damping: 22 }}
+            transition={{ type: 'spring', stiffness: 80, damping: 20 }}
             className="bg-slate-300 h-full rounded-r-full"
           />
         </div>
@@ -166,7 +166,7 @@ export default memo(function DebateChart({ sessionId, questionId }) {
                   initial={{ opacity: 0, x: op.side === 'for' ? -12 : 12 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                   className={`flex items-start gap-2.5 py-2 px-3 rounded-lg ${
                     op.side === 'for' ? 'bg-slate-50 dark:bg-slate-700' : 'bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700'
                   }`}

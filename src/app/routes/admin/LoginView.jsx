@@ -86,7 +86,7 @@ export default function LoginView({ onLogin, onSwitchToRegister }) {
       <Card className="p-10 space-y-6 overflow-visible">
         <motion.div className="flex justify-center -mt-20 mb-4"
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ type: 'spring', stiffness: 200, damping: 18 }}>
+          transition={{ type: 'spring', stiffness: 200, damping: 20 }}>
           <PickMascot size="lg" />
         </motion.div>
 

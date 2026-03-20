@@ -100,7 +100,7 @@ export default function QuizVoter({ sessionId, questionId, question, renderResul
             key="options"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             className="space-y-4"
           >
             <p className="text-xs text-slate-400 text-center">
@@ -118,17 +118,17 @@ export default function QuizVoter({ sessionId, questionId, question, renderResul
                 return (
                   <motion.button
                     key={option}
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 12 }}
                     animate={{
                       opacity: selected !== null && !isSelected ? 0.4 : 1,
                       y: 0,
                       scale: isSelected ? 0.98 : 1,
                     }}
                     transition={{
-                      delay: index * 0.04,
+                      delay: index * 0.05,
                       type: 'spring',
                       stiffness: 300,
-                      damping: 26,
+                      damping: 25,
                     }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => handleVote(option)}

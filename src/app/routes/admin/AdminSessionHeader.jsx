@@ -184,7 +184,7 @@ export default memo(function AdminSessionHeader({
         {!effectiveReadOnly && (
           <button
             onClick={onChatToggle}
-            className="flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95"
+            className="flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all active:scale-[0.96]"
             aria-label={chatOpen ? '채팅 닫기' : '채팅 열기'}
             aria-pressed={chatOpen}
           >
@@ -197,7 +197,7 @@ export default memo(function AdminSessionHeader({
           <div className="relative" ref={timerRef}>
             <button
               onClick={() => setTimerOpen(!timerOpen)}
-              className={`flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg transition-all active:scale-95 ${
+              className={`flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg transition-all active:scale-[0.96] ${
                 timerRunning ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700'
               }`}
               aria-label={timerRunning ? '타이머 진행 중 - 설정 열기' : '타이머 설정'}
@@ -232,7 +232,7 @@ export default memo(function AdminSessionHeader({
         {isTablet && onRightDrawer ? (
           <button
             onClick={onRightDrawer}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all active:scale-95"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all active:scale-[0.96]"
             aria-label="참여자 패널 열기"
           >
             <Users size={18} />
