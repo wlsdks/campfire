@@ -78,6 +78,12 @@ export default function QuestionManager({
         questionData.options = cleanOptions;
         questionData.correctAnswer = cleanOptions.includes(correctAnswer) ? correctAnswer : cleanOptions[0];
       }
+      if (type === 'ranking') {
+        // For ranking, options are stored in correct order.
+        // correctAnswer stores the correct order as comma-separated indices.
+        questionData.options = cleanOptions;
+        questionData.correctAnswer = cleanOptions.map((_, i) => String(i)).join(',');
+      }
       if (type === 'ox') {
         questionData.correctAnswer = correctAnswer || 'O';
       }

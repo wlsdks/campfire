@@ -26,6 +26,10 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
     if (isChoiceLike) {
       questionData.options = cleanOptions;
     }
+    if (type === 'ranking') {
+      questionData.options = cleanOptions;
+      questionData.correctAnswer = cleanOptions.map((_, i) => String(i)).join(',');
+    }
     if (type === 'quiz') {
       questionData.correctAnswer = cleanOptions.includes(correctAnswer) ? correctAnswer : cleanOptions[0];
       questionData.points = QUIZ_DEFAULTS.points;

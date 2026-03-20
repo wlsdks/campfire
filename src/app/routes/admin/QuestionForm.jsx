@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Check, AlertCircle } from 'lucide-react';
+import { Plus, Trash2, Check, AlertCircle, ArrowUp, ArrowDown } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { QUIZ_DEFAULTS, QUIZ_EVENT_PRESETS } from '@/lib/quiz';
 import { QUESTION_TYPES } from '@/lib/question-types';
 
 const OPTION_LABELS = ['A', 'B', 'C', 'D', 'E'];
+const RANKING_LABELS = ['1', '2', '3', '4', '5', '6'];
 const GAP = 'pt-4'; // 모든 섹션 간 동일한 간격
 
 const INPUT = 'w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm placeholder:text-slate-300 focus:outline-none focus:border-slate-400 transition-colors';
@@ -21,6 +22,16 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
   const [localError, setLocalError] = useState(null);
 
   const isChoiceLike = type === 'choice' || type === 'quiz';
+  const isRanking = type === 'ranking';
+
+  // For ranking: move item up/down to set correct order
+  function moveRankingItem(index, direction) {
+    const next = [...options];
+    const swapIdx = direction === 'up' ? index - 1 : index + 1;
+    if (swapIdx < 0 || swapIdx >= next.length) return;
+    [next[index], next[swapIdx]] = [next[swapIdx], next[index]];
+    setOptions(next);
+  }
 
   async function handleAdd() {
     if (!title.trim()) {
@@ -30,6 +41,10 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
     const cleanOptions = options.filter((o) => o.trim());
     if (isChoiceLike && cleanOptions.length < 2) {
       setLocalError('최소 2개의 선택지가 필요합니다.');
+      return;
+    }
+    if (isRanking && cleanOptions.length < 3) {
+      setLocalError('순위 맞추기는 최소 3개 항목이 필요합니다.');
       return;
     }
     if ((type === 'quiz' || type === 'choice') && !correctAnswer) {
@@ -74,7 +89,14 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
             return (
               <button
                 key={t.value}
-                onClick={() => { setType(t.value); setLocalError(null); }}
+                onClick={() => {
+                  setType(t.value);
+                  setLocalError(null);
+                  // Reset options count for ranking (minimum 3)
+                  if (t.value === 'ranking' && options.length < 3) {
+                    setOptions(['', '', '']);
+                  }
+                }}
                 className={`flex-1 flex flex-col items-center justify-center gap-1.5 py-4 rounded-lg border transition-all active:scale-[0.96] ${
                   selected
                     ? 'bg-slate-900 text-white border-slate-900 shadow-sm'
@@ -149,6 +171,79 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
                   className="w-full py-2.5 rounded-xl border border-dashed border-slate-200 text-slate-400 text-sm hover:border-slate-300 hover:text-slate-500 transition-all active:scale-[0.98] flex items-center justify-center gap-1.5"
                 >
                   <Plus size={14} /> 선택지 추가
+                </button>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* 순위 항목 (ranking) */}
+      <AnimatePresence>
+        {isRanking && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className={GAP}
+          >
+            <div className="flex items-baseline gap-2 mb-2">
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">정답 순서</p>
+              <span className="text-[11px] text-slate-300">아래 순서가 정답입니다. 화살표로 조정하세요</span>
+            </div>
+            <div className="rounded-xl border border-slate-200 p-3 space-y-2">
+              {options.map((opt, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <span className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-sm font-bold text-slate-500 shrink-0">
+                    {RANKING_LABELS[i]}
+                  </span>
+                  <input
+                    value={opt}
+                    onChange={(e) => {
+                      const next = [...options];
+                      next[i] = e.target.value;
+                      setOptions(next);
+                      setLocalError(null);
+                    }}
+                    placeholder={`${i + 1}번째 항목`}
+                    aria-label={`순위 ${i + 1}번째 항목`}
+                    className={`flex-1 ${INPUT} py-2.5`}
+                  />
+                  <div className="flex flex-col gap-0.5 shrink-0">
+                    <button
+                      onClick={() => moveRankingItem(i, 'up')}
+                      disabled={i === 0}
+                      className="p-1 rounded text-slate-300 hover:text-slate-600 disabled:opacity-30 transition-all active:scale-90"
+                      aria-label="위로 이동"
+                    >
+                      <ArrowUp size={12} />
+                    </button>
+                    <button
+                      onClick={() => moveRankingItem(i, 'down')}
+                      disabled={i === options.length - 1}
+                      className="p-1 rounded text-slate-300 hover:text-slate-600 disabled:opacity-30 transition-all active:scale-90"
+                      aria-label="아래로 이동"
+                    >
+                      <ArrowDown size={12} />
+                    </button>
+                  </div>
+                  {options.length > 3 && (
+                    <button
+                      onClick={() => removeOption(i)}
+                      className="p-1.5 rounded-lg text-slate-300 hover:text-red-500 transition-all active:scale-90"
+                      aria-label="항목 삭제"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  )}
+                </div>
+              ))}
+              {options.length < 6 && (
+                <button
+                  onClick={() => setOptions([...options, ''])}
+                  className="w-full py-2.5 rounded-xl border border-dashed border-slate-200 text-slate-400 text-sm hover:border-slate-300 hover:text-slate-500 transition-all active:scale-[0.98] flex items-center justify-center gap-1.5"
+                >
+                  <Plus size={14} /> 항목 추가
                 </button>
               )}
             </div>

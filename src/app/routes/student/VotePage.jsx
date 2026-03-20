@@ -6,6 +6,7 @@ import QuizVoter from '@/features/voting/components/QuizVoter';
 import TextInput from '@/features/voting/components/TextInput';
 import ScaleVoter from '@/features/voting/components/ScaleVoter';
 import DebateVoter from '@/features/voting/components/DebateVoter';
+import RankingVoter from '@/features/voting/components/RankingVoter';
 import WaitingPage from './WaitingPage';
 import LeaderboardPage from './LeaderboardPage';
 import SessionEndedPage from './SessionEndedPage';
@@ -226,6 +227,9 @@ export default function VotePage({ sessionId }) {
               )}
               {question.type === 'debate' && (
                 <DebateVoter sessionId={sessionId} questionId={currentQId} disabled={timerExpired} />
+              )}
+              {question.type === 'ranking' && (
+                <RankingVoter sessionId={sessionId} questionId={currentQId} options={question.options || []} disabled={timerExpired} />
               )}
 
               {/* Time's up overlay */}

@@ -66,6 +66,7 @@ const QTYPE_LABELS = {
   qna: 'Q&A',
   scale: '감정 온도계',
   debate: '찬반 토론',
+  ranking: '순위 맞추기',
 };
 
 /**

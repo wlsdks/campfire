@@ -1,4 +1,4 @@
-import { BarChart3, Circle, Cloud, MessageSquare, Swords, Thermometer, Trophy } from 'lucide-react';
+import { ArrowUpDown, BarChart3, Circle, Cloud, MessageSquare, Swords, Thermometer, Trophy } from 'lucide-react';
 
 /**
  * Canonical question type definitions.
@@ -13,6 +13,7 @@ export const QUESTION_TYPES = [
   { value: 'qna', label: 'Q&A', icon: MessageSquare },
   { value: 'scale', label: '감정 온도계', icon: Thermometer },
   { value: 'debate', label: '찬반 토론', icon: Swords },
+  { value: 'ranking', label: '순위 맞추기', icon: ArrowUpDown },
 ];
 
 /**

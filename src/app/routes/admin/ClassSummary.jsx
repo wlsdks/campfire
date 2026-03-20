@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react';
-import { BarChart3, Trophy, Circle, Cloud, MessageSquare, Swords, Thermometer, AlertTriangle } from 'lucide-react';
+import { ArrowUpDown, BarChart3, Trophy, Circle, Cloud, MessageSquare, Swords, Thermometer, AlertTriangle } from 'lucide-react';
 import AchievementSummary from '@/features/quiz/components/AchievementSummary';
 import ExportMenu from './ExportMenu';
 
@@ -11,6 +11,7 @@ const QTYPE_META = {
   qna: { label: 'Q&A', icon: MessageSquare },
   scale: { label: '감정 온도계', icon: Thermometer },
   debate: { label: '찬반 토론', icon: Swords },
+  ranking: { label: '순위 맞추기', icon: ArrowUpDown },
 };
 
 function getQuestionInsights(questions, participantCount) {

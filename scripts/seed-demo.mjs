@@ -161,6 +161,31 @@ function makeDebateVotes(participantIds, participants, forRatio = 0.6, voteRatio
   return votes;
 }
 
+/**
+ * Generate ranking votes. Value format: comma-separated item indices (e.g. "2,0,3,1").
+ * Items are stored in correct order (0,1,2,...), so correct answer is "0,1,2,...".
+ * Students' answers are shuffled from correct with varying accuracy.
+ */
+function makeRankingVotes(participantIds, participants, itemCount, voteRatio = 0.85) {
+  const votes = {};
+  const votingIds = participantIds.filter(() => Math.random() < voteRatio);
+  const correct = Array.from({ length: itemCount }, (_, i) => i);
+
+  for (const id of votingIds) {
+    // Each student gets a partially shuffled version
+    const answer = [...correct];
+    // Apply 1-3 random swaps to create varying accuracy
+    const swapCount = Math.floor(Math.random() * 3);
+    for (let s = 0; s < swapCount; s++) {
+      const a = Math.floor(Math.random() * itemCount);
+      const b = Math.floor(Math.random() * itemCount);
+      [answer[a], answer[b]] = [answer[b], answer[a]];
+    }
+    votes[id] = { value: answer.join(','), nickname: participants[id].nickname };
+  }
+  return votes;
+}
+
 // ─── INTERACTION GENERATORS ───────────────────────────
 
 function mid() { return `m_${uid()}`; }
@@ -426,7 +451,7 @@ const sessions = {};
   const q3a = qid(), q3b = qid(), q3c = qid(), q3d = qid(), q3e = qid();
   const s3 = sid();
   const t3 = now - 2 * HOUR;
-  const q3f = qid(), q3g = qid();
+  const q3f = qid(), q3g = qid(), q3h = qid();
   const s3Questions = {
     [q3a]: {
       type: 'choice', title: '오늘 수업 난이도는 어땠나요?', order: 1,
@@ -473,6 +498,12 @@ const sessions = {};
       points: 100, participationTickets: 1, correctBonusTickets: 2,
       speedWindowMs: 30000, maxSpeedBonus: 50,
       betting: true,
+    },
+    [q3h]: {
+      type: 'ranking', title: '웹 개발 프로세스를 올바른 순서로 정렬하세요', order: 8,
+      options: ['요구사항 분석', '와이어프레임 설계', '프론트엔드 개발', '백엔드 API 구현', '테스트 및 배포'],
+      correctAnswer: '0,1,2,3,4',
+      votes: makeRankingVotes(ids3, p3, 5),
     },
   };
   sessions[s3] = {
@@ -810,7 +841,7 @@ const sessions = {};
   // Round 2 — active
   const names2 = pickNames(19);
   const { participants: p2, ids: ids2 } = makeParticipants(names2);
-  const q2a = qid(), q2b = qid(), q2c = qid(), q2d = qid();
+  const q2a = qid(), q2b = qid(), q2c = qid(), q2d = qid(), q2e = qid();
   const s2 = sid();
   const t2 = now - 1 * HOUR;
   const s2UxQuestions = {
@@ -834,6 +865,12 @@ const sessions = {};
     [q2d]: {
       type: 'debate', title: '모바일 앱은 네이티브보다 웹앱이 더 나은 선택인가?', order: 4,
       votes: makeDebateVotes(ids2, p2, 0.55),
+    },
+    [q2e]: {
+      type: 'ranking', title: '디자인 프로세스를 올바른 순서로 배열하세요', order: 5,
+      options: ['사용자 조사', '페르소나 정의', '와이어프레임', '프로토타입'],
+      correctAnswer: '0,1,2,3',
+      votes: makeRankingVotes(ids2, p2, 4),
     },
   };
   sessions[s2] = {

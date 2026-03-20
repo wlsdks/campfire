@@ -296,7 +296,6 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 > 최근 10개만 유지. 오래된 것은 삭제.
 
 <!-- 예시: 2026-03-20 01:30 | improve: 학생 투표 화면 터치 타겟 48px로 통일 -->
-2026-03-20 | feat: 찬반 토론 — 새 질문 유형 `debate` 구현. DebateVoter(학생 찬성/반대 2버튼+한줄의견50자+실시간비율), DebateChart(강사 VS퍼센트히어로+비율바+의견스트림+전체/찬성/반대필터). 12개 파일 업데이트(QuestionForm/QuestionList/VizRenderer/VotePage/ClassSummary/CourseEditor/StatsView/ImportFromLibrary/QuestionLibraryView/csv.js/database.rules.json/seed-demo.mjs). Swords아이콘. vote값 "for:의견"/"against:의견" 형식. seed-demo에 makeDebateVotes+데모질문2개. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 2026-03-20 | improve: Admin 태블릿 반응형 — <1024px에서 3패널→전폭 중앙+오버레이 드로어. useMediaQuery 훅 신설, AdminPage에 좌/우 드로어 상태 추가, AdminSessionHeader에 List/Users 토글 버튼, RightSidebar에 isDrawer prop. 헤더 컴팩트(세션ID·경과시간 숨김, 버튼 라벨 축소). Framer Motion slide-in+백드롭. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 2026-03-20 | feat: 수업 요약 카드 — 세션 종료 시 학생별 "오늘의 기록" 요약 카드. SessionSummaryCard(166줄) + CelebrationMascot(65줄) + SessionEndedPage(20줄). 기존 votes+scores에서 참여수/정답률/점수/순위 계산. 성과별 동적 타이틀(1등!/상위권!/수고했어요!). 전문항 참여·연속정답 배지. VotePage에서 status==='ended' 시 자동 전환. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 2026-03-20 | feat: 마스코트 idle 애니메이션 — WaitingPage 마스코트에 5종 랜덤 idle 동작 추가(눈 좌우 둘러보기, 호기심 기울기, 이중 깜빡임, 안테나 흔들기). IdleMascot.jsx(198줄) 추출. useAnimationControls 명령적 시퀀싱, busyRef 동작 충돌 방지, 별도 주기적 자연 깜빡임. 3-6초 랜덤 간격. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
@@ -305,6 +304,7 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 2026-03-20 | feat: 스피드 퀴즈 모드 — 퀴즈 2개 이상 세션에서 rapid-fire 자동진행. 강사: QuestionManager에 "스피드 퀴즈" 원클릭 시작/중단 버튼(Zap아이콘), 헤더에 "스피드" 배지, useSpeedQuiz(자동10초타이머→자동정답공개+점수반영→3.5초후자동다음문제→리더보드). 학생: SpeedQuizBanner(진행 N/M+도트), SpeedQuizCombo(연속정답 카운터, 3연속 x1.2배·5연속 x1.5배 콤보 배율). useSpeedQuizStudent(읽기전용). VoteHelpers.jsx 추출(200줄 규칙). Firebase path: speedQuiz(transient). database.rules.json+seed-demo 업데이트. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 2026-03-20 | feat: 포인트 베팅 — 퀴즈 질문에 베팅 배율 선택 기능. 강사: QuestionForm에 "포인트 베팅" 토글 switch, QuestionList에 "베팅" 배지, VizRenderer에 BetDistribution(1x/2x/3x 분포 3카드). 학생: BetSelector(94줄, 3단계 Shield/Target/Flame), QuizVoter에 bet→options 2단계 흐름, VoteConfirm에 bet 라벨. quiz.js에 BET_OPTIONS+getQuizReward bet 배수/패널티 로직(정답 Nx배, 오답 -30/-60). QuizResult에 bet 배지+음수점수 빨간색. 총점 최소 0. 13개 파일 업데이트. seed-demo에 betting 데모 데이터. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 2026-03-20 | improve: 코드 정리 — 중복 패턴 통합 + 불필요 코드 제거. QUESTION_TYPES 5곳 중복 → lib/question-types.js 단일 소스 추출(+QUESTION_TYPE_MAP). 토스트 패턴 3곳 중복 → useToast 훅 + Toast UI 컴포넌트 추출. PinggoMascot 2곳 중복(인디고색 위반 포함) → 기존 공유 컴포넌트로 교체. 미사용 아이콘 import 정리(SessionDashboard 등). 총 225줄 제거, 번들 -4.6kB. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
+2026-03-20 | feat: 순위 맞추기 — 새 질문 유형 `ranking` 구현. RankingVoter(학생 dnd-kit 드래그정렬, 결정적셔플, 위치번호+GripVertical, 터치센서), RankingChart(강사 평균정확도%히어로+위치별정답률바+전부정답인원+정답순서레퍼런스). QuestionForm에 정답순서 편집UI(3~6항목, 화살표순서조정). 14개 파일 업데이트(question-types/QuestionForm/QuestionManager/QuestionList/VizRenderer/VotePage/VoteHelpers/ClassSummary/CourseEditor/csv/database.rules.json/seed-demo). ArrowUpDown아이콘. vote값 "2,0,3,1" 인덱스형식. seed-demo에 makeRankingVotes+데모질문2개. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 
