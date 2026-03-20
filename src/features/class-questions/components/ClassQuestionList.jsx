@@ -66,7 +66,7 @@ function ClassQuestionList({ sessionId }) {
               key={unansweredCount}
               initial={{ scale: 1.3 }}
               animate={{ scale: 1 }}
-              className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold animate-pulse"
+              className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-[10px] font-bold"
             >
               {unansweredCount}
             </motion.span>
