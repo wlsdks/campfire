@@ -55,7 +55,7 @@ function CoursePerformance({ courseData }) {
     return <EmptyState title="강의 데이터가 없습니다" description="강의를 진행하면 참여율 추이가 표시됩니다" mascotSize="sm" mood="thinking" className="py-8" />;
   }
   return (
-    <motion.div variants={stagger.container} initial="initial" animate="animate" className="space-y-3">
+    <motion.div variants={stagger.container} initial="initial" animate="animate" className="space-y-4">
       {courseData.map((course) => (
         <motion.div key={course.name} variants={stagger.item} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 max-sm:p-4">
           <div className="flex items-center justify-between mb-4">

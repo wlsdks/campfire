@@ -37,7 +37,7 @@ function RotatingTip() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
-          className="text-slate-400 text-sm text-center absolute px-4"
+          className="text-slate-500 dark:text-slate-400 text-sm text-center absolute px-4"
         >
           {TIPS[index]}
         </motion.p>

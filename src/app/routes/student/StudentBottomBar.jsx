@@ -170,7 +170,7 @@ export default function StudentBottomBar({ sessionId }) {
         className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 z-30">
         <div className="max-w-[620px] mx-auto px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
         <ReactionBar sessionId={sessionId} />
-        <div className="mt-3 pt-3">
+        <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
           <div className="grid grid-cols-4 gap-2.5">
             <motion.button
               whileTap={{ scale: 0.95 }}
@@ -201,7 +201,7 @@ export default function StudentBottomBar({ sessionId }) {
               <HelpCircle size={20} />
               <span className="text-[11px]">질문</span>
               {hasNewQuestion && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
+                <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-red-500" />
               )}
             </motion.button>
             <motion.button
@@ -212,7 +212,7 @@ export default function StudentBottomBar({ sessionId }) {
               <MessageSquare size={20} />
               <span className="text-[11px]">채팅</span>
               {hasUnread && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
+                <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-red-500" />
               )}
             </motion.button>
           </div>

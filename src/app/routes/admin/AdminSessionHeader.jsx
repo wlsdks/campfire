@@ -130,7 +130,7 @@ export default memo(function AdminSessionHeader({
               </motion.div>
             )}
             {effectiveReadOnly && !isReviewing && <Badge variant="neutral">클래스 확인</Badge>}
-            {isSetting && <Badge variant="warning" className="py-1 px-2.5 text-xs font-semibold">세팅중</Badge>}
+            {isSetting && <Badge variant="neutral">세팅중</Badge>}
             {speedQuizActive && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}

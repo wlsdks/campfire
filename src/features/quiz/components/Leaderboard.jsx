@@ -171,7 +171,7 @@ export default memo(function Leaderboard({
   }
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-2">
+    <div className="w-full max-w-xl mx-auto space-y-2">
       {title && (
         <motion.div
           initial={{ opacity: 0, y: 8 }}

@@ -31,8 +31,8 @@ export default function EmptyState({
     >
       <PinggoMascot size={mascotSize} mood={mood} />
 
-      <div className="mt-4 space-y-1.5">
-        <p className="text-slate-500 text-base font-medium">{title}</p>
+      <div className="mt-6 space-y-1.5">
+        <p className="text-slate-600 text-lg font-semibold">{title}</p>
         {description && (
           <p className="text-slate-400 text-sm leading-relaxed">{description}</p>
         )}

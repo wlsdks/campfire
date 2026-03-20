@@ -139,8 +139,8 @@ export const motion = {
 // ─── Component Recipes (Tailwind) ────────────────────
 export const tw = {
   // Cards
-  card: 'bg-white rounded-xl shadow-sm border border-slate-100 p-5',
-  cardHover: 'bg-white rounded-xl shadow-sm border border-slate-100 p-5 hover:shadow-md transition-shadow',
+  card: 'bg-white rounded-xl shadow-sm border border-slate-200 p-5',
+  cardHover: 'bg-white rounded-xl shadow-sm border border-slate-200 p-5 hover:shadow-md transition-shadow',
   cardInteractive: 'bg-white rounded-xl border border-slate-200 hover:border-slate-300 transition-all active:scale-[0.98]',
 
   // Buttons

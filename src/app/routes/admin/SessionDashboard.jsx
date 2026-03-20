@@ -116,7 +116,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
   return (
     <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col">
       {/* Header */}
-      <div className="bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 px-6 py-4 flex items-center justify-between">
+      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6 py-5 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <PinggoMascot size="sm" />
           <div>
@@ -135,10 +135,10 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
 
 
       {/* Content */}
-      <div ref={contentRef} className="flex-1 max-w-2xl mx-auto w-full px-6 max-sm:px-4 py-6 space-y-3 overflow-y-auto">
+      <div ref={contentRef} className="flex-1 max-w-2xl mx-auto w-full px-6 max-sm:px-4 py-8 space-y-5 overflow-y-auto">
         {/* Tab bar */}
         <LayoutGroup>
-          <div className="flex gap-1 mb-3 relative">
+          <div className="flex gap-1 mb-5 relative">
             {TABS.map((tab) => (
               <button key={tab.key} onClick={() => handleTabChange(tab.key)}
                 className={`relative px-4 max-sm:px-3 py-1.5 text-sm font-medium rounded-lg transition-colors duration-200 active:scale-[0.97] whitespace-nowrap ${
@@ -203,7 +203,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
                       className="py-8"
                     />
                   ) : (
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       {courseGroups.map(([name, list], gi) => (
                         <CourseGroup key={name} name={name} sessions={list} onSelect={handleSelect} onDelete={handleDeleteRequest} onDuplicate={handleDuplicate} startIndex={gi * 10} groupIndex={gi} />
                       ))}
