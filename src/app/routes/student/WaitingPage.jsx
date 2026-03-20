@@ -137,7 +137,13 @@ export default function WaitingPage({ sessionId, pendingEvent = null }) {
             <div className="flex items-center gap-2 bg-white dark:bg-slate-800 rounded-xl px-4 py-2.5 border border-slate-100 dark:border-slate-700 shadow-sm">
               <Users size={16} className="text-slate-400" />
               <span className="text-slate-700 dark:text-slate-300 text-sm font-medium">
-                <span className="text-slate-900 dark:text-slate-100 text-lg font-bold tabular-nums">{count}</span>
+                <motion.span
+                  key={count}
+                  initial={{ scale: 1.2 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                  className="text-slate-900 dark:text-slate-100 text-lg font-bold tabular-nums inline-block"
+                >{count}</motion.span>
                 <span className="ml-0.5">명 참여 중</span>
               </span>
             </div>
