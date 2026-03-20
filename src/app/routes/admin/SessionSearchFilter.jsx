@@ -63,8 +63,8 @@ export default function SessionSearchFilter({ searchQuery, onSearchChange, statu
             onClick={() => onStatusChange(filter.key)}
             className={`shrink-0 px-3 py-1 text-xs font-medium rounded-lg transition-all active:scale-[0.96] ${
               statusFilter === filter.key
-                ? 'bg-indigo-600 text-white dark:bg-indigo-500'
-                : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700/50'
+                ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
+                : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'
             }`}
           >
             {filter.label}

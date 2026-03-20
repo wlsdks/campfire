@@ -157,10 +157,10 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
         </LayoutGroup>
 
           {activeTab === 'classes' && (
-            <motion.div key="classes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className="space-y-3">
-              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
-                <Button onClick={() => setModalOpen(true)} variant="primary" size="lg" className="w-full">
-                  <Plus size={20} />새 클래스 만들기
+            <motion.div key="classes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className="space-y-4">
+              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="flex justify-end">
+                <Button onClick={() => setModalOpen(true)} variant="secondary" size="sm">
+                  <Plus size={16} />새 클래스
                 </Button>
               </motion.div>
               {loading ? (
@@ -203,7 +203,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
                       className="py-8"
                     />
                   ) : (
-                    <div className="space-y-2">
+                    <div className="space-y-3">
                       {courseGroups.map(([name, list], gi) => (
                         <CourseGroup key={name} name={name} sessions={list} onSelect={handleSelect} onDelete={handleDeleteRequest} onDuplicate={handleDuplicate} startIndex={gi * 10} groupIndex={gi} />
                       ))}
