@@ -8,6 +8,7 @@ import ScaleVoter from '@/features/voting/components/ScaleVoter';
 import DebateVoter from '@/features/voting/components/DebateVoter';
 import WaitingPage from './WaitingPage';
 import LeaderboardPage from './LeaderboardPage';
+import SessionEndedPage from './SessionEndedPage';
 import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
 import Badge from '@/components/ui/Badge';
@@ -134,6 +135,11 @@ export default function VotePage({ sessionId }) {
 
   const currentQId = session?.currentQuestion;
   const currentMode = session?.currentMode;
+
+  // Show summary card when session is ended
+  if (session?.status === 'ended') {
+    return <SessionEndedPage sessionId={sessionId} session={session} />;
+  }
 
   if (currentMode === 'leaderboard') return <LeaderboardPage sessionId={sessionId} />;
   if (!['poll', 'quiz'].includes(currentMode) || !currentQId) {

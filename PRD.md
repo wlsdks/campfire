@@ -129,6 +129,7 @@
 | 학생 입장 페이지 폴리시 | 학생 | ✅ 완료 | 390x844 모바일 최적화. 강의명 표시(Firebase에서 courseName 조회), 닉네임 2자 이상 유효성 검사 + 실시간 글자수 카운터(x/10), 에러 시 빨간 테두리 + 힌트 텍스트, 아바타 미리보기 height 애니메이션, 모바일 autoFocus 안정화(setTimeout), enterKeyHint="go", 키보드 가리지 않도록 pt-[20vh] 상단 배치, ArrowRight 아이콘으로 CTA 방향성 부여 |
 | PWA 매니페스트 | 학생 | ✅ 완료 | manifest.json + 서비스워커로 "홈 화면에 추가" 지원. 아이콘 4종(192/512 일반+마스코블), Apple 메타태그(apple-touch-icon, apple-mobile-web-app-capable, status-bar-style), theme-color #0F172A, 네트워크 우선+앱 셸 캐시 전략, 학생 화면에 설치 유도 배너(Chrome beforeinstallprompt + iOS 수동 안내) |
 | 태블릿 반응형 (768px) | 강사 | ✅ 완료 | 768~1023px 태블릿에서 3패널→전폭 중앙 레이아웃 전환. useMediaQuery 훅으로 실시간 감지. 좌측(질문 관리)/우측(참여자·상호작용) 사이드바가 오버레이 드로어로 변환. 헤더에 List/Users 토글 버튼 추가, 컴팩트 라벨(발표/종료), 세션 ID·경과시간 숨김. Framer Motion slide-in 애니메이션 + 백드롭. max-w-[85vw]로 모바일에서도 화면 덮지 않음. 읽기전용(완료 세션)에서도 동일 동작 |
+| 수업 요약 카드 | 학생 | ✅ 완료 | 세션 종료 시 학생별 "오늘의 기록" 요약 카드 표시. 참여 문항 수(N/전체), 정답률(%), 총점, 순위(N명 중 M위), 최고 연속 정답, 전문항 참여 배지. 성과에 따른 동적 타이틀(오늘의 1등!/상위권 달성!/수고했어요! 등). CelebrationMascot(happy eyes+sparkles) SVG 애니메이션. 기존 session.questions 투표 데이터 + scores에서 실시간 계산, 별도 Firebase 구조 불필요. SessionEndedPage가 VotePage에서 session.status==='ended' 시 자동 전환 |
 
 ---
 

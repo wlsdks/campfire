@@ -1,0 +1,166 @@
+import { useMemo } from 'react';
+import { motion } from 'framer-motion';
+import { Trophy, Target, Flame, Hash, Star } from 'lucide-react';
+import Badge from '@/components/ui/Badge';
+import { useScores } from '@/features/quiz/api/useScores';
+import { getParticipantId, getNickname } from '@/lib/participant';
+import CelebrationMascot from './CelebrationMascot';
+
+/** Pick a fun title based on student performance. */
+function getTitle({ answeredCount, correctRate, rank, totalParticipants, bestStreak, totalScore }) {
+  if (answeredCount === 0) return '참여해주셔서 감사합니다';
+  if (rank === 1 && totalParticipants > 2) return '오늘의 1등!';
+  if (rank <= 3 && totalParticipants > 3) return '상위권 달성!';
+  if (bestStreak >= 5) return '연승의 달인';
+  if (correctRate >= 90 && answeredCount >= 3) return '완벽에 가까운 정답률';
+  if (correctRate >= 70) return '잘 해냈어요!';
+  if (totalScore > 0) return '수고했어요!';
+  return '오늘도 수업 완료!';
+}
+
+/** Single stat item. */
+function StatItem({ icon: Icon, label, value, delay = 0 }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 28, delay }}
+      className="flex flex-col items-center gap-1 flex-1 min-w-0"
+    >
+      <Icon size={16} className="text-slate-400" />
+      <span className="text-xl font-bold text-slate-900 tabular-nums">{value}</span>
+      <span className="text-[11px] text-slate-400 font-medium">{label}</span>
+    </motion.div>
+  );
+}
+
+/** Animated badge that springs in. */
+function AnimBadge({ variant, icon: Icon, children, delay }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay, type: 'spring', stiffness: 300, damping: 22 }}
+    >
+      <Badge variant={variant}>
+        <Icon size={12} className="mr-1" />
+        {children}
+      </Badge>
+    </motion.div>
+  );
+}
+
+/** Compute student's session stats from questions + scores. */
+function useStudentStats(session, sessionId) {
+  const { leaderboard, scores } = useScores(sessionId);
+  const participantId = getParticipantId();
+
+  return useMemo(() => {
+    const questions = session?.questions || {};
+    let answered = 0, correct = 0, gradable = 0;
+
+    Object.values(questions).forEach((q) => {
+      const myVote = q.votes?.[participantId];
+      if (myVote) {
+        answered++;
+        if (q.correctAnswer) {
+          gradable++;
+          if (myVote.value === q.correctAnswer) correct++;
+        }
+      }
+    });
+
+    const myScore = scores[participantId];
+    const rankIdx = leaderboard.findIndex((e) => e.id === participantId);
+
+    return {
+      answeredCount: answered,
+      totalQuestions: Object.keys(questions).length,
+      correctRate: gradable > 0 ? Math.round((correct / gradable) * 100) : null,
+      totalScore: myScore?.total || 0,
+      bestStreak: myScore?.bestStreak || myScore?.streak || 0,
+      rank: rankIdx >= 0 ? rankIdx + 1 : 0,
+      totalParticipants: leaderboard.length,
+    };
+  }, [session?.questions, scores, leaderboard, participantId]);
+}
+
+export default function SessionSummaryCard({ session, sessionId }) {
+  const stats = useStudentStats(session, sessionId);
+  const nickname = getNickname();
+  const title = getTitle(stats);
+
+  const hasBadges = stats.rank > 0 || stats.bestStreak >= 2;
+  const allAnswered = stats.answeredCount === stats.totalQuestions && stats.totalQuestions > 0;
+
+  return (
+    <div className="w-full max-w-sm mx-auto space-y-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 280, damping: 28 }}
+        className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
+      >
+        {/* Header */}
+        <div className="pt-6 pb-4 px-5 text-center">
+          <CelebrationMascot />
+          <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.3 }}
+            className="text-2xl font-bold text-slate-900 mt-3"
+          >{title}</motion.p>
+          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="text-sm text-slate-400 mt-1"
+          >{nickname}님의 오늘 기록</motion.p>
+          {session?.courseName && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }} className="mt-2">
+              <Badge variant="neutral">
+                {session.courseName} {session.roundNumber ? `${session.roundNumber}차` : ''}
+              </Badge>
+            </motion.div>
+          )}
+        </div>
+
+        {/* Stats grid */}
+        <div className="px-5 pb-5">
+          <div className="bg-slate-50 rounded-xl p-4">
+            <div className="flex items-start justify-around">
+              <StatItem icon={Hash} label="참여" value={`${stats.answeredCount}/${stats.totalQuestions}`} delay={0.25} />
+              {stats.correctRate !== null && (
+                <StatItem icon={Target} label="정답률" value={`${stats.correctRate}%`} delay={0.3} />
+              )}
+              {stats.totalScore > 0 && (
+                <StatItem icon={Trophy} label="점수" value={stats.totalScore} delay={0.35} />
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Badges */}
+        {hasBadges && (
+          <div className="px-5 pb-5 flex items-center justify-center gap-2 flex-wrap">
+            {stats.rank > 0 && (
+              <AnimBadge variant="primary" icon={Trophy} delay={0.4}>
+                {stats.totalParticipants}명 중 {stats.rank}위
+              </AnimBadge>
+            )}
+            {stats.bestStreak >= 2 && (
+              <AnimBadge variant="neutral" icon={Flame} delay={0.45}>
+                최고 {stats.bestStreak}연속 정답
+              </AnimBadge>
+            )}
+            {allAnswered && (
+              <AnimBadge variant="primary" icon={Star} delay={0.5}>
+                전문항 참여
+              </AnimBadge>
+            )}
+          </div>
+        )}
+      </motion.div>
+
+      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
+        className="text-center text-xs text-slate-400"
+      >수업이 종료되었습니다</motion.p>
+    </div>
+  );
+}

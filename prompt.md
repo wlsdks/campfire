@@ -296,7 +296,6 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 > 최근 10개만 유지. 오래된 것은 삭제.
 
 <!-- 예시: 2026-03-20 01:30 | improve: 학생 투표 화면 터치 타겟 48px로 통일 -->
-2026-03-20 | improve: 질문 순서 변경 — QuestionList에 드래그 순서 변경, CourseEditor에도 동일 적용
 2026-03-20 | improve: 퀴즈 정답 축하 이펙트 — ConfettiBurst 컴포넌트 신설(114줄). Framer Motion SVG 파티클
 2026-03-20 | improve: 학생 리더보드 폴리시 — MyRankCard 히어로, StickyMyRank, RankChange, streak 강조
 2026-03-20 | feat: CSV 내보내기 — ClassSummary에서 질문 결과/참여자별 응답 CSV 다운로드. UTF-8 BOM 포함
@@ -305,6 +304,7 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 2026-03-20 | feat: 감정 온도계 — 새 질문 유형 `scale` 구현. ScaleVoter(학생 0~100 슬라이더+프리셋+제출), ScaleChart(강사 평균 히어로+위치바+히스토그램+통계). 10개 파일 QUESTION_TYPES 업데이트(QuestionForm/QuestionList/VizRenderer/VotePage/ClassSummary/CourseEditor/StatsView/ImportFromLibrary/QuestionLibraryView/csv.js). database.rules.json type 정규식에 scale 추가+배포. seed-demo.mjs에 정규분포 기반 makeScaleVotes 헬퍼+데모 질문 2개 추가. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 2026-03-20 | feat: 찬반 토론 — 새 질문 유형 `debate` 구현. DebateVoter(학생 찬성/반대 2버튼+한줄의견50자+실시간비율), DebateChart(강사 VS퍼센트히어로+비율바+의견스트림+전체/찬성/반대필터). 12개 파일 업데이트(QuestionForm/QuestionList/VizRenderer/VotePage/ClassSummary/CourseEditor/StatsView/ImportFromLibrary/QuestionLibraryView/csv.js/database.rules.json/seed-demo.mjs). Swords아이콘. vote값 "for:의견"/"against:의견" 형식. seed-demo에 makeDebateVotes+데모질문2개. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 2026-03-20 | improve: Admin 태블릿 반응형 — <1024px에서 3패널→전폭 중앙+오버레이 드로어. useMediaQuery 훅 신설, AdminPage에 좌/우 드로어 상태 추가, AdminSessionHeader에 List/Users 토글 버튼, RightSidebar에 isDrawer prop. 헤더 컴팩트(세션ID·경과시간 숨김, 버튼 라벨 축소). Framer Motion slide-in+백드롭. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
+2026-03-20 | feat: 수업 요약 카드 — 세션 종료 시 학생별 "오늘의 기록" 요약 카드. SessionSummaryCard(166줄) + CelebrationMascot(65줄) + SessionEndedPage(20줄). 기존 votes+scores에서 참여수/정답률/점수/순위 계산. 성과별 동적 타이틀(1등!/상위권!/수고했어요!). 전문항 참여·연속정답 배지. VotePage에서 status==='ended' 시 자동 전환. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 
