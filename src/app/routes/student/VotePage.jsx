@@ -34,6 +34,7 @@ import TeamBadge from '@/features/teams/components/TeamBadge';
 import { useMyTeam } from '@/features/teams/api/useTeamBattle';
 import { getParticipantId } from '@/lib/participant';
 import { useQuestionChime } from '@/hooks/useQuestionChime';
+import ReviewingBanner from '@/components/ui/ReviewingBanner';
 
 export default function VotePage({ sessionId }) {
   const { session, loading } = useSession(sessionId);
@@ -280,6 +281,7 @@ export default function VotePage({ sessionId }) {
           </ErrorBoundary>
       </div>
 
+      <ReviewingBanner sessionId={sessionId} />
       <StudentBottomBar sessionId={sessionId} />
       <AchievementToast achievements={achievements} />
     </div>

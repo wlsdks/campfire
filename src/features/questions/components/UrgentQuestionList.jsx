@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { ref, update, remove } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertCircle, Trash2, ChevronDown } from 'lucide-react';
+import { AlertCircle, Trash2, ChevronDown, MessageCircle } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 
@@ -11,6 +11,7 @@ export default function UrgentQuestionList({ sessionId }) {
   const { questionList, unreadCount } = useUrgentQuestions(sessionId);
   const [collapsed, setCollapsed] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
+  const reviewingIdRef = useRef(null);
 
   async function markRead(questionId) {
     try {
@@ -28,12 +29,24 @@ export default function UrgentQuestionList({ sessionId }) {
     }
   }
 
+  async function setReviewing(questionId, value) {
+    try {
+      await update(ref(db, `sessions/${sessionId}/urgentQuestions/${questionId}`), { reviewing: value });
+    } catch (err) {
+      console.error('질문 reviewing 상태 변경 실패:', err);
+    }
+  }
+
   function handleQuestionClick(q) {
     setSelectedQuestion(q);
+    reviewingIdRef.current = q.id;
+    setReviewing(q.id, true);
   }
 
   function handleConfirm() {
     if (selectedQuestion) {
+      // Question gets deleted entirely, no need to clear reviewing
+      reviewingIdRef.current = null;
       dismissOne(selectedQuestion.id);
       setSelectedQuestion(null);
     }
@@ -42,6 +55,10 @@ export default function UrgentQuestionList({ sessionId }) {
   function handleClose() {
     if (selectedQuestion && !selectedQuestion.read) {
       markRead(selectedQuestion.id);
+    }
+    if (reviewingIdRef.current) {
+      setReviewing(reviewingIdRef.current, false);
+      reviewingIdRef.current = null;
     }
     setSelectedQuestion(null);
   }
@@ -130,20 +147,54 @@ export default function UrgentQuestionList({ sessionId }) {
         ariaLabel="긴급 질문 확인"
       >
         {selectedQuestion && (
-          <div>
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-1">긴급 질문</h3>
-            <p className="text-xs text-slate-400 mb-4">익명</p>
-            <p className="text-base text-slate-700 dark:text-slate-200 leading-relaxed mb-6">
+          <div className="text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+            >
+              <MessageCircle size={28} className="text-slate-400 mx-auto mb-3" />
+            </motion.div>
+            <motion.h3
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, ease: 'easeOut', delay: 0.04 }}
+              className="text-xl font-bold text-slate-900 dark:text-slate-100"
+            >
+              긴급 질문
+            </motion.h3>
+            <motion.p
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, ease: 'easeOut', delay: 0.08 }}
+              className="text-xs text-slate-400 mt-1"
+            >
+              익명
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, ease: 'easeOut', delay: 0.12 }}
+              className="text-lg text-slate-700 dark:text-slate-200 leading-relaxed mt-6 mb-8"
+            >
               {selectedQuestion.text}
-            </p>
-            <div className="flex gap-3 justify-end">
-              <Button variant="secondary" size="sm" onClick={handleClose}>
-                닫기
-              </Button>
-              <Button variant="primary" size="sm" onClick={handleConfirm}>
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.25, ease: 'easeOut', delay: 0.16 }}
+              className="space-y-2"
+            >
+              <Button variant="primary" size="lg" onClick={handleConfirm} className="w-full">
                 확인
               </Button>
-            </div>
+              <button
+                onClick={handleClose}
+                className="w-full py-2 text-sm font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+              >
+                닫기
+              </button>
+            </motion.div>
           </div>
         )}
       </Modal>

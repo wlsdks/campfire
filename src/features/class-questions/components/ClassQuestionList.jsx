@@ -1,8 +1,9 @@
-import { memo } from 'react';
+import { memo, useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
 import { ChevronDown, HelpCircle, Check, Trash2, ChevronUp } from 'lucide-react';
 import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
+import Modal from '@/components/ui/Modal';
+import Button from '@/components/ui/Button';
 
 /**
  * Admin-side accordion list of class questions.
@@ -12,13 +13,50 @@ function ClassQuestionList({ sessionId }) {
   const { questions, unansweredCount, markAnswered, dismissQuestion } =
     useClassQuestions(sessionId);
   const [collapsed, setCollapsed] = useState(false);
+  const [selectedQuestion, setSelectedQuestion] = useState(null);
+
+  // Shake animation on new question arrival
+  const prevCountRef = useRef(questions.length);
+  const [shake, setShake] = useState(false);
+
+  useEffect(() => {
+    if (questions.length > prevCountRef.current) {
+      setShake(true);
+      setTimeout(() => setShake(false), 600);
+    }
+    prevCountRef.current = questions.length;
+  }, [questions.length]);
+
+  function handleQuestionClick(q) {
+    setSelectedQuestion(q);
+  }
+
+  function handleMarkAnswered() {
+    if (selectedQuestion) {
+      markAnswered(selectedQuestion.id);
+      setSelectedQuestion(null);
+    }
+  }
+
+  function handleDismiss() {
+    if (selectedQuestion) {
+      dismissQuestion(selectedQuestion.id);
+      setSelectedQuestion(null);
+    }
+  }
+
+  function handleClose() {
+    setSelectedQuestion(null);
+  }
 
   return (
     <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-      <button
+      <motion.button
         onClick={() => setCollapsed(!collapsed)}
         className="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors"
         aria-expanded={!collapsed}
+        animate={shake ? { x: [0, -4, 4, -3, 3, -1, 1, 0] } : {}}
+        transition={{ duration: 0.5, ease: 'easeInOut' }}
       >
         <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
           <HelpCircle size={14} className="text-slate-400" />
@@ -28,7 +66,7 @@ function ClassQuestionList({ sessionId }) {
               key={unansweredCount}
               initial={{ scale: 1.3 }}
               animate={{ scale: 1 }}
-              className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-[10px] font-bold"
+              className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold animate-pulse"
             >
               {unansweredCount}
             </motion.span>
@@ -37,7 +75,7 @@ function ClassQuestionList({ sessionId }) {
         <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ duration: 0.2 }}>
           <ChevronDown size={14} className="text-slate-400" />
         </motion.div>
-      </button>
+      </motion.button>
 
       <AnimatePresence>
         {!collapsed && (
@@ -61,11 +99,14 @@ function ClassQuestionList({ sessionId }) {
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0 }}
-                    className={`p-2.5 rounded-lg text-sm transition-colors ${
+                    role="button"
+                    aria-label={q.answered ? '답변 완료된 질문' : '미답변 질문 — 클릭하여 확인'}
+                    className={`p-2.5 rounded-lg text-sm transition-colors cursor-pointer ${
                       q.answered
-                        ? 'bg-slate-50 dark:bg-slate-700/50 opacity-60'
-                        : 'bg-slate-100 dark:bg-slate-700'
+                        ? 'bg-slate-50 dark:bg-slate-800 opacity-60'
+                        : 'bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 shadow-sm hover:shadow-md'
                     }`}
+                    onClick={() => handleQuestionClick(q)}
                   >
                     <p className="text-slate-700 dark:text-slate-200 leading-relaxed">
                       {q.text}
@@ -81,27 +122,11 @@ function ClassQuestionList({ sessionId }) {
                         )}
                       </div>
                       <div className="flex items-center gap-1">
-                        {!q.answered && (
-                          <button
-                            onClick={() => markAnswered(q.id)}
-                            aria-label="답변 완료 표시"
-                            className="text-slate-300 dark:text-slate-500 hover:text-emerald-500 transition-all active:scale-90 p-0.5"
-                          >
-                            <Check size={14} />
-                          </button>
-                        )}
                         {q.answered && (
                           <span className="text-emerald-500 text-[10px] font-medium">
                             답변 완료
                           </span>
                         )}
-                        <button
-                          onClick={() => dismissQuestion(q.id)}
-                          aria-label="질문 삭제"
-                          className="text-slate-300 dark:text-slate-500 hover:text-red-500 transition-all active:scale-90 p-0.5"
-                        >
-                          <Trash2 size={12} />
-                        </button>
                       </div>
                     </div>
                   </motion.div>
@@ -111,6 +136,47 @@ function ClassQuestionList({ sessionId }) {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <Modal
+        open={!!selectedQuestion}
+        onClose={handleClose}
+        ariaLabel="수업 질문 확인"
+      >
+        {selectedQuestion && (
+          <div className="text-center">
+            <div className="flex justify-center mb-3">
+              <HelpCircle size={28} className="text-slate-400" />
+            </div>
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-1">
+              수업 질문
+            </h3>
+            <p className="text-xs text-slate-400 mb-4">{selectedQuestion.nickname}</p>
+            {selectedQuestion.upvoteCount > 0 && (
+              <div className="flex items-center justify-center gap-1 text-slate-400 text-sm mb-3">
+                <ChevronUp size={16} />
+                <span>{selectedQuestion.upvoteCount}</span>
+              </div>
+            )}
+            <p className="text-lg text-slate-700 dark:text-slate-200 leading-relaxed mb-6">
+              {selectedQuestion.text}
+            </p>
+            <div className="flex gap-3 justify-center">
+              <Button variant="secondary" size="sm" onClick={handleClose}>
+                닫기
+              </Button>
+              {selectedQuestion.answered ? (
+                <Button variant="primary" size="sm" onClick={handleDismiss}>
+                  확인
+                </Button>
+              ) : (
+                <Button variant="primary" size="sm" onClick={handleMarkAnswered}>
+                  답변 완료
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

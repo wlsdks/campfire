@@ -8,6 +8,7 @@ import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
 import IdleMascot from './IdleMascot';
 import { getNickname } from '@/lib/participant';
+import ReviewingBanner from '@/components/ui/ReviewingBanner';
 
 const TIPS = [
   '강사가 질문을 활성화하면 자동으로 전환됩니다',
@@ -132,6 +133,7 @@ export default function WaitingPage({ sessionId, pendingEvent = null }) {
         )}
       </motion.div>
 
+      <ReviewingBanner sessionId={sessionId} />
       <StudentBottomBar sessionId={sessionId} />
     </div>
   );

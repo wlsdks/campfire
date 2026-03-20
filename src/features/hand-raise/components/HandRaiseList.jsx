@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ref, set, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
@@ -9,6 +9,18 @@ import IconButton from '@/components/ui/IconButton';
 export default function HandRaiseList({ sessionId }) {
   const { raisedList, count } = useHandRaises(sessionId);
   const [collapsed, setCollapsed] = useState(false);
+
+  // Shake animation on new hand raise arrival
+  const prevCountRef = useRef(count);
+  const [shake, setShake] = useState(false);
+
+  useEffect(() => {
+    if (count > prevCountRef.current) {
+      setShake(true);
+      setTimeout(() => setShake(false), 600);
+    }
+    prevCountRef.current = count;
+  }, [count]);
 
   async function dismissOne(participantId) {
     try {
@@ -32,9 +44,11 @@ export default function HandRaiseList({ sessionId }) {
 
   return (
     <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-      <button
+      <motion.button
         onClick={() => setCollapsed(!collapsed)}
         className="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors"
+        animate={shake ? { x: [0, -4, 4, -3, 3, -1, 1, 0] } : {}}
+        transition={{ duration: 0.5, ease: 'easeInOut' }}
       >
         <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
           <Hand size={14} className="text-slate-400" />
@@ -53,7 +67,7 @@ export default function HandRaiseList({ sessionId }) {
         <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ duration: 0.2 }}>
           <ChevronDown size={14} className="text-slate-400" />
         </motion.div>
-      </button>
+      </motion.button>
 
       <AnimatePresence>
         {!collapsed && (
