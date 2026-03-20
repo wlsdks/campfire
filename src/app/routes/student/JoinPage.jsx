@@ -3,7 +3,8 @@ import { ref, set, get, serverTimestamp, onDisconnect } from 'firebase/database'
 import { db } from '@/lib/firebase';
 import { getParticipantId, getNickname, setNickname as saveNickname } from '@/lib/participant';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Radio, Loader2, ArrowRight } from 'lucide-react';
+import { Loader2, ArrowRight } from 'lucide-react';
+import PickMascot from '@/components/ui/PickMascot';
 import Card from '@/components/ui/Card';
 import Avatar from '@/components/ui/Avatar';
 import Button from '@/components/ui/Button';
@@ -87,7 +88,7 @@ export default function JoinPage({ sessionId, onJoin }) {
               transition={{ type: 'spring', stiffness: 300, damping: 24, delay: 0.1 }}
               className="flex justify-center mb-1"
             >
-              <Radio size={32} className="text-indigo-500" />
+              <PickMascot size="sm" />
             </motion.div>
             <div>
               <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pick</h1>

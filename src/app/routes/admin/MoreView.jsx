@@ -128,7 +128,7 @@ function QuickStats({ sessions }) {
         {items.map((item) => (
           <div key={item.label}>
             <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{item.label}</p>
-            <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{item.value}<span className="text-xs text-slate-400 font-normal ml-0.5">{item.suffix}</span></p>
+            <p className="text-xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">{item.value}<span className="text-xs text-slate-400 font-normal ml-0.5">{item.suffix}</span></p>
           </div>
         ))}
       </div>

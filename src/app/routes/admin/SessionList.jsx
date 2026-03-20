@@ -41,7 +41,7 @@ function SessionRow({ session, onClick, onDelete, onDuplicate, index }) {
         {session.roundNumber ? `${session.roundNumber}차` : '—'}
       </span>
       <span className="text-sm text-slate-500 dark:text-slate-400 w-32 max-sm:w-auto shrink-0">{formatDate(session.createdAt)}</span>
-      <div className="flex items-center gap-1 flex-1 text-xs text-slate-400 min-w-0 max-sm:hidden">
+      <div className="flex items-center gap-1 flex-1 text-xs text-slate-400 min-w-0 max-sm:hidden tabular-nums">
         <span className="font-medium text-slate-500 dark:text-slate-400">{session.participantCount}</span>명 접속
         <span className="mx-1">·</span>
         <span className="font-medium text-slate-500 dark:text-slate-400">{session.activeCount || 0}</span>명 참여
@@ -118,11 +118,11 @@ export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, s
         </div>
         <div className="flex items-center gap-8">
           <div>
-            <span className="text-2xl font-bold text-slate-900 dark:text-slate-100">{stats.rounds}</span>
+            <span className="text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">{stats.rounds}</span>
             <span className="text-xs text-slate-400 ml-1">차수</span>
           </div>
           <div>
-            <span className="text-2xl font-bold text-slate-900 dark:text-slate-100">{stats.totalParticipants}</span>
+            <span className="text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">{stats.totalParticipants}</span>
             <span className="text-xs text-slate-400 ml-1">명</span>
           </div>
           <div className="flex-1">

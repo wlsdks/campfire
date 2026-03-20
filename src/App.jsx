@@ -1,7 +1,6 @@
 import { onDisconnect, ref, set, serverTimestamp } from 'firebase/database';
 import { BrowserRouter, Routes, Route, useSearchParams } from 'react-router-dom';
 import { lazy, Suspense, useEffect, useState } from 'react';
-import { Radio } from 'lucide-react';
 import { motion } from 'framer-motion';
 import PickMascot from '@/components/ui/PickMascot';
 import JoinPage from '@/app/routes/student/JoinPage';
@@ -81,7 +80,7 @@ function StudentRouter() {
             transition={{ delay: 0.45 }}
             className="flex items-center justify-center gap-2"
           >
-            <Radio size={14} className="text-indigo-500" />
+            <PickMascot size="xs" />
             <span className="text-xs text-slate-300 dark:text-slate-500">실시간 강의 참여 플랫폼</span>
           </motion.div>
         </motion.div>

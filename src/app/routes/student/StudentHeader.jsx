@@ -1,6 +1,7 @@
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { Radio, Trophy, Volume2, VolumeOff } from 'lucide-react';
+import { Trophy, Volume2, VolumeOff } from 'lucide-react';
+import PickMascot from '@/components/ui/PickMascot';
 import Avatar from '@/components/ui/Avatar';
 import ConnectionBanner from '@/components/ui/ConnectionBanner';
 import { useScores } from '@/features/quiz/api/useScores';
@@ -57,7 +58,7 @@ export default function StudentHeader({ sessionId }) {
       >
         <div className="flex items-center justify-between px-5 py-4 max-w-[620px] mx-auto">
           <div className="flex items-center gap-2.5">
-            <Radio size={20} className="text-indigo-600" />
+            <PickMascot size="xs" />
             <span className="font-bold text-lg text-slate-900 dark:text-slate-100">Pick</span>
           </div>
 
