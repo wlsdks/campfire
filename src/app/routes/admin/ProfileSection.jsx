@@ -44,11 +44,11 @@ export default function ProfileSection({ adminUser }) {
       </div>
       <div className="space-y-4">
         <div>
-          <label className="text-xs text-slate-400 font-medium block mb-1.5">아이디</label>
+          <label className="text-xs text-slate-500 dark:text-slate-400 font-medium block mb-1.5">아이디</label>
           <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">{adminUser?.username || '—'}</p>
         </div>
         <div>
-          <label className="text-xs text-slate-400 font-medium block mb-1.5">표시 이름</label>
+          <label className="text-xs text-slate-500 dark:text-slate-400 font-medium block mb-1.5">표시 이름</label>
           <AnimatePresence mode="wait">
             {editing ? (
               <motion.div key="edit" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="space-y-2">
@@ -76,7 +76,7 @@ export default function ProfileSection({ adminUser }) {
           </AnimatePresence>
         </div>
         <div>
-          <label className="text-xs text-slate-400 font-medium block mb-1.5">역할</label>
+          <label className="text-xs text-slate-500 dark:text-slate-400 font-medium block mb-1.5">역할</label>
           <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">{adminUser?.role === 'master' ? '마스터 관리자' : '강사'}</p>
         </div>
       </div>

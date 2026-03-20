@@ -81,7 +81,7 @@ function ShortcutsSection() {
       <div className="space-y-5">
         {SHORTCUTS.map(({ group, items }) => (
           <div key={group}>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">{group}</p>
+            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">{group}</p>
             <div className="space-y-2">
               {items.map((sc) => (
                 <div key={sc.label} className="flex items-center justify-between py-1.5">
@@ -127,8 +127,8 @@ function QuickStats({ sessions }) {
       <div className="grid grid-cols-2 gap-4">
         {items.map((item) => (
           <div key={item.label}>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">{item.label}</p>
-            <p className="text-xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">{item.value}<span className="text-xs text-slate-400 font-normal ml-0.5">{item.suffix}</span></p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-1.5 font-medium uppercase tracking-wide">{item.label}</p>
+            <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{item.value}<span className="text-xs text-slate-400 font-normal ml-0.5">{item.suffix}</span></p>
           </div>
         ))}
       </div>
@@ -172,7 +172,7 @@ function AppInfo() {
 // ─── Main MoreView ───────────────────────────────────
 export default function MoreView({ adminUser, sessions }) {
   return (
-    <motion.div variants={stagger.container} initial="initial" animate="animate" className="space-y-4">
+    <motion.div variants={stagger.container} initial="initial" animate="animate" className="space-y-5">
       <ProfileSection adminUser={adminUser} />
       <ThemeSection />
       <QuickStats sessions={sessions} />
