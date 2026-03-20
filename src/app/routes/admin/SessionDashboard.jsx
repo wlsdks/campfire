@@ -9,6 +9,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import { SuspenseFallback } from '@/components/ui/Skeleton';
 import PinggoMascot from '@/components/ui/PinggoMascot';
 import { CourseGroup, UngroupedSessions } from './SessionList';
+import SessionSearchFilter from './SessionSearchFilter';
 import { Plus, Loader2, LogOut } from 'lucide-react';
 
 const StatsView = lazy(() => import('./StatsView'));
@@ -27,11 +28,27 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [activeTab, setActiveTab] = useState('classes');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+
+  const filteredSessions = useMemo(() => {
+    let result = sessions;
+    if (statusFilter !== 'all') {
+      result = result.filter((s) => s.status === statusFilter);
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.trim().toLowerCase();
+      result = result.filter((s) => (s.courseName || '').toLowerCase().includes(q));
+    }
+    return result;
+  }, [sessions, searchQuery, statusFilter]);
+
+  const isFiltering = searchQuery.trim() !== '' || statusFilter !== 'all';
 
   const { courseGroups, ungrouped } = useMemo(() => {
     const groups = {};
     const noGroup = [];
-    sessions.forEach((s) => {
+    filteredSessions.forEach((s) => {
       if (s.courseName) {
         if (!groups[s.courseName]) groups[s.courseName] = [];
         groups[s.courseName].push(s);
@@ -50,7 +67,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
       }),
       ungrouped: noGroup,
     };
-  }, [sessions]);
+  }, [filteredSessions]);
 
   function handleSelect(session) {
     onSelectSession(session.id, session.status === 'ended' || session.status === 'reviewing');
@@ -86,11 +103,11 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
       </div>
 
       {/* Content */}
-      <div className="flex-1 max-w-2xl mx-auto w-full px-6 py-6 space-y-3">
+      <div className="flex-1 max-w-2xl mx-auto w-full px-6 max-sm:px-4 py-6 space-y-3">
         <div className="flex gap-1 mb-4">
           {TABS.map((tab) => (
             <button key={tab.key} onClick={() => setActiveTab(tab.key)}
-              className={`px-4 py-1.5 text-sm font-medium rounded-lg transition-all active:scale-[0.97] ${
+              className={`px-4 max-sm:px-3 py-1.5 text-sm font-medium rounded-lg transition-all active:scale-[0.97] whitespace-nowrap ${
                 activeTab === tab.key ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800'}`}>
               {tab.label}
             </button>
@@ -111,12 +128,47 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
                   steps={['위의 버튼으로 클래스를 만드세요', '객관식, 퀴즈, 워드클라우드 등 질문을 추가하세요', 'QR코드를 공유하면 학생들이 바로 참여합니다']}
                   mascotSize="lg" mood="happy" className="py-12" />
               ) : (
-                <div className="space-y-2">
-                  {courseGroups.map(([name, list], gi) => (
-                    <CourseGroup key={name} name={name} sessions={list} onSelect={handleSelect} onDelete={handleDeleteRequest} startIndex={gi * 10} />
-                  ))}
-                  <UngroupedSessions sessions={ungrouped} onSelect={handleSelect} onDelete={handleDeleteRequest} startIndex={courseGroups.length * 10} />
-                </div>
+                <>
+                  {sessions.length >= 3 && (
+                    <SessionSearchFilter
+                      searchQuery={searchQuery}
+                      onSearchChange={setSearchQuery}
+                      statusFilter={statusFilter}
+                      onStatusChange={setStatusFilter}
+                    />
+                  )}
+                  {isFiltering && (
+                    <div className="flex items-center justify-between px-1">
+                      <p className="text-xs text-slate-400 dark:text-slate-500">
+                        {filteredSessions.length > 0
+                          ? `${filteredSessions.length}개 세션`
+                          : '검색 결과 없음'}
+                      </p>
+                      {isFiltering && (
+                        <button
+                          onClick={() => { setSearchQuery(''); setStatusFilter('all'); }}
+                          className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                        >
+                          초기화
+                        </button>
+                      )}
+                    </div>
+                  )}
+                  {filteredSessions.length === 0 && isFiltering ? (
+                    <EmptyState
+                      title="검색 결과가 없습니다"
+                      description={searchQuery ? `"${searchQuery}"에 해당하는 클래스가 없어요` : '해당 상태의 세션이 없어요'}
+                      className="py-8"
+                    />
+                  ) : (
+                    <div className="space-y-2">
+                      {courseGroups.map(([name, list], gi) => (
+                        <CourseGroup key={name} name={name} sessions={list} onSelect={handleSelect} onDelete={handleDeleteRequest} startIndex={gi * 10} />
+                      ))}
+                      <UngroupedSessions sessions={ungrouped} onSelect={handleSelect} onDelete={handleDeleteRequest} startIndex={courseGroups.length * 10} />
+                    </div>
+                  )}
+                </>
               )}
             </motion.div>
           )}
