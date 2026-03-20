@@ -4,7 +4,7 @@ import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import TimerControls from '@/features/timer/components/TimerControls';
 import TimerRing from '@/features/timer/components/TimerRing';
-import { ArrowLeft, Clock, MessageCircle, Users, Monitor, Play, Square, Layers } from 'lucide-react';
+import { ArrowLeft, Clock, MessageCircle, Users, Monitor, Play, Square, Layers, List, PanelRight } from 'lucide-react';
 
 function formatElapsed(ms) {
   const totalSec = Math.floor(ms / 1000);
@@ -57,6 +57,9 @@ export default memo(function AdminSessionHeader({
   onStartSession,
   onEndSession,
   onPresentMode,
+  isTablet = false,
+  onLeftDrawer,
+  onRightDrawer,
 }) {
   const [timerOpen, setTimerOpen] = useState(false);
   const timerRef = useRef(null);
@@ -72,31 +75,43 @@ export default memo(function AdminSessionHeader({
   }, [timerOpen]);
 
   return (
-    <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shrink-0">
-      <div className="flex items-center gap-3">
+    <div className={`bg-white border-b border-slate-200 flex items-center justify-between shrink-0 ${isTablet ? 'px-3 py-3' : 'px-6 py-4'}`}>
+      <div className="flex items-center gap-2 lg:gap-3 min-w-0">
+        {/* Tablet: questions drawer toggle */}
+        {isTablet && onLeftDrawer && (
+          <button
+            onClick={onLeftDrawer}
+            className="p-2 -ml-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all active:scale-90"
+            aria-label="질문 목록 열기"
+          >
+            <List size={22} />
+          </button>
+        )}
         <button
           onClick={onBack}
-          className="p-2 -ml-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all active:scale-90"
+          className={`p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all active:scale-90 ${isTablet ? '' : '-ml-2'}`}
           aria-label="클래스 목록으로"
         >
-          <ArrowLeft size={22} />
+          <ArrowLeft size={isTablet ? 20 : 22} />
         </button>
-        <div>
+        <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-900">
+            <span className="font-bold text-slate-900 truncate">
               {session?.courseName || 'Pinggo'}
             </span>
             {session?.roundNumber && (
-              <span className="text-sm font-medium text-slate-500">{session.roundNumber}차</span>
+              <span className="text-sm font-medium text-slate-500 shrink-0">{session.roundNumber}차</span>
             )}
             {effectiveReadOnly && <Badge variant="neutral">클래스 확인</Badge>}
             {isSetting && <Badge variant="warning" className="py-1 px-2.5 text-xs font-semibold">세팅중</Badge>}
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-slate-400">세션 <span className="font-mono">{sessionId}</span></span>
+            {!isTablet && (
+              <span className="text-xs text-slate-400">세션 <span className="font-mono">{sessionId}</span></span>
+            )}
             {questionProgress && (
               <span className="inline-flex items-center gap-1 text-xs text-slate-400">
-                <span className="text-slate-200">&middot;</span>
+                {!isTablet && <span className="text-slate-200">&middot;</span>}
                 <Layers size={12} className="text-slate-300" />
                 {questionProgress.current ? (
                   <span>
@@ -108,11 +123,13 @@ export default memo(function AdminSessionHeader({
                 )}
               </span>
             )}
-            <ElapsedTime startedAt={session?.startedAt} createdAt={session?.createdAt} status={session?.status} />
+            {!isTablet && (
+              <ElapsedTime startedAt={session?.startedAt} createdAt={session?.createdAt} status={session?.status} />
+            )}
           </div>
         </div>
       </div>
-      <div className="flex items-center gap-3">
+      <div className={`flex items-center shrink-0 ${isTablet ? 'gap-1' : 'gap-3'}`}>
         {/* Chat button */}
         {!effectiveReadOnly && (
           <button
@@ -122,7 +139,7 @@ export default memo(function AdminSessionHeader({
             aria-pressed={chatOpen}
           >
             <MessageCircle size={20} />
-            <span className="text-[10px] font-medium">채팅</span>
+            {!isTablet && <span className="text-[10px] font-medium">채팅</span>}
           </button>
         )}
         {/* Timer button */}
@@ -141,7 +158,7 @@ export default memo(function AdminSessionHeader({
               ) : (
                 <>
                   <Clock size={20} />
-                  <span className="text-[10px] font-medium">타이머</span>
+                  {!isTablet && <span className="text-[10px] font-medium">타이머</span>}
                 </>
               )}
             </button>
@@ -161,25 +178,37 @@ export default memo(function AdminSessionHeader({
             </AnimatePresence>
           </div>
         )}
-        <Badge variant="neutral" className="py-2 px-3.5 text-sm">
-          <Users size={16} className="mr-1.5" />
-          {count}명
-        </Badge>
-        {totalTickets > 0 && <Badge variant="neutral" className="py-2 px-3.5 text-sm">{totalTickets}장 티켓</Badge>}
+        {/* Tablet: participants drawer toggle (replaces count badge) */}
+        {isTablet && onRightDrawer ? (
+          <button
+            onClick={onRightDrawer}
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all active:scale-95"
+            aria-label="참여자 패널 열기"
+          >
+            <Users size={18} />
+            <span className="text-sm font-semibold text-slate-600">{count}</span>
+          </button>
+        ) : (
+          <Badge variant="neutral" className="py-2 px-3.5 text-sm">
+            <Users size={16} className="mr-1.5" />
+            {count}명
+          </Badge>
+        )}
+        {!isTablet && totalTickets > 0 && <Badge variant="neutral" className="py-2 px-3.5 text-sm">{totalTickets}장 티켓</Badge>}
         {!effectiveReadOnly && isSetting && (
           <Button onClick={onStartSession} variant="primary" size="sm">
-            <Play size={18} />
-            시작하기
+            <Play size={isTablet ? 16 : 18} />
+            {isTablet ? '시작' : '시작하기'}
           </Button>
         )}
         {!effectiveReadOnly && !isSetting && (
           <>
             <Button onClick={onPresentMode} variant="primary" size="sm">
-              <Monitor size={18} />
-              발표 모드
+              <Monitor size={isTablet ? 16 : 18} />
+              {isTablet ? '발표' : '발표 모드'}
             </Button>
             <Button onClick={onEndSession} variant="secondary" size="sm">
-              <Square size={18} />
+              <Square size={isTablet ? 16 : 18} />
               종료
             </Button>
           </>

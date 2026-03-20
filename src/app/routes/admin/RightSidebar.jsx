@@ -173,7 +173,30 @@ export default memo(function RightSidebar({
   voteCounts,
   studentUrl,
   sidebarCollapsed,
+  isDrawer = false,
 }) {
+  const content = effectiveReadOnly ? (
+    <ReadOnlyRightSidebar
+      session={session}
+      participants={participants}
+      leaderboard={leaderboard}
+      voteCounts={voteCounts}
+    />
+  ) : (
+    <ActiveRightSidebar
+      session={session}
+      sessionId={sessionId}
+      count={count}
+      onlineList={onlineList}
+      leaderboard={leaderboard}
+      voteCounts={voteCounts}
+      studentUrl={studentUrl}
+    />
+  );
+
+  // In drawer mode, content is rendered by parent — no wrapper needed
+  if (isDrawer) return content;
+
   return (
     <motion.div
       animate={{ width: sidebarCollapsed ? 0 : '28%', minWidth: sidebarCollapsed ? 0 : 280 }}
@@ -181,24 +204,7 @@ export default memo(function RightSidebar({
       className="border-l border-slate-200 bg-white overflow-hidden shrink-0 min-w-0 max-w-[460px] h-full"
     >
       <div className="min-w-[280px] p-5 space-y-3 overflow-y-auto h-full scrollbar-hide">
-        {effectiveReadOnly ? (
-          <ReadOnlyRightSidebar
-            session={session}
-            participants={participants}
-            leaderboard={leaderboard}
-            voteCounts={voteCounts}
-          />
-        ) : (
-          <ActiveRightSidebar
-            session={session}
-            sessionId={sessionId}
-            count={count}
-            onlineList={onlineList}
-            leaderboard={leaderboard}
-            voteCounts={voteCounts}
-            studentUrl={studentUrl}
-          />
-        )}
+        {content}
       </div>
     </motion.div>
   );

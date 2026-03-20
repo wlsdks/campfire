@@ -289,11 +289,24 @@ transition={{ delay: index * 0.05 }}
 
 ## 9. 레이아웃 (Layout)
 
-### Admin 3패널
+### Admin 3패널 (Desktop 1024px+)
 ```
 좌측: 28% (min 280px, max 460px) — 질문 관리
 중앙: flex-1 — 시각화/결과
 우측: 28% (min 280px, max 460px) — 참여자/상호작용
+패널 접기: motion.div width 0 전환, 좌측 열기 버튼 표시
+```
+
+### Admin 태블릿 (768~1023px)
+```
+breakpoint: useMediaQuery('(max-width: 1023px)')
+중앙: flex-1 p-4 (전폭, 패딩 축소)
+좌측/우측: 오버레이 드로어 (fixed, w-[340px], max-w-[85vw])
+드로어 열기: 헤더 List(좌) / Users(우) 아이콘 버튼
+드로어 닫기: 백드롭 클릭 또는 X 버튼
+애니메이션: Framer Motion x: -100%→0 (좌) / x: 100%→0 (우), 0.25s ease
+백드롭: bg-black/30 z-40
+헤더 컴팩트: 세션ID·경과시간 숨김, 버튼 라벨 축소 (발표/종료)
 ```
 
 ### 학생 모바일 (390x844 기준)
