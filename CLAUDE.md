@@ -212,7 +212,7 @@ CTA hover:       hover:bg-slate-800 (#1E293B)
 CTA dark mode:   dark:bg-slate-100 dark:text-slate-900
 
 악센트(indigo):  차트 바, 포커스 링, 진행바, 브랜드 아이콘(Radio)
-브랜드 아이콘:   text-indigo-600 (Radio 아이콘)
+브랜드 아이콘:   사자 마스코트 (PickMascot) — 헤더, 로그인, 빈 상태
 Input focus:     focus:ring-indigo-500/20 focus:border-indigo-500
 
 배지 primary:    bg-slate-100 text-slate-700
@@ -230,7 +230,7 @@ Input focus:     focus:ring-indigo-500/20 focus:border-indigo-500
 |------|-------------------|-------------------|
 | CTA 버튼 | `bg-indigo-600` | `bg-slate-900` (dark CTA) |
 | 배지 | `bg-indigo-50 text-indigo-700` | `bg-slate-100 text-slate-700` |
-| 아이콘 | Sparkles in colored circle | Radio icon, bare |
+| 아이콘 | Sparkles in colored circle | 사자 마스코트 또는 bare lucide 아이콘 |
 | 카드 좌측 | `border-l-3 border-indigo-500` | `ring-1` or bg change |
 | 선택지 색상 | A=인디고 B=에메랄드 C=앰버 D=바이올렛 | 전부 slate 모노크로매틱 |
 | 바 차트 | 5색 레인보우 | 인디고 그라데이션 (브랜드) |
