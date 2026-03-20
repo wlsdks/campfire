@@ -171,48 +171,48 @@ export default function StudentBottomBar({ sessionId }) {
         <div className="max-w-xl mx-auto px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
         <ReactionBar sessionId={sessionId} />
         <div className="mt-3 pt-3">
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid grid-cols-4 gap-2.5">
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={toggleHand}
               aria-pressed={isRaised}
-              className={`h-12 rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-1.5 ${
+              className={`h-14 rounded-xl font-medium text-sm transition-all flex flex-col items-center justify-center gap-0.5 ${
                 isRaised
                   ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
-                  : 'bg-slate-50 text-slate-600 hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600'
+                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700'
               }`}
             >
-              <Hand size={18} />
-              {isRaised ? '내리기' : '손들기'}
+              <Hand size={20} />
+              <span className="text-[11px]">{isRaised ? '내리기' : '손들기'}</span>
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowQuestionInput(true)}
-              className="h-12 rounded-xl bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-1.5"
+              className="h-14 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 transition-all flex flex-col items-center justify-center gap-0.5"
             >
-              <MessageCircle size={18} />
-              긴급
+              <MessageCircle size={20} />
+              <span className="text-[11px]">긴급</span>
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={handleOpenQA}
-              className="h-12 rounded-xl bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-1.5 relative"
+              className="h-14 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 transition-all flex flex-col items-center justify-center gap-0.5 relative"
             >
-              <HelpCircle size={18} />
-              질문
+              <HelpCircle size={20} />
+              <span className="text-[11px]">질문</span>
               {hasNewQuestion && (
-                <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
               )}
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={handleOpenChat}
-              className="h-12 rounded-xl bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-1.5 relative"
+              className="h-14 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 transition-all flex flex-col items-center justify-center gap-0.5 relative"
             >
-              <MessageSquare size={18} />
-              채팅
+              <MessageSquare size={20} />
+              <span className="text-[11px]">채팅</span>
               {hasUnread && (
-                <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
               )}
             </motion.button>
           </div>
