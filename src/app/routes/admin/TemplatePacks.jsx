@@ -34,14 +34,22 @@ function PackQuestionPreview({ question, index }) {
 
 function PackCard({ pack, onImport, imported, index }) {
   const [expanded, setExpanded] = useState(false);
+  const cardRef = useRef(null);
   const typeLabels = [...new Set(pack.questions.map((q) => q.type))];
   const PackIcon = ICON_MAP[pack.icon] || Package;
+
+  useEffect(() => {
+    if (expanded && cardRef.current) {
+      setTimeout(() => cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 300);
+    }
+  }, [expanded]);
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: index * 0.06, ease: 'easeOut' }}
+      ref={cardRef}
       className={`rounded-xl border overflow-hidden transition-all duration-200 ${
         expanded
           ? 'border-slate-300 dark:border-slate-600 shadow-md'
