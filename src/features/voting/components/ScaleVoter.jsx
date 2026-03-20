@@ -2,7 +2,7 @@ import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId } from '@/lib/participant';
 import { motion } from 'framer-motion';
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, memo } from 'react';
 import VoteConfirm from './VoteConfirm';
 
 /**
@@ -24,7 +24,7 @@ function getScaleColor(value) {
   return 'bg-slate-900';
 }
 
-export default function ScaleVoter({ sessionId, questionId, disabled = false }) {
+export default memo(function ScaleVoter({ sessionId, questionId, disabled = false }) {
   const [value, setValue] = useState(50);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -165,4 +165,4 @@ export default function ScaleVoter({ sessionId, questionId, disabled = false }) 
       </motion.button>
     </motion.div>
   );
-}
+})

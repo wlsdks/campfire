@@ -2,7 +2,7 @@ import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId } from '@/lib/participant';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import VoteConfirm from './VoteConfirm';
 import StudentLiveResults from './StudentLiveResults';
 
@@ -14,7 +14,7 @@ const OPTION_STYLES = [
   { bg: 'bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700', text: 'text-slate-800 dark:text-slate-200', badge: 'bg-slate-500', letter: 'E' },
 ];
 
-export default function ChoiceVoter({ sessionId, questionId, options, disabled = false }) {
+export default memo(function ChoiceVoter({ sessionId, questionId, options, disabled = false }) {
   const [voted, setVoted] = useState(false);
   const [selected, setSelected] = useState(null);
 
@@ -84,4 +84,4 @@ export default function ChoiceVoter({ sessionId, questionId, options, disabled =
       })}
     </div>
   );
-}
+})

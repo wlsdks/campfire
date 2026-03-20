@@ -2,7 +2,7 @@ import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId } from '@/lib/participant';
 import { motion } from 'framer-motion';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, memo } from 'react';
 import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -57,7 +57,7 @@ function SortableRankItem({ id, label, position }) {
   );
 }
 
-export default function RankingVoter({ sessionId, questionId, options = [], disabled = false }) {
+export default memo(function RankingVoter({ sessionId, questionId, options = [], disabled = false }) {
   const pid = getParticipantId();
 
   // Shuffle items deterministically per student
@@ -150,4 +150,4 @@ export default function RankingVoter({ sessionId, questionId, options = [], disa
       </motion.button>
     </motion.div>
   );
-}
+})

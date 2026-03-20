@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ref, set, serverTimestamp } from 'firebase/database';
 import { Lock } from 'lucide-react';
@@ -28,7 +28,7 @@ const BET_LABELS = { 1: '1x 안전', 2: '2x 자신', 3: '3x 올인' };
  * @param {Object} props.question
  * @param {function} [props.renderResult] - Render function called with currentVote when quiz is revealed and user voted
  */
-export default function QuizVoter({ sessionId, questionId, question, renderResult, disabled = false }) {
+export default memo(function QuizVoter({ sessionId, questionId, question, renderResult, disabled = false }) {
   const participantId = getParticipantId();
   const { votes } = useVotes(sessionId, questionId);
   const currentVote = votes[participantId] || null;
@@ -150,4 +150,4 @@ export default function QuizVoter({ sessionId, questionId, question, renderResul
       </AnimatePresence>
     </div>
   );
-}
+})

@@ -1,7 +1,7 @@
 import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId } from '@/lib/participant';
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, MessageCircle, Cloud } from 'lucide-react';
 import Button from '@/components/ui/Button';
@@ -55,7 +55,7 @@ function SubmitConfirm({ type, value }) {
   );
 }
 
-export default function TextInput({ sessionId, questionId, type = 'wordcloud', placeholder, maxLength = 50, disabled = false }) {
+export default memo(function TextInput({ sessionId, questionId, type = 'wordcloud', placeholder, maxLength = 50, disabled = false }) {
   const [text, setText] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submittedValue, setSubmittedValue] = useState('');
@@ -129,4 +129,4 @@ export default function TextInput({ sessionId, questionId, type = 'wordcloud', p
       </Button>
     </motion.form>
   );
-}
+})

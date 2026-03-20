@@ -1,7 +1,7 @@
 import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId } from '@/lib/participant';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, memo } from 'react';
 import { motion } from 'framer-motion';
 import { Send } from 'lucide-react';
 import Button from '@/components/ui/Button';
@@ -100,7 +100,7 @@ function AnswerDistribution({ sessionId, questionId, correctAnswer }) {
   );
 }
 
-export default function FillBlankVoter({ sessionId, questionId, title, correctAnswer, disabled = false }) {
+export default memo(function FillBlankVoter({ sessionId, questionId, title, correctAnswer, disabled = false }) {
   const [answer, setAnswer] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -181,4 +181,4 @@ export default function FillBlankVoter({ sessionId, questionId, title, correctAn
       </div>
     </motion.div>
   );
-}
+})

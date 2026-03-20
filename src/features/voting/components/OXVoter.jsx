@@ -2,11 +2,11 @@ import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId } from '@/lib/participant';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import VoteConfirm from './VoteConfirm';
 import StudentLiveResults from './StudentLiveResults';
 
-export default function OXVoter({ sessionId, questionId, disabled = false }) {
+export default memo(function OXVoter({ sessionId, questionId, disabled = false }) {
   const [voted, setVoted] = useState(false);
   const [selected, setSelected] = useState(null);
 
@@ -68,4 +68,4 @@ export default function OXVoter({ sessionId, questionId, disabled = false }) {
       </motion.button>
     </div>
   );
-}
+})

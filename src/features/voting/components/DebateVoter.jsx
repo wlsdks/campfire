@@ -2,7 +2,7 @@ import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId } from '@/lib/participant';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, memo } from 'react';
 import { useVotes } from '@/hooks/useVotes';
 import { Users } from 'lucide-react';
 import VoteConfirm from './VoteConfirm';
@@ -71,7 +71,7 @@ function DebateLiveRatio({ sessionId, questionId, mySide }) {
   );
 }
 
-export default function DebateVoter({ sessionId, questionId, disabled = false }) {
+export default memo(function DebateVoter({ sessionId, questionId, disabled = false }) {
   const [side, setSide] = useState(null); // 'for' | 'against'
   const [opinion, setOpinion] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -187,4 +187,4 @@ export default function DebateVoter({ sessionId, questionId, disabled = false })
       </AnimatePresence>
     </motion.div>
   );
-}
+})

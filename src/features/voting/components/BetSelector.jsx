@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { motion } from 'framer-motion';
 import { BET_OPTIONS } from '@/lib/quiz';
 import { Shield, Target, Flame } from 'lucide-react';
@@ -10,7 +10,7 @@ const BET_DESCRIPTIONS = [
   '정답 3배, 오답 -60점',
 ];
 
-export default function BetSelector({ onSelect }) {
+export default memo(function BetSelector({ onSelect }) {
   const [selected, setSelected] = useState(null);
 
   function handleSelect(multiplier) {
@@ -91,4 +91,4 @@ export default function BetSelector({ onSelect }) {
       </div>
     </motion.div>
   );
-}
+})

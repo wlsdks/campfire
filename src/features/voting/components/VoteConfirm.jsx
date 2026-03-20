@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 
 function AnimatedCheck() {
   return (
@@ -32,7 +32,7 @@ function AnimatedCheck() {
   );
 }
 
-export default function VoteConfirm({
+export default memo(function VoteConfirm({
   submittedLabel = '투표 완료!',
   waitingLabel = '결과를 기다리는 중...',
   submittedDescription = '응답이 기록되었습니다',
@@ -86,4 +86,4 @@ export default function VoteConfirm({
       </div>
     </motion.div>
   );
-}
+})
