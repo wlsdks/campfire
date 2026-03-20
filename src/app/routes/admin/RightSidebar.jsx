@@ -63,7 +63,7 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
   const activeQ = activeQId ? session?.questions?.[activeQId] : null;
   const voted = activeQ?.votes ? Object.keys(activeQ.votes).length : 0;
   const total = count || 0;
-  const pct = total > 0 ? Math.round((voted / total) * 100) : 0;
+  const pct = total > 0 ? Math.min(100, Math.round((voted / total) * 100)) : 0;
 
   return (
     <>
@@ -137,7 +137,7 @@ function ReadOnlyRightSidebar({ session, participants, leaderboard, voteCounts }
     }
   });
   const activeCount = voterIds.size;
-  const pct = allParticipants > 0 ? Math.round((activeCount / allParticipants) * 100) : 0;
+  const pct = allParticipants > 0 ? Math.min(100, Math.round((activeCount / allParticipants) * 100)) : 0;
 
   return (
     <>
