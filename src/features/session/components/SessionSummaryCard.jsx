@@ -1,15 +1,19 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Target, Flame, Hash, Star } from 'lucide-react';
+import { Trophy, Target, Hash, Sparkle, Flame, CheckCheck, Zap, Crown } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import { useScores } from '@/features/quiz/api/useScores';
+import { useAchievements } from '@/features/quiz/api/useAchievements';
 import { getParticipantId, getNickname } from '@/lib/participant';
 import CelebrationMascot from './CelebrationMascot';
 
+const ACHIEVEMENT_ICONS = { Sparkle, Flame, CheckCheck, Zap, Crown };
+
 /** Pick a fun title based on student performance. */
-function getTitle({ answeredCount, correctRate, rank, totalParticipants, bestStreak, totalScore }) {
+function getTitle({ answeredCount, correctRate, rank, totalParticipants, bestStreak, totalScore, achievementCount }) {
   if (answeredCount === 0) return '참여해주셔서 감사합니다';
   if (rank === 1 && totalParticipants > 2) return '오늘의 1등!';
+  if (achievementCount >= 4) return '업적 마스터!';
   if (rank <= 3 && totalParticipants > 3) return '상위권 달성!';
   if (bestStreak >= 5) return '연승의 달인';
   if (correctRate >= 90 && answeredCount >= 3) return '완벽에 가까운 정답률';
@@ -34,18 +38,23 @@ function StatItem({ icon: Icon, label, value, delay = 0 }) {
   );
 }
 
-/** Animated badge that springs in. */
-function AnimBadge({ variant, icon: Icon, children, delay }) {
+/** Achievement item in summary. */
+function AchievementItem({ achievement, index }) {
+  const Icon = ACHIEVEMENT_ICONS[achievement.icon] || Sparkle;
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay, type: 'spring', stiffness: 300, damping: 22 }}
+      initial={{ opacity: 0, x: -8 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 26, delay: 0.5 + index * 0.08 }}
+      className="flex items-center gap-2.5 py-2"
     >
-      <Badge variant={variant}>
-        <Icon size={12} className="mr-1" />
-        {children}
-      </Badge>
+      <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+        <Icon size={14} className="text-slate-600" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-sm font-semibold text-slate-800 leading-tight">{achievement.label}</p>
+        <p className="text-xs text-slate-400 leading-tight">{achievement.description}</p>
+      </div>
     </motion.div>
   );
 }
@@ -81,17 +90,18 @@ function useStudentStats(session, sessionId) {
       bestStreak: myScore?.bestStreak || myScore?.streak || 0,
       rank: rankIdx >= 0 ? rankIdx + 1 : 0,
       totalParticipants: leaderboard.length,
+      scores,
     };
   }, [session?.questions, scores, leaderboard, participantId]);
 }
 
 export default function SessionSummaryCard({ session, sessionId }) {
   const stats = useStudentStats(session, sessionId);
+  const { achievements } = useAchievements(session, stats.scores);
   const nickname = getNickname();
-  const title = getTitle(stats);
+  const title = getTitle({ ...stats, achievementCount: achievements.length });
 
-  const hasBadges = stats.rank > 0 || stats.bestStreak >= 2;
-  const allAnswered = stats.answeredCount === stats.totalQuestions && stats.totalQuestions > 0;
+  const hasRank = stats.rank > 0;
 
   return (
     <div className="w-full max-w-sm mx-auto space-y-4">
@@ -122,7 +132,7 @@ export default function SessionSummaryCard({ session, sessionId }) {
         </div>
 
         {/* Stats grid */}
-        <div className="px-5 pb-5">
+        <div className="px-5 pb-4">
           <div className="bg-slate-50 rounded-xl p-4">
             <div className="flex items-start justify-around">
               <StatItem icon={Hash} label="참여" value={`${stats.answeredCount}/${stats.totalQuestions}`} delay={0.25} />
@@ -136,29 +146,41 @@ export default function SessionSummaryCard({ session, sessionId }) {
           </div>
         </div>
 
-        {/* Badges */}
-        {hasBadges && (
-          <div className="px-5 pb-5 flex items-center justify-center gap-2 flex-wrap">
-            {stats.rank > 0 && (
-              <AnimBadge variant="primary" icon={Trophy} delay={0.4}>
-                {stats.totalParticipants}명 중 {stats.rank}위
-              </AnimBadge>
-            )}
-            {stats.bestStreak >= 2 && (
-              <AnimBadge variant="neutral" icon={Flame} delay={0.45}>
-                최고 {stats.bestStreak}연속 정답
-              </AnimBadge>
-            )}
-            {allAnswered && (
-              <AnimBadge variant="primary" icon={Star} delay={0.5}>
-                전문항 참여
-              </AnimBadge>
-            )}
+        {/* Rank badge */}
+        {hasRank && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="px-5 pb-4 flex justify-center"
+          >
+            <Badge variant="primary">
+              <Trophy size={12} className="mr-1" />
+              {stats.totalParticipants}명 중 {stats.rank}위
+            </Badge>
+          </motion.div>
+        )}
+
+        {/* Achievements */}
+        {achievements.length > 0 && (
+          <div className="px-5 pb-5">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.45 }}
+            >
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">획득한 업적</p>
+              <div className="bg-slate-50 rounded-xl px-3.5 py-1 divide-y divide-slate-100">
+                {achievements.map((a, i) => (
+                  <AchievementItem key={a.id} achievement={a} index={i} />
+                ))}
+              </div>
+            </motion.div>
           </div>
         )}
       </motion.div>
 
-      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}
+      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
         className="text-center text-xs text-slate-400"
       >수업이 종료되었습니다</motion.p>
     </div>

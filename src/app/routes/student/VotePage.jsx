@@ -20,6 +20,9 @@ import TimerCountdown from '@/features/timer/components/TimerCountdown';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, Clock } from 'lucide-react';
 import { useTimer } from '@/features/timer/api/useTimer';
+import { useScores } from '@/features/quiz/api/useScores';
+import { useAchievements } from '@/features/quiz/api/useAchievements';
+import AchievementToast from '@/features/quiz/components/AchievementToast';
 import { getQuizReward } from '@/lib/quiz';
 
 const TYPE_LABELS = {
@@ -105,6 +108,10 @@ export default function VotePage({ sessionId }) {
     prevQuestionRef.current = currentQId;
     prevEndTimeRef.current = endTime;
   }, [session?.currentQuestion, endTime]);
+
+  // Achievement system — computed from existing votes/scores
+  const { scores } = useScores(sessionId);
+  const { achievements } = useAchievements(session, scores);
 
   // Compute question progress: "질문 1/3"
   // Must be before all conditional returns to satisfy React hooks rules.
@@ -255,6 +262,7 @@ export default function VotePage({ sessionId }) {
       </div>
 
       <StudentBottomBar sessionId={sessionId} />
+      <AchievementToast achievements={achievements} />
     </div>
   );
 }

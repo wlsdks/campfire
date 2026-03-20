@@ -1,5 +1,6 @@
 import { memo, useMemo } from 'react';
 import { BarChart3, Trophy, Circle, Cloud, MessageSquare, Swords, Thermometer, AlertTriangle } from 'lucide-react';
+import AchievementSummary from '@/features/quiz/components/AchievementSummary';
 import ExportMenu from './ExportMenu';
 
 const QTYPE_META = {
@@ -45,11 +46,14 @@ export default memo(function ClassSummary({ session, participants, scores, leade
   const questions = session?.questions || {};
   const questionList = Object.values(questions);
   const participantCount = Object.keys(participants).length;
-  const voterIds = new Set();
-  questionList.forEach((q) => {
-    if (q.votes) Object.keys(q.votes).forEach((pid) => voterIds.add(pid));
-  });
-  const activeCount = voterIds.size;
+  const voterIds = useMemo(() => {
+    const ids = new Set();
+    questionList.forEach((q) => {
+      if (q.votes) Object.keys(q.votes).forEach((pid) => ids.add(pid));
+    });
+    return [...ids];
+  }, [questions]);
+  const activeCount = voterIds.length;
   const activityRate = participantCount > 0 ? Math.round((activeCount / participantCount) * 100) : 0;
   const topStudent = leaderboard.length > 0 ? leaderboard[0] : null;
 
@@ -136,6 +140,9 @@ export default memo(function ClassSummary({ session, participants, scores, leade
           </div>
         </div>
       )}
+
+      {/* Achievement stats */}
+      <AchievementSummary questions={questions} scores={scores} participantIds={voterIds} />
 
       {/* Per-question breakdown */}
       {insights.length > 0 && (

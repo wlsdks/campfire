@@ -305,6 +305,7 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 2026-03-20 | improve: Admin 태블릿 반응형 — <1024px에서 3패널→전폭 중앙+오버레이 드로어. useMediaQuery 훅 신설, AdminPage에 좌/우 드로어 상태 추가, AdminSessionHeader에 List/Users 토글 버튼, RightSidebar에 isDrawer prop. 헤더 컴팩트(세션ID·경과시간 숨김, 버튼 라벨 축소). Framer Motion slide-in+백드롭. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 2026-03-20 | feat: 수업 요약 카드 — 세션 종료 시 학생별 "오늘의 기록" 요약 카드. SessionSummaryCard(166줄) + CelebrationMascot(65줄) + SessionEndedPage(20줄). 기존 votes+scores에서 참여수/정답률/점수/순위 계산. 성과별 동적 타이틀(1등!/상위권!/수고했어요!). 전문항 참여·연속정답 배지. VotePage에서 status==='ended' 시 자동 전환. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 2026-03-20 | feat: 마스코트 idle 애니메이션 — WaitingPage 마스코트에 5종 랜덤 idle 동작 추가(눈 좌우 둘러보기, 호기심 기울기, 이중 깜빡임, 안테나 흔들기). IdleMascot.jsx(198줄) 추출. useAnimationControls 명령적 시퀀싱, busyRef 동작 충돌 방지, 별도 주기적 자연 깜빡임. 3-6초 랜덤 간격. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
+2026-03-20 | feat: 숨겨진 업적 시스템 — 5종 업적(첫정답/5연속/전문항참여/번개응답/만점왕). useAchievements 훅(기존 votes+scores 순수 계산), AchievementToast(학생 실시간 알림, spring+큐), SessionSummaryCard에 업적 리스트(stagger), AchievementSummary(강사 달성 인원 통계). Firebase 구조 추가 불필요. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 

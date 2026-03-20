@@ -131,6 +131,7 @@
 | 태블릿 반응형 (768px) | 강사 | ✅ 완료 | 768~1023px 태블릿에서 3패널→전폭 중앙 레이아웃 전환. useMediaQuery 훅으로 실시간 감지. 좌측(질문 관리)/우측(참여자·상호작용) 사이드바가 오버레이 드로어로 변환. 헤더에 List/Users 토글 버튼 추가, 컴팩트 라벨(발표/종료), 세션 ID·경과시간 숨김. Framer Motion slide-in 애니메이션 + 백드롭. max-w-[85vw]로 모바일에서도 화면 덮지 않음. 읽기전용(완료 세션)에서도 동일 동작 |
 | 수업 요약 카드 | 학생 | ✅ 완료 | 세션 종료 시 학생별 "오늘의 기록" 요약 카드 표시. 참여 문항 수(N/전체), 정답률(%), 총점, 순위(N명 중 M위), 최고 연속 정답, 전문항 참여 배지. 성과에 따른 동적 타이틀(오늘의 1등!/상위권 달성!/수고했어요! 등). CelebrationMascot(happy eyes+sparkles) SVG 애니메이션. 기존 session.questions 투표 데이터 + scores에서 실시간 계산, 별도 Firebase 구조 불필요. SessionEndedPage가 VotePage에서 session.status==='ended' 시 자동 전환 |
 | 마스코트 idle 애니메이션 | 학생 | ✅ 완료 | WaitingPage 마스코트에 랜덤 idle 동작 추가. 5종 액션(눈 좌우 둘러보기, 호기심 기울기, 이중 깜빡임, 안테나 흔들기)이 3-6초 간격으로 랜덤 발동. 별도 주기적 자연 깜빡임. useAnimationControls로 명령적 시퀀싱, busyRef로 동작 충돌 방지. 기본 호흡 부유+안테나 맥동은 연속 유지. IdleMascot.jsx(198줄) 추출, WaitingPage에서 import. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0 |
+| 숨겨진 업적 시스템 | 양쪽 | ✅ 완료 | 학생이 세션 중 달성 조건을 충족하면 업적 배지를 획득. 5종 업적: 첫 정답(Sparkle), 5연속 정답(Flame), 전문항 참여(CheckCheck), 번개 응답/3초 이내(Zap), 만점왕/정답률 100%(Crown). 학생: VotePage에서 실시간 AchievementToast(spring 애니메이션, 3.5초 표시, 큐 기반), SessionSummaryCard에 획득 업적 리스트(아이콘+설명, stagger 애니메이션), 업적 4개 이상 시 "업적 마스터!" 타이틀. 강사: ClassSummary에 AchievementSummary(각 업적별 달성 학생 수 표시). useAchievements 훅(기존 votes/scores에서 순수 계산, Firebase 구조 추가 불필요). 3뷰포트(1280/768/390) 확인, 콘솔 에러 0 |
 
 ---
 
