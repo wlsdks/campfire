@@ -166,7 +166,7 @@ export default function QuestionLibraryView({ adminUid }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {/* Header actions */}
       <div className="flex items-center justify-between">
         <div>
@@ -267,7 +267,7 @@ export default function QuestionLibraryView({ adminUid }) {
           className="py-8"
         />
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-3">
           <AnimatePresence mode="popLayout">
             {filtered.map((q, i) => (
               <LibraryQuestionCard
