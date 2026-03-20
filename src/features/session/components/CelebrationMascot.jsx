@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-/** Mascot with happy eyes and sparkles for session end celebration. */
+/** Lion mascot with happy eyes and sparkles for session end celebration. */
 export default function CelebrationMascot() {
   return (
     <motion.svg
@@ -13,51 +13,68 @@ export default function CelebrationMascot() {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
     >
-      {/* Body */}
-      <circle cx="60" cy="68" r="32" fill="#1E293B" />
-      <ellipse cx="60" cy="62" rx="24" ry="20" fill="#334155" opacity="0.5" />
+      {/* Mane — fluffy bumps */}
+      <circle cx="60" cy="30" r="16" fill="#F59E0B" />
+      <circle cx="38" cy="36" r="15" fill="#F59E0B" />
+      <circle cx="82" cy="36" r="15" fill="#F59E0B" />
+      <circle cx="28" cy="54" r="14" fill="#F59E0B" />
+      <circle cx="92" cy="54" r="14" fill="#F59E0B" />
+      <circle cx="30" cy="74" r="13" fill="#F59E0B" />
+      <circle cx="90" cy="74" r="13" fill="#F59E0B" />
+      <circle cx="42" cy="88" r="12" fill="#F59E0B" />
+      <circle cx="78" cy="88" r="12" fill="#F59E0B" />
+      <circle cx="60" cy="92" r="12" fill="#F59E0B" />
+      <circle cx="60" cy="60" r="38" fill="#F59E0B" />
 
-      {/* Happy eyes */}
+      {/* Face */}
+      <circle cx="60" cy="62" r="30" fill="#FDE68A" />
+
+      {/* Ears */}
+      <circle cx="34" cy="34" r="8" fill="#F59E0B" />
+      <circle cx="34" cy="34" r="5" fill="#FDE68A" />
+      <circle cx="86" cy="34" r="8" fill="#F59E0B" />
+      <circle cx="86" cy="34" r="5" fill="#FDE68A" />
+
+      {/* Happy eyes (upside-down arcs) */}
       <motion.path
-        d="M44 63 Q50 57 56 63"
-        stroke="white" strokeWidth="2.5" strokeLinecap="round" fill="none"
+        d="M42 56 Q48 50 54 56"
+        stroke="#1E293B" strokeWidth="2.5" strokeLinecap="round" fill="none"
         initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
+        transition={{ duration: 0.4, delay: 0.3 }}
       />
       <motion.path
-        d="M64 63 Q70 57 76 63"
-        stroke="white" strokeWidth="2.5" strokeLinecap="round" fill="none"
+        d="M66 56 Q72 50 78 56"
+        stroke="#1E293B" strokeWidth="2.5" strokeLinecap="round" fill="none"
         initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-        transition={{ duration: 0.5, delay: 0.35 }}
+        transition={{ duration: 0.4, delay: 0.35 }}
       />
+
+      {/* Nose */}
+      <ellipse cx="60" cy="64" rx="3.5" ry="2.5" fill="#D97706" />
 
       {/* Wide smile */}
       <motion.path
-        d="M48 76 Q60 86 72 76"
-        stroke="white" strokeWidth="2.5" strokeLinecap="round" fill="none"
+        d="M50 69 Q60 78 70 69"
+        stroke="#D97706" strokeWidth="2" strokeLinecap="round" fill="none"
         initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
+        transition={{ duration: 0.4, delay: 0.4 }}
       />
 
-      {/* Antenna */}
-      <line x1="60" y1="36" x2="60" y2="24" stroke="#1E293B" strokeWidth="3" strokeLinecap="round" />
-      <motion.circle
-        cx="60" cy="21" r="5" fill="#64748B"
-        animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
-        transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-      />
+      {/* Cheeks */}
+      <circle cx="39" cy="65" r="5" fill="#FBBF24" opacity="0.5" />
+      <circle cx="81" cy="65" r="5" fill="#FBBF24" opacity="0.5" />
 
       {/* Sparkles */}
-      <motion.path d="M26 40 L28 36 L30 40 L26 40" fill="#94A3B8"
-        animate={{ opacity: [0, 0.6, 0], y: [0, -3, 0] }}
+      <motion.path d="M18 30 L20 26 L22 30 L18 30" fill="#FBBF24"
+        animate={{ opacity: [0, 0.8, 0], y: [0, -3, 0] }}
         transition={{ duration: 2, repeat: Infinity, delay: 0 }}
       />
-      <motion.path d="M90 50 L92 46 L94 50 L90 50" fill="#94A3B8"
-        animate={{ opacity: [0, 0.5, 0], y: [0, -2, 0] }}
+      <motion.path d="M96 40 L98 36 L100 40 L96 40" fill="#FBBF24"
+        animate={{ opacity: [0, 0.6, 0], y: [0, -2, 0] }}
         transition={{ duration: 2, repeat: Infinity, delay: 0.6 }}
       />
-      <motion.path d="M82 28 L84 24 L86 28 L82 28" fill="#94A3B8"
-        animate={{ opacity: [0, 0.4, 0], y: [0, -2, 0] }}
+      <motion.path d="M88 20 L90 16 L92 20 L88 20" fill="#FBBF24"
+        animate={{ opacity: [0, 0.5, 0], y: [0, -2, 0] }}
         transition={{ duration: 2.5, repeat: Infinity, delay: 1.2 }}
       />
     </motion.svg>
