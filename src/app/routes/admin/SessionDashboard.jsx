@@ -133,7 +133,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
       {/* Content */}
       <div ref={contentRef} className="flex-1 max-w-2xl mx-auto w-full px-6 max-sm:px-4 py-6 space-y-3 overflow-y-auto">
         {/* Tab bar */}
-        <div className="flex gap-1 mb-2">
+        <div className="flex gap-1 pb-3 mb-3 border-b border-slate-200 dark:border-slate-700">
           {TABS.map((tab) => (
             <button key={tab.key} onClick={() => handleTabChange(tab.key)}
               className={`px-4 max-sm:px-3 py-1.5 text-sm font-medium rounded-lg transition-all active:scale-[0.97] whitespace-nowrap ${
