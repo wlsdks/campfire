@@ -331,6 +331,50 @@ function makeUrgentQuestions(sessionStart, questionCount = 3) {
 }
 
 /**
+ * Generate class questions (persistent Q&A board).
+ * Named questions with upvotes, some answered.
+ */
+const CLASS_QUESTIONS = [
+  '이 부분 시험 범위에 포함되나요?',
+  '실습 코드 GitHub에 올려주시나요?',
+  '다음 주 수업 내용이 궁금합니다',
+  '과제 제출 형식이 어떻게 되나요?',
+  '이 개념을 실무에서는 어떻게 활용하나요?',
+  '참고 자료 추천해주실 수 있나요?',
+  '중간고사 범위가 여기까지인가요?',
+  '팀 프로젝트 주제 선정 기준이 있나요?',
+];
+
+function makeClassQuestions(participantIds, participants, sessionStart, questionCount = 4) {
+  const classQuestions = {};
+  const shuffled = [...CLASS_QUESTIONS].sort(() => Math.random() - 0.5);
+  const count = Math.min(questionCount, shuffled.length);
+  const timeSpan = Date.now() - sessionStart;
+
+  for (let i = 0; i < count; i++) {
+    const id = `cq_${uid()}`;
+    const authorIdx = Math.floor(Math.random() * participantIds.length);
+    const authorId = participantIds[authorIdx];
+
+    // Build random upvotes (0-6 students)
+    const upvoteCount = Math.floor(Math.random() * 7);
+    const upvoters = [...participantIds].sort(() => Math.random() - 0.5).slice(0, upvoteCount);
+    const upvotes = {};
+    upvoters.forEach((pid) => { upvotes[pid] = true; });
+
+    classQuestions[id] = {
+      text: shuffled[i],
+      nickname: participants[authorId].nickname,
+      participantId: authorId,
+      timestamp: sessionStart + Math.floor((timeSpan * (i + 1)) / (count + 1)),
+      answered: i === 0, // first one is answered
+      ...(Object.keys(upvotes).length > 0 ? { upvotes } : {}),
+    };
+  }
+  return classQuestions;
+}
+
+/**
  * Generate quiz scores for participants based on their quiz votes.
  * Calculates realistic scores from quiz question results.
  */
@@ -549,6 +593,7 @@ const sessions = {};
     chat: makeChat(ids3, p3, t3 + 10 * 60000, 6),
     handRaises: makeHandRaises(ids3, p3, t3 + 10 * 60000),
     urgentQuestions: makeUrgentQuestions(t3 + 10 * 60000, 2),
+    classQuestions: makeClassQuestions(ids3, p3, t3 + 10 * 60000, 5),
     scores: makeScores(ids3, p3, s3Questions),
     teamBattle: makeTeamBattle(ids3, 3),
   };
@@ -635,6 +680,7 @@ const sessions = {};
     chat: makeChat(ids2, p2, t2 + 15 * 60000, 10),
     handRaises: makeHandRaises(ids2, p2, t2 + 15 * 60000),
     urgentQuestions: makeUrgentQuestions(t2 + 15 * 60000, 4),
+    classQuestions: makeClassQuestions(ids2, p2, t2 + 15 * 60000, 3),
     scores: makeScores(ids2, p2, s2Questions),
   };
 }
@@ -692,6 +738,7 @@ const sessions = {};
     scores: makeScores(ids1, p1, s1AiQuestions),
     chat: makeChat(ids1, p1, t1 + HOUR, 4),
     urgentQuestions: makeUrgentQuestions(t1 + HOUR, 2),
+    classQuestions: makeClassQuestions(ids1, p1, t1 + HOUR, 3),
   };
 
   // Round 2 — setting
@@ -925,6 +972,7 @@ const sessions = {};
     chat: makeChat(ids2, p2, t2 + 5 * 60000, 8),
     handRaises: makeHandRaises(ids2, p2, t2 + 5 * 60000),
     urgentQuestions: makeUrgentQuestions(t2 + 5 * 60000, 3),
+    classQuestions: makeClassQuestions(ids2, p2, t2 + 5 * 60000, 4),
     scores: makeScores(ids2, p2, s2UxQuestions),
   };
 }

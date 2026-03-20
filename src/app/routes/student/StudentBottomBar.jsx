@@ -4,18 +4,21 @@ import { db } from '@/lib/firebase';
 import { getParticipantId, getNickname } from '@/lib/participant';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Hand, MessageCircle, MessageSquare, Send, CheckCircle, AlertCircle } from 'lucide-react';
+import { Hand, MessageCircle, MessageSquare, HelpCircle, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 import ReactionBar from '@/features/reactions/components/ReactionBar';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import ChatPanel from '@/features/chat/components/ChatPanel';
+import ClassQAPanel from '@/features/class-questions/components/ClassQAPanel';
 import { timing } from '@/lib/design-tokens';
 
 export default function StudentBottomBar({ sessionId }) {
   const [showQuestionInput, setShowQuestionInput] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [showQA, setShowQA] = useState(false);
   const [hasUnread, setHasUnread] = useState(false);
+  const [hasNewQuestion, setHasNewQuestion] = useState(false);
   const [questionText, setQuestionText] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState(null);
@@ -26,8 +29,17 @@ export default function StudentBottomBar({ sessionId }) {
     setHasUnread(false);
   };
 
+  const handleOpenQA = () => {
+    setShowQA(true);
+    setHasNewQuestion(false);
+  };
+
   const handleNewMessage = useCallback(() => {
     setHasUnread(true);
+  }, []);
+
+  const handleNewQuestion = useCallback(() => {
+    setHasNewQuestion(true);
   }, []);
 
   const pid = getParticipantId();
@@ -80,6 +92,14 @@ export default function StudentBottomBar({ sessionId }) {
         open={showChat}
         onClose={() => setShowChat(false)}
         onNewMessage={handleNewMessage}
+      />
+
+      {/* Class Q&A panel */}
+      <ClassQAPanel
+        sessionId={sessionId}
+        open={showQA}
+        onClose={() => setShowQA(false)}
+        onNewQuestion={handleNewQuestion}
       />
 
       {/* Question modal */}
@@ -151,34 +171,45 @@ export default function StudentBottomBar({ sessionId }) {
         <div className="max-w-lg mx-auto px-4 pt-2 pb-[calc(0.625rem+env(safe-area-inset-bottom))]">
         <ReactionBar sessionId={sessionId} />
         <div className="border-t border-slate-100 mt-2 pt-2">
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-4 gap-1.5">
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={toggleHand}
               aria-pressed={isRaised}
-              className={`h-11 rounded-lg font-medium text-sm transition-all flex items-center justify-center gap-1.5 ${
+              className={`h-11 rounded-lg font-medium text-xs transition-all flex items-center justify-center gap-1 ${
                 isRaised
                   ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
                   : 'bg-slate-50 text-slate-600 hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600'
               }`}
             >
-              <Hand size={16} />
-              {isRaised ? '손 내리기' : '손들기'}
+              <Hand size={15} />
+              {isRaised ? '내리기' : '손들기'}
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowQuestionInput(true)}
-              className="h-11 rounded-lg bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-1.5"
+              className="h-11 rounded-lg bg-slate-50 text-slate-600 font-medium text-xs hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-1"
             >
-              <MessageCircle size={16} />
-              긴급 질문
+              <MessageCircle size={15} />
+              긴급
+            </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={handleOpenQA}
+              className="h-11 rounded-lg bg-slate-50 text-slate-600 font-medium text-xs hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-1 relative"
+            >
+              <HelpCircle size={15} />
+              질문
+              {hasNewQuestion && (
+                <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500" />
+              )}
             </motion.button>
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={handleOpenChat}
-              className="h-11 rounded-lg bg-slate-50 text-slate-600 font-medium text-sm hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-1.5 relative"
+              className="h-11 rounded-lg bg-slate-50 text-slate-600 font-medium text-xs hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 transition-all flex items-center justify-center gap-1 relative"
             >
-              <MessageSquare size={16} />
+              <MessageSquare size={15} />
               채팅
               {hasUnread && (
                 <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500" />

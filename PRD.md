@@ -99,6 +99,7 @@
 | 긴급 질문 | 학생→강사 | ✅ 완료 | 익명 긴급 질문 전송 |
 | 리액션 | 학생 | ✅ 완료 | 실시간 리액션 버블 — 5종 아이콘별 고유 색상 (탭 시 피드백), 파티클 버스트, 스케일/로테이션 애니메이션, 컬러 버블 오버레이 |
 | 참여자 목록 | 강사 | ✅ 완료 | 접속자 + 답변 횟수(N개 참여) |
+| 수업 질문 보드 | 양쪽 | ✅ 완료 | 학생이 수업 내용에 대해 실명 질문을 올리고, 다른 학생이 추천(upvote)하는 Q&A 보드. 긴급 질문(익명, 일회성)과 분리된 영구적 질문 채널. 학생: 하단 바 "질문" 버튼 → ClassQAPanel(추천순 정렬, 이름/시간 표시, 답변 완료 표시). 추천 토글(participantId 기반, 재추천 취소 가능). 3초 쿨다운. 강사: 우측 사이드바 "수업 질문" 아코디언(미답변 수 배지, 추천 수 표시). "답변 완료" 체크 또는 삭제 가능. Firebase path: sessions/{sessionId}/classQuestions/{qId}(text/nickname/participantId/timestamp/answered/upvotes). database.rules.json 업데이트. seed-demo에 active/reviewing 세션 데모 데이터 추가. 다크 모드 지원. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0 |
 
 ### 2.7 게임 & 이벤트
 
@@ -153,7 +154,7 @@
 
 | 기능 | 대상 | 우선순위 | 설명 |
 |------|------|----------|------|
-| 학생 질문 탭 | 학생 | 높음 | 수업 자체에 대한 질문 (긴급질문과 별도) |
+| ~~학생 질문 탭~~ | 양쪽 | ~~높음~~ ✅ | 수업 질문 보드: 학생이 실명 질문 게시, 추천(upvote) 기능, 강사 답변 완료 표시. 긴급 질문(익명/일회성)과 분리 |
 | ~~세션 종료 2단계~~ | 양쪽 | ~~높음~~ ✅ | 질문받기(reviewing, 14일) → 완전종료(ended). 강사 "질문 받기 중" 배지, 학생 하단 바 활성 유지 |
 | ~~학생 채팅 접근~~ | 학생 | ~~높음~~ ✅ | 학생 하단바에서 채팅 참여 (닉네임 표시, 읽지 않은 메시지 알림) |
 | 수업 결과 리포트 | 강사 | 중간 | 질문별 정답률 ✅ 완료, CSV 내보내기 ✅ 완료, 학생별 참여도 분석은 추가 개발 필요 |
@@ -179,6 +180,7 @@ sessions/
     chat/{messageId}: { text, sender, senderType, timestamp }
     reactions/{reactionId}: { type, timestamp }
     urgentQuestions/{questionId}: { text, timestamp, read }
+    classQuestions/{questionId}: { text, nickname, participantId, timestamp, answered, upvotes/{participantId}: true }
     handRaises/{participantId}: { raised, nickname, timestamp }
     timer: { endTime, duration, running, startedAt }
     speedQuiz: { active, startedAt, totalQuestions }  // transient, removed when speed quiz ends
