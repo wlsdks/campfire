@@ -4,7 +4,7 @@ import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import TimerControls from '@/features/timer/components/TimerControls';
 import TimerRing from '@/features/timer/components/TimerRing';
-import { ArrowLeft, Clock, MessageCircle, Users, Monitor, Play, Square, Layers, List, PanelRight, Zap, Swords, MessageSquareDot, XCircle } from 'lucide-react';
+import { ArrowLeft, Clock, MessageCircle, Users, Monitor, Play, Square, Layers, List, Zap, Swords, MessageSquareDot, XCircle } from 'lucide-react';
 
 function formatElapsed(ms) {
   const totalSec = Math.floor(ms / 1000);

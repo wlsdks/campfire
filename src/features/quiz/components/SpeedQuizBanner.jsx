@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Square } from 'lucide-react';
+import { Zap } from 'lucide-react';
 
 /**
  * SpeedQuizBanner — shown on student screen during speed quiz mode.

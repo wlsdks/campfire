@@ -125,7 +125,7 @@
 
 ### 0. 안전 점검
 ```bash
-cd /Users/jinan/ai/Pick
+cd /Users/jinan/ai/Pinggo
 git checkout background-improve
 git pull origin background-improve   # 원격 변경 반영
 git status

@@ -1,6 +1,6 @@
 import { memo, useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, HelpCircle, Check, Trash2, ChevronUp } from 'lucide-react';
+import { ChevronDown, HelpCircle, ChevronUp } from 'lucide-react';
 import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
