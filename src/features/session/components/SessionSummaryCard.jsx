@@ -95,7 +95,7 @@ function useStudentStats(session, sessionId) {
   }, [session?.questions, scores, leaderboard, participantId]);
 }
 
-export default function SessionSummaryCard({ session, sessionId }) {
+export default function SessionSummaryCard({ session, sessionId, reviewing = false }) {
   const stats = useStudentStats(session, sessionId);
   const { achievements } = useAchievements(session, stats.scores);
   const nickname = getNickname();
@@ -182,7 +182,7 @@ export default function SessionSummaryCard({ session, sessionId }) {
 
       <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
         className="text-center text-xs text-slate-400"
-      >수업이 종료되었습니다</motion.p>
+      >{reviewing ? '하단에서 질문이나 채팅을 보낼 수 있어요' : '수업이 종료되었습니다'}</motion.p>
     </div>
   );
 }

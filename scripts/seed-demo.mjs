@@ -684,11 +684,14 @@ const sessions = {};
     },
   };
   sessions[s1] = {
-    status: 'ended', currentQuestion: q1a, currentMode: 'poll',
+    status: 'reviewing', currentQuestion: q1a, currentMode: 'poll',
     createdAt: t1, courseName: 'AI 프롬프트 엔지니어링', roundNumber: 1,
+    reviewingUntil: now + 10 * DAY,
     participants: p1,
     questions: s1AiQuestions,
     scores: makeScores(ids1, p1, s1AiQuestions),
+    chat: makeChat(ids1, p1, t1 + HOUR, 4),
+    urgentQuestions: makeUrgentQuestions(t1 + HOUR, 2),
   };
 
   // Round 2 — setting

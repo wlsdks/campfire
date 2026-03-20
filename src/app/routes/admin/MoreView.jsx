@@ -66,7 +66,7 @@ function QuickStats({ sessions }) {
     if (!sessions?.length) return null;
     return {
       total: sessions.length,
-      ended: sessions.filter((s) => s.status === 'ended').length,
+      ended: sessions.filter((s) => s.status === 'ended' || s.status === 'reviewing').length,
       participants: sessions.reduce((sum, s) => sum + (s.participantCount || 0), 0),
       questions: sessions.reduce((sum, s) => sum + (s.questionCount || 0), 0),
     };

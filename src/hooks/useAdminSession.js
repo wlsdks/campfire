@@ -65,8 +65,9 @@ export function useAdminSession() {
   const { handleSubmit: submitQuestion } = useQuestionActions(sessionId, session?.questions || {}, session?.currentQuestion, scores, participants);
 
   const isSetting = session?.status === 'setting';
+  const isReviewing = session?.status === 'reviewing';
   const isEnded = session?.status === 'ended';
-  const effectiveReadOnly = readOnly || isEnded;
+  const effectiveReadOnly = readOnly || isEnded || isReviewing;
   const isMaster = adminUser?.role === 'master';
 
   const voteCounts = useMemo(() => {
@@ -131,12 +132,24 @@ export function useAdminSession() {
   }, [sessionId]);
 
   const handleEndSession = useCallback(async () => {
-    if (!window.confirm('클래스를 종료하시겠습니까? 종료 후 학생들은 더 이상 참여할 수 없습니다.')) return;
+    if (!window.confirm('수업을 종료하시겠습니까?\n학생들은 결과를 확인하고, 질문을 보낼 수 있습니다.\n14일 후 자동으로 완전 종료됩니다.')) return;
     try {
-      await update(ref(db, `sessions/${sessionId}`), { status: 'ended', currentMode: 'waiting', currentQuestion: null });
-      handleBack();
+      const reviewingUntil = Date.now() + 14 * 24 * 60 * 60 * 1000; // 14 days
+      await update(ref(db, `sessions/${sessionId}`), {
+        status: 'reviewing',
+        currentMode: 'waiting',
+        currentQuestion: null,
+        reviewingUntil,
+      });
     } catch {}
-  }, [sessionId, handleBack]);
+  }, [sessionId]);
+
+  const handleFullEndSession = useCallback(async () => {
+    if (!window.confirm('완전 종료하시겠습니까?\n학생들은 더 이상 질문을 보낼 수 없습니다.')) return;
+    try {
+      await update(ref(db, `sessions/${sessionId}`), { status: 'ended' });
+    } catch {}
+  }, [sessionId]);
 
   const handleCenterFormSubmit = useCallback(async (formData) => {
     const success = await submitQuestion(formData);
@@ -158,8 +171,8 @@ export function useAdminSession() {
     // Auth
     adminUser, isMaster, handleLogin, handleLogout,
     // Session
-    sessionId, session, loading, readOnly, effectiveReadOnly, isSetting, isEnded,
-    handleSelectSession, handleBack, handleStartSession, handleEndSession,
+    sessionId, session, loading, readOnly, effectiveReadOnly, isSetting, isReviewing, isEnded,
+    handleSelectSession, handleBack, handleStartSession, handleEndSession, handleFullEndSession,
     // Approvals
     pendingAdmins, pendingCount, approveAdmin, rejectAdmin,
     // Participants & scores

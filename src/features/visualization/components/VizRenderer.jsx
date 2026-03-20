@@ -46,7 +46,7 @@ export default memo(function VizRenderer({ sessionId, session }) {
   if (!question) return null;
 
   const isQA = question.type === 'qna';
-  const isEnded = session?.status === 'ended';
+  const isEnded = session?.status === 'ended' || session?.status === 'reviewing';
   const hasCorrectAnswer = Boolean(question.correctAnswer);
   const answerRevealed = Boolean(question.revealedAt) || isEnded;
 

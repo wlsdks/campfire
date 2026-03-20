@@ -51,7 +51,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
   }, [sessions]);
 
   function handleSelect(session) {
-    onSelectSession(session.id, session.status === 'ended');
+    onSelectSession(session.id, session.status === 'ended' || session.status === 'reviewing');
   }
 
   function handleCreated(sessionId) {

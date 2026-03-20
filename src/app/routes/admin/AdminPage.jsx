@@ -81,7 +81,8 @@ export default function AdminPage() {
         timerRunning={s.timerRunning} endTime={s.endTime} duration={s.duration} onTimerStart={s.startTimer} onTimerStop={s.stopTimer}
         onBack={s.handleBack} onStartSession={s.handleStartSession} onEndSession={s.handleEndSession} onPresentMode={s.handlePresentMode}
         isTablet={isTablet} onLeftDrawer={s.handleLeftDrawerOpen} onRightDrawer={s.handleRightDrawerOpen}
-        speedQuizActive={s.speedQuizActive} teamBattleActive={s.teamBattleActive} />
+        speedQuizActive={s.speedQuizActive} teamBattleActive={s.teamBattleActive}
+        isReviewing={s.isReviewing} onFullEndSession={s.handleFullEndSession} />
 
       {isTablet && (
         <TabletDrawers leftOpen={s.leftDrawerOpen} rightOpen={s.rightDrawerOpen}

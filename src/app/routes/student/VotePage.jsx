@@ -118,6 +118,15 @@ export default function VotePage({ sessionId }) {
     return <Suspense fallback={<SuspenseFallback />}><SessionEndedPage sessionId={sessionId} session={session} /></Suspense>;
   }
 
+  // Reviewing: show summary + keep bottom bar for questions/chat
+  if (session?.status === 'reviewing') {
+    return (
+      <Suspense fallback={<SuspenseFallback />}>
+        <SessionEndedPage sessionId={sessionId} session={session} reviewing />
+      </Suspense>
+    );
+  }
+
   if (currentMode === 'leaderboard') return <Suspense fallback={<SuspenseFallback />}><LeaderboardPage sessionId={sessionId} /></Suspense>;
   if (!['poll', 'quiz'].includes(currentMode) || !currentQId) {
     return <WaitingPage sessionId={sessionId} pendingEvent={session?.pendingEvent || null} />;

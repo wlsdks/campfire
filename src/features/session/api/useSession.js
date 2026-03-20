@@ -26,6 +26,7 @@ export function useSession(sessionId) {
   const [roundNumber, setRoundNumber] = useState(NOT_LOADED);
   const [createdAt, setCreatedAt] = useState(NOT_LOADED);
   const [startedAt, setStartedAt] = useState(NOT_LOADED);
+  const [reviewingUntil, setReviewingUntil] = useState(NOT_LOADED);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -64,6 +65,9 @@ export function useSession(sessionId) {
     const saRef = ref(db, `sessions/${sessionId}/startedAt`);
     unsubs.push(onValue(saRef, (snap) => setStartedAt(snap.val())));
 
+    const ruRef = ref(db, `sessions/${sessionId}/reviewingUntil`);
+    unsubs.push(onValue(ruRef, (snap) => setReviewingUntil(snap.val())));
+
     return () => {
       unsubs.forEach((unsub) => unsub());
       // Reset on cleanup so next sessionId starts fresh.
@@ -76,6 +80,7 @@ export function useSession(sessionId) {
       setRoundNumber(NOT_LOADED);
       setCreatedAt(NOT_LOADED);
       setStartedAt(NOT_LOADED);
+      setReviewingUntil(NOT_LOADED);
     };
   }, [sessionId]);
 
@@ -100,8 +105,9 @@ export function useSession(sessionId) {
       roundNumber: roundNumber === NOT_LOADED ? null : (roundNumber ?? null),
       createdAt: createdAt === NOT_LOADED ? null : (createdAt ?? null),
       startedAt: startedAt === NOT_LOADED ? null : (startedAt ?? null),
+      reviewingUntil: reviewingUntil === NOT_LOADED ? null : (reviewingUntil ?? null),
     };
-  }, [loading, currentQuestion, currentMode, status, pendingEvent, questions, courseName, roundNumber, createdAt, startedAt]);
+  }, [loading, currentQuestion, currentMode, status, pendingEvent, questions, courseName, roundNumber, createdAt, startedAt, reviewingUntil]);
 
   return { session, loading };
 }

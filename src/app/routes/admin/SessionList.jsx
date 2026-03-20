@@ -17,6 +17,7 @@ function formatDate(timestamp) {
 function SessionRow({ session, onClick, index }) {
   const isSetting = session.status === 'setting';
   const isActive = session.status === 'active';
+  const isReviewing = session.status === 'reviewing';
 
   return (
     <motion.button
@@ -26,7 +27,7 @@ function SessionRow({ session, onClick, index }) {
       onClick={onClick}
       className="w-full flex items-center gap-4 px-5 py-3.5 text-left transition-all hover:bg-slate-50 active:bg-slate-100 group"
     >
-      <span className={`text-sm font-bold w-8 shrink-0 ${isSetting ? 'text-slate-500' : isActive ? 'text-slate-900' : 'text-slate-400'}`}>
+      <span className={`text-sm font-bold w-8 shrink-0 ${isSetting ? 'text-slate-500' : isActive || isReviewing ? 'text-slate-900' : 'text-slate-400'}`}>
         {session.roundNumber ? `${session.roundNumber}차` : '—'}
       </span>
       <span className="text-sm text-slate-500 w-32 shrink-0">{formatDate(session.createdAt)}</span>
@@ -43,6 +44,11 @@ function SessionRow({ session, onClick, index }) {
         <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 shrink-0">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           진행 중
+        </span>
+      ) : isReviewing ? (
+        <span className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 shrink-0">
+          <span className="w-2 h-2 rounded-full bg-slate-500 animate-pulse" />
+          질문 받기
         </span>
       ) : (
         <span className="text-xs text-slate-400 shrink-0">완료</span>

@@ -4,7 +4,7 @@ import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import TimerControls from '@/features/timer/components/TimerControls';
 import TimerRing from '@/features/timer/components/TimerRing';
-import { ArrowLeft, Clock, MessageCircle, Users, Monitor, Play, Square, Layers, List, PanelRight, Zap, Swords } from 'lucide-react';
+import { ArrowLeft, Clock, MessageCircle, Users, Monitor, Play, Square, Layers, List, PanelRight, Zap, Swords, MessageSquareDot, XCircle } from 'lucide-react';
 
 function formatElapsed(ms) {
   const totalSec = Math.floor(ms / 1000);
@@ -38,6 +38,19 @@ function ElapsedTime({ startedAt, createdAt, status }) {
   );
 }
 
+function ReviewingCountdown({ reviewingUntil }) {
+  const remaining = Math.max(0, reviewingUntil - Date.now());
+  const days = Math.ceil(remaining / (24 * 60 * 60 * 1000));
+  if (days <= 0) return null;
+  return (
+    <span className="inline-flex items-center gap-1 text-xs text-slate-400">
+      <span className="text-slate-200">&middot;</span>
+      <MessageSquareDot size={12} className="text-slate-300" />
+      <span>{days}일 후 자동 종료</span>
+    </span>
+  );
+}
+
 export default memo(function AdminSessionHeader({
   session,
   sessionId,
@@ -62,6 +75,8 @@ export default memo(function AdminSessionHeader({
   onRightDrawer,
   speedQuizActive = false,
   teamBattleActive = false,
+  isReviewing = false,
+  onFullEndSession,
 }) {
   const [timerOpen, setTimerOpen] = useState(false);
   const timerRef = useRef(null);
@@ -104,7 +119,17 @@ export default memo(function AdminSessionHeader({
             {session?.roundNumber && (
               <span className="text-sm font-medium text-slate-500 shrink-0">{session.roundNumber}차</span>
             )}
-            {effectiveReadOnly && <Badge variant="neutral">클래스 확인</Badge>}
+            {isReviewing && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-800 text-white rounded text-[11px] font-bold"
+              >
+                <MessageSquareDot size={10} />
+                질문 받기 중
+              </motion.div>
+            )}
+            {effectiveReadOnly && !isReviewing && <Badge variant="neutral">클래스 확인</Badge>}
             {isSetting && <Badge variant="warning" className="py-1 px-2.5 text-xs font-semibold">세팅중</Badge>}
             {speedQuizActive && (
               <motion.div
@@ -145,8 +170,11 @@ export default memo(function AdminSessionHeader({
                 )}
               </span>
             )}
-            {!isTablet && (
+            {!isTablet && !isReviewing && (
               <ElapsedTime startedAt={session?.startedAt} createdAt={session?.createdAt} status={session?.status} />
+            )}
+            {isReviewing && session?.reviewingUntil && (
+              <ReviewingCountdown reviewingUntil={session.reviewingUntil} />
             )}
           </div>
         </div>
@@ -232,6 +260,18 @@ export default memo(function AdminSessionHeader({
             <Button onClick={onEndSession} variant="secondary" size="sm">
               <Square size={isTablet ? 16 : 18} />
               종료
+            </Button>
+          </>
+        )}
+        {isReviewing && (
+          <>
+            <Button onClick={onPresentMode} variant="primary" size="sm">
+              <Monitor size={isTablet ? 16 : 18} />
+              {isTablet ? '결과' : '결과 보기'}
+            </Button>
+            <Button onClick={onFullEndSession} variant="secondary" size="sm">
+              <XCircle size={isTablet ? 16 : 18} />
+              {isTablet ? '종료' : '완전 종료'}
             </Button>
           </>
         )}
