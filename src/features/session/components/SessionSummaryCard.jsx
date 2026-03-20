@@ -104,7 +104,7 @@ export default function SessionSummaryCard({ session, sessionId, reviewing = fal
   const hasRank = stats.rank > 0;
 
   return (
-    <div className="w-full max-w-xl mx-auto space-y-4">
+    <div className="w-full mx-auto space-y-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

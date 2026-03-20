@@ -121,7 +121,7 @@ export default function LeaderboardPage({ sessionId }) {
     <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center p-4 pb-32 pt-16">
       <StudentHeader sessionId={sessionId} />
 
-      <div className="w-full max-w-xl space-y-5">
+      <div className="w-full space-y-5">
         {/* Team badge */}
         {teamActive && myTeam && (
           <div className="flex justify-center">
