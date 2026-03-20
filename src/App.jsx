@@ -1,14 +1,16 @@
 import { onDisconnect, ref, set, serverTimestamp } from 'firebase/database';
 import { BrowserRouter, Routes, Route, useSearchParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { Radio } from 'lucide-react';
 import JoinPage from '@/app/routes/student/JoinPage';
-import VotePage from '@/app/routes/student/VotePage';
-import AdminPage from '@/app/routes/admin/AdminPage';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import InstallPrompt from '@/components/ui/InstallPrompt';
+import { SuspenseFallback } from '@/components/ui/Skeleton';
 import { db } from '@/lib/firebase';
 import { getNickname, getParticipantId, hasJoinedSession, markSessionJoined } from '@/lib/participant';
+
+const VotePage = lazy(() => import('@/app/routes/student/VotePage'));
+const AdminPage = lazy(() => import('@/app/routes/admin/AdminPage'));
 
 function StudentRouter() {
   const [searchParams] = useSearchParams();
@@ -66,7 +68,11 @@ function StudentRouter() {
     );
   }
 
-  return <VotePage key={sessionId} sessionId={sessionId} />;
+  return (
+    <Suspense fallback={<SuspenseFallback />}>
+      <VotePage key={sessionId} sessionId={sessionId} />
+    </Suspense>
+  );
 }
 
 function App() {
@@ -81,7 +87,9 @@ function App() {
         } />
         <Route path="/admin" element={
           <ErrorBoundary scope="admin">
-            <AdminPage />
+            <Suspense fallback={<SuspenseFallback />}>
+              <AdminPage />
+            </Suspense>
           </ErrorBoundary>
         } />
       </Routes>

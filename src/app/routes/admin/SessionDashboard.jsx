@@ -1,16 +1,18 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSessionList } from '@/features/session/api/useSessionList';
 import CreateSessionModal from './CreateSessionModal';
 import AdminApproval from './AdminApproval';
-import StatsView from './StatsView';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
-import QuestionLibraryView from './QuestionLibraryView';
-import MoreView from './MoreView';
+import { SuspenseFallback } from '@/components/ui/Skeleton';
 import PinggoMascot from '@/components/ui/PinggoMascot';
 import { CourseGroup, UngroupedSessions } from './SessionList';
 import { Plus, Loader2, LogOut } from 'lucide-react';
+
+const StatsView = lazy(() => import('./StatsView'));
+const QuestionLibraryView = lazy(() => import('./QuestionLibraryView'));
+const MoreView = lazy(() => import('./MoreView'));
 
 const TABS = [
   { key: 'classes', label: '내 클래스' },
@@ -116,17 +118,25 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
             <motion.div key="history" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
               {loading ? (
                 <div className="flex items-center justify-center py-16 text-slate-400"><Loader2 size={20} className="animate-spin mr-2" />불러오는 중...</div>
-              ) : <StatsView sessions={sessions} />}
+              ) : (
+                <Suspense fallback={<SuspenseFallback fullPage={false} />}>
+                  <StatsView sessions={sessions} />
+                </Suspense>
+              )}
             </motion.div>
           )}
           {activeTab === 'library' && (
             <motion.div key="library" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
-              <QuestionLibraryView adminUid={adminUser?.uid} />
+              <Suspense fallback={<SuspenseFallback fullPage={false} />}>
+                <QuestionLibraryView adminUid={adminUser?.uid} />
+              </Suspense>
             </motion.div>
           )}
           {activeTab === 'more' && (
             <motion.div key="more" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}>
-              <MoreView adminUser={adminUser} sessions={sessions} />
+              <Suspense fallback={<SuspenseFallback fullPage={false} />}>
+                <MoreView adminUser={adminUser} sessions={sessions} />
+              </Suspense>
             </motion.div>
           )}
         </AnimatePresence>

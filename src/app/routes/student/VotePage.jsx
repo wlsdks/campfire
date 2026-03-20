@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo, lazy, Suspense } from 'react';
 import { useSession } from '@/features/session/api/useSession';
 import ChoiceVoter from '@/features/voting/components/ChoiceVoter';
 import OXVoter from '@/features/voting/components/OXVoter';
@@ -9,15 +9,16 @@ import DebateVoter from '@/features/voting/components/DebateVoter';
 import RankingVoter from '@/features/voting/components/RankingVoter';
 import FillBlankVoter from '@/features/voting/components/FillBlankVoter';
 import WaitingPage from './WaitingPage';
-import LeaderboardPage from './LeaderboardPage';
-import SessionEndedPage from './SessionEndedPage';
 import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
+
+const LeaderboardPage = lazy(() => import('./LeaderboardPage'));
+const SessionEndedPage = lazy(() => import('./SessionEndedPage'));
 import { TYPE_LABELS, QuizResultFromVote, TimerExpiredOverlay } from './VoteHelpers';
 import Badge from '@/components/ui/Badge';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
-import { SkeletonCard } from '@/components/ui/Skeleton';
+import { SkeletonCard, SuspenseFallback } from '@/components/ui/Skeleton';
 import TimerCountdown from '@/features/timer/components/TimerCountdown';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2 } from 'lucide-react';
@@ -114,10 +115,10 @@ export default function VotePage({ sessionId }) {
 
   // Show summary card when session is ended
   if (session?.status === 'ended') {
-    return <SessionEndedPage sessionId={sessionId} session={session} />;
+    return <Suspense fallback={<SuspenseFallback />}><SessionEndedPage sessionId={sessionId} session={session} /></Suspense>;
   }
 
-  if (currentMode === 'leaderboard') return <LeaderboardPage sessionId={sessionId} />;
+  if (currentMode === 'leaderboard') return <Suspense fallback={<SuspenseFallback />}><LeaderboardPage sessionId={sessionId} /></Suspense>;
   if (!['poll', 'quiz'].includes(currentMode) || !currentQId) {
     return <WaitingPage sessionId={sessionId} pendingEvent={session?.pendingEvent || null} />;
   }

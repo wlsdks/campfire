@@ -1,10 +1,8 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, QrCode, X, Copy, Check } from 'lucide-react';
 import QRCode from '@/components/ui/QRCode';
 import VizRenderer from '@/features/visualization/components/VizRenderer';
-import Roulette from '@/features/games/components/Roulette';
-import Lottery from '@/features/games/components/Lottery';
 import JoinToast from '@/features/participants/components/JoinToast';
 import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
 import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
@@ -12,6 +10,9 @@ import Badge from '@/components/ui/Badge';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
 import TeamScoreboard from '@/features/teams/components/TeamScoreboard';
+
+const Roulette = lazy(() => import('@/features/games/components/Roulette'));
+const Lottery = lazy(() => import('@/features/games/components/Lottery'));
 
 function PresentEmptyState({ sessionId, studentUrl, count }) {
   return (
@@ -113,9 +114,18 @@ function PresentQROverlay({ sessionId, studentUrl, count }) {
   );
 }
 
+const GameFallback = () => (
+  <div className="flex items-center justify-center min-h-[300px]">
+    <div className="flex items-center gap-2 text-slate-400">
+      <div className="w-5 h-5 border-2 border-slate-300 border-t-slate-500 rounded-full animate-spin" />
+      <span className="text-sm">준비 중...</span>
+    </div>
+  </div>
+);
+
 function MainContent({ currentMode, sessionId, session, onlineList, leaderboard, drawParticipants, presentMode, studentUrl, count, teamScores }) {
-  if (currentMode === 'roulette') return <Roulette participants={onlineList} />;
-  if (currentMode === 'lottery') return <Lottery participants={drawParticipants} />;
+  if (currentMode === 'roulette') return <Suspense fallback={<GameFallback />}><Roulette participants={onlineList} /></Suspense>;
+  if (currentMode === 'lottery') return <Suspense fallback={<GameFallback />}><Lottery participants={drawParticipants} /></Suspense>;
   if (currentMode === 'leaderboard') {
     return <Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" />;
   }

@@ -1,8 +1,11 @@
+import { lazy, Suspense } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import QuestionForm from './QuestionForm';
-import ClassSummary from './ClassSummary';
 import { MainContent } from './PresentationView';
+import { SuspenseFallback } from '@/components/ui/Skeleton';
+
+const ClassSummary = lazy(() => import('./ClassSummary'));
 
 export default function CenterContent({
   showCenterForm,
@@ -62,13 +65,15 @@ export default function CenterContent({
           className="w-full h-full"
         >
           {effectiveReadOnly && !session?.currentQuestion ? (
-            <ClassSummary
-              session={session}
-              participants={participants}
-              scores={scores}
-              leaderboard={leaderboard}
-              count={count}
-            />
+            <Suspense fallback={<SuspenseFallback fullPage={false} />}>
+              <ClassSummary
+                session={session}
+                participants={participants}
+                scores={scores}
+                leaderboard={leaderboard}
+                count={count}
+              />
+            </Suspense>
           ) : (
             <MainContent
               currentMode={currentMode}

@@ -32,3 +32,15 @@ export function SkeletonCard({ className = '' }) {
     </div>
   );
 }
+
+/** Lightweight Suspense fallback — centered spinner for lazy-loaded routes/sections. */
+export function SuspenseFallback({ fullPage = true }) {
+  return (
+    <div className={`${fullPage ? 'min-h-dvh' : 'min-h-[200px]'} bg-slate-50 flex items-center justify-center`}>
+      <div className="flex items-center gap-2 text-slate-400">
+        <div className="w-5 h-5 border-2 border-slate-300 border-t-slate-500 rounded-full animate-spin" />
+        <span className="text-sm">불러오는 중...</span>
+      </div>
+    </div>
+  );
+}

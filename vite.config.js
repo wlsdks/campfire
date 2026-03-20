@@ -13,4 +13,17 @@ export default defineConfig({
       '@': path.resolve(srcDir),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-firebase': ['firebase/app', 'firebase/database'],
+          'vendor-motion': ['framer-motion'],
+          'vendor-ui': ['lucide-react', 'qrcode.react'],
+          'vendor-dnd': ['@dnd-kit/core', '@dnd-kit/sortable', '@dnd-kit/utilities'],
+        },
+      },
+    },
+  },
 })
