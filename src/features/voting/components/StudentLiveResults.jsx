@@ -76,13 +76,13 @@ export default memo(function StudentLiveResults({ sessionId, questionId, options
                   {formatPercent(count, totalVotes)}
                 </span>
               </div>
-              <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div className="h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.max(barWidth, count > 0 ? 3 : 0)}%` }}
                   transition={{ type: 'spring', stiffness: 80, damping: 20 }}
                   className={`h-full rounded-full ${
-                    isMine ? 'bg-slate-800' : 'bg-slate-300'
+                    isMine ? 'bg-slate-800 dark:bg-slate-200' : 'bg-slate-300 dark:bg-slate-500'
                   }`}
                 />
               </div>

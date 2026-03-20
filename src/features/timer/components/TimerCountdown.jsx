@@ -5,9 +5,9 @@ import { Clock } from 'lucide-react';
 function getColor(secondsLeft, totalSeconds) {
   const ratio = totalSeconds > 0 ? secondsLeft / totalSeconds : 0;
   // Functional urgency colors — matches TimerRing + design-tokens pattern
-  if (ratio > 0.5) return { bar: '#0F172A', bg: 'bg-white', text: 'text-slate-900' };
-  if (ratio > 0.2) return { bar: '#F59E0B', bg: 'bg-white', text: 'text-amber-600' };
-  return { bar: '#EF4444', bg: 'bg-white', text: 'text-red-500' };
+  if (ratio > 0.5) return { bar: '#0F172A', barDark: '#E2E8F0', bg: 'bg-white dark:bg-slate-800', text: 'text-slate-900 dark:text-slate-100' };
+  if (ratio > 0.2) return { bar: '#F59E0B', barDark: '#F59E0B', bg: 'bg-white dark:bg-slate-800', text: 'text-amber-600 dark:text-amber-400' };
+  return { bar: '#EF4444', barDark: '#EF4444', bg: 'bg-white dark:bg-slate-800', text: 'text-red-500 dark:text-red-400' };
 }
 
 function formatTime(seconds) {
@@ -52,8 +52,8 @@ export default function TimerCountdown({ endTime, duration, onExpire }) {
       initial={{ opacity: 0, y: -8, height: 0 }}
       animate={{ opacity: 1, y: 0, height: 'auto' }}
       exit={{ opacity: 0, y: -8, height: 0 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-      className={`rounded-xl border border-slate-200 px-4 py-3 ${color.bg} transition-colors duration-300`}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+      className={`rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 ${color.bg} transition-colors duration-300`}
     >
       <motion.div
         animate={isPulsing ? { scale: [1, 1.01, 1] } : {}}
@@ -75,7 +75,7 @@ export default function TimerCountdown({ endTime, duration, onExpire }) {
             {formatTime(secondsLeft)}
           </motion.span>
         </div>
-        <div className="h-1.5 bg-slate-200/60 rounded-full overflow-hidden">
+        <div className="h-1.5 bg-slate-200/60 dark:bg-slate-600/60 rounded-full overflow-hidden">
           <motion.div
             className="h-full rounded-full"
             style={{ backgroundColor: color.bar }}
