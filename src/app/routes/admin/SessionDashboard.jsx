@@ -7,7 +7,7 @@ import AdminApproval from './AdminApproval';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
 import { SuspenseFallback } from '@/components/ui/Skeleton';
-import PinggoMascot from '@/components/ui/PinggoMascot';
+import PickMascot from '@/components/ui/PickMascot';
 import Toast from '@/components/ui/Toast';
 import { useToast } from '@/hooks/useToast';
 import { CourseGroup, UngroupedSessions } from './SessionList';
@@ -118,9 +118,9 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
       {/* Header */}
       <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6 py-5 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <PinggoMascot size="sm" />
+          <PickMascot size="sm" />
           <div>
-            <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">Pinggo</h1>
+            <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100">Pick</h1>
             <p className="text-slate-400 text-xs">{TABS.find((t) => t.key === activeTab)?.label}</p>
           </div>
         </div>
@@ -166,7 +166,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
               {loading ? (
                 <div className="flex items-center justify-center py-16 text-slate-400"><Loader2 size={20} className="animate-spin mr-2" />불러오는 중...</div>
               ) : sessions.length === 0 ? (
-                <EmptyState title="첫 클래스를 만들어보세요" description="Pinggo와 함께 학생 참여를 이끌어보세요"
+                <EmptyState title="첫 클래스를 만들어보세요" description="Pick과 함께 학생 참여를 이끌어보세요"
                   steps={['위의 버튼으로 클래스를 만드세요', '객관식, 퀴즈, 워드클라우드 등 질문을 추가하세요', 'QR코드를 공유하면 학생들이 바로 참여합니다']}
                   mascotSize="lg" mood="happy" className="py-12" />
               ) : (

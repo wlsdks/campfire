@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
-import PinggoMascot from './PinggoMascot';
+import PickMascot from './PickMascot';
 
 /**
  * Friendly empty-state component for admin screens.
- * Shows the Pinggo mascot, a title, description, and optional action steps.
+ * Shows the Pick mascot, a title, description, and optional action steps.
  *
  * @param {string} title — main message
  * @param {string} description — sub-description
@@ -29,7 +29,7 @@ export default function EmptyState({
       transition={{ duration: 0.3, ease: 'easeOut' }}
       className={`flex flex-col items-center text-center ${className}`}
     >
-      <PinggoMascot size={mascotSize} mood={mood} />
+      <PickMascot size={mascotSize} mood={mood} />
 
       <div className="mt-6 space-y-1.5">
         <p className="text-slate-600 text-lg font-semibold">{title}</p>

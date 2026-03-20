@@ -90,7 +90,7 @@ export default function JoinPage({ sessionId, onJoin }) {
               <Radio size={32} className="text-indigo-500" />
             </motion.div>
             <div>
-              <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pinggo</h1>
+              <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pick</h1>
               <p className={`text-sm mt-1.5 ${courseName ? 'text-slate-500 font-medium' : 'text-slate-400'}`}>
                 {courseName || '닉네임을 정하고 참여하세요'}
               </p>

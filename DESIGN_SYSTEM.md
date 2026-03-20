@@ -13,7 +13,7 @@ AI가 생성한 것처럼 보이면 안 됨. 토스, Linear, Notion처럼 절제
 
 | 항목 | AI 기본값 (금지) | Human 디자인 (우리) |
 |------|-----------------|-------------------|
-| CTA 버튼 | `bg-indigo-600` | `bg-slate-900` |
+| CTA 버튼 | `bg-indigo-600` | `bg-slate-900` (dark CTA) |
 | 배지 | `bg-indigo-50 text-indigo-700` | `bg-slate-100 text-slate-700` |
 | 아이콘 | 컬러 원형 배경 안 | 아이콘만 bare |
 | 카드 좌측 | `border-l-3 border-indigo-500` | `ring-1` or bg change |
@@ -37,15 +37,16 @@ AI가 생성한 것처럼 보이면 안 됨. 토스, Linear, Notion처럼 절제
 
 ## 2. 색상 (Colors)
 
-### 브랜드 & 기본
-| 용도 | 색상 | Tailwind | Hex |
-|------|------|----------|-----|
-| CTA / Primary | indigo-600 | `bg-indigo-600` | `#4F46E5` |
-| CTA hover | indigo-700 | `hover:bg-indigo-700` | `#4338CA` |
-| CTA dark mode | indigo-500 | `dark:bg-indigo-500` | `#6366F1` |
-| 브랜드 아이콘 | indigo-600 | -- | `#4F46E5` |
-| Input focus ring | -- | `focus:ring-indigo-500/20` | -- |
-| Active/selected states | indigo-600 | `bg-indigo-600` | `#4F46E5` |
+### CTA & 브랜드
+| 용도 | Tailwind | Hex | 비고 |
+|------|----------|-----|------|
+| CTA 버튼 | `bg-slate-900` | `#0F172A` | Dark CTA (Linear/Toss 스타일) |
+| CTA hover | `hover:bg-slate-800` | `#1E293B` | |
+| CTA dark mode | `dark:bg-slate-100 dark:text-slate-900` | | 반전 |
+| 브랜드 아이콘 | `text-indigo-600` | `#4F46E5` | Radio 아이콘 등 |
+| 악센트 (indigo) | `indigo-600/500/400/300` | | 차트 바, 포커스 링, 진행바 전용 |
+| Input focus ring | `focus:ring-indigo-500/20` | | |
+| 활성/선택 상태 | `bg-slate-900 text-white` | | 탭, 토글, 선택지 |
 
 ### 배경 & 표면
 | 용도 | Tailwind | Hex |
@@ -108,7 +109,7 @@ AI가 생성한 것처럼 보이면 안 됨. 토스, Linear, Notion처럼 절제
 | 보조 텍스트 | `text-slate-600` | `text-slate-300` | `dark:text-slate-300` |
 | 흐린 텍스트 | `text-slate-400` | `text-slate-400` | (동일) |
 | hover 배경 | `bg-slate-50` | `bg-slate-700` | `dark:hover:bg-slate-700` |
-| CTA 버튼 | `bg-indigo-600` | `bg-indigo-500 text-white` | `dark:bg-indigo-500` |
+| CTA 버튼 | `bg-slate-900` | `bg-slate-100 text-slate-900` | `dark:bg-slate-100 dark:text-slate-900` |
 | Input 배경 | `bg-white` | `bg-slate-700` | `dark:bg-slate-700` |
 | 스크롤바 thumb | `#CBD5E1` | `#334155` | CSS `.dark ::-webkit-scrollbar-thumb` |
 | focus-visible | indigo-600 | indigo-400 | CSS `.dark :focus-visible` |
@@ -224,7 +225,7 @@ font-family: 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', system
 전환: transition-all
 프레스: active:scale-[0.97]
 포커스: focus-visible:ring-2 focus-visible:ring-offset-2
-다크 Primary: dark:bg-indigo-500 dark:hover:bg-indigo-400 text-white
+다크 Primary: dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900
 다크 Secondary: dark:bg-slate-800 dark:text-slate-200 dark:border-slate-600
 다크 Ghost: dark:hover:bg-slate-700 dark:text-slate-300
 다크 Danger: (동일)
@@ -504,7 +505,7 @@ cardInteractive: 'bg-white rounded-xl border border-slate-200 hover:border-slate
 
 // Buttons
 btnBase:      'font-medium rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.97]'
-btnPrimary:   'bg-indigo-600 hover:bg-indigo-700 text-white focus-visible:ring-indigo-400'  // renders as Pinggo Indigo via @theme
+btnPrimary:   'bg-slate-900 hover:bg-slate-800 text-white focus-visible:ring-slate-400'  // dark CTA (Linear/Toss style)
 btnSecondary: 'bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 focus-visible:ring-slate-300'
 btnGhost:     'hover:bg-slate-100 text-slate-600 focus-visible:ring-slate-300'
 btnDanger:    'bg-red-500 hover:bg-red-600 text-white focus-visible:ring-red-400'
@@ -579,6 +580,224 @@ skeleton: 'animate-pulse bg-slate-200 rounded-lg'
 - 숫자/금액은 크고 굵게, 라벨은 작고 연하게
 - 애니메이션은 상태 전환에만, 장식적 모션 없음
 - 모든 아이콘/버튼에 한국어 텍스트 라벨 필수
+
+---
+
+## 16. Design Reference (2025-2026 트렌드)
+
+> 출처: Apple HIG, Linear, Notion, Toss, Vercel Geist, Stripe
+> 디자인 작업 시 항상 참고. 우리 앱에 적용 가능한 원칙 위주로 정리.
+
+### 전략적 미니멀리즘 (Strategic Minimalism)
+
+> "모든 요소가 자리를 차지할 자격을 증명해야 한다" — Linear
+> "대부분의 사람이 뭐가 바뀌었는지 바로 못 알아차리면, 그게 좋은 거다" — Linear
+
+- **타이포가 짐을 진다**: 색상/장식 대신 폰트 크기·두께·여백으로 위계
+- **화면당 CTA 하나**: 주요 액션 1개만 시각적으로 강조
+- **여백이 디자인이다**: "비어있는 것"이 아니라 "의도적으로 설계된 것"
+- **빼기의 미학**: 요소를 추가하지 말고, 불필요한 것을 제거
+
+### 여백(Whitespace) 원칙
+
+| 원칙 | 설명 | 출처 |
+|------|------|------|
+| 심리적 그룹핑 | 미묘한 여백 차이로 관련 요소를 시각적으로 묶음 | Notion |
+| 기능적 여백 | 여백은 장식이 아닌 시선 유도 도구 | Apple, Toss |
+| 콘텐츠 밀도 | 적을수록 좋다 — 모든 것이 존재 이유를 증명해야 함 | Linear, Vercel |
+| 점진적 공개 | 요약 → 확장 → 전체 분석 3단계 | Stripe |
+
+**적용 가이드:**
+```
+같은 그룹 내 요소 간격:   gap-3~4 (12-16px)
+다른 그룹/섹션 간 간격:   gap-5~8 (20-32px)
+탭 ↔ 콘텐츠 간격:        최소 mb-5 (20px) — 시각적 분리
+카드 내부 패딩:           일반 p-4~5, 히어로/입력 p-6~8 (중요도에 따라 차등)
+빈 공간을 두려워하지 말 것
+```
+
+### 컬러 최소주의 (2025-2026 방향)
+
+- **Linear 2025**: 모노크롬 블루 → 모노크롬 블랙/화이트로 전환
+- **Vercel**: "악센트 색상도 장식도 없다. 타이포와 여백, 가끔 빛 같은 그라디언트만"
+- **Toss**: OKLCH 색공간으로 지각적 균일성, 의미 있는 곳에만 색상
+- **따뜻한 회색**: Notion, Linear 모두 순수 흑(#000)보다 slate-900 선호
+- **우리 원칙**: slate 모노크롬 + indigo 악센트(차트/포커스링/진행바) + 기능색(red/emerald)
+
+### 타이포 트렌드
+
+| 트렌드 | 내용 | 출처 |
+|--------|------|------|
+| 본문 크기 상향 | 16px → 17-18px 추세 | 업계 전반 |
+| 헤딩 letter-spacing | -0.003em (좁게) | Apple, Vercel |
+| Weight 위계 명확 | 400 본문 / 500 라벨 / 600 헤딩 / 700 디스플레이 | Linear, Toss |
+| 숫자 강조 | text-3xl~5xl font-bold, 라벨은 text-xs text-slate-400 | Toss, Stripe |
+| Variable fonts | 단일 파일에서 무한 weight/width 변형 — 성능 향상 | Vercel Geist |
+
+### 컴포넌트 패턴 참고
+
+| 패턴 | 설명 | 출처 |
+|------|------|------|
+| 커맨드 팔레트 | Cmd+K 글로벌 검색이 SaaS 표준 | Linear, Vercel |
+| 사이드바 축소 | 시각적 존재감 줄이기 — 어둡게, 작은 아이콘, 비활성 뮤트 | Linear |
+| 프로그레시브 디스클로저 | 요약 → 확장 → 전체 분석 3단계 | Stripe |
+| Bento Grid | 비대칭 카드 레이아웃, 12-24px 라운딩 | 대시보드/랜딩 트렌드 |
+| 카드 표준 | bg-white, 12px 라운딩, 미세 그림자, 얇은 보더 | 업계 공통 |
+
+### 모바일 & 터치 최적화
+
+| 원칙 | 기준 | 출처 |
+|------|------|------|
+| 터치 타겟 | 최소 44-48px | Apple 44pt, Material 48px |
+| 확장 터치 영역 | 가시 영역 너머까지 터치 영역 확장 | Notion |
+| Thumb zone | 주요 액션은 화면 하단/중앙에 배치 | 업계 공통 |
+| 모바일 대시보드 | 단일 컬럼 카드 스택 | 업계 공통 |
+| 로딩 성능 | 카드당 <100ms 렌더, lazy loading 필수 | Stripe |
+
+### 접근성 & 대비 기준
+
+```
+text-slate-400은 bg-slate-50 위에서 WCAG AA 미달 가능
+→ 읽어야 하는 텍스트는 최소 text-slate-500 사용
+
+헤더 backdrop: bg-white/80보다 bg-white/90~95가 가독성 확보에 유리
+
+알림 점(notification dot): 최소 w-2.5 h-2.5 (10px) — 8px은 놓치기 쉬움
+
+다크모드: 단순 색상 반전이 아닌 별도 대비 튜닝 필요
+```
+
+### 디자인 자문 체크리스트 (매 작업 시 확인)
+
+```
+□ 이 요소를 빼도 화면이 작동하는가? → 빼라
+□ 색상 대신 크기/두께/여백으로 위계를 만들 수 있는가? → 그렇게 하라
+□ 섹션 사이 여백이 충분한가? → 의심되면 늘려라 (4px 단위)
+□ 숫자/지표가 라벨보다 시각적으로 우선하는가? → 숫자를 크고 굵게
+□ 하나의 화면에 사용자가 해야 할 일이 즉시 보이는가? → 1초 규칙
+□ 프로젝터에서도 뒷자리에서 읽을 수 있는가? → 강사 화면은 큰 글자, 높은 대비
+□ 모바일에서 한 손으로 조작할 수 있는가? → 주요 액션은 thumb zone에
+```
+
+### 래퍼런스 회사별 핵심 takeaway
+
+| 회사 | 핵심 교훈 |
+|------|----------|
+| Apple | 8pt 그리드, 44pt 터치 타겟, Liquid Glass(2025) — 투명 레이어는 핵심 UI에만 |
+| Linear | 색을 줄여라. 사이드바 존재감을 줄여라. 변화를 눈치채지 못하면 성공 |
+| Notion | 콘텐츠가 인터페이스다. 장식 요소 0. 시스템 폰트로 네이티브 느낌 |
+| Toss | OKLCH 색공간, UX 라이팅이 CTR 5-10% 좌우, 큰 제목+넉넉한 여백 |
+| Vercel | 타이포+여백만으로 충분. Geist 서체 체계. 악센트 색상 거의 0 |
+| Stripe | 프로그레시브 디스클로저 3단계, 카드 <100ms 렌더, 기능 색상만 |
+
+---
+
+## 17. 실전 디자인 팁 (Refactoring UI, Laws of UX 등)
+
+> 출처: Refactoring UI (Adam Wathan & Steve Schoger), Laws of UX, Toss Design, shadcn/ui
+> 디자인 작업 시 구체적으로 적용할 수 있는 실전 팁.
+
+### 타이포그래피
+
+| 팁 | 설명 | 적용 |
+|----|------|------|
+| **Weight + Color로 위계** | 크기만으로 위계를 만들지 말고, 두께(400~700)와 색상(slate-900~400)을 함께 사용 | 제목: `font-bold text-slate-900` / 라벨: `font-medium text-slate-500` / 보조: `font-normal text-slate-400` |
+| **비선형 크기 체계** | 12-14-16-18 같은 균등 스케일 금지. 12-14-16-20-24-30-36처럼 큰 크기일수록 점프폭 확대 | 작은 차이는 눈에 안 보인다. 위계가 명확해야 한다 |
+| **큰 텍스트는 가볍게, 작은 텍스트는 무겁게** | Display(36px)는 400-500, 캡션(12px)은 500-600 | 큰 글씨는 크기 자체가 시각적 무게. 작은 글씨는 두께로 보완 |
+| **Line-height는 크기에 반비례** | 14px → 1.7-1.8, 16px → 1.5-1.6, 24px+ → 1.2-1.3 | 큰 텍스트의 넓은 줄간격은 흩어져 보인다 |
+| **헤딩은 tracking-tight, 대문자 라벨은 tracking-wide** | 한국어 제목: `-0.01em`, 영문 라벨: `tracking-wide uppercase text-xs` | |
+| **숫자는 tabular-nums** | 숫자 열은 `tabular-nums text-right` | 자릿수가 정렬되어 비교가 쉬워진다 |
+| **45-75자 줄 길이** | `max-w-prose`(65ch) 또는 `max-w-xl` / `max-w-2xl` | 너무 긴 줄은 시선 복귀 시 위치를 잃는다 |
+
+### 여백 & 레이아웃
+
+| 팁 | 설명 |
+|----|------|
+| **많은 여백에서 시작, 줄여가기** | `p-8 gap-6`으로 시작 → 적절해질 때까지 축소. 부족한 여백보다 과한 여백이 나음 |
+| **그룹 간격 > 그룹 내 간격** | 카드 내부 `gap-3` → 카드 사이 `gap-6`. Gestalt 근접성 원칙 |
+| **화면 전체를 채우지 않기** | `max-w-4xl mx-auto`. 1440px 화면에 600px 콘텐츠도 괜찮다. 여백 = 자신감 |
+| **너비보다 컬럼 추가** | 1200px 인풋은 이상하다. 550px 2컬럼이 자연스럽다 |
+| **빈 화면은 온보딩** | "데이터 없음" 대신 일러스트 + CTA: "첫 질문을 만들어보세요!" |
+
+### 색상 & 배경
+
+| 팁 | 설명 | 적용 |
+|----|------|------|
+| **컬러 배경 위의 보조 텍스트** | `bg-indigo-600` 위 보조 텍스트는 `text-gray-400`이 아닌 `text-indigo-200` 사용 | 같은 색조의 밝은 버전이 조화롭다 |
+| **회색에 색조 섞기** | 순수 gray 대신 slate(파란 톤) 또는 stone(따뜻한 톤) 사용 | 순수 회색은 죽어 보인다. 약간의 색조가 세련됨 |
+| **섹션 배경 교차** | `bg-white` ↔ `bg-slate-50` 교차 배치 | 보더 없이도 섹션 구분 가능. 시각적 리듬 생성 |
+| **2-3색 규칙** | slate + brand(indigo) + 기능색(red/emerald). 그 이상은 혼란 | 프로 UI vs AI UI를 가르는 핵심 차이 |
+
+### 그림자 & 깊이
+
+| 팁 | 설명 | 적용 |
+|----|------|------|
+| **그림자는 아래로** | Y-offset 있는 그림자 사용 (빛은 위에서 온다) | Tailwind 기본 shadow가 이미 이렇게 설계됨 |
+| **2중 그림자 레이어** | 타이트한 ambient + 부드러운 offset shadow 조합 | `box-shadow: 0 1px 2px rgba(0,0,0,.07), 0 4px 8px rgba(0,0,0,.07)` |
+| **hover에 그림자 승급** | 클릭 가능한 카드: `shadow-sm hover:shadow-md` | "들어올림" 느낌으로 인터랙티브 시그널 |
+| **색상으로도 깊이 표현** | `bg-slate-50` 페이지 위 `bg-white` 카드 = 그림자 없이도 부유 효과 | |
+
+### 보더 & 구분선
+
+| 팁 | 설명 |
+|----|------|
+| **보더를 줄여라** | 보더 대신 여백 or 배경색 대비로 구분. 모든 선은 주의력 세금 |
+| **좌측 악센트 바 금지** | `border-l-4` = AI 기본값. `ring-1` 또는 bg 변경으로 대체 |
+| **상단 보더로 브랜드 터치** | 페이지 최상단 `h-1 bg-gradient-to-r from-indigo-500 to-indigo-600` = 마감된 느낌 |
+
+### 버튼
+
+| 팁 | 설명 |
+|----|------|
+| **계층으로 디자인** | 모든 "삭제"가 빨간 버튼일 필요 없다. 위험 액션도 텍스트 링크 + 확인 다이얼로그로 |
+| **Primary 1개만 강조** | 한 화면에 Primary 버튼은 하나. 나머지는 Secondary/Ghost |
+| **hover 전환 150-200ms** | `transition-colors duration-150`. 100ms↓ = 깜빡임, 400ms↑ = 느림 |
+| **hover + focus-visible 쌍** | 마우스 hover 스타일과 동일한 focus-visible 스타일 필수 |
+
+### 폼 & 입력
+
+| 팁 | 설명 |
+|----|------|
+| **라벨은 입력 위** | 좌측도, placeholder도 아닌 상단 배치. 모든 화면 크기에서 작동 |
+| **placeholder ≠ 라벨** | placeholder는 예시("예: 김철수"). 입력하면 사라지므로 라벨 역할 불가 |
+| **입력 너비 = 예상 내용 길이** | 우편번호 필드가 400px일 필요 없다. 크기가 힌트를 준다 |
+| **입력-버튼 높이 일치** | 나란히 놓일 때 `h-11` 통일. 높이 불일치 = 미완성 느낌 |
+| **에러는 필드 바로 아래** | 상단 배너가 아닌 해당 input 바로 밑에 `text-red-500 text-sm mt-1` |
+
+### 데이터 표시
+
+| 팁 | 설명 | Tailwind |
+|----|------|----------|
+| **라벨은 작게, 값은 크게** | "참여자" 작고 연하게, "24" 크고 굵게 | 값: `text-2xl font-bold text-slate-900`, 라벨: `text-xs text-slate-500 uppercase tracking-wide` |
+| **자연어로 표시** | "재고: 12" 대신 "12개 남음" | 라벨:값 쌍보다 문장이 빠르게 읽힌다 |
+| **바 차트 > 파이 차트** | 인간은 각도/면적 비교를 못한다. 길이 비교가 정확 | |
+| **실시간 데이터는 애니메이트** | 숫자 변경 시 `AnimatePresence` + spring 카운터 | 급변은 놓치기 쉽다. 부드러운 전환이 인지를 돕는다 |
+
+### UX 법칙 (Laws of UX) — Pinggo 적용
+
+| 법칙 | 내용 | Pinggo 적용 |
+|------|------|-------------|
+| **Fitts's Law** | 크고 가까운 타겟 = 빠른 클릭 | 투표 버튼은 thumb zone(하단)에, 크게(48px+) |
+| **Hick's Law** | 선택지가 적을수록 빠른 결정 | 학생 화면: 질문 + 선택지만. 부가 기능은 숨기기 |
+| **Miller's Law** | 작업 기억 5-9개 | 선택지 4-6개, 대시보드 지표 3-4개 그룹 |
+| **Gestalt 근접성** | 가까운 요소 = 관련된 것 | 질문 텍스트↔선택지는 밀착, 투표↔상태바는 분리 |
+| **Jakob's Law** | 사용자는 다른 앱처럼 작동하길 기대 | 하단바는 iOS 탭바 패턴, 모달은 ESC로 닫기 |
+
+### 아이콘
+
+| 팁 | 설명 |
+|----|------|
+| **아이콘 크기 유지, 확대 금지** | 16px 아이콘을 48px로 키우면 뭉개진다. 대신 `w-10 h-10 bg-slate-100 rounded-lg` 안에 원래 크기로 |
+| **텍스트 옆 아이콘은 연하게** | 아이콘: `text-slate-400`, 텍스트: `text-slate-600`. 아이콘은 면적이 커서 무거워 보인다 |
+| **컬러 원형 배경 금지** | `bg-indigo-100 rounded-full p-2` = AI 기본값. bare 아이콘이 프로페셔널 |
+
+### 빈 상태 & 대기 화면
+
+| 팁 | 설명 |
+|----|------|
+| **빈 상태 = 온보딩** | "데이터 없음" 대신 일러스트 + 설명 + CTA 버튼 |
+| **불필요한 액션 숨기기** | 데이터 없으면 "내보내기" 버튼 자체를 안 보여줌. disabled보다 hide |
+| **대기 화면에 캐릭터** | 마스코트/일러스트로 따뜻함 전달 (한국 앱 표준 패턴) |
 
 ---
 

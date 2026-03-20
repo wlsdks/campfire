@@ -52,13 +52,13 @@ export default function StudentHeader({ sessionId }) {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-        aria-label="Pinggo 학생 헤더"
+        aria-label="Pick 학생 헤더"
         className="fixed top-0 left-0 right-0 z-20 bg-white/92 dark:bg-slate-800/92 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700"
       >
         <div className="flex items-center justify-between px-5 py-4 max-w-[620px] mx-auto">
           <div className="flex items-center gap-2.5">
             <Radio size={20} className="text-indigo-600" />
-            <span className="font-bold text-lg text-slate-900 dark:text-slate-100">Pinggo</span>
+            <span className="font-bold text-lg text-slate-900 dark:text-slate-100">Pick</span>
           </div>
 
           <div className="flex items-center gap-4">

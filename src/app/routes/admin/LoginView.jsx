@@ -6,7 +6,7 @@ import { db } from '@/lib/firebase';
 import { hashPassword } from '@/lib/auth';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import PinggoMascot from '@/components/ui/PinggoMascot';
+import PickMascot from '@/components/ui/PickMascot';
 
 const inputClass = (hasError, isFocused) =>
   `w-full bg-slate-50 dark:bg-slate-700 border-2 rounded-xl px-4 py-4 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:bg-white dark:focus:bg-slate-600 transition-all duration-200 ${
@@ -87,13 +87,13 @@ export default function LoginView({ onLogin, onSwitchToRegister }) {
         <motion.div className="flex justify-center -mt-20 mb-4"
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
           transition={{ type: 'spring', stiffness: 200, damping: 18 }}>
-          <PinggoMascot size="lg" />
+          <PickMascot size="lg" />
         </motion.div>
 
         <motion.div className="text-center space-y-1.5"
           initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.3 }}>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pinggo</h1>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pick</h1>
           <p className="text-slate-400 text-sm">관리자 로그인</p>
         </motion.div>
 

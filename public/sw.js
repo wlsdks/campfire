@@ -1,7 +1,7 @@
-// Pinggo Service Worker — app shell caching for PWA "Add to Home Screen"
+// Pick Service Worker — app shell caching for PWA "Add to Home Screen"
 // Strategy: Network-first for all requests, cache app shell for offline launch
 
-const CACHE_NAME = 'pinggo-v1';
+const CACHE_NAME = 'pick-v1';
 
 // App shell files to pre-cache on install
 const APP_SHELL = [

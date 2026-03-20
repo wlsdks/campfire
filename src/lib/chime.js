@@ -1,5 +1,5 @@
 /**
- * Pinggo Notification Chime — Web Audio API
+ * Pick Notification Chime — Web Audio API
  *
  * Synthesizes a subtle two-tone ascending chime.
  * No external audio files needed.

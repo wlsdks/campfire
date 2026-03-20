@@ -1,6 +1,6 @@
 {
-  "name": "Pinggo - 실시간 수업 참여",
-  "short_name": "Pinggo",
+  "name": "Pick - 실시간 수업 참여",
+  "short_name": "Pick",
   "description": "실시간 투표, 퀴즈, 워드클라우드로 수업에 참여하세요",
   "start_url": "/",
   "display": "standalone",

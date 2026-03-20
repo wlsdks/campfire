@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 /**
  * PWA install prompt — shows a subtle bottom banner inviting students
- * to add Pinggo to their home screen. Only appears on mobile when the
+ * to add Pick to their home screen. Only appears on mobile when the
  * browser fires `beforeinstallprompt` (Chrome/Edge/Samsung).
  * On iOS Safari, shows a manual instruction instead.
  */

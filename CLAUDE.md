@@ -43,11 +43,12 @@ src/
 
 ## Design System
 
-### Brand Color: Indigo (#4F46E5 / indigo-600)
-- CTA buttons: `bg-indigo-600 hover:bg-indigo-700`
-- Dark mode CTA: `dark:bg-indigo-500 dark:hover:bg-indigo-400`
+### Brand Color: Indigo (#4F46E5 / indigo-600) — 악센트 전용
+- CTA 버튼: `bg-slate-900 hover:bg-slate-800` (dark CTA — Linear/Toss 스타일)
+- Dark mode CTA: `dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900`
 - Input focus: `focus:ring-indigo-500/20 focus:border-indigo-500`
-- Selected/active states: `bg-indigo-600`
+- 악센트 용도: 차트 바, 진행바, 포커스 링, 브랜드 아이콘(Radio)
+- 활성/선택 상태: `bg-slate-900` (탭, 토글)
 - Keep slate for text, cards, borders, backgrounds
 
 ### Colors (design-tokens.js)
@@ -92,8 +93,8 @@ font-family: 'Pretendard', 'Inter', -apple-system, system-ui, sans-serif;
 
 ### Component Patterns (Tailwind recipes — use these exactly)
 ```
-Button Primary:   bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-5 rounded-lg transition-colors
-                  dark: dark:bg-indigo-500 dark:hover:bg-indigo-400
+Button Primary:   bg-slate-900 hover:bg-slate-800 text-white font-medium py-2.5 px-5 rounded-lg transition-colors
+                  dark: dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900
 Button Secondary: bg-white hover:bg-slate-50 text-slate-700 font-medium py-2.5 px-5 rounded-lg border border-slate-200 transition-colors
 Button Ghost:     hover:bg-slate-100 text-slate-600 font-medium py-2.5 px-5 rounded-lg transition-colors
 Button Danger:    bg-red-500 hover:bg-red-600 text-white font-medium py-2.5 px-5 rounded-lg transition-colors
@@ -206,25 +207,28 @@ Reference: Toss (토스), Linear, Notion, Vercel — restrained, dark CTA, monoc
 
 ### 우리 앱의 색상 체계 (확정)
 ```
-브랜드 CTA:      bg-indigo-600 (#4F46E5)
-CTA hover:       hover:bg-indigo-700 (#4338CA)
-CTA dark mode:   dark:bg-indigo-500 (#6366F1)
+CTA 버튼:        bg-slate-900 (#0F172A) — dark CTA (Linear/Toss 스타일)
+CTA hover:       hover:bg-slate-800 (#1E293B)
+CTA dark mode:   dark:bg-slate-100 dark:text-slate-900
+
+악센트(indigo):  차트 바, 포커스 링, 진행바, 브랜드 아이콘(Radio)
+브랜드 아이콘:   text-indigo-600 (Radio 아이콘)
+Input focus:     focus:ring-indigo-500/20 focus:border-indigo-500
+
 배지 primary:    bg-slate-100 text-slate-700
 배지 neutral:    bg-slate-50 text-slate-500
 배지 error:      bg-red-50 text-red-700
 
-브랜드 아이콘:   text-indigo-600 (Radio 아이콘)
-Input focus:     focus:ring-indigo-500/20 focus:border-indigo-500
-활성/선택 상태:  bg-indigo-600 (탭, 토글, 선택지)
+활성/선택 상태:  bg-slate-900 text-white (탭, 토글, 선택지)
 그 외 모든 UI:   slate-50 ~ slate-900 범위
 
-절대 사용 금지:  bg-amber-50 (장식), bg-emerald-50 (장식)
+절대 사용 금지:  bg-amber-50 (장식), bg-emerald-50 (장식), indigo를 CTA 버튼에 사용
 ```
 
 ### AI Default vs Human-Crafted 비교표
 | 요소 | AI 기본값 (피할 것) | Human 디자인 (우리) |
 |------|-------------------|-------------------|
-| CTA 버튼 | `bg-indigo-600` | `bg-indigo-600` |
+| CTA 버튼 | `bg-indigo-600` | `bg-slate-900` (dark CTA) |
 | 배지 | `bg-indigo-50 text-indigo-700` | `bg-slate-100 text-slate-700` |
 | 아이콘 | Sparkles in colored circle | Radio icon, bare |
 | 카드 좌측 | `border-l-3 border-indigo-500` | `ring-1` or bg change |
@@ -249,6 +253,30 @@ Input focus:     focus:ring-indigo-500/20 focus:border-indigo-500
 - **Lottie 인라인 JSON 사용 금지** — 브라우저 호환 불안정. Framer Motion SVG로 대체
 - **SVG path 애니메이션 추천** — `motion.path` + `pathLength` 조합이 가장 안정적
 - **과한 것보다 없는 게 낫다**
+
+---
+
+## Design Reference (2025-2026 트렌드)
+
+> 상세 내용은 `DESIGN_SYSTEM.md` §16 참조. 아래는 핵심 요약.
+
+### 핵심 원칙 (디자인 작업 전 항상 확인)
+- **전략적 미니멀리즘**: 요소를 추가하지 말고 불필요한 것을 제거. 타이포가 위계를 진다.
+- **여백이 디자인**: 같은 그룹 `gap-3~4`, 다른 섹션 `gap-5~8`, 탭↔콘텐츠 최소 `mb-5`
+- **컬러 최소주의**: slate 모노크롬 + indigo 악센트(차트/포커스) + 기능색(red/emerald)만
+- **숫자 강조**: 지표는 크고 굵게(3xl~5xl bold), 라벨은 작고 연하게(xs slate-400)
+- **접근성**: 읽는 텍스트 최소 `text-slate-500`, 알림점 최소 `w-2.5`, 헤더 `bg-white/90+`
+
+### 디자인 자문 체크리스트
+```
+□ 이 요소를 빼도 화면이 작동하는가? → 빼라
+□ 색상 대신 크기/두께/여백으로 위계를 만들 수 있는가? → 그렇게 하라
+□ 섹션 사이 여백이 충분한가? → 의심되면 늘려라 (4px 단위)
+□ 숫자/지표가 라벨보다 시각적으로 우선하는가? → 숫자를 크고 굵게
+□ 하나의 화면에 사용자가 해야 할 일이 즉시 보이는가? → 1초 규칙
+□ 프로젝터에서도 뒷자리에서 읽을 수 있는가? → 강사 화면은 큰 글자, 높은 대비
+□ 모바일에서 한 손으로 조작할 수 있는가? → 주요 액션은 thumb zone에
+```
 
 ---
 
