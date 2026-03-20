@@ -164,10 +164,11 @@ npm run build   # 반드시 통과
 - CLAUDE.md AI 생성 UI 체크리스트 10개 항목 점검
 - "토스/Linear처럼 보이는가, AI 데모처럼 보이는가?" 자문
 
-### 4. 커밋 & 푸시
+### 4. 커밋 & 푸시 & 배포
 ```bash
 git add -A && git commit -m "improve: 설명"
 git push origin background-improve
+npx vite build && npx firebase deploy   # 매 사이클 배포
 ```
 
 ### 5. 에러 복구
