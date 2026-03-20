@@ -49,6 +49,7 @@
 | 워드클라우드 | 양쪽 | ✅ 완료 | 자유 텍스트 입력 → 시각화 |
 | Q&A | 양쪽 | ✅ 완료 | 자유 질문/답변 카드 |
 | 감정 온도계 (Scale) | 양쪽 | ✅ 완료 | 0~100 슬라이더로 의견 강도 표현. 학생: 모바일 슬라이더+프리셋 버튼(0/25/50/75/100)+제출 확인. 강사: 평균 히어로 숫자+위치 바+10구간 히스토그램+중앙값/최솟값/최댓값 통계. Firebase votes에 숫자를 문자열로 저장. 질문 보관함/CSV 내보내기/강의 템플릿 모두 지원. Thermometer 아이콘 |
+| 찬반 토론 (Debate) | 양쪽 | ✅ 완료 | 주제에 대해 찬성/반대 선택 + 한 줄 의견(50자, 선택). 학생: 찬성/반대 2버튼 선택 → 의견 입력 → 제출 → 실시간 비율 바(내 선택 표시). 강사: 퍼센트 VS 히어로 표시 + 비율 바 + 의견 스트림(전체/찬성/반대 필터). Firebase votes에 "for:의견" 또는 "against:의견" 형식으로 저장. Swords 아이콘. 질문 보관함/CSV 내보내기/강의 템플릿 모두 지원 |
 | 정답 표시 | 강사 | ✅ 완료 | 완료 세션 자동 공개, 진행중은 수동 |
 | 정답 설정 (모든 유형) | 강사 | ✅ 완료 | 객관식/퀴즈/OX 모두 정답 필수 |
 | 질문 활성화/중지 | 강사 | ✅ 완료 | 빠른 진행 카드로 원클릭 |
@@ -152,7 +153,7 @@ sessions/
     currentQuestion, currentMode
     questions/
       {questionId}/
-        type (choice|ox|quiz|wordcloud|qna|scale), title, order, options[], correctAnswer
+        type (choice|ox|quiz|wordcloud|qna|scale|debate), title, order, options[], correctAnswer
         points, event, activatedAt, revealedAt, awardedAt
         votes/{participantId}: { value, nickname, timestamp }
     participants/{participantId}: { nickname, joinedAt, online }

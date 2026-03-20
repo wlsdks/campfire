@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowDown, ArrowLeft, ArrowUp, BarChart3, Circle, Cloud, Copy, MessageSquare, Plus, Thermometer, Trash2, Trophy, CheckCircle } from 'lucide-react';
+import { ArrowDown, ArrowLeft, ArrowUp, BarChart3, Circle, Cloud, Copy, MessageSquare, Plus, Swords, Thermometer, Trash2, Trophy, CheckCircle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useCourseTemplate } from '@/features/session/api/useCourseTemplate';
 import { generateQuestionId } from '@/lib/utils';
@@ -14,6 +14,7 @@ const QUESTION_TYPES = [
   { value: 'wordcloud', label: '워드클라우드', icon: Cloud },
   { value: 'qna', label: 'Q&A', icon: MessageSquare },
   { value: 'scale', label: '감정 온도계', icon: Thermometer },
+  { value: 'debate', label: '찬반 토론', icon: Swords },
 ];
 
 export default function CourseEditor({ courseId, courseName, onBack }) {

@@ -1,0 +1,208 @@
+import { useMemo, memo, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useVotes } from '@/hooks/useVotes';
+import { MessageCircle } from 'lucide-react';
+
+/** Parse debate vote value "for:opinion text" -> { side, opinion } */
+function parseDebateVote(value) {
+  if (typeof value !== 'string') return null;
+  const colonIdx = value.indexOf(':');
+  if (colonIdx < 0) return null;
+  const side = value.slice(0, colonIdx);
+  const opinion = value.slice(colonIdx + 1).trim();
+  if (side !== 'for' && side !== 'against') return null;
+  return { side, opinion };
+}
+
+export default memo(function DebateChart({ sessionId, questionId }) {
+  const { voteList, totalVotes } = useVotes(sessionId, questionId);
+  const [filter, setFilter] = useState('all'); // 'all' | 'for' | 'against'
+
+  const { forCount, againstCount, opinions } = useMemo(() => {
+    let f = 0;
+    let a = 0;
+    const ops = [];
+
+    voteList.forEach((v) => {
+      const parsed = parseDebateVote(v.value);
+      if (!parsed) return;
+      if (parsed.side === 'for') f++;
+      else a++;
+
+      if (parsed.opinion) {
+        ops.push({
+          id: v.id,
+          side: parsed.side,
+          opinion: parsed.opinion,
+          nickname: v.nickname || '',
+          timestamp: v.timestamp || 0,
+        });
+      }
+    });
+
+    // Sort by timestamp descending (newest first)
+    ops.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    return { forCount: f, againstCount: a, opinions: ops };
+  }, [voteList]);
+
+  const forPct = totalVotes > 0 ? Math.round((forCount / totalVotes) * 100) : 50;
+  const againstPct = totalVotes > 0 ? Math.round((againstCount / totalVotes) * 100) : 50;
+
+  const filteredOpinions = useMemo(() => {
+    if (filter === 'all') return opinions;
+    return opinions.filter((o) => o.side === filter);
+  }, [opinions, filter]);
+
+  return (
+    <div className="space-y-6 w-full max-w-xl mx-auto px-8">
+      {/* Hero ratio display */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        className="flex items-center justify-between text-center"
+      >
+        <div className="flex-1 space-y-1">
+          <motion.p
+            key={forCount}
+            initial={{ scale: 1.2 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+            className="text-5xl font-black text-slate-900 tabular-nums"
+          >
+            {forPct}%
+          </motion.p>
+          <p className="text-lg font-bold text-slate-600">찬성</p>
+          <p className="text-sm text-slate-400">{forCount}명</p>
+        </div>
+
+        <div className="px-4">
+          <div className="text-slate-200 text-xl font-bold">VS</div>
+        </div>
+
+        <div className="flex-1 space-y-1">
+          <motion.p
+            key={againstCount}
+            initial={{ scale: 1.2 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+            className="text-5xl font-black text-slate-900 tabular-nums"
+          >
+            {againstPct}%
+          </motion.p>
+          <p className="text-lg font-bold text-slate-600">반대</p>
+          <p className="text-sm text-slate-400">{againstCount}명</p>
+        </div>
+      </motion.div>
+
+      {/* Ratio bar */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="space-y-2"
+      >
+        <div className="h-6 bg-slate-100 rounded-full overflow-hidden flex">
+          <motion.div
+            animate={{ width: `${forPct}%` }}
+            transition={{ type: 'spring', stiffness: 60, damping: 22 }}
+            className="bg-slate-800 h-full rounded-l-full"
+          />
+          <motion.div
+            animate={{ width: `${againstPct}%` }}
+            transition={{ type: 'spring', stiffness: 60, damping: 22 }}
+            className="bg-slate-300 h-full rounded-r-full"
+          />
+        </div>
+        <div className="flex justify-between text-sm font-semibold">
+          <span className="text-slate-700">{forPct}%</span>
+          <span className="text-slate-300 text-xs font-normal">총 {totalVotes}명</span>
+          <span className="text-slate-500">{againstPct}%</span>
+        </div>
+      </motion.div>
+
+      {/* Opinions stream */}
+      {opinions.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="space-y-3"
+        >
+          {/* Filter tabs */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-1.5">
+              <MessageCircle size={14} className="text-slate-400" />
+              <p className="text-xs font-semibold text-slate-400 tracking-wider uppercase">의견</p>
+            </div>
+            <div className="flex gap-1">
+              {[
+                { value: 'all', label: '전체' },
+                { value: 'for', label: '찬성' },
+                { value: 'against', label: '반대' },
+              ].map((f) => (
+                <button
+                  key={f.value}
+                  onClick={() => setFilter(f.value)}
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all active:scale-[0.96] ${
+                    filter === f.value
+                      ? 'bg-slate-900 text-white'
+                      : 'bg-slate-50 text-slate-400 hover:bg-slate-100'
+                  }`}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Opinion cards */}
+          <div className="max-h-48 overflow-y-auto space-y-1.5 scrollbar-hide">
+            <AnimatePresence mode="popLayout">
+              {filteredOpinions.map((op) => (
+                <motion.div
+                  key={op.id}
+                  layout
+                  initial={{ opacity: 0, x: op.side === 'for' ? -12 : 12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+                  className={`flex items-start gap-2.5 py-2 px-3 rounded-lg ${
+                    op.side === 'for' ? 'bg-slate-50' : 'bg-white border border-slate-100'
+                  }`}
+                >
+                  <span
+                    className={`text-[10px] font-bold px-1.5 py-0.5 rounded shrink-0 mt-0.5 ${
+                      op.side === 'for'
+                        ? 'bg-slate-800 text-white'
+                        : 'bg-slate-200 text-slate-600'
+                    }`}
+                  >
+                    {op.side === 'for' ? '찬' : '반'}
+                  </span>
+                  <p className="text-sm text-slate-700 leading-relaxed flex-1">{op.opinion}</p>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+
+            {filteredOpinions.length === 0 && (
+              <p className="text-center text-xs text-slate-300 py-4">
+                {filter === 'all' ? '아직 작성된 의견이 없습니다' : `${filter === 'for' ? '찬성' : '반대'} 의견이 없습니다`}
+              </p>
+            )}
+          </div>
+        </motion.div>
+      )}
+
+      {/* Total count */}
+      <div className="text-center text-slate-400 text-sm pt-2 border-t border-slate-100">
+        총 <span className="text-slate-600 font-semibold">{totalVotes}</span>명 참여
+        {opinions.length > 0 && (
+          <span className="text-slate-300 ml-2">
+            ({opinions.length}개 의견)
+          </span>
+        )}
+      </div>
+    </div>
+  );
+});

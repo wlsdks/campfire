@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical, BarChart3, BookmarkPlus, Check, ChevronDown, Circle, Cloud, Copy, MessageSquare, Play, Square, Thermometer, Trash2, Trophy } from 'lucide-react';
+import { GripVertical, BarChart3, BookmarkPlus, Check, ChevronDown, Circle, Cloud, Copy, MessageSquare, Play, Square, Swords, Thermometer, Trash2, Trophy } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import PinggoMascot from '@/components/ui/PinggoMascot';
 import { isQuizQuestion } from '@/lib/quiz';
@@ -15,6 +15,7 @@ const QUESTION_TYPES = [
   { value: 'wordcloud', label: '워드클라우드', icon: Cloud },
   { value: 'qna', label: 'Q&A', icon: MessageSquare },
   { value: 'scale', label: '감정 온도계', icon: Thermometer },
+  { value: 'debate', label: '찬반 토론', icon: Swords },
 ];
 
 function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, onReveal, onShowLeaderboard, onClearActive, onDuplicate, onDelete, onSaveToLibrary }) {

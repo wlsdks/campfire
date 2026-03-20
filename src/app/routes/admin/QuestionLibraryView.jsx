@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BarChart3, Circle, Cloud, Loader2, MessageSquare, Thermometer, Trophy, Plus, Trash2, Search, X, CheckCircle } from 'lucide-react';
+import { BarChart3, Circle, Cloud, Loader2, MessageSquare, Swords, Thermometer, Trophy, Plus, Trash2, Search, X, CheckCircle } from 'lucide-react';
 import { useQuestionLibrary } from '@/features/questions/api/useQuestionLibrary';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
@@ -14,6 +14,7 @@ const QUESTION_TYPES = [
   { value: 'wordcloud', label: '워드클라우드', icon: Cloud },
   { value: 'qna', label: 'Q&A', icon: MessageSquare },
   { value: 'scale', label: '감정 온도계', icon: Thermometer },
+  { value: 'debate', label: '찬반 토론', icon: Swords },
 ];
 
 const TYPE_FILTERS = [

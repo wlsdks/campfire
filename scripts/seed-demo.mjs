@@ -104,6 +104,57 @@ function makeScaleVotes(participantIds, participants, center = 60, spread = 25, 
   return votes;
 }
 
+/**
+ * Generate debate votes. Value format: "for:opinion" or "against:opinion".
+ * forRatio controls the split (0.6 = 60% for).
+ */
+const DEBATE_OPINIONS_FOR = [
+  '미래 경쟁력을 위해 필수',
+  '효율성이 크게 향상됨',
+  '이미 대세가 되고 있음',
+  '비용 절감 효과가 큼',
+  '학습 곡선이 낮아졌음',
+  '창의적 활용이 무궁무진',
+  '생산성이 확실히 높아짐',
+  '거부할 수 없는 흐름',
+];
+const DEBATE_OPINIONS_AGAINST = [
+  '아직 신뢰성이 부족함',
+  '기존 방식이 더 안정적',
+  '보안 우려가 있음',
+  '과도한 의존이 위험',
+  '인간의 판단이 더 중요',
+  '비용 대비 효과 불분명',
+  '윤리적 문제가 해결 안 됨',
+  '기술 격차가 심화될 수 있음',
+];
+
+function makeDebateVotes(participantIds, participants, forRatio = 0.6, voteRatio = 0.85) {
+  const votes = {};
+  const votingIds = participantIds.filter(() => Math.random() < voteRatio);
+  const forOps = [...DEBATE_OPINIONS_FOR].sort(() => Math.random() - 0.5);
+  const againstOps = [...DEBATE_OPINIONS_AGAINST].sort(() => Math.random() - 0.5);
+  let fi = 0, ai = 0;
+
+  for (const id of votingIds) {
+    const isFor = Math.random() < forRatio;
+    const side = isFor ? 'for' : 'against';
+    // 70% chance of including an opinion
+    let opinion = '';
+    if (Math.random() < 0.7) {
+      if (isFor) {
+        opinion = forOps[fi % forOps.length];
+        fi++;
+      } else {
+        opinion = againstOps[ai % againstOps.length];
+        ai++;
+      }
+    }
+    votes[id] = { value: `${side}:${opinion}`, nickname: participants[id].nickname };
+  }
+  return votes;
+}
+
 // ─── INTERACTION GENERATORS ───────────────────────────
 
 function mid() { return `m_${uid()}`; }
@@ -360,7 +411,7 @@ const sessions = {};
   // Round 3 — active (진행 중)
   const names3 = pickNames(18);
   const { participants: p3, ids: ids3 } = makeParticipants(names3);
-  const q3a = qid(), q3b = qid(), q3c = qid(), q3d = qid();
+  const q3a = qid(), q3b = qid(), q3c = qid(), q3d = qid(), q3e = qid();
   const s3 = sid();
   const t3 = now - 2 * HOUR;
   const s3Questions = {
@@ -387,6 +438,10 @@ const sessions = {};
     [q3d]: {
       type: 'scale', title: 'AI 도구 활용 능력에 대한 자신감은?', order: 4,
       votes: makeScaleVotes(ids3, p3, 62, 20),
+    },
+    [q3e]: {
+      type: 'debate', title: 'AI가 프로그래머를 대체할 수 있을까?', order: 5,
+      votes: makeDebateVotes(ids3, p3, 0.45),
     },
   };
   sessions[s3] = {
@@ -724,7 +779,7 @@ const sessions = {};
   // Round 2 — active
   const names2 = pickNames(19);
   const { participants: p2, ids: ids2 } = makeParticipants(names2);
-  const q2a = qid(), q2b = qid(), q2c = qid();
+  const q2a = qid(), q2b = qid(), q2c = qid(), q2d = qid();
   const s2 = sid();
   const t2 = now - 1 * HOUR;
   const s2UxQuestions = {
@@ -744,6 +799,10 @@ const sessions = {};
     [q2c]: {
       type: 'ox', title: '다크모드는 항상 눈의 피로를 줄여준다', order: 3,
       correctAnswer: 'X',
+    },
+    [q2d]: {
+      type: 'debate', title: '모바일 앱은 네이티브보다 웹앱이 더 나은 선택인가?', order: 4,
+      votes: makeDebateVotes(ids2, p2, 0.55),
     },
   };
   sessions[s2] = {

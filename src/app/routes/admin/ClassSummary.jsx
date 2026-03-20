@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react';
-import { BarChart3, Trophy, Circle, Cloud, MessageSquare, Thermometer, AlertTriangle } from 'lucide-react';
+import { BarChart3, Trophy, Circle, Cloud, MessageSquare, Swords, Thermometer, AlertTriangle } from 'lucide-react';
 import ExportMenu from './ExportMenu';
 
 const QTYPE_META = {
@@ -9,6 +9,7 @@ const QTYPE_META = {
   wordcloud: { label: '워드클라우드', icon: Cloud },
   qna: { label: 'Q&A', icon: MessageSquare },
   scale: { label: '감정 온도계', icon: Thermometer },
+  debate: { label: '찬반 토론', icon: Swords },
 };
 
 function getQuestionInsights(questions, participantCount) {

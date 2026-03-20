@@ -5,6 +5,7 @@ import OXVoter from '@/features/voting/components/OXVoter';
 import QuizVoter from '@/features/voting/components/QuizVoter';
 import TextInput from '@/features/voting/components/TextInput';
 import ScaleVoter from '@/features/voting/components/ScaleVoter';
+import DebateVoter from '@/features/voting/components/DebateVoter';
 import WaitingPage from './WaitingPage';
 import LeaderboardPage from './LeaderboardPage';
 import StudentHeader from './StudentHeader';
@@ -27,6 +28,7 @@ const TYPE_LABELS = {
   wordcloud: '워드클라우드',
   qna: 'Q&A',
   scale: '감정 온도계',
+  debate: '찬반 토론',
 };
 
 /** Renders QuizResult from vote data passed by QuizVoter. */
@@ -233,6 +235,9 @@ export default function VotePage({ sessionId }) {
               )}
               {question.type === 'scale' && (
                 <ScaleVoter sessionId={sessionId} questionId={currentQId} disabled={timerExpired} />
+              )}
+              {question.type === 'debate' && (
+                <DebateVoter sessionId={sessionId} questionId={currentQId} disabled={timerExpired} />
               )}
 
               {/* Time's up overlay */}
