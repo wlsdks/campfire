@@ -314,6 +314,24 @@ animate-pulse bg-slate-200 rounded-lg
 프레스: active:scale-90
 ```
 
+### 채팅 메시지 (ChatPanel)
+```
+내 메시지:   bg-slate-900 dark:bg-slate-200 text-white dark:text-slate-900 rounded-2xl rounded-br-sm
+상대 메시지: bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-2xl rounded-tl-sm
+아바타:      w-8 h-8 rounded-full bg-slate-100 text-xs font-semibold (이니셜 1자)
+강사 배지:   bg-slate-100 rounded-full px-1.5 py-0.5 text-[10px]
+메시지 간격: gap-3
+스마트 스크롤: 하단 100px 이내→자동, 위 스크롤→유지
+```
+
+### 경품 추첨 (PrizeDraw)
+```
+슬롯 릴: text-3xl font-bold, 2.5s rapid cycling
+당첨 카드: bg-white rounded-2xl shadow-xl p-8
+당첨 배지: bg-slate-900 text-white rounded-full px-3 py-1 text-sm font-bold
+레이아웃: 1명=중앙, 2-3명=flex row, 4+명=grid-cols-2
+```
+
 ---
 
 ## 7. 그림자 (Shadows)
@@ -399,6 +417,9 @@ transition={{ delay: index * 0.05 }}
 | 드로어 slide | x: -100%/100% -> 0, 0.25s ease | 태블릿 사이드바 |
 | 아코디언 흔들림 | x [0, -4, 4, -3, 3, -1, 1, 0], 0.5초 | 새 질문/손들기 수신 시 |
 | ReviewingBanner | fade+slide, pulse dot | 강사 질문 확인 중 알림 |
+| 경품 추첨 슬롯 | 이름 rapid cycling 2.5s → 당첨 spring bounce + ConfettiBurst | 경품 추첨 모드 |
+| 참여자 수 bounce | key={count} scale 1.2→1 spring | 대기 화면 참여자 입장 시 |
+| 리더보드 순위 reveal | scale 0→1, spring 400/22 | 순위 발표 |
 
 ### 규칙
 - 모든 모션 400ms 이하
