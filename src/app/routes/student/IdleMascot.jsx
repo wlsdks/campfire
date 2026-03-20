@@ -148,36 +148,46 @@ export default function IdleMascot() {
           animate={body}
           style={{ transformOrigin: '60px 60px' }}
         >
-          {/* Mane — simple soft circle */}
-          <circle cx="60" cy="60" r="44" fill="#FBBF24" />
+          {/* Mane — fluffy bumps */}
+          <circle cx="60" cy="30" r="16" fill="#F59E0B" />
+          <circle cx="38" cy="36" r="15" fill="#F59E0B" />
+          <circle cx="82" cy="36" r="15" fill="#F59E0B" />
+          <circle cx="28" cy="54" r="14" fill="#F59E0B" />
+          <circle cx="92" cy="54" r="14" fill="#F59E0B" />
+          <circle cx="30" cy="74" r="13" fill="#F59E0B" />
+          <circle cx="90" cy="74" r="13" fill="#F59E0B" />
+          <circle cx="42" cy="88" r="12" fill="#F59E0B" />
+          <circle cx="78" cy="88" r="12" fill="#F59E0B" />
+          <circle cx="60" cy="92" r="12" fill="#F59E0B" />
+          <circle cx="60" cy="60" r="38" fill="#F59E0B" />
 
           {/* Face */}
-          <circle cx="60" cy="63" r="32" fill="#FDE68A" />
+          <circle cx="60" cy="62" r="30" fill="#FDE68A" />
 
           {/* Left ear */}
-          <motion.g animate={leftEar} style={{ transformOrigin: '30px 35px' }}>
-            <circle cx="30" cy="35" r="12" fill="#FBBF24" />
-            <circle cx="30" cy="35" r="7" fill="#FDE68A" />
+          <motion.g animate={leftEar} style={{ transformOrigin: '34px 34px' }}>
+            <circle cx="34" cy="34" r="8" fill="#F59E0B" />
+            <circle cx="34" cy="34" r="5" fill="#FDE68A" />
           </motion.g>
 
           {/* Right ear */}
-          <motion.g animate={rightEar} style={{ transformOrigin: '90px 35px' }}>
-            <circle cx="90" cy="35" r="12" fill="#FBBF24" />
-            <circle cx="90" cy="35" r="7" fill="#FDE68A" />
+          <motion.g animate={rightEar} style={{ transformOrigin: '86px 34px' }}>
+            <circle cx="86" cy="34" r="8" fill="#F59E0B" />
+            <circle cx="86" cy="34" r="5" fill="#FDE68A" />
           </motion.g>
 
           {/* Eyes group -- translates for look L/R */}
           <motion.g animate={eyes}>
             {/* Blink group -- scaleY for blink */}
-            <motion.g animate={blink} style={{ transformOrigin: '60px 58px' }}>
-              <ellipse cx="48" cy="58" rx="5" ry="5.5" fill="#1E293B" />
-              <ellipse cx="72" cy="58" rx="5" ry="5.5" fill="#1E293B" />
+            <motion.g animate={blink} style={{ transformOrigin: '60px 57px' }}>
+              <ellipse cx="48" cy="57" rx="5" ry="5.5" fill="#1E293B" />
+              <ellipse cx="72" cy="57" rx="5" ry="5.5" fill="#1E293B" />
             </motion.g>
           </motion.g>
 
           {/* Eye shines */}
-          <circle cx="46" cy="56" r="2" fill="white" />
-          <circle cx="70" cy="56" r="2" fill="white" />
+          <circle cx="46" cy="55" r="2" fill="white" />
+          <circle cx="70" cy="55" r="2" fill="white" />
 
           {/* Nose */}
           <ellipse cx="60" cy="66" rx="3.5" ry="2.5" fill="#D97706" />
@@ -192,8 +202,8 @@ export default function IdleMascot() {
           />
 
           {/* Cheeks */}
-          <circle cx="39" cy="67" r="5" fill="#FBBF24" opacity="0.4" />
-          <circle cx="81" cy="67" r="5" fill="#FBBF24" opacity="0.4" />
+          <circle cx="39" cy="66" r="5" fill="#FBBF24" opacity="0.4" />
+          <circle cx="81" cy="66" r="5" fill="#FBBF24" opacity="0.4" />
         </motion.g>
       </motion.svg>
     </motion.div>
