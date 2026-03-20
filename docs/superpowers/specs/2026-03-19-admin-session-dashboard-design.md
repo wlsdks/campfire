@@ -16,7 +16,7 @@
 - **위치**: `src/app/routes/admin/SessionDashboard.jsx`
 - **역할**: 로그인 후 첫 화면. 세션 목록 + 새 세션 생성
 - **UI**:
-  - 상단: Pinggo 마스코트 + 환영 텍스트
+  - 상단: Pick 마스코트 + 환영 텍스트
   - "새 세션 만들기" 버튼
   - 세션 카드 리스트 (최신순 정렬)
 - **카드 정보**: 세션코드, 생성일시, 참여자 수, 질문 수, 상태 배지(active/ended)
@@ -38,5 +38,5 @@
 
 ## Design
 - 토스 스타일: 큰 제목, 넉넉한 여백, 최소 장식
-- Pinggo 마스코트 재사용 (AdminLogin과 동일)
+- Pick 마스코트 재사용 (AdminLogin과 동일)
 - Framer Motion 입장 애니메이션

@@ -1,11 +1,11 @@
-# Pinggo Background Improvement Loop
+# Pick Background Improvement Loop
 
 > 15분 간격 자동 실행. 매 사이클 시작 시 반드시 CLAUDE.md 참조.
 > 브랜치: `background-improve`에서만 작업. main은 절대 건드리지 않음.
 
 ## 서비스 핵심 (절대 잊지 말 것)
 
-**Pinggo = 강사와 학생의 실시간 상호작용 플랫폼**
+**Pick = 강사와 학생의 실시간 상호작용 플랫폼**
 
 - **핵심 가치**: 수업 중 강사↔학생 소통. 이것이 모든 기능의 존재 이유.
 - **강사**: 학생 참여를 이끌고, 학습 결과 데이터를 확인하고 활용할 수 있어야 함
@@ -52,7 +52,7 @@
   - 데이터 변경: spring 애니메이션으로 숫자 카운트업
   - 리스트 추가/삭제: AnimatePresence로 자연스럽게
 - **Lottie**: 상업적 무료 범위 내 자유 활용 (LottieFiles CDN)
-- **Pinggo 마스코트 활용 (적극적으로)**:
+- **Pick 마스코트 활용 (적극적으로)**:
   - 대기 화면: 마스코트가 산책하거나 장난치는 애니메이션
   - 빈 상태: 마스코트가 안내하거나 기다리는 포즈
   - 퀴즈 정답: 마스코트 축하 (현재 컨페티 + 추가 가능)
@@ -124,7 +124,7 @@
 
 ### 0. 안전 점검
 ```bash
-cd /Users/jinan/ai/Pinggo
+cd /Users/jinan/ai/Pick
 git checkout background-improve
 git pull origin background-improve   # 원격 변경 반영
 git status
@@ -214,7 +214,7 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 
 ## 기획 & 재미 요소 (적극적으로 도전)
 
-> 레퍼런스는 참고하되, **그대로 따라하지 말고 Pinggo만의 창의적인 방식**으로 구현.
+> 레퍼런스는 참고하되, **그대로 따라하지 말고 Pick만의 창의적인 방식**으로 구현.
 > Kahoot, Mentimeter, Slido 등을 검색해서 아이디어 얻되 차별화 필수.
 
 ### 새 모드 아이디어 (구현 가능한 것부터)
@@ -249,7 +249,7 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 - **강사 부담 최소**: 강사가 복잡한 세팅 안 해도 되게
 - **모바일 우선**: 학생이 폰에서 한 손으로 참여 가능
 - **데이터 활용**: 결과가 강사에게 유용한 인사이트 제공
-- **남의 것 베끼지 않기**: 레퍼런스 조사 후 Pinggo만의 방식으로 재해석
+- **남의 것 베끼지 않기**: 레퍼런스 조사 후 Pick만의 방식으로 재해석
 
 ## Playwright 기능 검증 (매 사이클 필수)
 

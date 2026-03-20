@@ -1,8 +1,8 @@
-# Pinggo Design System
+# Pick Design System
 
 > 이 문서만으로 동일한 UI/UX를 다른 프로젝트에서도 재현할 수 있어야 함.
 > 모든 값은 `src/lib/design-tokens.js`에 코드로도 정의됨.
-> 59차 사이클 기준 최종 업데이트.
+> 2026-03-21 기준 최신 업데이트.
 
 ---
 
@@ -43,7 +43,7 @@ AI가 생성한 것처럼 보이면 안 됨. 토스, Linear, Notion처럼 절제
 | CTA 버튼 | `bg-slate-900` | `#0F172A` | Dark CTA (Linear/Toss 스타일) |
 | CTA hover | `hover:bg-slate-800` | `#1E293B` | |
 | CTA dark mode | `dark:bg-slate-100 dark:text-slate-900` | | 반전 |
-| 브랜드 아이콘 | `text-indigo-600` | `#4F46E5` | Radio 아이콘 등 |
+| 브랜드 아이콘 | `text-indigo-600` | `#4F46E5` | 사자 마스코트 (PickMascot) |
 | 악센트 (indigo) | `indigo-600/500/400/300` | | 차트 바, 포커스 링, 진행바 전용 |
 | Input focus ring | `focus:ring-indigo-500/20` | | |
 | 활성/선택 상태 | `bg-slate-900 text-white` | | 탭, 토글, 선택지 |
@@ -222,7 +222,7 @@ font-family: 'Pretendard', 'Inter', -apple-system, 'Apple SD Gothic Neo', system
 
 ```
 모서리: rounded-lg (8px)
-전환: transition-all
+전환: transition-all duration-150
 프레스: active:scale-[0.97]
 포커스: focus-visible:ring-2 focus-visible:ring-offset-2
 다크 Primary: dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900
@@ -246,9 +246,11 @@ placeholder: text-slate-400
 패딩: px-2.5 py-0.5
 모서리: rounded-full
 크기: text-xs font-medium
-Primary: bg-slate-100 text-slate-700 / dark:bg-slate-700 dark:text-slate-200
-Neutral: bg-slate-50 text-slate-500 / dark:bg-slate-800 dark:text-slate-400
-Error: bg-red-50 text-red-700 / dark:bg-red-900/30 dark:text-red-400
+테두리: 없음 (border 사용 금지)
+변형 3종만 사용:
+  Primary: bg-slate-100 text-slate-700 / dark:bg-slate-700 dark:text-slate-200
+  Neutral: bg-slate-50 text-slate-500 / dark:bg-slate-800 dark:text-slate-400
+  Error: bg-red-50 text-red-700 / dark:bg-red-900/30 dark:text-red-400
 ```
 
 ### 아바타 (Avatar)
@@ -395,6 +397,8 @@ transition={{ delay: index * 0.05 }}
 | 리액션 버블 | 파티클 버스트 + 스케일/로테이션, 2초 fade-out | 학생 리액션 |
 | 카운트업 | spring 기반 숫자 애니메이션 | 통계 숫자 |
 | 드로어 slide | x: -100%/100% -> 0, 0.25s ease | 태블릿 사이드바 |
+| 아코디언 흔들림 | x [0, -4, 4, -3, 3, -1, 1, 0], 0.5초 | 새 질문/손들기 수신 시 |
+| ReviewingBanner | fade+slide, pulse dot | 강사 질문 확인 중 알림 |
 
 ### 규칙
 - 모든 모션 400ms 이하
@@ -445,6 +449,13 @@ transition={{ delay: index * 0.05 }}
 | 트렌드 상승 | TrendingUp |
 | 트렌드 하락 | TrendingDown |
 | 난이도 경고 | AlertTriangle |
+
+### 마스코트 (PickMascot)
+- 사자 캐릭터 — 팀 아슬란(Aslan) 브랜딩
+- 뭉글뭉글한 갈기, 큰 눈, 볼터치
+- 사이즈: xs(36px) 헤더/인라인, sm(48px) 조인/로그인, md(72px) 빈상태, lg(100px) 랜딩/대기
+- 파일: `src/components/ui/PickMascot.jsx`
+- 대기 화면용 IdleMascot: 눈 깜빡임, 좌우 눈동자, 귀 흔들림 애니메이션
 
 ---
 
@@ -583,7 +594,7 @@ skeleton: 'animate-pulse bg-slate-200 rounded-lg'
 
 ---
 
-## 16. Design Reference (2025-2026 트렌드)
+## 14. Design Reference (2025-2026 트렌드)
 
 > 출처: Apple HIG, Linear, Notion, Toss, Vercel Geist, Stripe
 > 디자인 작업 시 항상 참고. 우리 앱에 적용 가능한 원칙 위주로 정리.
@@ -692,7 +703,7 @@ text-slate-400은 bg-slate-50 위에서 WCAG AA 미달 가능
 
 ---
 
-## 17. 실전 디자인 팁 (Refactoring UI, Laws of UX 등)
+## 15. 실전 디자인 팁 (Refactoring UI, Laws of UX 등)
 
 > 출처: Refactoring UI (Adam Wathan & Steve Schoger), Laws of UX, Toss Design, shadcn/ui
 > 디자인 작업 시 구체적으로 적용할 수 있는 실전 팁.
@@ -773,9 +784,9 @@ text-slate-400은 bg-slate-50 위에서 WCAG AA 미달 가능
 | **바 차트 > 파이 차트** | 인간은 각도/면적 비교를 못한다. 길이 비교가 정확 | |
 | **실시간 데이터는 애니메이트** | 숫자 변경 시 `AnimatePresence` + spring 카운터 | 급변은 놓치기 쉽다. 부드러운 전환이 인지를 돕는다 |
 
-### UX 법칙 (Laws of UX) — Pinggo 적용
+### UX 법칙 (Laws of UX) — Pick 적용
 
-| 법칙 | 내용 | Pinggo 적용 |
+| 법칙 | 내용 | Pick 적용 |
 |------|------|-------------|
 | **Fitts's Law** | 크고 가까운 타겟 = 빠른 클릭 | 투표 버튼은 thumb zone(하단)에, 크게(48px+) |
 | **Hick's Law** | 선택지가 적을수록 빠른 결정 | 학생 화면: 질문 + 선택지만. 부가 기능은 숨기기 |
@@ -801,7 +812,7 @@ text-slate-400은 bg-slate-50 위에서 WCAG AA 미달 가능
 
 ---
 
-## 14. 접근성 (Accessibility)
+## 16. 접근성 (Accessibility)
 
 ### aria 속성
 | 속성 | 적용 대상 |
@@ -827,7 +838,7 @@ text-slate-400은 bg-slate-50 위에서 WCAG AA 미달 가능
 
 ---
 
-## 15. 번들 구조
+## 17. 번들 구조
 
 ### Vite manualChunks
 | 청크 | 포함 라이브러리 | 크기 (gzip) |

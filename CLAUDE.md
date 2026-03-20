@@ -1,6 +1,6 @@
-# Pinggo - Project Guidelines
+# Pick - Project Guidelines
 
-## What is Pinggo?
+## What is Pick?
 Real-time classroom engagement platform. Instructors create sessions, students join via QR/code and participate in polls, quizzes, word clouds, Q&A. Korean market (한국어 UI).
 
 ## Tech Stack

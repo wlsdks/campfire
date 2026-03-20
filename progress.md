@@ -1,4 +1,4 @@
-# Pinggo UI/UX Improvement Progress
+# Pick UI/UX Improvement Progress
 
 > Auto-updated each cycle. [x] = done, [ ] = pending, [~] = in progress
 > Last updated: 2026-03-19

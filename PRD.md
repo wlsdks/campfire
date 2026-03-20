@@ -1,4 +1,4 @@
-# Pinggo PRD (Product Requirements Document)
+# Pick PRD (Product Requirements Document)
 
 > 실시간 강의 참여 플랫폼. 강사와 학생의 상호작용이 핵심.
 > 이 문서는 매 개선 사이클마다 업데이트됨. (59차 사이클 기준 최종 업데이트)
@@ -384,7 +384,7 @@ src/
   components/ui/             — 공유 UI 프리미티브 (16개)
     Avatar, Badge, Button, Card, ConnectionBanner, ConnectionDot,
     EmptyState, ErrorBoundary, IconButton, InstallPrompt, Modal,
-    PinggoMascot, QRCode, QuizEventBanner, Skeleton, Toast
+    PickMascot, QRCode, QuizEventBanner, Skeleton, Toast
 
   features/                  — 비즈니스 기능 (12개 도메인)
     chat/                    — ChatPanel, useChat
