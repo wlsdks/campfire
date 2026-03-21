@@ -34,20 +34,23 @@ export function useStudentDM(sessionId, participantId) {
     return () => unsub();
   }, [sessionId, participantId]);
 
-  // Find the current non-resolved DM thread with its messages
-  const activeDM = useMemo(() => {
-    for (const [id, thread] of Object.entries(threads)) {
-      if (thread.status !== 'resolved') {
+  // All non-resolved DM threads with messages
+  const allActiveDMs = useMemo(() => {
+    return Object.entries(threads)
+      .filter(([, t]) => t.status !== 'resolved')
+      .map(([id, thread]) => {
         const msgs = thread.messages
           ? Object.entries(thread.messages)
               .map(([mid, m]) => ({ id: mid, ...m }))
               .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0))
           : [];
         return { id, ...thread, messageList: msgs };
-      }
-    }
-    return null;
+      })
+      .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
   }, [threads]);
+
+  // First active DM (backward compat)
+  const activeDM = allActiveDMs[0] || null;
 
   const requestHelp = useCallback(async (text, studentName) => {
     if (!sessionId || !participantId || !text?.trim()) return false;
@@ -91,7 +94,7 @@ export function useStudentDM(sessionId, participantId) {
     }
   }, [sessionId, activeDM?.id]);
 
-  return { activeDM, sendMessage, requestHelp };
+  return { activeDM, allActiveDMs, sendMessage, requestHelp };
 }
 
 /**

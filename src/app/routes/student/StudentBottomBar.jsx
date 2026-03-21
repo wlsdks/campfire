@@ -36,8 +36,11 @@ export default function StudentBottomBar({ sessionId }) {
 
   const pid = getParticipantId();
   const nickname = getNickname() || '익명';
-  const { activeDM, sendMessage: sendDMMessage, requestHelp } = useStudentDM(sessionId, pid);
+  const { activeDM, allActiveDMs, sendMessage: sendDMMessage, requestHelp } = useStudentDM(sessionId, pid);
   const isRaised = handRaises[pid]?.raised === true;
+
+  const totalDMMessages = allActiveDMs.reduce((sum, dm) => sum + (dm.messageList?.length || 0), 0);
+  const dmUnread = Math.max(0, totalDMMessages - dmLastSeen);
 
   const handleNewMessage = useCallback(() => setHasUnread(true), []);
   const handleNewQuestion = useCallback(() => setHasNewQuestion(true), []);
@@ -76,8 +79,15 @@ export default function StudentBottomBar({ sessionId }) {
       <ChatPanel sessionId={sessionId} senderName={nickname} senderType="student" open={showChat} onClose={() => setShowChat(false)} onNewMessage={handleNewMessage} />
       <ClassQAPanel sessionId={sessionId} open={showQA} onClose={() => setShowQA(false)} onNewQuestion={handleNewQuestion} />
       <HelpRequestModal open={showHelpModal && !activeDM} onClose={() => setShowHelpModal(false)} onSubmit={handleHelpRequest} />
-      {showDMChat && activeDM && (
-        <DMBubble activeDM={activeDM} senderName={nickname} onSendMessage={sendDMMessage} onClose={() => setShowDMChat(false)} />
+      {showDMChat && (
+        <DMBubble
+          activeDMs={allActiveDMs}
+          activeDM={activeDM}
+          senderName={nickname}
+          onSendMessage={sendDMMessage}
+          onClose={() => setShowDMChat(false)}
+          onRequestHelp={() => { setShowDMChat(false); setShowHelpModal(true); }}
+        />
       )}
 
       <Modal open={showQuestionInput} onClose={() => setShowQuestionInput(false)} ariaLabel="익명 긴급 질문">
@@ -117,16 +127,16 @@ export default function StudentBottomBar({ sessionId }) {
                 {hasUnread && <span className={`${UNREAD_DOT} bg-red-500`} />}
               </motion.button>
               <motion.button whileTap={{ scale: 0.96 }} onClick={() => {
-                if (activeDM) { setShowDMChat(true); setDmLastSeen(activeDM.messageList?.length || 0); }
+                if (allActiveDMs.length > 0) { setShowDMChat(true); setDmLastSeen(totalDMMessages); }
                 else setShowHelpModal(true);
               }} className={`${BTN} relative`}>
                 <Headset size={20} /><span className="text-[11px]">도움</span>
-                {activeDM && (activeDM.messageList?.length || 0) > dmLastSeen && (
-                  <span className={`${UNREAD_DOT} bg-red-500`}>
-                    <span className="text-white text-[8px] font-bold">{(activeDM.messageList?.length || 0) - dmLastSeen}</span>
+                {dmUnread > 0 && (
+                  <span className={`${UNREAD_DOT} bg-red-500 flex items-center justify-center`}>
+                    <span className="text-white text-[8px] font-bold">{dmUnread}</span>
                   </span>
                 )}
-                {activeDM && (activeDM.messageList?.length || 0) <= dmLastSeen && (
+                {allActiveDMs.length > 0 && dmUnread === 0 && (
                   <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-500" />
                 )}
               </motion.button>
