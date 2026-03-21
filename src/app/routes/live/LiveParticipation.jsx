@@ -1,6 +1,5 @@
-import { memo } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
-import { useEffect, useRef } from 'react';
 
 /** Animated number counter for live view. */
 function AnimatedNumber({ value, className }) {
