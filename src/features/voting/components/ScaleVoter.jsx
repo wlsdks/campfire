@@ -4,6 +4,9 @@ import { getParticipantId } from '@/lib/participant';
 import { motion } from 'framer-motion';
 import { useState, useCallback, useRef, memo } from 'react';
 import VoteConfirm from './VoteConfirm';
+import { useVotes } from '@/hooks/useVotes';
+import { Users } from 'lucide-react';
+import { useMemo } from 'react';
 
 /**
  * Labels at specific scale positions for orientation.
@@ -22,6 +25,50 @@ function getScaleColor(value) {
   if (value <= 60) return 'bg-slate-500';
   if (value <= 80) return 'bg-slate-700';
   return 'bg-slate-900';
+}
+
+function ScaleLiveAverage({ sessionId, questionId, myValue }) {
+  const { totalVotes, votes } = useVotes(sessionId, questionId);
+  const avg = useMemo(() => {
+    const vals = Object.values(votes || {}).map(v => Number(v.value)).filter(v => !isNaN(v));
+    return vals.length > 0 ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : 0;
+  }, [votes]);
+
+  if (totalVotes === 0) return null;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.4, type: 'spring', stiffness: 300, damping: 25 }}
+      className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 shadow-sm"
+    >
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-xs font-semibold text-slate-500 tracking-tight">실시간 평균</p>
+        <div className="flex items-center gap-1 text-slate-400">
+          <Users size={12} />
+          <span className="text-xs font-medium tabular-nums">{totalVotes}</span>
+        </div>
+      </div>
+      <div className="text-center">
+        <span className="text-3xl font-bold text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{avg}</span>
+        <span className="text-sm text-slate-400 ml-1">점</span>
+      </div>
+      <div className="mt-2 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+        <motion.div
+          className="h-full bg-slate-400 dark:bg-slate-500 rounded-full"
+          initial={{ width: 0 }}
+          animate={{ width: `${avg}%` }}
+          transition={{ type: 'spring', stiffness: 80, damping: 20 }}
+        />
+      </div>
+      <div className="flex justify-between mt-1 text-[10px] text-slate-400">
+        <span>0</span>
+        <span>내 응답: {myValue}점</span>
+        <span>100</span>
+      </div>
+    </motion.div>
+  );
 }
 
 export default memo(function ScaleVoter({ sessionId, questionId, disabled = false }) {
@@ -48,14 +95,17 @@ export default memo(function ScaleVoter({ sessionId, questionId, disabled = fals
 
   if (submitted) {
     return (
-      <VoteConfirm
-        submittedLabel="응답 완료!"
-        submittedDescription="의견이 기록되었습니다"
-        waitingLabel="결과를 기다리는 중..."
-        waitingDescription="강사가 결과를 공개하면 표시됩니다"
-        selectedAnswer={`${value}점`}
-        selectedAnswerLabel="내 응답"
-      />
+      <div className="space-y-3">
+        <VoteConfirm
+          submittedLabel="응답 완료!"
+          submittedDescription="의견이 기록되었습니다"
+          waitingLabel="결과를 기다리는 중..."
+          waitingDescription="강사가 결과를 공개하면 표시됩니다"
+          selectedAnswer={`${value}점`}
+          selectedAnswerLabel="내 응답"
+        />
+        <ScaleLiveAverage sessionId={sessionId} questionId={questionId} myValue={value} />
+      </div>
     );
   }
 
