@@ -2,7 +2,7 @@ import { useMemo, memo } from 'react';
 import { motion } from 'framer-motion';
 import { useVotes } from '@/hooks/useVotes';
 import { formatPercent } from '@/lib/utils';
-import { Users } from 'lucide-react';
+import { Users, Check } from 'lucide-react';
 
 /**
  * Compact live poll results for student phones.
@@ -63,9 +63,7 @@ export default memo(function StudentLiveResults({ sessionId, questionId, options
                 >
                   {option}
                   {isMine && (
-                    <span className="ml-1.5 text-[10px] font-medium text-slate-400">
-                      (내 선택)
-                    </span>
+                    <Check size={12} className="inline ml-1 text-slate-500 dark:text-slate-400" />
                   )}
                 </span>
                 <span
