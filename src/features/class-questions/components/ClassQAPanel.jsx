@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, X, ThumbsUp, Check, HelpCircle } from 'lucide-react';
 import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
-import { getParticipantId, getNickname } from '@/lib/participant';
+import { getParticipantId, getNickname, getLastSeen, saveLastSeen } from '@/lib/participant';
 import { timeAgo } from '@/lib/utils';
 
 const MAX_LENGTH = 200;
@@ -67,18 +67,20 @@ export default function ClassQAPanel({ sessionId, open, onClose, onNewQuestion }
   const [posting, setPosting] = useState(false);
   const [tab, setTab] = useState('all'); // 'all' | 'mine'
   const inputRef = useRef(null);
-  const prevCountRef = useRef(-1);
+  const prevCountRef = useRef(getLastSeen(sessionId, 'qa'));
 
   const participantId = getParticipantId();
   const nickname = getNickname();
 
   // Notify parent of new questions when panel is closed
   useEffect(() => {
+    if (loading) return;
     if (prevCountRef.current >= 0 && questions.length > prevCountRef.current && !open && onNewQuestion) {
       onNewQuestion();
     }
     prevCountRef.current = questions.length;
-  }, [questions.length, open, onNewQuestion]);
+    if (open) saveLastSeen(sessionId, 'qa', questions.length);
+  }, [questions.length, loading, open, onNewQuestion, sessionId]);
 
   useEffect(() => {
     if (open) {

@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { ref, set, push, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
-import { getParticipantId, getNickname } from '@/lib/participant';
+import { getParticipantId, getNickname, getLastSeen, saveLastSeen } from '@/lib/participant';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { useStudentDM } from '@/features/dm/api/useDM';
 import { motion } from 'framer-motion';
@@ -24,7 +24,7 @@ export default function StudentBottomBar({ sessionId }) {
   const [showChat, setShowChat] = useState(false);
   const [showQA, setShowQA] = useState(false);
   const [showDMChat, setShowDMChat] = useState(false);
-  const [dmLastSeen, setDmLastSeen] = useState(0);
+  const [dmLastSeen, setDmLastSeen] = useState(() => getLastSeen(sessionId, 'dm') >= 0 ? getLastSeen(sessionId, 'dm') : 0);
   const [hasUnread, setHasUnread] = useState(false);
   const [hasNewQuestion, setHasNewQuestion] = useState(false);
   const [questionText, setQuestionText] = useState('');
@@ -124,7 +124,7 @@ export default function StudentBottomBar({ sessionId }) {
                 {hasUnread && <span className={`${UNREAD_DOT} bg-red-500`} />}
               </motion.button>
               <motion.button whileTap={{ scale: 0.96 }} onClick={() => {
-                setShowDMChat(true); setDmLastSeen(totalDMMessages);
+                setShowDMChat(true); setDmLastSeen(totalDMMessages); saveLastSeen(sessionId, 'dm', totalDMMessages);
               }} className={`${BTN} relative`}>
                 <Headset size={20} /><span className="text-[11px]">도움</span>
                 {dmUnread > 0 && (

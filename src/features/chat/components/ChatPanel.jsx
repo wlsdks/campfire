@@ -4,6 +4,7 @@ import { Send, X, MessageCircle, Shield } from 'lucide-react';
 import PickMascot from '@/components/ui/PickMascot';
 import { useChat } from '@/features/chat/api/useChat';
 import { useStaffChat } from '@/features/dm/api/useStaffChat';
+import { getLastSeen, saveLastSeen } from '@/lib/participant';
 import ChatMessage from '@/features/chat/components/ChatMessage';
 
 const MAX_LENGTH = 500;
@@ -23,8 +24,8 @@ export default function ChatPanel({ sessionId, senderName, senderType, open, onC
   const messagesEndRef = useRef(null);
   const containerRef = useRef(null);
   const inputRef = useRef(null);
-  const prevPublicCountRef = useRef(-1);
-  const prevStaffCountRef = useRef(-1);
+  const prevPublicCountRef = useRef(getLastSeen(sessionId, 'chat'));
+  const prevStaffCountRef = useRef(getLastSeen(sessionId, 'staffchat'));
   const isNearBottomRef = useRef(true);
 
   function handleScroll() {
@@ -47,15 +48,18 @@ export default function ChatPanel({ sessionId, senderName, senderType, open, onC
   }, [open, channel]);
 
   useEffect(() => {
+    if (publicChat.loading) return;
     if (prevPublicCountRef.current >= 0 && publicChat.messages.length > prevPublicCountRef.current && !open && onNewMessage) onNewMessage();
     prevPublicCountRef.current = publicChat.messages.length;
-  }, [publicChat.messages.length, open, onNewMessage]);
+    if (open) saveLastSeen(sessionId, 'chat', publicChat.messages.length);
+  }, [publicChat.messages.length, publicChat.loading, open, onNewMessage, sessionId]);
 
   useEffect(() => {
-    if (!isStaffOrInstructor) return;
+    if (!isStaffOrInstructor || staffChat.loading) return;
     if (prevStaffCountRef.current >= 0 && staffChat.messages.length > prevStaffCountRef.current && (channel !== 'staff' || !open)) setStaffUnread(true);
     prevStaffCountRef.current = staffChat.messages.length;
-  }, [staffChat.messages.length, channel, open, isStaffOrInstructor]);
+    if (open && channel === 'staff') saveLastSeen(sessionId, 'staffchat', staffChat.messages.length);
+  }, [staffChat.messages.length, staffChat.loading, channel, open, isStaffOrInstructor, sessionId]);
 
   useEffect(() => {
     if (open) { const t = setTimeout(() => inputRef.current?.focus(), 200); return () => clearTimeout(t); }

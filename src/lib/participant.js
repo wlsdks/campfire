@@ -70,3 +70,31 @@ export function markSessionJoined(sessionId, participantId) {
     },
   });
 }
+
+/**
+ * Returns the last-seen count for a channel (chat/qa/dm) in a session.
+ * Used to suppress false unread badges on page refresh.
+ * @param {string} sessionId
+ * @param {string} channel - 'chat' | 'qa' | 'dm'
+ * @returns {number} last-seen count, or -1 if never opened
+ */
+export function getLastSeen(sessionId, channel) {
+  try {
+    const v = localStorage.getItem(`pick_${channel}_seen_${sessionId}`);
+    return v !== null ? parseInt(v, 10) : -1;
+  } catch {
+    return -1;
+  }
+}
+
+/**
+ * Saves the last-seen count for a channel in a session.
+ * @param {string} sessionId
+ * @param {string} channel - 'chat' | 'qa' | 'dm'
+ * @param {number} count
+ */
+export function saveLastSeen(sessionId, channel, count) {
+  try {
+    localStorage.setItem(`pick_${channel}_seen_${sessionId}`, String(count));
+  } catch {}
+}
