@@ -171,7 +171,7 @@ export function OXAnswerSection({ correctAnswer, setCorrectAnswer, setLocalError
           const isCorrect = correctAnswer === val;
           return (
             <button key={val} onClick={() => { setCorrectAnswer(val); setLocalError(null); }}
-              className={`flex-1 py-3 rounded-lg text-lg font-bold transition-colors duration-150 active:scale-[0.96] flex items-center justify-center gap-2 ${
+              className={`flex-1 py-3 rounded-lg text-lg font-bold tracking-tight transition-colors duration-150 active:scale-[0.96] flex items-center justify-center gap-2 ${
                 isCorrect ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900' : 'bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600'}`}>
               {isCorrect && <Check size={16} />}{val}
             </button>

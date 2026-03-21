@@ -1,8 +1,9 @@
 import { useState, useMemo } from 'react';
-import { Search, X, Check, BookmarkPlus, MessageSquare } from 'lucide-react';
+import { Search, X, Check, MessageSquare } from 'lucide-react';
 import { useQuestionLibrary } from '@/features/questions/api/useQuestionLibrary';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
+import PickMascot from '@/components/ui/PickMascot';
 import { QUESTION_TYPES } from '@/lib/question-types';
 
 function PickableCard({ question, selected, onToggle }) {
@@ -110,7 +111,7 @@ export default function ImportFromLibraryModal({ open, onClose, adminUid, onImpo
     <Modal open={open} onClose={handleClose} ariaLabel="보관함에서 질문 가져오기">
       <div className="space-y-4">
         <div>
-          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">보관함에서 가져오기</h2>
+          <h2 className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">보관함에서 가져오기</h2>
           <p className="text-slate-400 text-xs mt-0.5">저장된 질문을 선택하여 추가하세요</p>
         </div>
 
@@ -141,8 +142,8 @@ export default function ImportFromLibraryModal({ open, onClose, adminUid, onImpo
           {loading ? (
             <div className="text-center py-8 text-slate-400 text-sm">불러오는 중...</div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-8 space-y-1">
-              <BookmarkPlus size={20} className="text-slate-400 mx-auto" />
+            <div className="flex flex-col items-center text-center py-8 space-y-2">
+              <PickMascot size="sm" mood="waiting" />
               <p className="text-slate-400 text-sm">
                 {questions.length === 0 ? '저장된 질문이 없습니다' : '일치하는 질문이 없습니다'}
               </p>

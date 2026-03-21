@@ -108,7 +108,7 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
       <div className="flex-1 max-w-2xl mx-auto w-full px-6 py-8 space-y-4">
         {/* Add button */}
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">질문 목록</h2>
+          <h2 className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">질문 목록</h2>
           <Button onClick={() => setShowForm(!showForm)} variant={showForm ? 'ghost' : 'primary'} size="sm">
             {showForm ? '취소' : <><Plus size={14} /> 추가</>}
           </Button>

@@ -32,7 +32,7 @@ export default function EmptyState({
       <PickMascot size={mascotSize} mood={mood} />
 
       <div className="mt-6 space-y-1.5">
-        <p className="text-slate-600 text-lg font-semibold">{title}</p>
+        <p className="text-slate-600 text-lg font-semibold tracking-tight">{title}</p>
         {description && (
           <p className="text-slate-400 text-sm leading-relaxed">{description}</p>
         )}

@@ -54,7 +54,7 @@ export function TimerExpiredOverlay() {
         initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="text-lg font-bold text-slate-900 dark:text-slate-100"
+        className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100"
       >
         시간이 종료되었습니다
       </motion.p>

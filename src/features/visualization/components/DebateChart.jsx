@@ -72,7 +72,7 @@ export default memo(function DebateChart({ sessionId, questionId }) {
           >
             {forPct}%
           </motion.p>
-          <p className="text-lg font-bold text-slate-600 dark:text-slate-300">찬성</p>
+          <p className="text-lg font-bold tracking-tight text-slate-600 dark:text-slate-300">찬성</p>
           <p className="text-sm text-slate-400 dark:text-slate-500">{forCount}명</p>
         </div>
 
@@ -90,7 +90,7 @@ export default memo(function DebateChart({ sessionId, questionId }) {
           >
             {againstPct}%
           </motion.p>
-          <p className="text-lg font-bold text-slate-600 dark:text-slate-300">반대</p>
+          <p className="text-lg font-bold tracking-tight text-slate-600 dark:text-slate-300">반대</p>
           <p className="text-sm text-slate-400 dark:text-slate-500">{againstCount}명</p>
         </div>
       </motion.div>

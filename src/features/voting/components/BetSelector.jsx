@@ -28,7 +28,7 @@ export default memo(function BetSelector({ onSelect }) {
       className="w-full space-y-4"
     >
       <div className="text-center space-y-1">
-        <p className="text-lg font-bold text-slate-900 dark:text-slate-100">포인트 베팅</p>
+        <p className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">포인트 베팅</p>
         <p className="text-sm text-slate-400">자신감에 따라 배율을 선택하세요</p>
       </div>
 

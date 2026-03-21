@@ -4,6 +4,7 @@ import { Loader2, MessageSquare, Plus, Trash2, Search, X } from 'lucide-react';
 import { useQuestionLibrary } from '@/features/questions/api/useQuestionLibrary';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
+import PickMascot from '@/components/ui/PickMascot';
 import Toast from '@/components/ui/Toast';
 import QuestionForm from './QuestionForm';
 import TemplatePacks from './TemplatePacks';
@@ -170,7 +171,7 @@ export default function QuestionLibraryView({ adminUid }) {
       {/* Header actions */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 leading-snug">질문 보관함</h2>
+          <h2 className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-snug">질문 보관함</h2>
           <p className="text-slate-400 text-xs mt-0.5">
             {questions.length > 0 ? `${questions.length}개의 질문이 저장됨` : '자주 쓰는 질문을 저장하세요'}
           </p>
@@ -283,9 +284,9 @@ export default function QuestionLibraryView({ adminUid }) {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="text-center py-10 space-y-1"
+              className="flex flex-col items-center text-center py-10 space-y-2"
             >
-              <Search size={20} className="text-slate-400 dark:text-slate-600 mx-auto" />
+              <PickMascot size="sm" mood="waiting" />
               <p className="text-slate-400 text-sm">일치하는 질문이 없습니다</p>
               <p className="text-slate-400 dark:text-slate-500 text-xs">검색어나 필터를 변경해보세요</p>
             </motion.div>

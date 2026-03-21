@@ -46,7 +46,7 @@ export default memo(function BetDistribution({ sessionId, questionId }) {
               className="flex-1 rounded-xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-3 text-center"
             >
               <Icon size={16} className="text-slate-400 mx-auto mb-1.5" />
-              <p className="text-lg font-bold text-slate-900 dark:text-slate-100">{count}</p>
+              <p className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">{count}</p>
               <p className="text-xs text-slate-400 dark:text-slate-500">{label}</p>
               <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">{pct}%</p>
             </motion.div>

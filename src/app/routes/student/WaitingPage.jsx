@@ -159,7 +159,7 @@ export default function WaitingPage({ sessionId, pendingEvent = null, courseName
                   initial={{ scale: 1.2 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                  className="text-slate-900 dark:text-slate-100 text-lg font-bold tabular-nums inline-block"
+                  className="text-slate-900 dark:text-slate-100 text-lg font-bold tracking-tight tabular-nums inline-block"
                 >{count}</motion.span>
                 <span className="ml-0.5 text-xs text-slate-400">명 참여 중</span>
               </span>

@@ -181,7 +181,7 @@ export default memo(function Leaderboard({
           className="flex items-center gap-2 mb-4"
         >
           <Trophy size={20} className="text-slate-500" />
-          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">{title}</h3>
+          <h3 className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">{title}</h3>
         </motion.div>
       )}
 

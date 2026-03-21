@@ -181,15 +181,15 @@ export default memo(function ScaleChart({ sessionId, questionId }) {
           className="flex justify-center gap-6"
         >
           <div className="text-center">
-            <p className="text-lg font-bold text-slate-700 dark:text-slate-200 tabular-nums">{stats.median}</p>
+            <p className="text-lg font-bold tracking-tight text-slate-700 dark:text-slate-200 tabular-nums">{stats.median}</p>
             <p className="text-[10px] text-slate-400 dark:text-slate-500">중앙값</p>
           </div>
           <div className="text-center">
-            <p className="text-lg font-bold text-slate-700 dark:text-slate-200 tabular-nums">{stats.min}</p>
+            <p className="text-lg font-bold tracking-tight text-slate-700 dark:text-slate-200 tabular-nums">{stats.min}</p>
             <p className="text-[10px] text-slate-400 dark:text-slate-500">최솟값</p>
           </div>
           <div className="text-center">
-            <p className="text-lg font-bold text-slate-700 dark:text-slate-200 tabular-nums">{stats.max}</p>
+            <p className="text-lg font-bold tracking-tight text-slate-700 dark:text-slate-200 tabular-nums">{stats.max}</p>
             <p className="text-[10px] text-slate-400 dark:text-slate-500">최댓값</p>
           </div>
         </motion.div>

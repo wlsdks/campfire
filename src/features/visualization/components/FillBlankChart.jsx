@@ -16,7 +16,7 @@ function SentenceDisplay({ title, correctAnswer, revealed }) {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.2 }}
-              className={`inline-block mx-1 px-3 py-1 rounded-lg text-lg font-bold border-b-2 ${
+              className={`inline-block mx-1 px-3 py-1 rounded-lg text-lg font-bold tracking-tight border-b-2 ${
                 revealed
                   ? 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100 border-slate-500'
                   : 'bg-slate-50 dark:bg-slate-700 text-slate-300 border-dashed border-slate-300 dark:border-slate-500'

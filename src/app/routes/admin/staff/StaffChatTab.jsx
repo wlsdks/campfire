@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Send } from 'lucide-react';
+import PickMascot from '@/components/ui/PickMascot';
 import { useChat } from '@/features/chat/api/useChat';
 import { formatChatTime } from '@/lib/utils';
 
@@ -94,7 +95,8 @@ export default function StaffChatTab({ sessionId, senderName }) {
           </div>
         )}
         {!loading && messages.length === 0 && (
-          <div className="flex-1 flex items-center justify-center">
+          <div className="flex-1 flex flex-col items-center justify-center gap-2">
+            <PickMascot size="sm" mood="waiting" />
             <p className="text-sm text-slate-400 dark:text-slate-500 text-center leading-relaxed">
               아직 메시지가 없습니다<br />
               <span className="text-xs">강사와 학생들에게 메시지를 보내세요</span>

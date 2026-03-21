@@ -29,7 +29,7 @@ export default function DeleteSessionModal({ open, onClose, session, onConfirm }
           <AlertTriangle size={24} className="text-red-500" />
         </div>
         <div>
-          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-1">
+          <h3 className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-1">
             세션을 삭제하시겠습니까?
           </h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">

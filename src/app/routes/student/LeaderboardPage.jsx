@@ -33,7 +33,7 @@ function MyRankCard({ rank, entry, total }) {
           transition={{ type: 'spring', stiffness: 400, damping: 22, delay: 0.15 }}
         >
           <span className="text-5xl font-bold text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{rank}</span>
-          <span className="text-lg font-bold text-slate-400 dark:text-slate-500 ml-0.5">위</span>
+          <span className="text-lg font-bold tracking-tight text-slate-400 dark:text-slate-500 ml-0.5">위</span>
         </motion.div>
         {total > 1 && (
           <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">

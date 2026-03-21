@@ -70,7 +70,7 @@ function ErrorFallback({ fullPage, errorMessage, onRetry, onReload }) {
         </div>
 
         {/* Message */}
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-1">
+        <h2 className="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100 mb-1">
           문제가 발생했습니다
         </h2>
         <p className="text-sm text-slate-400 leading-relaxed mb-6">
