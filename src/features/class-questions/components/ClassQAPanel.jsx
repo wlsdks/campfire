@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, X, ChevronUp, Check, HelpCircle } from 'lucide-react';
+import { Send, X, ThumbsUp, Check, HelpCircle } from 'lucide-react';
 import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
 import { getParticipantId, getNickname } from '@/lib/participant';
 import { timeAgo } from '@/lib/utils';
@@ -56,7 +56,7 @@ function QuestionCard({ q, participantId, onUpvote }) {
                 : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
             }`}
           >
-            <ChevronUp size={14} />
+            <ThumbsUp size={12} />
             {q.upvoteCount || 0}
           </motion.button>
         )}
@@ -70,6 +70,7 @@ export default function ClassQAPanel({ sessionId, open, onClose, onNewQuestion }
     useClassQuestions(sessionId);
   const [inputText, setInputText] = useState('');
   const [posting, setPosting] = useState(false);
+  const [tab, setTab] = useState('all'); // 'all' | 'mine'
   const inputRef = useRef(null);
   const prevCountRef = useRef(0);
 
@@ -144,36 +145,45 @@ export default function ClassQAPanel({ sessionId, open, onClose, onNewQuestion }
               </button>
             </div>
 
+            {/* Tabs */}
+            <div className="flex gap-1 px-4 pt-3 pb-0 shrink-0">
+              <div className="flex gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1 w-full">
+                {[
+                  { key: 'all', label: `전체 질문${questions.length > 0 ? ` (${questions.length})` : ''}` },
+                  { key: 'mine', label: `내 질문${questions.filter((q) => q.participantId === participantId).length > 0 ? ` (${questions.filter((q) => q.participantId === participantId).length})` : ''}` },
+                ].map((t) => (
+                  <button key={t.key} onClick={() => setTab(t.key)}
+                    className={`flex-1 py-2 text-xs font-medium rounded-lg transition-colors duration-150 ${
+                      tab === t.key ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
+                    }`}>{t.label}</button>
+                ))}
+              </div>
+            </div>
+
             {/* Questions list */}
             <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2 scrollbar-hide">
               {loading && questions.length === 0 && (
                 <div className="flex-1 flex items-center justify-center h-full">
-                  <span className="text-sm text-slate-300 dark:text-slate-500">
-                    불러오는 중...
-                  </span>
+                  <span className="text-sm text-slate-300 dark:text-slate-500">불러오는 중...</span>
                 </div>
               )}
-              {!loading && questions.length === 0 && (
-                <div className="flex items-center justify-center h-full">
-                  <p className="text-sm text-slate-300 dark:text-slate-500 text-center leading-relaxed">
-                    아직 질문이 없습니다
-                    <br />
-                    <span className="text-xs">
-                      수업에 대해 궁금한 점을 질문하세요
-                    </span>
-                  </p>
-                </div>
-              )}
-              <AnimatePresence>
-                {questions.map((q) => (
-                  <QuestionCard
-                    key={q.id}
-                    q={q}
-                    participantId={participantId}
-                    onUpvote={handleUpvote}
-                  />
-                ))}
-              </AnimatePresence>
+              {(() => {
+                const filtered = tab === 'mine' ? questions.filter((q) => q.participantId === participantId) : questions;
+                return filtered.length === 0 && !loading ? (
+                  <div className="flex items-center justify-center h-full">
+                    <p className="text-sm text-slate-400 dark:text-slate-500 text-center leading-relaxed">
+                      {tab === 'mine' ? '내가 올린 질문이 없습니다' : '아직 질문이 없습니다'}
+                      <br /><span className="text-xs">수업에 대해 궁금한 점을 질문하세요</span>
+                    </p>
+                  </div>
+                ) : (
+                  <AnimatePresence>
+                    {filtered.map((q) => (
+                      <QuestionCard key={q.id} q={q} participantId={participantId} onUpvote={handleUpvote} />
+                    ))}
+                  </AnimatePresence>
+                );
+              })()}
             </div>
 
             {/* Input */}
