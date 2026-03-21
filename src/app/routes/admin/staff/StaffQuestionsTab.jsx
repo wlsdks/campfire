@@ -54,7 +54,7 @@ export default function StaffQuestionsTab({ sessionId }) {
   }
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       <AnimatePresence>
         {unified.map((q) => {
           const isUrgent = q._type === 'urgent';
@@ -117,7 +117,7 @@ export default function StaffQuestionsTab({ sessionId }) {
             <p className="text-lg text-slate-700 dark:text-slate-200 leading-relaxed mt-6 mb-8">
               {selected.text}
             </p>
-            <div className="space-y-2">
+            <div className="space-y-3">
               <Button variant="primary" size="lg" onClick={handleConfirm} className="w-full">
                 {selected._type === 'urgent' ? '확인 (삭제)' : (selected.answered ? '닫기' : '답변 완료')}
               </Button>

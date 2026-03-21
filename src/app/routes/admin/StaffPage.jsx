@@ -24,7 +24,8 @@ export default function StaffPage({ sessionId, session, adminUser, onBack }) {
   return (
     <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col">
       {/* Header */}
-      <header className="flex items-center gap-3 px-4 py-3 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shrink-0">
+      <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shrink-0">
+        <div className="flex items-center gap-3 px-4 py-3 max-w-2xl mx-auto">
         <button
           onClick={onBack}
           className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all"
@@ -47,12 +48,13 @@ export default function StaffPage({ sessionId, session, adminUser, onBack }) {
           <Users size={12} className="inline mr-1" />
           {count}
         </span>
+        </div>
       </header>
 
       {/* Tab bar */}
-      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-4 pt-2 pb-0 shrink-0">
+      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shrink-0">
         <LayoutGroup>
-          <div className="flex gap-1">
+          <div className="flex gap-1 max-w-2xl mx-auto px-4 pt-2">
             {TABS.map((tab) => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.key;
@@ -83,13 +85,15 @@ export default function StaffPage({ sessionId, session, adminUser, onBack }) {
       </div>
 
       {/* Tab content */}
-      <div className={`flex-1 overflow-y-auto px-4 py-4 ${activeTab === 'chat' ? 'flex flex-col min-h-0 overflow-hidden' : ''}`}>
+      <div className={`flex-1 overflow-y-auto ${activeTab === 'chat' ? 'flex flex-col min-h-0 overflow-hidden' : ''}`}>
+        <div className="max-w-2xl mx-auto px-4 py-4 w-full">
         {activeTab === 'questions' && <StaffQuestionsTab sessionId={sessionId} />}
         {activeTab === 'handRaise' && <StaffHandRaisesTab sessionId={sessionId} />}
         {activeTab === 'chat' && (
           <StaffChatTab sessionId={sessionId} senderName={adminUser?.displayName || '스태프'} />
         )}
         {activeTab === 'participants' && <StaffParticipantsTab sessionId={sessionId} />}
+        </div>
       </div>
     </div>
   );
