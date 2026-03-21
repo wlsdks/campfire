@@ -157,13 +157,13 @@ export default memo(function ClassSummary({ session, participants, scores, leade
       {/* Per-question breakdown */}
       {insights.length > 0 && (
         <div className="space-y-2">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider px-1">질문별 결과</p>
+          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider px-1">질문별 결과</p>
           <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700 overflow-hidden">
             {insights.map((q, i) => {
               const meta = QTYPE_META[q.type] || QTYPE_META.qna;
               const Icon = meta.icon;
               return (
-                <div key={q.id} className="px-4 py-3 flex items-center gap-3">
+                <div key={q.id} className="px-4 py-3 flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                   <span className="text-xs font-semibold text-slate-400 w-5 text-right shrink-0">{i + 1}</span>
                   <Icon size={14} className="text-slate-400 shrink-0" />
                   <div className="flex-1 min-w-0">
