@@ -18,7 +18,7 @@ export function ChoiceOptionsSection({ options, setOptions, correctAnswer, setCo
   return (
     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
       exit={{ opacity: 0, height: 0 }} className={GAP}>
-      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">선택지</p>
+      <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">선택지</p>
       <div className="rounded-xl border border-slate-200 dark:border-slate-600 p-3 space-y-2">
         {options.map((opt, i) => (
           <div key={i} className="flex items-center gap-2">
@@ -35,7 +35,7 @@ export function ChoiceOptionsSection({ options, setOptions, correctAnswer, setCo
               className={`flex-1 ${INPUT} py-2.5`} />
             {options.length > 2 && (
               <button onClick={() => removeOption(i)}
-                className="p-1.5 rounded-lg text-slate-300 hover:text-red-500 transition-all active:scale-90"
+                className="p-1.5 rounded-lg text-slate-300 dark:text-slate-600 hover:text-red-500 transition-colors duration-150 active:scale-90"
                 aria-label="선택지 삭제"><Trash2 size={14} /></button>
             )}
           </div>
@@ -55,7 +55,7 @@ export function CorrectAnswerSection({ options, correctAnswer, setCorrectAnswer,
   return (
     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
       exit={{ opacity: 0, height: 0 }} className={GAP}>
-      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">정답 선택</p>
+      <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">정답 선택</p>
       <div className="flex flex-wrap gap-2">
         {options.filter((o) => o.trim()).map((option, i) => {
           const isCorrect = correctAnswer === option;
@@ -91,7 +91,7 @@ export function RankingOptionsSection({ options, setOptions, setLocalError }) {
     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
       exit={{ opacity: 0, height: 0 }} className={GAP}>
       <div className="flex items-baseline gap-2 mb-2">
-        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">정답 순서</p>
+        <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">정답 순서</p>
         <span className="text-[11px] text-slate-400">아래 순서가 정답입니다. 화살표로 조정하세요</span>
       </div>
       <div className="rounded-xl border border-slate-200 dark:border-slate-600 p-3 space-y-2">
@@ -106,15 +106,15 @@ export function RankingOptionsSection({ options, setOptions, setLocalError }) {
               className={`flex-1 ${INPUT} py-2.5`} />
             <div className="flex flex-col gap-0.5 shrink-0">
               <button onClick={() => moveRankingItem(i, 'up')} disabled={i === 0}
-                className="p-1 rounded text-slate-300 hover:text-slate-600 disabled:opacity-30 transition-all active:scale-90"
+                className="p-1 rounded text-slate-300 dark:text-slate-600 hover:text-slate-600 dark:hover:text-slate-300 disabled:opacity-30 transition-colors duration-150 active:scale-90"
                 aria-label="위로 이동"><ArrowUp size={12} /></button>
               <button onClick={() => moveRankingItem(i, 'down')} disabled={i === options.length - 1}
-                className="p-1 rounded text-slate-300 hover:text-slate-600 disabled:opacity-30 transition-all active:scale-90"
+                className="p-1 rounded text-slate-300 dark:text-slate-600 hover:text-slate-600 dark:hover:text-slate-300 disabled:opacity-30 transition-colors duration-150 active:scale-90"
                 aria-label="아래로 이동"><ArrowDown size={12} /></button>
             </div>
             {options.length > 3 && (
               <button onClick={() => removeOption(i)}
-                className="p-1.5 rounded-lg text-slate-300 hover:text-red-500 transition-all active:scale-90"
+                className="p-1.5 rounded-lg text-slate-300 dark:text-slate-600 hover:text-red-500 transition-colors duration-150 active:scale-90"
                 aria-label="항목 삭제"><Trash2 size={14} /></button>
             )}
           </div>
@@ -136,7 +136,7 @@ export function FillBlankSection({ title, correctAnswer, setCorrectAnswer, setLo
       exit={{ opacity: 0, height: 0 }} className={GAP}>
       <div className="rounded-xl border border-slate-200 dark:border-slate-600 p-3 space-y-3">
         <div>
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">빈칸 미리보기</p>
+          <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">빈칸 미리보기</p>
           <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
             {title.includes('___')
               ? title.split('___').map((part, i, arr) => (
@@ -150,7 +150,7 @@ export function FillBlankSection({ title, correctAnswer, setCorrectAnswer, setLo
           </p>
         </div>
         <div>
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1.5">정답</p>
+          <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">정답</p>
           <input value={correctAnswer}
             onChange={(e) => { setCorrectAnswer(e.target.value); setLocalError(null); }}
             placeholder="빈칸에 들어갈 정답" aria-label="빈칸 정답"
@@ -165,7 +165,7 @@ export function OXAnswerSection({ correctAnswer, setCorrectAnswer, setLocalError
   return (
     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
       exit={{ opacity: 0, height: 0 }} className={GAP}>
-      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">정답 선택</p>
+      <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">정답 선택</p>
       <div className="flex gap-2">
         {['O', 'X'].map((val) => {
           const isCorrect = correctAnswer === val;
@@ -189,7 +189,7 @@ export function QuizSettingsSection({ points, setPoints, event, setEvent, bettin
       <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
         exit={{ opacity: 0, height: 0 }} className={GAP}>
         <div className="flex items-baseline gap-2 mb-2">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">점수 설정</p>
+          <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">점수 설정</p>
           <span className="text-[11px] text-slate-400">(+속도 보너스 최대 {QUIZ_DEFAULTS.maxSpeedBonus}점)</span>
         </div>
         <div className="flex gap-1.5">
@@ -206,7 +206,7 @@ export function QuizSettingsSection({ points, setPoints, event, setEvent, bettin
       {/* 이벤트 */}
       <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
         exit={{ opacity: 0, height: 0 }} className={GAP}>
-        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">이벤트 <span className="normal-case font-normal">(선택)</span></p>
+        <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2">이벤트 <span className="normal-case font-normal">(선택)</span></p>
         <div className="flex flex-wrap gap-1.5">
           {QUIZ_EVENT_PRESETS.map((preset) => {
             const isSelected = event?.id === preset.id;
@@ -226,7 +226,7 @@ export function QuizSettingsSection({ points, setPoints, event, setEvent, bettin
         exit={{ opacity: 0, height: 0 }} className={GAP}>
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">포인트 베팅</p>
+            <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">포인트 베팅</p>
             <p className="text-[11px] text-slate-400 mt-0.5">학생이 배율을 선택 (1x/2x/3x)</p>
           </div>
           <button onClick={() => setBetting(!betting)}

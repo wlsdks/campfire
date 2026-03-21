@@ -92,14 +92,14 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
         <div className="flex items-center gap-3">
           <button
             onClick={onBack}
-            className="text-slate-400 hover:text-slate-600 transition-all active:scale-90"
+            className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150 active:scale-90"
             aria-label="돌아가기"
           >
             <ArrowLeft size={20} />
           </button>
           <div>
             <h1 className="font-bold text-slate-900 dark:text-slate-100 text-lg">{courseName || '강의 편집'}</h1>
-            <p className="text-slate-400 text-xs">질문 템플릿 편집</p>
+            <p className="text-slate-400 dark:text-slate-500 text-xs">질문 템플릿 편집</p>
           </div>
         </div>
       </div>
@@ -138,7 +138,7 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.25, delay: index * 0.03 }}
-                className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 transition-all"
+                className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 transition-all"
               >
                 <div className="flex items-start gap-2">
                   {/* Reorder buttons */}
@@ -149,8 +149,8 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
                         disabled={index === 0}
                         className={`p-0.5 rounded transition-all active:scale-90 ${
                           index === 0
-                            ? 'text-slate-200 cursor-default'
-                            : 'text-slate-300 hover:bg-slate-100 hover:text-slate-600'
+                            ? 'text-slate-200 dark:text-slate-700 cursor-default'
+                            : 'text-slate-300 dark:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-slate-300'
                         }`}
                         title="위로 이동"
                         aria-label="질문 위로 이동"
@@ -162,8 +162,8 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
                         disabled={index === questionList.length - 1}
                         className={`p-0.5 rounded transition-all active:scale-90 ${
                           index === questionList.length - 1
-                            ? 'text-slate-200 cursor-default'
-                            : 'text-slate-300 hover:bg-slate-100 hover:text-slate-600'
+                            ? 'text-slate-200 dark:text-slate-700 cursor-default'
+                            : 'text-slate-300 dark:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-slate-300'
                         }`}
                         title="아래로 이동"
                         aria-label="질문 아래로 이동"
@@ -179,7 +179,7 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
                       <Icon size={12} className="text-slate-400" />
                       <span className="text-xs font-medium text-slate-400">{qType?.label}</span>
                     </div>
-                    <span className="text-slate-700 text-sm leading-snug">{q.title}</span>
+                    <span className="text-slate-700 dark:text-slate-200 text-sm leading-snug">{q.title}</span>
                     {q.options && (
                       <div className="flex flex-wrap gap-1 mt-1.5">
                         {q.options.map((opt, i) => (
@@ -201,7 +201,7 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
                   <div className="flex gap-1 shrink-0">
                     <button
                       onClick={() => handleDuplicate(qId)}
-                      className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-600 transition-all active:scale-90"
+                      className="p-1.5 rounded-md text-slate-300 dark:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150 active:scale-90"
                       title="복제"
                       aria-label="질문 복제"
                     >
@@ -209,7 +209,7 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
                     </button>
                     <button
                       onClick={() => handleDelete(qId)}
-                      className="p-1.5 rounded-md text-slate-300 hover:bg-slate-200 hover:text-slate-700 transition-all active:scale-90"
+                      className="p-1.5 rounded-md text-slate-300 dark:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-700 dark:hover:text-slate-300 transition-colors duration-150 active:scale-90"
                       title="삭제"
                       aria-label="질문 삭제"
                     >
