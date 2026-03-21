@@ -20,7 +20,7 @@ export default memo(function LiveHeader({ courseName, roundNumber, count }) {
         )}
         {roundNumber && (
           <Badge variant="neutral" className="!bg-slate-700 !text-slate-300">
-            {roundNumber}회차
+            {roundNumber}차
           </Badge>
         )}
       </div>

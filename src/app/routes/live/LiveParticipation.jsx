@@ -6,7 +6,7 @@ export default memo(function LiveParticipation({ voted, total }) {
   const pct = total > 0 ? Math.min(100, Math.round((voted / total) * 100)) : 0;
 
   return (
-    <div className="w-full max-w-xl mx-auto space-y-2">
+    <div className="w-full max-w-2xl mx-auto space-y-2">
       <div className="flex items-center justify-between">
         <span className="text-slate-400 text-sm font-semibold uppercase tracking-wider">참여</span>
         <span className="text-sm text-slate-400 tabular-nums">

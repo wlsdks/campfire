@@ -105,8 +105,8 @@ export default function LivePage() {
       <JoinToast sessionId={sessionId} />
       <ReactionOverlay sessionId={sessionId} />
 
-      <div className="flex-1 flex items-center justify-center overflow-auto p-6">
-        <div className="w-full max-w-4xl mx-auto">
+      <div className="flex-1 flex items-center justify-center overflow-auto px-8 py-4">
+        <div className="w-full max-w-5xl mx-auto">
           <AnimatePresence mode="wait">
             {isGameMode ? (
               <motion.div key="game" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="w-full">
@@ -126,7 +126,7 @@ export default function LivePage() {
                   </div>
                 )}
 
-                <div className="w-full">
+                <div className="w-full [&_.max-w-xl]:max-w-2xl">
                   <VizRenderer sessionId={sessionId} session={session} />
                 </div>
 
