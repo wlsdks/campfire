@@ -93,7 +93,7 @@ function StickyMyRank({ rank, entry, total }) {
               <span className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate block">{entry.nickname}</span>
               <span className="text-xs text-slate-400">{entry.total}점</span>
             </div>
-            <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 shrink-0">나</span>
+            <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shrink-0">나</span>
           </div>
         </motion.div>
       )}

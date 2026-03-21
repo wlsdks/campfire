@@ -26,7 +26,7 @@ function OverviewCards({ totalClasses, totalParticipants, avgActivity, courseCou
   const animActivity = useCountUp(avgActivity, 1000);
 
   return (
-    <motion.div variants={stagger.container} initial="initial" animate="animate" className="grid grid-cols-3 gap-4 max-sm:gap-2">
+    <motion.div variants={stagger.container} initial="initial" animate="animate" className="grid grid-cols-3 gap-4 max-sm:gap-3">
       <motion.div variants={stagger.item} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 max-sm:p-4">
         <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-3">총 클래스</p>
         <p className="text-3xl max-sm:text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">{animClasses}</p>
@@ -57,7 +57,7 @@ function CoursePerformance({ courseData }) {
   return (
     <motion.div variants={stagger.container} initial="initial" animate="animate" className="space-y-4">
       {courseData.map((course) => (
-        <motion.div key={course.name} variants={stagger.item} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 max-sm:p-4">
+        <motion.div key={course.name} variants={stagger.item} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 max-sm:p-4 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between mb-4">
             <h4 className="font-bold text-slate-900 dark:text-slate-100">{course.name}</h4>
             <div className="flex items-center gap-4 text-xs text-slate-400">

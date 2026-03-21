@@ -100,7 +100,7 @@ export default memo(function ClassSummary({ session, participants, scores, leade
       </div>
 
       {/* Top stats */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-3 gap-4">
         <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 text-center">
           <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{participantCount}</p>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">참여자</p>
@@ -131,13 +131,13 @@ export default memo(function ClassSummary({ session, participants, scores, leade
 
       {/* Hardest question callout */}
       {hardestQuestion && hardestQuestion.correctRate < 70 && (
-        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex items-start gap-3">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 flex items-start gap-3">
           <div className="shrink-0 mt-0.5">
             <AlertTriangle size={16} className="text-slate-400" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-xs text-slate-400 font-medium">가장 어려웠던 질문</p>
-            <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 mt-0.5 truncate">{hardestQuestion.title}</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">가장 어려웠던 질문</p>
+            <p className="text-base font-semibold text-slate-900 dark:text-slate-100 mt-1 truncate">{hardestQuestion.title}</p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
               정답률 {hardestQuestion.correctRate}% ({hardestQuestion.correctCount}/{hardestQuestion.voteCount}명 정답)
             </p>
@@ -147,7 +147,7 @@ export default memo(function ClassSummary({ session, participants, scores, leade
 
       {/* Top student */}
       {topStudent && (
-        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-4 flex items-center gap-4">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 flex items-center gap-4">
           <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-base font-bold text-slate-600 dark:text-slate-300">
             {topStudent.nickname?.charAt(0)}
           </div>
@@ -178,8 +178,8 @@ export default memo(function ClassSummary({ session, participants, scores, leade
                   <span className="text-xs font-semibold text-slate-400 w-5 text-right shrink-0">{i + 1}</span>
                   <Icon size={14} className="text-slate-400 shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-slate-700 dark:text-slate-200 truncate">{q.title}</p>
-                    <div className="flex items-center gap-2 mt-1">
+                    <p className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{q.title}</p>
+                    <div className="flex items-center gap-2 mt-1.5">
                       <span className="text-xs text-slate-400">{q.voteCount}명 응답</span>
                       {q.hasCorrectAnswer && q.correctRate !== null && (
                         <>
@@ -203,7 +203,7 @@ export default memo(function ClassSummary({ session, participants, scores, leade
                   <div className="w-16 shrink-0">
                     <div className="h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                       <motion.div
-                        className="h-full bg-slate-400 rounded-full"
+                        className="h-full bg-indigo-400 dark:bg-indigo-500 rounded-full"
                         initial={{ width: 0 }}
                         animate={{ width: `${q.responseRate}%` }}
                         transition={{ type: 'spring', stiffness: 80, damping: 20, delay: 0.1 + i * 0.05 }}
