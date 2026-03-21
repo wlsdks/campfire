@@ -144,7 +144,7 @@ export default memo(function DebateChart({ sessionId, questionId }) {
                 <button
                   key={f.value}
                   onClick={() => setFilter(f.value)}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-all active:scale-[0.96] ${
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors duration-150 active:scale-[0.96] ${
                     filter === f.value
                       ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
                       : 'bg-slate-50 dark:bg-slate-700 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-600'

@@ -69,7 +69,7 @@ function SessionRow({ session, onClick, onDelete, onDuplicate, index, hideAction
           {session.questionCount > 0 && (
             <button
               onClick={handleDuplicate}
-              className="p-1.5 rounded-lg text-slate-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all active:scale-90 max-sm:opacity-60"
+              className="p-1.5 rounded-lg text-slate-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90 max-sm:opacity-60"
               aria-label="세션 복제"
             >
               <Copy size={14} />
@@ -78,7 +78,7 @@ function SessionRow({ session, onClick, onDelete, onDuplicate, index, hideAction
           {!isActive && (
             <button
               onClick={handleDelete}
-              className="p-1.5 rounded-lg text-slate-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-all active:scale-90 max-sm:opacity-60"
+              className="p-1.5 rounded-lg text-slate-300 dark:text-slate-600 opacity-0 group-hover:opacity-100 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150 active:scale-90 max-sm:opacity-60"
               aria-label="세션 삭제"
             >
               <Trash2 size={14} />

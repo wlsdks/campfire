@@ -115,7 +115,7 @@ export default function QuestionManager({
       {questionList.length > 0 && readOnly && (
         <button
           onClick={() => onViewQuestion?.('__summary__')}
-          className={`w-full rounded-xl border bg-white dark:bg-slate-800 p-3 space-y-1 shadow-sm text-left transition-all active:scale-[0.98] ${
+          className={`w-full rounded-xl border bg-white dark:bg-slate-800 p-3 space-y-1 shadow-sm text-left transition-colors duration-150 active:scale-[0.98] ${
             !currentQuestion ? 'border-slate-400 shadow-md' : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
           }`}
         >

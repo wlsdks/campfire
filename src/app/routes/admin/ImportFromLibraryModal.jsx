@@ -12,7 +12,7 @@ function PickableCard({ question, selected, onToggle }) {
   return (
     <button
       onClick={onToggle}
-      className={`w-full text-left p-3 rounded-xl border transition-all active:scale-[0.98] ${
+      className={`w-full text-left p-3 rounded-xl border transition-colors duration-150 active:scale-[0.98] ${
         selected
           ? 'border-slate-400 bg-slate-50 dark:bg-slate-700 dark:border-slate-500 shadow-sm'
           : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'

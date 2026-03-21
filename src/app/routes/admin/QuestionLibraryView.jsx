@@ -75,7 +75,7 @@ function LibraryQuestionCard({ question, onDelete, index }) {
         </div>
         <button
           onClick={() => onDelete(question.id)}
-          className="p-1.5 rounded-lg text-slate-200 dark:text-slate-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950 transition-all active:scale-90 opacity-0 group-hover:opacity-100"
+          className="p-1.5 rounded-lg text-slate-200 dark:text-slate-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950 transition-colors duration-150 active:scale-90 opacity-0 group-hover:opacity-100"
           title="삭제"
           aria-label="질문 삭제"
         >
@@ -238,7 +238,7 @@ export default function QuestionLibraryView({ adminUid }) {
                 <button
                   key={f.value}
                   onClick={() => setTypeFilter(f.value)}
-                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all active:scale-[0.96] whitespace-nowrap shrink-0 ${
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors duration-150 active:scale-[0.96] whitespace-nowrap shrink-0 ${
                     isSelected
                       ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
                       : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-600'

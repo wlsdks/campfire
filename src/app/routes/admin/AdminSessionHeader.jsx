@@ -99,7 +99,7 @@ export default memo(function AdminSessionHeader({
         {isTablet && onLeftDrawer && (
           <button
             onClick={onLeftDrawer}
-            className="p-2 -ml-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all active:scale-90"
+            className="p-2 -ml-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
             aria-label="질문 목록 열기"
           >
             <List size={22} />
@@ -107,7 +107,7 @@ export default memo(function AdminSessionHeader({
         )}
         <button
           onClick={onBack}
-          className={`p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all active:scale-90 ${isTablet ? '' : '-ml-2'}`}
+          className={`p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90 ${isTablet ? '' : '-ml-2'}`}
           aria-label="클래스 목록으로"
         >
           <ArrowLeft size={isTablet ? 20 : 22} />
@@ -185,7 +185,7 @@ export default memo(function AdminSessionHeader({
         {!effectiveReadOnly && (
           <button
             onClick={onChatToggle}
-            className="relative flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all active:scale-[0.96]"
+            className="relative flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-[0.96]"
             aria-label={chatOpen ? '채팅 닫기' : '채팅 열기'}
             aria-pressed={chatOpen}
           >
@@ -201,7 +201,7 @@ export default memo(function AdminSessionHeader({
           <div className="relative" ref={timerRef}>
             <button
               onClick={() => setTimerOpen(!timerOpen)}
-              className={`flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg transition-all active:scale-[0.96] ${
+              className={`flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg transition-colors duration-150 active:scale-[0.96] ${
                 timerRunning ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700'
               }`}
               aria-label={timerRunning ? '타이머 진행 중 - 설정 열기' : '타이머 설정'}
@@ -236,7 +236,7 @@ export default memo(function AdminSessionHeader({
         {isTablet && onRightDrawer ? (
           <button
             onClick={onRightDrawer}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all active:scale-[0.96]"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-[0.96]"
             aria-label="참여자 패널 열기"
           >
             <Users size={18} />

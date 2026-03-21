@@ -69,7 +69,7 @@ export default function QuickProgressCard({
               <button
                 key={preset.id}
                 onClick={() => setNextEvent(isSelected ? null : preset)}
-                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all active:scale-[0.96] ${
+                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors duration-150 active:scale-[0.96] ${
                   isSelected
                     ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
                     : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
@@ -87,7 +87,7 @@ export default function QuickProgressCard({
           {speedQuizActive ? (
             <button
               onClick={onEndSpeedQuiz}
-              className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-sm font-medium transition-all active:scale-[0.97]"
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-sm font-medium transition-colors duration-150 active:scale-[0.97]"
             >
               <span className="flex items-center gap-2">
                 <Zap size={14} />
@@ -98,7 +98,7 @@ export default function QuickProgressCard({
           ) : (
             <button
               onClick={onStartSpeedQuiz}
-              className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-sm font-medium text-slate-700 dark:text-slate-200 transition-all active:scale-[0.97]"
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 text-sm font-medium text-slate-700 dark:text-slate-200 transition-colors duration-150 active:scale-[0.97]"
             >
               <span className="flex items-center gap-2">
                 <Zap size={14} className="text-slate-500" />

@@ -34,7 +34,7 @@ export default function TabletDrawers({
                 <span className="text-sm font-bold text-slate-900 dark:text-slate-100">질문 관리</span>
                 <button
                   onClick={onCloseLeft}
-                  className="p-2 -mr-2 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all active:scale-90"
+                  className="p-2 -mr-2 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
                   aria-label="닫기"
                 >
                   <X size={18} />
@@ -71,7 +71,7 @@ export default function TabletDrawers({
                 <span className="text-sm font-bold text-slate-900 dark:text-slate-100">참여자 · 상호작용</span>
                 <button
                   onClick={onCloseRight}
-                  className="p-2 -mr-2 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all active:scale-90"
+                  className="p-2 -mr-2 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
                   aria-label="닫기"
                 >
                   <X size={18} />

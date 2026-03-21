@@ -193,7 +193,7 @@ export default memo(function ScaleVoter({ sessionId, questionId, disabled = fals
             key={v}
             type="button"
             onClick={() => setValue(v)}
-            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.96] ${
+            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors duration-150 active:scale-[0.96] ${
               value === v
                 ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
                 : 'bg-slate-50 text-slate-500 hover:bg-slate-100 dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600'

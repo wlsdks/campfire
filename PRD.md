@@ -112,6 +112,7 @@
 | 순위 맞추기 차트 | 강사 | 완료 | 평균 정확도 % + 위치별 정답률 바 + 정답 순서 레퍼런스 |
 | 빈칸 채우기 차트 | 강사 | 완료 | 정답률 % + 답변 빈도 바 차트 + 정답 하이라이트 |
 | 발표 모드 | 강사 | 완료 | 전체화면, 시각화만 표시. 접이식 QR 오버레이 |
+| 라이브 관전 뷰 | 전체 | 완료 | `/live?s=세션코드` 별도 URL. 로그인 불필요, 읽기전용, 강제 다크모드. 실시간 차트+게임+타이머+리액션+참여율 카운트업 애니메이션. 강사 RightSidebar에서 전자칠판 링크 복사 |
 
 ### 3.7 퀴즈 & 점수 시스템
 
@@ -386,6 +387,10 @@ src/
       ModeSwitcher.jsx       — 모드 전환 아코디언
       PresentationView.jsx   — 발표 모드
       ClassSummary.jsx       — 완료 세션 인사이트
+    live/
+      LivePage.jsx           — 전자칠판 라이브 관전 뷰 (/live?s=세션코드)
+      LiveHeader.jsx         — 라이브 뷰 헤더 (강의명+접속자)
+      LiveParticipation.jsx  — 라이브 뷰 참여율 바 (카운트업 애니메이션)
       CourseEditor.jsx       — 강의 템플릿 편집
       EventBooster.jsx       — 이벤트 부스터
       ExportMenu.jsx         — CSV 내보내기 메뉴

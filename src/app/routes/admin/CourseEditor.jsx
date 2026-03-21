@@ -147,7 +147,7 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
                       <button
                         onClick={() => handleMove(qId, 'up')}
                         disabled={index === 0}
-                        className={`p-0.5 rounded transition-all active:scale-90 ${
+                        className={`p-0.5 rounded transition-colors duration-150 active:scale-90 ${
                           index === 0
                             ? 'text-slate-200 dark:text-slate-700 cursor-default'
                             : 'text-slate-300 dark:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-slate-300'
@@ -160,7 +160,7 @@ export default function CourseEditor({ courseId, courseName, onBack }) {
                       <button
                         onClick={() => handleMove(qId, 'down')}
                         disabled={index === questionList.length - 1}
-                        className={`p-0.5 rounded transition-all active:scale-90 ${
+                        className={`p-0.5 rounded transition-colors duration-150 active:scale-90 ${
                           index === questionList.length - 1
                             ? 'text-slate-200 dark:text-slate-700 cursor-default'
                             : 'text-slate-300 dark:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-slate-300'

@@ -58,7 +58,7 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTic
                   <button
                     key={mode}
                     onClick={() => onSwitchMode(mode)}
-                    className="w-full inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium rounded-lg bg-slate-900 text-white transition-all active:scale-[0.97]"
+                    className="w-full inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium rounded-lg bg-slate-900 text-white transition-colors duration-150 active:scale-[0.97]"
                     aria-label={`${label} 모드로 전환`}
                   >
                     <Icon size={16} /> {label}

@@ -126,7 +126,7 @@ export default function UrgentQuestionList({ sessionId }) {
                           <button
                             aria-label="질문 삭제"
                             onClick={(e) => { e.stopPropagation(); dismissOne(q.id); }}
-                            className="text-slate-300 hover:text-red-500 transition-all active:scale-90"
+                            className="text-slate-300 hover:text-red-500 transition-colors duration-150 active:scale-90"
                           >
                             <Trash2 size={12} />
                           </button>
