@@ -180,7 +180,7 @@ export default function RegisterView({ onLogin, onSwitchToLogin }) {
         <motion.div className="text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.6 }}>
           <button type="button" onClick={onSwitchToLogin}
-            className="text-sm text-slate-400 hover:text-slate-600 transition-colors duration-150">
+            className="text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150">
             이미 계정이 있으신가요? <span className="font-medium text-slate-700 dark:text-slate-200">로그인</span>
           </button>
         </motion.div>

@@ -134,7 +134,7 @@ export default function LoginView({ onLogin, onSwitchToRegister }) {
         <motion.div className="text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.6 }}>
           <button type="button" onClick={onSwitchToRegister}
-            className="text-sm text-slate-400 hover:text-slate-600 transition-colors duration-150">
+            className="text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150">
             계정이 없으신가요? <span className="font-medium text-slate-700 dark:text-slate-200">회원가입</span>
           </button>
         </motion.div>
@@ -155,7 +155,7 @@ export default function LoginView({ onLogin, onSwitchToRegister }) {
                   setSubmitting(false);
                 }
               }}
-              className="w-full py-2.5 text-sm text-slate-400 hover:text-slate-600 transition-colors duration-150"
+              className="w-full py-2.5 text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150"
               disabled={submitting}>
               강사 데모로 둘러보기
             </button>
@@ -172,7 +172,7 @@ export default function LoginView({ onLogin, onSwitchToRegister }) {
                   setSubmitting(false);
                 }
               }}
-              className="w-full py-2.5 text-sm text-slate-400 hover:text-slate-600 transition-colors duration-150"
+              className="w-full py-2.5 text-sm text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150"
               disabled={submitting}>
               스태프 데모로 둘러보기
             </button>
