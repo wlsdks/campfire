@@ -40,6 +40,9 @@ function ChatMessage({ msg, isOwn }) {
           {msg.senderType === 'instructor' && (
             <span className="ml-1 text-[10px] font-semibold text-slate-900 dark:text-slate-100 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded-full">강사</span>
           )}
+          {msg.senderType === 'staff' && (
+            <span className="ml-1 text-[10px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-600 px-1.5 py-0.5 rounded-full">스태프</span>
+          )}
         </span>
         <div className="px-3.5 py-2.5 text-sm leading-relaxed bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-2xl rounded-tl-sm">
           {msg.text}

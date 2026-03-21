@@ -77,7 +77,10 @@ export default function ProfileSection({ adminUser }) {
         </div>
         <div>
           <label className="text-xs text-slate-500 dark:text-slate-400 font-medium block mb-1.5">역할</label>
-          <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">{adminUser?.role === 'master' ? '마스터 관리자' : '강사'}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">{
+            adminUser?.role === 'master' ? '마스터 관리자' :
+            adminUser?.role === 'staff' ? '운영 스태프' : '강사'
+          }</p>
         </div>
       </div>
     </motion.div>
