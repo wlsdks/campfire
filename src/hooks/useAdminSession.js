@@ -139,7 +139,6 @@ export function useAdminSession() {
   }, [sessionId]);
 
   const handleEndSession = useCallback(async () => {
-    if (!window.confirm('수업을 종료하시겠습니까?\n학생들은 결과를 확인하고, 질문을 보낼 수 있습니다.\n14일 후 자동으로 완전 종료됩니다.')) return;
     try {
       const reviewingUntil = Date.now() + 14 * 24 * 60 * 60 * 1000; // 14 days
       await update(ref(db, `sessions/${sessionId}`), {
@@ -152,7 +151,6 @@ export function useAdminSession() {
   }, [sessionId]);
 
   const handleFullEndSession = useCallback(async () => {
-    if (!window.confirm('완전 종료하시겠습니까?\n학생들은 더 이상 질문을 보낼 수 없습니다.')) return;
     try {
       await update(ref(db, `sessions/${sessionId}`), { status: 'ended' });
     } catch {}

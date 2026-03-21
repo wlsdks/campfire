@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 import TimerControls from '@/features/timer/components/TimerControls';
 import TimerRing from '@/features/timer/components/TimerRing';
 import { ArrowLeft, Clock, MessageCircle, Users, Monitor, Play, Square, Layers, List, Zap, Swords, MessageSquareDot, XCircle } from 'lucide-react';
@@ -80,6 +81,7 @@ export default memo(function AdminSessionHeader({
   onFullEndSession,
 }) {
   const [timerOpen, setTimerOpen] = useState(false);
+  const [confirmEnd, setConfirmEnd] = useState(null);
   const timerRef = useRef(null);
 
   // Close timer popup on outside click
@@ -261,7 +263,7 @@ export default memo(function AdminSessionHeader({
               <Monitor size={isTablet ? 16 : 18} />
               {isTablet ? '발표' : '발표 모드'}
             </Button>
-            <Button onClick={onEndSession} variant="secondary" size="sm">
+            <Button onClick={() => setConfirmEnd('end')} variant="secondary" size="sm">
               <Square size={isTablet ? 16 : 18} />
               종료
             </Button>
@@ -273,13 +275,30 @@ export default memo(function AdminSessionHeader({
               <Monitor size={isTablet ? 16 : 18} />
               {isTablet ? '결과' : '결과 보기'}
             </Button>
-            <Button onClick={onFullEndSession} variant="secondary" size="sm">
+            <Button onClick={() => setConfirmEnd('fullEnd')} variant="secondary" size="sm">
               <XCircle size={isTablet ? 16 : 18} />
               {isTablet ? '종료' : '완전 종료'}
             </Button>
           </>
         )}
       </div>
+
+      <ConfirmModal
+        open={confirmEnd === 'end'}
+        title="수업을 종료하시겠습니까?"
+        description={"학생들은 결과를 확인하고, 질문을 보낼 수 있습니다.\n14일 후 자동으로 완전 종료됩니다."}
+        onConfirm={() => { onEndSession(); setConfirmEnd(null); }}
+        onCancel={() => setConfirmEnd(null)}
+      />
+      <ConfirmModal
+        open={confirmEnd === 'fullEnd'}
+        title="완전 종료하시겠습니까?"
+        description="학생들은 더 이상 질문을 보낼 수 없습니다."
+        variant="danger"
+        confirmLabel="완전 종료"
+        onConfirm={() => { onFullEndSession(); setConfirmEnd(null); }}
+        onCancel={() => setConfirmEnd(null)}
+      />
     </div>
   );
 });

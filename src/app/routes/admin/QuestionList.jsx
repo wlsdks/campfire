@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import Tooltip from '@/components/ui/Tooltip';
 import { GripVertical, BookmarkPlus, Check, ChevronDown, Copy, MessageSquare, Play, Square, Trash2, Trophy } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import PickMascot from '@/components/ui/PickMascot';
@@ -66,37 +67,37 @@ const SortableItem = memo(function SortableItem({ qId, q, currentQuestion, readO
         {!readOnly && (
           <div className="flex gap-1 shrink-0" onPointerDown={stopDrag}>
             {!isActive ? (
-              <button onClick={() => onActivate(qId)} title="질문 활성화" className="p-1.5 rounded-md bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 text-white transition-colors duration-150 active:scale-90" aria-label="질문 활성화">
+              <Tooltip label="질문 활성화"><button onClick={() => onActivate(qId)} className="p-1.5 rounded-md bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 text-white transition-colors duration-150 active:scale-90" aria-label="질문 활성화">
                 <Play size={12} />
-              </button>
+              </button></Tooltip>
             ) : (
               <>
                 {isQuiz && !q.revealedAt && (
-                  <button onClick={() => onReveal(qId)} title="정답 공개" className="p-1.5 rounded-md bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 text-white transition-colors duration-150 active:scale-90" aria-label="정답 공개">
+                  <Tooltip label="정답 공개"><button onClick={() => onReveal(qId)} className="p-1.5 rounded-md bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 text-white transition-colors duration-150 active:scale-90" aria-label="정답 공개">
                     <Check size={12} />
-                  </button>
+                  </button></Tooltip>
                 )}
                 {isQuiz && q.revealedAt && (
-                  <button onClick={onShowLeaderboard} title="리더보드 보기" className="p-1.5 rounded-md bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 text-white transition-colors duration-150 active:scale-90" aria-label="리더보드 보기">
+                  <Tooltip label="리더보드 보기"><button onClick={onShowLeaderboard} className="p-1.5 rounded-md bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 text-white transition-colors duration-150 active:scale-90" aria-label="리더보드 보기">
                     <Trophy size={12} />
-                  </button>
+                  </button></Tooltip>
                 )}
-                <button onClick={onClearActive} title="질문 중지" className="p-1.5 rounded-md bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-500 transition-colors duration-150 active:scale-90" aria-label="질문 중지">
+                <Tooltip label="질문 중지"><button onClick={onClearActive} className="p-1.5 rounded-md bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-500 transition-colors duration-150 active:scale-90" aria-label="질문 중지">
                   <Square size={12} />
-                </button>
+                </button></Tooltip>
               </>
             )}
             {onSaveToLibrary && (
-              <button onClick={() => onSaveToLibrary(qId)} title="보관함에 저장" className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="보관함에 저장">
+              <Tooltip label="보관함에 저장"><button onClick={() => onSaveToLibrary(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="보관함에 저장">
                 <BookmarkPlus size={12} />
-              </button>
+              </button></Tooltip>
             )}
-            <button onClick={() => onDuplicate(qId)} title="질문 복제" className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="질문 복제">
+            <Tooltip label="질문 복제"><button onClick={() => onDuplicate(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="질문 복제">
               <Copy size={12} />
-            </button>
-            <button onClick={() => onDelete(qId)} title="질문 삭제" className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-700 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="질문 삭제">
+            </button></Tooltip>
+            <Tooltip label="질문 삭제"><button onClick={() => onDelete(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-700 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="질문 삭제">
               <Trash2 size={12} />
-            </button>
+            </button></Tooltip>
           </div>
         )}
       </div>
