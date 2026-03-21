@@ -81,7 +81,7 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
           </div>
           <div className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`참여율 ${pct}%`}>
             <div
-              className="h-full bg-slate-700 dark:bg-slate-300 rounded-full transition-all duration-500"
+              className="h-full bg-indigo-500 dark:bg-indigo-400 rounded-full transition-all duration-500"
               style={{ width: `${pct}%` }}
             />
           </div>

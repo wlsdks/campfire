@@ -175,8 +175,8 @@ export default function VotePage({ sessionId }) {
           >
             {questionProgress && (
               <div className="flex items-center gap-2 mb-4">
-                <span className="text-xs font-medium text-slate-400 tabular-nums">
-                  질문 {questionProgress.current}/{questionProgress.total}
+                <span className="text-xs font-medium text-slate-400 dark:text-slate-500 tabular-nums">
+                  질문 <motion.span key={questionProgress.current} initial={{ scale: 0.8, opacity: 0.5 }} animate={{ scale: 1, opacity: 1 }} className="inline-block">{questionProgress.current}</motion.span>/{questionProgress.total}
                 </span>
                 <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                   <motion.div

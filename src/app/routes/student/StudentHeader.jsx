@@ -69,7 +69,7 @@ export default function StudentHeader({ sessionId }) {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                className="text-sm font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1"
+                className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1"
               >
                 <Trophy size={14} className="text-slate-500 dark:text-slate-400" />
                 <HeaderScore value={totalScore} />

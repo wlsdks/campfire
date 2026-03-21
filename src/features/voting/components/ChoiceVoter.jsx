@@ -68,7 +68,7 @@ export default memo(function ChoiceVoter({ sessionId, questionId, options, disab
             }}
             transition={isSelected
               ? { scale: { type: 'spring', stiffness: 400, damping: 22 }, opacity: { duration: 0.2 } }
-              : { delay: hasSelection ? 0 : i * 0.05, duration: 0.25, ease: 'easeOut' }
+              : { delay: hasSelection ? 0 : i * 0.05, duration: 0.25, ease: 'easeOut', opacity: { duration: 0.15 } }
             }
             whileTap={!hasSelection ? { scale: 0.97 } : undefined}
             onClick={() => handleVote(option)}

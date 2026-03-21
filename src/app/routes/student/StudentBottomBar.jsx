@@ -206,7 +206,7 @@ export default function StudentBottomBar({ sessionId }) {
               <HelpCircle size={20} />
               <span className="text-[11px]">질문</span>
               {hasNewQuestion && (
-                <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-red-500" />
+                <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
               )}
             </motion.button>
             <motion.button
@@ -217,7 +217,7 @@ export default function StudentBottomBar({ sessionId }) {
               <MessageSquare size={20} />
               <span className="text-[11px]">채팅</span>
               {hasUnread && (
-                <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-red-500" />
+                <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
               )}
             </motion.button>
           </div>

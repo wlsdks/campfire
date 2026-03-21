@@ -56,7 +56,7 @@ export default function TimerCountdown({ endTime, duration, onExpire }) {
       className={`rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 ${color.bg} transition-colors duration-300`}
     >
       <motion.div
-        animate={isPulsing ? { scale: [1, 1.01, 1] } : {}}
+        animate={isPulsing ? { scale: [1, 1.03, 1] } : {}}
         transition={isPulsing ? { repeat: Infinity, duration: 0.6 } : {}}
       >
         <div className="flex items-center justify-between mb-2">
