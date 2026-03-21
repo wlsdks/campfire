@@ -85,7 +85,7 @@ function CopyableCode({ code }) {
   );
 }
 
-export default function WaitingPage({ sessionId, pendingEvent = null }) {
+export default function WaitingPage({ sessionId, pendingEvent = null, courseName = null }) {
   const { count } = useParticipants(sessionId);
   const nickname = getNickname();
 
@@ -116,11 +116,21 @@ export default function WaitingPage({ sessionId, pendingEvent = null }) {
               {nickname}님, 준비 완료!
             </motion.p>
           )}
+          {courseName && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.15, duration: 0.3 }}
+              className="text-slate-500 dark:text-slate-400 text-sm font-medium"
+            >
+              {courseName}
+            </motion.p>
+          )}
           <motion.p
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.35, ease: 'easeOut' }}
-            className="text-slate-500 text-base"
+            className="text-slate-400 dark:text-slate-500 text-sm"
           >
             다음 질문을 기다리는 중...
           </motion.p>
