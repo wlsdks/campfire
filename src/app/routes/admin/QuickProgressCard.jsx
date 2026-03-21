@@ -39,7 +39,7 @@ export default function QuickProgressCard({
   }
 
   return (
-    <div className="rounded-xl bg-white dark:bg-slate-800 p-5 space-y-4 shadow-sm">
+    <div className="rounded-xl bg-slate-50 dark:bg-slate-800 p-5 space-y-4">
       <div className="space-y-1.5">
         <p className="text-slate-400 dark:text-slate-500 text-sm font-semibold tracking-tight">빠른 진행</p>
         <p className="text-slate-900 dark:text-slate-100 text-base font-semibold">

@@ -23,8 +23,8 @@ export default function ChatPanel({ sessionId, senderName, senderType, open, onC
   const messagesEndRef = useRef(null);
   const containerRef = useRef(null);
   const inputRef = useRef(null);
-  const prevPublicCountRef = useRef(0);
-  const prevStaffCountRef = useRef(0);
+  const prevPublicCountRef = useRef(-1);
+  const prevStaffCountRef = useRef(-1);
   const isNearBottomRef = useRef(true);
 
   function handleScroll() {
@@ -47,13 +47,13 @@ export default function ChatPanel({ sessionId, senderName, senderType, open, onC
   }, [open, channel]);
 
   useEffect(() => {
-    if (publicChat.messages.length > prevPublicCountRef.current && !open && onNewMessage) onNewMessage();
+    if (prevPublicCountRef.current >= 0 && publicChat.messages.length > prevPublicCountRef.current && !open && onNewMessage) onNewMessage();
     prevPublicCountRef.current = publicChat.messages.length;
   }, [publicChat.messages.length, open, onNewMessage]);
 
   useEffect(() => {
     if (!isStaffOrInstructor) return;
-    if (staffChat.messages.length > prevStaffCountRef.current && (channel !== 'staff' || !open)) setStaffUnread(true);
+    if (prevStaffCountRef.current >= 0 && staffChat.messages.length > prevStaffCountRef.current && (channel !== 'staff' || !open)) setStaffUnread(true);
     prevStaffCountRef.current = staffChat.messages.length;
   }, [staffChat.messages.length, channel, open, isStaffOrInstructor]);
 

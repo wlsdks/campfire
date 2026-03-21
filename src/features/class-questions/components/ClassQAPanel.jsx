@@ -67,14 +67,14 @@ export default function ClassQAPanel({ sessionId, open, onClose, onNewQuestion }
   const [posting, setPosting] = useState(false);
   const [tab, setTab] = useState('all'); // 'all' | 'mine'
   const inputRef = useRef(null);
-  const prevCountRef = useRef(0);
+  const prevCountRef = useRef(-1);
 
   const participantId = getParticipantId();
   const nickname = getNickname();
 
   // Notify parent of new questions when panel is closed
   useEffect(() => {
-    if (questions.length > prevCountRef.current && !open && onNewQuestion) {
+    if (prevCountRef.current >= 0 && questions.length > prevCountRef.current && !open && onNewQuestion) {
       onNewQuestion();
     }
     prevCountRef.current = questions.length;
