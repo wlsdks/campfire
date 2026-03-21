@@ -153,7 +153,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
                 <button
                   key={course.name}
                   onClick={() => handleSelectCourse(course)}
-                  className="w-full flex items-center justify-between p-3.5 rounded-xl border border-slate-100 dark:border-slate-700 hover:border-slate-200 hover:shadow-sm transition-all active:scale-[0.98] text-left group"
+                  className="w-full flex items-center justify-between p-3.5 rounded-xl border border-slate-100 dark:border-slate-700 hover:border-slate-200 hover:shadow-sm transition-colors duration-150 active:scale-[0.98] text-left group"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
@@ -170,7 +170,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
 
               <button
                 onClick={handleNewCourse}
-                className="w-full flex items-center gap-3 p-3.5 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-600 hover:border-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all active:scale-[0.98] text-left"
+                className="w-full flex items-center gap-3 p-3.5 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-600 hover:border-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-[0.98] text-left"
               >
                 <div className="w-9 h-9 rounded-lg bg-slate-50 dark:bg-slate-700 flex items-center justify-center">
                   <Plus size={18} className="text-slate-400" />
@@ -248,14 +248,14 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setRoundNumber(Math.max(1, roundNumber - 1))}
-                    className="w-7 h-7 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-300 hover:bg-slate-100 transition-all active:scale-90 text-sm font-medium"
+                    className="w-7 h-7 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-300 hover:bg-slate-100 transition-colors duration-150 active:scale-90 text-sm font-medium"
                   >
                     -
                   </button>
                   <span className="font-bold text-slate-900 dark:text-slate-100 text-lg w-10 text-center">{roundNumber}</span>
                   <button
                     onClick={() => setRoundNumber(roundNumber + 1)}
-                    className="w-7 h-7 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-300 hover:bg-slate-100 transition-all active:scale-90 text-sm font-medium"
+                    className="w-7 h-7 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-300 hover:bg-slate-100 transition-colors duration-150 active:scale-90 text-sm font-medium"
                   >
                     +
                   </button>
@@ -277,7 +277,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
                       setDuplicateSourceId('');
                     }
                   }}
-                  className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-all active:scale-[0.98] text-left ${
+                  className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-colors duration-150 active:scale-[0.98] text-left ${
                     duplicateEnabled
                       ? 'border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-700'
                       : 'border-slate-100 dark:border-slate-700 hover:border-slate-200'
@@ -309,7 +309,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
                           <button
                             key={s.id}
                             onClick={() => setDuplicateSourceId(s.id)}
-                            className={`w-full flex items-center justify-between p-2.5 rounded-lg border text-left transition-all active:scale-[0.98] text-sm ${
+                            className={`w-full flex items-center justify-between p-2.5 rounded-lg border text-left transition-colors duration-150 active:scale-[0.98] text-sm ${
                               duplicateSourceId === s.id
                                 ? 'border-slate-300 dark:border-slate-500 bg-white dark:bg-slate-700 shadow-sm'
                                 : 'border-slate-100 dark:border-slate-700 hover:border-slate-200'

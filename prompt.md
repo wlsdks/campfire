@@ -497,16 +497,16 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 ## 사이클 로그
 > 최근 10개만 유지. 오래된 것은 삭제.
 
-2026-03-21 | improve: 버튼 transition 통일(10개) + 다크모드 잔여갭(ImportLibrary/HandRaise/Dashboard)
+2026-03-21 | feat: 라이브 관전 뷰 — /live?s=세션코드, 전자칠판용 읽기전용 실시간 결과 화면
+2026-03-21 | chore: 미사용 import 제거 + 아코디언 aria-label + DebateChart/FillBlankChart 다크모드
+2026-03-21 | improve: 버튼 transition 통일(10개) + 다크모드 잔여갭(6파일)
 2026-03-21 | improve: 학생 UX — 실시간결과 인디고바, 리액션 쿨다운 쉐이크, 라벨 uppercase
 2026-03-21 | improve: tracking-tight 전체 적용(12파일) + 투표 컴포넌트 다크모드(3파일)
 2026-03-21 | improve: 관리자 폼/에디터 다크모드(CourseEditor/QuestionForm/QuestionManager)
 2026-03-21 | improve: 디자인 시스템 준수 — 값>라벨 위계, 참여율 uppercase, transition 통일
-2026-03-21 | improve: OX hover 스케일, 리더보드 배지, QuickProgressCard 라벨, VoteConfirm 다크모드
-2026-03-21 | improve: 마이크로인터랙션 — 알림 pulse, 참여율 인디고, 선택 fade, 점수 bold, 질문번호 bounce
-2026-03-21 | improve: 통계 정확성 — 세팅중 차수 제외, 0응답 dimming, 미분류 세션ID 표시
+2026-03-21 | improve: OX hover, 리더보드 배지, QuickProgressCard 라벨, VoteConfirm 다크모드
+2026-03-21 | improve: 마이크로인터랙션 — 알림 pulse, 참여율 인디고, 선택 fade, 질문번호 bounce
 2026-03-21 | fix: duplicate key + 트렌드 왜곡 + 시각화 7개 다크모드 40+ 수정
-2026-03-21 | feat: StaffPage 3패널 + 답변 아코디언 + 우측 패널 + 대시보드 필터
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 
