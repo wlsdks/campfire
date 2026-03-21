@@ -123,7 +123,7 @@ function ClassQuestionList({ sessionId }) {
                       </div>
                       <div className="flex items-center gap-1">
                         {q.answered && (
-                          <span className="text-emerald-500 text-[10px] font-medium">
+                          <span className="text-slate-400 dark:text-slate-500 text-[10px] font-medium">
                             {q.answeredByRole === 'staff'
                               ? '스태프 답변 완료'
                               : '강사 답변 완료'}
