@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { BookmarkPlus, PanelLeftClose, Plus } from 'lucide-react';
 import Button from '@/components/ui/Button';
@@ -46,6 +46,7 @@ export default function QuestionManager({
   const nextEntry = activeIndex >= 0 ? questionList[activeIndex + 1] : questionList[0];
 
   const completedCount = questionList.filter(([, q]) => q.activatedAt || q.revealedAt).length;
+  const handleActivate = useCallback((qId) => activateQuestion(qId), [activateQuestion]);
 
   async function handleSaveToLibrary(qId) {
     const question = questions?.[qId];
@@ -60,7 +61,7 @@ export default function QuestionManager({
     enabled: shortcutsEnabled,
     questionList,
     currentQuestion,
-    onActivate: (qId) => activateQuestion(qId),
+    onActivate: handleActivate,
     onReveal: revealQuiz,
     onShowLeaderboard: showLeaderboard,
     onClearActive: clearActive,
@@ -102,7 +103,7 @@ export default function QuestionManager({
           activeIndex={activeIndex}
           currentEntry={currentEntry}
           nextEntry={nextEntry}
-          onActivate={(qId) => activateQuestion(qId)}
+          onActivate={handleActivate}
           onClearActive={clearActive}
           onNextEvent={() => {}}
           speedQuizActive={speedQuizActive}
@@ -136,7 +137,7 @@ export default function QuestionManager({
 
       <QuestionList
         questionList={questionList} currentQuestion={currentQuestion}
-        onActivate={(qId) => activateQuestion(qId)} onReveal={revealQuiz} onShowLeaderboard={showLeaderboard}
+        onActivate={handleActivate} onReveal={revealQuiz} onShowLeaderboard={showLeaderboard}
         onClearActive={clearActive} onDuplicate={duplicateQuestion} onDelete={deleteQuestion}
         onReorder={reorderQuestion}
         onMoveUp={(qId) => moveQuestion(qId, 'up')} onMoveDown={(qId) => moveQuestion(qId, 'down')}

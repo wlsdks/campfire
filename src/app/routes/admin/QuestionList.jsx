@@ -1,4 +1,4 @@
-import { useState, memo } from 'react';
+import { useState, memo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
@@ -117,6 +117,10 @@ export default memo(function QuestionList({
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
   const ids = questionList.map(([qId]) => qId);
 
+  const handleDuplicateWithToast = useCallback((id) => { onDuplicate(id); showToast('질문이 복제되었습니다'); }, [onDuplicate, showToast]);
+  const handleDeleteWithToast = useCallback((id) => { onDelete(id); showToast('질문이 삭제되었습니다'); }, [onDelete, showToast]);
+  const handleSaveWithToast = useCallback((id) => { onSaveToLibrary?.(id); showToast('보관함에 저장되었습니다'); }, [onSaveToLibrary, showToast]);
+
   function handleDragEnd(event) {
     const { active, over } = event;
     if (!over || active.id === over.id || !onReorder) return;
@@ -156,9 +160,9 @@ export default memo(function QuestionList({
                         key={qId} qId={qId} q={q} currentQuestion={currentQuestion} readOnly={readOnly}
                         onActivate={onActivate} onReveal={onReveal} onShowLeaderboard={onShowLeaderboard}
                         onClearActive={onClearActive}
-                        onDuplicate={onDuplicate}
-                        onDelete={onDelete}
-                        onSaveToLibrary={onSaveToLibrary ? (id) => { onSaveToLibrary(id); showToast('보관함에 저장되었습니다'); } : null}
+                        onDuplicate={handleDuplicateWithToast}
+                        onDelete={handleDeleteWithToast}
+                        onSaveToLibrary={onSaveToLibrary ? handleSaveWithToast : null}
                       />
                     ))}
                   </SortableContext>
@@ -169,9 +173,9 @@ export default memo(function QuestionList({
                     key={qId} qId={qId} q={q} currentQuestion={currentQuestion} readOnly={readOnly}
                     onView={onView} onActivate={onActivate} onReveal={onReveal} onShowLeaderboard={onShowLeaderboard}
                     onClearActive={onClearActive}
-                    onDuplicate={(id) => { onDuplicate(id); showToast('질문이 복제되었습니다'); }}
-                    onDelete={(id) => { onDelete(id); showToast('질문이 삭제되었습니다'); }}
-                    onSaveToLibrary={onSaveToLibrary ? (id) => { onSaveToLibrary(id); showToast('보관함에 저장되었습니다'); } : null}
+                    onDuplicate={handleDuplicateWithToast}
+                    onDelete={handleDeleteWithToast}
+                    onSaveToLibrary={onSaveToLibrary ? handleSaveWithToast : null}
                   />
                 ))
               )}
