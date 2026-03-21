@@ -17,24 +17,24 @@ function QuestionCard({ q, participantId, onUpvote }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
       layout
-      className={`p-3.5 rounded-xl border transition-colors ${
+      className={`p-4 rounded-xl border shadow-sm transition-colors ${
         q.answered
-          ? 'bg-slate-50 dark:bg-slate-700/40 border-slate-100 dark:border-slate-700 opacity-70'
+          ? 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 opacity-60'
           : isMine
-            ? 'bg-slate-50 dark:bg-slate-700 border-slate-300 dark:border-slate-500 ring-1 ring-slate-200 dark:ring-slate-600'
+            ? 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600'
             : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'
       }`}
     >
-      <p className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed">
+      <p className="text-sm font-medium text-slate-800 dark:text-slate-200 leading-relaxed">
         {q.text}
       </p>
-      <div className="flex items-center justify-between mt-2">
+      <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-700">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
             {q.nickname}
-            {isMine && <span className="ml-1 text-[10px] font-semibold text-slate-500 dark:text-slate-400">내 질문</span>}
           </span>
-          <span className="text-[10px] text-slate-300 dark:text-slate-500">
+          {isMine && <span className="text-[10px] font-semibold text-white dark:text-slate-900 bg-slate-900 dark:bg-slate-100 px-1.5 py-0.5 rounded-md">나</span>}
+          <span className="text-[10px] text-slate-300 dark:text-slate-600">
             {timeAgo(q.timestamp)}
           </span>
           {q.answered && (
@@ -161,7 +161,7 @@ export default function ClassQAPanel({ sessionId, open, onClose, onNewQuestion }
             </div>
 
             {/* Questions list */}
-            <div className="flex-1 overflow-y-auto px-4 py-3 space-y-2 scrollbar-hide">
+            <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 scrollbar-hide">
               {loading && questions.length === 0 && (
                 <div className="flex-1 flex items-center justify-center h-full">
                   <span className="text-sm text-slate-300 dark:text-slate-500">불러오는 중...</span>
