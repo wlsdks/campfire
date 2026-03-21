@@ -84,8 +84,12 @@ export default function JoinPage({ sessionId, onJoin }) {
           <div className="text-center space-y-3">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
+              animate={{ scale: 1, opacity: 1, y: [0, -3, 0] }}
+              transition={{
+                scale: { type: 'spring', stiffness: 300, damping: 25, delay: 0.1 },
+                opacity: { duration: 0.3, delay: 0.1 },
+                y: { duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1 },
+              }}
               className="flex justify-center mb-1"
             >
               <PickMascot size="sm" />

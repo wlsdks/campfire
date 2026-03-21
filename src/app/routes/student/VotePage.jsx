@@ -224,10 +224,12 @@ export default function VotePage({ sessionId }) {
 
           {/* Voter area */}
           <ErrorBoundary scope="voter" fullPage={false}>
+           <AnimatePresence mode="wait">
             <motion.div
               key={`voter-${currentQId}`}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.08 }}
               className="relative"
             >
@@ -278,6 +280,7 @@ export default function VotePage({ sessionId }) {
                 {timerExpired && <TimerExpiredOverlay />}
               </AnimatePresence>
             </motion.div>
+           </AnimatePresence>
           </ErrorBoundary>
       </div>
 
