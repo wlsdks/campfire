@@ -23,7 +23,7 @@ function MyRankCard({ rank, entry, total }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-      className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm p-5"
+      className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5"
     >
       {/* Rank number hero */}
       <div className="text-center mb-4">

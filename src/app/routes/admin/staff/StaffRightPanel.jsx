@@ -186,7 +186,7 @@ function ParticipantSection({ sessionId }) {
 
 export default function StaffRightPanel({ sessionId, session }) {
   return (
-    <div className="h-full overflow-y-auto p-4 space-y-3">
+    <div className="h-full overflow-y-auto p-4 space-y-4">
       <CurrentQuestionStatus session={session} />
       <UrgentQuestionSection sessionId={sessionId} />
       <HandRaiseSection sessionId={sessionId} />

@@ -42,7 +42,7 @@ export default function ProfileSection({ adminUser }) {
         <User size={18} className="text-slate-400" />
         <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">프로필</h3>
       </div>
-      <div className="space-y-4">
+      <div className="space-y-5">
         <div>
           <label className="text-xs text-slate-500 dark:text-slate-400 font-medium block mb-1.5">아이디</label>
           <p className="text-sm text-slate-600 dark:text-slate-300 font-medium">{adminUser?.username || '—'}</p>

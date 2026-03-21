@@ -32,7 +32,7 @@ function StatItem({ icon: Icon, label, value, delay = 0 }) {
       className="flex flex-col items-center gap-1 flex-1 min-w-0"
     >
       <Icon size={16} className="text-slate-400" />
-      <span className="text-xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">{value}</span>
+      <span className="text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">{value}</span>
       <span className="text-[11px] text-slate-400 font-medium">{label}</span>
     </motion.div>
   );
@@ -114,7 +114,7 @@ export default function SessionSummaryCard({ session, sessionId, reviewing = fal
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-        className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden"
+        className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm overflow-hidden"
       >
         {/* Header */}
         <div className="pt-6 pb-4 px-5 text-center">
