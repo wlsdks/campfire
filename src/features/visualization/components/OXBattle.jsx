@@ -46,7 +46,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
             key={`o-${oCount}`}
             initial={{ scale: 1.15 }}
             animate={{ scale: 1 }}
-            className={`text-3xl font-bold ${oCorrect ? 'text-indigo-700 dark:text-indigo-400' : 'text-slate-900 dark:text-slate-100'}`}
+            className={`text-3xl font-bold tracking-tight ${oCorrect ? 'text-indigo-700 dark:text-indigo-400' : 'text-slate-900 dark:text-slate-100'}`}
           >
             {oCount}
           </motion.div>
@@ -85,7 +85,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
             key={`x-${xCount}`}
             initial={{ scale: 1.15 }}
             animate={{ scale: 1 }}
-            className={`text-3xl font-bold ${xCorrect ? 'text-slate-800 dark:text-slate-200' : 'text-slate-900 dark:text-slate-100'}`}
+            className={`text-3xl font-bold tracking-tight ${xCorrect ? 'text-slate-800 dark:text-slate-200' : 'text-slate-900 dark:text-slate-100'}`}
           >
             {xCount}
           </motion.div>

@@ -109,7 +109,7 @@ export default function StaffQuestionsTab({ sessionId, adminUser }) {
             ) : (
               <HelpCircle size={28} className="text-slate-400 mx-auto mb-3" />
             )}
-            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+            <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
               {selected._type === 'urgent' ? '긴급 질문' : '수업 질문'}
             </h3>
             <p className="text-xs text-slate-400 mt-1">

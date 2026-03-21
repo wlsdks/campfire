@@ -29,7 +29,7 @@ function SubmitConfirm({ type, value }) {
         </motion.div>
 
         <div className="space-y-1 text-center">
-          <p className="text-xl font-bold text-slate-900 dark:text-slate-100">
+          <p className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
             {isQnA ? '질문이 전달되었습니다' : '단어가 등록되었습니다'}
           </p>
           <p className="text-sm text-slate-400">

@@ -93,7 +93,7 @@ export default function Lottery({ participants, onResult }) {
       <div className="flex flex-col items-center justify-center gap-4 py-16">
         <Ticket size={36} className="text-slate-400" />
         <div className="text-center space-y-1">
-          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100">{hasTicketMode ? '보상 추첨' : '제비뽑기'}</h3>
+          <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">{hasTicketMode ? '보상 추첨' : '제비뽑기'}</h3>
           <p className="text-slate-400 text-sm">참여자가 접속하면 시작할 수 있어요</p>
         </div>
       </div>

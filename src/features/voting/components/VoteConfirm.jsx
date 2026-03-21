@@ -63,7 +63,7 @@ export default memo(function VoteConfirm({
             initial={{ opacity: 0, y: 4 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="text-xl font-bold text-slate-900 dark:text-slate-100"
+            className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100"
           >
             {waiting ? waitingLabel : submittedLabel}
           </motion.p>

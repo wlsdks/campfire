@@ -32,7 +32,7 @@ function StatItem({ icon: Icon, label, value, delay = 0 }) {
       className="flex flex-col items-center gap-1 flex-1 min-w-0"
     >
       <Icon size={16} className="text-slate-400" />
-      <span className="text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">{value}</span>
+      <span className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 tabular-nums">{value}</span>
       <span className="text-[11px] text-slate-400 font-medium">{label}</span>
     </motion.div>
   );

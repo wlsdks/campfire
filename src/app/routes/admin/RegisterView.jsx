@@ -107,7 +107,7 @@ export default function RegisterView({ onLogin, onSwitchToLogin }) {
               className="w-14 h-14 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mx-auto">
               <UserPlus size={24} className="text-slate-600 dark:text-slate-300" />
             </motion.div>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">가입 완료!</h2>
+            <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">가입 완료!</h2>
             <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
               관리자 승인 후 이용 가능합니다.<br />잠시만 기다려주세요.
             </p>
