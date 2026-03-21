@@ -67,8 +67,20 @@ export default memo(function VoteConfirm({
           >
             {waiting ? waitingLabel : submittedLabel}
           </motion.p>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-slate-400 flex items-center justify-center gap-1">
             {waiting ? waitingDescription : submittedDescription}
+            {waiting && (
+              <span className="flex gap-0.5 ml-0.5">
+                {[0, 1, 2].map((i) => (
+                  <motion.span
+                    key={i}
+                    className="w-1 h-1 rounded-full bg-slate-300"
+                    animate={{ opacity: [0.3, 1, 0.3] }}
+                    transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
+                  />
+                ))}
+              </span>
+            )}
           </p>
         </div>
 
