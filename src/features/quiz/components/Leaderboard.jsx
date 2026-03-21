@@ -34,7 +34,7 @@ function RankChange({ delta }) {
     <motion.span
       initial={{ opacity: 0, scale: 0.5 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className={`inline-flex items-center text-xs font-semibold ${isUp ? 'text-emerald-600' : 'text-red-500'}`}
     >
       {isUp ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
@@ -65,11 +65,11 @@ function LeaderboardRow({ entry, rank, isHighlighted, isPodium, podiumIndex, ran
       initial={{ opacity: 0, x: -16 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{
-        layout: { type: 'spring', stiffness: 300, damping: 28 },
+        layout: { type: 'spring', stiffness: 300, damping: 25 },
         delay: rank * 0.04,
         type: 'spring',
         stiffness: 300,
-        damping: 26,
+        damping: 25,
       }}
       className={`flex items-center gap-3 px-4 py-3 rounded-xl border ${podiumStyle} ${highlightStyle}`}
     >

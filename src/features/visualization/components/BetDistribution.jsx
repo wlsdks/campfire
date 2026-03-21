@@ -29,7 +29,7 @@ export default memo(function BetDistribution({ sessionId, questionId }) {
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 28 }}
+      transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 25 }}
       className="w-full max-w-xl mx-auto px-8 mt-6"
     >
       <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">베팅 분포</p>

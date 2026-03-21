@@ -13,7 +13,7 @@ export default memo(function TeamBadge({ teamName, teamColors, memberCount }) {
     <motion.div
       initial={{ opacity: 0, y: -8, scale: 0.9 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 22 }}
       className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold ${teamColors.bg} ${teamColors.text}`}
     >
       <Users size={12} />

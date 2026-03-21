@@ -72,7 +72,7 @@ export default memo(function RankingChart({ sessionId, questionId, items = [] })
           key={analysis.avgScore}
           initial={{ scale: 1.1, opacity: 0.7 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 22 }}
           className="text-5xl font-bold tracking-tight text-slate-900 dark:text-slate-100 tabular-nums"
         >
           {analysis.avgScore}%
@@ -95,7 +95,7 @@ export default memo(function RankingChart({ sessionId, questionId, items = [] })
             key={i}
             initial={{ opacity: 0, x: -8 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.05, type: 'spring', stiffness: 300, damping: 28 }}
+            transition={{ delay: i * 0.05, type: 'spring', stiffness: 300, damping: 25 }}
             className="flex items-center gap-3"
           >
             {/* Position number */}
@@ -123,7 +123,7 @@ export default memo(function RankingChart({ sessionId, questionId, items = [] })
                   }}
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.max(pos.pct, 2)}%` }}
-                  transition={{ type: 'spring', stiffness: 200, damping: 25, delay: i * 0.05 + 0.1 }}
+                  transition={{ type: 'spring', stiffness: 200, damping: 20, delay: i * 0.05 + 0.1 }}
                 />
                 {/* Percentage label inside bar */}
                 <span className={`absolute right-2 top-1/2 -translate-y-1/2 text-xs font-semibold tabular-nums ${
