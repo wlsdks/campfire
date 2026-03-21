@@ -34,21 +34,24 @@ const DMListItem = memo(function DMListItem({ dm, onClick }) {
   return (
     <motion.button initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
       onClick={onClick}
-      className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors duration-150 text-left">
-      <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-sm font-semibold text-slate-600 dark:text-slate-300 shrink-0">
+      className="w-full flex items-center gap-3.5 p-3.5 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors duration-150 text-left">
+      <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-sm font-bold text-slate-600 dark:text-slate-300 shrink-0">
         {(dm.staffName || '스').charAt(0)}
       </div>
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
             {isWaiting ? '도움 요청' : dm.staffName || '스태프'}
           </span>
+          {!isWaiting && (
+            <span className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded-full shrink-0">스태프</span>
+          )}
           <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-semibold shrink-0 ${
-            isWaiting ? 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'
-              : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400'
+            isWaiting ? 'bg-slate-50 text-slate-400 dark:bg-slate-700 dark:text-slate-500'
+              : 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
           }`}>{isWaiting ? '대기중' : '진행중'}</span>
         </div>
-        {lastMsg && <p className="text-xs text-slate-400 dark:text-slate-500 truncate mt-0.5">{lastMsg.text}</p>}
+        {lastMsg && <p className="text-xs text-slate-400 dark:text-slate-500 truncate mt-1 leading-relaxed">{lastMsg.text}</p>}
       </div>
     </motion.button>
   );
@@ -98,8 +101,8 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
   }
 
   const isWaiting = currentDM?.status === 'waiting';
-  const TAB_CLS = (active) => `flex-1 py-2 text-xs font-medium rounded-lg transition-colors duration-150 ${
-    active ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'
+  const TAB_CLS = (active) => `flex-1 py-2.5 text-sm font-medium rounded-lg transition-colors duration-150 ${
+    active ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
   }`;
 
   return (
@@ -121,6 +124,9 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
                 <span className="text-sm font-bold tracking-tight text-slate-900 dark:text-slate-100 truncate">
                   {isWaiting ? '도움 요청' : currentDM.staffName || '스태프'}
                 </span>
+                {!isWaiting && (
+                  <span className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded-full shrink-0">스태프</span>
+                )}
                 {isWaiting && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 shrink-0">대기중</span>}
               </div>
               <button onClick={onClose} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150" aria-label="닫기"><X size={16} /></button>
