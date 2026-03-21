@@ -108,7 +108,7 @@ export default function StaffPage({ sessionId, session, adminUser, onBack, onLog
         <div className="flex items-center gap-3 px-5 py-3">
           <button
             onClick={onBack}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-colors duration-150"
             aria-label="뒤로가기"
           >
             <ArrowLeft size={20} />
@@ -134,7 +134,7 @@ export default function StaffPage({ sessionId, session, adminUser, onBack, onLog
           {/* Chat button */}
           <button
             onClick={handleChatToggle}
-            className="relative p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all"
+            className="relative p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-colors duration-150"
             aria-label="채팅"
           >
             <MessageSquare size={18} />
@@ -147,7 +147,7 @@ export default function StaffPage({ sessionId, session, adminUser, onBack, onLog
           {onLogout && (
             <button
               onClick={onLogout}
-              className="p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all"
+              className="p-2 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-colors duration-150"
               aria-label="로그아웃"
             >
               <LogOut size={18} />

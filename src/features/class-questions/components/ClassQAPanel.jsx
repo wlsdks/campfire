@@ -147,7 +147,7 @@ export default function ClassQAPanel({ sessionId, open, onClose, onNewQuestion }
               </div>
               <button
                 onClick={onClose}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150"
                 aria-label="수업 질문 닫기"
               >
                 <X size={18} />

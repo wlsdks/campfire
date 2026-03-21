@@ -90,7 +90,7 @@ export default function ChatPanel({ sessionId, senderName, senderType, open, onC
                 <MessageCircle size={18} className="text-slate-400" />
                 <span className="font-bold text-slate-900 dark:text-slate-100">채팅</span>
               </div>
-              <button onClick={onClose} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all" aria-label="채팅 닫기">
+              <button onClick={onClose} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150" aria-label="채팅 닫기">
                 <X size={18} />
               </button>
             </div>

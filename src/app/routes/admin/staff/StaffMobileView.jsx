@@ -37,7 +37,7 @@ export default function StaffMobileView({ sessionId, session, adminUser, onBack,
         <div className="flex items-center gap-3 px-4 py-3 max-w-2xl mx-auto">
           <button
             onClick={onBack}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-colors duration-150"
             aria-label="뒤로가기"
           >
             <ArrowLeft size={20} />
@@ -60,7 +60,7 @@ export default function StaffMobileView({ sessionId, session, adminUser, onBack,
           {onLogout && (
             <button
               onClick={onLogout}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-colors duration-150"
               aria-label="로그아웃"
             >
               <LogOut size={16} />
