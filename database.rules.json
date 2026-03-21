@@ -8,7 +8,7 @@
         "username": { ".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 20" },
         "passwordHash": { ".validate": "newData.isString()" },
         "displayName": { ".validate": "newData.isString() && newData.val().length <= 20" },
-        "role": { ".validate": "newData.isString() && newData.val().matches(/^(master|admin)$/)" },
+        "role": { ".validate": "newData.isString() && newData.val().matches(/^(master|admin|staff)$/)" },
         "approved": { ".validate": "newData.isBoolean()" },
         "createdAt": { ".validate": true }
       }
