@@ -19,6 +19,7 @@ function timeAgo(timestamp) {
 
 function QuestionCard({ q, participantId, onUpvote }) {
   const hasUpvoted = q.upvotes?.[participantId];
+  const isMine = q.participantId === participantId;
 
   return (
     <motion.div
@@ -29,7 +30,9 @@ function QuestionCard({ q, participantId, onUpvote }) {
       className={`p-3.5 rounded-xl border transition-colors ${
         q.answered
           ? 'bg-slate-50 dark:bg-slate-700/40 border-slate-100 dark:border-slate-700 opacity-70'
-          : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'
+          : isMine
+            ? 'bg-slate-50 dark:bg-slate-700 border-slate-300 dark:border-slate-500 ring-1 ring-slate-200 dark:ring-slate-600'
+            : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'
       }`}
     >
       <p className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed">
@@ -37,7 +40,10 @@ function QuestionCard({ q, participantId, onUpvote }) {
       </p>
       <div className="flex items-center justify-between mt-2">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-400">{q.nickname}</span>
+          <span className="text-xs text-slate-400">
+            {q.nickname}
+            {isMine && <span className="ml-1 text-[10px] font-semibold text-slate-500 dark:text-slate-400">내 질문</span>}
+          </span>
           <span className="text-[10px] text-slate-300 dark:text-slate-500">
             {timeAgo(q.timestamp)}
           </span>

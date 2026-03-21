@@ -141,7 +141,7 @@ export default function LoginView({ onLogin, onSwitchToRegister }) {
 
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}
           transition={{ duration: 0.4, delay: 0.7 }}>
-          <div className="border-t border-slate-100 dark:border-slate-700 pt-4">
+          <div className="border-t border-slate-100 dark:border-slate-700 pt-4 space-y-2">
             <button type="button"
               onClick={async () => {
                 setSubmitting(true);
@@ -157,7 +157,24 @@ export default function LoginView({ onLogin, onSwitchToRegister }) {
               }}
               className="w-full py-2.5 text-sm text-slate-400 hover:text-slate-600 transition-colors"
               disabled={submitting}>
-              데모로 둘러보기
+              강사 데모로 둘러보기
+            </button>
+            <button type="button"
+              onClick={async () => {
+                setSubmitting(true);
+                setError('');
+                try {
+                  sessionStorage.setItem('pinggo_admin',
+                    JSON.stringify({ uid: 'staff_demo', username: 'staff_demo', displayName: '데모 스태프', role: 'staff' }));
+                  onLogin();
+                } catch {
+                  setError('데모 로그인에 실패했습니다');
+                  setSubmitting(false);
+                }
+              }}
+              className="w-full py-2.5 text-sm text-slate-400 hover:text-slate-600 transition-colors"
+              disabled={submitting}>
+              스태프 데모로 둘러보기
             </button>
           </div>
         </motion.div>
