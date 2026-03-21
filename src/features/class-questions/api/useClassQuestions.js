@@ -91,12 +91,13 @@ export function useClassQuestions(sessionId) {
   );
 
   const markAnswered = useCallback(
-    async (questionId) => {
+    async (questionId, answeredBy, answeredByRole) => {
       if (!sessionId || !questionId) return;
       try {
-        await update(ref(db, `sessions/${sessionId}/classQuestions/${questionId}`), {
-          answered: true,
-        });
+        const data = { answered: true };
+        if (answeredBy) data.answeredBy = answeredBy;
+        if (answeredByRole) data.answeredByRole = answeredByRole;
+        await update(ref(db, `sessions/${sessionId}/classQuestions/${questionId}`), data);
       } catch (err) {
         console.error('Mark answered failed:', err);
       }

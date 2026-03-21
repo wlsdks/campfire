@@ -1,5 +1,8 @@
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { MessageCircle, HelpCircle, ThumbsUp } from 'lucide-react';
+import { MessageCircle, HelpCircle, ThumbsUp, Radio } from 'lucide-react';
+import { QUESTION_TYPE_MAP } from '@/lib/question-types';
+import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
 
@@ -14,10 +17,46 @@ function timeAgo(timestamp) {
   return `${Math.floor(hours / 24)}일 전`;
 }
 
-export default function StaffQuestionDetail({ question, onAction, loading }) {
+function ActiveQuestionBanner({ session }) {
+  const currentQId = session?.currentQuestion;
+  const questions = session?.questions;
+  if (!currentQId || !questions?.[currentQId]) return null;
+
+  const q = questions[currentQId];
+  const typeInfo = QUESTION_TYPE_MAP[q.type];
+  const typeLabel = typeInfo?.label || q.type;
+  const voteCount = q.votes ? Object.keys(q.votes).length : 0;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+      className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 max-w-md w-full"
+    >
+      <div className="flex items-center gap-1.5 mb-3">
+        <Radio size={14} className="text-indigo-500 animate-pulse" />
+        <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+          현재 진행 중
+        </span>
+      </div>
+      <p className="text-base font-semibold text-slate-900 dark:text-slate-100 leading-relaxed">
+        {q.title}
+      </p>
+      <div className="flex items-center gap-2 mt-2">
+        <Badge variant="primary">{typeLabel}</Badge>
+        <span className="text-xs text-slate-400 dark:text-slate-500 tabular-nums">{voteCount}명 응답</span>
+      </div>
+    </motion.div>
+  );
+}
+
+export default function StaffQuestionDetail({ question, onAction, loading, session }) {
   if (!question) {
+    const hasActiveQuestion = session?.currentQuestion && session?.questions?.[session.currentQuestion];
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex flex-col items-center justify-center h-full gap-6">
+        {hasActiveQuestion && <ActiveQuestionBanner session={session} />}
         <EmptyState
           title="왼쪽에서 질문을 선택하세요"
           description="질문을 클릭하면 상세 내용이 표시됩니다"
@@ -31,6 +70,12 @@ export default function StaffQuestionDetail({ question, onAction, loading }) {
   const isUrgent = question._type === 'urgent';
   const isDone = isUrgent ? question.read : question.answered;
   const Icon = isUrgent ? MessageCircle : HelpCircle;
+
+  const answeredLabel = useMemo(() => {
+    if (isUrgent) return '확인됨';
+    if (question.answeredByRole === 'staff') return '스태프 답변 완료';
+    return '강사 답변 완료';
+  }, [isUrgent, question.answeredByRole]);
 
   return (
     <motion.div
@@ -92,7 +137,7 @@ export default function StaffQuestionDetail({ question, onAction, loading }) {
         )}
         {isDone && (
           <div className="text-center text-sm text-slate-400 py-3">
-            {isUrgent ? '확인됨' : '답변 완료'}
+            {answeredLabel}
           </div>
         )}
       </div>

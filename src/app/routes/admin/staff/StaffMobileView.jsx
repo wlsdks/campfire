@@ -96,7 +96,7 @@ export default function StaffMobileView({ sessionId, session, adminUser, onBack,
       {/* Tab content */}
       <div className={`flex-1 overflow-y-auto ${activeTab === 'chat' ? 'flex flex-col min-h-0 overflow-hidden' : ''}`}>
         <div className="max-w-2xl mx-auto px-4 py-4 w-full">
-          {activeTab === 'questions' && <StaffQuestionsTab sessionId={sessionId} />}
+          {activeTab === 'questions' && <StaffQuestionsTab sessionId={sessionId} adminUser={adminUser} />}
           {activeTab === 'handRaise' && <StaffHandRaisesTab sessionId={sessionId} />}
           {activeTab === 'chat' && (
             <StaffChatTab sessionId={sessionId} senderName={adminUser?.displayName || '스태프'} />

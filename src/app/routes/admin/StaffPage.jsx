@@ -47,7 +47,8 @@ export default function StaffPage({ sessionId, session, adminUser, onBack, onLog
       if (q._type === 'urgent') {
         await remove(ref(db, `sessions/${sessionId}/urgentQuestions/${q.id}`));
       } else {
-        await markAnswered(q.id);
+        const staffName = adminUser?.displayName || '스태프';
+        await markAnswered(q.id, staffName, 'staff');
       }
       // Auto-select next unread question
       const nextUnread = unified.find(
@@ -149,7 +150,7 @@ export default function StaffPage({ sessionId, session, adminUser, onBack, onLog
       {/* 3-panel body */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left: Questions */}
-        <div className="w-[30%] min-w-[280px] max-w-[400px] border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shrink-0">
+        <div className="w-[28%] min-w-[280px] max-w-[460px] border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shrink-0">
           <StaffQuestionPanel
             urgentList={urgentList}
             classList={classList}
@@ -164,12 +165,13 @@ export default function StaffPage({ sessionId, session, adminUser, onBack, onLog
             question={selected}
             onAction={handleAction}
             loading={actionLoading}
+            session={session}
           />
         </div>
 
         {/* Right: Hand raises + Participants */}
-        <div className="w-[30%] min-w-[280px] max-w-[400px] border-l border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shrink-0">
-          <StaffRightPanel sessionId={sessionId} />
+        <div className="w-[28%] min-w-[280px] max-w-[460px] border-l border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shrink-0">
+          <StaffRightPanel sessionId={sessionId} session={session} />
         </div>
       </div>
     </div>

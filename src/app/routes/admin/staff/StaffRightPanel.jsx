@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { ref, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Hand, Users, ChevronDown } from 'lucide-react';
+import { Hand, Users, ChevronDown, AlertTriangle, Radio } from 'lucide-react';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { useParticipants } from '@/features/participants/api/useParticipants';
+import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
+import { QUESTION_TYPE_MAP } from '@/lib/question-types';
 import Avatar from '@/components/ui/Avatar';
+import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
-import EmptyState from '@/components/ui/EmptyState';
 
 function Accordion({ title, icon: Icon, count, defaultOpen = false, children }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -40,13 +42,70 @@ function Accordion({ title, icon: Icon, count, defaultOpen = false, children }) 
             transition={{ duration: 0.2, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="px-5 pb-4">
-              {children}
-            </div>
+            <div className="px-5 pb-4">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+function CurrentQuestionStatus({ session }) {
+  const currentQId = session?.currentQuestion;
+  const questions = session?.questions;
+  if (!currentQId || !questions?.[currentQId]) return null;
+
+  const q = questions[currentQId];
+  const typeInfo = QUESTION_TYPE_MAP[q.type];
+  const typeLabel = typeInfo?.label || q.type;
+  const voteCount = q.votes ? Object.keys(q.votes).length : 0;
+
+  return (
+    <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+      <div className="flex items-center gap-1.5 mb-2">
+        <Radio size={12} className="text-indigo-500 animate-pulse" />
+        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+          진행 중인 질문
+        </p>
+      </div>
+      <p className="text-sm font-medium text-slate-900 dark:text-slate-100 leading-relaxed">
+        {q.title}
+      </p>
+      <div className="flex items-center gap-2 mt-1.5">
+        <Badge variant="primary">{typeLabel}</Badge>
+        <span className="text-xs text-slate-400 dark:text-slate-500 tabular-nums">{voteCount}명 응답</span>
+      </div>
+    </div>
+  );
+}
+
+function UrgentQuestionSection({ sessionId }) {
+  const { questionList, unreadCount } = useUrgentQuestions(sessionId);
+
+  return (
+    <Accordion title="긴급 질문" icon={AlertTriangle} count={unreadCount} defaultOpen={unreadCount > 0}>
+      {questionList.length === 0 ? (
+        <p className="text-sm text-slate-400 dark:text-slate-500 py-4 text-center">
+          긴급 질문이 없습니다
+        </p>
+      ) : (
+        <div className="space-y-1.5">
+          {questionList.map((q) => (
+            <div
+              key={q.id}
+              className={`p-2.5 rounded-lg text-sm ${
+                q.read
+                  ? 'bg-slate-50 dark:bg-slate-800 opacity-50'
+                  : 'bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600'
+              }`}
+            >
+              <p className="text-slate-700 dark:text-slate-200 leading-relaxed">{q.text}</p>
+              <span className="text-slate-400 text-xs mt-1 block">익명</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </Accordion>
   );
 }
 
@@ -107,10 +166,7 @@ function ParticipantSection({ sessionId }) {
       ) : (
         <div className="space-y-0.5">
           {onlineList.map((p) => (
-            <div
-              key={p.id}
-              className="flex items-center gap-3 py-2 px-2 rounded-lg"
-            >
+            <div key={p.id} className="flex items-center gap-3 py-2 px-2 rounded-lg">
               <Avatar name={p.nickname} size="sm" />
               <span className="flex-1 text-sm text-slate-700 dark:text-slate-200 truncate">
                 {p.nickname}
@@ -123,10 +179,12 @@ function ParticipantSection({ sessionId }) {
   );
 }
 
-export default function StaffRightPanel({ sessionId }) {
+export default function StaffRightPanel({ sessionId, session }) {
   return (
     <div className="flex flex-col h-full">
+      <CurrentQuestionStatus session={session} />
       <div className="flex-1 overflow-y-auto scrollbar-hide">
+        <UrgentQuestionSection sessionId={sessionId} />
         <HandRaiseSection sessionId={sessionId} />
         <ParticipantSection sessionId={sessionId} />
       </div>

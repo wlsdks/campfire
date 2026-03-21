@@ -20,7 +20,7 @@ function timeAgo(timestamp) {
   return `${Math.floor(hours / 24)}일 전`;
 }
 
-export default function StaffQuestionsTab({ sessionId }) {
+export default function StaffQuestionsTab({ sessionId, adminUser }) {
   const { questionList: urgentList } = useUrgentQuestions(sessionId);
   const { questions: classList, markAnswered } = useClassQuestions(sessionId);
   const [selected, setSelected] = useState(null);
@@ -40,7 +40,8 @@ export default function StaffQuestionsTab({ sessionId }) {
         console.error('긴급 질문 삭제 실패:', err);
       }
     } else {
-      await markAnswered(selected.id);
+      const staffName = adminUser?.displayName || '스태프';
+      await markAnswered(selected.id, staffName, 'staff');
     }
     setSelected(null);
   }
@@ -89,7 +90,7 @@ export default function StaffQuestionsTab({ sessionId }) {
                     {isDimmed && (
                       <span className="flex items-center gap-0.5 text-slate-400 text-[10px] ml-auto">
                         <Check size={10} />
-                        {isUrgent ? '확인됨' : '답변 완료'}
+                        {isUrgent ? '확인됨' : (q.answeredByRole === 'staff' ? '스태프 답변' : '강사 답변')}
                       </span>
                     )}
                   </div>

@@ -33,7 +33,7 @@ function ClassQuestionList({ sessionId }) {
 
   function handleMarkAnswered() {
     if (selectedQuestion) {
-      markAnswered(selectedQuestion.id);
+      markAnswered(selectedQuestion.id, '강사', 'admin');
       setSelectedQuestion(null);
     }
   }
@@ -124,7 +124,9 @@ function ClassQuestionList({ sessionId }) {
                       <div className="flex items-center gap-1">
                         {q.answered && (
                           <span className="text-emerald-500 text-[10px] font-medium">
-                            답변 완료
+                            {q.answeredByRole === 'staff'
+                              ? '스태프 답변 완료'
+                              : '강사 답변 완료'}
                           </span>
                         )}
                       </div>

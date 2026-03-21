@@ -94,6 +94,11 @@ export default function StaffQuestionPanel({ urgentList, classList, selectedId, 
                           <span className="text-slate-300 dark:text-slate-600 text-[10px]">
                             {timeAgo(q.timestamp)}
                           </span>
+                          {!isUrgent && q.answered && (
+                            <span className="text-slate-400 text-[10px] ml-auto">
+                              {q.answeredByRole === 'staff' ? '스태프 답변' : '강사 답변'}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
