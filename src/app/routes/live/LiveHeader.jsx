@@ -26,17 +26,18 @@ export default memo(function LiveHeader({ courseName, roundNumber, count }) {
       </div>
 
       <div className="flex items-center gap-2">
+        <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
         <Users size={16} className="text-slate-400" />
         <motion.span
           key={count}
           initial={{ opacity: 0.6, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-          className="text-slate-100 font-bold text-lg tabular-nums"
+          className="text-slate-100 font-bold text-xl tabular-nums tracking-tight"
         >
           {count}
         </motion.span>
-        <span className="text-slate-400 text-xs">명</span>
+        <span className="text-slate-500 text-xs">명</span>
       </div>
     </header>
   );

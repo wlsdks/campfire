@@ -844,7 +844,69 @@ text-slate-400은 bg-slate-50 위에서 WCAG AA 미달 가능
 
 ---
 
-## 16. 접근성 (Accessibility)
+## 16. 버튼 & 인터랙션 표준 (2026-03-21 확정)
+
+### 버튼 transition 규칙
+```
+모든 버튼/인터랙티브 요소:
+  transition-colors duration-150   ← 색상 전환 150ms
+  active:scale-[0.96]              ← 누를 때 살짝 축소 (선택)
+
+금지: transition-all (무엇이 전환되는지 명시적으로)
+금지: transition 없이 hover 색상 변경
+```
+
+### hover 상태 규칙
+| 요소 | hover 패턴 |
+|------|-----------|
+| 카드 (클릭 가능) | `hover:shadow-md transition-shadow` |
+| 목록 행 | `hover:bg-slate-50 dark:hover:bg-slate-700/50` |
+| 아이콘 버튼 | `text-slate-400 hover:text-slate-600 dark:hover:text-slate-300` |
+| 삭제 버튼 | `text-slate-300 dark:text-slate-600 hover:text-red-500` |
+| 고스트 버튼 | `hover:bg-slate-100 dark:hover:bg-slate-700` |
+
+### 카드 깊이 표현 (택 1)
+```
+방법 A: shadow-sm (그림자만) ← 권장: QuickProgressCard, QuizResult, LeaderboardPage
+방법 B: border border-slate-200 (테두리만) ← 아코디언, 질문 카드, 입력 필드
+금지: shadow-sm + border 동시 사용 (이중 깊이 단서)
+```
+
+### 알림 점 (Notification Dot)
+```
+크기: 최소 w-2.5 h-2.5 (10px)
+색상: bg-red-500
+애니메이션: animate-pulse (새 알림 시)
+위치: absolute top-1.5 right-1.5
+```
+
+---
+
+## 17. 라이브 관전 뷰 (Live Spectator View)
+
+### URL & 접근
+- 경로: `/live?s={sessionId}`
+- 로그인 불필요, 순수 읽기전용
+- 강제 다크모드 (프로젝터/전자칠판 최적화)
+
+### 레이아웃
+```
+전체 h-dvh bg-slate-900
+├── LiveHeader (슬림): Pick 로고 + 강의명 + 차수 배지 + 접속자 수
+├── 메인 콘텐츠 (max-w-5xl 중앙):
+│   ├── VizRenderer (기존 차트 재사용, max-w-xl→max-w-2xl 오버라이드)
+│   ├── LiveParticipation (인디고 진행 바, max-w-2xl)
+│   └── 대기 상태: 마스코트 + "다음 질문을 기다리는 중..."
+├── ReactionOverlay (기존 재사용)
+└── JoinToast (기존 재사용)
+```
+
+### 공유 방법
+강사 RightSidebar 하단: "전자칠판 링크 복사" 버튼 (초대 링크 아래)
+
+---
+
+## 18. 접근성 (Accessibility)
 
 ### aria 속성
 | 속성 | 적용 대상 |
@@ -870,7 +932,7 @@ text-slate-400은 bg-slate-50 위에서 WCAG AA 미달 가능
 
 ---
 
-## 17. 번들 구조
+## 19. 번들 구조
 
 ### Vite manualChunks
 | 청크 | 포함 라이브러리 | 크기 (gzip) |
