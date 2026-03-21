@@ -136,6 +136,7 @@
 | 실시간 채팅 | 양쪽 | 완료 | 세션 내 강사-학생 채팅 (팝업 모달). 학생 하단 바에서 접근 |
 | 운영 채팅 | 스태프+강사 | 완료 | 스태프+강사 전용 내부 채널. ChatPanel에 [전체 채팅 \| 운영 채팅] 탭. 학생 안 보임 |
 | 1:1 DM 도움 요청 | 학생→스태프 | 완료 | 학생 "도움" 버튼 → 메시지 입력 → 모든 스태프에 알림. 먼저 응답한 스태프가 배정. DMBubble로 1:1 대화. 해결 완료 시 종료. 학생끼리 DM 불가 |
+| DM 관리 목록 | 스태프 | 완료 | 스태프 우측 패널 "1:1 도움" 아코디언. DM 목록(대기중/진행중) + 인라인 응답 버튼. 수업 질문에서 "1:1 답변" 버튼으로 DM 자동 생성 |
 | 손들기 | 학생→강사 | 완료 | 학생이 손들면 강사 우측 패널에 표시 |
 | 긴급 질문 | 학생→강사 | 완료 | 익명 긴급 질문 전송 |
 | 수업 질문 보드 | 양쪽 | 완료 | 학생 실명 Q&A + 추천(upvote) + 강사 답변 완료/삭제. participantId 기반 추천 토글, 3초 쿨다운. 추천순 정렬 |
@@ -393,6 +394,15 @@ src/
       LivePage.jsx           — 전자칠판 라이브 관전 뷰 (/live?s=세션코드)
       LiveHeader.jsx         — 라이브 뷰 헤더 (강의명+접속자)
       LiveParticipation.jsx  — 라이브 뷰 참여율 바 (카운트업 애니메이션)
+  features/dm/
+    api/
+      useDM.js               — useStudentDM + useStaffDMs 훅
+      useStaffChat.js         — 운영 채팅 구독 훅
+    components/
+      HelpRequestModal.jsx    — 학생 도움 요청 모달
+      DMBubble.jsx            — 학생 DM 플로팅 버블
+      StaffDMAlert.jsx        — 스태프 DM 알림 배너
+      StaffDMChat.jsx         — 스태프 DM 대화 모달
       CourseEditor.jsx       — 강의 템플릿 편집
       EventBooster.jsx       — 이벤트 부스터
       ExportMenu.jsx         — CSV 내보내기 메뉴
