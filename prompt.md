@@ -350,18 +350,16 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 ## 사이클 로그
 > 최근 10개만 유지. 오래된 것은 삭제.
 
-2026-03-21 | chore: 데드 코드 정리 — 15 미사용 import + 2 고아 파일 삭제 (EventBooster.jsx, ConnectionDot.jsx)
-2026-03-21 | improve: 대기 화면 팁 아이콘 + 복사 가능 세션코드 — contextual 아이콘(Zap/Hand/MessageSquare/Trophy/Heart), CopyableCode with 클립보드+체크 피드백
-2026-03-21 | feat: 경품 추첨 게임 모드 — PrizeDraw.jsx 신규. 슬롯머신→당첨 발표+ConfettiBurst. 1/2-3/4+ 레이아웃. ModeSwitcher+PresentationView 통합
-2026-03-21 | improve: 돌림판 UI — 컨페티+아바타+당첨 배지+리셋 버튼. colors.border 참조 버그 수정
-2026-03-21 | improve: 제비뽑기 UI — 아바타 카드+컨페티+리셋 버튼. spring 프리셋 통일
-2026-03-21 | improve: 다크모드 완전 해결 — 3사이클에 걸쳐 ~95개 누락 수정. 투표(8)+게임(3)+어드민(8) 20개 파일
-2026-03-21 | perf: 10개 투표 컴포넌트 React.memo — ChoiceVoter/OXVoter/QuizVoter/TextInput/ScaleVoter/DebateVoter/RankingVoter/FillBlankVoter/VoteConfirm/BetSelector
-2026-03-21 | docs: PRD 업데이트 — 경품 추첨, 채팅 리디자인, reviewing 배너, 마스코트 등 14개 신규 기능 반영
-2026-03-21 | test: Playwright 검증 — admin+student 화면 콘솔 에러 0, HMR 이슈(dev서버 오래됨) 확인→새로고침 후 정상
-2026-03-21 | improve: CreateSessionModal 다크모드 — 3스텝 위자드 전체 dark: 적용
-2026-03-20 | feat(61차): 원클릭 세션 복제 — 세션 목록에서 Copy 아이콘으로 즉시 복제. useSessionList에 duplicateSession 추가(Firebase questions fetch→투표/런타임 데이터 제거→새 세션 생성→낙관적 UI 업데이트). SessionRow에 Copy 버튼(질문 있는 세션만), hover시 표시/모바일 항상 표시. SessionDashboard에 handleDuplicate+Toast+복제 중 오버레이. 복제 시 같은 강의 다음 차수 자동 배정→즉시 세션 입장. 다크 모드 지원. PRD 업데이트. 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
-2026-03-20 | fix: 탭 전환 화면 점프 버그 — 대시보드 탭 전환 시 AnimatePresence mode="wait" 제거(exit→enter 사이 높이 붕괴 방지). 탭 전환을 fade-in only로 변경, scroll-to-top 추가. QuestionLibraryView의 LibraryQuestionCard에서 layout prop 제거(불필요한 레이아웃 재계산 방지). 3뷰포트(1280/768/390) 확인, 콘솔 에러 0
+2026-03-21 | feat: 경품 추첨 게임 모드 — PrizeDraw.jsx 신규. 슬롯머신→당첨 발표+ConfettiBurst. ModeSwitcher+PresentationView 통합
+2026-03-21 | improve: 게임 UI 3종 — 돌림판(컨페티+아바타+리셋), 제비뽑기(아바타 카드+컨페티+리셋), 경품추첨(슬롯+당첨)
+2026-03-21 | improve: 다크모드 완전 해결 — ~95개 누락 수정 across 20+ 파일 (투표+게임+어드민+타이머+리액션)
+2026-03-21 | perf: React.memo 10개 투표 컴포넌트 + 데드코드 15 import + 2 파일 삭제
+2026-03-21 | improve: 마이크로인터랙션 — 참여자 수 bounce, 리더보드 순위 reveal, 하단바 active 피드백, IdleMascot 귀 stagger
+2026-03-21 | improve: 타이포 — tabular-nums(헤더/숫자), tracking-tight(프레젠터 제목), 대비 패스(JoinPage/ClassSummary)
+2026-03-21 | fix: CelebrationMascot 로봇→사자, Roulette colors.border 버그, Firebase rules reviewing+timer
+2026-03-21 | improve: 채팅 아바타 UI + 스마트 스크롤 + JoinToast 아바타 + 대기화면 팁 아이콘
+2026-03-21 | docs: PRD+DESIGN_SYSTEM+CLAUDE.md 업데이트 — 경품추첨/채팅/마스코트/애니메이션 스펙 반영
+2026-03-21 | improve: seed-demo reviewing 필드 + QuestionList 드래그 핸들 가시성 + 세션종료 메시지
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 
