@@ -25,6 +25,8 @@ export default function StudentBottomBar({ sessionId }) {
   const [showChat, setShowChat] = useState(false);
   const [showQA, setShowQA] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
+  const [showDMChat, setShowDMChat] = useState(false);
+  const [dmLastSeen, setDmLastSeen] = useState(0);
   const [hasUnread, setHasUnread] = useState(false);
   const [hasNewQuestion, setHasNewQuestion] = useState(false);
   const [questionText, setQuestionText] = useState('');
@@ -74,7 +76,9 @@ export default function StudentBottomBar({ sessionId }) {
       <ChatPanel sessionId={sessionId} senderName={nickname} senderType="student" open={showChat} onClose={() => setShowChat(false)} onNewMessage={handleNewMessage} />
       <ClassQAPanel sessionId={sessionId} open={showQA} onClose={() => setShowQA(false)} onNewQuestion={handleNewQuestion} />
       <HelpRequestModal open={showHelpModal && !activeDM} onClose={() => setShowHelpModal(false)} onSubmit={handleHelpRequest} />
-      <DMBubble activeDM={activeDM} senderName={nickname} onSendMessage={sendDMMessage} />
+      {showDMChat && activeDM && (
+        <DMBubble activeDM={activeDM} senderName={nickname} onSendMessage={sendDMMessage} onClose={() => setShowDMChat(false)} />
+      )}
 
       <Modal open={showQuestionInput} onClose={() => setShowQuestionInput(false)} ariaLabel="익명 긴급 질문">
         <form onSubmit={submitUrgentQuestion} className="space-y-4">
@@ -112,9 +116,19 @@ export default function StudentBottomBar({ sessionId }) {
                 <MessageSquare size={20} /><span className="text-[11px]">채팅</span>
                 {hasUnread && <span className={`${UNREAD_DOT} bg-red-500`} />}
               </motion.button>
-              <motion.button whileTap={{ scale: 0.96 }} onClick={() => setShowHelpModal(true)} className={`${BTN} relative`}>
+              <motion.button whileTap={{ scale: 0.96 }} onClick={() => {
+                if (activeDM) { setShowDMChat(true); setDmLastSeen(activeDM.messageList?.length || 0); }
+                else setShowHelpModal(true);
+              }} className={`${BTN} relative`}>
                 <Headset size={20} /><span className="text-[11px]">도움</span>
-                {activeDM && <span className={`${UNREAD_DOT} bg-amber-500`} />}
+                {activeDM && (activeDM.messageList?.length || 0) > dmLastSeen && (
+                  <span className={`${UNREAD_DOT} bg-red-500`}>
+                    <span className="text-white text-[8px] font-bold">{(activeDM.messageList?.length || 0) - dmLastSeen}</span>
+                  </span>
+                )}
+                {activeDM && (activeDM.messageList?.length || 0) <= dmLastSeen && (
+                  <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-500" />
+                )}
               </motion.button>
             </div>
           </div>
