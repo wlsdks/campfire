@@ -497,16 +497,16 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 ## 사이클 로그
 > 최근 10개만 유지. 오래된 것은 삭제.
 
-2026-03-21 | feat: 경품 추첨 + 게임 UI 3종 개선 — PrizeDraw 슬롯머신, 돌림판/제비뽑기 컨페티+아바타+리셋
-2026-03-21 | improve: 다크모드 완전 해결 — ~95개 누락 across 20+ 파일 + React.memo 10개 투표 컴포넌트
-2026-03-21 | feat: StaffPage 4탭 UI + 스태프 데모 로그인 + 채팅 스태프 배지 + Firebase staff 역할
-2026-03-21 | feat: 자신감 측정기 E2E — 학생 ConfidenceMeter → Firebase confidence → 강사 ConfidenceStats 분포바 → ClassSummary 확신%
-2026-03-21 | improve: 마이크로인터랙션 — 손들기 흔들림, 투표확인 overshoot, 리액션 float-up, 참여자 bounce, 리더보드 reveal
-2026-03-21 | improve: 타이포+대비 — tabular-nums, tracking-tight, WCAG 대비 패스, 드래그 핸들 가시성
+2026-03-21 | feat: 경품 추첨 + 게임 3종 개선 + 다크모드 ~95개 해결 + React.memo 10개
+2026-03-21 | feat: StaffPage 4탭 + 스태프 데모/배지/역할 + 본인 질문 하이라이트
+2026-03-21 | feat: 자신감 측정기 6터치포인트 — Meter→Firebase→ConfidenceStats→ClassSummary→CSV→복습힌트
+2026-03-21 | feat: ScaleVoter 실시간 평균 + 채팅 미읽 알림 점 + CSV 자신감 내보내기
+2026-03-21 | improve: 마이크로인터랙션 — 손들기 흔들림, 투표 overshoot+dots, 리액션 float-up, 참여자 bounce
+2026-03-21 | improve: 타이포+대비+a11y — tabular-nums, tracking-tight, WCAG, 드래그 핸들, aria-labels
 2026-03-21 | fix: CelebrationMascot 사자, Roulette 버그, Firebase rules, IdleMascot 크기+귀 stagger
-2026-03-21 | feat: 학생 UX — 강의명 대기 표시, 본인 질문 하이라이트, 복사 세션코드, 팁 아이콘
-2026-03-21 | docs: prompt.md 강화 — 우선순위 매트릭스, 회귀 방지, 애니메이션 리소스, 토스 철학, 이모지 금지
-2026-03-21 | docs: PRD+DESIGN_SYSTEM 업데이트 — 스태프/자신감측정기/채팅/마스코트/애니메이션 스펙
+2026-03-21 | feat: 학생 UX — 강의명 대기, 복사 세션코드, 팁 아이콘, 대기dots, 리더보드 reveal
+2026-03-21 | docs: prompt.md — 우선순위 매트릭스, 회귀 방지, 애니메이션 리소스, 토스 철학, 이모지 금지, 스태프 기획
+2026-03-21 | docs: PRD 60커밋 동기화 — 스태프/자신감/마이크로인터랙션/CSV 등 20+ 신규 기능
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 
