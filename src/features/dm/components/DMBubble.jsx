@@ -73,7 +73,7 @@ export default function DMBubble({ activeDM, senderName, onSendMessage }) {
           exit={{ scale: 0, opacity: 0 }}
           transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           onClick={() => setExpanded(true)}
-          className="fixed bottom-28 right-4 z-40 w-12 h-12 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-lg flex items-center justify-center hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors"
+          className="fixed bottom-28 right-4 z-40 w-12 h-12 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-lg flex items-center justify-center hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150"
           aria-label="도움 요청 채팅 열기"
         >
           <MessageSquare size={20} />
@@ -98,7 +98,7 @@ export default function DMBubble({ activeDM, senderName, onSendMessage }) {
                 {isWaiting ? '도움 요청' : activeDM.staffName || '스태프'}
               </span>
               {isWaiting && (
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 shrink-0">대기중</span>
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 shrink-0">대기중</span>
               )}
             </div>
             <button

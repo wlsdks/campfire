@@ -17,15 +17,15 @@ const DMAlertItem = memo(function DMAlertItem({ dm, onRespond, onDismiss }) {
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md p-3.5 flex items-start gap-3"
     >
-      <div className="w-8 h-8 rounded-full bg-amber-50 dark:bg-amber-900/30 flex items-center justify-center shrink-0 mt-0.5">
-        <MessageSquare size={14} className="text-amber-600 dark:text-amber-400" />
+      <div className="shrink-0 mt-0.5">
+        <MessageSquare size={16} className="text-slate-400" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
             {dm.studentName || '학생'}
           </span>
-          <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+          <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400">
             도움 요청
           </span>
         </div>
@@ -35,14 +35,14 @@ const DMAlertItem = memo(function DMAlertItem({ dm, onRespond, onDismiss }) {
         <div className="flex items-center gap-2 mt-2">
           <button
             onClick={() => onRespond(dm)}
-            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors"
+            className="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150"
           >
             응답
             <ArrowRight size={12} />
           </button>
           <button
             onClick={() => onDismiss(dm.id)}
-            className="px-3 py-1.5 text-xs font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 dark:hover:text-slate-300 rounded-lg transition-colors"
+            className="px-3 py-1.5 text-xs font-medium text-slate-500 hover:text-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 dark:hover:text-slate-300 rounded-lg transition-colors duration-150"
           >
             확인
           </button>
