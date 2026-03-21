@@ -110,6 +110,12 @@ export default memo(function QuestionList({
   onDuplicate, onDelete, readOnly = false, onView, onReorder, onSaveToLibrary,
 }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [toast, setToast] = useState(null);
+
+  function showToast(msg) {
+    setToast(msg);
+    setTimeout(() => setToast(null), 2000);
+  }
   const activeCount = questionList.filter(([qId]) => qId === currentQuestion).length;
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
   const ids = questionList.map(([qId]) => qId);
@@ -152,8 +158,10 @@ export default memo(function QuestionList({
                       <SortableItem
                         key={qId} qId={qId} q={q} currentQuestion={currentQuestion} readOnly={readOnly}
                         onActivate={onActivate} onReveal={onReveal} onShowLeaderboard={onShowLeaderboard}
-                        onClearActive={onClearActive} onDuplicate={onDuplicate} onDelete={onDelete}
-                        onSaveToLibrary={onSaveToLibrary}
+                        onClearActive={onClearActive}
+                        onDuplicate={(id) => { onDuplicate(id); showToast('질문이 복제되었습니다'); }}
+                        onDelete={(id) => { onDelete(id); showToast('질문이 삭제되었습니다'); }}
+                        onSaveToLibrary={onSaveToLibrary ? (id) => { onSaveToLibrary(id); showToast('보관함에 저장되었습니다'); } : null}
                       />
                     ))}
                   </SortableContext>
@@ -163,8 +171,10 @@ export default memo(function QuestionList({
                   <SortableItem
                     key={qId} qId={qId} q={q} currentQuestion={currentQuestion} readOnly={readOnly}
                     onView={onView} onActivate={onActivate} onReveal={onReveal} onShowLeaderboard={onShowLeaderboard}
-                    onClearActive={onClearActive} onDuplicate={onDuplicate} onDelete={onDelete}
-                    onSaveToLibrary={onSaveToLibrary}
+                    onClearActive={onClearActive}
+                    onDuplicate={(id) => { onDuplicate(id); showToast('질문이 복제되었습니다'); }}
+                    onDelete={(id) => { onDelete(id); showToast('질문이 삭제되었습니다'); }}
+                    onSaveToLibrary={onSaveToLibrary ? (id) => { onSaveToLibrary(id); showToast('보관함에 저장되었습니다'); } : null}
                   />
                 ))
               )}
@@ -177,6 +187,20 @@ export default memo(function QuestionList({
                 </div>
               )}
             </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-4 py-2.5 rounded-xl shadow-lg text-sm font-medium"
+          >
+            {toast}
           </motion.div>
         )}
       </AnimatePresence>
