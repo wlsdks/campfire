@@ -162,23 +162,32 @@ export default function ClassQAPanel({ sessionId, open, onClose, onNewQuestion }
                   <span className="text-sm text-slate-300 dark:text-slate-500">불러오는 중...</span>
                 </div>
               )}
-              {(() => {
-                const filtered = tab === 'mine' ? questions.filter((q) => q.participantId === participantId) : questions;
-                return filtered.length === 0 && !loading ? (
-                  <div className="flex items-center justify-center h-full">
-                    <p className="text-sm text-slate-400 dark:text-slate-500 text-center leading-relaxed">
-                      {tab === 'mine' ? '내가 올린 질문이 없습니다' : '아직 질문이 없습니다'}
-                      <br /><span className="text-xs">수업에 대해 궁금한 점을 질문하세요</span>
-                    </p>
-                  </div>
-                ) : (
-                  <AnimatePresence>
-                    {filtered.map((q, i) => (
-                      <QuestionCard key={q.id} q={q} index={i} participantId={participantId} onUpvote={handleUpvote} />
-                    ))}
-                  </AnimatePresence>
-                );
-              })()}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={tab}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="space-y-3"
+                >
+                  {(() => {
+                    const filtered = tab === 'mine' ? questions.filter((q) => q.participantId === participantId) : questions;
+                    return filtered.length === 0 && !loading ? (
+                      <div className="flex items-center justify-center py-12">
+                        <p className="text-sm text-slate-400 dark:text-slate-500 text-center leading-relaxed">
+                          {tab === 'mine' ? '내가 올린 질문이 없습니다' : '아직 질문이 없습니다'}
+                          <br /><span className="text-xs">수업에 대해 궁금한 점을 질문하세요</span>
+                        </p>
+                      </div>
+                    ) : (
+                      filtered.map((q, i) => (
+                        <QuestionCard key={q.id} q={q} index={i} participantId={participantId} onUpvote={handleUpvote} />
+                      ))
+                    );
+                  })()}
+                </motion.div>
+              </AnimatePresence>
             </div>
 
             {/* Input */}
