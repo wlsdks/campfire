@@ -59,7 +59,7 @@ export default memo(function ConfidenceStats({ sessionId, questionId }) {
           const count = stats.counts[key];
           if (count === 0) return null;
           return (
-            <span key={key} className="flex items-center gap-1 text-[10px] text-slate-400">
+            <span key={key} className="flex items-center gap-1 text-[10px] text-slate-400 dark:text-slate-500">
               <span className={`w-2 h-2 rounded-full ${color}`} />
               {label} {Math.round((count / stats.total) * 100)}%
             </span>

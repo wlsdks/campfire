@@ -32,7 +32,7 @@ export default memo(function BetDistribution({ sessionId, questionId }) {
       transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 28 }}
       className="w-full max-w-xl mx-auto px-8 mt-6"
     >
-      <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">베팅 분포</p>
+      <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-3">베팅 분포</p>
       <div className="flex gap-3">
         {BET_CONFIG.map(({ multiplier, label, Icon }) => {
           const count = distribution.counts[multiplier];
@@ -47,8 +47,8 @@ export default memo(function BetDistribution({ sessionId, questionId }) {
             >
               <Icon size={16} className="text-slate-400 mx-auto mb-1.5" />
               <p className="text-lg font-bold text-slate-900 dark:text-slate-100">{count}</p>
-              <p className="text-xs text-slate-400">{label}</p>
-              <p className="text-[10px] text-slate-400 mt-0.5">{pct}%</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500">{label}</p>
+              <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">{pct}%</p>
             </motion.div>
           );
         })}

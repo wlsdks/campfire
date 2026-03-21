@@ -69,11 +69,11 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
                   key={count}
                   initial={{ scale: 1.2 }}
                   animate={{ scale: 1 }}
-                  className={`font-bold text-lg ${isCorrect ? 'text-indigo-700' : countColor}`}
+                  className={`font-bold text-lg ${isCorrect ? 'text-indigo-700 dark:text-indigo-400' : countColor}`}
                 >
                   {count}
                 </motion.span>
-                <span className={`text-sm ${isCorrect ? 'text-indigo-500' : 'text-slate-400'}`}>
+                <span className={`text-sm ${isCorrect ? 'text-indigo-500 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'}`}>
                   {formatPercent(count, totalVotes)}
                 </span>
               </div>
@@ -89,7 +89,7 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
           </motion.div>
         );
       })}
-      <div className="text-center text-slate-400 text-sm mt-4 pt-4 border-t border-slate-100 dark:border-slate-700">
+      <div className="text-center text-slate-400 dark:text-slate-500 text-sm mt-4 pt-4 border-t border-slate-100 dark:border-slate-700">
         총 <span className="text-slate-600 dark:text-slate-300 font-semibold">{totalVotes}</span>명 투표
       </div>
     </div>

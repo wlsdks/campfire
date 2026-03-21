@@ -18,7 +18,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
     <div className="w-full max-w-xl mx-auto space-y-6">
       {/* Split display */}
       <div className="flex items-center justify-between text-center">
-        <div className={`flex-1 space-y-2 py-4 rounded-xl transition-all ${oCorrect ? 'bg-indigo-50/50 ring-2 ring-indigo-500/30' : ''}`}>
+        <div className={`flex-1 space-y-2 py-4 rounded-xl transition-all ${oCorrect ? 'ring-2 ring-indigo-500/30 bg-indigo-50/30 dark:bg-indigo-950/20' : ''}`}>
           <div className="relative inline-block">
             <motion.div
               key={oCount}
@@ -26,8 +26,8 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
               animate={{ scale: 1 }}
               className={`text-7xl font-black ${
                 revealed
-                  ? oCorrect ? 'text-indigo-600' : 'text-slate-300'
-                  : oWinning ? 'text-indigo-600' : 'text-indigo-400'
+                  ? oCorrect ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-300 dark:text-slate-600'
+                  : oWinning ? 'text-indigo-600 dark:text-indigo-400' : 'text-indigo-400 dark:text-indigo-500'
               }`}
             >
               O
@@ -50,14 +50,14 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
           >
             {oCount}
           </motion.div>
-          <div className="text-slate-400 text-sm">명</div>
+          <div className="text-slate-400 dark:text-slate-500 text-sm">명</div>
         </div>
 
         <div className="px-4">
-          <div className="text-slate-200 text-2xl font-bold">VS</div>
+          <div className="text-slate-200 dark:text-slate-700 text-2xl font-bold">VS</div>
         </div>
 
-        <div className={`flex-1 space-y-2 py-4 rounded-xl transition-all ${xCorrect ? 'bg-slate-100/80 ring-2 ring-slate-400/30' : ''}`}>
+        <div className={`flex-1 space-y-2 py-4 rounded-xl transition-all ${xCorrect ? 'bg-slate-100/80 dark:bg-slate-700/50 ring-2 ring-slate-400/30 dark:ring-slate-500/30' : ''}`}>
           <div className="relative inline-block">
             <motion.div
               key={xCount}
@@ -65,8 +65,8 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
               animate={{ scale: 1 }}
               className={`text-7xl font-black ${
                 revealed
-                  ? xCorrect ? 'text-slate-700' : 'text-slate-300'
-                  : xWinning ? 'text-slate-700' : 'text-slate-400'
+                  ? xCorrect ? 'text-slate-700 dark:text-slate-200' : 'text-slate-300 dark:text-slate-600'
+                  : xWinning ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400 dark:text-slate-500'
               }`}
             >
               X
@@ -75,7 +75,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
               <motion.span
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="absolute -top-1 -right-3 flex items-center justify-center w-6 h-6 rounded-full bg-slate-700 text-white"
+                className="absolute -top-1 -right-3 flex items-center justify-center w-6 h-6 rounded-full bg-slate-700 dark:bg-slate-300 text-white dark:text-slate-900"
               >
                 <Check size={14} strokeWidth={3} />
               </motion.span>
@@ -89,7 +89,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
           >
             {xCount}
           </motion.div>
-          <div className="text-slate-400 text-sm">명</div>
+          <div className="text-slate-400 dark:text-slate-500 text-sm">명</div>
         </div>
       </div>
 
@@ -108,8 +108,8 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
           />
         </div>
         <div className="flex justify-between text-base font-bold">
-          <span className="text-indigo-600">{Math.round(oPct)}%</span>
-          <span className="text-slate-400 text-sm">총 {totalVotes}명</span>
+          <span className="text-indigo-600 dark:text-indigo-400">{Math.round(oPct)}%</span>
+          <span className="text-slate-400 dark:text-slate-500 text-sm">총 {totalVotes}명</span>
           <span className="text-slate-600 dark:text-slate-300">{Math.round(xPct)}%</span>
         </div>
       </div>

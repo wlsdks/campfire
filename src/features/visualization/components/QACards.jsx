@@ -32,10 +32,10 @@ function DetailModal({ item, onClose }) {
             <Avatar name={item.nickname || '익명'} size="sm" />
             <div>
               <p className="text-sm font-medium text-slate-700 dark:text-slate-200">{item.nickname || '익명'}</p>
-              <p className="text-xs text-slate-400">{formatTime(item.timestamp)}</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500">{formatTime(item.timestamp)}</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-slate-300 hover:text-slate-500 transition-colors">
+          <button onClick={onClose} className="text-slate-300 dark:text-slate-600 hover:text-slate-500 dark:hover:text-slate-400 transition-colors">
             <X size={18} />
           </button>
         </div>
@@ -59,7 +59,7 @@ export default memo(function QACards({ sessionId, questionId, title }) {
         {/* Question header */}
         <div className="mb-6">
           {title && <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight leading-tight mb-1">{title}</h2>}
-          <div className="flex items-center gap-3 text-sm text-slate-400">
+          <div className="flex items-center gap-3 text-sm text-slate-400 dark:text-slate-500">
             <span className="flex items-center gap-1">
               <Users size={14} />
               {sorted.length}명 응답
@@ -83,7 +83,7 @@ export default memo(function QACards({ sessionId, questionId, title }) {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
                     <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{vote.nickname || '익명'}</span>
-                    <span className="text-xs text-slate-300">{formatTime(vote.timestamp)}</span>
+                    <span className="text-xs text-slate-300 dark:text-slate-600">{formatTime(vote.timestamp)}</span>
                   </div>
                   <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed line-clamp-2">{vote.value}</p>
                 </div>
@@ -94,10 +94,10 @@ export default memo(function QACards({ sessionId, questionId, title }) {
 
         {sorted.length === 0 && (
           <div className="text-center py-20 space-y-3">
-            <MessageSquare size={32} className="text-slate-200 mx-auto" />
+            <MessageSquare size={32} className="text-slate-200 dark:text-slate-700 mx-auto" />
             <div>
-              <p className="text-slate-400 text-sm">아직 응답이 없습니다</p>
-              <p className="text-slate-400 text-xs mt-1">학생들이 답변하면 여기에 표시됩니다</p>
+              <p className="text-slate-400 dark:text-slate-500 text-sm">아직 응답이 없습니다</p>
+              <p className="text-slate-400 dark:text-slate-500 text-xs mt-1">학생들이 답변하면 여기에 표시됩니다</p>
             </div>
           </div>
         )}

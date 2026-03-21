@@ -49,8 +49,14 @@ function computeStats(voteList) {
 /** Map 0-100 to color intensity. */
 function getBarColor(bucketIndex) {
   const intensity = Math.round((bucketIndex / (BUCKET_COUNT - 1)) * 4);
-  const shades = ['bg-slate-200', 'bg-slate-300', 'bg-slate-400', 'bg-slate-600', 'bg-slate-800'];
-  return shades[intensity] || 'bg-slate-400';
+  const shades = [
+    'bg-slate-200 dark:bg-slate-700',
+    'bg-slate-300 dark:bg-slate-600',
+    'bg-slate-400 dark:bg-slate-500',
+    'bg-slate-600 dark:bg-slate-400',
+    'bg-slate-800 dark:bg-slate-200',
+  ];
+  return shades[intensity] || 'bg-slate-400 dark:bg-slate-500';
 }
 
 export default memo(function ScaleChart({ sessionId, questionId }) {
@@ -78,7 +84,7 @@ export default memo(function ScaleChart({ sessionId, questionId }) {
         >
           {stats.count > 0 ? stats.avg : '--'}
         </motion.p>
-        <p className="text-sm text-slate-400 mt-1">평균</p>
+        <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">평균</p>
       </motion.div>
 
       {/* Average position indicator on 0–100 bar */}
@@ -100,13 +106,13 @@ export default memo(function ScaleChart({ sessionId, questionId }) {
           </div>
           {/* Edge labels */}
           <div className="flex justify-between mt-1">
-            <span className="text-[10px] text-slate-300">0</span>
-            <span className="text-[10px] text-slate-300">100</span>
+            <span className="text-[10px] text-slate-300 dark:text-slate-600">0</span>
+            <span className="text-[10px] text-slate-300 dark:text-slate-600">100</span>
           </div>
           {/* Median marker */}
           {stats.count >= 3 && (
             <motion.div
-              className="absolute top-0 w-0.5 h-3 bg-white/80"
+              className="absolute top-0 w-0.5 h-3 bg-white/80 dark:bg-slate-400/80"
               style={{ left: `${stats.median}%` }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -125,7 +131,7 @@ export default memo(function ScaleChart({ sessionId, questionId }) {
           transition={{ delay: 0.15, duration: 0.3 }}
           className="space-y-2"
         >
-          <p className="text-xs font-semibold text-slate-400 tracking-wider uppercase">응답 분포</p>
+          <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 tracking-wider uppercase">응답 분포</p>
           <div className="flex items-end gap-1.5 h-24">
             {buckets.map((count, i) => {
               const heightPct = maxBucket > 0 ? (count / maxBucket) * 100 : 0;
@@ -139,7 +145,7 @@ export default memo(function ScaleChart({ sessionId, questionId }) {
                       initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: i * 0.05 }}
-                      className="text-[10px] font-semibold text-slate-500 tabular-nums"
+                      className="text-[10px] font-semibold text-slate-500 dark:text-slate-400 tabular-nums"
                     >
                       {count}
                     </motion.span>
@@ -148,7 +154,7 @@ export default memo(function ScaleChart({ sessionId, questionId }) {
                     initial={{ height: 0 }}
                     animate={{ height: `${Math.max(heightPct, count > 0 ? 8 : 2)}%` }}
                     transition={{ type: 'spring', stiffness: 80, damping: 20, delay: i * 0.05 }}
-                    className={`w-full rounded-t-md ${count > 0 ? getBarColor(i) : 'bg-slate-100'}`}
+                    className={`w-full rounded-t-md ${count > 0 ? getBarColor(i) : 'bg-slate-100 dark:bg-slate-800'}`}
                     style={{ minHeight: count > 0 ? '4px' : '2px' }}
                   />
                 </motion.div>
@@ -158,7 +164,7 @@ export default memo(function ScaleChart({ sessionId, questionId }) {
           {/* Bucket labels */}
           <div className="flex gap-1.5">
             {BUCKET_LABELS.map((label, i) => (
-              <span key={i} className="flex-1 text-center text-[9px] text-slate-300">
+              <span key={i} className="flex-1 text-center text-[9px] text-slate-300 dark:text-slate-600">
                 {label}
               </span>
             ))}
@@ -176,15 +182,15 @@ export default memo(function ScaleChart({ sessionId, questionId }) {
         >
           <div className="text-center">
             <p className="text-lg font-bold text-slate-700 dark:text-slate-200 tabular-nums">{stats.median}</p>
-            <p className="text-[10px] text-slate-400">중앙값</p>
+            <p className="text-[10px] text-slate-400 dark:text-slate-500">중앙값</p>
           </div>
           <div className="text-center">
             <p className="text-lg font-bold text-slate-700 dark:text-slate-200 tabular-nums">{stats.min}</p>
-            <p className="text-[10px] text-slate-400">최솟값</p>
+            <p className="text-[10px] text-slate-400 dark:text-slate-500">최솟값</p>
           </div>
           <div className="text-center">
             <p className="text-lg font-bold text-slate-700 dark:text-slate-200 tabular-nums">{stats.max}</p>
-            <p className="text-[10px] text-slate-400">최댓값</p>
+            <p className="text-[10px] text-slate-400 dark:text-slate-500">최댓값</p>
           </div>
         </motion.div>
       )}

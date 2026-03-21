@@ -2,10 +2,16 @@ import { useVotes } from '@/hooks/useVotes';
 import { useMemo, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Cloud } from 'lucide-react';
-// Monochromatic slate palette for word cloud
-const COLORS = [
-  '#0F172A', '#1E293B', '#334155', '#475569',
-  '#64748B', '#94A3B8', '#334155', '#475569',
+// Monochromatic slate palette — Tailwind classes for dark mode support
+const WORD_CLASSES = [
+  'text-slate-900 dark:text-slate-100',
+  'text-slate-800 dark:text-slate-200',
+  'text-slate-700 dark:text-slate-300',
+  'text-slate-600 dark:text-slate-400',
+  'text-slate-500 dark:text-slate-400',
+  'text-slate-400 dark:text-slate-500',
+  'text-slate-700 dark:text-slate-300',
+  'text-slate-600 dark:text-slate-400',
 ];
 
 export default memo(function WordCloud({ sessionId, questionId }) {
@@ -36,11 +42,8 @@ export default memo(function WordCloud({ sessionId, questionId }) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ type: 'spring', stiffness: 200, damping: 20, delay: i * 0.03 }}
-              style={{
-                fontSize: getFontSize(word.count),
-                color: COLORS[i % COLORS.length],
-              }}
-              className="font-bold whitespace-nowrap transition-transform hover:scale-105 cursor-default"
+              style={{ fontSize: getFontSize(word.count) }}
+              className={`font-bold whitespace-nowrap transition-transform hover:scale-105 cursor-default ${WORD_CLASSES[i % WORD_CLASSES.length]}`}
               title={`${word.text}: ${word.count}회`}
             >
               {word.text}
@@ -49,13 +52,13 @@ export default memo(function WordCloud({ sessionId, questionId }) {
         </AnimatePresence>
         {words.length === 0 && (
           <div className="text-center space-y-2">
-            <Cloud size={28} className="text-slate-400 mx-auto" />
-            <p className="text-slate-400 text-base">아직 입력이 없습니다</p>
+            <Cloud size={28} className="text-slate-300 dark:text-slate-600 mx-auto" />
+            <p className="text-slate-400 dark:text-slate-500 text-base">아직 입력이 없습니다</p>
           </div>
         )}
       </div>
       {totalVotes > 0 && (
-        <div className="text-center text-slate-400 text-sm mt-2">
+        <div className="text-center text-slate-400 dark:text-slate-500 text-sm mt-2">
           총 {totalVotes}개 응답
         </div>
       )}
