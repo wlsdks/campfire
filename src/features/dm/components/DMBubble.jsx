@@ -99,8 +99,9 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
   const allDMs = activeDMs || (activeDM ? [activeDM] : []);
 
   return (
-    <AnimatePresence>
+    <>
       <motion.div
+        key="dm-backdrop"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -108,6 +109,7 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
         onClick={onClose}
       />
       <motion.div
+        key="dm-panel"
         initial={{ opacity: 0, scale: 0.95, y: 12 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: 12 }}
@@ -213,6 +215,6 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
           </>
         )}
       </motion.div>
-    </AnimatePresence>
+    </>
   );
 }
