@@ -4,6 +4,8 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from 
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import Tooltip from '@/components/ui/Tooltip';
+import Toast from '@/components/ui/Toast';
+import { useToast } from '@/hooks/useToast';
 import { GripVertical, BookmarkPlus, Check, ChevronDown, Copy, MessageSquare, Play, Square, Trash2, Trophy } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import PickMascot from '@/components/ui/PickMascot';
@@ -110,12 +112,7 @@ export default memo(function QuestionList({
   onDuplicate, onDelete, readOnly = false, onView, onReorder, onSaveToLibrary,
 }) {
   const [collapsed, setCollapsed] = useState(false);
-  const [toast, setToast] = useState(null);
-
-  function showToast(msg) {
-    setToast(msg);
-    setTimeout(() => setToast(null), 2000);
-  }
+  const { toast, showToast } = useToast();
   const activeCount = questionList.filter(([qId]) => qId === currentQuestion).length;
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
   const ids = questionList.map(([qId]) => qId);
@@ -191,19 +188,7 @@ export default memo(function QuestionList({
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {toast && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-4 py-2.5 rounded-xl shadow-lg text-sm font-medium"
-          >
-            {toast}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <Toast message={toast} />
     </div>
   );
 });
