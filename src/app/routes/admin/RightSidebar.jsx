@@ -232,7 +232,7 @@ export default memo(function RightSidebar({
       transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
       className="border-l border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden shrink-0 min-w-0 max-w-[460px] h-full"
     >
-      <div className="min-w-[280px] p-5 space-y-3 overflow-y-auto h-full scrollbar-hide">
+      <div className="min-w-[280px] p-5 space-y-5 overflow-y-auto h-full scrollbar-hide">
         {content}
       </div>
     </motion.div>

@@ -156,7 +156,7 @@ export default memo(function ClassSummary({ session, participants, scores, leade
             <p className="text-base font-bold text-slate-900 dark:text-slate-100">{topStudent.nickname}</p>
           </div>
           <div className="text-right">
-            <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{topStudent.total}</p>
+            <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{topStudent.total}</p>
             <p className="text-xs text-slate-400">점</p>
           </div>
         </div>

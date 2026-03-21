@@ -120,11 +120,11 @@ export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, s
         </div>
         <div className="flex items-center gap-8">
           <div>
-            <span className="text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">{stats.rounds}</span>
+            <span className="text-3xl font-bold text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{stats.rounds}</span>
             <span className="text-xs text-slate-400 ml-1">차수</span>
           </div>
           <div>
-            <span className="text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">{stats.totalParticipants}</span>
+            <span className="text-3xl font-bold text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{stats.totalParticipants}</span>
             <span className="text-xs text-slate-400 ml-1">명</span>
           </div>
           <div className="flex-1">

@@ -51,7 +51,7 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08, duration: 0.3, ease: 'easeOut' }}
-            className={`space-y-1.5 ${isCorrect ? 'rounded-lg ring-2 ring-indigo-500/30 p-3 -mx-3 bg-indigo-50/30 dark:bg-indigo-950/30' : ''}`}
+            className={`space-y-1.5 ${isCorrect ? 'rounded-lg ring-2 ring-indigo-500/30 p-3 -mx-3 bg-slate-50/50 dark:bg-slate-800/50' : ''}`}
           >
             <div className="flex justify-between items-baseline gap-2">
               <div className="flex items-center gap-2 min-w-0 flex-1">

@@ -18,7 +18,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
     <div className="w-full max-w-xl mx-auto space-y-6">
       {/* Split display */}
       <div className="flex items-center justify-between text-center">
-        <div className={`flex-1 space-y-2 py-4 rounded-xl transition-all ${oCorrect ? 'ring-2 ring-indigo-500/30 bg-indigo-50/30 dark:bg-indigo-950/20' : ''}`}>
+        <div className={`flex-1 space-y-2 py-4 rounded-xl transition-all ${oCorrect ? 'ring-2 ring-indigo-500/30 bg-slate-50/50 dark:bg-slate-800/50' : ''}`}>
           <div className="relative inline-block">
             <motion.div
               key={oCount}
