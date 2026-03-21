@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { useAdminSession } from '@/hooks/useAdminSession';
@@ -16,6 +17,8 @@ import TabletDrawers from './TabletDrawers';
 import CenterContent from './CenterContent';
 import TeamBattleControl from '@/features/teams/components/TeamBattleControl';
 
+const StaffPage = lazy(() => import('./StaffPage'));
+
 export default function AdminPage() {
   const s = useAdminSession();
   const isTablet = useMediaQuery('(max-width: 1023px)');
@@ -31,6 +34,24 @@ export default function AdminPage() {
     </div>
   );
   if (!s.session) { s.handleBack(); return null; }
+
+  if (s.adminUser?.role === 'staff') {
+    return (
+      <Suspense fallback={
+        <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+          <div className="flex items-center gap-2 text-slate-400"><Loader2 size={20} className="animate-spin" /><span>불러오는 중...</span></div>
+        </div>
+      }>
+        <StaffPage
+          sessionId={s.sessionId}
+          session={s.session}
+          adminUser={s.adminUser}
+          onBack={s.handleBack}
+          onLogout={s.handleLogout}
+        />
+      </Suspense>
+    );
+  }
 
   const currentMode = s.session?.currentMode;
   const isSpecialMode = ['roulette', 'lottery', 'prizeDraw', 'leaderboard', 'teamBattle'].includes(currentMode);
