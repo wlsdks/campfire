@@ -68,8 +68,8 @@ function CoursePerformance({ courseData }) {
           </div>
           <div className="flex items-end gap-4">
             <div className="flex-1 space-y-2">
-              {course.roundDetails.map((round) => (
-                <div key={round.roundNumber} className="flex items-center gap-3">
+              {course.roundDetails.map((round, idx) => (
+                <div key={`${round.roundNumber}-${idx}`} className="flex items-center gap-3">
                   <span className="text-xs text-slate-400 w-8 shrink-0 font-medium">{round.roundNumber}차</span>
                   <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                     <motion.div className="h-full bg-slate-700 dark:bg-slate-300 rounded-full"
@@ -105,7 +105,7 @@ function RecentQuestions({ questions, loading, courseFilter }) {
         const typeInfo = QUESTION_TYPE_MAP[q.type] || { label: q.type, icon: MessageSquare };
         const Icon = typeInfo.icon;
         return (
-          <motion.div key={`${q.sessionId}-${q.qId}-${i}`} variants={stagger.item} className="flex items-center gap-3 py-2.5">
+          <motion.div key={`${q.sessionId}-${q.qId}`} variants={stagger.item} className="flex items-center gap-3 py-2.5">
             <Icon size={16} className="text-slate-400 shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-sm text-slate-700 dark:text-slate-200 truncate">{q.title}</p>
@@ -215,7 +215,9 @@ export default function StatsView({ sessions }) {
           name,
           rounds: list.length,
           totalParticipants: list.reduce((sum, s) => sum + s.participantCount, 0),
-          roundDetails: list.map((s) => ({ roundNumber: s.roundNumber || '\u2014', activityRate: s.activityRate, participantCount: s.participantCount })),
+          roundDetails: list
+            .filter((s) => s.status !== 'setting')
+            .map((s) => ({ roundNumber: s.roundNumber || '\u2014', activityRate: s.activityRate, participantCount: s.participantCount })),
         };
       })
       .sort((a, b) => b.totalParticipants - a.totalParticipants);

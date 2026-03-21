@@ -48,7 +48,7 @@ export default function ExportMenu({ session, participants, scores }) {
             <FileSpreadsheet size={16} className="text-slate-400 shrink-0" />
             <div>
               <p className="font-medium">질문 결과</p>
-              <p className="text-xs text-slate-400 mt-0.5">질문별 응답률, 정답률, 분포</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">질문별 응답률, 정답률, 분포</p>
             </div>
           </button>
           <button
@@ -58,7 +58,7 @@ export default function ExportMenu({ session, participants, scores }) {
             <Users size={16} className="text-slate-400 shrink-0" />
             <div>
               <p className="font-medium">참여자별 응답</p>
-              <p className="text-xs text-slate-400 mt-0.5">학생별 답변, 점수, 티켓</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">학생별 답변, 점수, 티켓</p>
             </div>
           </button>
         </div>

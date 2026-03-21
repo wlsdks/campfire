@@ -75,7 +75,7 @@ export function DifficultQuestions({ questions, loading }) {
         const Icon = typeInfo.icon;
         const isVeryHard = q.correctRate < 30;
         return (
-          <motion.div key={`${q.sessionId}-${q.qId}-${i}`} variants={stagger.item}
+          <motion.div key={`${q.sessionId}-${q.qId}`} variants={stagger.item}
             className="flex items-center gap-3 py-2.5">
             <div className="flex items-center justify-center w-6 h-6 shrink-0">
               {isVeryHard
