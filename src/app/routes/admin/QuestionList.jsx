@@ -48,8 +48,8 @@ function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, o
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5 mb-1">
-            <Icon size={13} className={!readOnly && isActive ? 'text-slate-700' : 'text-slate-400'} />
-            <span className={`text-xs font-semibold ${!readOnly && isActive ? 'text-slate-700' : 'text-slate-400'}`}>
+            <Icon size={13} className={!readOnly && isActive ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400'} />
+            <span className={`text-xs font-semibold ${!readOnly && isActive ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400'}`}>
               {qType?.label}
             </span>
             {!readOnly && isActive && <Badge variant="primary">LIVE</Badge>}
