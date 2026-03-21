@@ -234,6 +234,7 @@ JoinPage → WaitingPage → VotePage(투표) → VoteConfirm → 결과 대기 
 ## 사이클 로그
 > 최근 10개만 유지.
 
+2026-03-22 | chore: 의존성 업데이트 (tailwindcss 4.2.2, firebase 12.11.0) + StreakBadge 3단계 + DESIGN_SYSTEM 동기화
 2026-03-22 | perf: useCallback 최적화 (QuestionManager/List) + 타이머 3초 shake + 다크모드 hover 3곳
 2026-03-22 | refactor: ChatMessage 중복제거 + QuestionItem memo + QuizEventBanner 다크모드 + 답변배지 모노크롬
 2026-03-22 | improve: tracking-tight 18곳 + PickMascot 빈상태 3곳 + 읽음 상태 localStorage 영속화
