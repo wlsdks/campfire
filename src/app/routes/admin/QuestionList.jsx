@@ -9,7 +9,7 @@ import PickMascot from '@/components/ui/PickMascot';
 import { isQuizQuestion } from '@/lib/quiz';
 import { QUESTION_TYPES } from '@/lib/question-types';
 
-function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, onReveal, onShowLeaderboard, onClearActive, onDuplicate, onDelete, onSaveToLibrary }) {
+const SortableItem = memo(function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, onReveal, onShowLeaderboard, onClearActive, onDuplicate, onDelete, onSaveToLibrary }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: qId });
   const qType = QUESTION_TYPES.find((t) => t.value === q.type);
   const Icon = qType?.icon || MessageSquare;
@@ -102,7 +102,7 @@ function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, o
       </div>
     </div>
   );
-}
+});
 
 export default memo(function QuestionList({
   questionList, currentQuestion, onActivate, onReveal, onShowLeaderboard, onClearActive,

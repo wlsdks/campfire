@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, Copy, Trash2 } from 'lucide-react';
 
@@ -14,7 +14,7 @@ function formatDate(timestamp) {
   return `${month}/${day} ${ampm} ${h12}:${minutes}`;
 }
 
-function SessionRow({ session, onClick, onDelete, onDuplicate, index, hideActions = false }) {
+const SessionRow = memo(function SessionRow({ session, onClick, onDelete, onDuplicate, index, hideActions = false }) {
   const isSetting = session.status === 'setting';
   const isActive = session.status === 'active';
   const isReviewing = session.status === 'reviewing';
@@ -88,7 +88,7 @@ function SessionRow({ session, onClick, onDelete, onDuplicate, index, hideAction
       )}
     </motion.div>
   );
-}
+});
 
 export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, startIndex, groupIndex = 0, hideActions = false }) {
   const [collapsed, setCollapsed] = useState(false);

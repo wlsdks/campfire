@@ -2,11 +2,10 @@ import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId } from '@/lib/participant';
 import { motion } from 'framer-motion';
-import { useState, useCallback, useRef, memo } from 'react';
+import { useState, useCallback, useRef, memo, useMemo } from 'react';
 import VoteConfirm from './VoteConfirm';
 import { useVotes } from '@/hooks/useVotes';
 import { Users } from 'lucide-react';
-import { useMemo } from 'react';
 
 /**
  * Labels at specific scale positions for orientation.

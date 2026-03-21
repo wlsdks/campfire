@@ -1,18 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Send } from 'lucide-react';
 import { useChat } from '@/features/chat/api/useChat';
+import { formatChatTime } from '@/lib/utils';
 
 const MAX_LENGTH = 500;
-
-function formatTime(timestamp) {
-  if (!timestamp) return '';
-  const d = new Date(timestamp);
-  const h = d.getHours();
-  const m = String(d.getMinutes()).padStart(2, '0');
-  const period = h < 12 ? '오전' : '오후';
-  const hour12 = h % 12 || 12;
-  return `${period} ${hour12}:${m}`;
-}
 
 function ChatMessage({ msg, isOwn }) {
   const initial = (msg.sender || '익명').charAt(0);
@@ -23,7 +14,7 @@ function ChatMessage({ msg, isOwn }) {
         <div className="px-3.5 py-2.5 text-sm leading-relaxed bg-slate-900 dark:bg-slate-200 text-white dark:text-slate-900 rounded-2xl rounded-br-sm max-w-[75%]">
           {msg.text}
         </div>
-        <span className="text-[10px] text-slate-300 dark:text-slate-500 px-1">{formatTime(msg.timestamp)}</span>
+        <span className="text-[10px] text-slate-300 dark:text-slate-500 px-1">{formatChatTime(msg.timestamp)}</span>
       </div>
     );
   }
@@ -46,7 +37,7 @@ function ChatMessage({ msg, isOwn }) {
         <div className="px-3.5 py-2.5 text-sm leading-relaxed bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-2xl rounded-tl-sm">
           {msg.text}
         </div>
-        <span className="text-[10px] text-slate-300 dark:text-slate-500 px-1">{formatTime(msg.timestamp)}</span>
+        <span className="text-[10px] text-slate-300 dark:text-slate-500 px-1">{formatChatTime(msg.timestamp)}</span>
       </div>
     </div>
   );

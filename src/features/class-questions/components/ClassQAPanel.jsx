@@ -3,19 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, X, ChevronUp, Check, HelpCircle } from 'lucide-react';
 import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
 import { getParticipantId, getNickname } from '@/lib/participant';
+import { timeAgo } from '@/lib/utils';
 
 const MAX_LENGTH = 200;
-
-function timeAgo(timestamp) {
-  if (!timestamp) return '';
-  const diff = Date.now() - timestamp;
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return '방금';
-  if (mins < 60) return `${mins}분 전`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}시간 전`;
-  return `${Math.floor(hours / 24)}일 전`;
-}
 
 function QuestionCard({ q, participantId, onUpvote }) {
   const hasUpvoted = q.upvotes?.[participantId];

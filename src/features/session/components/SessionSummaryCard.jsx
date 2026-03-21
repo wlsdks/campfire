@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import { motion } from 'framer-motion';
 import { Trophy, Target, Hash, Sparkle, Flame, CheckCheck, Zap, Crown } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
@@ -23,7 +23,7 @@ function getTitle({ answeredCount, correctRate, rank, totalParticipants, bestStr
 }
 
 /** Single stat item. */
-function StatItem({ icon: Icon, label, value, delay = 0 }) {
+const StatItem = memo(function StatItem({ icon: Icon, label, value, delay = 0 }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 8 }}
@@ -36,10 +36,10 @@ function StatItem({ icon: Icon, label, value, delay = 0 }) {
       <span className="text-[11px] text-slate-400 font-medium">{label}</span>
     </motion.div>
   );
-}
+});
 
 /** Achievement item in summary. */
-function AchievementItem({ achievement, index }) {
+const AchievementItem = memo(function AchievementItem({ achievement, index }) {
   const Icon = ACHIEVEMENT_ICONS[achievement.icon] || Sparkle;
   return (
     <motion.div
@@ -57,7 +57,7 @@ function AchievementItem({ achievement, index }) {
       </div>
     </motion.div>
   );
-}
+});
 
 /** Compute student's session stats from questions + scores. */
 function useStudentStats(session, sessionId) {

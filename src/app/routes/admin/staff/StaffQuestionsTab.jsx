@@ -8,17 +8,7 @@ import { useClassQuestions } from '@/features/class-questions/api/useClassQuesti
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
-
-function timeAgo(timestamp) {
-  if (!timestamp) return '';
-  const diff = Date.now() - timestamp;
-  const mins = Math.floor(diff / 60000);
-  if (mins < 1) return '방금';
-  if (mins < 60) return `${mins}분 전`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}시간 전`;
-  return `${Math.floor(hours / 24)}일 전`;
-}
+import { timeAgo } from '@/lib/utils';
 
 export default function StaffQuestionsTab({ sessionId, adminUser }) {
   const { questionList: urgentList } = useUrgentQuestions(sessionId);
