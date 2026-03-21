@@ -1,7 +1,7 @@
 # Pick Background Improvement Loop
 
 > 15분 간격 자동 실행. 매 사이클 시작 시 CLAUDE.md + DESIGN_SYSTEM.md 참조.
-> 브랜치: `background-improve`에서만 작업. main은 절대 건드리지 않음.
+> 브랜치: `background-improve-v2`에서만 작업. main은 절대 건드리지 않음.
 
 ## 서비스 정체성
 
