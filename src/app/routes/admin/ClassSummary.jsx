@@ -109,7 +109,7 @@ export default memo(function ClassSummary({ session, participants, scores, leade
           <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{activityRate}%</p>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">참여율</p>
           <div className="mt-2 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-            <motion.div className="h-full bg-slate-700 dark:bg-slate-300 rounded-full"
+            <motion.div className="h-full bg-indigo-500 dark:bg-indigo-400 rounded-full"
               initial={{ width: 0 }} animate={{ width: `${activityRate}%` }}
               transition={{ type: 'spring', stiffness: 80, damping: 20, delay: 0.2 }} />
           </div>

@@ -133,7 +133,7 @@ export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, s
               <span className="text-sm font-bold text-slate-700 dark:text-slate-200">{stats.avgActivity}%</span>
             </div>
             <div className="h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-              <div className="h-full bg-slate-700 dark:bg-slate-300 rounded-full transition-all duration-500"
+              <div className="h-full bg-indigo-500 dark:bg-indigo-400 rounded-full transition-all duration-500"
                 style={{ width: `${stats.avgActivity}%` }} />
             </div>
           </div>
