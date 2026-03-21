@@ -68,13 +68,17 @@ function useStudentStats(session, sessionId) {
     const questions = session?.questions || {};
     let answered = 0, correct = 0, gradable = 0;
 
+    let confidentWrong = 0;
+
     Object.values(questions).forEach((q) => {
       const myVote = q.votes?.[participantId];
       if (myVote) {
         answered++;
         if (q.correctAnswer) {
           gradable++;
-          if (myVote.value === q.correctAnswer) correct++;
+          const isCorrect = myVote.value === q.correctAnswer;
+          if (isCorrect) correct++;
+          if (!isCorrect && myVote.confidence === 'high') confidentWrong++;
         }
       }
     });
@@ -90,6 +94,7 @@ function useStudentStats(session, sessionId) {
       bestStreak: myScore?.bestStreak || myScore?.streak || 0,
       rank: rankIdx >= 0 ? rankIdx + 1 : 0,
       totalParticipants: leaderboard.length,
+      confidentWrong,
       scores,
     };
   }, [session?.questions, scores, leaderboard, participantId]);
@@ -158,6 +163,20 @@ export default function SessionSummaryCard({ session, sessionId, reviewing = fal
               <Trophy size={12} className="mr-1" />
               {stats.totalParticipants}명 중 {stats.rank}위
             </Badge>
+          </motion.div>
+        )}
+
+        {/* Confidence insight */}
+        {stats.confidentWrong > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.42 }}
+            className="px-5 pb-2"
+          >
+            <p className="text-xs text-slate-500 dark:text-slate-400 text-center">
+              확신했지만 틀린 문제가 <span className="font-semibold text-slate-700 dark:text-slate-200">{stats.confidentWrong}개</span> 있어요 — 복습해보세요!
+            </p>
           </motion.div>
         )}
 
