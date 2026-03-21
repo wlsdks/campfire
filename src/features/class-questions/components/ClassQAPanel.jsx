@@ -7,59 +7,54 @@ import { timeAgo } from '@/lib/utils';
 
 const MAX_LENGTH = 200;
 
-function QuestionCard({ q, participantId, onUpvote }) {
+function QuestionCard({ q, participantId, onUpvote, index = 0 }) {
   const hasUpvoted = q.upvotes?.[participantId];
   const isMine = q.participantId === participantId;
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
-      layout
-      className={`p-4 rounded-xl border shadow-sm transition-colors ${
-        q.answered
-          ? 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 opacity-60'
-          : isMine
-            ? 'bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600'
-            : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'
-      }`}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2, delay: index * 0.03 }}
+      className={`rounded-xl shadow-sm overflow-hidden ${q.answered ? 'opacity-50' : ''}`}
     >
-      <p className="text-sm font-medium text-slate-800 dark:text-slate-200 leading-relaxed">
-        {q.text}
-      </p>
-      <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-700">
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-            {q.nickname}
-          </span>
-          {isMine && <span className="text-[10px] font-semibold text-white dark:text-slate-900 bg-slate-900 dark:bg-slate-100 px-1.5 py-0.5 rounded-md">나</span>}
-          <span className="text-[10px] text-slate-300 dark:text-slate-600">
-            {timeAgo(q.timestamp)}
-          </span>
-          {q.answered && (
-            <span className="flex items-center gap-0.5 text-emerald-500 text-[10px] font-medium">
-              <Check size={10} />
-              답변 완료
+      <div className={`p-4 bg-white dark:bg-slate-800 ${isMine && !q.answered ? 'ring-1 ring-slate-300 dark:ring-slate-600' : ''}`}>
+        <p className="text-[15px] text-slate-800 dark:text-slate-200 leading-relaxed">
+          {q.text}
+        </p>
+        <div className="flex items-center justify-between mt-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-slate-400 dark:text-slate-500">
+              {q.nickname}
             </span>
+            {isMine && (
+              <span className="text-[10px] font-semibold text-white dark:text-slate-900 bg-slate-900 dark:bg-slate-100 px-1.5 py-0.5 rounded-md">나</span>
+            )}
+            <span className="text-[10px] text-slate-300 dark:text-slate-600">{timeAgo(q.timestamp)}</span>
+            {q.answered && (
+              <span className="flex items-center gap-0.5 text-slate-400 text-[10px] font-medium">
+                <Check size={10} /> 답변 완료
+              </span>
+            )}
+          </div>
+          {!q.answered && (
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={() => onUpvote(q.id)}
+              aria-label={hasUpvoted ? '추천 취소' : '추천'}
+              aria-pressed={!!hasUpvoted}
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors duration-150 ${
+                hasUpvoted
+                  ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
+                  : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+              }`}
+            >
+              <ThumbsUp size={12} />
+              {q.upvoteCount || 0}
+            </motion.button>
           )}
         </div>
-        {!q.answered && (
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            onClick={() => onUpvote(q.id)}
-            aria-label={hasUpvoted ? '추천 취소' : '추천'}
-            aria-pressed={!!hasUpvoted}
-            className={`flex items-center gap-0.5 px-2 py-1 rounded-lg text-xs font-medium transition-all ${
-              hasUpvoted
-                ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
-                : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-600'
-            }`}
-          >
-            <ThumbsUp size={12} />
-            {q.upvoteCount || 0}
-          </motion.button>
-        )}
       </div>
     </motion.div>
   );
@@ -123,7 +118,7 @@ export default function ClassQAPanel({ sessionId, open, onClose, onNewQuestion }
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 12 }}
             transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-            className="fixed inset-4 sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-[420px] sm:h-[600px] bg-slate-50 dark:bg-slate-900 rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden"
+            className="fixed inset-4 sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-[420px] sm:h-[600px] bg-slate-50 dark:bg-slate-900 rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden border border-slate-200 dark:border-slate-700"
           >
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-3.5 bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 shrink-0">
@@ -178,8 +173,8 @@ export default function ClassQAPanel({ sessionId, open, onClose, onNewQuestion }
                   </div>
                 ) : (
                   <AnimatePresence>
-                    {filtered.map((q) => (
-                      <QuestionCard key={q.id} q={q} participantId={participantId} onUpvote={handleUpvote} />
+                    {filtered.map((q, i) => (
+                      <QuestionCard key={q.id} q={q} index={i} participantId={participantId} onUpvote={handleUpvote} />
                     ))}
                   </AnimatePresence>
                 );
