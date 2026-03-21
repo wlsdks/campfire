@@ -497,16 +497,16 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 ## 사이클 로그
 > 최근 10개만 유지. 오래된 것은 삭제.
 
-2026-03-21 | improve: 디자인 철학 준수 — 장식색 제거, 섹션간격 확대, 숫자위계, border 중복 제거(7파일)
-2026-03-21 | improve: Apple/Toss 원칙 — 정답배경 slate, 사이드바 space-y-5, 강의 수치 text-3xl
-2026-03-21 | improve: transition-all→duration-150 최종 패스(12버튼) + 사이클 로그
+2026-03-21 | feat: DM 도움요청 + 운영채팅 — 학생↔스태프 1:1 DM, 스태프+강사 내부채널, 5열 하단바
+2026-03-21 | docs: DM 설계 스펙 + PostgreSQL DDL 15테이블 + PRD 동기화
+2026-03-21 | improve: transition-all 완전 소멸(27버튼 17파일) + 디자인 철학 준수(7파일)
+2026-03-21 | improve: 라이브뷰 애니메이션 강화 + DESIGN_SYSTEM §16-17 문서화
 2026-03-21 | feat: 라이브 관전 뷰 — /live?s=세션코드, 전자칠판용 읽기전용 실시간 결과 화면
-2026-03-21 | chore: 코드정리(미사용import, aria-label) + DebateChart/FillBlankChart 다크모드
-2026-03-21 | improve: 학생 UX — 실시간결과 인디고바, 리액션 쿨다운 쉐이크, 버튼transition 통일
-2026-03-21 | improve: tracking-tight 전체(12파일) + 투표 다크모드 + 관리자 폼 다크모드
-2026-03-21 | improve: 디자인 시스템 — 값>라벨 위계, 참여율 uppercase, OX hover, 리더보드 배지
+2026-03-21 | improve: Apple/Toss 원칙 — 장식색 제거, space-y-5, text-3xl 숫자, border 제거
+2026-03-21 | improve: tracking-tight 전체 + 투표/관리자 다크모드 + 코드정리
+2026-03-21 | improve: 학생 UX — 실시간결과 인디고바, 리액션 쿨다운, OX hover, 리더보드 배지
 2026-03-21 | improve: 마이크로인터랙션 — 알림 pulse, 참여율 인디고, 선택 fade, 질문번호 bounce
-2026-03-21 | fix: duplicate key + 트렌드 왜곡 + 시각화 7개 다크모드 40+ 수정
+2026-03-21 | fix: duplicate key + 트렌드 왜곡 + 시각화 다크모드 40+ 수정
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 
