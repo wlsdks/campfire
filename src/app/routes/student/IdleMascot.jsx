@@ -74,7 +74,7 @@ export default function IdleMascot() {
             }),
             rightEar.start({
               rotate: [0, 15, -12, 8, -4, 0],
-              transition: { duration: 0.65, ease: 'easeInOut' },
+              transition: { duration: 0.65, ease: 'easeInOut', delay: 0.08 },
             }),
           ]);
           break;
