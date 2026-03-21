@@ -121,6 +121,39 @@
 - 에러 처리: try-catch로 감싸고, 사용자에게 실패 피드백
 - **매 사이클 검증**: Playwright로 실제 데이터가 Firebase에 저장/조회되는지 확인
 
+## 우선순위 매트릭스 (매 사이클 참고)
+
+작업 선택 시 아래 순서로 우선순위 판단:
+
+1. **🔴 깨진 것 먼저** — 빌드 에러, 런타임 에러, 콘솔 에러 → 즉시 수정
+2. **🟠 사용자 요청** — prompt.md에 명시된 미구현 기능 (스태프 모드 등)
+3. **🟡 UX 개선** — 디자인 시스템 위반, 다크모드 누락, 대비/접근성
+4. **🟢 기능 고도화** — 기존 기능 polish, 마이크로인터랙션, 애니메이션
+5. **🔵 신규 기능** — PRD에 없는 새 아이디어 (한 사이클에 하나만)
+6. **⚪ 문서/정리** — PRD, DESIGN_SYSTEM, 사이클 로그, 데드코드
+
+## 회귀 방지 규칙
+
+- **파일 수정 전 반드시 Read** — 현재 상태를 모르고 수정하면 다른 사람의 작업을 덮어쓸 수 있음
+- **큰 변경은 서브에이전트** — 5개 파일 이상 수정 시 서브에이전트 사용 (컨텍스트 보호)
+- **하나의 관심사만** — 한 커밋에 여러 종류의 변경 섞지 않기 (UI + 기능 + 버그 → 별도 커밋)
+- **spring 값은 프리셋만** — design-tokens.js에 정의된 5개 프리셋(default/gentle/bouncy/stiff/smooth) 외 사용 금지
+- **색상은 slate 계열만** — bg-indigo-600 CTA 금지, bg-amber/emerald 장식 금지
+- **text-slate-300은 장식에만** — 읽어야 하는 텍스트는 최소 text-slate-500 (dark: text-slate-400)
+- **새 컴포넌트는 memo 고려** — props 받는 리스트 아이템, 차트, 투표 컴포넌트 → React.memo
+- **새 파일은 200줄 이하** — 초과 시 서브컴포넌트로 분리
+
+## 자주 하는 실수 (금지 목록)
+
+- ❌ `colors.border` 같이 import 안 한 변수 참조 → 런타임 에러
+- ❌ JSX에서 `{#hex}` → 문자열로 감싸야 함 `{"#hex"}`
+- ❌ `PinggoMascot` 참조 → `PickMascot`으로 교체됨
+- ❌ Lottie 인라인 JSON → Framer Motion SVG로 대체
+- ❌ `bg-indigo-600` CTA 버튼 → `bg-slate-900` 사용
+- ❌ `animate-pulse` 남용 → 긴급 배지에만 사용
+- ❌ 하드코딩 데모 데이터 → Firebase에서 읽기
+- ❌ `console.log` 남기기 → 디버깅 후 삭제
+
 ## 사이클 워크플로우
 
 ### 0. 안전 점검
@@ -165,7 +198,16 @@ npm run build   # 반드시 통과
 - CLAUDE.md AI 생성 UI 체크리스트 10개 항목 점검
 - "토스/Linear처럼 보이는가, AI 데모처럼 보이는가?" 자문
 
-### 4. 커밋 & 푸시 & 배포
+### 4. 커밋 & 푸시
+**커밋 메시지 규칙:**
+- `feat:` 새 기능 → `feat: prize draw game mode`
+- `improve:` UI/UX 개선 → `improve: dark mode for voter components`
+- `fix:` 버그 수정 → `fix: colors.border reference error`
+- `perf:` 성능 → `perf: React.memo for voter components`
+- `a11y:` 접근성 → `a11y: aria-labels for game buttons`
+- `chore:` 정리 → `chore: dead code cleanup`
+- `docs:` 문서 → `docs: PRD update`
+
 ```bash
 git add -A && git commit -m "improve: 설명"
 git push origin background-improve
