@@ -142,13 +142,13 @@
 ## 사이클 로그
 > 최근 10개만 유지.
 
-2026-03-22 | fix: DM 모달 중앙화 + 미읽 배지 + 다중DM 목록 + 강사 DM 제거 + duplicate key
-2026-03-21 | improve: 마스코트 6곳 빈상태 + 채팅 메시지 slide-in 애니메이션
-2026-03-21 | feat: DM 목록 탭 + 질문→DM 1:1 답변 + hooks 버그 수정
-2026-03-21 | refactor: 코드 품질 — 유틸 추출, React.memo, 의존성 업데이트, 중복 import
-2026-03-21 | improve: 애니메이션 — voter exit, spring 참여율바, 마스코트 호흡, spring 프리셋
+2026-03-22 | feat: QA패널 탭(전체/내질문) + 추천 ThumbsUp + Tooltip 포탈 + ConfirmModal + 토스트 통일
+2026-03-22 | feat: DM 모달 [채팅방|새요청] 탭 + 다중DM + 스태프 배지 + 강사 DM 제거
+2026-03-21 | improve: 마스코트 6곳 빈상태 + 채팅 slide-in + 참여율바 인디고 통일
+2026-03-21 | refactor: 코드 품질 — 유틸 추출, React.memo, 의존성 업데이트, spring 프리셋
+2026-03-21 | improve: 애니메이션 — voter exit, 마스코트 호흡, 헤더 카운트 bounce
 2026-03-21 | improve: 디자인 시스템 완전 준수 — transition/tracking/spring/border/색상/간격
-2026-03-21 | feat: 라이브 관전 뷰 + 애니메이션 강화 + DESIGN_SYSTEM §16-18 문서화
+2026-03-21 | feat: DM 도움요청 + 운영채팅 + 라이브뷰 + DESIGN_SYSTEM §16-18
 2026-03-21 | improve: 마이크로인터랙션 — pulse, 인디고바, 쿨다운 쉐이크, OX hover
 2026-03-21 | fix: duplicate key + 트렌드 왜곡 + 시각화 다크모드 40+ 수정
 2026-03-21 | feat: StaffPage 3패널 + 답변 아코디언 + 우측 패널 + 대시보드 필터
