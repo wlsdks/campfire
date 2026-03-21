@@ -66,35 +66,35 @@ function SortableItem({ qId, q, currentQuestion, readOnly, onView, onActivate, o
         {!readOnly && (
           <div className="flex gap-1 shrink-0" onPointerDown={stopDrag}>
             {!isActive ? (
-              <button onClick={() => onActivate(qId)} className="p-1.5 rounded-md bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 text-white transition-all active:scale-90" aria-label="질문 활성화">
+              <button onClick={() => onActivate(qId)} className="p-1.5 rounded-md bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 text-white transition-colors duration-150 active:scale-90" aria-label="질문 활성화">
                 <Play size={12} />
               </button>
             ) : (
               <>
                 {isQuiz && !q.revealedAt && (
-                  <button onClick={() => onReveal(qId)} className="p-1.5 rounded-md bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 text-white transition-all active:scale-90" aria-label="정답 공개">
+                  <button onClick={() => onReveal(qId)} className="p-1.5 rounded-md bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 text-white transition-colors duration-150 active:scale-90" aria-label="정답 공개">
                     <Check size={12} />
                   </button>
                 )}
                 {isQuiz && q.revealedAt && (
-                  <button onClick={onShowLeaderboard} className="p-1.5 rounded-md bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 text-white transition-all active:scale-90" aria-label="리더보드 보기">
+                  <button onClick={onShowLeaderboard} className="p-1.5 rounded-md bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 text-white transition-colors duration-150 active:scale-90" aria-label="리더보드 보기">
                     <Trophy size={12} />
                   </button>
                 )}
-                <button onClick={onClearActive} className="p-1.5 rounded-md bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-500 transition-all active:scale-90" aria-label="질문 중지">
+                <button onClick={onClearActive} className="p-1.5 rounded-md bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-500 transition-colors duration-150 active:scale-90" aria-label="질문 중지">
                   <Square size={12} />
                 </button>
               </>
             )}
             {onSaveToLibrary && (
-              <button onClick={() => onSaveToLibrary(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-all active:scale-90" aria-label="보관함에 저장">
+              <button onClick={() => onSaveToLibrary(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="보관함에 저장">
                 <BookmarkPlus size={12} />
               </button>
             )}
-            <button onClick={() => onDuplicate(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-all active:scale-90" aria-label="질문 복제">
+            <button onClick={() => onDuplicate(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="질문 복제">
               <Copy size={12} />
             </button>
-            <button onClick={() => onDelete(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-700 dark:hover:text-slate-200 transition-all active:scale-90" aria-label="질문 삭제">
+            <button onClick={() => onDelete(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-700 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="질문 삭제">
               <Trash2 size={12} />
             </button>
           </div>

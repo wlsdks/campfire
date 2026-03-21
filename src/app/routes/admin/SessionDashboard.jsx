@@ -136,7 +136,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
         <div className="flex items-center gap-4">
           {adminUser && <span className="text-sm text-slate-500 font-medium">{adminUser.displayName}</span>}
           {isMaster && <AdminApproval pendingAdmins={pendingAdmins} pendingCount={pendingCount} approveAdmin={approveAdmin} rejectAdmin={rejectAdmin} />}
-          <button onClick={onLogout} className="flex items-center gap-1.5 text-slate-400 hover:text-slate-600 text-sm transition-all active:scale-[0.97]">
+          <button onClick={onLogout} className="flex items-center gap-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 text-sm transition-colors duration-150 active:scale-[0.97]">
             <LogOut size={16} />로그아웃
           </button>
         </div>

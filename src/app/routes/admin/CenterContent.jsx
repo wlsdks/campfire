@@ -42,7 +42,7 @@ export default function CenterContent({
               </div>
               <button
                 onClick={onHideCenterForm}
-                className="p-2 rounded-lg text-slate-300 hover:text-slate-600 hover:bg-slate-100 dark:text-slate-500 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all active:scale-90"
+                className="p-2 rounded-lg text-slate-300 hover:text-slate-600 hover:bg-slate-100 dark:text-slate-500 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
                 aria-label="취소"
               >
                 <X size={20} />

@@ -84,7 +84,7 @@ export default function HandRaiseList({ sessionId }) {
                   <button
                     onClick={(e) => { e.stopPropagation(); dismissAll(); }}
                     aria-label="모든 손들기 해제"
-                    className="text-xs text-slate-400 hover:text-slate-600 transition-colors"
+                    className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                   >
                     전체 해제
                   </button>

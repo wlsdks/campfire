@@ -46,7 +46,7 @@ export default function SessionSearchFilter({ searchQuery, onSearchChange, statu
                 onSearchChange('');
                 inputRef.current?.focus();
               }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all active:scale-90"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
               aria-label="검색어 지우기"
             >
               <X size={14} />
@@ -61,7 +61,7 @@ export default function SessionSearchFilter({ searchQuery, onSearchChange, statu
           <button
             key={filter.key}
             onClick={() => onStatusChange(filter.key)}
-            className={`shrink-0 px-3 py-1 text-xs font-medium rounded-lg transition-all active:scale-[0.96] ${
+            className={`shrink-0 px-3 py-1 text-xs font-medium rounded-lg transition-colors duration-150 active:scale-[0.96] ${
               statusFilter === filter.key
                 ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
                 : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800'

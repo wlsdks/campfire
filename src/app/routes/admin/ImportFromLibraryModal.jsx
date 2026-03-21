@@ -116,7 +116,7 @@ export default function ImportFromLibraryModal({ open, onClose, adminUid, onImpo
 
         {questions.length > 3 && (
           <div className="relative">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 dark:text-slate-600" />
             <input
               type="text"
               value={searchQuery}
@@ -128,7 +128,7 @@ export default function ImportFromLibraryModal({ open, onClose, adminUid, onImpo
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-300 dark:text-slate-600 hover:text-slate-500"
                 aria-label="검색어 지우기"
               >
                 <X size={12} />
