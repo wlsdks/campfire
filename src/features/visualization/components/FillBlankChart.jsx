@@ -86,7 +86,7 @@ export default memo(function FillBlankChart({ sessionId, questionId, title, corr
           >
             {correctPct}%
           </motion.p>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-slate-400 dark:text-slate-500">
             정답률 ({correctCount}/{totalVotes}명)
           </p>
         </motion.div>
@@ -147,7 +147,7 @@ export default memo(function FillBlankChart({ sessionId, questionId, title, corr
       )}
 
       {/* Total */}
-      <div className="text-center text-slate-400 text-sm pt-2 border-t border-slate-100 dark:border-slate-700">
+      <div className="text-center text-slate-400 dark:text-slate-500 text-sm pt-2 border-t border-slate-100 dark:border-slate-700">
         <span className="text-slate-600 dark:text-slate-300 font-semibold">{totalVotes}</span>명 응답
       </div>
     </div>

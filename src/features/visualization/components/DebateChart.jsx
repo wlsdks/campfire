@@ -73,11 +73,11 @@ export default memo(function DebateChart({ sessionId, questionId }) {
             {forPct}%
           </motion.p>
           <p className="text-lg font-bold text-slate-600 dark:text-slate-300">찬성</p>
-          <p className="text-sm text-slate-400">{forCount}명</p>
+          <p className="text-sm text-slate-400 dark:text-slate-500">{forCount}명</p>
         </div>
 
         <div className="px-4">
-          <div className="text-slate-200 text-xl font-bold">VS</div>
+          <div className="text-slate-200 dark:text-slate-700 text-xl font-bold tracking-tight">VS</div>
         </div>
 
         <div className="flex-1 space-y-1">
@@ -91,7 +91,7 @@ export default memo(function DebateChart({ sessionId, questionId }) {
             {againstPct}%
           </motion.p>
           <p className="text-lg font-bold text-slate-600 dark:text-slate-300">반대</p>
-          <p className="text-sm text-slate-400">{againstCount}명</p>
+          <p className="text-sm text-slate-400 dark:text-slate-500">{againstCount}명</p>
         </div>
       </motion.div>
 
