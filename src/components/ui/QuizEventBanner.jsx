@@ -3,24 +3,21 @@ import { getQuizEventBadges, normalizeQuizEvent } from '@/lib/quiz';
 
 const STATE_STYLES = {
   pending: {
-    card: 'border-slate-200 bg-slate-50 text-slate-700',
+    card: 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-200',
     label: 'text-slate-400',
-    chip: 'border-slate-200 bg-white text-slate-500',
     icon: 'text-slate-400',
     title: '다음 퀴즈 이벤트',
   },
   active: {
-    card: 'border-slate-200 bg-white text-slate-800 shadow-sm',
-    label: 'text-slate-900',
-    chip: 'border-slate-200 bg-slate-50 text-slate-600',
-    icon: 'text-slate-900',
+    card: 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 shadow-sm',
+    label: 'text-slate-900 dark:text-slate-100',
+    icon: 'text-slate-900 dark:text-slate-100',
     title: '보너스 라운드',
   },
   result: {
-    card: 'border-slate-200 bg-white text-slate-800 shadow-sm',
-    label: 'text-slate-500',
-    chip: 'border-slate-200 bg-slate-50 text-slate-600',
-    icon: 'text-slate-500',
+    card: 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 shadow-sm',
+    label: 'text-slate-500 dark:text-slate-400',
+    icon: 'text-slate-500 dark:text-slate-400',
     title: '적용된 이벤트',
   },
 };
@@ -48,10 +45,10 @@ export default function QuizEventBanner({ event, state = 'active', compact = fal
             <span className={`text-xs font-medium ${style.label}`}>
               {style.title}
             </span>
-            <span className="text-sm font-semibold text-slate-800">{normalized.label}</span>
+            <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">{normalized.label}</span>
           </div>
           {!compact && (
-            <p className="max-w-[28rem] text-sm leading-relaxed text-slate-500">
+            <p className="max-w-[28rem] text-sm leading-relaxed text-slate-500 dark:text-slate-400">
               {normalized.description?.replace(/다음 퀴즈/g, state === 'active' || state === 'result' ? '이번 퀴즈' : '다음 퀴즈')}
             </p>
           )}
