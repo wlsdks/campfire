@@ -118,30 +118,36 @@ function AccordionSection({ icon: Icon, title, count, defaultOpen, badgeVariant,
   );
 }
 
-export default function StaffQuestionPanel({ urgentList, classList, selectedId, onSelect }) {
-  const { unanswered, answered } = useMemo(() => {
+export default function StaffQuestionPanel({ urgentList, classList, selectedId, onSelect, staffName }) {
+  const { unanswered, myAnswered, otherAnswered } = useMemo(() => {
     const unansweredItems = [];
-    const answeredItems = [];
+    const myItems = [];
+    const otherItems = [];
 
     urgentList.forEach((q) => {
       const item = { ...q, _type: 'urgent', _key: `urgent-${q.id}` };
-      if (q.read) answeredItems.push(item);
+      if (q.read) otherItems.push(item);
       else unansweredItems.push(item);
     });
 
     classList.forEach((q) => {
       const item = { ...q, _type: 'class', _key: `class-${q.id}` };
-      if (q.answered) answeredItems.push(item);
-      else unansweredItems.push(item);
+      if (q.answered) {
+        if (q.answeredBy === staffName || q.answeredByRole === 'staff') myItems.push(item);
+        else otherItems.push(item);
+      } else {
+        unansweredItems.push(item);
+      }
     });
 
     unansweredItems.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-    answeredItems.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    myItems.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    otherItems.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
 
-    return { unanswered: unansweredItems, answered: answeredItems };
-  }, [urgentList, classList]);
+    return { unanswered: unansweredItems, myAnswered: myItems, otherAnswered: otherItems };
+  }, [urgentList, classList, staffName]);
 
-  const totalCount = unanswered.length + answered.length;
+  const totalCount = unanswered.length + myAnswered.length + otherAnswered.length;
 
   return (
     <div className="flex flex-col h-full">
@@ -192,19 +198,17 @@ export default function StaffQuestionPanel({ urgentList, classList, selectedId, 
               )}
             </AccordionSection>
 
-            {/* Answered */}
-            <AccordionSection
-              icon={HelpCircle}
-              title="답변 완료"
-              count={answered.length}
-              defaultOpen={false}
-              badgeVariant="slate"
-            >
-              {answered.length === 0 ? (
-                <p className="text-slate-400 dark:text-slate-500 text-xs py-1">답변 완료된 질문이 없습니다</p>
-              ) : (
+            {/* My answered */}
+            {myAnswered.length > 0 && (
+              <AccordionSection
+                icon={Check}
+                title="내가 답변"
+                count={myAnswered.length}
+                defaultOpen={true}
+                badgeVariant="slate"
+              >
                 <AnimatePresence>
-                  {answered.map((q) => (
+                  {myAnswered.map((q) => (
                     <QuestionItem
                       key={q._key}
                       q={q}
@@ -213,8 +217,30 @@ export default function StaffQuestionPanel({ urgentList, classList, selectedId, 
                     />
                   ))}
                 </AnimatePresence>
-              )}
-            </AccordionSection>
+              </AccordionSection>
+            )}
+
+            {/* All answered */}
+            {otherAnswered.length > 0 && (
+              <AccordionSection
+                icon={HelpCircle}
+                title="전체 답변 완료"
+                count={otherAnswered.length}
+                defaultOpen={false}
+                badgeVariant="slate"
+              >
+                <AnimatePresence>
+                  {otherAnswered.map((q) => (
+                    <QuestionItem
+                      key={q._key}
+                      q={q}
+                      isSelected={selectedId === q._key}
+                      onClick={() => onSelect({ ...q })}
+                    />
+                  ))}
+                </AnimatePresence>
+              </AccordionSection>
+            )}
           </div>
         )}
       </div>

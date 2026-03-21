@@ -156,6 +156,7 @@ export default function StaffPage({ sessionId, session, adminUser, onBack, onLog
             classList={classList}
             selectedId={selected?._key}
             onSelect={handleSelect}
+            staffName={senderName}
           />
         </div>
 
