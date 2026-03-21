@@ -1,45 +1,59 @@
-import { useState, useRef, useEffect, memo } from 'react';
+import { useState, useRef, useCallback, memo } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**
  * Instant tooltip — shows on hover with no delay.
- * Auto-detects if near top edge and flips to show below.
+ * Uses portal to avoid overflow:hidden clipping.
  */
 export default memo(function Tooltip({ label, children }) {
   const [show, setShow] = useState(false);
-  const [above, setAbove] = useState(true);
+  const [pos, setPos] = useState({ x: 0, y: 0, above: true });
   const ref = useRef(null);
 
-  useEffect(() => {
-    if (show && ref.current) {
+  const handleEnter = useCallback(() => {
+    if (ref.current) {
       const rect = ref.current.getBoundingClientRect();
-      setAbove(rect.top > 50);
+      const above = rect.top > 50;
+      setPos({
+        x: rect.left + rect.width / 2,
+        y: above ? rect.top - 6 : rect.bottom + 6,
+        above,
+      });
     }
-  }, [show]);
+    setShow(true);
+  }, []);
 
   return (
     <div
       ref={ref}
       className="relative inline-flex"
-      onMouseEnter={() => setShow(true)}
+      onMouseEnter={handleEnter}
       onMouseLeave={() => setShow(false)}
     >
       {children}
-      <AnimatePresence>
-        {show && (
+      {show && createPortal(
+        <AnimatePresence>
           <motion.div
-            initial={{ opacity: 0, y: above ? 4 : -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: above ? 4 : -4 }}
-            transition={{ duration: 0.1 }}
-            className={`absolute left-1/2 -translate-x-1/2 px-2.5 py-1.5 rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-[11px] font-medium whitespace-nowrap z-[60] pointer-events-none shadow-lg ${
-              above ? 'bottom-full mb-1.5' : 'top-full mt-1.5'
-            }`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.08 }}
+            style={{
+              position: 'fixed',
+              left: pos.x,
+              top: pos.above ? pos.y : undefined,
+              bottom: pos.above ? undefined : `calc(100vh - ${pos.y}px)`,
+              transform: pos.above ? 'translate(-50%, -100%)' : 'translate(-50%, 0)',
+              zIndex: 9999,
+            }}
+            className="px-2.5 py-1.5 rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-[11px] font-medium whitespace-nowrap pointer-events-none shadow-lg"
           >
             {label}
           </motion.div>
-        )}
-      </AnimatePresence>
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 });

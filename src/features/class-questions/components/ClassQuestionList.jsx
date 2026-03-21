@@ -1,6 +1,6 @@
 import { memo, useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, HelpCircle, ChevronUp } from 'lucide-react';
+import { ChevronDown, HelpCircle, ThumbsUp } from 'lucide-react';
 import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
@@ -115,8 +115,8 @@ function ClassQuestionList({ sessionId }) {
                       <div className="flex items-center gap-2">
                         <span className="text-slate-400 text-xs">{q.nickname}</span>
                         {q.upvoteCount > 0 && (
-                          <span className="flex items-center gap-0.5 text-slate-400 text-xs">
-                            <ChevronUp size={12} />
+                          <span className="flex items-center gap-0.5 text-slate-400 text-xs" title="추천 수">
+                            <ThumbsUp size={10} />
                             {q.upvoteCount}
                           </span>
                         )}
@@ -155,8 +155,8 @@ function ClassQuestionList({ sessionId }) {
             <p className="text-xs text-slate-400 mb-4">{selectedQuestion.nickname}</p>
             {selectedQuestion.upvoteCount > 0 && (
               <div className="flex items-center justify-center gap-1 text-slate-400 text-sm mb-3">
-                <ChevronUp size={16} />
-                <span>{selectedQuestion.upvoteCount}</span>
+                <ThumbsUp size={14} />
+                <span>추천 {selectedQuestion.upvoteCount}</span>
               </div>
             )}
             <p className="text-lg text-slate-700 dark:text-slate-200 leading-relaxed mb-6">

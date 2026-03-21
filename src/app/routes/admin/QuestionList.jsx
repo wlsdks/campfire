@@ -159,8 +159,8 @@ export default memo(function QuestionList({
                         key={qId} qId={qId} q={q} currentQuestion={currentQuestion} readOnly={readOnly}
                         onActivate={onActivate} onReveal={onReveal} onShowLeaderboard={onShowLeaderboard}
                         onClearActive={onClearActive}
-                        onDuplicate={(id) => { onDuplicate(id); showToast('질문이 복제되었습니다'); }}
-                        onDelete={(id) => { onDelete(id); showToast('질문이 삭제되었습니다'); }}
+                        onDuplicate={onDuplicate}
+                        onDelete={onDelete}
                         onSaveToLibrary={onSaveToLibrary ? (id) => { onSaveToLibrary(id); showToast('보관함에 저장되었습니다'); } : null}
                       />
                     ))}
