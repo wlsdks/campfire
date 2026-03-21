@@ -56,7 +56,8 @@ const ReactionButton = memo(function ReactionButton({ reaction, isFlash, onTap }
         animate={isFlash ? {
           scale: [1, 1.15, 1],
           rotate: [0, -6, 6, 0],
-        } : { scale: 1, rotate: 0 }}
+          y: [0, -4, 0],
+        } : { scale: 1, rotate: 0, y: 0 }}
         transition={isFlash ? {
           duration: 0.35,
           ease: [0.25, 0.1, 0.25, 1],
