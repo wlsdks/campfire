@@ -37,7 +37,7 @@ export default function CenterContent({
           <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-6 lg:p-8">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">새 질문 추가</h2>
+                <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">새 질문 추가</h2>
                 <p className="text-slate-400 text-sm mt-1">질문을 작성하고 추가하세요</p>
               </div>
               <button

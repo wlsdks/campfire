@@ -144,7 +144,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
             className="space-y-5"
           >
             <div>
-              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">새 클래스 등록</h2>
+              <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">새 클래스 등록</h2>
               <p className="text-slate-400 text-sm mt-1">강의를 선택하세요</p>
             </div>
 
@@ -191,7 +191,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
             className="space-y-5"
           >
             <div>
-              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">새 강의</h2>
+              <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">새 강의</h2>
               <p className="text-slate-400 text-sm mt-1">강의 이름을 입력하세요</p>
             </div>
 
@@ -233,7 +233,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
             className="space-y-5"
           >
             <div>
-              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">클래스 확인</h2>
+              <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">클래스 확인</h2>
               <p className="text-slate-400 text-sm mt-1">정보를 확인하고 등록하세요</p>
             </div>
 

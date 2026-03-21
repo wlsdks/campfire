@@ -149,7 +149,7 @@ function ClassQuestionList({ sessionId }) {
             <div className="flex justify-center mb-3">
               <HelpCircle size={28} className="text-slate-400" />
             </div>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-1">
+            <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-1">
               수업 질문
             </h3>
             <p className="text-xs text-slate-400 mb-4">{selectedQuestion.nickname}</p>

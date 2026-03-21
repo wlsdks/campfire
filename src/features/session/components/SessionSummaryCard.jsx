@@ -121,7 +121,7 @@ export default function SessionSummaryCard({ session, sessionId, reviewing = fal
           <CelebrationMascot />
           <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.3 }}
-            className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-3"
+            className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mt-3"
           >{title}</motion.p>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}

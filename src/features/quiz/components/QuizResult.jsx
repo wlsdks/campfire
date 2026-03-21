@@ -44,7 +44,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
         </div>
 
         <div className="space-y-1 text-center">
-          <p className={`text-2xl font-bold ${isCorrect ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500'}`}>
+          <p className={`text-2xl font-bold tracking-tight ${isCorrect ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500'}`}>
             {isCorrect ? '정답!' : '오답'}
           </p>
           <p className="text-sm text-slate-400">
@@ -105,7 +105,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
                 className="text-center"
               >
                 <p className="text-xs font-medium text-slate-400">점수</p>
-                <p className={`mt-0.5 text-2xl font-bold ${points < 0 ? 'text-red-500' : 'text-slate-900 dark:text-slate-100'}`}>
+                <p className={`mt-0.5 text-2xl font-bold tracking-tight ${points < 0 ? 'text-red-500' : 'text-slate-900 dark:text-slate-100'}`}>
                   <CountUp value={Math.abs(points)} prefix={points < 0 ? '-' : '+'} />
                 </p>
               </motion.div>
@@ -129,7 +129,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
                   <Ticket size={12} />
                   티켓
                 </p>
-                <p className="mt-0.5 text-2xl font-bold text-slate-900 dark:text-slate-100">{tickets}장</p>
+                <p className="mt-0.5 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">{tickets}장</p>
               </motion.div>
             )}
           </div>

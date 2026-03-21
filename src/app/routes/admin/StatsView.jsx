@@ -29,17 +29,17 @@ function OverviewCards({ totalClasses, totalParticipants, avgActivity, courseCou
     <motion.div variants={stagger.container} initial="initial" animate="animate" className="grid grid-cols-3 gap-4 max-sm:gap-3">
       <motion.div variants={stagger.item} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 max-sm:p-4">
         <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-3">총 클래스</p>
-        <p className="text-3xl max-sm:text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">{animClasses}</p>
+        <p className="text-3xl max-sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 tabular-nums">{animClasses}</p>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">{courseCount}개 강의</p>
       </motion.div>
       <motion.div variants={stagger.item} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 max-sm:p-4">
         <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-3">총 참여자</p>
-        <p className="text-3xl max-sm:text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">{animParticipants}</p>
+        <p className="text-3xl max-sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 tabular-nums">{animParticipants}</p>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">누적 접속 수</p>
       </motion.div>
       <motion.div variants={stagger.item} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 max-sm:p-4">
         <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-3">평균 참여율</p>
-        <p className="text-3xl max-sm:text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">{animActivity}%</p>
+        <p className="text-3xl max-sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 tabular-nums">{animActivity}%</p>
         <div className="mt-3 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
           <motion.div className="h-full bg-slate-700 dark:bg-slate-300 rounded-full"
             initial={{ width: 0 }} animate={{ width: `${avgActivity}%` }}

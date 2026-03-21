@@ -73,7 +73,7 @@ export default memo(function RankingChart({ sessionId, questionId, items = [] })
           initial={{ scale: 1.1, opacity: 0.7 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-          className="text-5xl font-bold text-slate-900 dark:text-slate-100 tabular-nums"
+          className="text-5xl font-bold tracking-tight text-slate-900 dark:text-slate-100 tabular-nums"
         >
           {analysis.avgScore}%
         </motion.p>

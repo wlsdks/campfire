@@ -144,7 +144,7 @@ export default memo(function DebateVoter({ sessionId, questionId, disabled = fal
           } ${disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
         >
           <span className="text-3xl font-black">반대</span>
-          <span className={`text-xs font-medium ${side === 'against' ? 'text-slate-300' : 'text-slate-400'}`}>동의하지 않습니다</span>
+          <span className={`text-xs font-medium ${side === 'against' ? 'text-slate-300 dark:text-slate-600' : 'text-slate-400'}`}>동의하지 않습니다</span>
         </motion.button>
       </div>
 
@@ -161,7 +161,7 @@ export default memo(function DebateVoter({ sessionId, questionId, disabled = fal
             <div className="rounded-xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 p-4 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
                 <p className="text-xs font-semibold text-slate-400">한 줄 의견 <span className="font-normal">(선택)</span></p>
-                <span className="text-[11px] text-slate-300 tabular-nums">{opinion.length}/50</span>
+                <span className="text-[11px] text-slate-300 dark:text-slate-600 tabular-nums">{opinion.length}/50</span>
               </div>
               <input
                 type="text"

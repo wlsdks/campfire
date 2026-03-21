@@ -58,7 +58,7 @@ function SortableRankItem({ id, label, position }) {
         {position}
       </motion.span>
       <span className="flex-1 text-sm font-medium text-slate-800 dark:text-slate-200 leading-snug select-none">{label}</span>
-      <GripVertical size={16} className="text-slate-300 shrink-0" />
+      <GripVertical size={16} className="text-slate-300 dark:text-slate-600 shrink-0" />
     </div>
   );
 }
