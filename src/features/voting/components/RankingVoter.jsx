@@ -48,9 +48,15 @@ function SortableRankItem({ id, label, position }) {
           : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 cursor-grab active:scale-[0.98]'
       }`}
     >
-      <span className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0">
+      <motion.span
+        key={position}
+        initial={{ scale: 1.2 }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-500 dark:text-slate-400 shrink-0 tabular-nums"
+      >
         {position}
-      </span>
+      </motion.span>
       <span className="flex-1 text-sm font-medium text-slate-800 dark:text-slate-200 leading-snug select-none">{label}</span>
       <GripVertical size={16} className="text-slate-300 shrink-0" />
     </div>
