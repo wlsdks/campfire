@@ -20,7 +20,7 @@ function RightPanelAccordion({ title, count, defaultOpen = false, children }) {
         aria-expanded={open}
       >
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-slate-600 dark:text-slate-300">{title}</span>
+          <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 tracking-tight">{title}</span>
           {count > 0 && <span className="text-xs text-slate-400">{count}</span>}
         </div>
         <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
@@ -69,14 +69,14 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
     <>
       <div className="flex items-center gap-2">
         <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-        <span className="text-slate-900 dark:text-slate-100 font-bold text-lg tabular-nums">{count}</span>
-        <span className="text-slate-500 dark:text-slate-400 text-sm">명 접속 중</span>
+        <span className="text-slate-900 dark:text-slate-100 font-bold text-2xl tabular-nums tracking-tight">{count}</span>
+        <span className="text-slate-500 dark:text-slate-400 text-xs">명 접속 중</span>
       </div>
 
       {activeQ && (
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-slate-500 dark:text-slate-400 text-xs font-medium">참여율</span>
+            <span className="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">참여율</span>
             <span className="text-slate-600 dark:text-slate-300 text-xs font-semibold">{voted}/{total}명 투표</span>
           </div>
           <div className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`참여율 ${pct}%`}>

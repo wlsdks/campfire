@@ -113,7 +113,7 @@ export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, s
         className="w-full text-left px-5 py-6 transition-all hover:bg-slate-50/50 dark:hover:bg-slate-700/30 active:bg-slate-100/50 dark:active:bg-slate-700/50"
       >
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 leading-tight">{name}</h3>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 leading-tight tracking-tight">{name}</h3>
           <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ duration: 0.2 }}>
             <ChevronDown size={16} className="text-slate-400" />
           </motion.div>

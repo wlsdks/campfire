@@ -59,7 +59,7 @@ function CoursePerformance({ courseData }) {
       {courseData.map((course) => (
         <motion.div key={course.name} variants={stagger.item} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 max-sm:p-4 hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between mb-4">
-            <h4 className="font-bold text-slate-900 dark:text-slate-100">{course.name}</h4>
+            <h4 className="font-bold text-slate-900 dark:text-slate-100 tracking-tight">{course.name}</h4>
             <div className="flex items-center gap-4 text-xs text-slate-400">
               <TrendIndicator roundDetails={course.roundDetails} />
               <span><span className="font-semibold text-slate-600 dark:text-slate-300">{course.conductedRounds}</span>차수</span>
@@ -150,7 +150,7 @@ function QuestionsTab({ questions, difficultQuestions, questionsLoading, courseN
         <div className="flex gap-1 overflow-x-auto scrollbar-hide -mx-1 px-1 pb-1">
           <button
             onClick={() => setCourseFilter('all')}
-            className={`px-3 py-1 rounded-lg text-xs font-medium transition-all active:scale-[0.96] whitespace-nowrap shrink-0 ${
+            className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors duration-150 active:scale-[0.96] whitespace-nowrap shrink-0 ${
               courseFilter === 'all'
                 ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
                 : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-600'
@@ -162,7 +162,7 @@ function QuestionsTab({ questions, difficultQuestions, questionsLoading, courseN
             <button
               key={name}
               onClick={() => setCourseFilter(name)}
-              className={`px-3 py-1 rounded-lg text-xs font-medium transition-all active:scale-[0.96] whitespace-nowrap shrink-0 ${
+              className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors duration-150 active:scale-[0.96] whitespace-nowrap shrink-0 ${
                 courseFilter === name
                   ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
                   : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-600'
