@@ -234,6 +234,7 @@ JoinPage → WaitingPage → VotePage(투표) → VoteConfirm → 결과 대기 
 ## 사이클 로그
 > 최근 10개만 유지.
 
+2026-03-22 | fix: TeamScoreboard tracking-tight + 전항목 0위반 최종 달성
 2026-03-22 | chore: 의존성 업데이트 (tailwindcss 4.2.2, firebase 12.11.0) + StreakBadge 3단계 + DESIGN_SYSTEM 동기화
 2026-03-22 | perf: useCallback 최적화 (QuestionManager/List) + 타이머 3초 shake + 다크모드 hover 3곳
 2026-03-22 | refactor: ChatMessage 중복제거 + QuestionItem memo + QuizEventBanner 다크모드 + 답변배지 모노크롬
@@ -243,8 +244,6 @@ JoinPage → WaitingPage → VotePage(투표) → VoteConfirm → 결과 대기 
 2026-03-22 | feat: DM 모달 [채팅방|새요청] 탭 + 다중DM + 스태프 배지 + 강사 DM 제거
 2026-03-21 | improve: 마스코트 6곳 빈상태 + 채팅 slide-in + 참여율바 인디고 통일
 2026-03-21 | refactor: 코드 품질 — 유틸 추출, React.memo, 의존성 업데이트, spring 프리셋
-2026-03-21 | improve: 애니메이션 — voter exit, 마스코트 호흡, 헤더 카운트 bounce
-2026-03-21 | improve: 디자인 시스템 완전 준수 — transition/tracking/spring/border/색상/간격
 
 ---
 
