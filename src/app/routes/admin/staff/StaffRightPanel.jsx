@@ -1,11 +1,13 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, memo } from 'react';
 import { ref, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Hand, Users, ChevronDown, AlertTriangle, Radio } from 'lucide-react';
+import { Hand, Users, ChevronDown, AlertTriangle, Radio, MessageSquare, ArrowRight } from 'lucide-react';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
+import { useStaffDMs } from '@/features/dm/api/useDM';
+import StaffDMChat from '@/features/dm/components/StaffDMChat';
 import { QUESTION_TYPE_MAP } from '@/lib/question-types';
 import Avatar from '@/components/ui/Avatar';
 import Badge from '@/components/ui/Badge';
@@ -159,6 +161,107 @@ function HandRaiseSection({ sessionId }) {
   );
 }
 
+const DMItem = memo(function DMItem({ dm, onOpen, onRespond }) {
+  const lastMsg = dm.messageList?.[dm.messageList.length - 1];
+  const preview = lastMsg?.text || '';
+  const truncated = preview.length > 35 ? preview.slice(0, 35) + '...' : preview;
+  const isWaiting = dm.status === 'waiting';
+
+  return (
+    <div
+      onClick={() => onOpen(dm)}
+      className="flex items-center gap-2.5 p-2.5 rounded-lg cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors duration-150"
+    >
+      <div className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-xs font-semibold text-slate-600 dark:text-slate-300 shrink-0">
+        {(dm.studentName || '학').charAt(0)}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5">
+          <span className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">
+            {dm.studentName || '학생'}
+          </span>
+          {isWaiting ? (
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400 shrink-0">
+              대기
+            </span>
+          ) : (
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-700 dark:bg-slate-600 dark:text-slate-300 shrink-0">
+              진행중
+            </span>
+          )}
+        </div>
+        {truncated && (
+          <p className="text-xs text-slate-400 dark:text-slate-500 truncate mt-0.5">{truncated}</p>
+        )}
+      </div>
+      {isWaiting && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onRespond(dm); }}
+          className="inline-flex items-center gap-0.5 px-2 py-1 text-[11px] font-medium bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150 shrink-0"
+        >
+          응답
+          <ArrowRight size={10} />
+        </button>
+      )}
+    </div>
+  );
+});
+
+function DMSection({ sessionId, staffId, staffName, senderType }) {
+  const { waitingDMs, activeDMs, respondToDM, resolveDM, sendMessage } = useStaffDMs(sessionId);
+  const [openDM, setOpenDM] = useState(null);
+
+  const allDMs = useMemo(() => [...waitingDMs, ...activeDMs], [waitingDMs, activeDMs]);
+
+  const liveDM = openDM ? (activeDMs.find((d) => d.id === openDM.id) || waitingDMs.find((d) => d.id === openDM.id) || openDM) : null;
+
+  async function handleRespond(dm) {
+    await respondToDM(dm.id, staffId, staffName);
+    setOpenDM({ ...dm, status: 'active', staffName });
+  }
+
+  function handleOpen(dm) {
+    if (dm.status === 'waiting') {
+      handleRespond(dm);
+    } else {
+      setOpenDM(dm);
+    }
+  }
+
+  return (
+    <>
+      <Accordion title="1:1 도움" icon={MessageSquare} count={allDMs.length} defaultOpen={waitingDMs.length > 0}>
+        {allDMs.length === 0 ? (
+          <p className="text-sm text-slate-400 dark:text-slate-500 py-4 text-center">
+            도움 요청이 없습니다
+          </p>
+        ) : (
+          <div className="space-y-0.5">
+            {waitingDMs.map((dm) => (
+              <DMItem key={dm.id} dm={dm} onOpen={handleOpen} onRespond={handleRespond} />
+            ))}
+            {activeDMs.map((dm) => (
+              <DMItem key={dm.id} dm={dm} onOpen={handleOpen} onRespond={handleRespond} />
+            ))}
+          </div>
+        )}
+      </Accordion>
+
+      <StaffDMChat
+        dm={liveDM}
+        open={!!liveDM}
+        onClose={() => setOpenDM(null)}
+        onResolve={resolveDM}
+        onSendMessage={sendMessage}
+        staffName={staffName}
+        senderType={senderType || 'staff'}
+        allActiveDMs={activeDMs}
+        onSwitchDM={setOpenDM}
+      />
+    </>
+  );
+}
+
 function ParticipantSection({ sessionId }) {
   const { onlineList } = useParticipants(sessionId);
 
@@ -184,9 +287,10 @@ function ParticipantSection({ sessionId }) {
   );
 }
 
-export default function StaffRightPanel({ sessionId, session }) {
+export default function StaffRightPanel({ sessionId, session, staffId, staffName, senderType }) {
   return (
     <div className="h-full overflow-y-auto p-4 space-y-4">
+      <DMSection sessionId={sessionId} staffId={staffId} staffName={staffName} senderType={senderType} />
       <CurrentQuestionStatus session={session} />
       <UrgentQuestionSection sessionId={sessionId} />
       <HandRaiseSection sessionId={sessionId} />

@@ -1,12 +1,14 @@
 import { useState, useMemo, useCallback } from 'react';
-import { ref, push, serverTimestamp } from 'firebase/database';
+import { ref, push, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { motion } from 'framer-motion';
-import { MessageCircle, HelpCircle, ThumbsUp, Radio, Send } from 'lucide-react';
+import { MessageCircle, HelpCircle, ThumbsUp, Radio, Send, MessageSquare } from 'lucide-react';
 import { QUESTION_TYPE_MAP } from '@/lib/question-types';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
+import StaffDMChat from '@/features/dm/components/StaffDMChat';
+import { useStaffDMs } from '@/features/dm/api/useDM';
 import { timeAgo } from '@/lib/utils';
 
 function ActiveQuestionBanner({ session }) {
@@ -92,7 +94,36 @@ function ChatReplyInput({ sessionId, senderName, questionText }) {
   );
 }
 
-export default function StaffQuestionDetail({ question, onAction, loading, session, sessionId, senderName }) {
+export default function StaffQuestionDetail({ question, onAction, loading, session, sessionId, senderName, staffId }) {
+  const [openDM, setOpenDM] = useState(null);
+  const { activeDMs, resolveDM, sendMessage } = useStaffDMs(sessionId);
+
+  const liveDM = openDM ? (activeDMs.find((d) => d.id === openDM.id) || openDM) : null;
+
+  const handleDirectReply = useCallback(async (q) => {
+    if (!sessionId || !q) return;
+    try {
+      const dmRef = push(ref(db, `sessions/${sessionId}/dm`));
+      await set(dmRef, {
+        studentId: q.participantId || q.id,
+        studentName: q.nickname || '학생',
+        staffId: staffId,
+        staffName: senderName,
+        status: 'active',
+        createdAt: serverTimestamp(),
+      });
+      await push(ref(db, `sessions/${sessionId}/dm/${dmRef.key}/messages`), {
+        text: `📋 수업 질문: ${q.text}`,
+        sender: q.nickname || '학생',
+        senderType: 'student',
+        timestamp: serverTimestamp(),
+      });
+      setOpenDM({ id: dmRef.key, studentName: q.nickname || '학생', status: 'active', staffName: senderName });
+    } catch (err) {
+      console.error('1:1 답변 생성 실패:', err);
+    }
+  }, [sessionId, staffId, senderName]);
+
   if (!question) {
     const hasActiveQuestion = session?.currentQuestion && session?.questions?.[session.currentQuestion];
     return (
@@ -166,15 +197,28 @@ export default function StaffQuestionDetail({ question, onAction, loading, sessi
       {/* Action buttons */}
       <div className="mt-10 w-full max-w-xs space-y-3">
         {!isDone && (
-          <Button
-            variant="primary"
-            size="lg"
-            onClick={() => onAction(question)}
-            disabled={loading}
-            className="w-full"
-          >
-            {isUrgent ? '확인 (삭제)' : '답변 완료'}
-          </Button>
+          <>
+            <Button
+              variant="primary"
+              size="lg"
+              onClick={() => onAction(question)}
+              disabled={loading}
+              className="w-full"
+            >
+              {isUrgent ? '확인 (삭제)' : '답변 완료'}
+            </Button>
+            {!isUrgent && (
+              <Button
+                variant="secondary"
+                size="lg"
+                onClick={() => handleDirectReply(question)}
+                className="w-full"
+              >
+                <MessageSquare size={16} className="mr-1.5" />
+                1:1 답변
+              </Button>
+            )}
+          </>
         )}
         {isDone && (
           <div className="text-center text-sm text-slate-400 py-3">
@@ -191,6 +235,19 @@ export default function StaffQuestionDetail({ question, onAction, loading, sessi
           questionText={question.text}
         />
       </div>
+
+      {/* DM Chat modal */}
+      <StaffDMChat
+        dm={liveDM}
+        open={!!liveDM}
+        onClose={() => setOpenDM(null)}
+        onResolve={resolveDM}
+        onSendMessage={sendMessage}
+        staffName={senderName}
+        senderType="staff"
+        allActiveDMs={activeDMs}
+        onSwitchDM={setOpenDM}
+      />
     </motion.div>
   );
 }

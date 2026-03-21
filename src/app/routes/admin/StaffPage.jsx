@@ -178,12 +178,13 @@ export default function StaffPage({ sessionId, session, adminUser, onBack, onLog
             session={session}
             sessionId={sessionId}
             senderName={senderName}
+            staffId={adminUser?.uid}
           />
         </div>
 
         {/* Right: Hand raises + Participants */}
         <div className="w-[28%] min-w-[280px] max-w-[460px] border-l border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shrink-0">
-          <StaffRightPanel sessionId={sessionId} session={session} />
+          <StaffRightPanel sessionId={sessionId} session={session} staffId={adminUser?.uid} staffName={senderName} senderType="staff" />
         </div>
       </div>
     </div>
