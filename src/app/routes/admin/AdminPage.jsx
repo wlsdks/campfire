@@ -16,6 +16,7 @@ import ModeSwitcher from './ModeSwitcher';
 import TabletDrawers from './TabletDrawers';
 import CenterContent from './CenterContent';
 import TeamBattleControl from '@/features/teams/components/TeamBattleControl';
+import StaffDMAlert from '@/features/dm/components/StaffDMAlert';
 
 const StaffPage = lazy(() => import('./StaffPage'));
 
@@ -95,6 +96,7 @@ export default function AdminPage() {
     <div className="h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col overflow-hidden">
       <JoinToast sessionId={s.sessionId} />
       <ReactionOverlay sessionId={s.sessionId} />
+      <StaffDMAlert sessionId={s.sessionId} staffId={s.adminUser?.uid} staffName={s.adminUser?.displayName || '강사'} senderType="instructor" />
       <ChatPanel sessionId={s.sessionId} senderName={s.adminUser?.displayName || '강사'} senderType="instructor" open={s.chatOpen} onClose={s.handleChatClose} onNewMessage={s.handleNewChatMessage} />
 
       <AdminSessionHeader session={s.session} sessionId={s.sessionId} effectiveReadOnly={s.effectiveReadOnly} isSetting={s.isSetting}

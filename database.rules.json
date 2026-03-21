@@ -189,6 +189,39 @@
           }
         },
 
+        "staffChat": {
+          ".write": true,
+          "$messageId": {
+            ".validate": "newData.hasChild('text') && newData.hasChild('sender')",
+            "text": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 500" },
+            "sender": { ".validate": "newData.isString() && newData.val().length <= 20" },
+            "senderType": { ".validate": "newData.isString()" },
+            "timestamp": { ".validate": true }
+          }
+        },
+
+        "dm": {
+          ".write": true,
+          "$dmId": {
+            ".validate": "newData.hasChild('studentId') && newData.hasChild('status')",
+            "studentId": { ".validate": "newData.isString()" },
+            "studentName": { ".validate": "newData.isString() && newData.val().length <= 20" },
+            "staffId": { ".validate": "newData.isString() || !newData.exists()" },
+            "staffName": { ".validate": "newData.isString() || !newData.exists()" },
+            "status": { ".validate": "newData.isString() && newData.val().matches(/^(waiting|active|resolved)$/)" },
+            "createdAt": { ".validate": true },
+            "messages": {
+              "$messageId": {
+                ".validate": "newData.hasChild('text') && newData.hasChild('sender')",
+                "text": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 500" },
+                "sender": { ".validate": "newData.isString() && newData.val().length <= 20" },
+                "senderType": { ".validate": "newData.isString()" },
+                "timestamp": { ".validate": true }
+              }
+            }
+          }
+        },
+
         "handRaises": {
           ".write": true
         },

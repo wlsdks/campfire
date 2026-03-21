@@ -3,6 +3,7 @@ import { motion, LayoutGroup } from 'framer-motion';
 import { ArrowLeft, MessageCircle, Hand, MessageSquare, Users, LogOut } from 'lucide-react';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 import Badge from '@/components/ui/Badge';
+import StaffDMAlert from '@/features/dm/components/StaffDMAlert';
 import StaffQuestionsTab from './StaffQuestionsTab';
 import StaffHandRaisesTab from './StaffHandRaisesTab';
 import StaffChatTab from './StaffChatTab';
@@ -23,6 +24,14 @@ export default function StaffMobileView({ sessionId, session, adminUser, onBack,
 
   return (
     <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col">
+      {/* DM alerts for help requests */}
+      <StaffDMAlert
+        sessionId={sessionId}
+        staffId={adminUser?.uid}
+        staffName={adminUser?.displayName || '스태프'}
+        senderType="staff"
+      />
+
       {/* Header */}
       <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shrink-0">
         <div className="flex items-center gap-3 px-4 py-3 max-w-2xl mx-auto">

@@ -9,6 +9,7 @@ import { useClassQuestions } from '@/features/class-questions/api/useClassQuesti
 import { useChat } from '@/features/chat/api/useChat';
 import Badge from '@/components/ui/Badge';
 import ChatPanel from '@/features/chat/components/ChatPanel';
+import StaffDMAlert from '@/features/dm/components/StaffDMAlert';
 import StaffQuestionPanel from './staff/StaffQuestionPanel';
 import StaffQuestionDetail from './staff/StaffQuestionDetail';
 import StaffRightPanel from './staff/StaffRightPanel';
@@ -84,6 +85,14 @@ export default function StaffPage({ sessionId, session, adminUser, onBack, onLog
 
   return (
     <div className="h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col overflow-hidden">
+      {/* DM alerts for help requests */}
+      <StaffDMAlert
+        sessionId={sessionId}
+        staffId={adminUser?.uid}
+        staffName={senderName}
+        senderType="staff"
+      />
+
       {/* Chat panel modal */}
       <ChatPanel
         sessionId={sessionId}
