@@ -46,6 +46,7 @@ export default function TimerCountdown({ endTime, duration, onExpire }) {
   const progress = duration > 0 ? secondsLeft / duration : 0;
   const color = getColor(secondsLeft, duration);
   const isPulsing = secondsLeft <= 5 && secondsLeft > 0;
+  const isUrgent = secondsLeft <= 3 && secondsLeft > 0;
 
   return (
     <motion.div
@@ -56,8 +57,8 @@ export default function TimerCountdown({ endTime, duration, onExpire }) {
       className={`rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 ${color.bg} transition-colors duration-300`}
     >
       <motion.div
-        animate={isPulsing ? { scale: [1, 1.03, 1] } : {}}
-        transition={isPulsing ? { repeat: Infinity, duration: 0.6 } : {}}
+        animate={isUrgent ? { x: [0, -3, 3, -2, 2, 0], scale: [1, 1.04, 1] } : isPulsing ? { scale: [1, 1.03, 1] } : {}}
+        transition={isUrgent ? { repeat: Infinity, duration: 0.5 } : isPulsing ? { repeat: Infinity, duration: 0.6 } : {}}
       >
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-1.5">
