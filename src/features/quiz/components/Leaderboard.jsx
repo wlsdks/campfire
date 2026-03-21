@@ -84,8 +84,8 @@ function LeaderboardRow({ entry, rank, isHighlighted, isPodium, podiumIndex, ran
         <div className="flex items-center gap-1.5">
           <span className="font-medium text-sm truncate">{entry.nickname}</span>
           {isHighlighted && (
-            <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${
-              rank === 0 ? 'bg-white/20 text-white' : 'bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-200'
+            <span className={`text-xs font-semibold px-1.5 py-0.5 rounded-md ${
+              rank === 0 ? 'bg-white/20 text-white' : 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
             }`}>나</span>
           )}
         </div>
@@ -95,13 +95,13 @@ function LeaderboardRow({ entry, rank, isHighlighted, isPodium, podiumIndex, ran
             <span className={`inline-flex items-center gap-0.5 font-medium ${
               (entry.streak || 0) >= 3 ? 'text-amber-600' : ''
             }`}>
-              <Flame size={12} />
+              <Flame size={14} />
               {entry.streak}연속
             </span>
           )}
           {(entry.tickets || 0) > 0 && (
             <span className="inline-flex items-center gap-0.5">
-              <Ticket size={12} />
+              <Ticket size={14} />
               {entry.tickets}
             </span>
           )}

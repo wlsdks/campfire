@@ -41,7 +41,7 @@ export default function QuickProgressCard({
   return (
     <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-5 space-y-4 shadow-sm">
       <div className="space-y-1.5">
-        <p className="text-slate-400 text-xs font-semibold uppercase tracking-wider">빠른 진행</p>
+        <p className="text-slate-400 dark:text-slate-500 text-sm font-semibold tracking-tight">빠른 진행</p>
         <p className="text-slate-900 dark:text-slate-100 text-base font-semibold">
           {currentEntry
             ? `${activeIndex + 1}/${questionList.length}번째 질문 진행 중`
