@@ -7,6 +7,7 @@ import { getNickname, getParticipantId } from '@/lib/participant';
 import { useVotes } from '@/hooks/useVotes';
 import VoteConfirm from './VoteConfirm';
 import BetSelector from './BetSelector';
+import ConfidenceMeter from './ConfidenceMeter';
 
 const OPTION_STYLES = [
   { bg: 'bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700', text: 'text-slate-800 dark:text-slate-200', badge: 'bg-slate-800', letter: 'A' },
@@ -34,13 +35,15 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
   const currentVote = votes[participantId] || null;
   const [selected, setSelected] = useState(null);
   const [betMultiplier, setBetMultiplier] = useState(null);
+  const [pendingAnswer, setPendingAnswer] = useState(null);
+  const [showConfidence, setShowConfidence] = useState(false);
 
   const bettingEnabled = question?.betting === true;
   const needsBet = bettingEnabled && betMultiplier === null;
 
-  async function handleVote(option) {
-    if (disabled) return;
+  async function submitVote(option, confidence) {
     setSelected(option);
+    setShowConfidence(false);
     try {
       const voteData = {
         value: option,
@@ -50,10 +53,31 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
       if (bettingEnabled && betMultiplier) {
         voteData.bet = String(betMultiplier);
       }
+      if (confidence) {
+        voteData.confidence = confidence;
+      }
       await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${participantId}`), voteData);
     } catch (err) {
       console.error('Quiz vote failed:', err);
       setSelected(null);
+      setPendingAnswer(null);
+    }
+  }
+
+  function handleVote(option) {
+    if (disabled || selected !== null) return;
+    // If user taps quickly while confidence is already showing, skip it
+    if (showConfidence) {
+      submitVote(option, null);
+      return;
+    }
+    setPendingAnswer(option);
+    setShowConfidence(true);
+  }
+
+  function handleConfidence(level) {
+    if (pendingAnswer) {
+      submitVote(pendingAnswer, level);
     }
   }
 
@@ -114,13 +138,14 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
             <div className="space-y-2.5">
               {(question?.options || []).map((option, index) => {
                 const style = OPTION_STYLES[index % OPTION_STYLES.length];
-                const isSelected = selected === option;
+                const isSelected = selected === option || pendingAnswer === option;
+                const isLocked = selected !== null || showConfidence;
                 return (
                   <motion.button
                     key={option}
                     initial={{ opacity: 0, y: 12 }}
                     animate={{
-                      opacity: selected !== null && !isSelected ? 0.4 : 1,
+                      opacity: isLocked && !isSelected ? 0.4 : 1,
                       y: 0,
                       scale: isSelected ? 0.98 : 1,
                     }}
@@ -132,10 +157,10 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
                     }}
                     whileTap={{ scale: 0.97 }}
                     onClick={() => handleVote(option)}
-                    disabled={selected !== null || disabled}
+                    disabled={isLocked || disabled}
                     className={`w-full py-3.5 px-4 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${
                       isSelected ? 'ring-2 ring-slate-400 dark:ring-slate-500 border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-700' : 'border-slate-200 dark:border-slate-700'
-                    } ${(selected !== null && !isSelected) || disabled ? 'cursor-not-allowed' : ''} transition-colors flex items-center gap-3`}
+                    } ${(isLocked && !isSelected) || disabled ? 'cursor-not-allowed' : ''} transition-colors flex items-center gap-3`}
                   >
                     <span className={`w-8 h-8 rounded-lg ${style.badge} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
                       {style.letter}
@@ -145,6 +170,12 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
                 );
               })}
             </div>
+
+            <AnimatePresence>
+              {showConfidence && (
+                <ConfidenceMeter onConfirm={handleConfidence} />
+              )}
+            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
