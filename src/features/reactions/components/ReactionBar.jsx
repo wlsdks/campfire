@@ -46,7 +46,7 @@ function TapParticles({ color }) {
 }
 
 /** Single reaction button with tap feedback + particles. */
-const ReactionButton = memo(function ReactionButton({ reaction, isFlash, onTap }) {
+const ReactionButton = memo(function ReactionButton({ reaction, isFlash, isShaking, onTap }) {
   const { type, icon: Icon, label, buttonClass, activeClass, accentColor } = reaction;
 
   return (
@@ -57,6 +57,9 @@ const ReactionButton = memo(function ReactionButton({ reaction, isFlash, onTap }
           scale: [1, 1.15, 1],
           rotate: [0, -6, 6, 0],
           y: [0, -4, 0],
+        } : isShaking ? {
+          x: [0, -2, 2, -1, 1, 0],
+          scale: 1, rotate: 0, y: 0,
         } : { scale: 1, rotate: 0, y: 0 }}
         transition={isFlash ? {
           duration: 0.35,
@@ -90,9 +93,15 @@ export default function ReactionBar({ sessionId }) {
     if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
   }, []);
 
+  const [cooldownShake, setCooldownShake] = useState(null);
+
   const handleReaction = useCallback((type) => {
     const now = performance.now();
-    if (now - cooldownRef.current < COOLDOWN_MS) return;
+    if (now - cooldownRef.current < COOLDOWN_MS) {
+      setCooldownShake(type);
+      setTimeout(() => setCooldownShake(null), 300);
+      return;
+    }
     cooldownRef.current = now;
 
     setFlashType(type);
@@ -108,6 +117,7 @@ export default function ReactionBar({ sessionId }) {
           key={reaction.type}
           reaction={reaction}
           isFlash={flashType === reaction.type}
+          isShaking={cooldownShake === reaction.type}
           onTap={handleReaction}
         />
       ))}

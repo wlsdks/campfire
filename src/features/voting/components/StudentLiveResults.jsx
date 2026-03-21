@@ -35,12 +35,12 @@ export default memo(function StudentLiveResults({ sessionId, questionId, options
       className="w-full rounded-xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 p-4 shadow-sm space-y-3"
     >
       <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold text-slate-500 tracking-tight">
+        <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
           실시간 결과
         </p>
-        <div className="flex items-center gap-1 text-slate-400">
+        <div className="flex items-center gap-1 text-slate-400 dark:text-slate-500">
           <Users size={12} />
-          <span className="text-xs font-medium">{totalVotes}</span>
+          <span className="text-xs font-semibold tabular-nums">{totalVotes}</span>
         </div>
       </div>
 
@@ -58,7 +58,7 @@ export default memo(function StudentLiveResults({ sessionId, questionId, options
                   className={`text-sm truncate ${
                     isMine
                       ? 'font-semibold text-slate-900 dark:text-slate-100'
-                      : 'font-medium text-slate-500'
+                      : 'font-medium text-slate-500 dark:text-slate-400'
                   }`}
                 >
                   {option}
@@ -68,7 +68,7 @@ export default memo(function StudentLiveResults({ sessionId, questionId, options
                 </span>
                 <span
                   className={`text-xs tabular-nums shrink-0 ${
-                    isMine ? 'font-bold text-slate-900 dark:text-slate-100' : 'font-medium text-slate-400'
+                    isMine ? 'font-bold text-slate-900 dark:text-slate-100' : 'font-medium text-slate-400 dark:text-slate-500'
                   }`}
                 >
                   {formatPercent(count, totalVotes)}
@@ -80,7 +80,7 @@ export default memo(function StudentLiveResults({ sessionId, questionId, options
                   animate={{ width: `${Math.max(barWidth, count > 0 ? 3 : 0)}%` }}
                   transition={{ type: 'spring', stiffness: 80, damping: 20 }}
                   className={`h-full rounded-full ${
-                    isMine ? 'bg-slate-800 dark:bg-slate-200' : 'bg-slate-300 dark:bg-slate-500'
+                    isMine ? 'bg-indigo-500 dark:bg-indigo-400' : 'bg-slate-200 dark:bg-slate-600'
                   }`}
                 />
               </div>
