@@ -135,8 +135,8 @@ export default function IdleMascot() {
       }}
     >
       <motion.svg
-        width="120"
-        height="120"
+        width="140"
+        height="140"
         viewBox="0 0 120 120"
         fill="none"
         aria-hidden="true"
