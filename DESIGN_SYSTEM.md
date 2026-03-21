@@ -906,7 +906,45 @@ text-slate-400은 bg-slate-50 위에서 WCAG AA 미달 가능
 
 ---
 
-## 18. 접근성 (Accessibility)
+## 18. DM & 채팅 패턴
+
+### 채널 구조
+| 채널 | 참여자 | Firebase 경로 |
+|------|--------|--------------|
+| 공개 채팅 | 전체 | `sessions/{id}/chat` |
+| 운영 채팅 | 스태프+강사 | `sessions/{id}/staffChat` |
+| 1:1 DM | 학생↔스태프 | `sessions/{id}/dm/{dmId}` |
+
+### 메시지 버블 스타일
+```
+내 메시지 (우측):    bg-slate-900 dark:bg-slate-200 text-white dark:text-slate-900 rounded-2xl rounded-br-sm
+상대 메시지 (좌측):  bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-2xl rounded-tl-sm
+타임스탬프:          text-[10px] text-slate-300 dark:text-slate-500
+발신자 이름:         text-[11px] font-medium text-slate-500
+```
+
+### 역할 배지 (채팅 내)
+```
+강사: bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100 text-[10px] font-semibold rounded-full px-1.5
+스태프: bg-slate-50 dark:bg-slate-600 text-slate-600 dark:text-slate-300 text-[10px] font-semibold rounded-full px-1.5
+```
+
+### DM 알림 (StaffDMAlert)
+- 위치: `fixed top-3 right-3 z-50`
+- 카드: `bg-white rounded-xl border shadow-md p-3.5`
+- 아이콘: bare (원형 배경 없음)
+- 배지: `bg-red-50 text-red-700` (기능적 — 긴급/도움 요청)
+- CTA: "응답 →" dark CTA 스타일, "확인" ghost
+
+### DM 플로팅 버블 (DMBubble, 학생용)
+- 위치: `fixed bottom-28 right-4 z-40`
+- 접힌 상태: `w-12 h-12 rounded-full bg-slate-900 shadow-lg`
+- 펼친 상태: `rounded-2xl shadow-xl border max-h-[50vh]`
+- 대기 상태: 펄스 dots 애니메이션
+
+---
+
+## 19. 접근성 (Accessibility)
 
 ### aria 속성
 | 속성 | 적용 대상 |
@@ -932,7 +970,7 @@ text-slate-400은 bg-slate-50 위에서 WCAG AA 미달 가능
 
 ---
 
-## 19. 번들 구조
+## 20. 번들 구조
 
 ### Vite manualChunks
 | 청크 | 포함 라이브러리 | 크기 (gzip) |
