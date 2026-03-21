@@ -45,6 +45,8 @@ AI가 생성한 것처럼 보이면 안 됨. 토스, Linear, Notion처럼 절제
 | CTA dark mode | `dark:bg-slate-100 dark:text-slate-900` | | 반전 |
 | 브랜드 아이콘 | `text-indigo-600` | `#4F46E5` | 사자 마스코트 (PickMascot) |
 | 악센트 (indigo) | `indigo-600/500/400/300` | | 차트 바, 포커스 링, 진행바 전용 |
+| 진행 바 fill | `bg-indigo-500 dark:bg-indigo-400` | | 학생 질문 진행, 응답률 바 |
+| 참여율 바 fill | `bg-slate-700 dark:bg-slate-300` | | 수업 기록 참여율 (모노크롬) |
 | Input focus ring | `focus:ring-indigo-500/20` | | |
 | 활성/선택 상태 | `bg-slate-900 text-white` | | 탭, 토글, 선택지 |
 
@@ -134,9 +136,16 @@ html.dark {
 - 드로어, 에러바운더리, 연결배너 등
 - 세션 헤더: AdminSessionHeader 전체 (버튼/뱃지/타이머 팝업)
 - 질문 관리: QuestionList, QuickProgressCard, QuestionForm, QuestionFormSections
-- 시각화: BarChart, OXBattle, QACards, ScaleChart, DebateChart, RankingChart, FillBlankChart, BetDistribution
+- 시각화: BarChart, OXBattle, QACards, ScaleChart, WordCloud, DebateChart, RankingChart, FillBlankChart, BetDistribution, ConfidenceStats
 - 아코디언: EventBooster, ModeSwitcher, HandRaiseList, UrgentQuestionList, ClassQuestionList
 - 기타: CenterContent, ExportMenu, TimerControls, ParticipantList, ClassSummary
+- 스태프: StaffPage, StaffQuestionPanel, StaffQuestionDetail, StaffRightPanel, StaffMobileView
+
+### 다크모드 주의사항
+- `text-slate-400`은 라이트/다크 양쪽에서 보이므로 dark: 생략 가능하나, 더 나은 대비를 위해 `dark:text-slate-500` 권장
+- `text-slate-300` (장식용)은 반드시 `dark:text-slate-600` 추가 (다크 배경에서 안 보임)
+- WordCloud처럼 inline style로 색상 지정하면 다크모드 불가 → Tailwind 클래스 사용
+- ScaleChart 히스토그램처럼 동적 색상 매핑은 `'bg-slate-200 dark:bg-slate-700'` 형태로 양쪽 포함
 
 ---
 
@@ -750,6 +759,8 @@ text-slate-400은 bg-slate-50 위에서 WCAG AA 미달 가능
 | **화면 전체를 채우지 않기** | `max-w-4xl mx-auto`. 1440px 화면에 600px 콘텐츠도 괜찮다. 여백 = 자신감 |
 | **너비보다 컬럼 추가** | 1200px 인풋은 이상하다. 550px 2컬럼이 자연스럽다 |
 | **빈 화면은 온보딩** | "데이터 없음" 대신 일러스트 + CTA: "첫 질문을 만들어보세요!" |
+| **카드 패딩 통일** | 같은 뷰 내 카드들은 동일한 패딩 사용. `p-4`/`p-5` 혼용 금지. 기본은 `p-5` (모바일 `p-4`) |
+| **그리드 gap ≥ 4** | 카드 그리드 최소 `gap-4` (16px). `gap-3`은 카드 내부 요소 간격에만 사용 |
 
 ### 색상 & 배경
 
