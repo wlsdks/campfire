@@ -37,6 +37,16 @@ function getQuestionInsights(questions, participantCount) {
       correctRate = Math.round((correctCount / voteCount) * 100);
     }
 
+    // Confidence analysis (quiz only)
+    let highConfidenceRate = null;
+    if (hasCorrectAnswer && voteCount > 0) {
+      const confVotes = Object.values(votes).filter((v) => v.confidence);
+      if (confVotes.length > 0) {
+        const highConf = confVotes.filter((v) => v.confidence === 'high').length;
+        highConfidenceRate = Math.round((highConf / confVotes.length) * 100);
+      }
+    }
+
     return {
       id: qId,
       title: q.title,
@@ -46,6 +56,7 @@ function getQuestionInsights(questions, participantCount) {
       hasCorrectAnswer,
       correctRate,
       correctCount,
+      highConfidenceRate,
     };
   });
 }
@@ -174,10 +185,16 @@ export default memo(function ClassSummary({ session, participants, scores, leade
                         <>
                           <span className="text-slate-200 dark:text-slate-600">&middot;</span>
                           <span className={`text-xs font-medium ${
-                            q.correctRate >= 70 ? 'text-slate-600' : q.correctRate >= 40 ? 'text-slate-500' : 'text-slate-900 font-semibold'
+                            q.correctRate >= 70 ? 'text-slate-600' : q.correctRate >= 40 ? 'text-slate-500' : 'text-slate-900 dark:text-slate-100 font-semibold'
                           }`}>
                             정답률 {q.correctRate}%
                           </span>
+                        </>
+                      )}
+                      {q.highConfidenceRate !== null && (
+                        <>
+                          <span className="text-slate-200 dark:text-slate-600">&middot;</span>
+                          <span className="text-xs text-slate-400">확신 {q.highConfidenceRate}%</span>
                         </>
                       )}
                     </div>
