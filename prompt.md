@@ -497,14 +497,14 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 ## 사이클 로그
 > 최근 10개만 유지. 오래된 것은 삭제.
 
-2026-03-21 | fix: DM 실시간 업데이트 버그 + transition-colors 최종(38곳 31파일) + DM 디자인 준수
-2026-03-21 | feat: DM 도움요청 + 운영채팅 — 학생↔스태프 1:1 DM, 스태프+강사 내부채널, 5열 하단바
-2026-03-21 | docs: DM 설계 스펙 + PostgreSQL DDL 15테이블 + PRD 동기화
-2026-03-21 | improve: transition-all 완전 소멸 + 디자인 철학 준수(장식색/간격/숫자위계/border)
+2026-03-21 | refactor: 코드 품질 — 중복 유틸 추출(8함수→2), React.memo(4곳), 의존성 업데이트
+2026-03-21 | improve: 애니메이션 — voter exit, spring 참여율바, JoinPage 마스코트 호흡, 헤더 카운트 bounce
+2026-03-21 | improve: spring 프리셋 표준화(9곳) + tracking-tight 최종(11곳) + 로그인 다크모드
+2026-03-21 | fix: DM 실시간 업데이트 + transition 최종(38곳) + DESIGN_SYSTEM §18 채팅 패턴
+2026-03-21 | feat: DM 도움요청 + 운영채팅 — 학생↔스태프 1:1, 스태프+강사 내부채널
+2026-03-21 | improve: 디자인 시스템 완전 준수 — transition/tracking/spring/border/색상/간격
 2026-03-21 | feat: 라이브 관전 뷰 + 애니메이션 강화 + DESIGN_SYSTEM §16-17 문서화
-2026-03-21 | improve: Apple/Toss 원칙 — tracking-tight 전체 + 투표/관리자 다크모드 + 코드정리
-2026-03-21 | improve: 학생 UX — 실시간결과 인디고바, 리액션 쿨다운, OX hover, 리더보드 배지
-2026-03-21 | improve: 마이크로인터랙션 — 알림 pulse, 참여율 인디고, 선택 fade, 질문번호 bounce
+2026-03-21 | improve: 마이크로인터랙션 — pulse, 인디고바, 쿨다운 쉐이크, OX hover, 배지
 2026-03-21 | fix: duplicate key + 트렌드 왜곡 + 시각화 다크모드 40+ 수정
 2026-03-21 | feat: StaffPage 3패널 + 답변 아코디언 + 우측 패널 + 대시보드 필터
 
