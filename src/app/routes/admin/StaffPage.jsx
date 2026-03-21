@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import { ref, update, remove } from 'firebase/database';
+import { ref, remove } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { ArrowLeft, Users, MessageSquare, LogOut } from 'lucide-react';
 import { useMediaQuery } from '@/hooks/useMediaQuery';

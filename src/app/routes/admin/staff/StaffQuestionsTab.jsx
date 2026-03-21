@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { ref, update, remove } from 'firebase/database';
+import { ref, remove } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, HelpCircle, Check } from 'lucide-react';
