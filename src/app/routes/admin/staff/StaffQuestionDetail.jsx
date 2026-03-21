@@ -124,6 +124,17 @@ export default function StaffQuestionDetail({ question, onAction, loading, sessi
     }
   }, [sessionId, staffId, senderName]);
 
+  const isUrgent = question?._type === 'urgent';
+  const isDone = isUrgent ? question?.read : question?.answered;
+  const Icon = isUrgent ? MessageCircle : HelpCircle;
+
+  const answeredLabel = useMemo(() => {
+    if (!question) return '';
+    if (isUrgent) return '확인됨';
+    if (question.answeredByRole === 'staff') return '스태프 답변 완료';
+    return '강사 답변 완료';
+  }, [question, isUrgent]);
+
   if (!question) {
     const hasActiveQuestion = session?.currentQuestion && session?.questions?.[session.currentQuestion];
     return (
@@ -138,16 +149,6 @@ export default function StaffQuestionDetail({ question, onAction, loading, sessi
       </div>
     );
   }
-
-  const isUrgent = question._type === 'urgent';
-  const isDone = isUrgent ? question.read : question.answered;
-  const Icon = isUrgent ? MessageCircle : HelpCircle;
-
-  const answeredLabel = useMemo(() => {
-    if (isUrgent) return '확인됨';
-    if (question.answeredByRole === 'staff') return '스태프 답변 완료';
-    return '강사 답변 완료';
-  }, [isUrgent, question.answeredByRole]);
 
   return (
     <motion.div
