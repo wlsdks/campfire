@@ -66,6 +66,9 @@ export default function StaffDMAlert({ sessionId, staffId, staffName, senderType
 
   const visibleWaiting = waitingDMs.filter((dm) => !dismissed.has(dm.id));
 
+  // Keep openDM in sync with live activeDMs data
+  const liveDM = openDM ? activeDMs.find((d) => d.id === openDM.id) || openDM : null;
+
   function handleDismiss(id) {
     setDismissed((prev) => new Set([...prev, id]));
   }
@@ -73,11 +76,9 @@ export default function StaffDMAlert({ sessionId, staffId, staffName, senderType
   async function handleRespond(dm) {
     await respondToDM(dm.id, staffId, staffName);
     setDismissed((prev) => new Set([...prev, dm.id]));
-    // Find the now-active thread
     setOpenDM({ ...dm, status: 'active', staffName });
   }
 
-  // Also allow opening active DMs
   const hasActiveDMs = activeDMs.length > 0;
 
   return (
@@ -127,8 +128,8 @@ export default function StaffDMAlert({ sessionId, staffId, staffName, senderType
 
       {/* DM Chat modal */}
       <StaffDMChat
-        dm={openDM}
-        open={!!openDM}
+        dm={liveDM}
+        open={!!liveDM}
         onClose={() => setOpenDM(null)}
         onResolve={resolveDM}
         onSendMessage={sendMessage}

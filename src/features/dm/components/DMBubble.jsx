@@ -103,7 +103,7 @@ export default function DMBubble({ activeDM, senderName, onSendMessage }) {
             </div>
             <button
               onClick={() => setExpanded(false)}
-              className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 transition-all"
+              className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150"
               aria-label="최소화"
             >
               <ChevronDown size={16} />
@@ -153,7 +153,7 @@ export default function DMBubble({ activeDM, senderName, onSendMessage }) {
             <button
               onClick={handleSend}
               disabled={!inputText.trim() || sending}
-              className="flex items-center justify-center w-9 h-9 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 disabled:opacity-30 hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors shrink-0"
+              className="flex items-center justify-center w-9 h-9 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 disabled:opacity-30 hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150 shrink-0"
               aria-label="보내기"
             >
               <Send size={14} />

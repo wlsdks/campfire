@@ -41,14 +41,14 @@ export default function HelpRequestModal({ open, onClose, onSubmit }) {
           <p className="text-slate-900 dark:text-slate-100 font-bold text-lg">
             도움 요청이 전송되었습니다
           </p>
-          <p className="text-slate-400 text-sm">스태프가 곧 응답합니다</p>
+          <p className="text-slate-400 dark:text-slate-500 text-sm">스태프가 곧 응답합니다</p>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="text-center space-y-1">
             <HelpCircle size={24} className="text-slate-900 dark:text-slate-100 mx-auto mb-2" />
             <p className="text-slate-900 dark:text-slate-100 font-bold text-lg">도움 요청</p>
-            <p className="text-slate-400 text-xs">스태프에게 1:1 도움을 요청합니다</p>
+            <p className="text-slate-400 dark:text-slate-500 text-xs">스태프에게 1:1 도움을 요청합니다</p>
           </div>
           <textarea
             value={text}
