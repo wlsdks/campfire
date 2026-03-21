@@ -234,6 +234,7 @@ JoinPage → WaitingPage → VotePage(투표) → VoteConfirm → 결과 대기 
 ## 사이클 로그
 > 최근 10개만 유지.
 
+2026-03-22 | refactor: ChatMessage 중복제거 + QuestionItem memo + QuizEventBanner 다크모드 + 답변배지 모노크롬
 2026-03-22 | improve: tracking-tight 18곳 + PickMascot 빈상태 3곳 + 읽음 상태 localStorage 영속화
 2026-03-22 | fix: 디자인 시스템 준수 — spring 프리셋 14파일 + duration-150 31곳 + 다크모드
 2026-03-22 | feat: QA패널 탭(전체/내질문) + 추천 ThumbsUp + Tooltip 포탈 + ConfirmModal + 토스트 통일
@@ -243,7 +244,6 @@ JoinPage → WaitingPage → VotePage(투표) → VoteConfirm → 결과 대기 
 2026-03-21 | improve: 애니메이션 — voter exit, 마스코트 호흡, 헤더 카운트 bounce
 2026-03-21 | improve: 디자인 시스템 완전 준수 — transition/tracking/spring/border/색상/간격
 2026-03-21 | feat: DM 도움요청 + 운영채팅 + 라이브뷰 + DESIGN_SYSTEM §16-18
-2026-03-21 | improve: 마이크로인터랙션 — pulse, 인디고바, 쿨다운 쉐이크, OX hover
 
 ---
 
