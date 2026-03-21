@@ -4,11 +4,11 @@ import { useState, useEffect, memo } from 'react';
 function AnimatedCheck() {
   return (
     <div className="relative w-14 h-14 flex items-center justify-center">
-      {/* Dark circle scales in */}
+      {/* Dark circle scales in with overshoot */}
       <motion.div
         initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+        animate={{ scale: [0, 1.15, 1] }}
+        transition={{ duration: 0.4, times: [0, 0.6, 1], ease: 'easeOut' }}
         className="absolute inset-0 bg-slate-900 dark:bg-slate-100 rounded-full"
       />
       {/* White checkmark draws */}
@@ -19,7 +19,7 @@ function AnimatedCheck() {
       >
         <motion.path
           d="M6 13l4 4L18 7"
-          stroke="white"
+          className="stroke-white dark:stroke-slate-900"
           strokeWidth={3}
           strokeLinecap="round"
           strokeLinejoin="round"
