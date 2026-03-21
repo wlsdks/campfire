@@ -8,6 +8,7 @@ import DebateChart from './DebateChart';
 import RankingChart from './RankingChart';
 import FillBlankChart from './FillBlankChart';
 import BetDistribution from './BetDistribution';
+import ConfidenceStats from './ConfidenceStats';
 import Badge from '@/components/ui/Badge';
 import EmptyState from '@/components/ui/EmptyState';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
@@ -90,6 +91,7 @@ export default memo(function VizRenderer({ sessionId, session }) {
                 correctValue={question.correctAnswer}
                 revealed={answerRevealed}
               />
+              <ConfidenceStats sessionId={sessionId} questionId={currentQId} />
               {question.betting && (
                 <BetDistribution sessionId={sessionId} questionId={currentQId} />
               )}
