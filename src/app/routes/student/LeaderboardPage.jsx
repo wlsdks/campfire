@@ -33,10 +33,10 @@ function MyRankCard({ rank, entry, total }) {
           transition={{ type: 'spring', stiffness: 400, damping: 22, delay: 0.15 }}
         >
           <span className="text-5xl font-bold text-slate-900 dark:text-slate-100 tabular-nums tracking-tight">{rank}</span>
-          <span className="text-lg font-bold text-slate-400 ml-0.5">위</span>
+          <span className="text-lg font-bold text-slate-400 dark:text-slate-500 ml-0.5">위</span>
         </motion.div>
         {total > 1 && (
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
             {total}명 중 상위 {pct <= 100 ? pct : 100}%
           </p>
         )}
@@ -91,7 +91,7 @@ function StickyMyRank({ rank, entry, total }) {
             </span>
             <div className="flex-1 min-w-0">
               <span className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate block">{entry.nickname}</span>
-              <span className="text-xs text-slate-400">{entry.total}점</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500">{entry.total}점</span>
             </div>
             <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shrink-0">나</span>
           </div>

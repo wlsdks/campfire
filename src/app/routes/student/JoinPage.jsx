@@ -92,7 +92,7 @@ export default function JoinPage({ sessionId, onJoin }) {
             </motion.div>
             <div>
               <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pick</h1>
-              <p className={`text-sm mt-1.5 ${courseName ? 'text-slate-500 font-medium' : 'text-slate-400'}`}>
+              <p className={`text-sm mt-1.5 ${courseName ? 'text-slate-500 dark:text-slate-400 font-medium' : 'text-slate-400 dark:text-slate-500'}`}>
                 {courseName || '닉네임을 정하고 참여하세요'}
               </p>
             </div>

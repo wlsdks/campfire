@@ -48,7 +48,7 @@ function PendingAdminRow({ admin, onApprove, onReject, index }) {
           <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm truncate">
             {admin.displayName || admin.username}
           </p>
-          <div className="flex items-center gap-2 text-xs text-slate-400 mt-0.5">
+          <div className="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-500 mt-0.5">
             <span>@{admin.username}</span>
             <span className="flex items-center gap-0.5">
               <Clock size={10} />
@@ -71,7 +71,7 @@ function PendingAdminRow({ admin, onApprove, onReject, index }) {
             </Button>
             <button
               onClick={() => setConfirming(null)}
-              className="text-slate-400 hover:text-slate-600 transition-colors p-1"
+              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors p-1"
             >
               <X size={14} />
             </button>
@@ -88,7 +88,7 @@ function PendingAdminRow({ admin, onApprove, onReject, index }) {
             </Button>
             <button
               onClick={() => setConfirming(null)}
-              className="text-slate-400 hover:text-slate-600 transition-colors p-1"
+              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors p-1"
             >
               <X size={14} />
             </button>
@@ -126,7 +126,7 @@ export default function AdminApproval({ pendingAdmins, pendingCount, approveAdmi
       {/* Trigger button */}
       <button
         onClick={() => setOpen(true)}
-        className="relative flex items-center gap-1.5 text-slate-400 hover:text-slate-600 text-sm transition-all active:scale-[0.96]"
+        className="relative flex items-center gap-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 text-sm transition-all active:scale-[0.96]"
         aria-label="관리자 승인 관리"
       >
         <ShieldCheck size={18} />
@@ -150,7 +150,7 @@ export default function AdminApproval({ pendingAdmins, pendingCount, approveAdmi
             </div>
             <button
               onClick={() => setOpen(false)}
-              className="text-slate-400 hover:text-slate-600 transition-colors"
+              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
             >
               <X size={18} />
             </button>
@@ -159,8 +159,8 @@ export default function AdminApproval({ pendingAdmins, pendingCount, approveAdmi
           {/* List */}
           {pendingAdmins.length === 0 ? (
             <div className="text-center py-8">
-              <ShieldCheck size={32} className="text-slate-400 mx-auto mb-3" />
-              <p className="text-slate-400 text-sm">대기 중인 승인 요청이 없습니다</p>
+              <ShieldCheck size={32} className="text-slate-300 dark:text-slate-600 mx-auto mb-3" />
+              <p className="text-slate-400 dark:text-slate-500 text-sm">대기 중인 승인 요청이 없습니다</p>
             </div>
           ) : (
             <div className="space-y-2 max-h-80 overflow-y-auto">

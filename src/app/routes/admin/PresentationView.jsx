@@ -84,7 +84,7 @@ function PresentQROverlay({ sessionId, studentUrl, count }) {
             </button>
             <div className="mt-1 flex items-center justify-center gap-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-slate-400 text-xs">{count}명 접속 중</span>
+              <span className="text-slate-400 dark:text-slate-500 text-xs">{count}명 접속 중</span>
             </div>
           </motion.div>
         ) : (
@@ -103,7 +103,7 @@ function PresentQROverlay({ sessionId, studentUrl, count }) {
             </div>
             <div className="text-left">
               <span className="text-slate-900 dark:text-slate-100 text-sm font-bold tracking-wider block leading-tight">{sessionId}</span>
-              <span className="text-slate-400 text-[11px] flex items-center gap-1">
+              <span className="text-slate-400 dark:text-slate-500 text-[11px] flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
                 {count}명
               </span>
@@ -117,8 +117,8 @@ function PresentQROverlay({ sessionId, studentUrl, count }) {
 
 const GameFallback = () => (
   <div className="flex items-center justify-center min-h-[300px]">
-    <div className="flex items-center gap-2 text-slate-400">
-      <div className="w-5 h-5 border-2 border-slate-300 border-t-slate-500 rounded-full animate-spin" />
+    <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500">
+      <div className="w-5 h-5 border-2 border-slate-300 dark:border-slate-600 border-t-slate-500 dark:border-t-slate-400 rounded-full animate-spin" />
       <span className="text-sm">준비 중...</span>
     </div>
   </div>
