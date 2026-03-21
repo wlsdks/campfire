@@ -2,7 +2,7 @@
 
 > 이 문서만으로 동일한 UI/UX를 다른 프로젝트에서도 재현할 수 있어야 함.
 > 모든 값은 `src/lib/design-tokens.js`에 코드로도 정의됨.
-> 2026-03-21 기준 최신 업데이트.
+> 2026-03-22 기준 최신 업데이트.
 
 ---
 
@@ -419,7 +419,7 @@ transition={{ delay: index * 0.05 }}
 | 애니메이션 | 설명 | 적용 |
 |-----------|------|------|
 | 정답 파티클 버스트 | 24개 SVG 파티클(원/사각/다이아몬드), 1.2초 | 퀴즈 정답 |
-| StreakBadge | Flame 아이콘 + 떨림 모션, 5연속+ 빠른 화염 | 연속 정답 |
+| StreakBadge 3단계 | 3+: 흰 배지 + 느린 flame(0.8s), 5+: 다크 배지 + 빠른 flame(0.5s), 10+: shadow-lg + pulse + 큰 flame(0.35s) + 🔥 | 연속 정답 |
 | IdleMascot | 5종 랜덤 동작(눈 둘러보기/기울기/깜빡임/귀 흔들기), 3-6초 간격 | 대기 화면 |
 | 리액션 버블 | 파티클 버스트 + 스케일/로테이션, 2초 fade-out | 학생 리액션 |
 | 카운트업 | spring 기반 숫자 애니메이션 | 통계 숫자 |
@@ -429,6 +429,7 @@ transition={{ delay: index * 0.05 }}
 | 경품 추첨 슬롯 | 이름 rapid cycling 2.5s → 당첨 spring bounce + ConfettiBurst | 경품 추첨 모드 |
 | 참여자 수 bounce | key={count} scale 1.2→1 spring | 대기 화면 참여자 입장 시 |
 | 리더보드 순위 reveal | scale 0→1, spring 400/22 | 순위 발표 |
+| 타이머 긴박감 2단계 | 5초↓: pulse(1→1.03), 3초↓: shake(±3px) + 강한 pulse(1→1.04) | 퀴즈 카운트다운 |
 
 ### 규칙
 - 모든 모션 400ms 이하
