@@ -29,6 +29,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
   const { sessions, loading, refresh, deleteSession, duplicateSession } = useSessionList();
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
+  const isStaff = adminUser?.role === 'staff';
   const [activeTab, setActiveTab] = useState(() => {
     const hash = window.location.hash.replace('#', '');
     return ['classes', 'history', 'library', 'more'].includes(hash) ? hash : 'classes';
@@ -39,6 +40,14 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
   const { toast, showToast } = useToast();
   const contentRef = useRef(null);
 
+  // Staff only sees active/reviewing sessions
+  const displaySessions = useMemo(() => {
+    if (isStaff) {
+      return sessions.filter(s => s.status === 'active' || s.status === 'reviewing');
+    }
+    return sessions;
+  }, [sessions, isStaff]);
+
   const handleTabChange = useCallback((key) => {
     setActiveTab(key);
     window.location.hash = key;
@@ -48,7 +57,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
   }, []);
 
   const filteredSessions = useMemo(() => {
-    let result = sessions;
+    let result = displaySessions;
     if (statusFilter !== 'all') {
       result = result.filter((s) => s.status === statusFilter);
     }
@@ -57,7 +66,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
       result = result.filter((s) => (s.courseName || '').toLowerCase().includes(q));
     }
     return result;
-  }, [sessions, searchQuery, statusFilter]);
+  }, [displaySessions, searchQuery, statusFilter]);
 
   const isFiltering = searchQuery.trim() !== '' || statusFilter !== 'all';
 
@@ -158,20 +167,27 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
 
           {activeTab === 'classes' && (
             <motion.div key="classes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className="space-y-4">
-              <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="flex justify-end">
-                <Button onClick={() => setModalOpen(true)} variant="secondary" size="sm">
-                  <Plus size={16} />새 클래스
-                </Button>
-              </motion.div>
+              {!isStaff && (
+                <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="flex justify-end">
+                  <Button onClick={() => setModalOpen(true)} variant="secondary" size="sm">
+                    <Plus size={16} />새 클래스
+                  </Button>
+                </motion.div>
+              )}
               {loading ? (
                 <div className="flex items-center justify-center py-16 text-slate-400"><Loader2 size={20} className="animate-spin mr-2" />불러오는 중...</div>
-              ) : sessions.length === 0 ? (
-                <EmptyState title="첫 클래스를 만들어보세요" description="Pick과 함께 학생 참여를 이끌어보세요"
-                  steps={['위의 버튼으로 클래스를 만드세요', '객관식, 퀴즈, 워드클라우드 등 질문을 추가하세요', 'QR코드를 공유하면 학생들이 바로 참여합니다']}
-                  mascotSize="lg" mood="happy" className="py-12" />
+              ) : displaySessions.length === 0 ? (
+                isStaff ? (
+                  <EmptyState title="진행 중인 수업이 없습니다" description="강사가 수업을 시작하면 여기에 표시됩니다"
+                    mascotSize="lg" className="py-12" />
+                ) : (
+                  <EmptyState title="첫 클래스를 만들어보세요" description="Pick과 함께 학생 참여를 이끌어보세요"
+                    steps={['위의 버튼으로 클래스를 만드세요', '객관식, 퀴즈, 워드클라우드 등 질문을 추가하세요', 'QR코드를 공유하면 학생들이 바로 참여합니다']}
+                    mascotSize="lg" mood="happy" className="py-12" />
+                )
               ) : (
                 <>
-                  {sessions.length >= 3 && (
+                  {!isStaff && sessions.length >= 3 && (
                     <SessionSearchFilter
                       searchQuery={searchQuery}
                       onSearchChange={setSearchQuery}
@@ -205,9 +221,9 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
                   ) : (
                     <div className="space-y-4">
                       {courseGroups.map(([name, list], gi) => (
-                        <CourseGroup key={name} name={name} sessions={list} onSelect={handleSelect} onDelete={handleDeleteRequest} onDuplicate={handleDuplicate} startIndex={gi * 10} groupIndex={gi} />
+                        <CourseGroup key={name} name={name} sessions={list} onSelect={handleSelect} onDelete={handleDeleteRequest} onDuplicate={handleDuplicate} startIndex={gi * 10} groupIndex={gi} hideActions={isStaff} />
                       ))}
-                      <UngroupedSessions sessions={ungrouped} onSelect={handleSelect} onDelete={handleDeleteRequest} onDuplicate={handleDuplicate} startIndex={courseGroups.length * 10} groupIndex={courseGroups.length} />
+                      <UngroupedSessions sessions={ungrouped} onSelect={handleSelect} onDelete={handleDeleteRequest} onDuplicate={handleDuplicate} startIndex={courseGroups.length * 10} groupIndex={courseGroups.length} hideActions={isStaff} />
                     </div>
                   )}
                 </>

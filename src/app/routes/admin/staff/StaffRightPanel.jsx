@@ -14,21 +14,26 @@ import Button from '@/components/ui/Button';
 function Accordion({ title, icon: Icon, count, defaultOpen = false, children }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="border-b border-slate-200 dark:border-slate-700 last:border-b-0">
+    <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
       <button
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-5 py-3.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 active:bg-slate-100 dark:active:bg-slate-600 transition-colors"
+        className="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors"
         aria-expanded={open}
       >
-        <div className="flex items-center gap-2">
+        <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
           <Icon size={14} className="text-slate-400" />
-          <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">{title}</span>
+          {title}
           {count > 0 && (
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 tabular-nums">
+            <motion.span
+              key={count}
+              initial={{ scale: 1.3 }}
+              animate={{ scale: 1 }}
+              className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-[10px] font-bold"
+            >
               {count}
-            </span>
+            </motion.span>
           )}
-        </div>
+        </span>
         <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
           <ChevronDown size={14} className="text-slate-400" />
         </motion.div>
@@ -42,7 +47,7 @@ function Accordion({ title, icon: Icon, count, defaultOpen = false, children }) 
             transition={{ duration: 0.2, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="px-5 pb-4">{children}</div>
+            <div className="px-3.5 pb-3">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -61,7 +66,7 @@ function CurrentQuestionStatus({ session }) {
   const voteCount = q.votes ? Object.keys(q.votes).length : 0;
 
   return (
-    <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+    <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-4">
       <div className="flex items-center gap-1.5 mb-2">
         <Radio size={12} className="text-indigo-500 animate-pulse" />
         <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
@@ -181,13 +186,11 @@ function ParticipantSection({ sessionId }) {
 
 export default function StaffRightPanel({ sessionId, session }) {
   return (
-    <div className="flex flex-col h-full">
+    <div className="h-full overflow-y-auto p-4 space-y-3">
       <CurrentQuestionStatus session={session} />
-      <div className="flex-1 overflow-y-auto scrollbar-hide">
-        <UrgentQuestionSection sessionId={sessionId} />
-        <HandRaiseSection sessionId={sessionId} />
-        <ParticipantSection sessionId={sessionId} />
-      </div>
+      <UrgentQuestionSection sessionId={sessionId} />
+      <HandRaiseSection sessionId={sessionId} />
+      <ParticipantSection sessionId={sessionId} />
     </div>
   );
 }
