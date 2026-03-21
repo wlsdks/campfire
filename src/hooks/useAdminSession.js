@@ -43,6 +43,7 @@ export function useAdminSession() {
   const [readOnly, setReadOnly] = useState(false);
   const [presentMode, setPresentMode] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
+  const [hasUnreadChat, setHasUnreadChat] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showCenterForm, setShowCenterForm] = useState(false);
   const [modeOpen, setModeOpen] = useState(false);
@@ -104,8 +105,14 @@ export function useAdminSession() {
   function handleLogout() { sessionStorage.removeItem('pinggo_admin'); setAdminUser(null); setSessionId(''); setUrlParams({}); }
 
   // UI toggles
-  const handleChatToggle = useCallback(() => setChatOpen(prev => !prev), []);
+  const handleChatToggle = useCallback(() => {
+    setChatOpen(prev => !prev);
+    setHasUnreadChat(false);
+  }, []);
   const handleChatClose = useCallback(() => setChatOpen(false), []);
+  const handleNewChatMessage = useCallback(() => {
+    if (!chatOpen) setHasUnreadChat(true);
+  }, [chatOpen]);
   const handlePresentMode = useCallback(() => setPresentMode(true), []);
   const handleExitPresent = useCallback(() => setPresentMode(false), []);
   const handleModeToggle = useCallback(() => setModeOpen(prev => !prev), []);
@@ -188,7 +195,7 @@ export function useAdminSession() {
     presentMode, chatOpen, sidebarCollapsed, showCenterForm, modeOpen,
     leftDrawerOpen, rightDrawerOpen,
     // UI handlers
-    handleChatToggle, handleChatClose,
+    handleChatToggle, handleChatClose, handleNewChatMessage, hasUnreadChat,
     handlePresentMode, handleExitPresent,
     handleModeToggle, switchMode,
     handleCollapseOpen, handleCollapseClose,

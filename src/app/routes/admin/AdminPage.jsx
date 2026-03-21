@@ -95,10 +95,10 @@ export default function AdminPage() {
     <div className="h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col overflow-hidden">
       <JoinToast sessionId={s.sessionId} />
       <ReactionOverlay sessionId={s.sessionId} />
-      <ChatPanel sessionId={s.sessionId} senderName={s.adminUser?.displayName || '강사'} senderType="instructor" open={s.chatOpen} onClose={s.handleChatClose} />
+      <ChatPanel sessionId={s.sessionId} senderName={s.adminUser?.displayName || '강사'} senderType="instructor" open={s.chatOpen} onClose={s.handleChatClose} onNewMessage={s.handleNewChatMessage} />
 
       <AdminSessionHeader session={s.session} sessionId={s.sessionId} effectiveReadOnly={s.effectiveReadOnly} isSetting={s.isSetting}
-        questionProgress={s.questionProgress} count={s.count} totalTickets={s.totalTickets} chatOpen={s.chatOpen} onChatToggle={s.handleChatToggle}
+        questionProgress={s.questionProgress} count={s.count} totalTickets={s.totalTickets} chatOpen={s.chatOpen} hasUnreadChat={s.hasUnreadChat} onChatToggle={s.handleChatToggle}
         timerRunning={s.timerRunning} endTime={s.endTime} duration={s.duration} onTimerStart={s.startTimer} onTimerStop={s.stopTimer}
         onBack={s.handleBack} onStartSession={s.handleStartSession} onEndSession={s.handleEndSession} onPresentMode={s.handlePresentMode}
         isTablet={isTablet} onLeftDrawer={s.handleLeftDrawerOpen} onRightDrawer={s.handleRightDrawerOpen}

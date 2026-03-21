@@ -60,6 +60,7 @@ export default memo(function AdminSessionHeader({
   count,
   totalTickets,
   chatOpen,
+  hasUnreadChat,
   onChatToggle,
   timerRunning,
   endTime,
@@ -184,12 +185,15 @@ export default memo(function AdminSessionHeader({
         {!effectiveReadOnly && (
           <button
             onClick={onChatToggle}
-            className="flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all active:scale-[0.96]"
+            className="relative flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-all active:scale-[0.96]"
             aria-label={chatOpen ? '채팅 닫기' : '채팅 열기'}
             aria-pressed={chatOpen}
           >
             <MessageCircle size={20} />
             {!isTablet && <span className="text-[10px] font-medium">채팅</span>}
+            {hasUnreadChat && !chatOpen && (
+              <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-red-500" />
+            )}
           </button>
         )}
         {/* Timer button */}
