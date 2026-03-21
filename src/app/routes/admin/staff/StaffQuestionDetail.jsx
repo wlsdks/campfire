@@ -1,6 +1,8 @@
-import { useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
+import { ref, push, serverTimestamp } from 'firebase/database';
+import { db } from '@/lib/firebase';
 import { motion } from 'framer-motion';
-import { MessageCircle, HelpCircle, ThumbsUp, Radio } from 'lucide-react';
+import { MessageCircle, HelpCircle, ThumbsUp, Radio, Send } from 'lucide-react';
 import { QUESTION_TYPE_MAP } from '@/lib/question-types';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
@@ -51,7 +53,56 @@ function ActiveQuestionBanner({ session }) {
   );
 }
 
-export default function StaffQuestionDetail({ question, onAction, loading, session }) {
+function ChatReplyInput({ sessionId, senderName, questionText }) {
+  const [replyText, setReplyText] = useState('');
+  const [sending, setSending] = useState(false);
+
+  const handleReply = useCallback(async () => {
+    const trimmed = replyText.trim();
+    if (!trimmed || !sessionId) return;
+
+    setSending(true);
+    try {
+      const chatRef = ref(db, `sessions/${sessionId}/chat`);
+      await push(chatRef, {
+        text: trimmed,
+        sender: senderName || '스태프',
+        senderType: 'staff',
+        timestamp: serverTimestamp(),
+      });
+      setReplyText('');
+    } catch (err) {
+      console.error('채팅 답변 전송 실패:', err);
+    }
+    setSending(false);
+  }, [replyText, sessionId, senderName]);
+
+  return (
+    <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700">
+      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">채팅으로 답변</p>
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={replyText}
+          onChange={(e) => setReplyText(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && !e.nativeEvent.isComposing && handleReply()}
+          placeholder="답변을 입력하세요..."
+          className="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+        />
+        <Button
+          onClick={handleReply}
+          variant="primary"
+          size="sm"
+          disabled={!replyText.trim() || sending}
+        >
+          <Send size={16} />
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+export default function StaffQuestionDetail({ question, onAction, loading, session, sessionId, senderName }) {
   if (!question) {
     const hasActiveQuestion = session?.currentQuestion && session?.questions?.[session.currentQuestion];
     return (
@@ -140,6 +191,15 @@ export default function StaffQuestionDetail({ question, onAction, loading, sessi
             {answeredLabel}
           </div>
         )}
+      </div>
+
+      {/* Quick chat reply */}
+      <div className="w-full max-w-xs">
+        <ChatReplyInput
+          sessionId={sessionId}
+          senderName={senderName}
+          questionText={question.text}
+        />
       </div>
     </motion.div>
   );

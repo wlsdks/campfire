@@ -166,6 +166,8 @@ export default function StaffPage({ sessionId, session, adminUser, onBack, onLog
             onAction={handleAction}
             loading={actionLoading}
             session={session}
+            sessionId={sessionId}
+            senderName={senderName}
           />
         </div>
 

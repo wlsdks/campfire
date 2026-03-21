@@ -1,6 +1,6 @@
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageCircle, Check } from 'lucide-react';
+import { MessageCircle, ChevronDown, AlertCircle, HelpCircle, Check } from 'lucide-react';
 import EmptyState from '@/components/ui/EmptyState';
 
 function timeAgo(timestamp) {
@@ -14,19 +14,139 @@ function timeAgo(timestamp) {
   return `${Math.floor(hours / 24)}일 전`;
 }
 
+function QuestionItem({ q, isSelected, onClick }) {
+  const isUrgent = q._type === 'urgent';
+  const isDone = isUrgent ? q.read : q.answered;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      role="button"
+      aria-label={isDone ? '처리된 질문' : '미처리 질문 — 클릭하여 확인'}
+      className={`p-2.5 rounded-lg text-sm transition-colors cursor-pointer ${
+        isSelected
+          ? 'bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 shadow-sm ring-1 ring-slate-300 dark:ring-slate-500'
+          : isDone
+            ? 'bg-slate-50 dark:bg-slate-800 opacity-60'
+            : 'bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 shadow-sm hover:shadow-md'
+      }`}
+      onClick={onClick}
+    >
+      <div className="flex items-start gap-2">
+        {!isDone && <div className="w-1.5 h-1.5 rounded-full bg-slate-900 dark:bg-slate-100 mt-1.5 shrink-0" />}
+        {isDone && <Check size={12} className="text-slate-400 mt-1 shrink-0" />}
+        <div className="flex-1 min-w-0">
+          <p className="text-slate-700 dark:text-slate-200 leading-relaxed line-clamp-2">{q.text}</p>
+          <div className="flex items-center gap-1.5 mt-1.5">
+            <span
+              className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium ${
+                isUrgent
+                  ? 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+                  : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
+              }`}
+            >
+              {isUrgent ? '긴급' : '수업'}
+            </span>
+            <span className="text-slate-300 dark:text-slate-600 text-[10px]">
+              {isUrgent ? '익명' : q.nickname || '익명'}
+            </span>
+            <span className="text-slate-300 dark:text-slate-600 text-[10px]">·</span>
+            <span className="text-slate-300 dark:text-slate-600 text-[10px]">{timeAgo(q.timestamp)}</span>
+            {isDone && !isUrgent && (
+              <span className="text-slate-400 text-[10px] ml-auto">
+                {q.answeredByRole === 'staff' ? '스태프 답변' : '강사 답변'}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+function AccordionSection({ icon: Icon, title, count, defaultOpen, badgeVariant, children }) {
+  const [collapsed, setCollapsed] = useState(!defaultOpen);
+
+  return (
+    <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        className="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors"
+        aria-expanded={!collapsed}
+      >
+        <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+          <Icon size={14} className="text-slate-400" />
+          {title}
+          {count > 0 && (
+            <motion.span
+              key={count}
+              initial={{ scale: 1.3 }}
+              animate={{ scale: 1 }}
+              className={`inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold ${
+                badgeVariant === 'red'
+                  ? 'bg-red-500 text-white animate-pulse'
+                  : 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
+              }`}
+            >
+              {count}
+            </motion.span>
+          )}
+        </span>
+        <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ duration: 0.2 }}>
+          <ChevronDown size={14} className="text-slate-400" />
+        </motion.div>
+      </button>
+
+      <AnimatePresence>
+        {!collapsed && (
+          <motion.div
+            initial={{ height: 0 }}
+            animate={{ height: 'auto' }}
+            exit={{ height: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            className="overflow-hidden"
+          >
+            <div className="px-3.5 pb-3 space-y-1.5">
+              {children}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export default function StaffQuestionPanel({ urgentList, classList, selectedId, onSelect }) {
-  const unified = useMemo(() => {
-    const urgent = urgentList.map((q) => ({ ...q, _type: 'urgent' }));
-    const classQ = classList.map((q) => ({ ...q, _type: 'class' }));
-    return [...urgent, ...classQ].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+  const { unanswered, answered } = useMemo(() => {
+    const unansweredItems = [];
+    const answeredItems = [];
+
+    urgentList.forEach((q) => {
+      const item = { ...q, _type: 'urgent', _key: `urgent-${q.id}` };
+      if (q.read) answeredItems.push(item);
+      else unansweredItems.push(item);
+    });
+
+    classList.forEach((q) => {
+      const item = { ...q, _type: 'class', _key: `class-${q.id}` };
+      if (q.answered) answeredItems.push(item);
+      else unansweredItems.push(item);
+    });
+
+    unansweredItems.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+    answeredItems.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+
+    return { unanswered: unansweredItems, answered: answeredItems };
   }, [urgentList, classList]);
 
-  const totalCount = unified.length;
+  const totalCount = unanswered.length + answered.length;
 
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="px-5 py-4 border-b border-slate-200 dark:border-slate-700 shrink-0">
+      <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700 shrink-0">
         <div className="flex items-center gap-2">
           <MessageCircle size={16} className="text-slate-400" />
           <h2 className="text-sm font-bold text-slate-900 dark:text-slate-100">질문</h2>
@@ -36,7 +156,7 @@ export default function StaffQuestionPanel({ urgentList, classList, selectedId, 
         </div>
       </div>
 
-      {/* List */}
+      {/* Accordion sections */}
       <div className="flex-1 overflow-y-auto scrollbar-hide">
         {totalCount === 0 ? (
           <div className="flex items-center justify-center py-16 px-5">
@@ -47,65 +167,54 @@ export default function StaffQuestionPanel({ urgentList, classList, selectedId, 
             />
           </div>
         ) : (
-          <div className="p-3 space-y-1">
-            <AnimatePresence>
-              {unified.map((q) => {
-                const key = `${q._type}-${q.id}`;
-                const isUrgent = q._type === 'urgent';
-                const isDimmed = isUrgent ? q.read : q.answered;
-                const isSelected = selectedId === key;
+          <div className="space-y-3 p-4">
+            {/* Unanswered */}
+            <AccordionSection
+              icon={AlertCircle}
+              title="미답변 질문"
+              count={unanswered.length}
+              defaultOpen={true}
+              badgeVariant="red"
+            >
+              {unanswered.length === 0 ? (
+                <p className="text-slate-400 dark:text-slate-500 text-xs py-1">미답변 질문이 없습니다</p>
+              ) : (
+                <AnimatePresence>
+                  {unanswered.map((q) => (
+                    <QuestionItem
+                      key={q._key}
+                      q={q}
+                      isSelected={selectedId === q._key}
+                      onClick={() => onSelect({ ...q })}
+                    />
+                  ))}
+                </AnimatePresence>
+              )}
+            </AccordionSection>
 
-                return (
-                  <motion.button
-                    key={key}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    onClick={() => onSelect({ ...q, _key: key })}
-                    className={`w-full text-left p-3 rounded-xl text-sm transition-colors ${
-                      isSelected
-                        ? 'bg-slate-100 dark:bg-slate-700 ring-1 ring-slate-300 dark:ring-slate-500'
-                        : isDimmed
-                          ? 'opacity-50 hover:bg-slate-50 dark:hover:bg-slate-700/50'
-                          : 'hover:bg-slate-50 dark:hover:bg-slate-700/50'
-                    }`}
-                  >
-                    <div className="flex items-start gap-2">
-                      {!isDimmed && (
-                        <div className="w-1.5 h-1.5 rounded-full bg-slate-900 dark:bg-slate-100 mt-1.5 shrink-0" />
-                      )}
-                      {isDimmed && (
-                        <Check size={12} className="text-slate-400 mt-1 shrink-0" />
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-slate-700 dark:text-slate-200 leading-relaxed line-clamp-2">
-                          {q.text}
-                        </p>
-                        <div className="flex items-center gap-1.5 mt-1.5">
-                          <span
-                            className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium ${
-                              isUrgent
-                                ? 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                                : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
-                            }`}
-                          >
-                            {isUrgent ? '긴급' : '수업'}
-                          </span>
-                          <span className="text-slate-300 dark:text-slate-600 text-[10px]">
-                            {timeAgo(q.timestamp)}
-                          </span>
-                          {!isUrgent && q.answered && (
-                            <span className="text-slate-400 text-[10px] ml-auto">
-                              {q.answeredByRole === 'staff' ? '스태프 답변' : '강사 답변'}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </motion.button>
-                );
-              })}
-            </AnimatePresence>
+            {/* Answered */}
+            <AccordionSection
+              icon={HelpCircle}
+              title="답변 완료"
+              count={answered.length}
+              defaultOpen={false}
+              badgeVariant="slate"
+            >
+              {answered.length === 0 ? (
+                <p className="text-slate-400 dark:text-slate-500 text-xs py-1">답변 완료된 질문이 없습니다</p>
+              ) : (
+                <AnimatePresence>
+                  {answered.map((q) => (
+                    <QuestionItem
+                      key={q._key}
+                      q={q}
+                      isSelected={selectedId === q._key}
+                      onClick={() => onSelect({ ...q })}
+                    />
+                  ))}
+                </AnimatePresence>
+              )}
+            </AccordionSection>
           </div>
         )}
       </div>
