@@ -83,7 +83,7 @@ export function exportQuestionSummary(session, participants, filename) {
   const sorted = getSortedQuestions(session?.questions);
   const participantCount = Object.keys(participants || {}).length;
 
-  const header = ['번호', '질문', '유형', '선택지', '정답', '응답 수', '응답률(%)', '정답률(%)', '선택지별 분포'];
+  const header = ['번호', '질문', '유형', '선택지', '정답', '응답 수', '응답률(%)', '정답률(%)', '자신감 분포', '선택지별 분포'];
   const rows = [header];
 
   sorted.forEach((q, i) => {
@@ -111,6 +111,16 @@ export function exportQuestionSummary(session, participants, filename) {
       .map(([val, cnt]) => `${val}: ${cnt}명`)
       .join(', ');
 
+    // Confidence distribution
+    const confCounts = { high: 0, medium: 0, low: 0 };
+    Object.values(votes).forEach((v) => {
+      if (v.confidence) confCounts[v.confidence]++;
+    });
+    const confTotal = confCounts.high + confCounts.medium + confCounts.low;
+    const confStr = confTotal > 0
+      ? `확신 ${confCounts.high}, 보통 ${confCounts.medium}, 낮음 ${confCounts.low}`
+      : '';
+
     rows.push([
       i + 1,
       data.title || '',
@@ -120,6 +130,7 @@ export function exportQuestionSummary(session, participants, filename) {
       voteCount,
       responseRate,
       correctRate,
+      confStr,
       distStr,
     ]);
   });
@@ -163,7 +174,8 @@ export function exportParticipantResponses(session, participants, scores, filena
       const vote = q.data.votes?.[pid];
       const betSuffix = q.data.betting && vote?.bet && parseInt(vote.bet, 10) > 1
         ? ` (${vote.bet}x)` : '';
-      row.push(vote?.value ? `${vote.value}${betSuffix}` : '');
+      const confSuffix = vote?.confidence ? ` [${vote.confidence === 'high' ? '확신' : vote.confidence === 'medium' ? '보통' : '낮음'}]` : '';
+      row.push(vote?.value ? `${vote.value}${betSuffix}${confSuffix}` : '');
     });
 
     if (hasScores) {
