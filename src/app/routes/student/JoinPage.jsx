@@ -158,7 +158,7 @@ export default function JoinPage({ sessionId, onJoin }) {
               <span className={`text-xs text-red-400 transition-opacity ${tooShort ? 'opacity-100' : 'opacity-0'}`}>
                 {NICKNAME_MIN}자 이상 입력해주세요
               </span>
-              <span className={`text-xs tabular-nums transition-colors ${
+              <span className={`text-xs tabular-nums transition-colors duration-150 ${
                 trimmed.length >= NICKNAME_MAX ? 'text-slate-500 font-medium' : 'text-slate-400 dark:text-slate-500'
               }`}>
                 {trimmed.length}/{NICKNAME_MAX}

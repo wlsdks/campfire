@@ -82,7 +82,7 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.max(pct, count > 0 ? 2 : 0)}%` }}
-                transition={{ type: 'spring', stiffness: 80, damping: 20, delay: i * 0.08 }}
+                transition={{ type: 'spring', stiffness: 200, damping: 20, delay: i * 0.08 }}
                 className={`h-full rounded-lg ${barColor}`}
               />
             </div>

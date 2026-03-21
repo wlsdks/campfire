@@ -77,7 +77,7 @@ export default function ChatPanel({ sessionId, senderName, senderType, open, onC
   }
 
   const emptyMsg = channel === 'staff' ? '운영팀 내부 채팅입니다' : senderType === 'instructor' ? '학생들과 실시간으로 소통하세요' : '강사와 학생들에게 메시지를 보내세요';
-  const tabCls = (active) => `flex-1 py-1.5 text-xs font-medium rounded-lg transition-colors ${active ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'}`;
+  const tabCls = (active) => `flex-1 py-1.5 text-xs font-medium rounded-lg transition-colors duration-150 ${active ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'}`;
 
   return (
     <AnimatePresence>
@@ -124,7 +124,7 @@ export default function ChatPanel({ sessionId, senderName, senderType, open, onC
             {/* Input */}
             <div className="flex items-center gap-2 px-4 py-3 border-t border-slate-100 dark:border-slate-700 shrink-0">
               <input ref={inputRef} type="text" value={inputText} onChange={(e) => setInputText(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }} placeholder={channel === 'staff' ? '운영 메시지를 입력하세요' : '메시지를 입력하세요'} aria-label="채팅 메시지" maxLength={MAX_LENGTH} className="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 focus:bg-white dark:focus:bg-slate-600 transition-all" />
-              <button onClick={handleSend} disabled={!inputText.trim() || !canSend || sending} className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 disabled:opacity-30 hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors shrink-0" aria-label="메시지 보내기">
+              <button onClick={handleSend} disabled={!inputText.trim() || !canSend || sending} className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 disabled:opacity-30 hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150 shrink-0" aria-label="메시지 보내기">
                 <Send size={16} />
               </button>
             </div>

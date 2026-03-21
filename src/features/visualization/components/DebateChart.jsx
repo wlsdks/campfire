@@ -105,12 +105,12 @@ export default memo(function DebateChart({ sessionId, questionId }) {
         <div className="h-6 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden flex">
           <motion.div
             animate={{ width: `${forPct}%` }}
-            transition={{ type: 'spring', stiffness: 80, damping: 20 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
             className="bg-slate-800 h-full rounded-l-full"
           />
           <motion.div
             animate={{ width: `${againstPct}%` }}
-            transition={{ type: 'spring', stiffness: 80, damping: 20 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
             className="bg-slate-300 h-full rounded-r-full"
           />
         </div>

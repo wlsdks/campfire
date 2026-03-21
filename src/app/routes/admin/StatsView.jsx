@@ -43,7 +43,7 @@ function OverviewCards({ totalClasses, totalParticipants, avgActivity, courseCou
         <div className="mt-3 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
           <motion.div className="h-full bg-slate-700 dark:bg-slate-300 rounded-full"
             initial={{ width: 0 }} animate={{ width: `${avgActivity}%` }}
-            transition={{ type: 'spring', stiffness: 80, damping: 20, delay: 0.3 }} />
+            transition={{ type: 'spring', stiffness: 200, damping: 20, delay: 0.3 }} />
         </div>
       </motion.div>
     </motion.div>
@@ -74,7 +74,7 @@ function CoursePerformance({ courseData }) {
                   <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
                     <motion.div className="h-full bg-slate-700 dark:bg-slate-300 rounded-full"
                       initial={{ width: 0 }} animate={{ width: `${round.activityRate}%` }}
-                      transition={{ type: 'spring', stiffness: 80, damping: 20, delay: 0.15 }} />
+                      transition={{ type: 'spring', stiffness: 200, damping: 20, delay: 0.15 }} />
                   </div>
                   <span className="text-xs font-semibold text-slate-600 dark:text-slate-300 w-10 text-right">{round.activityRate}%</span>
                 </div>

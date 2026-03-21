@@ -20,7 +20,7 @@ export default function SessionSearchFilter({ searchQuery, onSearchChange, statu
       <div className="relative">
         <Search
           size={16}
-          className={`absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors ${
+          className={`absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors duration-150 ${
             focused ? 'text-slate-600 dark:text-slate-300' : 'text-slate-300 dark:text-slate-500'
           }`}
         />

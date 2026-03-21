@@ -48,7 +48,7 @@ export default memo(function ConfidenceStats({ sessionId, questionId }) {
               key={key}
               initial={{ width: 0 }}
               animate={{ width: `${pct}%` }}
-              transition={{ type: 'spring', stiffness: 80, damping: 20, delay: 0.4 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 20, delay: 0.4 }}
               className={`h-full ${color} first:rounded-l-full last:rounded-r-full`}
             />
           );

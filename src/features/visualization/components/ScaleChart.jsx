@@ -101,7 +101,7 @@ export default memo(function ScaleChart({ sessionId, questionId }) {
               className="h-full bg-slate-700 dark:bg-slate-300 rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${stats.avg}%` }}
-              transition={{ type: 'spring', stiffness: 80, damping: 20 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 20 }}
             />
           </div>
           {/* Edge labels */}
@@ -153,7 +153,7 @@ export default memo(function ScaleChart({ sessionId, questionId }) {
                   <motion.div
                     initial={{ height: 0 }}
                     animate={{ height: `${Math.max(heightPct, count > 0 ? 8 : 2)}%` }}
-                    transition={{ type: 'spring', stiffness: 80, damping: 20, delay: i * 0.05 }}
+                    transition={{ type: 'spring', stiffness: 200, damping: 20, delay: i * 0.05 }}
                     className={`w-full rounded-t-md ${count > 0 ? getBarColor(i) : 'bg-slate-100 dark:bg-slate-800'}`}
                     style={{ minHeight: count > 0 ? '4px' : '2px' }}
                   />

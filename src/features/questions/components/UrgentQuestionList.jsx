@@ -110,7 +110,7 @@ export default function UrgentQuestionList({ sessionId }) {
                     exit={{ opacity: 0 }}
                     role="button"
                     aria-label={q.read ? '읽은 질문' : '읽지 않은 질문 -- 클릭하여 확인'}
-                    className={`p-2.5 rounded-lg text-sm transition-colors cursor-pointer ${
+                    className={`p-2.5 rounded-lg text-sm transition-colors duration-150 cursor-pointer ${
                       q.read
                         ? 'bg-slate-50 dark:bg-slate-800 opacity-60'
                         : 'bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 shadow-sm hover:shadow-md'

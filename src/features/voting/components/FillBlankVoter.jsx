@@ -78,7 +78,7 @@ function AnswerDistribution({ sessionId, questionId, correctAnswer }) {
           <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
             <motion.div
               animate={{ width: `${correctPct}%` }}
-              transition={{ type: 'spring', stiffness: 80, damping: 20 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 20 }}
               className="h-full bg-slate-700 rounded-full"
             />
           </div>

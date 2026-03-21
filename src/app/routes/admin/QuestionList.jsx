@@ -44,7 +44,7 @@ const SortableItem = memo(function SortableItem({ qId, q, currentQuestion, readO
       <div className="flex items-start gap-2">
         {/* Drag indicator */}
         {!readOnly && (
-          <div className="shrink-0 -ml-1 text-slate-300 dark:text-slate-600 group-hover:text-slate-400 dark:group-hover:text-slate-500 transition-colors pt-0.5 cursor-grab active:cursor-grabbing">
+          <div className="shrink-0 -ml-1 text-slate-300 dark:text-slate-600 group-hover:text-slate-400 dark:group-hover:text-slate-500 transition-colors duration-150 pt-0.5 cursor-grab active:cursor-grabbing">
             <GripVertical size={14} />
           </div>
         )}

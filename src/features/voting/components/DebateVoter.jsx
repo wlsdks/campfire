@@ -47,12 +47,12 @@ function DebateLiveRatio({ sessionId, questionId, mySide }) {
         <div className="h-3 bg-slate-100 rounded-full overflow-hidden flex">
           <motion.div
             animate={{ width: `${forPct}%` }}
-            transition={{ type: 'spring', stiffness: 80, damping: 20 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
             className="bg-slate-800 h-full rounded-l-full"
           />
           <motion.div
             animate={{ width: `${againstPct}%` }}
-            transition={{ type: 'spring', stiffness: 80, damping: 20 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
             className="bg-slate-300 h-full rounded-r-full"
           />
         </div>
@@ -178,7 +178,7 @@ export default memo(function DebateVoter({ sessionId, questionId, disabled = fal
               whileTap={{ scale: 0.97 }}
               onClick={handleSubmit}
               disabled={disabled || submitting}
-              className="w-full py-3 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-900 font-medium text-base transition-colors disabled:opacity-50 active:scale-[0.97]"
+              className="w-full py-3 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-900 font-medium text-base transition-colors duration-150 disabled:opacity-50 active:scale-[0.97]"
             >
               {submitting ? '제출 중...' : '제출하기'}
             </motion.button>

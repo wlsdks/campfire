@@ -101,7 +101,7 @@ function ClassQuestionList({ sessionId }) {
                     exit={{ opacity: 0 }}
                     role="button"
                     aria-label={q.answered ? '답변 완료된 질문' : '미답변 질문 — 클릭하여 확인'}
-                    className={`p-2.5 rounded-lg text-sm transition-colors cursor-pointer ${
+                    className={`p-2.5 rounded-lg text-sm transition-colors duration-150 cursor-pointer ${
                       q.answered
                         ? 'bg-slate-50 dark:bg-slate-800 opacity-60'
                         : 'bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 shadow-sm hover:shadow-md'

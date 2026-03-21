@@ -71,7 +71,7 @@ function PendingAdminRow({ admin, onApprove, onReject, index }) {
             </Button>
             <button
               onClick={() => setConfirming(null)}
-              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors p-1"
+              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150 p-1"
             >
               <X size={14} />
             </button>
@@ -88,7 +88,7 @@ function PendingAdminRow({ admin, onApprove, onReject, index }) {
             </Button>
             <button
               onClick={() => setConfirming(null)}
-              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors p-1"
+              className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150 p-1"
             >
               <X size={14} />
             </button>

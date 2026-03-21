@@ -93,14 +93,14 @@ function ErrorFallback({ fullPage, errorMessage, onRetry, onReload }) {
         <div className="flex items-center justify-center gap-3">
           <button
             onClick={onRetry}
-            className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-900 font-medium py-2.5 px-5 rounded-lg transition-colors text-sm"
+            className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-900 font-medium py-2.5 px-5 rounded-lg transition-colors duration-150 text-sm"
           >
             <RefreshCw size={15} />
             다시 시도
           </button>
           <button
             onClick={onReload}
-            className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium py-2.5 px-5 rounded-lg border border-slate-200 dark:border-slate-600 transition-colors text-sm"
+            className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-medium py-2.5 px-5 rounded-lg border border-slate-200 dark:border-slate-600 transition-colors duration-150 text-sm"
           >
             페이지 새로고침
           </button>

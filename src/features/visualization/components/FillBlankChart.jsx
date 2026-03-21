@@ -116,7 +116,7 @@ export default memo(function FillBlankChart({ sessionId, questionId, title, corr
                     <div className="relative h-9 bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden">
                       <motion.div
                         animate={{ width: `${widthPct}%` }}
-                        transition={{ type: 'spring', stiffness: 80, damping: 20 }}
+                        transition={{ type: 'spring', stiffness: 200, damping: 20 }}
                         className={`absolute inset-y-0 left-0 rounded-lg ${
                           revealed && a.isCorrect ? 'bg-slate-800' : 'bg-slate-300'
                         }`}

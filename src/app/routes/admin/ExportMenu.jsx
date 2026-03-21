@@ -31,7 +31,7 @@ export default function ExportMenu({ session, participants, scores }) {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setOpen((p) => !p)}
-        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-900 text-sm font-medium transition-colors active:scale-[0.97]"
+        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-900 text-sm font-medium transition-colors duration-150 active:scale-[0.97]"
         aria-expanded={open}
         aria-label="CSV 내보내기"
       >
@@ -43,7 +43,7 @@ export default function ExportMenu({ session, participants, scores }) {
         <div className="absolute right-0 top-full mt-1.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg py-1 z-30 w-56">
           <button
             onClick={handleQuestionExport}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-left"
+            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150 text-left"
           >
             <FileSpreadsheet size={16} className="text-slate-400 shrink-0" />
             <div>
@@ -53,7 +53,7 @@ export default function ExportMenu({ session, participants, scores }) {
           </button>
           <button
             onClick={handleParticipantExport}
-            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-left"
+            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150 text-left"
           >
             <Users size={16} className="text-slate-400 shrink-0" />
             <div>

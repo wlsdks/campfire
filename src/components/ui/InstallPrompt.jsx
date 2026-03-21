@@ -89,7 +89,7 @@ export default function InstallPrompt() {
           )}
           <button
             onClick={handleDismiss}
-            className="flex-shrink-0 text-slate-400 hover:text-white transition-colors p-1"
+            className="flex-shrink-0 text-slate-400 hover:text-white transition-colors duration-150 p-1"
             aria-label="닫기"
           >
             <X size={16} />

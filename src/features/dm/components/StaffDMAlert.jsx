@@ -50,7 +50,7 @@ const DMAlertItem = memo(function DMAlertItem({ dm, onRespond, onDismiss }) {
       </div>
       <button
         onClick={() => onDismiss(dm.id)}
-        className="p-1 text-slate-300 hover:text-slate-500 dark:text-slate-500 dark:hover:text-slate-300 transition-colors shrink-0"
+        className="p-1 text-slate-300 hover:text-slate-500 dark:text-slate-500 dark:hover:text-slate-300 transition-colors duration-150 shrink-0"
         aria-label="닫기"
       >
         <X size={14} />

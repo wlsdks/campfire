@@ -58,7 +58,7 @@ export default function ProfileSection({ adminUser }) {
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-slate-400">{displayName.length}/20</span>
                   <div className="flex gap-2">
-                    <button onClick={cancelEdit} className="text-xs text-slate-400 hover:text-slate-600 transition-colors px-3 py-1.5">취소</button>
+                    <button onClick={cancelEdit} className="text-xs text-slate-400 hover:text-slate-600 transition-colors duration-150 px-3 py-1.5">취소</button>
                     <Button onClick={handleSave} variant="primary" size="sm" disabled={saving}>{saving ? '저장 중...' : '저장'}</Button>
                   </div>
                 </div>
@@ -67,7 +67,7 @@ export default function ProfileSection({ adminUser }) {
             ) : (
               <motion.div key="display" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="flex items-center gap-3">
                 <p className="text-sm text-slate-700 dark:text-slate-200 font-medium flex-1">{adminUser?.displayName || '—'}</p>
-                <button onClick={() => setEditing(true)} className="text-xs text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors px-2.5 py-1 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">수정</button>
+                <button onClick={() => setEditing(true)} className="text-xs text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors duration-150 px-2.5 py-1 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700">수정</button>
                 <AnimatePresence>
                   {saved && <motion.span initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }} className="text-xs text-emerald-600 flex items-center gap-0.5"><Check size={12} />저장됨</motion.span>}
                 </AnimatePresence>

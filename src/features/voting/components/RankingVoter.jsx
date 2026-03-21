@@ -150,7 +150,7 @@ export default memo(function RankingVoter({ sessionId, questionId, options = [],
         whileTap={{ scale: 0.97 }}
         onClick={handleSubmit}
         disabled={disabled || submitting}
-        className="w-full py-3 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-900 font-medium text-base transition-colors disabled:opacity-50 active:scale-[0.97]"
+        className="w-full py-3 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-900 font-medium text-base transition-colors duration-150 disabled:opacity-50 active:scale-[0.97]"
       >
         {submitting ? '제출 중...' : '이 순서로 제출'}
       </motion.button>

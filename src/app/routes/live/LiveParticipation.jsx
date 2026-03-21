@@ -43,7 +43,7 @@ export default memo(function LiveParticipation({ voted, total }) {
           className="h-full bg-gradient-to-r from-indigo-600 to-indigo-400 rounded-full"
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
-          transition={{ type: 'spring', stiffness: 80, damping: 20 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 20 }}
         />
       </div>
     </div>

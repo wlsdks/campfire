@@ -160,7 +160,7 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
                     disabled={isLocked || disabled}
                     className={`w-full py-3.5 px-4 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${
                       isSelected ? 'ring-2 ring-slate-400 dark:ring-slate-500 border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-700' : 'border-slate-200 dark:border-slate-700'
-                    } ${(isLocked && !isSelected) || disabled ? 'cursor-not-allowed' : ''} transition-colors flex items-center gap-3`}
+                    } ${(isLocked && !isSelected) || disabled ? 'cursor-not-allowed' : ''} transition-colors duration-150 flex items-center gap-3`}
                   >
                     <span className={`w-8 h-8 rounded-lg ${style.badge} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
                       {style.letter}

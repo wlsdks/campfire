@@ -111,7 +111,7 @@ export default memo(function ClassSummary({ session, participants, scores, leade
           <div className="mt-2 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
             <motion.div className="h-full bg-indigo-500 dark:bg-indigo-400 rounded-full"
               initial={{ width: 0 }} animate={{ width: `${activityRate}%` }}
-              transition={{ type: 'spring', stiffness: 80, damping: 20, delay: 0.2 }} />
+              transition={{ type: 'spring', stiffness: 200, damping: 20, delay: 0.2 }} />
           </div>
         </div>
         <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-5 text-center">
@@ -206,7 +206,7 @@ export default memo(function ClassSummary({ session, participants, scores, leade
                         className="h-full bg-indigo-400 dark:bg-indigo-500 rounded-full"
                         initial={{ width: 0 }}
                         animate={{ width: `${q.responseRate}%` }}
-                        transition={{ type: 'spring', stiffness: 80, damping: 20, delay: 0.1 + i * 0.05 }}
+                        transition={{ type: 'spring', stiffness: 200, damping: 20, delay: 0.1 + i * 0.05 }}
                       />
                     </div>
                     <p className="text-[10px] text-slate-400 dark:text-slate-500 text-right mt-0.5">{q.responseRate}%</p>

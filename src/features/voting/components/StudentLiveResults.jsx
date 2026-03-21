@@ -78,7 +78,7 @@ export default memo(function StudentLiveResults({ sessionId, questionId, options
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.max(barWidth, count > 0 ? 3 : 0)}%` }}
-                  transition={{ type: 'spring', stiffness: 80, damping: 20 }}
+                  transition={{ type: 'spring', stiffness: 200, damping: 20 }}
                   className={`h-full rounded-full ${
                     isMine ? 'bg-indigo-500 dark:bg-indigo-400' : 'bg-slate-200 dark:bg-slate-600'
                   }`}

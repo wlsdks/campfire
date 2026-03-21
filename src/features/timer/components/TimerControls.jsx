@@ -47,7 +47,7 @@ export default function TimerControls({ isRunning, onStart, onStop }) {
         <button
           onClick={onStop}
           aria-label="타이머 중지"
-          className="w-full py-1.5 rounded-lg bg-slate-100 dark:bg-slate-600 text-slate-600 dark:text-slate-300 text-xs font-medium hover:bg-slate-200 dark:hover:bg-slate-500 transition-colors flex items-center justify-center gap-1.5"
+          className="w-full py-1.5 rounded-lg bg-slate-100 dark:bg-slate-600 text-slate-600 dark:text-slate-300 text-xs font-medium hover:bg-slate-200 dark:hover:bg-slate-500 transition-colors duration-150 flex items-center justify-center gap-1.5"
         >
           <Square size={12} />
           타이머 중지

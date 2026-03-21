@@ -5,7 +5,7 @@ import { QUIZ_DEFAULTS, QUIZ_EVENT_PRESETS } from '@/lib/quiz';
 const OPTION_LABELS = ['A', 'B', 'C', 'D', 'E'];
 const RANKING_LABELS = ['1', '2', '3', '4', '5', '6'];
 const GAP = 'pt-4';
-const INPUT = 'w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors';
+const INPUT = 'w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors duration-150';
 
 export function ChoiceOptionsSection({ options, setOptions, correctAnswer, setCorrectAnswer, setLocalError }) {
   function removeOption(index) {
@@ -230,7 +230,7 @@ export function QuizSettingsSection({ points, setPoints, event, setEvent, bettin
             <p className="text-[11px] text-slate-400 mt-0.5">학생이 배율을 선택 (1x/2x/3x)</p>
           </div>
           <button onClick={() => setBetting(!betting)}
-            className={`relative w-11 h-6 rounded-full transition-colors ${betting ? 'bg-slate-900 dark:bg-slate-100' : 'bg-slate-200 dark:bg-slate-600'}`}
+            className={`relative w-11 h-6 rounded-full transition-colors duration-150 ${betting ? 'bg-slate-900 dark:bg-slate-100' : 'bg-slate-200 dark:bg-slate-600'}`}
             role="switch" aria-checked={betting} aria-label="포인트 베팅 활성화">
             <motion.div animate={{ x: betting ? 20 : 2 }}
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}

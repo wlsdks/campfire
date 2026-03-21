@@ -211,7 +211,7 @@ export default function ClassQAPanel({ sessionId, open, onClose, onNewQuestion }
               <button
                 onClick={handlePost}
                 disabled={!inputText.trim() || !canPost || posting}
-                className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 disabled:opacity-30 hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors shrink-0"
+                className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 disabled:opacity-30 hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150 shrink-0"
                 aria-label="질문 보내기"
               >
                 <Send size={16} />

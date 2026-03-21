@@ -97,7 +97,7 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
               className="h-full bg-indigo-500 dark:bg-indigo-400 rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${pct}%` }}
-              transition={{ type: 'spring', stiffness: 80, damping: 20 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 20 }}
             />
           </div>
         </div>

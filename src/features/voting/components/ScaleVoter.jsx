@@ -58,7 +58,7 @@ function ScaleLiveAverage({ sessionId, questionId, myValue }) {
           className="h-full bg-slate-400 dark:bg-slate-500 rounded-full"
           initial={{ width: 0 }}
           animate={{ width: `${avg}%` }}
-          transition={{ type: 'spring', stiffness: 80, damping: 20 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 20 }}
         />
       </div>
       <div className="flex justify-between mt-1 text-[10px] text-slate-400">
@@ -175,7 +175,7 @@ export default memo(function ScaleVoter({ sessionId, questionId, disabled = fals
               key={l.value}
               type="button"
               onClick={() => setValue(l.value)}
-              className={`text-xs font-medium transition-colors ${
+              className={`text-xs font-medium transition-colors duration-150 ${
                 value === l.value ? 'text-slate-700' : 'text-slate-300 dark:text-slate-600 hover:text-slate-500'
               }`}
             >
@@ -208,7 +208,7 @@ export default memo(function ScaleVoter({ sessionId, questionId, disabled = fals
         whileTap={{ scale: 0.97 }}
         onClick={handleSubmit}
         disabled={disabled || submitting}
-        className="w-full py-3 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-900 font-medium text-base transition-colors disabled:opacity-50 active:scale-[0.97]"
+        className="w-full py-3 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-900 font-medium text-base transition-colors duration-150 disabled:opacity-50 active:scale-[0.97]"
       >
         {submitting ? '제출 중...' : '제출하기'}
       </motion.button>

@@ -108,7 +108,7 @@ export default function StaffDMChat({
                   <button
                     key={d.id}
                     onClick={() => onSwitchDM(d)}
-                    className={`px-2.5 py-1 text-xs font-medium rounded-lg transition-colors shrink-0 ${
+                    className={`px-2.5 py-1 text-xs font-medium rounded-lg transition-colors duration-150 shrink-0 ${
                       d.id === dm.id
                         ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
                         : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'
