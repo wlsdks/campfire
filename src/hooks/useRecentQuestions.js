@@ -49,6 +49,16 @@ export function useRecentQuestions(sessions) {
               correctRate = Math.round((correctCount / responseCount) * 100);
             }
 
+            // Confidence analysis
+            let highConfidenceWrongRate = null;
+            if (hasCorrectAnswer && responseCount > 0) {
+              const confVotes = Object.values(votes).filter((v) => v.confidence === 'high');
+              if (confVotes.length > 0) {
+                const confWrong = confVotes.filter((v) => v.value !== q.correctAnswer).length;
+                highConfidenceWrongRate = Math.round((confWrong / confVotes.length) * 100);
+              }
+            }
+
             allQuestions.push({
               qId,
               sessionId: s.id,
@@ -63,6 +73,7 @@ export function useRecentQuestions(sessions) {
               hasCorrectAnswer,
               correctRate,
               correctCount,
+              highConfidenceWrongRate,
             });
           });
         }

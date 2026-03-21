@@ -90,10 +90,15 @@ export function DifficultQuestions({ questions, loading }) {
               </p>
             </div>
             <div className="shrink-0 text-right">
-              <p className={`text-sm font-bold ${isVeryHard ? 'text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-300'}`}>
+              <p className={`text-sm font-bold tabular-nums ${isVeryHard ? 'text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-300'}`}>
                 {q.correctRate}%
               </p>
-              <p className="text-[10px] text-slate-400">정답률</p>
+              <p className="text-[10px] text-slate-400">
+                정답률
+                {q.highConfidenceWrongRate > 0 && (
+                  <span className="ml-1 text-slate-500 dark:text-slate-400">· 오개념 {q.highConfidenceWrongRate}%</span>
+                )}
+              </p>
             </div>
           </motion.div>
         );
