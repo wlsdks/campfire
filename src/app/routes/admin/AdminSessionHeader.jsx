@@ -245,7 +245,7 @@ export default memo(function AdminSessionHeader({
         ) : (
           <Badge variant="neutral" className="py-2 px-3.5 text-sm tabular-nums">
             <Users size={16} className="mr-1.5" />
-            {count}명
+            <motion.span key={count} initial={{ scale: 1.2 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 25 }} className="inline-block">{count}</motion.span>명
           </Badge>
         )}
         {!isTablet && totalTickets > 0 && <Badge variant="neutral" className="py-2 px-3.5 text-sm tabular-nums">{totalTickets}장 티켓</Badge>}
