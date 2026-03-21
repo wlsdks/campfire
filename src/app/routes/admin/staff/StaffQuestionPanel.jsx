@@ -1,10 +1,10 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, ChevronDown, AlertCircle, HelpCircle, Check } from 'lucide-react';
 import EmptyState from '@/components/ui/EmptyState';
 import { timeAgo } from '@/lib/utils';
 
-function QuestionItem({ q, isSelected, onClick }) {
+const QuestionItem = memo(function QuestionItem({ q, isSelected, onClick }) {
   const isUrgent = q._type === 'urgent';
   const isDone = isUrgent ? q.read : q.answered;
 
@@ -54,7 +54,7 @@ function QuestionItem({ q, isSelected, onClick }) {
       </div>
     </motion.div>
   );
-}
+});
 
 function AccordionSection({ icon: Icon, title, count, defaultOpen, badgeVariant, children }) {
   const [collapsed, setCollapsed] = useState(!defaultOpen);
