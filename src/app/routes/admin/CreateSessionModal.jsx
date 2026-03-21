@@ -248,14 +248,14 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setRoundNumber(Math.max(1, roundNumber - 1))}
-                    className="w-7 h-7 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-300 hover:bg-slate-100 transition-colors duration-150 active:scale-90 text-sm font-medium"
+                    className="w-7 h-7 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors duration-150 active:scale-90 text-sm font-medium"
                   >
                     -
                   </button>
                   <span className="font-bold text-slate-900 dark:text-slate-100 text-lg w-10 text-center">{roundNumber}</span>
                   <button
                     onClick={() => setRoundNumber(roundNumber + 1)}
-                    className="w-7 h-7 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-300 hover:bg-slate-100 transition-colors duration-150 active:scale-90 text-sm font-medium"
+                    className="w-7 h-7 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors duration-150 active:scale-90 text-sm font-medium"
                   >
                     +
                   </button>

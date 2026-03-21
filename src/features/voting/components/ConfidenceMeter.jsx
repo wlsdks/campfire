@@ -34,7 +34,7 @@ export default memo(function ConfidenceMeter({ onConfirm }) {
             className={`py-2.5 rounded-lg text-sm font-medium transition-all ${
               selected === key
                 ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
-                : 'bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100'
+                : 'bg-slate-50 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600'
             } ${selected !== null && selected !== key ? 'opacity-40 cursor-not-allowed' : ''}`}
           >
             {label}
