@@ -34,17 +34,22 @@ export default function DMBubble({ activeDM, senderName, onSendMessage }) {
   const [expanded, setExpanded] = useState(false);
   const [inputText, setInputText] = useState('');
   const [sending, setSending] = useState(false);
+  const [lastSeenCount, setLastSeenCount] = useState(0);
   const messagesEndRef = useRef(null);
+
+  const messageCount = activeDM?.messageList?.length || 0;
 
   useEffect(() => {
     if (expanded) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      setLastSeenCount(messageCount);
     }
-  }, [activeDM?.messageList?.length, expanded]);
+  }, [messageCount, expanded]);
 
   if (!activeDM) return null;
 
   const isWaiting = activeDM.status === 'waiting';
+  const unreadCount = expanded ? 0 : Math.max(0, messageCount - lastSeenCount);
 
   async function handleSend() {
     const text = inputText.trim();
@@ -58,21 +63,27 @@ export default function DMBubble({ activeDM, senderName, onSendMessage }) {
   return (
     <AnimatePresence>
       {!expanded ? (
-        <motion.button
-          key="bubble"
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-          onClick={() => setExpanded(true)}
-          className="fixed bottom-28 right-4 z-40 w-12 h-12 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-lg flex items-center justify-center hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150"
-          aria-label="도움 요청 채팅 열기"
-        >
-          <MessageSquare size={20} />
-          {isWaiting && (
-            <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-amber-500 animate-pulse" />
-          )}
-        </motion.button>
+        <div className="fixed bottom-[120px] left-0 right-0 z-40 pointer-events-none">
+          <div className="max-w-[620px] mx-auto px-5 flex justify-end pointer-events-auto">
+            <motion.button
+              key="bubble"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              onClick={() => setExpanded(true)}
+              className="w-12 h-12 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-lg flex items-center justify-center hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150 relative"
+              aria-label="도움 요청 채팅 열기"
+            >
+              <MessageSquare size={20} />
+              {(isWaiting || unreadCount > 0) && (
+                <span className="absolute -top-1 -right-1 min-w-[20px] h-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center px-1 animate-pulse">
+                  {unreadCount > 0 ? unreadCount : ''}
+                </span>
+              )}
+            </motion.button>
+          </div>
+        </div>
       ) : (
         <motion.div
           key="panel"
