@@ -1,6 +1,6 @@
 import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, ChevronDown, Copy, Check } from 'lucide-react';
+import { Users, ChevronDown, Copy, Check, Monitor } from 'lucide-react';
 import ParticipantList from '@/features/participants/components/ParticipantList';
 import QRCode from '@/components/ui/QRCode';
 import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
@@ -49,6 +49,7 @@ function RightPanelAccordion({ title, count, defaultOpen = false, children }) {
 
 function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard, voteCounts, studentUrl, teamScores }) {
   const [copied, setCopied] = useState(false);
+  const [liveCopied, setLiveCopied] = useState(false);
 
   async function copyStudentLink() {
     try {
@@ -57,6 +58,17 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
       setCopied(false);
+    }
+  }
+
+  async function copyLiveUrl() {
+    try {
+      const liveUrl = `${window.location.origin}/live?s=${sessionId}`;
+      await navigator.clipboard.writeText(liveUrl);
+      setLiveCopied(true);
+      window.setTimeout(() => setLiveCopied(false), 2000);
+    } catch {
+      setLiveCopied(false);
     }
   }
 
@@ -121,6 +133,10 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
         <Button onClick={copyStudentLink} variant="secondary" size="sm" className="w-full mt-3">
           {copied ? <Check size={16} /> : <Copy size={16} />}
           {copied ? '링크 복사됨' : '초대 링크 복사'}
+        </Button>
+        <Button onClick={copyLiveUrl} variant="secondary" size="sm" className="w-full mt-2">
+          {liveCopied ? <Check size={14} /> : <Monitor size={14} />}
+          {liveCopied ? '링크 복사됨' : '전자칠판 링크 복사'}
         </Button>
         <p className="text-slate-400 text-xs mt-2 text-center break-all leading-relaxed">{studentUrl}</p>
       </div>
