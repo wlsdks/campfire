@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { motion } from 'framer-motion';
-import { RefreshCw, AlertTriangle } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
+import PickMascot from '@/components/ui/PickMascot';
 
 /**
  * React Error Boundary — catches render errors and shows a recovery UI.
@@ -63,11 +64,9 @@ function ErrorFallback({ fullPage, errorMessage, onRetry, onReload }) {
         transition={{ duration: 0.3, ease: 'easeOut' }}
         className="text-center max-w-sm"
       >
-        {/* Icon */}
+        {/* Mascot */}
         <div className="flex justify-center mb-4">
-          <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-            <AlertTriangle size={22} className="text-slate-400" />
-          </div>
+          <PickMascot size="md" mood="thinking" />
         </div>
 
         {/* Message */}

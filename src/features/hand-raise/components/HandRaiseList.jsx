@@ -4,6 +4,7 @@ import { db } from '@/lib/firebase';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Hand, X, ChevronDown } from 'lucide-react';
+import PickMascot from '@/components/ui/PickMascot';
 import IconButton from '@/components/ui/IconButton';
 
 export default function HandRaiseList({ sessionId }) {
@@ -91,7 +92,10 @@ export default function HandRaiseList({ sessionId }) {
                 </div>
               )}
               {count === 0 && (
-                <p className="text-slate-400 text-xs py-1">손든 학생이 없습니다</p>
+                <div className="flex items-center gap-2 py-1">
+                  <PickMascot size="xs" />
+                  <p className="text-slate-400 text-xs">손든 학생이 없습니다</p>
+                </div>
               )}
               <AnimatePresence>
                 {raisedList.map((p, i) => (

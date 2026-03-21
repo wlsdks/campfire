@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, X, MessageCircle, Shield } from 'lucide-react';
+import PickMascot from '@/components/ui/PickMascot';
 import { useChat } from '@/features/chat/api/useChat';
 import { useStaffChat } from '@/features/dm/api/useStaffChat';
 import ChatMessage from '@/features/chat/components/ChatMessage';
@@ -111,7 +112,8 @@ export default function ChatPanel({ sessionId, senderName, senderType, open, onC
             <div ref={containerRef} onScroll={handleScroll} className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3 scrollbar-hide">
               {loading && messages.length === 0 && <div className="flex-1 flex items-center justify-center"><span className="text-sm text-slate-400 dark:text-slate-500">불러오는 중...</span></div>}
               {!loading && messages.length === 0 && (
-                <div className="flex-1 flex items-center justify-center">
+                <div className="flex-1 flex flex-col items-center justify-center gap-2">
+                  <PickMascot size="sm" mood="waiting" />
                   <p className="text-sm text-slate-400 dark:text-slate-500 text-center leading-relaxed">아직 메시지가 없습니다<br /><span className="text-xs">{emptyMsg}</span></p>
                 </div>
               )}

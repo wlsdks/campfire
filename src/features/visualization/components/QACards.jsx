@@ -1,7 +1,8 @@
 import { useState, memo, useMemo } from 'react';
 import { useVotes } from '@/hooks/useVotes';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, X, Users } from 'lucide-react';
+import { X, Users } from 'lucide-react';
+import PickMascot from '@/components/ui/PickMascot';
 import Avatar from '@/components/ui/Avatar';
 
 function formatTime(timestamp) {
@@ -93,8 +94,8 @@ export default memo(function QACards({ sessionId, questionId, title }) {
         </div>
 
         {sorted.length === 0 && (
-          <div className="text-center py-20 space-y-3">
-            <MessageSquare size={32} className="text-slate-200 dark:text-slate-700 mx-auto" />
+          <div className="text-center py-20 space-y-3 flex flex-col items-center">
+            <PickMascot size="sm" />
             <div>
               <p className="text-slate-400 dark:text-slate-500 text-sm">아직 응답이 없습니다</p>
               <p className="text-slate-400 dark:text-slate-500 text-xs mt-1">학생들이 답변하면 여기에 표시됩니다</p>

@@ -1,6 +1,7 @@
 import { motion, useMotionValue, useTransform, animate, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, memo } from 'react';
 import { ChevronUp, ChevronDown, Flame, Medal, Ticket, Trophy } from 'lucide-react';
+import PickMascot from '@/components/ui/PickMascot';
 import Avatar from '@/components/ui/Avatar';
 
 /** Animated number counter — counts from prev to `value` on change. */
@@ -162,8 +163,8 @@ export default memo(function Leaderboard({
 
   if (visible.length === 0) {
     return (
-      <div className="text-center py-10 space-y-2">
-        <Trophy size={32} className="text-slate-200 dark:text-slate-600 mx-auto" />
+      <div className="text-center py-10 space-y-2 flex flex-col items-center">
+        <PickMascot size="sm" />
         <p className="text-slate-400 text-sm">{emptyLabel}</p>
         <p className="text-slate-400 dark:text-slate-500 text-xs">퀴즈에 정답을 맞히면 점수가 올라갑니다</p>
       </div>
