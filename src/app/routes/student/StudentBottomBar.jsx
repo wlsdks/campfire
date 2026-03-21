@@ -12,7 +12,6 @@ import ReactionBar from '@/features/reactions/components/ReactionBar';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import ChatPanel from '@/features/chat/components/ChatPanel';
 import ClassQAPanel from '@/features/class-questions/components/ClassQAPanel';
-import HelpRequestModal from '@/features/dm/components/HelpRequestModal';
 import DMBubble from '@/features/dm/components/DMBubble';
 import StudentToasts from '@/app/routes/student/StudentToasts';
 import { timing } from '@/lib/design-tokens';
@@ -24,7 +23,6 @@ export default function StudentBottomBar({ sessionId }) {
   const [showQuestionInput, setShowQuestionInput] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [showQA, setShowQA] = useState(false);
-  const [showHelpModal, setShowHelpModal] = useState(false);
   const [showDMChat, setShowDMChat] = useState(false);
   const [dmLastSeen, setDmLastSeen] = useState(0);
   const [hasUnread, setHasUnread] = useState(false);
@@ -78,7 +76,6 @@ export default function StudentBottomBar({ sessionId }) {
       <ReactionOverlay sessionId={sessionId} />
       <ChatPanel sessionId={sessionId} senderName={nickname} senderType="student" open={showChat} onClose={() => setShowChat(false)} onNewMessage={handleNewMessage} />
       <ClassQAPanel sessionId={sessionId} open={showQA} onClose={() => setShowQA(false)} onNewQuestion={handleNewQuestion} />
-      <HelpRequestModal open={showHelpModal && !activeDM} onClose={() => setShowHelpModal(false)} onSubmit={handleHelpRequest} />
       {showDMChat && (
         <DMBubble
           activeDMs={allActiveDMs}
@@ -86,7 +83,7 @@ export default function StudentBottomBar({ sessionId }) {
           senderName={nickname}
           onSendMessage={sendDMMessage}
           onClose={() => setShowDMChat(false)}
-          onRequestHelp={() => { setShowDMChat(false); setShowHelpModal(true); }}
+          onRequestHelp={handleHelpRequest}
         />
       )}
 
@@ -127,8 +124,7 @@ export default function StudentBottomBar({ sessionId }) {
                 {hasUnread && <span className={`${UNREAD_DOT} bg-red-500`} />}
               </motion.button>
               <motion.button whileTap={{ scale: 0.96 }} onClick={() => {
-                if (allActiveDMs.length > 0) { setShowDMChat(true); setDmLastSeen(totalDMMessages); }
-                else setShowHelpModal(true);
+                setShowDMChat(true); setDmLastSeen(totalDMMessages);
               }} className={`${BTN} relative`}>
                 <Headset size={20} /><span className="text-[11px]">도움</span>
                 {dmUnread > 0 && (
