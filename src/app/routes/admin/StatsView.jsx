@@ -62,7 +62,7 @@ function CoursePerformance({ courseData }) {
             <h4 className="font-bold text-slate-900 dark:text-slate-100">{course.name}</h4>
             <div className="flex items-center gap-4 text-xs text-slate-400">
               <TrendIndicator roundDetails={course.roundDetails} />
-              <span><span className="font-semibold text-slate-600 dark:text-slate-300">{course.rounds}</span>차수</span>
+              <span><span className="font-semibold text-slate-600 dark:text-slate-300">{course.conductedRounds}</span>차수</span>
               <span className="max-sm:hidden"><span className="font-semibold text-slate-600 dark:text-slate-300">{course.totalParticipants}</span>명</span>
             </div>
           </div>
@@ -104,8 +104,9 @@ function RecentQuestions({ questions, loading, courseFilter }) {
       {filtered.map((q, i) => {
         const typeInfo = QUESTION_TYPE_MAP[q.type] || { label: q.type, icon: MessageSquare };
         const Icon = typeInfo.icon;
+        const noResponses = q.responseCount === 0;
         return (
-          <motion.div key={`${q.sessionId}-${q.qId}`} variants={stagger.item} className="flex items-center gap-3 py-2.5">
+          <motion.div key={`${q.sessionId}-${q.qId}`} variants={stagger.item} className={`flex items-center gap-3 py-2.5 ${noResponses ? 'opacity-40' : ''}`}>
             <Icon size={16} className="text-slate-400 shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-sm text-slate-700 dark:text-slate-200 truncate">{q.title}</p>
@@ -211,15 +212,17 @@ export default function StatsView({ sessions }) {
     const courseData = Object.entries(courseMap)
       .map(([name, list]) => {
         list.sort((a, b) => (a.roundNumber || 0) - (b.roundNumber || 0));
+        const conducted = list.filter((s) => s.status !== 'setting');
         return {
           name,
           rounds: list.length,
+          conductedRounds: conducted.length,
           totalParticipants: list.reduce((sum, s) => sum + s.participantCount, 0),
-          roundDetails: list
-            .filter((s) => s.status !== 'setting')
+          roundDetails: conducted
             .map((s) => ({ roundNumber: s.roundNumber || '\u2014', activityRate: s.activityRate, participantCount: s.participantCount })),
         };
       })
+      .filter((c) => c.conductedRounds > 0)
       .sort((a, b) => b.totalParticipants - a.totalParticipants);
     return { totalClasses, totalParticipants, avgActivity, courseCount, courseData };
   }, [sessions]);

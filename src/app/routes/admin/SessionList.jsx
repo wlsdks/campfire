@@ -38,7 +38,7 @@ function SessionRow({ session, onClick, onDelete, onDuplicate, index, hideAction
       onClick={onClick}
     >
       <span className={`text-sm font-bold w-8 shrink-0 ${isSetting ? 'text-slate-500' : isActive || isReviewing ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400'}`}>
-        {session.roundNumber ? `${session.roundNumber}차` : '—'}
+        {session.roundNumber ? `${session.roundNumber}차` : session.id ? `#${session.id.slice(-4)}` : '—'}
       </span>
       <span className="text-sm text-slate-500 dark:text-slate-400 w-32 max-sm:w-auto shrink-0 tabular-nums">{formatDate(session.createdAt)}</span>
       <div className="flex items-center gap-1 flex-1 text-xs text-slate-400 min-w-0 max-sm:hidden tabular-nums">
