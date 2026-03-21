@@ -142,11 +142,11 @@
 ## 사이클 로그
 > 최근 10개만 유지.
 
+2026-03-22 | fix: DM 모달 중앙화 + 미읽 배지 + 다중DM 목록 + 강사 DM 제거 + duplicate key
 2026-03-21 | improve: 마스코트 6곳 빈상태 + 채팅 메시지 slide-in 애니메이션
 2026-03-21 | feat: DM 목록 탭 + 질문→DM 1:1 답변 + hooks 버그 수정
 2026-03-21 | refactor: 코드 품질 — 유틸 추출, React.memo, 의존성 업데이트, 중복 import
 2026-03-21 | improve: 애니메이션 — voter exit, spring 참여율바, 마스코트 호흡, spring 프리셋
-2026-03-21 | feat: DM 도움요청 + 운영채팅 — 학생↔스태프 1:1, 스태프+강사 내부채널
 2026-03-21 | improve: 디자인 시스템 완전 준수 — transition/tracking/spring/border/색상/간격
 2026-03-21 | feat: 라이브 관전 뷰 + 애니메이션 강화 + DESIGN_SYSTEM §16-18 문서화
 2026-03-21 | improve: 마이크로인터랙션 — pulse, 인디고바, 쿨다운 쉐이크, OX hover
