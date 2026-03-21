@@ -174,7 +174,7 @@ export default memo(function ClassSummary({ session, participants, scores, leade
               const meta = QTYPE_META[q.type] || QTYPE_META.qna;
               const Icon = meta.icon;
               return (
-                <div key={q.id} className="px-4 py-3 flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                <div key={q.id} className="px-4 py-3 flex items-center gap-3 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors duration-150">
                   <span className="text-xs font-semibold text-slate-400 w-5 text-right shrink-0">{i + 1}</span>
                   <Icon size={14} className="text-slate-400 shrink-0" />
                   <div className="flex-1 min-w-0">

@@ -27,7 +27,7 @@ export default function StaffParticipantsTab({ sessionId }) {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -12 }}
             transition={{ delay: i * 0.03 }}
-            className="flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+            className="flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors duration-150"
           >
             <Avatar name={p.nickname} size="sm" />
             <span className="flex-1 text-sm text-slate-700 dark:text-slate-200 truncate">

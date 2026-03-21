@@ -63,7 +63,7 @@ function PresentQROverlay({ sessionId, studentUrl, count }) {
               <span className="text-slate-900 dark:text-slate-100 text-sm font-semibold">참여 QR코드</span>
               <button
                 onClick={toggle}
-                className="p-1 rounded-lg text-slate-300 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                className="p-1 rounded-lg text-slate-300 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150"
                 aria-label="QR 닫기"
               >
                 <X size={16} />
@@ -77,7 +77,7 @@ function PresentQROverlay({ sessionId, studentUrl, count }) {
             </div>
             <button
               onClick={handleCopy}
-              className="mt-3 w-full flex items-center justify-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              className="mt-3 w-full flex items-center justify-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 py-1.5 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150"
             >
               {copied ? <Check size={12} /> : <Copy size={12} />}
               {copied ? '복사됨' : '링크 복사'}

@@ -46,7 +46,7 @@ export default function HandRaiseList({ sessionId }) {
     <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
       <motion.button
         onClick={() => setCollapsed(!collapsed)}
-        className="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors"
+        className="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150"
         animate={shake ? { x: [0, -4, 4, -3, 3, -1, 1, 0] } : {}}
         transition={{ duration: 0.5, ease: 'easeInOut' }}
       >
@@ -84,7 +84,7 @@ export default function HandRaiseList({ sessionId }) {
                   <button
                     onClick={(e) => { e.stopPropagation(); dismissAll(); }}
                     aria-label="모든 손들기 해제"
-                    className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                    className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150"
                   >
                     전체 해제
                   </button>

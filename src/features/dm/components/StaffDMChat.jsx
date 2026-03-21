@@ -94,7 +94,7 @@ export default function StaffDMChat({
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={handleResolve}
-                  className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/20 rounded-lg transition-colors"
+                  className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/20 rounded-lg transition-colors duration-150"
                 >
                   <CheckCircle2 size={14} />
                   해결 완료

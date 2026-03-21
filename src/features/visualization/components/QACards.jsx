@@ -35,7 +35,7 @@ function DetailModal({ item, onClose }) {
               <p className="text-xs text-slate-400 dark:text-slate-500">{formatTime(item.timestamp)}</p>
             </div>
           </div>
-          <button onClick={onClose} className="text-slate-300 dark:text-slate-600 hover:text-slate-500 dark:hover:text-slate-400 transition-colors">
+          <button onClick={onClose} className="text-slate-300 dark:text-slate-600 hover:text-slate-500 dark:hover:text-slate-400 transition-colors duration-150">
             <X size={18} />
           </button>
         </div>

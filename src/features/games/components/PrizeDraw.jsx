@@ -149,7 +149,7 @@ export default function PrizeDraw({ participants, onResult }) {
             <button
               onClick={() => setCount(Math.max(1, count - 1))}
               aria-label="추첨 인원 감소"
-              className="px-2.5 py-2 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              className="px-2.5 py-2 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150"
             >
               <Minus size={14} />
             </button>
@@ -165,7 +165,7 @@ export default function PrizeDraw({ participants, onResult }) {
             <button
               onClick={() => setCount(Math.min(names.length, count + 1))}
               aria-label="추첨 인원 증가"
-              className="px-2.5 py-2 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              className="px-2.5 py-2 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150"
             >
               <Plus size={14} />
             </button>

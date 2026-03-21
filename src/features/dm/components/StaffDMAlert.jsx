@@ -114,7 +114,7 @@ export default function StaffDMAlert({ sessionId, staffId, staffName, senderType
             exit={{ scale: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             onClick={() => setOpenDM(activeDMs[0])}
-            className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-lg flex items-center justify-center hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors"
+            className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-lg flex items-center justify-center hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150"
             aria-label="활성 도움 요청"
           >
             <MessageSquare size={20} />

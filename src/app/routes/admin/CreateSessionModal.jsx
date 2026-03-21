@@ -164,7 +164,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
                       <p className="text-slate-400 text-xs">{course.count}개 차수 진행</p>
                     </div>
                   </div>
-                  <ChevronRight size={16} className="text-slate-300 group-hover:text-slate-500 transition-colors" />
+                  <ChevronRight size={16} className="text-slate-300 group-hover:text-slate-500 transition-colors duration-150" />
                 </button>
               ))}
 

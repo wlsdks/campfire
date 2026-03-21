@@ -205,7 +205,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
                       {isFiltering && (
                         <button
                           onClick={() => { setSearchQuery(''); setStatusFilter('all'); }}
-                          className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                          className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150"
                         >
                           초기화
                         </button>

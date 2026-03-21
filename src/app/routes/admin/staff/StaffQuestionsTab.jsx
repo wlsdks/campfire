@@ -124,7 +124,7 @@ export default function StaffQuestionsTab({ sessionId, adminUser }) {
               </Button>
               <button
                 onClick={() => setSelected(null)}
-                className="w-full py-2 text-sm font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                className="w-full py-2 text-sm font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150"
               >
                 닫기
               </button>

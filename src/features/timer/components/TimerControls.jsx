@@ -20,7 +20,7 @@ export default function TimerControls({ isRunning, onStart, onStop }) {
               key={sec}
               onClick={() => onStart(sec)}
               aria-label={`${sec}초 타이머 시작`}
-              className="flex-1 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-600 hover:bg-slate-200 dark:hover:bg-slate-500 hover:text-slate-900 dark:hover:text-white text-slate-600 dark:text-slate-300 text-xs font-medium transition-colors"
+              className="flex-1 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-600 hover:bg-slate-200 dark:hover:bg-slate-500 hover:text-slate-900 dark:hover:text-white text-slate-600 dark:text-slate-300 text-xs font-medium transition-colors duration-150"
             >
               {sec}초
             </button>
@@ -37,7 +37,7 @@ export default function TimerControls({ isRunning, onStart, onStop }) {
             <button
               onClick={() => onStart(customSeconds)}
               aria-label="커스텀 타이머 시작"
-              className="px-2 py-1.5 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-500 transition-colors"
+              className="px-2 py-1.5 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-500 transition-colors duration-150"
             >
               <Play size={12} />
             </button>

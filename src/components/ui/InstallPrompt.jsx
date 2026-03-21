@@ -82,7 +82,7 @@ export default function InstallPrompt() {
           {!IS_IOS && deferredPrompt && (
             <button
               onClick={handleInstall}
-              className="flex-shrink-0 bg-white text-slate-900 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+              className="flex-shrink-0 bg-white text-slate-900 text-sm font-medium px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors duration-150"
             >
               설치
             </button>

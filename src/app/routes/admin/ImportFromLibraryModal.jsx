@@ -123,7 +123,7 @@ export default function ImportFromLibraryModal({ open, onClose, adminUid, onImpo
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="질문 검색..."
               aria-label="보관함 질문 검색"
-              className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg pl-9 pr-8 py-2 text-sm dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-600 focus:border-slate-400 transition-colors"
+              className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg pl-9 pr-8 py-2 text-sm dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-600 focus:border-slate-400 transition-colors duration-150"
             />
             {searchQuery && (
               <button
