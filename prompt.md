@@ -497,16 +497,16 @@ npx vite build && npx firebase deploy   # 매 사이클 배포
 ## 사이클 로그
 > 최근 10개만 유지. 오래된 것은 삭제.
 
-2026-03-21 | feat: 경품 추첨 게임 모드 — PrizeDraw.jsx 신규. 슬롯머신→당첨 발표+ConfettiBurst. ModeSwitcher+PresentationView 통합
-2026-03-21 | improve: 게임 UI 3종 — 돌림판(컨페티+아바타+리셋), 제비뽑기(아바타 카드+컨페티+리셋), 경품추첨(슬롯+당첨)
-2026-03-21 | improve: 다크모드 완전 해결 — ~95개 누락 수정 across 20+ 파일 (투표+게임+어드민+타이머+리액션)
-2026-03-21 | perf: React.memo 10개 투표 컴포넌트 + 데드코드 15 import + 2 파일 삭제
-2026-03-21 | improve: 마이크로인터랙션 — 참여자 수 bounce, 리더보드 순위 reveal, 하단바 active 피드백, IdleMascot 귀 stagger
-2026-03-21 | improve: 타이포 — tabular-nums(헤더/숫자), tracking-tight(프레젠터 제목), 대비 패스(JoinPage/ClassSummary)
-2026-03-21 | fix: CelebrationMascot 로봇→사자, Roulette colors.border 버그, Firebase rules reviewing+timer
-2026-03-21 | improve: 채팅 아바타 UI + 스마트 스크롤 + JoinToast 아바타 + 대기화면 팁 아이콘
-2026-03-21 | docs: PRD+DESIGN_SYSTEM+CLAUDE.md 업데이트 — 경품추첨/채팅/마스코트/애니메이션 스펙 반영
-2026-03-21 | improve: seed-demo reviewing 필드 + QuestionList 드래그 핸들 가시성 + 세션종료 메시지
+2026-03-21 | feat: 경품 추첨 + 게임 UI 3종 개선 — PrizeDraw 슬롯머신, 돌림판/제비뽑기 컨페티+아바타+리셋
+2026-03-21 | improve: 다크모드 완전 해결 — ~95개 누락 across 20+ 파일 + React.memo 10개 투표 컴포넌트
+2026-03-21 | feat: StaffPage 4탭 UI + 스태프 데모 로그인 + 채팅 스태프 배지 + Firebase staff 역할
+2026-03-21 | feat: 자신감 측정기 E2E — 학생 ConfidenceMeter → Firebase confidence → 강사 ConfidenceStats 분포바 → ClassSummary 확신%
+2026-03-21 | improve: 마이크로인터랙션 — 손들기 흔들림, 투표확인 overshoot, 리액션 float-up, 참여자 bounce, 리더보드 reveal
+2026-03-21 | improve: 타이포+대비 — tabular-nums, tracking-tight, WCAG 대비 패스, 드래그 핸들 가시성
+2026-03-21 | fix: CelebrationMascot 사자, Roulette 버그, Firebase rules, IdleMascot 크기+귀 stagger
+2026-03-21 | feat: 학생 UX — 강의명 대기 표시, 본인 질문 하이라이트, 복사 세션코드, 팁 아이콘
+2026-03-21 | docs: prompt.md 강화 — 우선순위 매트릭스, 회귀 방지, 애니메이션 리소스, 토스 철학, 이모지 금지
+2026-03-21 | docs: PRD+DESIGN_SYSTEM 업데이트 — 스태프/자신감측정기/채팅/마스코트/애니메이션 스펙
 
 ## 페르소나 (매 사이클 반드시 해당 관점으로 사고)
 
