@@ -182,7 +182,12 @@ export default function StudentBottomBar({ sessionId }) {
                   : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 active:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 dark:active:bg-slate-600'
               }`}
             >
-              <Hand size={20} />
+              <motion.div
+                animate={isRaised ? { rotate: [0, -15, 15, -10, 10, 0] } : { rotate: 0 }}
+                transition={isRaised ? { duration: 0.6, repeat: Infinity, repeatDelay: 2 } : {}}
+              >
+                <Hand size={20} />
+              </motion.div>
               <span className="text-[11px]">{isRaised ? '내리기' : '손들기'}</span>
             </motion.button>
             <motion.button
