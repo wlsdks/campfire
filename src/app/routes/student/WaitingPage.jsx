@@ -145,7 +145,14 @@ export default function WaitingPage({ sessionId, pendingEvent = null, courseName
             className="flex items-center justify-center gap-2"
           >
             <div className="flex items-center gap-2 bg-white dark:bg-slate-800 rounded-xl px-4 py-2.5 border border-slate-100 dark:border-slate-700 shadow-sm">
-              <Users size={16} className="text-slate-400" />
+              <motion.div
+                key={count}
+                initial={{ scale: 1.2 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              >
+                <Users size={16} className="text-slate-400" />
+              </motion.div>
               <span className="text-slate-700 dark:text-slate-300 text-sm font-medium">
                 <motion.span
                   key={count}
