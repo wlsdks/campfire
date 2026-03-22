@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, lazy, Suspense } from 'react';
+import { useState, useRef, useEffect, useMemo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Target, Loader2, RotateCcw } from 'lucide-react';
 import Button from '@/components/ui/Button';
@@ -11,16 +11,24 @@ const SEGMENT_COLORS = [
   '#1E293B', '#475569', '#CBD5E1', '#334155',
 ];
 
-function getSpinResult(nameCount, segmentAngle) {
-  const winnerIndex = Math.floor(Math.random() * nameCount);
+function getWeightedSpinResult(segments) {
+  // Weighted random — more tickets/points = higher probability
+  const totalWeight = segments.reduce((sum, s) => sum + s.weight, 0);
+  let rand = Math.random() * totalWeight;
+  let winnerIndex = 0;
+  for (let i = 0; i < segments.length; i++) {
+    rand -= segments[i].weight;
+    if (rand <= 0) { winnerIndex = i; break; }
+  }
+  // Calculate angle to winner's segment center
+  let angleToCenter = 0;
+  for (let i = 0; i < winnerIndex; i++) angleToCenter += segments[i].angle;
+  angleToCenter += segments[winnerIndex].angle / 2;
   const extraRotations = (5 + Math.random() * 3) * 360;
-  return {
-    winnerIndex,
-    targetAngle: extraRotations + (360 - winnerIndex * segmentAngle - segmentAngle / 2),
-  };
+  return { winnerIndex, targetAngle: extraRotations + (360 - angleToCenter) };
 }
 
-export default function Roulette({ participants, onResult }) {
+export default function Roulette({ participants, scores = {}, onResult }) {
   const [spinning, setSpinning] = useState(false);
   const [winner, setWinner] = useState(null);
   const [rotation, setRotation] = useState(0);
@@ -34,14 +42,26 @@ export default function Roulette({ participants, onResult }) {
     };
   }, []);
 
-  const names = participants.map(p => p.nickname);
-  const segmentAngle = 360 / (names.length || 1);
+  // Build weighted segments — everyone gets at least 1 base weight
+  const segments = participants.map(p => {
+    const s = scores[p.id];
+    const tickets = s?.tickets || 0;
+    const total = s?.total || 0;
+    const weight = 1 + tickets + Math.floor(total / 100); // base 1 + tickets + score/100
+    return { name: p.nickname, weight };
+  });
+  const totalWeight = segments.reduce((sum, s) => sum + s.weight, 0) || 1;
+  const segmentsWithAngle = segments.map(s => ({
+    ...s,
+    angle: (s.weight / totalWeight) * 360,
+  }));
+  const names = segments.map(s => s.name);
 
   function spin() {
     if (spinning || names.length === 0) return;
     setSpinning(true);
     setWinner(null);
-    const { winnerIndex, targetAngle } = getSpinResult(names.length, segmentAngle);
+    const { winnerIndex, targetAngle } = getWeightedSpinResult(segmentsWithAngle);
     setRotation(prev => prev + targetAngle);
     timerRef.current = setTimeout(() => {
       if (!mountedRef.current) return;
@@ -78,20 +98,24 @@ export default function Roulette({ participants, onResult }) {
           transition={{ duration: 4, ease: [0.17, 0.67, 0.12, 0.99] }}
         >
           <circle cx="100" cy="100" r="98" fill="none" stroke={"#E2E8F0"} strokeWidth="1.5" />
-          {names.map((name, i) => {
-            const startAngle = i * segmentAngle;
-            const endAngle = startAngle + segmentAngle;
+          {(() => {
+            let cumulativeAngle = 0;
+            return segmentsWithAngle.map((seg, i) => {
+            const startAngle = cumulativeAngle;
+            const endAngle = startAngle + seg.angle;
+            cumulativeAngle = endAngle;
             const startRad = (startAngle - 90) * Math.PI / 180;
             const endRad = (endAngle - 90) * Math.PI / 180;
             const x1 = 100 + 95 * Math.cos(startRad);
             const y1 = 100 + 95 * Math.sin(startRad);
             const x2 = 100 + 95 * Math.cos(endRad);
             const y2 = 100 + 95 * Math.sin(endRad);
-            const largeArc = segmentAngle > 180 ? 1 : 0;
+            const largeArc = seg.angle > 180 ? 1 : 0;
             const midRad = ((startAngle + endAngle) / 2 - 90) * Math.PI / 180;
             const textX = 100 + 62 * Math.cos(midRad);
             const textY = 100 + 62 * Math.sin(midRad);
             const textRotation = (startAngle + endAngle) / 2;
+            const name = seg.name;
             return (
               <g key={name + i}>
                 <path
@@ -112,7 +136,7 @@ export default function Roulette({ participants, onResult }) {
                 </text>
               </g>
             );
-          })}
+          })})()}
           <circle cx="100" cy="100" r="18" fill="white" stroke={"#E2E8F0"} strokeWidth="1.5" />
           <text x="100" y="100" fill={'#0F172A'} fontSize="10" fontWeight="bold" fontFamily="'Pretendard', system-ui" textAnchor="middle" dominantBaseline="central">GO</text>
         </motion.svg>
