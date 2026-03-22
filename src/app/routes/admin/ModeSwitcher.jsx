@@ -1,6 +1,6 @@
 import { memo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Target, Ticket, Trophy, Swords, Gift, Sparkles, Coffee, X, ChevronDown } from 'lucide-react';
+import { Target, Ticket, Trophy, Swords, Gift, Dices, Coffee, X, ChevronDown } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
 export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTickets, leaderboard, modeOpen, onToggle, onSwitchMode, teamBattleActive = false }) {
@@ -50,7 +50,7 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTic
                 { mode: 'roulette', label: '돌림판', icon: Target },
                 { mode: 'lottery', label: totalTickets > 0 ? '보상 추첨' : '제비뽑기', icon: Ticket },
                 { mode: 'prizeDraw', label: '경품 추첨', icon: Gift },
-                { mode: 'slotMachine', label: '777 슬롯', icon: Sparkles },
+                { mode: 'slotMachine', label: '777 슬롯', icon: Dices },
                 { mode: 'breakTime', label: '쉬는 시간', icon: Coffee },
                 ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
                 ...(teamBattleActive ? [{ mode: 'teamBattle', label: '팀 스코어보드', icon: Swords }] : []),

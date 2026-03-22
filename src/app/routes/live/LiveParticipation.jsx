@@ -30,7 +30,7 @@ export default memo(function LiveParticipation({ voted, total }) {
         <span className="text-slate-400 text-sm font-semibold uppercase tracking-wider">참여</span>
         <div className="flex items-baseline gap-2">
           <span className="text-slate-100 tabular-nums">
-            <AnimatedNumber value={voted} className="text-2xl font-bold" />
+            <AnimatedNumber value={voted} className="text-2xl font-bold tracking-tight" />
             <span className="text-sm text-slate-500 ml-0.5">/ {total}명</span>
           </span>
           <span className="text-lg font-bold tracking-tight text-indigo-400 tabular-nums">

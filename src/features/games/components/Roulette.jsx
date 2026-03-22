@@ -162,7 +162,7 @@ export default function Roulette({ participants, scores = {}, onResult }) {
             className="relative text-center space-y-4"
           >
             <Suspense fallback={null}><ConfettiBurst /></Suspense>
-            <div className="w-20 h-20 mx-auto rounded-full bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-3xl font-bold text-indigo-600 dark:text-indigo-400 ring-4 ring-indigo-100 dark:ring-indigo-800/50">
+            <div className="w-20 h-20 mx-auto rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-3xl font-bold text-slate-900 dark:text-slate-100 ring-4 ring-slate-200 dark:ring-slate-700">
               {winner.charAt(0).toUpperCase()}
             </div>
             <div className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">{winner}</div>
