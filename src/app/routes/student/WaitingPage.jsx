@@ -41,9 +41,9 @@ function RotatingTip() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.3, ease: 'easeOut' }}
-          className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm text-center absolute px-4"
+          className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-[14px] text-center absolute px-4"
         >
-          <Icon size={14} className="text-slate-400 shrink-0" />
+          <Icon size={16} className="text-slate-400 shrink-0" />
           <span>{tip.text}</span>
         </motion.div>
       </AnimatePresence>
@@ -66,7 +66,7 @@ function CopyableCode({ code }) {
   return (
     <button
       onClick={handleCopy}
-      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 transition-colors duration-150 active:scale-[0.96]"
+      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 transition-colors duration-150 active:scale-[0.96]"
       aria-label="세션 코드 복사"
     >
       {code}
