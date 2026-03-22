@@ -106,25 +106,7 @@ export default function StaffDMAlert({ sessionId, staffId, staffName, senderType
         )}
       </AnimatePresence>
 
-      {/* Active DM indicator (small badge button) */}
-      <AnimatePresence>
-        {hasActiveDMs && !openDM && (
-          <motion.button
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            exit={{ scale: 0 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            onClick={() => setOpenDM(activeDMs[0])}
-            className="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-lg flex items-center justify-center hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150"
-            aria-label="활성 도움 요청"
-          >
-            <MessageSquare size={20} />
-            <span className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-red-500 text-white text-[10px] font-bold flex items-center justify-center">
-              {activeDMs.length}
-            </span>
-          </motion.button>
-        )}
-      </AnimatePresence>
+      {/* Active DM indicator removed — DM is accessible via staff right panel */}
 
       {/* DM Chat modal */}
       <StaffDMChat
