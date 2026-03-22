@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback, lazy, Suspense } from 'react';
+import { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import Button from '@/components/ui/Button';
@@ -9,96 +9,78 @@ const ConfettiBurst = lazy(() => import('@/features/quiz/components/ConfettiBurs
 
 /**
  * SlotMachine — 777 style name slot game.
- * 3 reels spin and stop one by one. When all 3 match = winner!
- * Guaranteed to hit within 1-6 spins via internal probability.
+ * 3 reels show cycling names then stop one by one.
+ * Guaranteed win within 1-6 spins.
  */
 export default function SlotMachine({ participants, onResult }) {
   const [spinning, setSpinning] = useState(false);
-  const [reels, setReels] = useState([null, null, null]);
+  const [results, setResults] = useState([null, null, null]);
+  const [stopped, setStopped] = useState([false, false, false]);
   const [winner, setWinner] = useState(null);
   const [spinCount, setSpinCount] = useState(0);
-  const [stopped, setStopped] = useState([false, false, false]);
-  const timerRefs = useRef([]);
   const guaranteedWinner = useRef(null);
   const mountedRef = useRef(true);
+  const timersRef = useRef([]);
 
   useEffect(() => {
     return () => {
       mountedRef.current = false;
-      timerRefs.current.forEach(clearTimeout);
+      timersRef.current.forEach(clearTimeout);
     };
   }, []);
 
   const names = participants.map(p => p.nickname);
 
-  const pickRandom = useCallback(() => names[Math.floor(Math.random() * names.length)], [names]);
+  function pickRandom() {
+    return names[Math.floor(Math.random() * names.length)];
+  }
 
   function spin() {
     if (spinning || names.length === 0) return;
+    timersRef.current.forEach(clearTimeout);
 
-    const nextCount = spinCount + 1;
-    setSpinCount(nextCount);
+    const next = spinCount + 1;
+    setSpinCount(next);
     setSpinning(true);
     setWinner(null);
     setStopped([false, false, false]);
+    setResults([null, null, null]);
 
-    // Guarantee win within 6 spins
     if (!guaranteedWinner.current) {
       guaranteedWinner.current = pickRandom();
     }
 
-    // Determine if this spin should win
-    // Probability increases each spin: spin 1=20%, 2=30%, 3=50%, 4=70%, 5=90%, 6=100%
-    const winChance = [0.2, 0.3, 0.5, 0.7, 0.9, 1.0][Math.min(nextCount - 1, 5)];
+    // Win probability increases each spin
+    const winChance = [0.2, 0.3, 0.5, 0.7, 0.9, 1.0][Math.min(next - 1, 5)];
     const shouldWin = Math.random() < winChance;
 
-    // Generate reel results
     let r1, r2, r3;
     if (shouldWin) {
-      const w = guaranteedWinner.current;
-      r1 = w; r2 = w; r3 = w;
+      r1 = r2 = r3 = guaranteedWinner.current;
     } else {
-      // Near miss — 2 match sometimes for excitement
-      const nearMiss = Math.random() < 0.4;
       r1 = pickRandom();
-      r2 = nearMiss ? r1 : pickRandom();
+      r2 = Math.random() < 0.4 ? r1 : pickRandom(); // near miss
       r3 = pickRandom();
-      // Ensure not accidentally 3 match
       while (r1 === r2 && r2 === r3) r3 = pickRandom();
     }
 
-    // Animate reels with cycling effect then stop one by one
-    const cycleInterval = 80;
-    const reel1Duration = 1200;
-    const reel2Duration = 2000;
-    const reel3Duration = 2800;
-
-    // Rapid cycling animation
-    const cycleTimer = setInterval(() => {
+    // Stop reels one by one — NO setInterval, just timeouts
+    timersRef.current[0] = setTimeout(() => {
       if (!mountedRef.current) return;
-      setReels([pickRandom(), pickRandom(), pickRandom()]);
-    }, cycleInterval);
-
-    // Stop reel 1
-    timerRefs.current[0] = setTimeout(() => {
-      if (!mountedRef.current) return;
+      setResults(prev => [r1, prev[1], prev[2]]);
       setStopped(prev => [true, prev[1], prev[2]]);
-      setReels(prev => [r1, prev[1], prev[2]]);
-    }, reel1Duration);
+    }, 1200);
 
-    // Stop reel 2
-    timerRefs.current[1] = setTimeout(() => {
+    timersRef.current[1] = setTimeout(() => {
       if (!mountedRef.current) return;
+      setResults(prev => [prev[0], r2, prev[2]]);
       setStopped(prev => [prev[0], true, prev[2]]);
-      setReels(prev => [prev[0], r2, prev[2]]);
-    }, reel2Duration);
+    }, 2000);
 
-    // Stop reel 3 + check result
-    timerRefs.current[2] = setTimeout(() => {
-      clearInterval(cycleTimer);
+    timersRef.current[2] = setTimeout(() => {
       if (!mountedRef.current) return;
+      setResults([r1, r2, r3]);
       setStopped([true, true, true]);
-      setReels([r1, r2, r3]);
       setSpinning(false);
 
       if (r1 === r2 && r2 === r3) {
@@ -108,14 +90,12 @@ export default function SlotMachine({ participants, onResult }) {
         setSpinCount(0);
         onResult?.(r1);
       }
-    }, reel3Duration);
-
-    timerRefs.current[3] = cycleTimer;
+    }, 2800);
   }
 
   function reset() {
     setWinner(null);
-    setReels([null, null, null]);
+    setResults([null, null, null]);
     setStopped([false, false, false]);
     guaranteedWinner.current = null;
     setSpinCount(0);
@@ -125,57 +105,63 @@ export default function SlotMachine({ participants, onResult }) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-16">
         <Sparkles size={36} className="text-slate-400" />
-        <div className="text-center space-y-1">
-          <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">777 슬롯</h3>
-          <p className="text-slate-400 text-sm">참여자가 접속하면 시작할 수 있어요</p>
-        </div>
+        <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">777 슬롯</h3>
+        <p className="text-slate-400 text-sm">참여자가 접속하면 시작할 수 있어요</p>
       </div>
     );
   }
 
-  const isMatch = reels[0] && reels[0] === reels[1] && reels[1] === reels[2];
+  const isMatch = results[0] && results[0] === results[1] && results[1] === results[2];
+
+  // Pick 3 random names to show as cycling placeholder per reel
+  const cycleNames = [0, 1, 2].map(() => [pickRandom(), pickRandom(), pickRandom()]);
 
   return (
     <div className="flex flex-col items-center gap-8">
       <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">777 슬롯</h3>
 
-      {/* Slot reels */}
+      {/* 3 Reels */}
       <div className="flex gap-3 justify-center">
-        {[0, 1, 2].map((idx) => (
-          <motion.div
-            key={idx}
-            animate={spinning && !stopped[idx] ? { y: [0, -8, 0] } : {}}
-            transition={spinning && !stopped[idx] ? { repeat: Infinity, duration: 0.15 } : {}}
-            className={`w-24 h-28 rounded-2xl flex flex-col items-center justify-center gap-1 ${
-              stopped[idx] && isMatch
-                ? 'bg-slate-900 dark:bg-slate-100 shadow-lg'
-                : 'bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-600'
-            } transition-colors duration-300`}
-          >
-            {reels[idx] ? (
-              <>
+        {[0, 1, 2].map((idx) => {
+          const isReelStopped = stopped[idx];
+          const name = results[idx];
+
+          return (
+            <div
+              key={idx}
+              className={`w-24 h-28 rounded-2xl flex flex-col items-center justify-center gap-1 overflow-hidden ${
+                isReelStopped && isMatch
+                  ? 'bg-slate-900 dark:bg-slate-100 shadow-lg'
+                  : 'bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-600'
+              } transition-colors duration-300`}
+            >
+              {spinning && !isReelStopped ? (
+                // CSS-only cycling animation — no state updates
+                <div className="animate-slot-cycle flex flex-col items-center gap-1">
+                  <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-600 animate-pulse" />
+                  <span className="text-[10px] text-slate-400 animate-pulse">...</span>
+                </div>
+              ) : name ? (
                 <motion.div
-                  key={reels[idx] + idx + (stopped[idx] ? 's' : 'c')}
-                  initial={{ scale: 0.8, opacity: 0.5 }}
-                  animate={{ scale: stopped[idx] ? 1 : 0.9, opacity: 1 }}
-                  transition={stopped[idx] ? { type: 'spring', stiffness: 400, damping: 22 } : { duration: 0.05 }}
+                  initial={{ scale: 0.5, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+                  className="flex flex-col items-center gap-1"
                 >
-                  <Avatar name={reels[idx]} size={stopped[idx] ? 'md' : 'sm'} />
+                  <Avatar name={name} size="md" />
+                  <span className={`text-xs font-bold truncate max-w-[80px] ${
+                    isMatch ? 'text-white dark:text-slate-900' : 'text-slate-700 dark:text-slate-200'
+                  }`}>{name}</span>
                 </motion.div>
-                <span className={`text-xs font-bold truncate max-w-[80px] ${
-                  stopped[idx] && isMatch ? 'text-white dark:text-slate-900' : 'text-slate-700 dark:text-slate-200'
-                }`}>
-                  {reels[idx]}
-                </span>
-              </>
-            ) : (
-              <span className="text-2xl font-bold text-slate-300 dark:text-slate-600">?</span>
-            )}
-          </motion.div>
-        ))}
+              ) : (
+                <span className="text-2xl font-bold text-slate-300 dark:text-slate-600">?</span>
+              )}
+            </div>
+          );
+        })}
       </div>
 
-      {/* Winner celebration */}
+      {/* Winner */}
       <AnimatePresence>
         {winner && (
           <motion.div
@@ -195,14 +181,10 @@ export default function SlotMachine({ participants, onResult }) {
 
       {/* Controls */}
       <div className="flex gap-3">
-        <Button onClick={spin} variant="primary" size="lg" disabled={spinning || names.length === 0}>
+        <Button onClick={spin} variant="primary" size="lg" disabled={spinning}>
           {spinning ? '돌리는 중...' : winner ? '다시 돌리기' : '돌리기'}
         </Button>
-        {winner && (
-          <Button onClick={reset} variant="secondary" size="lg">
-            초기화
-          </Button>
-        )}
+        {winner && <Button onClick={reset} variant="secondary" size="lg">초기화</Button>}
       </div>
 
       {spinCount > 0 && !winner && !spinning && (

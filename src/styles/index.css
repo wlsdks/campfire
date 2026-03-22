@@ -85,6 +85,15 @@ input, textarea, select {
   background-size: 200% 100%;
 }
 
+/* Slot machine reel cycling */
+@keyframes slot-cycle {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(-8px); opacity: 1; }
+}
+.animate-slot-cycle {
+  animation: slot-cycle 0.15s ease-in-out infinite;
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
