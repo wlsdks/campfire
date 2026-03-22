@@ -144,10 +144,10 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
 
 
       {/* Content */}
-      <div ref={contentRef} className="flex-1 max-w-2xl mx-auto w-full px-6 max-sm:px-4 py-8 space-y-5 overflow-y-auto">
+      <div ref={contentRef} className="flex-1 max-w-2xl mx-auto w-full px-6 max-sm:px-4 py-8 space-y-4 overflow-y-auto">
         {/* Tab bar */}
         <LayoutGroup>
-          <div className="flex gap-1 mb-5 relative">
+          <div className="flex gap-1 mb-4 relative">
             {TABS.map((tab) => (
               <button key={tab.key} onClick={() => handleTabChange(tab.key)}
                 className={`relative px-4 max-sm:px-3 py-1.5 text-sm font-medium rounded-lg transition-colors duration-200 active:scale-[0.97] whitespace-nowrap ${
@@ -167,13 +167,6 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
 
           {activeTab === 'classes' && (
             <motion.div key="classes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className="space-y-4">
-              {!isStaff && (
-                <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="flex justify-end">
-                  <Button onClick={() => setModalOpen(true)} variant="secondary" size="sm">
-                    <Plus size={16} />새 클래스
-                  </Button>
-                </motion.div>
-              )}
               {loading ? (
                 <div className="flex items-center justify-center py-16 text-slate-400"><Loader2 size={20} className="animate-spin mr-2" />불러오는 중...</div>
               ) : displaySessions.length === 0 ? (
@@ -181,19 +174,37 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
                   <EmptyState title="진행 중인 수업이 없습니다" description="강사가 수업을 시작하면 여기에 표시됩니다"
                     mascotSize="lg" className="py-12" />
                 ) : (
-                  <EmptyState title="첫 클래스를 만들어보세요" description="Pick과 함께 학생 참여를 이끌어보세요"
-                    steps={['위의 버튼으로 클래스를 만드세요', '객관식, 퀴즈, 워드클라우드 등 질문을 추가하세요', 'QR코드를 공유하면 학생들이 바로 참여합니다']}
-                    mascotSize="lg" mood="happy" className="py-12" />
+                  <>
+                    <div className="flex justify-end">
+                      <Button onClick={() => setModalOpen(true)} variant="secondary" size="sm">
+                        <Plus size={16} />새 클래스
+                      </Button>
+                    </div>
+                    <EmptyState title="첫 클래스를 만들어보세요" description="Pick과 함께 학생 참여를 이끌어보세요"
+                      steps={['위의 버튼으로 클래스를 만드세요', '객관식, 퀴즈, 워드클라우드 등 질문을 추가하세요', 'QR코드를 공유하면 학생들이 바로 참여합니다']}
+                      mascotSize="lg" mood="happy" className="py-12" />
+                  </>
                 )
               ) : (
                 <>
-                  {!isStaff && sessions.length >= 3 && (
+                  {!isStaff && sessions.length >= 3 ? (
                     <SessionSearchFilter
                       searchQuery={searchQuery}
                       onSearchChange={setSearchQuery}
                       statusFilter={statusFilter}
                       onStatusChange={setStatusFilter}
+                      actionSlot={!isStaff && (
+                        <Button onClick={() => setModalOpen(true)} variant="secondary" size="sm" className="shrink-0 !py-2.5">
+                          <Plus size={16} />새 클래스
+                        </Button>
+                      )}
                     />
+                  ) : !isStaff && (
+                    <div className="flex justify-end">
+                      <Button onClick={() => setModalOpen(true)} variant="secondary" size="sm">
+                        <Plus size={16} />새 클래스
+                      </Button>
+                    </div>
                   )}
                   {isFiltering && (
                     <div className="flex items-center justify-between px-1">

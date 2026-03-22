@@ -10,14 +10,15 @@ const STATUS_FILTERS = [
   { key: 'setting', label: '세팅중' },
 ];
 
-export default function SessionSearchFilter({ searchQuery, onSearchChange, statusFilter, onStatusChange }) {
+export default function SessionSearchFilter({ searchQuery, onSearchChange, statusFilter, onStatusChange, actionSlot }) {
   const [focused, setFocused] = useState(false);
   const inputRef = useRef(null);
 
   return (
-    <div className="space-y-2.5">
-      {/* Search input */}
-      <div className="relative">
+    <div className="space-y-4">
+      {/* Search input + action */}
+      <div className="flex items-center gap-3">
+      <div className="relative flex-1">
         <Search
           size={16}
           className={`absolute left-3.5 top-1/2 -translate-y-1/2 transition-colors duration-150 ${
@@ -53,6 +54,8 @@ export default function SessionSearchFilter({ searchQuery, onSearchChange, statu
             </motion.button>
           )}
         </AnimatePresence>
+      </div>
+      {actionSlot}
       </div>
 
       {/* Status filter chips */}
