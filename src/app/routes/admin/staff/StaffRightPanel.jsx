@@ -2,7 +2,7 @@ import { useState, useMemo, memo } from 'react';
 import { ref, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Hand, Users, ChevronDown, AlertTriangle, Radio, MessageSquare, ArrowRight } from 'lucide-react';
+import { Hand, Users, ChevronDown, AlertTriangle, Radio, MessageSquare, ArrowRight, Copy, Check } from 'lucide-react';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
@@ -287,6 +287,31 @@ function ParticipantSection({ sessionId }) {
   );
 }
 
+function LinkSection({ sessionId }) {
+  const [copied, setCopied] = useState(false);
+  const studentUrl = `${window.location.origin}/?s=${sessionId}`;
+  const liveUrl = `${window.location.origin}/live?s=${sessionId}`;
+
+  function handleCopy(url) {
+    navigator.clipboard?.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  return (
+    <div className="space-y-1.5 px-1">
+      <button onClick={() => handleCopy(studentUrl)}
+        className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-medium text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-[0.97]">
+        {copied ? <><Check size={12} className="text-emerald-500" />복사됨</> : <><Copy size={12} />초대 링크 복사</>}
+      </button>
+      <button onClick={() => handleCopy(liveUrl)}
+        className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-medium text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-[0.97]">
+        <Radio size={12} />전자칠판 링크 복사
+      </button>
+    </div>
+  );
+}
+
 export default function StaffRightPanel({ sessionId, session, staffId, staffName, senderType }) {
   return (
     <div className="h-full overflow-y-auto p-4 space-y-4">
@@ -295,6 +320,7 @@ export default function StaffRightPanel({ sessionId, session, staffId, staffName
       <UrgentQuestionSection sessionId={sessionId} />
       <HandRaiseSection sessionId={sessionId} />
       <ParticipantSection sessionId={sessionId} />
+      <LinkSection sessionId={sessionId} />
     </div>
   );
 }

@@ -11,6 +11,7 @@ import QuestionForm from './QuestionForm';
 import QuestionList from './QuestionList';
 import QuickProgressCard from './QuickProgressCard';
 import ImportFromLibraryModal from './ImportFromLibraryModal';
+import InstructorNotes from './InstructorNotes';
 
 export default function QuestionManager({
   sessionId,
@@ -144,6 +145,8 @@ export default function QuestionManager({
         readOnly={readOnly} onView={readOnly ? onViewQuestion : undefined}
         onSaveToLibrary={!readOnly && adminUid ? handleSaveToLibrary : undefined}
       />
+
+      {!readOnly && <InstructorNotes sessionId={sessionId} />}
 
       {!readOnly && adminUid && (
         <ImportFromLibraryModal open={libraryOpen} onClose={() => setLibraryOpen(false)}
