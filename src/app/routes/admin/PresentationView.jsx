@@ -152,7 +152,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     if (currentMode === 'prizeDraw') return <PrizeDraw participants={onlineList} />;
     if (currentMode === 'slotMachine') return <SlotMachine participants={onlineList} />;
     if (currentMode === 'breakTime') return <BreakTimer />;
-    if (currentMode === 'leaderboard') return <Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" />;
+    if (currentMode === 'leaderboard') return <div className="w-full max-w-2xl [&_.max-w-xl]:max-w-2xl"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" /></div>;
     if (currentMode === 'teamBattle') return <TeamScoreboard teamScores={teamScores || []} />;
     return null;
   })();

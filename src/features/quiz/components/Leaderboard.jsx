@@ -1,6 +1,6 @@
 import { motion, useMotionValue, useTransform, animate, AnimatePresence } from 'framer-motion';
 import { useEffect, useRef, memo } from 'react';
-import { ChevronUp, ChevronDown, Flame, Medal, Ticket, Trophy } from 'lucide-react';
+import { ChevronUp, ChevronDown, Crown, Flame, Medal, Ticket, Trophy } from 'lucide-react';
 import PickMascot from '@/components/ui/PickMascot';
 import Avatar from '@/components/ui/Avatar';
 
@@ -74,9 +74,9 @@ function LeaderboardRow({ entry, rank, isHighlighted, isPodium, podiumIndex, ran
       }}
       className={`flex items-center gap-3 px-4 py-3 rounded-xl border ${podiumStyle} ${highlightStyle}`}
     >
-      {/* Rank number / medal */}
+      {/* Rank number / crown / medal */}
       <span className={`w-6 text-center font-bold text-sm shrink-0 ${rank < 3 ? '' : 'text-slate-400'}`}>
-        {rank === 0 ? <Medal size={16} className="text-white dark:text-slate-900 mx-auto" /> : rank + 1}
+        {rank === 0 ? <Crown size={18} className="text-white dark:text-slate-900 mx-auto" /> : rank === 1 ? <Medal size={16} className="mx-auto" /> : rank + 1}
       </span>
 
       <Avatar name={entry.nickname} size="sm" />

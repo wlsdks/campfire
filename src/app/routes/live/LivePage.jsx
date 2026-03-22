@@ -125,7 +125,7 @@ export default function LivePage() {
                   {currentMode === 'prizeDraw' && <PrizeDraw participants={onlineList} />}
                   {currentMode === 'slotMachine' && <SlotMachine participants={onlineList} />}
                   {currentMode === 'breakTime' && <BreakTimer />}
-                  {currentMode === 'leaderboard' && <Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" />}
+                  {currentMode === 'leaderboard' && <div className="w-full max-w-2xl mx-auto [&_.max-w-xl]:max-w-2xl"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" /></div>}
                   {currentMode === 'teamBattle' && <TeamScoreboard teamScores={teamScores || []} />}
                 </Suspense>
               </motion.div>
