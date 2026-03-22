@@ -24,6 +24,7 @@ export default function CenterContent({
   teamScores,
 }) {
   return (
+    <div className="flex-1 flex flex-col">
     <AnimatePresence mode="wait">
       {showCenterForm ? (
         <motion.div
@@ -62,7 +63,7 @@ export default function CenterContent({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.15 }}
-          className="w-full h-full"
+          className="w-full flex-1 flex flex-col"
         >
           {effectiveReadOnly && !session?.currentQuestion ? (
             <Suspense fallback={<SuspenseFallback fullPage={false} />}>
@@ -88,5 +89,6 @@ export default function CenterContent({
         </motion.div>
       )}
     </AnimatePresence>
+    </div>
   );
 }
