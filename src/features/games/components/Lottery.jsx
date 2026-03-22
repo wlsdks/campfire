@@ -90,18 +90,18 @@ export default function Lottery({ participants, onResult }) {
 
   if (participants.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 py-16">
-        <Ticket size={36} className="text-slate-400" />
-        <div className="text-center space-y-1">
-          <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">{hasTicketMode ? '보상 추첨' : '제비뽑기'}</h3>
-          <p className="text-slate-400 text-sm">참여자가 접속하면 시작할 수 있어요</p>
+      <div className="flex flex-col items-center justify-center gap-4 py-16" onClick={e => e.stopPropagation()}>
+        <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+          <Ticket size={28} className="text-slate-300" />
         </div>
+        <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">{hasTicketMode ? '보상 추첨' : '제비뽑기'}</h3>
+        <p className="text-slate-400 text-base">참여자가 접속하면 시작할 수 있어요</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center gap-6">
+    <div className="flex flex-col items-center gap-6 w-full max-w-2xl mx-auto" onClick={e => e.stopPropagation()}>
       {/* Count selector */}
       <div className="flex items-center gap-3">
         <span className="text-slate-500 text-sm font-medium">추첨 인원</span>
@@ -132,7 +132,7 @@ export default function Lottery({ participants, onResult }) {
       </div>
 
       {/* Cards area */}
-      <div className="flex flex-wrap gap-4 justify-center min-h-[220px] items-center px-4">
+      <div className="flex flex-wrap gap-5 justify-center min-h-[280px] items-center px-4">
         <AnimatePresence mode="popLayout">
           {winners.map((winner, i) => (
             <motion.div
@@ -140,12 +140,12 @@ export default function Lottery({ participants, onResult }) {
               initial={{ rotateY: 180, opacity: 0, scale: 0.5 }}
               animate={{ rotateY: 0, opacity: 1, scale: 1 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25, delay: i * 0.05 }}
-              className={`w-36 h-44 ${CARD_COLORS[i % CARD_COLORS.length]} rounded-2xl flex flex-col items-center justify-center shadow-lg`}
+              className={`w-40 h-52 ${CARD_COLORS[i % CARD_COLORS.length]} rounded-2xl flex flex-col items-center justify-center shadow-lg`}
               style={{ perspective: 1000 }}
             >
               {i === 0 && <Suspense fallback={null}><ConfettiBurst /></Suspense>}
-              <Avatar name={winner.nickname} size="md" />
-              <div className="text-white font-bold text-base mt-2">{winner.nickname}</div>
+              <Avatar name={winner.nickname} size="lg" />
+              <div className="text-white font-bold text-lg mt-2">{winner.nickname}</div>
               <span className="mt-1 px-2 py-0.5 bg-white/20 rounded-full text-white/90 text-[10px] font-bold">
                 #{i + 1} 당첨
               </span>

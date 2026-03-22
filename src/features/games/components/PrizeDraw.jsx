@@ -15,39 +15,39 @@ function pickWinners(participants, count) {
   return winners;
 }
 
+/** SlotReel — uses direct DOM manipulation to avoid state-update freeze. */
 const SlotReel = memo(function SlotReel({ names, running, finalName }) {
-  const [displayIdx, setDisplayIdx] = useState(0);
+  const textRef = useRef(null);
   const intervalRef = useRef(null);
 
   useEffect(() => {
-    if (!running || names.length === 0) {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      return;
+    if (running && names.length > 0) {
+      intervalRef.current = setInterval(() => {
+        if (textRef.current) {
+          textRef.current.textContent = names[Math.floor(Math.random() * names.length)];
+        }
+      }, 80);
     }
-    let speed = 60;
-    function tick() {
-      setDisplayIdx((prev) => (prev + 1) % names.length);
-    }
-    intervalRef.current = setInterval(tick, speed);
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+    return () => { if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; } };
   }, [running, names]);
 
-  const displayName = running ? names[displayIdx] : (finalName || '');
-
   return (
-    <div className="h-14 flex items-center justify-center overflow-hidden">
-      <AnimatePresence mode="popLayout">
+    <div className="h-16 flex items-center justify-center overflow-hidden">
+      {running ? (
         <motion.span
-          key={running ? displayIdx : `final-${finalName}`}
-          initial={{ y: 24, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -24, opacity: 0 }}
-          transition={{ duration: running ? 0.05 : 0.3 }}
-          className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight block"
-        >
-          {displayName}
-        </motion.span>
-      </AnimatePresence>
+          ref={textRef}
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 0.3, repeat: Infinity }}
+          className="text-4xl font-bold text-slate-900 dark:text-slate-100 tracking-tight"
+        >...</motion.span>
+      ) : finalName ? (
+        <motion.span
+          initial={{ scale: 0.5, opacity: 0, y: 20 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+          className="text-4xl font-bold text-slate-900 dark:text-slate-100 tracking-tight"
+        >{finalName}</motion.span>
+      ) : null}
     </div>
   );
 });
@@ -125,18 +125,18 @@ export default function PrizeDraw({ participants, onResult }) {
 
   if (names.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 py-16">
-        <Gift size={36} className="text-slate-400" />
-        <div className="text-center space-y-1">
-          <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">경품 추첨</h3>
-          <p className="text-slate-400 text-sm">참여자가 접속하면 시작할 수 있어요</p>
+      <div className="flex flex-col items-center justify-center gap-4 py-16" onClick={e => e.stopPropagation()}>
+        <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+          <Gift size={28} className="text-slate-300" />
         </div>
+        <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">경품 추첨</h3>
+        <p className="text-slate-400 text-base">참여자가 접속하면 시작할 수 있어요</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-lg mx-auto">
+    <div className="flex flex-col items-center gap-6 w-full max-w-2xl mx-auto" onClick={e => e.stopPropagation()}>
       {/* Count selector - only in idle */}
       {phase === 'idle' && (
         <motion.div
@@ -179,7 +179,7 @@ export default function PrizeDraw({ participants, onResult }) {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-10 w-full text-center"
+          className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-12 w-full max-w-md mx-auto text-center"
           data-sound="slot-spin"
         >
           <p className="text-slate-400 text-sm mb-4 font-medium">추첨 중...</p>
