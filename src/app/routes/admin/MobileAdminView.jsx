@@ -323,9 +323,10 @@ export default function MobileAdminView({ s }) {
   const currentMode = s.session?.currentMode;
   const isSpecialMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'leaderboard', 'teamBattle'].includes(currentMode);
 
+  const onNewChatMsg = s.handleNewChatMessage;
   const handleNewChatMessage = useCallback(() => {
-    if (activeTab !== 'chat') s.handleNewChatMessage();
-  }, [activeTab, s.handleNewChatMessage]);
+    if (activeTab !== 'chat') onNewChatMsg();
+  }, [activeTab, onNewChatMsg]);
 
   return (
     <div className="h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col overflow-hidden">
