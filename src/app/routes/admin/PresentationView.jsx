@@ -14,6 +14,7 @@ import TeamScoreboard from '@/features/teams/components/TeamScoreboard';
 const Roulette = lazy(() => import('@/features/games/components/Roulette'));
 const Lottery = lazy(() => import('@/features/games/components/Lottery'));
 const PrizeDraw = lazy(() => import('@/features/games/components/PrizeDraw'));
+const SlotMachine = lazy(() => import('@/features/games/components/SlotMachine'));
 
 function PresentEmptyState({ sessionId, studentUrl, count }) {
   return (
@@ -128,6 +129,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
   if (currentMode === 'roulette') return <Suspense fallback={<GameFallback />}><Roulette participants={onlineList} /></Suspense>;
   if (currentMode === 'lottery') return <Suspense fallback={<GameFallback />}><Lottery participants={drawParticipants} /></Suspense>;
   if (currentMode === 'prizeDraw') return <Suspense fallback={<GameFallback />}><PrizeDraw participants={onlineList} /></Suspense>;
+  if (currentMode === 'slotMachine') return <Suspense fallback={<GameFallback />}><SlotMachine participants={onlineList} /></Suspense>;
   if (currentMode === 'leaderboard') {
     return <Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" />;
   }
