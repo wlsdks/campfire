@@ -16,11 +16,13 @@ import ModeSwitcher from './ModeSwitcher';
 import TabletDrawers from './TabletDrawers';
 import CenterContent from './CenterContent';
 import TeamBattleControl from '@/features/teams/components/TeamBattleControl';
+import MobileAdminView from './MobileAdminView';
 
 const StaffPage = lazy(() => import('./StaffPage'));
 
 export default function AdminPage() {
   const s = useAdminSession();
+  const isMobile = useMediaQuery('(max-width: 767px)');
   const isTablet = useMediaQuery('(max-width: 1023px)');
 
   if (!s.adminUser) return <AdminLogin onLogin={s.handleLogin} />;
@@ -51,6 +53,11 @@ export default function AdminPage() {
         />
       </Suspense>
     );
+  }
+
+  // Mobile: bottom tab layout (phone-sized screens)
+  if (isMobile && !s.presentMode) {
+    return <MobileAdminView s={s} />;
   }
 
   const currentMode = s.session?.currentMode;

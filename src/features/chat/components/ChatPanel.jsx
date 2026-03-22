@@ -9,7 +9,7 @@ import ChatMessage from '@/features/chat/components/ChatMessage';
 
 const MAX_LENGTH = 500;
 
-export default function ChatPanel({ sessionId, senderName, senderType, open, onClose, onNewMessage }) {
+export default function ChatPanel({ sessionId, senderName, senderType, open, onClose, onNewMessage, inline = false }) {
   const isStaffOrInstructor = senderType === 'staff' || senderType === 'instructor';
   const [channel, setChannel] = useState('public');
 
@@ -82,6 +82,41 @@ export default function ChatPanel({ sessionId, senderName, senderType, open, onC
 
   const emptyMsg = channel === 'staff' ? '운영팀 내부 채팅입니다' : senderType === 'instructor' ? '학생들과 실시간으로 소통하세요' : '강사와 학생들에게 메시지를 보내세요';
   const tabCls = (active) => `flex-1 py-1.5 text-xs font-medium rounded-lg transition-colors duration-150 ${active ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'}`;
+
+  // Inline mode: render without modal wrapper (for mobile tab view)
+  if (inline && open) {
+    return (
+      <div className="flex flex-col h-full bg-white dark:bg-slate-800">
+        {isStaffOrInstructor && (
+          <div className="flex gap-1 px-4 py-2.5 border-b border-slate-50 dark:border-slate-700/50 shrink-0">
+            <button onClick={() => handleChannelSwitch('public')} className={tabCls(channel === 'public')}>전체 채팅</button>
+            <button onClick={() => handleChannelSwitch('staff')} className={`relative ${tabCls(channel === 'staff')} flex items-center justify-center gap-1`}>
+              <Shield size={12} />
+              운영 채팅
+              {staffUnread && channel !== 'staff' && <span className="absolute top-1 right-2 w-2 h-2 rounded-full bg-red-500 animate-pulse" />}
+            </button>
+          </div>
+        )}
+        <div ref={containerRef} onScroll={handleScroll} className="flex-1 overflow-y-auto overscroll-contain px-4 py-3 flex flex-col gap-3 scrollbar-hide">
+          {loading && messages.length === 0 && <div className="flex-1 flex items-center justify-center"><span className="text-sm text-slate-400 dark:text-slate-500">불러오는 중...</span></div>}
+          {!loading && messages.length === 0 && (
+            <div className="flex-1 flex flex-col items-center justify-center gap-2">
+              <PickMascot size="sm" mood="waiting" />
+              <p className="text-sm text-slate-400 dark:text-slate-500 text-center leading-relaxed">아직 메시지가 없습니다<br /><span className="text-xs">{emptyMsg}</span></p>
+            </div>
+          )}
+          {messages.map((msg) => <ChatMessage key={msg.id} msg={msg} isOwn={msg.sender === senderName && msg.senderType === senderType} />)}
+          <div ref={messagesEndRef} />
+        </div>
+        <div className="flex items-center gap-2 px-4 py-3 border-t border-slate-100 dark:border-slate-700 shrink-0">
+          <input ref={inputRef} type="text" value={inputText} onChange={(e) => setInputText(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }} placeholder={channel === 'staff' ? '운영 메시지를 입력하세요' : '메시지를 입력하세요'} aria-label="채팅 메시지" maxLength={MAX_LENGTH} className="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 focus:bg-white dark:focus:bg-slate-600 transition-all" />
+          <button onClick={handleSend} disabled={!inputText.trim() || !canSend || sending} className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 disabled:opacity-30 hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150 shrink-0" aria-label="메시지 보내기">
+            <Send size={16} />
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <AnimatePresence>
