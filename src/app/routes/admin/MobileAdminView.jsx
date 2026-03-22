@@ -80,8 +80,9 @@ function MobileTabBar({ activeTab, onTabChange, hasUnreadChat }) {
         const Icon = tab.icon;
         const isActive = activeTab === tab.key;
         return (
-          <button
+          <motion.button
             key={tab.key}
+            whileTap={{ scale: 0.92 }}
             onClick={() => onTabChange(tab.key)}
             className={`flex-1 flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium transition-colors duration-150 relative ${
               isActive
@@ -94,7 +95,7 @@ function MobileTabBar({ activeTab, onTabChange, hasUnreadChat }) {
             {tab.key === 'chat' && hasUnreadChat && (
               <span className="absolute top-2 left-1/2 ml-2 w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
             )}
-          </button>
+          </motion.button>
         );
       })}
     </div>
