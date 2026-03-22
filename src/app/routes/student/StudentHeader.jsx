@@ -54,7 +54,7 @@ export default function StudentHeader({ sessionId }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         aria-label="Pick 학생 헤더"
-        className="fixed top-0 left-0 right-0 z-20 bg-white/92 dark:bg-slate-800/92 backdrop-blur-sm border-b border-slate-200 dark:border-slate-700"
+        className="fixed top-0 left-0 right-0 z-20 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md"
       >
         <div className="flex items-center justify-between px-5 py-4 max-w-[620px] mx-auto">
           <div className="flex items-center gap-2.5">

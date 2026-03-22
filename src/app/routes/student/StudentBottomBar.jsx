@@ -17,7 +17,7 @@ import StudentToasts from '@/app/routes/student/StudentToasts';
 import { timing } from '@/lib/design-tokens';
 
 const UNREAD_DOT = 'absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full animate-pulse';
-const BTN = 'h-[56px] rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 active:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 dark:active:bg-slate-600 transition-all flex flex-col items-center justify-center gap-0.5';
+const BTN = 'h-[56px] rounded-xl bg-slate-50 text-slate-600 font-medium text-sm active:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:active:bg-slate-600 transition-all flex flex-col items-center justify-center gap-1';
 
 export default function StudentBottomBar({ sessionId }) {
   const [showQuestionInput, setShowQuestionInput] = useState(false);

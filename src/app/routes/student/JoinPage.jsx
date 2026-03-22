@@ -79,7 +79,7 @@ export default function JoinPage({ sessionId, onJoin }) {
         onSubmit={handleJoin}
         className="w-full max-w-xl"
       >
-        <Card className="p-8 space-y-7">
+        <Card className="p-8 space-y-7 max-sm:border-0 max-sm:shadow-none max-sm:bg-white/80 max-sm:dark:bg-slate-800/80 max-sm:backdrop-blur-sm">
           {/* Header */}
           <div className="text-center space-y-3">
             <motion.div
@@ -92,7 +92,7 @@ export default function JoinPage({ sessionId, onJoin }) {
               }}
               className="flex justify-center mb-1"
             >
-              <PickMascot size="sm" />
+              <PickMascot size="md" />
             </motion.div>
             <div>
               <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pick</h1>
