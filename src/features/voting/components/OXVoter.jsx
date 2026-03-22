@@ -2,6 +2,7 @@ import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId } from '@/lib/participant';
 import { motion } from 'framer-motion';
+import { hapticTap } from '@/lib/haptics';
 import { useState, memo } from 'react';
 import VoteConfirm from './VoteConfirm';
 import StudentLiveResults from './StudentLiveResults';
@@ -48,7 +49,7 @@ export default memo(function OXVoter({ sessionId, questionId, disabled = false }
         transition={{ duration: 0.3, ease: 'easeOut' }}
         whileHover={!selected && !disabled ? { scale: 1.02 } : undefined}
         whileTap={{ scale: 0.95 }}
-        onClick={() => handleVote('O')}
+        onClick={() => { hapticTap(); handleVote('O'); }}
         disabled={selected !== null || disabled}
         className={`flex-1 py-12 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border transition-all flex flex-col items-center gap-2 ${selected === 'O' ? 'ring-2 ring-slate-400 dark:ring-slate-500 border-slate-300 dark:border-slate-500' : 'border-slate-200 dark:border-slate-700'} ${(selected !== null && selected !== 'O') || disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
       >
@@ -61,7 +62,7 @@ export default memo(function OXVoter({ sessionId, questionId, disabled = false }
         transition={{ duration: 0.3, ease: 'easeOut' }}
         whileHover={!selected && !disabled ? { scale: 1.02 } : undefined}
         whileTap={{ scale: 0.95 }}
-        onClick={() => handleVote('X')}
+        onClick={() => { hapticTap(); handleVote('X'); }}
         disabled={selected !== null || disabled}
         className={`flex-1 py-12 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border transition-all flex flex-col items-center gap-2 ${selected === 'X' ? 'ring-2 ring-slate-400 dark:ring-slate-500 border-slate-300 dark:border-slate-500' : 'border-slate-200 dark:border-slate-700'} ${(selected !== null && selected !== 'X') || disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
       >

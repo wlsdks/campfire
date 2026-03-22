@@ -3,6 +3,7 @@ import { db } from '@/lib/firebase';
 import { getParticipantId } from '@/lib/participant';
 import { motion } from 'framer-motion';
 import { useState, memo } from 'react';
+import { hapticTap } from '@/lib/haptics';
 import VoteConfirm from './VoteConfirm';
 import StudentLiveResults from './StudentLiveResults';
 
@@ -64,14 +65,14 @@ export default memo(function ChoiceVoter({ sessionId, questionId, options, disab
             animate={{
               opacity: hasSelection && !isSelected ? 0.4 : 1,
               y: hasSelection && !isSelected ? 2 : 0,
-              scale: isSelected ? [0.97, 1.02, 1] : 1,
+              scale: isSelected ? [0.95, 1.04, 1] : 1,
             }}
             transition={isSelected
               ? { scale: { type: 'spring', stiffness: 400, damping: 22 }, opacity: { duration: 0.2 } }
               : { delay: hasSelection ? 0 : i * 0.05, duration: 0.25, ease: 'easeOut', opacity: { duration: 0.15 } }
             }
-            whileTap={!hasSelection ? { scale: 0.97 } : undefined}
-            onClick={() => handleVote(option)}
+            whileTap={!hasSelection ? { scale: 0.95 } : undefined}
+            onClick={() => { hapticTap(); handleVote(option); }}
             disabled={hasSelection || disabled}
             className={`w-full py-4 px-5 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${isSelected ? 'ring-2 ring-slate-400 dark:ring-slate-500 border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-700' : 'border-slate-200 dark:border-slate-700'} ${hasSelection && !isSelected ? 'cursor-not-allowed' : ''} transition-colors duration-150 flex items-center gap-3.5`}
           >

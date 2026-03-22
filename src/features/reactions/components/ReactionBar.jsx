@@ -104,6 +104,9 @@ export default function ReactionBar({ sessionId }) {
     }
     cooldownRef.current = now;
 
+    // Haptic feedback (Android only, iOS gets visual spring)
+    if ('vibrate' in navigator) navigator.vibrate(8);
+
     setFlashType(type);
     sendReaction(type);
     if (flashTimerRef.current) clearTimeout(flashTimerRef.current);

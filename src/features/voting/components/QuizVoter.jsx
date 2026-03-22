@@ -1,5 +1,6 @@
 import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { hapticTap } from '@/lib/haptics';
 import { ref, set, serverTimestamp } from 'firebase/database';
 import { Lock } from 'lucide-react';
 import { db } from '@/lib/firebase';
@@ -156,7 +157,7 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
                       damping: 25,
                     }}
                     whileTap={{ scale: 0.97 }}
-                    onClick={() => handleVote(option)}
+                    onClick={() => { hapticTap(); handleVote(option); }}
                     disabled={isLocked || disabled}
                     className={`w-full py-3.5 px-4 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${
                       isSelected ? 'ring-2 ring-slate-400 dark:ring-slate-500 border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-700' : 'border-slate-200 dark:border-slate-700'
