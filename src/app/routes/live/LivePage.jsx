@@ -21,6 +21,7 @@ const Roulette = lazy(() => import('@/features/games/components/Roulette'));
 const Lottery = lazy(() => import('@/features/games/components/Lottery'));
 const PrizeDraw = lazy(() => import('@/features/games/components/PrizeDraw'));
 const SlotMachine = lazy(() => import('@/features/games/components/SlotMachine'));
+const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
 const Leaderboard = lazy(() => import('@/features/quiz/components/Leaderboard'));
 const TeamScoreboard = lazy(() => import('@/features/teams/components/TeamScoreboard'));
 
@@ -48,7 +49,7 @@ export default function LivePage() {
   const question = currentQId ? session?.questions?.[currentQId] : null;
   const { totalVotes } = useVotes(sessionId, currentQId);
 
-  const isGameMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'leaderboard', 'teamBattle'].includes(currentMode);
+  const isGameMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'breakTime', 'leaderboard', 'teamBattle'].includes(currentMode);
   const isEnded = session?.status === 'ended';
   const hasActiveQuestion = ['poll', 'quiz'].includes(currentMode) && currentQId && question;
 
@@ -116,6 +117,7 @@ export default function LivePage() {
                   {currentMode === 'lottery' && <Lottery participants={onlineList} />}
                   {currentMode === 'prizeDraw' && <PrizeDraw participants={onlineList} />}
                   {currentMode === 'slotMachine' && <SlotMachine participants={onlineList} />}
+                  {currentMode === 'breakTime' && <BreakTimer />}
                   {currentMode === 'leaderboard' && <Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" />}
                   {currentMode === 'teamBattle' && <TeamScoreboard teamScores={teamScores || []} />}
                 </Suspense>

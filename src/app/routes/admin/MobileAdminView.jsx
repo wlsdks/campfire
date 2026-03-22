@@ -246,7 +246,7 @@ export default function MobileAdminView({ s }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   const currentMode = s.session?.currentMode;
-  const isSpecialMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'leaderboard', 'teamBattle'].includes(currentMode);
+  const isSpecialMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'breakTime', 'leaderboard', 'teamBattle'].includes(currentMode);
 
   const handleNewChatMessage = useCallback(() => {
     if (activeTab !== 'chat') s.handleNewChatMessage();

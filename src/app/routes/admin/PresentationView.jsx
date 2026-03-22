@@ -15,6 +15,7 @@ const Roulette = lazy(() => import('@/features/games/components/Roulette'));
 const Lottery = lazy(() => import('@/features/games/components/Lottery'));
 const PrizeDraw = lazy(() => import('@/features/games/components/PrizeDraw'));
 const SlotMachine = lazy(() => import('@/features/games/components/SlotMachine'));
+const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
 
 function PresentEmptyState({ sessionId, studentUrl, count }) {
   return (
@@ -126,15 +127,23 @@ const GameFallback = () => (
 );
 
 function MainContent({ currentMode, sessionId, session, onlineList, leaderboard, drawParticipants, presentMode, studentUrl, count, teamScores }) {
-  if (currentMode === 'roulette') return <Suspense fallback={<GameFallback />}><Roulette participants={onlineList} /></Suspense>;
-  if (currentMode === 'lottery') return <Suspense fallback={<GameFallback />}><Lottery participants={drawParticipants} /></Suspense>;
-  if (currentMode === 'prizeDraw') return <Suspense fallback={<GameFallback />}><PrizeDraw participants={onlineList} /></Suspense>;
-  if (currentMode === 'slotMachine') return <Suspense fallback={<GameFallback />}><SlotMachine participants={onlineList} /></Suspense>;
-  if (currentMode === 'leaderboard') {
-    return <Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" />;
-  }
-  if (currentMode === 'teamBattle') {
-    return <TeamScoreboard teamScores={teamScores || []} />;
+  // Game modes — centered vertically
+  const gameContent = (() => {
+    if (currentMode === 'roulette') return <Roulette participants={onlineList} />;
+    if (currentMode === 'lottery') return <Lottery participants={drawParticipants} />;
+    if (currentMode === 'prizeDraw') return <PrizeDraw participants={onlineList} />;
+    if (currentMode === 'slotMachine') return <SlotMachine participants={onlineList} />;
+    if (currentMode === 'breakTime') return <BreakTimer />;
+    if (currentMode === 'leaderboard') return <Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" />;
+    if (currentMode === 'teamBattle') return <TeamScoreboard teamScores={teamScores || []} />;
+    return null;
+  })();
+  if (gameContent) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <Suspense fallback={<GameFallback />}>{gameContent}</Suspense>
+      </div>
+    );
   }
 
   const currentQId = session?.currentQuestion;
