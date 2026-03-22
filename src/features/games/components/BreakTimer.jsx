@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import BreakMascot from './BreakMascot';
 import PickMascot from '@/components/ui/PickMascot';
 import Button from '@/components/ui/Button';
 
@@ -61,13 +62,8 @@ export default function BreakTimer() {
   // Not started — show preset buttons
   if (!totalSeconds) {
     return (
-      <div className="flex flex-col items-center gap-8">
-        <motion.div
-          animate={{ y: [0, -8, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          <PickMascot size="lg" mood="happy" />
-        </motion.div>
+      <div className="flex flex-col items-center gap-8" onClick={e => e.stopPropagation()}>
+        <BreakMascot size={120} />
         <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">쉬는 시간</h3>
         <div className="grid grid-cols-2 gap-3 w-full max-w-xs">
           {PRESETS.map(p => (
@@ -88,12 +84,12 @@ export default function BreakTimer() {
   // Finished
   if (isFinished) {
     return (
-      <div className="flex flex-col items-center gap-6">
+      <div className="flex flex-col items-center gap-6" onClick={e => e.stopPropagation()}>
         <motion.div
-          animate={{ scale: [1, 1.1, 1], rotate: [0, -5, 5, 0] }}
+          animate={{ scale: [1, 1.08, 1] }}
           transition={{ duration: 0.8, repeat: Infinity }}
         >
-          <PickMascot size="lg" mood="happy" />
+          <BreakMascot size={120} />
         </motion.div>
         <motion.h3
           animate={{ scale: [1, 1.05, 1] }}
@@ -109,22 +105,9 @@ export default function BreakTimer() {
 
   // Running
   return (
-    <div className="flex flex-col items-center gap-8">
-      {/* Dancing mascot */}
-      <motion.div
-        animate={{
-          y: [0, -12, 0],
-          rotate: [0, -3, 3, 0],
-          scale: [1, 1.02, 1],
-        }}
-        transition={{
-          duration: 2.5,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      >
-        <PickMascot size="lg" mood="happy" />
-      </motion.div>
+    <div className="flex flex-col items-center gap-8" onClick={e => e.stopPropagation()}>
+      {/* Animated mascot — cycles through idle/dance/walk/stretch/wave */}
+      <BreakMascot size={140} />
 
       {/* Big countdown */}
       <div className="text-center">
