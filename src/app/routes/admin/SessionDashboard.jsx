@@ -170,7 +170,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
               {loading ? (
                 <div className="space-y-4">
                   {[1, 2, 3].map((i) => (
-                    <div key={i} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 animate-pulse">
+                    <div key={i} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 animate-shimmer">
                       <div className="flex items-center justify-between mb-4">
                         <div className="h-5 bg-slate-200 dark:bg-slate-700 rounded-lg w-40" />
                         <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-12" />

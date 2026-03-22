@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect, memo } from 'react';
+import { hapticSuccess } from '@/lib/haptics';
 
 function AnimatedCheck() {
   return (
@@ -43,6 +44,7 @@ export default memo(function VoteConfirm({
   const [waiting, setWaiting] = useState(false);
 
   useEffect(() => {
+    hapticSuccess();
     const timer = setTimeout(() => setWaiting(true), 3000);
     return () => clearTimeout(timer);
   }, []);

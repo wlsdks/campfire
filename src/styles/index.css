@@ -70,6 +70,21 @@ input, textarea, select {
   outline-color: #818CF8;
 }
 
+/* Skeleton shimmer — directional gradient (토스/당근 premium feel) */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.animate-shimmer {
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 37%, #e2e8f0 63%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+.dark .animate-shimmer {
+  background: linear-gradient(90deg, #334155 25%, #475569 37%, #334155 63%);
+  background-size: 200% 100%;
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
