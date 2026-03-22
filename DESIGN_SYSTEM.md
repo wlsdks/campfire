@@ -995,3 +995,95 @@ text-slate-400은 bg-slate-50 위에서 WCAG AA 미달 가능
 | Roulette | 게임 |
 | Lottery | 게임 |
 | ClassSummary | 완료 세션 |
+
+---
+
+## 21. 모바일 앱 디자인 시스템 (Mobile-First)
+
+> 래퍼런스: 토스, 당근마켓, 카카오톡, Apple HIG, Linear
+> 적용 범위: `(max-width: 767px)` — MobileAdminView + 학생 전체 화면
+
+### 핵심 원칙
+1. **앱처럼 보여야 한다** — PWA이지만 네이티브 앱 수준의 UX
+2. **큰 글씨, 큰 터치 타겟** — 모든 텍스트 +1~2px, 터치 타겟 44px+
+3. **배경색 대비로 섹션 구분** — border/shadow 대신 `bg-slate-50` 위에 `bg-white` 카드
+4. **밀도 < 여유** — 데스크탑보다 더 넉넉한 padding/gap
+
+### 모바일 타이포그래피 (vs 데스크탑)
+| 용도 | 데스크탑 | 모바일 | 비고 |
+|------|---------|--------|------|
+| 히어로 숫자 | text-3xl~5xl | text-5xl | 참여자 수 등 |
+| 페이지 제목 | text-xl | text-base~text-lg | 헤더 공간 절약 |
+| 섹션 제목 | text-sm semibold | text-[17px] semibold | Apple Body 기준 |
+| 본문 | text-sm (14px) | text-[15px]~text-base | iOS 최소 가독성 |
+| 채팅 버블 | text-sm | text-[15px] | 카카오톡 참고 |
+| 캡션/시간 | text-[10px] | text-[11px]~text-[13px] | 가독성 확보 |
+| 탭바 라벨 | — | text-[11px] | Apple HIG 기준 |
+
+### 모바일 섹션 구분 패턴
+```
+방법 1 (토스): bg-slate-50 페이지 배경 + bg-white 카드 섹션 (border 없음)
+방법 2 (당근/카카오): 8px 높이 회색 구분선 (h-2 bg-slate-100)
+방법 3 (Apple): rounded-2xl 카드 + bg-slate-50 배경
+
+금지: 모바일에서 shadow로 섹션 구분 (한국 앱 어디에서도 안 씀)
+금지: 모바일에서 border + shadow 동시 사용
+```
+
+### 모바일 컴포넌트 규격
+| 컴포넌트 | 높이 | 패딩 | 아이콘 | 모서리 |
+|----------|------|------|--------|--------|
+| 헤더 | auto (py-3.5) | px-5 | 22px | — |
+| 하단 탭 바 | 56px + safe area | — | 24px | — |
+| 리스트 행 | 48-56px | px-5 py-3.5 | 20px | — |
+| 섹션 아코디언 | auto (py-4) | px-5 | 20px | rounded-2xl |
+| 버튼 (CTA) | 48px+ | px-5 py-3.5 | 18px | rounded-xl |
+| 학생 하단 버튼 | 56px | — | 22px | rounded-xl |
+| 채팅 아바타 | 36px (w-9) | — | 13px text | rounded-full |
+
+### 모바일 모달 규격
+```
+모바일 (< 640px): fixed inset-0 (전체 화면, 둥근 모서리 없음)
+태블릿+: fixed inset-auto, 420x600px, rounded-2xl shadow-2xl
+
+모달 애니메이션:
+  모바일: y: 20→0 (아래에서 올라옴)
+  데스크탑: scale: 0.95→1 (센터 스케일)
+```
+
+### 모바일 하단 탭 바 (강사)
+```
+4탭: 진행 | 결과 | 참여 | 채팅
+아이콘: 24px, 활성 strokeWidth=2, 비활성 strokeWidth=1.5
+라벨: text-[11px] font-medium
+활성: text-slate-900 dark:text-slate-100
+비활성: text-slate-400 dark:text-slate-500
+미읽음: w-2.5 h-2.5 bg-red-500 absolute
+safe area: paddingBottom env(safe-area-inset-bottom)
+```
+
+### 모바일 학생 하단 바
+```
+리액션 바: 5개 아이콘 (좋아요/불꽃/하트/웃음/박수)
+액션 바: 5열 grid (손들기/긴급/질문/채팅/도움)
+버튼 높이: 56px, 아이콘 22px, 라벨 text-[11px]
+safe area: pb-[calc(0.75rem+env(safe-area-inset-bottom))]
+```
+
+### CSS 최적화 (index.css)
+```css
+body { overscroll-behavior-y: contain; }  /* pull-to-refresh 방지 */
+input, select, textarea { font-size: max(16px, 1em); }  /* iOS 줌 방지 */
+a, button, [role="button"] { touch-action: manipulation; }  /* 300ms 딜레이 제거 */
+button, a { -webkit-tap-highlight-color: transparent; }  /* 파란 탭 플래시 제거 */
+<body ontouchstart="">  /* iOS :active 활성화 */
+```
+
+### 래퍼런스 요약
+| 출처 | 핵심 교훈 |
+|------|----------|
+| 토스 | 배경색 대비, border 없음, 큰 숫자, 패딩 내장 리스트 |
+| 당근 | 8px 회색 구분선, thin hairline 아이템 구분 |
+| 카카오 | 배경색 버블, 8px 구분선, 사용자 설정 글씨 크기 |
+| Apple | 17pt 본문, 44pt 터치 타겟, inset grouped 카드 |
+| Linear | 모노크롬 + spacing 위계, 3변수 색상 체계 |

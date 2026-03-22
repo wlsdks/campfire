@@ -17,7 +17,7 @@ import StudentToasts from '@/app/routes/student/StudentToasts';
 import { timing } from '@/lib/design-tokens';
 
 const UNREAD_DOT = 'absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full animate-pulse';
-const BTN = 'h-14 rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 active:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 dark:active:bg-slate-600 transition-all flex flex-col items-center justify-center gap-0.5';
+const BTN = 'h-[56px] rounded-xl bg-white text-slate-600 border border-slate-200 font-medium text-sm hover:bg-slate-50 active:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600 dark:hover:bg-slate-700 dark:active:bg-slate-600 transition-all flex flex-col items-center justify-center gap-0.5';
 
 export default function StudentBottomBar({ sessionId }) {
   const [showQuestionInput, setShowQuestionInput] = useState(false);
@@ -106,27 +106,27 @@ export default function StudentBottomBar({ sessionId }) {
           <ReactionBar sessionId={sessionId} />
           <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
             <div className="grid grid-cols-5 gap-2">
-              <motion.button whileTap={{ scale: 0.96 }} onClick={toggleHand} aria-pressed={isRaised} className={`h-14 rounded-xl font-medium text-sm transition-all flex flex-col items-center justify-center gap-0.5 ${isRaised ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : BTN.replace('bg-white ', '')}`}>
+              <motion.button whileTap={{ scale: 0.96 }} onClick={toggleHand} aria-pressed={isRaised} className={`h-[56px] rounded-xl font-medium text-sm transition-all flex flex-col items-center justify-center gap-0.5 ${isRaised ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : BTN.replace('bg-white ', '')}`}>
                 <motion.div animate={isRaised ? { rotate: [0, -15, 15, -10, 10, 0] } : { rotate: 0 }} transition={isRaised ? { duration: 0.6, repeat: Infinity, repeatDelay: 2 } : {}}>
-                  <Hand size={20} />
+                  <Hand size={22} />
                 </motion.div>
                 <span className="text-[11px]">{isRaised ? '내리기' : '손들기'}</span>
               </motion.button>
               <motion.button whileTap={{ scale: 0.96 }} onClick={() => setShowQuestionInput(true)} className={BTN}>
-                <MessageCircle size={20} /><span className="text-[11px]">긴급</span>
+                <MessageCircle size={22} /><span className="text-[11px]">긴급</span>
               </motion.button>
               <motion.button whileTap={{ scale: 0.96 }} onClick={() => { setShowQA(true); setHasNewQuestion(false); }} className={`${BTN} relative`}>
-                <HelpCircle size={20} /><span className="text-[11px]">질문</span>
+                <HelpCircle size={22} /><span className="text-[11px]">질문</span>
                 {hasNewQuestion && <span className={`${UNREAD_DOT} bg-red-500`} />}
               </motion.button>
               <motion.button whileTap={{ scale: 0.96 }} onClick={() => { setShowChat(true); setHasUnread(false); }} className={`${BTN} relative`}>
-                <MessageSquare size={20} /><span className="text-[11px]">채팅</span>
+                <MessageSquare size={22} /><span className="text-[11px]">채팅</span>
                 {hasUnread && <span className={`${UNREAD_DOT} bg-red-500`} />}
               </motion.button>
               <motion.button whileTap={{ scale: 0.96 }} onClick={() => {
                 setShowDMChat(true); setDmLastSeen(totalDMMessages); saveLastSeen(sessionId, 'dm', totalDMMessages);
               }} className={`${BTN} relative`}>
-                <Headset size={20} /><span className="text-[11px]">도움</span>
+                <Headset size={22} /><span className="text-[11px]">도움</span>
                 {dmUnread > 0 && (
                   <span className={`${UNREAD_DOT} bg-red-500 flex items-center justify-center`}>
                     <span className="text-white text-[8px] font-bold">{dmUnread}</span>
