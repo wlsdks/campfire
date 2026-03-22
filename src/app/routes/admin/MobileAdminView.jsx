@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, BarChart3, Users, MessageSquare, Play, Hand, AlertCircle, HelpCircle, Copy, Check, ChevronDown, MoreHorizontal, Target, Ticket, Gift, Dices, Coffee, Trophy, Swords, X, Gamepad2 } from 'lucide-react';
+import { ArrowLeft, BarChart3, Users, MessageSquare, Play, Hand, AlertCircle, HelpCircle, Copy, Check, ChevronDown, MoreHorizontal, Target, Ticket, Gift, Dices, CircleDot, Coffee, Trophy, Swords, X, Gamepad2 } from 'lucide-react';
 import JoinToast from '@/features/participants/components/JoinToast';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import QuestionManager from './QuestionManager';
@@ -28,6 +28,7 @@ const MODE_MAP = {
   lottery: { label: '추첨', icon: Ticket },
   prizeDraw: { label: '경품', icon: Gift },
   slotMachine: { label: '777', icon: Dices },
+  plinko: { label: '핀볼', icon: CircleDot },
   breakTime: { label: '쉬는시간', icon: Coffee },
   leaderboard: { label: '리더보드', icon: Trophy },
   teamBattle: { label: '팀 대항전', icon: Swords },
@@ -94,6 +95,7 @@ function MobileModePicker({ open, onClose, currentMode, onSwitchMode, leaderboar
     { mode: 'lottery', label: '추첨', icon: Ticket },
     { mode: 'prizeDraw', label: '경품 추첨', icon: Gift },
     { mode: 'slotMachine', label: '777 슬롯', icon: Dices },
+    { mode: 'plinko', label: '핀볼', icon: CircleDot },
     { mode: 'breakTime', label: '쉬는 시간', icon: Coffee },
     ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
     ...(teamBattleActive ? [{ mode: 'teamBattle', label: '팀 대항전', icon: Swords }] : []),
@@ -319,7 +321,7 @@ export default function MobileAdminView({ s }) {
   const [modesOpen, setModesOpen] = useState(false);
 
   const currentMode = s.session?.currentMode;
-  const isSpecialMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'breakTime', 'leaderboard', 'teamBattle'].includes(currentMode);
+  const isSpecialMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'leaderboard', 'teamBattle'].includes(currentMode);
 
   const handleNewChatMessage = useCallback(() => {
     if (activeTab !== 'chat') s.handleNewChatMessage();

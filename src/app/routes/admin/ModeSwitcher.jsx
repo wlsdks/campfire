@@ -1,6 +1,6 @@
 import { memo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Target, Ticket, Trophy, Swords, Gift, Dices, Coffee, X, ChevronDown } from 'lucide-react';
+import { Target, Ticket, Trophy, Swords, Gift, Dices, Coffee, X, ChevronDown, CircleDot } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
 export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTickets, leaderboard, modeOpen, onToggle, onSwitchMode, teamBattleActive = false }) {
@@ -28,7 +28,7 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTic
           <p className="text-slate-500 dark:text-slate-400 text-sm font-semibold">모드 전환</p>
           {isSpecialMode && (
             <span className="text-xs font-medium text-slate-600 dark:text-slate-200 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">
-              {{ roulette: '돌림판', lottery: '제비뽑기', prizeDraw: '경품 추첨', slotMachine: '777 슬롯', breakTime: '쉬는 시간', teamBattle: '팀 스코어보드', leaderboard: '리더보드' }[currentMode] || currentMode}
+              {{ roulette: '돌림판', lottery: '제비뽑기', prizeDraw: '경품 추첨', slotMachine: '777 슬롯', plinko: '핀볼', breakTime: '쉬는 시간', teamBattle: '팀 스코어보드', leaderboard: '리더보드' }[currentMode] || currentMode}
             </span>
           )}
         </div>
@@ -51,6 +51,7 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTic
                 { mode: 'lottery', label: totalTickets > 0 ? '보상 추첨' : '제비뽑기', icon: Ticket },
                 { mode: 'prizeDraw', label: '경품 추첨', icon: Gift },
                 { mode: 'slotMachine', label: '777 슬롯', icon: Dices },
+                { mode: 'plinko', label: '핀볼', icon: CircleDot },
                 { mode: 'breakTime', label: '쉬는 시간', icon: Coffee },
                 ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
                 ...(teamBattleActive ? [{ mode: 'teamBattle', label: '팀 스코어보드', icon: Swords }] : []),

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Zap, Hand, MessageSquare, Trophy, Heart, Copy, Check, Target, Ticket, Gift, Dices, Coffee } from 'lucide-react';
+import { Users, Zap, Hand, MessageSquare, Trophy, Heart, Copy, Check, Target, Ticket, Gift, Dices, CircleDot, Coffee } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
@@ -90,6 +90,7 @@ const GAME_MODES = {
   lottery: { label: '추첨 진행 중', icon: Ticket },
   prizeDraw: { label: '경품 추첨 진행 중', icon: Gift },
   slotMachine: { label: '777 슬롯 진행 중', icon: Dices },
+  plinko: { label: '핀볼 진행 중', icon: CircleDot },
   breakTime: { label: '쉬는 시간', icon: Coffee },
   teamBattle: { label: '팀 대항전 진행 중', icon: Trophy },
 };

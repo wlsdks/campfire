@@ -21,6 +21,7 @@ const Roulette = lazy(() => import('@/features/games/components/Roulette'));
 const Lottery = lazy(() => import('@/features/games/components/Lottery'));
 const PrizeDraw = lazy(() => import('@/features/games/components/PrizeDraw'));
 const SlotMachine = lazy(() => import('@/features/games/components/SlotMachine'));
+const Plinko = lazy(() => import('@/features/games/components/Plinko'));
 const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
 const Leaderboard = lazy(() => import('@/features/quiz/components/Leaderboard'));
 const TeamScoreboard = lazy(() => import('@/features/teams/components/TeamScoreboard'));
@@ -49,7 +50,7 @@ export default function LivePage() {
   const question = currentQId ? session?.questions?.[currentQId] : null;
   const { totalVotes } = useVotes(sessionId, currentQId);
 
-  const isGameMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'breakTime', 'leaderboard', 'teamBattle'].includes(currentMode);
+  const isGameMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'leaderboard', 'teamBattle'].includes(currentMode);
   const isEnded = session?.status === 'ended';
   const hasActiveQuestion = ['poll', 'quiz'].includes(currentMode) && currentQId && question;
 
@@ -124,6 +125,7 @@ export default function LivePage() {
                   {currentMode === 'lottery' && <Lottery participants={onlineList} />}
                   {currentMode === 'prizeDraw' && <PrizeDraw participants={onlineList} />}
                   {currentMode === 'slotMachine' && <SlotMachine participants={onlineList} />}
+                  {currentMode === 'plinko' && <Plinko participants={onlineList} />}
                   {currentMode === 'breakTime' && <BreakTimer />}
                   {currentMode === 'leaderboard' && <div className="w-full max-w-2xl mx-auto [&_.max-w-xl]:max-w-2xl"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" /></div>}
                   {currentMode === 'teamBattle' && <div className="w-full max-w-2xl mx-auto [&_.max-w-lg]:max-w-2xl"><TeamScoreboard teamScores={teamScores || []} /></div>}
