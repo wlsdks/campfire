@@ -343,16 +343,16 @@ Pick에서:
 ## 사이클 로그
 > 최근 10개만 유지.
 
-2026-03-22 | fix: TeamScoreboard tracking-tight + 전항목 0위반 최종 달성
-2026-03-22 | chore: 의존성 업데이트 (tailwindcss 4.2.2, firebase 12.11.0) + StreakBadge 3단계 + DESIGN_SYSTEM 동기화
-2026-03-22 | perf: useCallback 최적화 (QuestionManager/List) + 타이머 3초 shake + 다크모드 hover 3곳
-2026-03-22 | refactor: ChatMessage 중복제거 + QuestionItem memo + QuizEventBanner 다크모드 + 답변배지 모노크롬
-2026-03-22 | improve: tracking-tight 18곳 + PickMascot 빈상태 3곳 + 읽음 상태 localStorage 영속화
+2026-03-23 | feat: 강사 메모 + 사후 질문 FAB + 스태프 전자칠판 링크 + BottomSheet 컴포넌트
+2026-03-22 | improve: 모바일 전체 재구축 — 강사/스태프 하단 탭, 전체화면 모달, 토스 디자인 토큰
+2026-03-22 | improve: 채팅 버블 inline-block + 15px, shimmer 스켈레톤, haptic 피드백
+2026-03-22 | improve: 모바일 터치 최적화 — overscroll-contain, touch-action, iOS 줌 방지
+2026-03-22 | feat: 디자인 시스템 100% — icons/press 토큰, Quick Start 가이드, 래퍼런스 14개
+2026-03-22 | improve: 질문 카드 모바일 정리 (드래그핸들/보조액션 숨김) + 대시보드 탭 border 제거
 2026-03-22 | fix: 디자인 시스템 준수 — spring 프리셋 14파일 + duration-150 31곳 + 다크모드
 2026-03-22 | feat: QA패널 탭(전체/내질문) + 추천 ThumbsUp + Tooltip 포탈 + ConfirmModal + 토스트 통일
 2026-03-22 | feat: DM 모달 [채팅방|새요청] 탭 + 다중DM + 스태프 배지 + 강사 DM 제거
-2026-03-21 | improve: 마스코트 6곳 빈상태 + 채팅 slide-in + 참여율바 인디고 통일
-2026-03-21 | refactor: 코드 품질 — 유틸 추출, React.memo, 의존성 업데이트, spring 프리셋
+2026-03-22 | fix: 읽음 상태 localStorage 영속화 + QuickProgressCard 배경
 
 ---
 
