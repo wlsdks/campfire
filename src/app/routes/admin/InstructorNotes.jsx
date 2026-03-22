@@ -114,7 +114,7 @@ export default function InstructorNotes({ sessionId }) {
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="px-4 pb-3 space-y-2">
+            <div className="px-4 pt-1 pb-4 space-y-3">
               {/* Add input */}
               <form onSubmit={handleAdd} className="relative">
                 <input
