@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, BarChart3, Users, MessageSquare, Play, Hand, AlertCircle, HelpCircle, Copy, Check, ChevronDown, MoreHorizontal } from 'lucide-react';
+import { ArrowLeft, BarChart3, Users, MessageSquare, Play, Hand, AlertCircle, HelpCircle, Copy, Check, ChevronDown, MoreHorizontal, Target, Ticket, Gift, Dices, Coffee, Trophy, Swords, X, Gamepad2 } from 'lucide-react';
 import JoinToast from '@/features/participants/components/JoinToast';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import QuestionManager from './QuestionManager';
@@ -23,46 +23,119 @@ const TABS = [
   { key: 'chat', label: '채팅', icon: MessageSquare },
 ];
 
+/* ─── Mode labels ─── */
+const MODE_MAP = {
+  roulette: { label: '돌림판', icon: Target },
+  lottery: { label: '추첨', icon: Ticket },
+  prizeDraw: { label: '경품', icon: Gift },
+  slotMachine: { label: '777', icon: Dices },
+  breakTime: { label: '쉬는시간', icon: Coffee },
+  leaderboard: { label: '리더보드', icon: Trophy },
+  teamBattle: { label: '팀 대항전', icon: Swords },
+};
+
 /* ─── Header ─── */
-function MobileHeader({ session, count, onBack, onEndSession, isReviewing, onFullEndSession, effectiveReadOnly, isSetting, onStartSession, activeTab, onBackToTab, onOpenSettings }) {
-  const [confirmEnd, setConfirmEnd] = useState(false);
+function MobileHeader({ session, count, onBack, effectiveReadOnly, isSetting, onStartSession, activeTab, onBackToTab, onOpenSettings, isSpecialMode, currentMode, onOpenModes }) {
   const courseName = session?.courseName || 'Pick';
   const round = session?.roundNumber ? `${session.roundNumber}차` : '';
   const isActive = session?.status === 'active' || session?.status === 'reviewing';
+  const modeInfo = MODE_MAP[currentMode];
 
   return (
-    <>
-      <div className="flex items-center justify-between px-5 py-3.5 bg-white dark:bg-slate-800 shrink-0">
-        <div className="flex items-center gap-3 min-w-0">
-          <button onClick={activeTab !== 'progress' ? onBackToTab : onBack} className="p-2 -ml-2 rounded-xl text-slate-400 active:bg-slate-100 dark:active:bg-slate-700 transition-colors duration-150" aria-label="뒤로">
-            <ArrowLeft size={22} />
-          </button>
-          <div className="min-w-0">
-            <h1 className="text-base font-bold text-slate-900 dark:text-slate-100 truncate tracking-tight">{courseName} {round}</h1>
-            <div className="flex items-center gap-1.5 text-[13px] text-slate-400">
-              {isActive && <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />}
-              <span>{count}명 접속</span>
-            </div>
+    <div className="flex items-center justify-between px-5 py-3.5 bg-white dark:bg-slate-800 shrink-0">
+      <div className="flex items-center gap-3 min-w-0">
+        <button onClick={activeTab !== 'progress' ? onBackToTab : onBack} className="p-2 -ml-2 rounded-xl text-slate-400 active:bg-slate-100 dark:active:bg-slate-700 transition-colors duration-150" aria-label="뒤로">
+          <ArrowLeft size={22} />
+        </button>
+        <div className="min-w-0">
+          <h1 className="text-base font-bold text-slate-900 dark:text-slate-100 truncate tracking-tight">{courseName} {round}</h1>
+          <div className="flex items-center gap-1.5 text-[13px] text-slate-400">
+            {isActive && <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />}
+            <span>{count}명 접속</span>
           </div>
         </div>
-        <div className="flex items-center gap-1.5">
-          {isSetting && !effectiveReadOnly && (
-            <button onClick={onStartSession}
-              className="px-4 py-2 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-sm font-semibold transition-colors duration-150 active:scale-[0.96]">
-              수업 시작
-            </button>
-          )}
-          {!effectiveReadOnly && onOpenSettings && (
-            <motion.button whileTap={{ scale: 0.9 }} onClick={onOpenSettings}
-              className="p-2 rounded-xl text-slate-400 active:bg-slate-100 dark:active:bg-slate-700 transition-colors duration-150"
-              aria-label="세션 설정">
-              <MoreHorizontal size={20} />
-            </motion.button>
-          )}
-        </div>
       </div>
-      {/* 종료 확인은 바텀시트 내에서 처리 */}
-    </>
+      <div className="flex items-center gap-1.5">
+        {isSetting && !effectiveReadOnly && (
+          <button onClick={onStartSession}
+            className="px-4 py-2 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-sm font-semibold transition-colors duration-150 active:scale-[0.96]">
+            수업 시작
+          </button>
+        )}
+        {/* Mode indicator — quick access to mode picker */}
+        {!effectiveReadOnly && isActive && (
+          <motion.button whileTap={{ scale: 0.92 }} onClick={onOpenModes}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-medium transition-colors duration-150 ${
+              isSpecialMode
+                ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
+                : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+            }`}
+            aria-label="모드 전환"
+          >
+            {modeInfo ? <modeInfo.icon size={15} /> : <Gamepad2 size={15} />}
+            <span className="max-w-[60px] truncate">{modeInfo?.label || '모드'}</span>
+          </motion.button>
+        )}
+        {!effectiveReadOnly && onOpenSettings && (
+          <motion.button whileTap={{ scale: 0.9 }} onClick={onOpenSettings}
+            className="p-2 rounded-xl text-slate-400 active:bg-slate-100 dark:active:bg-slate-700 transition-colors duration-150"
+            aria-label="세션 설정">
+            <MoreHorizontal size={20} />
+          </motion.button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Mode Picker BottomSheet (grid layout, one-tap switch) ─── */
+function MobileModePicker({ open, onClose, currentMode, onSwitchMode, leaderboard, teamBattleActive }) {
+  const modes = [
+    { mode: 'roulette', label: '돌림판', icon: Target },
+    { mode: 'lottery', label: '추첨', icon: Ticket },
+    { mode: 'prizeDraw', label: '경품 추첨', icon: Gift },
+    { mode: 'slotMachine', label: '777 슬롯', icon: Dices },
+    { mode: 'breakTime', label: '쉬는 시간', icon: Coffee },
+    ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
+    ...(teamBattleActive ? [{ mode: 'teamBattle', label: '팀 대항전', icon: Swords }] : []),
+  ];
+
+  const isSpecial = modes.some(m => m.mode === currentMode);
+
+  return (
+    <BottomSheet open={open} onClose={onClose} ariaLabel="모드 전환">
+      <div className="space-y-4">
+        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">모드 전환</h3>
+        <div className="grid grid-cols-3 gap-3">
+          {modes.map(({ mode, label, icon: Icon }) => {
+            const isActive = currentMode === mode;
+            return (
+              <motion.button
+                key={mode}
+                whileTap={{ scale: 0.93 }}
+                onClick={() => { onSwitchMode(mode); onClose(); }}
+                className={`flex flex-col items-center gap-2 py-4 px-2 rounded-2xl text-center transition-colors duration-150 ${
+                  isActive
+                    ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
+                    : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 active:bg-slate-100 dark:active:bg-slate-700'
+                }`}
+              >
+                <Icon size={24} strokeWidth={isActive ? 2 : 1.5} />
+                <span className="text-xs font-medium leading-tight">{label}</span>
+              </motion.button>
+            );
+          })}
+        </div>
+        {isSpecial && (
+          <button
+            onClick={() => { onSwitchMode('waiting'); onClose(); }}
+            className="w-full py-3 rounded-xl text-slate-500 dark:text-slate-400 font-medium text-[15px] bg-slate-50 dark:bg-slate-800 active:bg-slate-100 dark:active:bg-slate-700 transition-colors duration-150 flex items-center justify-center gap-2"
+          >
+            <X size={16} /> 화면 종료
+          </button>
+        )}
+      </div>
+    </BottomSheet>
   );
 }
 
@@ -244,6 +317,7 @@ function MobileParticipantsTab({ sessionId, onlineList, count, studentUrl }) {
 export default function MobileAdminView({ s }) {
   const [activeTab, setActiveTab] = useState('progress');
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [modesOpen, setModesOpen] = useState(false);
 
   const currentMode = s.session?.currentMode;
   const isSpecialMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'breakTime', 'leaderboard', 'teamBattle'].includes(currentMode);
@@ -261,15 +335,15 @@ export default function MobileAdminView({ s }) {
         session={s.session}
         count={s.count}
         onBack={s.handleBack}
-        onEndSession={s.handleEndSession}
         onStartSession={s.handleStartSession}
-        isReviewing={s.isReviewing}
-        onFullEndSession={s.handleFullEndSession}
         effectiveReadOnly={s.effectiveReadOnly}
         isSetting={s.isSetting}
         activeTab={activeTab}
         onBackToTab={() => setActiveTab('progress')}
         onOpenSettings={() => setSettingsOpen(true)}
+        isSpecialMode={isSpecialMode}
+        currentMode={currentMode}
+        onOpenModes={() => setModesOpen(true)}
       />
 
       {/* Tab content */}
@@ -324,6 +398,16 @@ export default function MobileAdminView({ s }) {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Mode picker bottom sheet (grid, one-tap) */}
+      <MobileModePicker
+        open={modesOpen}
+        onClose={() => setModesOpen(false)}
+        currentMode={currentMode}
+        onSwitchMode={s.switchMode}
+        leaderboard={s.leaderboard}
+        teamBattleActive={s.teamBattleActive}
+      />
 
       {/* Session settings bottom sheet (team battle + mode switcher) */}
       <BottomSheet open={settingsOpen} onClose={() => setSettingsOpen(false)} ariaLabel="세션 설정">
