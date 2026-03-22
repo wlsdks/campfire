@@ -158,7 +158,7 @@ export default function ClassQAPanel({ sessionId, open, onClose, onNewQuestion }
             </div>
 
             {/* Questions list */}
-            <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 scrollbar-hide">
+            <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-3 space-y-3 scrollbar-hide">
               {loading && questions.length === 0 && (
                 <div className="flex-1 flex items-center justify-center h-full">
                   <span className="text-sm text-slate-300 dark:text-slate-500">불러오는 중...</span>

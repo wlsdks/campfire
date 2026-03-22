@@ -23,6 +23,38 @@ html.dark {
 /* Korean body text needs more breathing room */
 body {
   line-height: 1.7;
+  overscroll-behavior-y: contain; /* Prevent pull-to-refresh */
+  -webkit-tap-highlight-color: transparent; /* Remove blue tap flash on iOS */
+}
+
+/* === Mobile Web Optimization === */
+
+/* Prevent iOS auto-zoom on input focus (font < 16px triggers zoom) */
+input, select, textarea {
+  font-size: max(16px, 1em);
+}
+
+/* Eliminate 300ms tap delay on interactive elements */
+a, button, input, select, textarea,
+[role="button"], [role="tab"], [role="link"] {
+  touch-action: manipulation;
+}
+
+/* Prevent text size adjustment on orientation change */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Remove iOS default input styling */
+input, textarea, select {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Prevent scroll bleed-through on modals/drawers */
+.overscroll-contain {
+  overscroll-behavior-y: contain;
 }
 
 /* Hide all scrollbars globally */

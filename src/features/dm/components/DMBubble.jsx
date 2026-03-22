@@ -190,7 +190,7 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
                 )}
               </div>
             ) : (
-              <div className="flex-1 overflow-y-auto px-5 py-5 scrollbar-hide">
+              <div className="flex-1 overflow-y-auto overscroll-contain px-5 py-5 scrollbar-hide">
                 {requestSent ? (
                   <div className="flex flex-col items-center justify-center h-full gap-3">
                     <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 400, damping: 22 }}

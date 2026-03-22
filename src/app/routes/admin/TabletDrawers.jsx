@@ -40,7 +40,7 @@ export default function TabletDrawers({
                   <X size={18} />
                 </button>
               </div>
-              <div className="flex-1 p-4 overflow-y-auto scrollbar-hide">
+              <div className="flex-1 p-4 overflow-y-auto overscroll-contain scrollbar-hide">
                 {leftContent}
               </div>
             </motion.div>
@@ -77,7 +77,7 @@ export default function TabletDrawers({
                   <X size={18} />
                 </button>
               </div>
-              <div className="flex-1 p-4 space-y-3 overflow-y-auto scrollbar-hide">
+              <div className="flex-1 p-4 space-y-3 overflow-y-auto overscroll-contain scrollbar-hide">
                 {rightContent}
               </div>
             </motion.div>
