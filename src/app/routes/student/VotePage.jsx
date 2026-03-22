@@ -138,7 +138,7 @@ export default function VotePage({ sessionId }) {
   if (!question) return <WaitingPage sessionId={sessionId} pendingEvent={session?.pendingEvent || null} courseName={session?.courseName} />;
 
   return (
-    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center px-5 pb-52 pt-16">
+    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center px-5 pb-8 pt-16">
       <StudentHeader sessionId={sessionId} />
 
       <div className="w-full max-w-xl space-y-5">
@@ -285,7 +285,7 @@ export default function VotePage({ sessionId }) {
       </div>
 
       <ReviewingBanner sessionId={sessionId} />
-      <StudentBottomBar sessionId={sessionId} />
+      {/* Bottom bar hidden during active voting — focus on the question */}
       <AchievementToast achievements={achievements} />
     </div>
   );
