@@ -37,8 +37,8 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
             transition={{ delay: 0.12, type: 'spring', stiffness: 400, damping: 22 }}
           >
             {isCorrect
-              ? <Check size={36} className="text-slate-800" strokeWidth={2.5} />
-              : <X size={36} className="text-slate-400" strokeWidth={2.5} />
+              ? <Check size={36} className="text-slate-800 dark:text-slate-100" strokeWidth={2.5} />
+              : <X size={36} className="text-slate-400 dark:text-slate-500" strokeWidth={2.5} />
             }
           </motion.div>
         </div>
@@ -70,7 +70,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
               animate={{ rotate: [-4, 4, -4], scale: [1, 1.15, 1] }}
               transition={{ repeat: Infinity, duration: streak >= 5 ? 0.5 : 0.8, ease: 'easeInOut' }}
             >
-              <Flame size={15} className={streak >= 5 ? 'text-white' : 'text-slate-500'} />
+              <Flame size={15} className={streak >= 5 ? 'text-white dark:text-slate-900' : 'text-slate-500 dark:text-slate-400'} />
             </motion.div>
             <span className="font-bold text-sm tabular-nums">{streak}연속 정답!</span>
           </motion.div>
@@ -79,7 +79,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
         {!isCorrect && correctAnswer && (
           <div className="w-full rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-700 dark:border-slate-600 px-4 py-3 text-center">
             <p className="text-xs font-medium text-slate-400">정답</p>
-            <p className="mt-1 text-base font-semibold text-slate-800">{correctAnswer}</p>
+            <p className="mt-1 text-base font-semibold text-slate-800 dark:text-slate-200">{correctAnswer}</p>
           </div>
         )}
 
@@ -89,7 +89,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.18, type: 'spring', stiffness: 300, damping: 25 }}
-            className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold"
+            className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-xs font-semibold"
           >
             {bet}x 베팅
           </motion.div>
