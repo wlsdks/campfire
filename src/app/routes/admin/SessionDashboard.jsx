@@ -168,7 +168,25 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
           {activeTab === 'classes' && (
             <motion.div key="classes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className="space-y-4">
               {loading ? (
-                <div className="flex items-center justify-center py-16 text-slate-400"><Loader2 size={20} className="animate-spin mr-2" />불러오는 중...</div>
+                <div className="space-y-4">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 animate-pulse">
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="h-5 bg-slate-200 dark:bg-slate-700 rounded-lg w-40" />
+                        <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-12" />
+                      </div>
+                      <div className="flex gap-4 mb-3">
+                        <div className="h-8 bg-slate-200 dark:bg-slate-700 rounded w-16" />
+                        <div className="h-8 bg-slate-200 dark:bg-slate-700 rounded w-16" />
+                        <div className="flex-1 h-3 bg-slate-200 dark:bg-slate-700 rounded mt-3" />
+                      </div>
+                      <div className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-700">
+                        <div className="h-10 bg-slate-100 dark:bg-slate-800 rounded-lg" />
+                        <div className="h-10 bg-slate-100 dark:bg-slate-800 rounded-lg" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : displaySessions.length === 0 ? (
                 isStaff ? (
                   <EmptyState title="진행 중인 수업이 없습니다" description="강사가 수업을 시작하면 여기에 표시됩니다"
