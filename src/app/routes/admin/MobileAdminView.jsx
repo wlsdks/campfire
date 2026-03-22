@@ -295,8 +295,8 @@ export default function MobileAdminView({ s }) {
 
           {activeTab === 'results' && (
             <motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}
-              className="h-full overflow-y-auto overscroll-contain scrollbar-hide">
-              <div className="bg-white dark:bg-slate-800 min-h-full p-5 flex flex-col">
+              className="h-full flex flex-col overflow-y-auto overscroll-contain scrollbar-hide">
+              <div className="bg-white dark:bg-slate-800 flex-1 p-5 flex flex-col">
                 <CenterContent showCenterForm={s.showCenterForm} onHideCenterForm={s.handleHideCenterForm} onCenterFormSubmit={s.handleCenterFormSubmit}
                   effectiveReadOnly={s.effectiveReadOnly} session={s.session} currentMode={currentMode} sessionId={s.sessionId}
                   onlineList={s.onlineList} leaderboard={s.leaderboard} drawParticipants={s.drawParticipants}
