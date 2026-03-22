@@ -120,23 +120,26 @@ export default function Roulette({ participants, scores = {}, onResult }) {
           {segmentsWithAngle.map((seg, i) => {
             const sa = seg.startAngle;
             const ea = sa + seg.angle;
-            const sr = (sa - 90) * Math.PI / 180;
-            const er = (ea - 90) * Math.PI / 180;
-            const x1 = 100 + 97 * Math.cos(sr), y1 = 100 + 97 * Math.sin(sr);
-            const x2 = 100 + 97 * Math.cos(er), y2 = 100 + 97 * Math.sin(er);
-            const la = seg.angle > 180 ? 1 : 0;
             const mr = ((sa + ea) / 2 - 90) * Math.PI / 180;
             const tx = 100 + textR * Math.cos(mr), ty = 100 + textR * Math.sin(mr);
             const tr = (sa + ea) / 2;
             const dn = seg.name.length > 5 ? seg.name.slice(0, 5) + '..' : seg.name;
+
+            // Full circle (1 participant) — SVG arc can't draw 360°
+            const isFull = seg.angle >= 359.9;
+
             return (
               <g key={i}>
-                <path
-                  d={`M100,100 L${x1},${y1} A97,97 0 ${la},1 ${x2},${y2} Z`}
-                  fill={SEGMENT_COLORS[i % SEGMENT_COLORS.length]}
-                  stroke="rgba(255,255,255,0.12)"
-                  strokeWidth="0.8"
-                />
+                {isFull ? (
+                  <circle cx="100" cy="100" r="97" fill={SEGMENT_COLORS[i % SEGMENT_COLORS.length]} />
+                ) : (
+                  <path
+                    d={`M100,100 L${100 + 97 * Math.cos((sa - 90) * Math.PI / 180)},${100 + 97 * Math.sin((sa - 90) * Math.PI / 180)} A97,97 0 ${seg.angle > 180 ? 1 : 0},1 ${100 + 97 * Math.cos((ea - 90) * Math.PI / 180)},${100 + 97 * Math.sin((ea - 90) * Math.PI / 180)} Z`}
+                    fill={SEGMENT_COLORS[i % SEGMENT_COLORS.length]}
+                    stroke="rgba(255,255,255,0.12)"
+                    strokeWidth="0.8"
+                  />
+                )}
                 <text
                   x={tx} y={ty} fill="white" fontSize={fontSize} fontWeight="700"
                   fontFamily="'Pretendard','Inter',system-ui,sans-serif"
