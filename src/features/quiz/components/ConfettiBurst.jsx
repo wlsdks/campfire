@@ -1,9 +1,9 @@
 import { memo, useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-const PARTICLE_COUNT = 24;
-const COLORS = ['#0F172A', '#334155', '#64748B', '#94A3B8', '#CBD5E1'];
-const MAX_DURATION = 1.2; // longest particle animation (seconds)
+const PARTICLE_COUNT = 32;
+const COLORS = ['#0F172A', '#334155', '#4F46E5', '#6366F1', '#94A3B8', '#CBD5E1'];
+const MAX_DURATION = 1.4;
 
 function seededRandom(seed) {
   const x = Math.sin(seed * 9301 + 49297) * 49297;
@@ -20,7 +20,7 @@ function createParticle(index) {
   const baseAngle = (index / PARTICLE_COUNT) * 360;
   const angle = baseAngle + (s1 - 0.5) * 40;
   const rad = (angle * Math.PI) / 180;
-  const distance = 60 + s2 * 110;
+  const distance = 80 + s2 * 150;
 
   return {
     id: index,
@@ -52,7 +52,7 @@ function ParticleShape({ shape, color, size }) {
 }
 
 const Particle = memo(function Particle({ particle }) {
-  const size = 6 * particle.scale;
+  const size = 8 * particle.scale;
 
   return (
     <motion.div

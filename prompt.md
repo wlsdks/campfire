@@ -422,7 +422,14 @@ Pick에서:
 ## 사이클 로그
 > 최근 10개만 유지.
 
-2026-03-23 | v3 시작 — 게임 수리(777/룰렛), 핀볼 개발, 모드 전환 UX, 캐릭터 애니메이션
+2026-03-23 | improve: confetti 스케일업 + 브랜드 색상, BreakTimer 프로젝터 사이징
+2026-03-23 | improve: 학생 WaitingPage 게임 모드 인디케이터 (돌림판/추첨/쉬는시간 표시)
+2026-03-23 | improve: 모바일 모드 피커 — 헤더 인디케이터 + 3열 그리드 BottomSheet
+2026-03-23 | fix: PrizeDraw SlotReel 프리즈 + 전체 게임 스케일업
+2026-03-23 | fix: 디자인 시스템 준수 — tracking-tight, Sparkles→Dices
+2026-03-23 | feat: 쉬는시간 전신 캐릭터 5동작 (걷기/춤/스트레칭/손흔들기/대기)
+2026-03-23 | improve: 모드 전환 애니메이션 — PresentationView + LivePage (scale/slide/fade)
+2026-03-23 | fix: 룰렛/슬롯머신 전면 재작성 — 크기 확대, 버그 수정, scores 연결
 
 ---
 
