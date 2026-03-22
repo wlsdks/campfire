@@ -1,18 +1,18 @@
 import { useState, useRef, useEffect, useMemo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Target, Loader2, RotateCcw } from 'lucide-react';
+import { RotateCcw } from 'lucide-react';
 import Button from '@/components/ui/Button';
-import Avatar from '@/components/ui/Avatar';
+import { hapticSuccess } from '@/lib/haptics';
 
 const ConfettiBurst = lazy(() => import('@/features/quiz/components/ConfettiBurst'));
-// Monochromatic slate segments
+
+// Indigo gradient — all dark enough for white text
 const SEGMENT_COLORS = [
-  '#0F172A', '#334155', '#64748B', '#94A3B8',
-  '#1E293B', '#475569', '#CBD5E1', '#334155',
+  '#1E1B4B', '#312E81', '#3730A3', '#4338CA',
+  '#4F46E5', '#6366F1', '#4338CA', '#312E81',
 ];
 
 function getWeightedSpinResult(segments) {
-  // Weighted random — more tickets/points = higher probability
   const totalWeight = segments.reduce((sum, s) => sum + s.weight, 0);
   let rand = Math.random() * totalWeight;
   let winnerIndex = 0;
@@ -20,11 +20,10 @@ function getWeightedSpinResult(segments) {
     rand -= segments[i].weight;
     if (rand <= 0) { winnerIndex = i; break; }
   }
-  // Calculate angle to winner's segment center
   let angleToCenter = 0;
   for (let i = 0; i < winnerIndex; i++) angleToCenter += segments[i].angle;
   angleToCenter += segments[winnerIndex].angle / 2;
-  const extraRotations = (5 + Math.random() * 3) * 360;
+  const extraRotations = (6 + Math.random() * 3) * 360;
   return { winnerIndex, targetAngle: extraRotations + (360 - angleToCenter) };
 }
 
@@ -35,27 +34,22 @@ export default function Roulette({ participants, scores = {}, onResult }) {
   const mountedRef = useRef(true);
   const timerRef = useRef(null);
 
-  useEffect(() => {
-    return () => {
-      mountedRef.current = false;
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
+  useEffect(() => () => {
+    mountedRef.current = false;
+    if (timerRef.current) clearTimeout(timerRef.current);
   }, []);
 
-  // Build weighted segments — everyone gets at least 1 base weight
-  const segments = participants.map(p => {
-    const s = scores[p.id];
-    const tickets = s?.tickets || 0;
-    const total = s?.total || 0;
-    const weight = 1 + tickets + Math.floor(total / 100); // base 1 + tickets + score/100
-    return { name: p.nickname, weight };
-  });
-  const totalWeight = segments.reduce((sum, s) => sum + s.weight, 0) || 1;
-  const segmentsWithAngle = segments.map(s => ({
-    ...s,
-    angle: (s.weight / totalWeight) * 360,
-  }));
-  const names = segments.map(s => s.name);
+  const segmentsWithAngle = useMemo(() => {
+    const segs = participants.map(p => {
+      const s = scores[p.id];
+      const weight = 1 + (s?.tickets || 0) + Math.floor((s?.total || 0) / 100);
+      return { name: p.nickname, weight };
+    });
+    const total = segs.reduce((sum, s) => sum + s.weight, 0) || 1;
+    return segs.map(s => ({ ...s, angle: (s.weight / total) * 360 }));
+  }, [participants, scores]);
+
+  const names = useMemo(() => segmentsWithAngle.map(s => s.name), [segmentsWithAngle]);
 
   function spin() {
     if (spinning || names.length === 0) return;
@@ -66,119 +60,137 @@ export default function Roulette({ participants, scores = {}, onResult }) {
     timerRef.current = setTimeout(() => {
       if (!mountedRef.current) return;
       setSpinning(false);
-      setWinner(names[winnerIndex]);
-      onResult?.(names[winnerIndex]);
-    }, 4000);
+      const w = names[winnerIndex];
+      setWinner(w);
+      hapticSuccess();
+      onResult?.(w);
+    }, 4500);
   }
 
   if (names.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4 py-16">
-        <Target size={36} className="text-slate-400" />
-        <div className="text-center space-y-1">
-          <h3 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">돌림판</h3>
-          <p className="text-slate-400 text-sm">참여자가 접속하면 시작할 수 있어요</p>
+      <div className="flex flex-col items-center justify-center gap-4 py-16" onClick={e => e.stopPropagation()}>
+        <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+          <svg viewBox="0 0 24 24" className="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <circle cx="12" cy="12" r="10" /><path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
+          </svg>
         </div>
+        <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">돌림판</h3>
+        <p className="text-slate-400 text-base">참여자가 접속하면 시작할 수 있어요</p>
       </div>
     );
   }
 
+  const fontSize = names.length > 20 ? 5 : names.length > 12 ? 6 : names.length > 6 ? 8 : 10;
+  const textR = names.length > 20 ? 55 : names.length > 12 ? 58 : 62;
+
   return (
-    <div className="flex flex-col items-center gap-6">
-      <div className="relative w-full max-w-[320px] aspect-square mx-auto">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-0.5 z-10 drop-shadow">
-          <svg width="24" height="20" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 20L0 0H24L12 20Z" fill={'#0F172A'} />
+    <div className="flex flex-col items-center gap-8 w-full max-w-2xl mx-auto" onClick={e => e.stopPropagation()}>
+      {/* Wheel */}
+      <div className="relative w-full max-w-lg aspect-square mx-auto">
+        {/* Pointer */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 z-10">
+          <svg width="36" height="30" viewBox="0 0 36 30" fill="none">
+            <path d="M18 30L2 2H34L18 30Z" className="fill-slate-900 dark:fill-slate-100" />
           </svg>
         </div>
+
+        {/* Glow ring when spinning */}
+        {spinning && (
+          <motion.div
+            className="absolute inset-0 rounded-full"
+            style={{ boxShadow: '0 0 40px 8px rgba(79,70,229,0.25)' }}
+            animate={{ opacity: [0.4, 0.8, 0.4] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          />
+        )}
+
         <motion.svg
           viewBox="0 0 200 200"
-          className="w-full h-full drop-shadow-md"
+          className="w-full h-full drop-shadow-lg"
           animate={{ rotate: rotation }}
-          transition={{ duration: 4, ease: [0.17, 0.67, 0.12, 0.99] }}
+          transition={{ duration: 4.5, ease: [0.12, 0.56, 0.08, 0.99] }}
         >
-          <circle cx="100" cy="100" r="98" fill="none" stroke={"#E2E8F0"} strokeWidth="1.5" />
+          <circle cx="100" cy="100" r="99" fill="none" stroke="white" strokeWidth="2" opacity="0.2" />
           {(() => {
-            let cumulativeAngle = 0;
+            let cum = 0;
             return segmentsWithAngle.map((seg, i) => {
-            const startAngle = cumulativeAngle;
-            const endAngle = startAngle + seg.angle;
-            cumulativeAngle = endAngle;
-            const startRad = (startAngle - 90) * Math.PI / 180;
-            const endRad = (endAngle - 90) * Math.PI / 180;
-            const x1 = 100 + 95 * Math.cos(startRad);
-            const y1 = 100 + 95 * Math.sin(startRad);
-            const x2 = 100 + 95 * Math.cos(endRad);
-            const y2 = 100 + 95 * Math.sin(endRad);
-            const largeArc = seg.angle > 180 ? 1 : 0;
-            const midRad = ((startAngle + endAngle) / 2 - 90) * Math.PI / 180;
-            const textX = 100 + 62 * Math.cos(midRad);
-            const textY = 100 + 62 * Math.sin(midRad);
-            const textRotation = (startAngle + endAngle) / 2;
-            const name = seg.name;
-            return (
-              <g key={name + i}>
-                <path
-                  d={`M100,100 L${x1},${y1} A95,95 0 ${largeArc},1 ${x2},${y2} Z`}
-                  fill={SEGMENT_COLORS[i % SEGMENT_COLORS.length]}
-                  stroke="white"
-                  strokeWidth="1.5"
-                />
-                <text
-                  x={textX} y={textY} fill="white"
-                  fontSize={names.length > 10 ? '6' : '8'}
-                  fontWeight="600"
-                  fontFamily="'Pretendard', 'Inter', system-ui, sans-serif"
-                  textAnchor="middle" dominantBaseline="central"
-                  transform={`rotate(${textRotation}, ${textX}, ${textY})`}
-                >
-                  {name.length > 6 ? name.slice(0, 6) + '..' : name}
-                </text>
-              </g>
-            );
-          })})()}
-          <circle cx="100" cy="100" r="18" fill="white" stroke={"#E2E8F0"} strokeWidth="1.5" />
-          <text x="100" y="100" fill={'#0F172A'} fontSize="10" fontWeight="bold" fontFamily="'Pretendard', system-ui" textAnchor="middle" dominantBaseline="central">GO</text>
+              const sa = cum;
+              const ea = sa + seg.angle;
+              cum = ea;
+              const sr = (sa - 90) * Math.PI / 180;
+              const er = (ea - 90) * Math.PI / 180;
+              const x1 = 100 + 97 * Math.cos(sr), y1 = 100 + 97 * Math.sin(sr);
+              const x2 = 100 + 97 * Math.cos(er), y2 = 100 + 97 * Math.sin(er);
+              const la = seg.angle > 180 ? 1 : 0;
+              const mr = ((sa + ea) / 2 - 90) * Math.PI / 180;
+              const tx = 100 + textR * Math.cos(mr), ty = 100 + textR * Math.sin(mr);
+              const tr = (sa + ea) / 2;
+              const dn = seg.name.length > 5 ? seg.name.slice(0, 5) + '..' : seg.name;
+              return (
+                <g key={i}>
+                  <path
+                    d={`M100,100 L${x1},${y1} A97,97 0 ${la},1 ${x2},${y2} Z`}
+                    fill={SEGMENT_COLORS[i % SEGMENT_COLORS.length]}
+                    stroke="rgba(255,255,255,0.12)"
+                    strokeWidth="0.8"
+                  />
+                  <text
+                    x={tx} y={ty} fill="white" fontSize={fontSize} fontWeight="700"
+                    fontFamily="'Pretendard','Inter',system-ui,sans-serif"
+                    textAnchor="middle" dominantBaseline="central"
+                    transform={`rotate(${tr},${tx},${ty})`}
+                  >{dn}</text>
+                </g>
+              );
+            });
+          })()}
+          <circle cx="100" cy="100" r="22" fill="white" />
+          <circle cx="100" cy="100" r="20" fill="#FAFAFA" stroke="#E2E8F0" strokeWidth="0.8" />
+          <text x="100" y="100" fill="#4F46E5" fontSize="7" fontWeight="800" fontFamily="'Pretendard',system-ui" textAnchor="middle" dominantBaseline="central">PICK</text>
         </motion.svg>
       </div>
 
+      {/* Winner */}
       <AnimatePresence>
         {winner && (
           <motion.div
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.8, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="text-center space-y-3"
+            className="relative text-center space-y-4"
           >
             <Suspense fallback={null}><ConfettiBurst /></Suspense>
-            <Avatar name={winner} size="lg" />
-            <div className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">{winner}</div>
-            <span className="inline-flex items-center px-3 py-1 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-full text-sm font-bold">
+            <div className="w-20 h-20 mx-auto rounded-full bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center text-3xl font-bold text-indigo-600 dark:text-indigo-400 ring-4 ring-indigo-100 dark:ring-indigo-800/50">
+              {winner.charAt(0).toUpperCase()}
+            </div>
+            <div className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">{winner}</div>
+            <span className="inline-flex items-center px-5 py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-full text-base font-bold">
               당첨!
             </span>
           </motion.div>
         )}
       </AnimatePresence>
 
+      {/* Controls */}
       <div className="flex gap-3">
         {winner && (
-          <Button onClick={() => { setWinner(null); }} variant="secondary" size="lg">
-            <RotateCcw size={18} />
-            다시 돌리기
+          <Button onClick={() => setWinner(null)} variant="secondary" size="lg">
+            <RotateCcw size={18} /> 다시 돌리기
           </Button>
         )}
-        <Button onClick={spin} disabled={spinning || names.length === 0} variant="primary" size="lg">
+        <Button onClick={spin} disabled={spinning} variant="primary" size="lg">
           {spinning ? (
             <span className="flex items-center gap-2">
-              <Loader2 size={20} className="animate-spin" />
+              <motion.span
+                animate={{ rotate: 360 }}
+                transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
+                className="inline-block w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+              />
               돌리는 중...
             </span>
-          ) : (
-            <span className="flex items-center gap-2">
-              <Target size={20} />
-              {winner ? '한 번 더' : '돌리기'}
-            </span>
-          )}
+          ) : winner ? '한 번 더' : '돌리기'}
         </Button>
       </div>
     </div>

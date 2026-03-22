@@ -84,6 +84,7 @@ export default function CenterContent({
               leaderboard={leaderboard}
               drawParticipants={drawParticipants}
               teamScores={teamScores}
+              scores={scores}
             />
           )}
         </motion.div>

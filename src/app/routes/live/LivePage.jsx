@@ -113,7 +113,7 @@ export default function LivePage() {
             {isGameMode ? (
               <motion.div key="game" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="w-full">
                 <Suspense fallback={<GameFallback />}>
-                  {currentMode === 'roulette' && <Roulette participants={onlineList} />}
+                  {currentMode === 'roulette' && <Roulette participants={onlineList} scores={scores} />}
                   {currentMode === 'lottery' && <Lottery participants={onlineList} />}
                   {currentMode === 'prizeDraw' && <PrizeDraw participants={onlineList} />}
                   {currentMode === 'slotMachine' && <SlotMachine participants={onlineList} />}

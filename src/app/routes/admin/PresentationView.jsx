@@ -126,10 +126,10 @@ const GameFallback = () => (
   </div>
 );
 
-function MainContent({ currentMode, sessionId, session, onlineList, leaderboard, drawParticipants, presentMode, studentUrl, count, teamScores }) {
+function MainContent({ currentMode, sessionId, session, onlineList, leaderboard, drawParticipants, presentMode, studentUrl, count, teamScores, scores }) {
   // Game modes — centered vertically
   const gameContent = (() => {
-    if (currentMode === 'roulette') return <Roulette participants={onlineList} />;
+    if (currentMode === 'roulette') return <Roulette participants={onlineList} scores={scores} />;
     if (currentMode === 'lottery') return <Lottery participants={drawParticipants} />;
     if (currentMode === 'prizeDraw') return <PrizeDraw participants={onlineList} />;
     if (currentMode === 'slotMachine') return <SlotMachine participants={onlineList} />;
@@ -158,7 +158,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
 
 export { MainContent };
 
-export default function PresentationView({ sessionId, session, currentMode, onlineList, leaderboard, drawParticipants, studentUrl, count, onExit, teamScores }) {
+export default function PresentationView({ sessionId, session, currentMode, onlineList, leaderboard, drawParticipants, studentUrl, count, onExit, teamScores, scores }) {
   const exitPresent = useCallback(() => onExit(), [onExit]);
 
   useEffect(() => {
@@ -187,6 +187,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
           studentUrl={studentUrl}
           count={count}
           teamScores={teamScores}
+          scores={scores}
         />
       </div>
       <PresentQROverlay sessionId={sessionId} studentUrl={studentUrl} count={count} />
