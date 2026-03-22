@@ -259,14 +259,44 @@ JoinPage → WaitingPage → VotePage(투표) → VoteConfirm → 결과 대기 
 
 ```
 0. git pull + npm run build (안전 점검)
-1. Read CLAUDE.md + Read DESIGN_SYSTEM.md (디자인 철학·규칙 숙지 — 매 사이클 필수)
+1. Read CLAUDE.md + Read DESIGN_SYSTEM.md (디자인 철학·규칙 숙지)
 2. git log --oneline -10 (최근 작업 확인)
 3. 우선순위 매트릭스에서 작업 선택
 4. 파일 Read → 수정 → npm run build
-5. Playwright로 검증 (콘솔 에러 0개)
-6. Apple/Toss 디자인 자문 5항목 + 기계적 체크리스트 10항목 확인
+5. Playwright 390x844 모바일 스크린샷 촬영 + 검증
+6. Apple/Toss 디자인 자문 + 모바일 체크리스트 확인
 7. git commit + push + firebase deploy
 ```
+
+### 자율 UI/UX 개선 (할 일이 없을 때)
+> 기계적 검사가 전부 통과하고 할 일이 없으면, 아래 중 하나를 선택하여 진행한다.
+> "Build clean. 변경 없음."을 반복하지 않는다.
+
+**A. 래퍼런스 리서치 → 적용**
+- 토스/당근/카카오/Apple/Linear의 최신 UI 패턴을 웹 검색으로 조사
+- 우리 앱에 적용 가능한 패턴을 찾아서 구현
+- 예: 스와이프 삭제, 바텀 시트, 스크롤 스냅, 스켈레톤 로딩
+
+**B. 모바일 사용성 개선**
+- Playwright 390x844로 모든 화면을 돌며 "앱처럼 느껴지지 않는 곳" 찾기
+- 공유 컴포넌트(QuestionList, SessionList 등)의 모바일 반응형 개선
+- 터치 인터랙션 개선 (스와이프, 길게 누르기, 드래그)
+
+**C. 디자인 시스템 구조 개선**
+- DESIGN_SYSTEM.md §21 모바일을 웹과 동일 수준으로 분리 (§21.1~21.N)
+- design-tokens.js에 모바일 토큰 추가
+- 웹/모바일 공용 컴포넌트의 반응형 분기 패턴 정립
+
+**D. 마이크로 인터랙션 추가**
+- 의미 있는 애니메이션 추가 (투표 후 피드백, 리스트 재정렬, 카드 전환)
+- spring 물리 기반 자연스러운 모션
+- 상태 변화를 시각적으로 전달하는 모션
+
+**E. 학생 화면 앱 체험 강화**
+- WaitingPage idle 애니메이션 다양화
+- 투표 후 확인 모션 개선
+- 세션 요약 카드의 시각적 임팩트 강화
+- 리더보드 애니메이션 드라마틱하게
 
 ### 검증 뷰포트
 - Desktop: 1280x800 (강사)
