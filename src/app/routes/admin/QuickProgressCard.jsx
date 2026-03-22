@@ -130,8 +130,8 @@ export default function QuickProgressCard({
           다음 예정: <span className="text-slate-600 dark:text-slate-300">{nextEntry[1].title}</span>
         </p>
       )}
-      {/* Keyboard shortcut hints */}
-      <div className="flex flex-wrap gap-1.5 pt-1">
+      {/* Keyboard shortcut hints — hidden on mobile (no keyboard) */}
+      <div className="flex flex-wrap gap-1.5 pt-1 max-sm:hidden">
         <KeyHint keys="← →" label="질문 이동" />
         <KeyHint keys="Space" label="다음" />
         <KeyHint keys="Esc" label="대기" />
