@@ -130,12 +130,12 @@ export default function VotePage({ sessionId }) {
 
   if (currentMode === 'leaderboard') return <Suspense fallback={<SuspenseFallback />}><LeaderboardPage sessionId={sessionId} /></Suspense>;
   if (!['poll', 'quiz'].includes(currentMode) || !currentQId) {
-    return <WaitingPage sessionId={sessionId} pendingEvent={session?.pendingEvent || null} courseName={session?.courseName} />;
+    return <WaitingPage sessionId={sessionId} pendingEvent={session?.pendingEvent || null} courseName={session?.courseName} currentMode={currentMode} />;
   }
 
   const question = session?.questions?.[currentQId];
 
-  if (!question) return <WaitingPage sessionId={sessionId} pendingEvent={session?.pendingEvent || null} courseName={session?.courseName} />;
+  if (!question) return <WaitingPage sessionId={sessionId} pendingEvent={session?.pendingEvent || null} courseName={session?.courseName} currentMode={currentMode} />;
 
   return (
     <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center px-5 pb-40 pt-16">

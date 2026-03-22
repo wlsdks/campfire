@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Zap, Hand, MessageSquare, Trophy, Heart, Copy, Check } from 'lucide-react';
+import { Users, Zap, Hand, MessageSquare, Trophy, Heart, Copy, Check, Target, Ticket, Gift, Dices, Coffee } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
@@ -85,7 +85,16 @@ function CopyableCode({ code }) {
   );
 }
 
-export default function WaitingPage({ sessionId, pendingEvent = null, courseName = null }) {
+const GAME_MODES = {
+  roulette: { label: '돌림판 진행 중', icon: Target },
+  lottery: { label: '추첨 진행 중', icon: Ticket },
+  prizeDraw: { label: '경품 추첨 진행 중', icon: Gift },
+  slotMachine: { label: '777 슬롯 진행 중', icon: Dices },
+  breakTime: { label: '쉬는 시간', icon: Coffee },
+  teamBattle: { label: '팀 대항전 진행 중', icon: Trophy },
+};
+
+export default function WaitingPage({ sessionId, pendingEvent = null, courseName = null, currentMode = null }) {
   const { count } = useParticipants(sessionId);
   const nickname = getNickname();
 
@@ -126,14 +135,32 @@ export default function WaitingPage({ sessionId, pendingEvent = null, courseName
               {courseName}
             </motion.p>
           )}
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.35, ease: 'easeOut' }}
-            className="text-slate-400 dark:text-slate-500 text-sm"
           >
-            다음 질문을 기다리는 중...
-          </motion.p>
+            {GAME_MODES[currentMode] ? (
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-medium">
+                {(() => { const MIcon = GAME_MODES[currentMode].icon; return <MIcon size={16} className="text-slate-400" />; })()}
+                <span>{GAME_MODES[currentMode].label}</span>
+                {currentMode !== 'breakTime' && (
+                  <span className="flex gap-0.5">
+                    {[0, 1, 2].map(i => (
+                      <motion.span key={i} className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600"
+                        animate={{ opacity: [0.3, 1, 0.3] }}
+                        transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
+                      />
+                    ))}
+                  </span>
+                )}
+              </div>
+            ) : (
+              <p className="text-slate-400 dark:text-slate-500 text-sm">
+                다음 질문을 기다리는 중...
+              </p>
+            )}
+          </motion.div>
         </div>
 
         {/* Participant count */}
