@@ -162,7 +162,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     content = <Suspense fallback={<GameFallback />}>{gameContent}</Suspense>;
   } else if (isActive) {
     contentKey = `question-${currentQId}`;
-    content = <VizRenderer sessionId={sessionId} session={session} />;
+    content = <div className="w-full [&_.max-w-xl]:max-w-2xl"><VizRenderer sessionId={sessionId} session={session} /></div>;
   } else if (presentMode) {
     contentKey = 'empty';
     content = <PresentEmptyState sessionId={sessionId} studentUrl={studentUrl} count={count} />;
