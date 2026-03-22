@@ -73,14 +73,11 @@ export default function Plinko({ participants, onResult }) {
   const names = useMemo(() => participants.map(p => p.nickname), [participants]);
   const pins = useMemo(() => generatePins(ROWS), []);
 
-  // Show max 8 slots, distribute names
-  const slots = useMemo(() => {
-    if (names.length === 0) return [];
-    const maxSlots = Math.min(names.length, 8);
-    return names.slice(0, maxSlots);
-  }, [names]);
-
-  const slotW = slots.length > 0 ? (BOARD_W - 40) / slots.length : 0;
+  const maxSlots = Math.min(names.length, 8);
+  const initialSlots = useMemo(() => names.slice(0, maxSlots), [names, maxSlots]);
+  const [displaySlots, setDisplaySlots] = useState([]);
+  const activeSlots = displaySlots.length > 0 ? displaySlots : initialSlots;
+  const slotW = activeSlots.length > 0 ? (BOARD_W - 40) / activeSlots.length : 0;
 
   const drop = useCallback(() => {
     if (dropping || names.length === 0) return;
@@ -89,15 +86,22 @@ export default function Plinko({ participants, onResult }) {
     setWinner(null);
     setBallStep(0);
 
-    const winnerIdx = Math.floor(Math.random() * slots.length);
-    const path = computePath(winnerIdx, slots.length, ROWS);
+    // Pick winner from ALL participants (fair probability)
+    const winnerName = names[Math.floor(Math.random() * names.length)];
+
+    // Build display slots: always include winner + random sample of others
+    const others = names.filter(n => n !== winnerName).sort(() => Math.random() - 0.5);
+    const slotsArr = [winnerName, ...others].slice(0, maxSlots).sort(() => Math.random() - 0.5);
+    setDisplaySlots(slotsArr);
+
+    const winnerSlotIdx = slotsArr.indexOf(winnerName);
+    const path = computePath(winnerSlotIdx, slotsArr.length, ROWS);
     setBallPath(path);
 
     // Animate step by step — accelerating (gravity feel)
     const totalSteps = path.length - 1;
     path.forEach((_, i) => {
       if (i === 0) return;
-      // Each step gets slightly faster: 280ms → 150ms
       const stepDelay = Array.from({ length: i }, (__, s) =>
         Math.max(150, 280 - s * 15)
       ).reduce((a, b) => a + b, 0);
@@ -108,14 +112,14 @@ export default function Plinko({ participants, onResult }) {
           setTimeout(() => {
             if (!mountedRef.current) return;
             setDropping(false);
-            setWinner(slots[winnerIdx]);
+            setWinner(winnerName);
             hapticSuccess();
-            onResult?.(slots[winnerIdx]);
+            onResult?.(winnerName);
           }, 400);
         }
       }, stepDelay));
     });
-  }, [dropping, names, slots, onResult]);
+  }, [dropping, names, maxSlots, onResult]);
 
   if (names.length === 0) {
     return (
@@ -147,14 +151,14 @@ export default function Plinko({ participants, onResult }) {
           ))}
 
           {/* Slot dividers */}
-          {slots.map((_, i) => {
+          {activeSlots.map((_, i) => {
             if (i === 0) return null;
             const x = 20 + i * slotW;
             return <line key={`d${i}`} x1={x} y1={BOARD_H - SLOT_H - 8} x2={x} y2={BOARD_H - 4} className="stroke-slate-300 dark:stroke-slate-600" strokeWidth="1" />;
           })}
 
           {/* Slot labels */}
-          {slots.map((name, i) => {
+          {activeSlots.map((name, i) => {
             const x = 20 + i * slotW + slotW / 2;
             const displayName = name.length > 4 ? name.slice(0, 4) : name;
             const isWinnerSlot = winner === name;
@@ -165,7 +169,7 @@ export default function Plinko({ participants, onResult }) {
                 y={BOARD_H - SLOT_H / 2 + 2}
                 textAnchor="middle"
                 dominantBaseline="central"
-                fontSize={slots.length > 6 ? 9 : 11}
+                fontSize={activeSlots.length > 6 ? 9 : 11}
                 fontWeight="700"
                 fontFamily="'Pretendard','Inter',system-ui,sans-serif"
                 className={isWinnerSlot ? 'fill-indigo-600 dark:fill-indigo-400' : 'fill-slate-500 dark:fill-slate-400'}
