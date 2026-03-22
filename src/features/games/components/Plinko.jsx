@@ -130,9 +130,9 @@ export default function Plinko({ participants, onResult }) {
     <div className="flex flex-col items-center gap-6 w-full max-w-2xl mx-auto" onClick={e => e.stopPropagation()}>
       <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">핀볼</h3>
 
-      {/* Board */}
-      <div className="relative mx-auto" style={{ width: BOARD_W, height: BOARD_H }}>
-        <svg width={BOARD_W} height={BOARD_H} viewBox={`0 0 ${BOARD_W} ${BOARD_H}`} className="drop-shadow-md">
+      {/* Board — responsive: viewBox scales to fit, max 400px */}
+      <div className="relative mx-auto w-full" style={{ maxWidth: BOARD_W, aspectRatio: `${BOARD_W} / ${BOARD_H}` }}>
+        <svg viewBox={`0 0 ${BOARD_W} ${BOARD_H}`} className="w-full h-full drop-shadow-md">
           {/* Background */}
           <rect x="0" y="0" width={BOARD_W} height={BOARD_H} rx="16" fill="currentColor" className="text-slate-100 dark:text-slate-800" />
 
