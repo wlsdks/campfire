@@ -76,7 +76,7 @@ export default function Roulette({ participants, scores = {}, onResult }) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-16" onClick={e => e.stopPropagation()}>
         <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-          <svg viewBox="0 0 24 24" className="w-8 h-8 text-slate-300" fill="none" stroke="currentColor" strokeWidth="1.5">
+          <svg viewBox="0 0 24 24" className="w-8 h-8 text-slate-300 dark:text-slate-600" fill="none" stroke="currentColor" strokeWidth="1.5">
             <circle cx="12" cy="12" r="10" /><path d="M12 2v4M12 18v4M2 12h4M18 12h4" />
           </svg>
         </div>

@@ -127,7 +127,7 @@ export default function PrizeDraw({ participants, onResult }) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-16" onClick={e => e.stopPropagation()}>
         <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-          <Gift size={28} className="text-slate-300" />
+          <Gift size={28} className="text-slate-300 dark:text-slate-600" />
         </div>
         <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">경품 추첨</h3>
         <p className="text-slate-400 text-base">참여자가 접속하면 시작할 수 있어요</p>
