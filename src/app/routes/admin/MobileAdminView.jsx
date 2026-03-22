@@ -8,7 +8,6 @@ import CenterContent from './CenterContent';
 import ChatPanel from '@/features/chat/components/ChatPanel';
 import TeamBattleControl from '@/features/teams/components/TeamBattleControl';
 import ModeSwitcher from './ModeSwitcher';
-import ConfirmModal from '@/components/ui/ConfirmModal';
 import BottomSheet from '@/components/ui/BottomSheet';
 import Avatar from '@/components/ui/Avatar';
 import PickMascot from '@/components/ui/PickMascot';

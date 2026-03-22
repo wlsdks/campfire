@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import BreakMascot from './BreakMascot';
-import PickMascot from '@/components/ui/PickMascot';
 import Button from '@/components/ui/Button';
 
 const PRESETS = [
@@ -65,13 +64,16 @@ export default function BreakTimer() {
       <div className="flex flex-col items-center gap-8" onClick={e => e.stopPropagation()}>
         <BreakMascot size={120} />
         <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">쉬는 시간</h3>
-        <div className="grid grid-cols-2 gap-3 w-full max-w-xs">
-          {PRESETS.map(p => (
+        <div className="grid grid-cols-4 gap-3 w-full max-w-md">
+          {PRESETS.map((p, i) => (
             <motion.button
               key={p.seconds}
-              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25, delay: i * 0.05 }}
+              whileTap={{ scale: 0.93 }}
               onClick={() => start(p.seconds)}
-              className="py-4 rounded-2xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 font-bold text-lg tracking-tight active:bg-slate-50 dark:active:bg-slate-700 transition-colors duration-150"
+              className="py-5 rounded-2xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 font-bold text-xl tracking-tight active:bg-slate-50 dark:active:bg-slate-700 transition-colors duration-150 shadow-sm"
             >
               {p.label}
             </motion.button>
@@ -115,7 +117,7 @@ export default function BreakTimer() {
           key={remaining}
           initial={{ scale: 1.05 }}
           animate={{ scale: 1 }}
-          className="text-6xl font-bold tabular-nums tracking-tight text-slate-900 dark:text-slate-100"
+          className="text-7xl md:text-8xl font-bold tabular-nums tracking-tight text-slate-900 dark:text-slate-100"
         >
           {formatTime(remaining)}
         </motion.p>
@@ -123,7 +125,7 @@ export default function BreakTimer() {
       </div>
 
       {/* Progress bar */}
-      <div className="w-full max-w-xs h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+      <div className="w-full max-w-sm h-2.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
         <motion.div
           className="h-full bg-indigo-500 dark:bg-indigo-400 rounded-full"
           animate={{ width: `${progress * 100}%` }}
