@@ -24,7 +24,7 @@ export default function CenterContent({
   teamScores,
 }) {
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="h-full flex flex-col">
     <AnimatePresence mode="wait">
       {showCenterForm ? (
         <motion.div
