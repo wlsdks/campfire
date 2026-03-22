@@ -283,7 +283,8 @@ export default function MobileAdminView({ s }) {
                 <QuestionManager
                   sessionId={s.sessionId} questions={s.session?.questions || {}} currentQuestion={s.session?.currentQuestion}
                   scores={s.scores} participants={s.participants} pendingEvent={null} readOnly={s.effectiveReadOnly}
-                  formOpen={s.showCenterForm} onAddClick={s.effectiveReadOnly ? undefined : s.handleShowCenterForm}
+                  formOpen={s.showCenterForm}
+                  onAddClick={s.effectiveReadOnly ? undefined : () => { s.handleShowCenterForm(); setActiveTab('results'); }}
                   onViewQuestion={(qId) => { s.handleViewQuestion(qId); setActiveTab('results'); }}
                   adminUid={s.adminUser?.uid}
                   speedQuizActive={s.speedQuizActive} onStartSpeedQuiz={s.startSpeedQuiz} onEndSpeedQuiz={s.endSpeedQuiz} speedQuizCount={s.speedQuizCount}
