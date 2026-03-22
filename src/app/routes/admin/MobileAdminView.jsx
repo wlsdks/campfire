@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, BarChart3, Users, MessageSquare, Play, Hand, AlertCircle, HelpCircle, Copy, Check, ChevronDown } from 'lucide-react';
+import { ArrowLeft, BarChart3, Users, MessageSquare, Play, Hand, AlertCircle, HelpCircle, Copy, Check, ChevronDown, MoreHorizontal } from 'lucide-react';
 import JoinToast from '@/features/participants/components/JoinToast';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import QuestionManager from './QuestionManager';
@@ -9,6 +9,7 @@ import ChatPanel from '@/features/chat/components/ChatPanel';
 import TeamBattleControl from '@/features/teams/components/TeamBattleControl';
 import ModeSwitcher from './ModeSwitcher';
 import ConfirmModal from '@/components/ui/ConfirmModal';
+import BottomSheet from '@/components/ui/BottomSheet';
 import Avatar from '@/components/ui/Avatar';
 import PickMascot from '@/components/ui/PickMascot';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
@@ -23,7 +24,7 @@ const TABS = [
 ];
 
 /* ─── Header ─── */
-function MobileHeader({ session, count, onBack, onEndSession, isReviewing, onFullEndSession, effectiveReadOnly, isSetting, onStartSession, activeTab, onBackToTab }) {
+function MobileHeader({ session, count, onBack, onEndSession, isReviewing, onFullEndSession, effectiveReadOnly, isSetting, onStartSession, activeTab, onBackToTab, onOpenSettings }) {
   const [confirmEnd, setConfirmEnd] = useState(false);
   const courseName = session?.courseName || 'Pick';
   const round = session?.roundNumber ? `${session.roundNumber}차` : '';
@@ -44,7 +45,7 @@ function MobileHeader({ session, count, onBack, onEndSession, isReviewing, onFul
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           {isSetting && !effectiveReadOnly && (
             <button onClick={onStartSession}
               className="px-4 py-2 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-sm font-semibold transition-colors duration-150 active:scale-[0.96]">
@@ -62,6 +63,13 @@ function MobileHeader({ session, count, onBack, onEndSession, isReviewing, onFul
               className="px-4 py-2 rounded-xl text-slate-500 dark:text-slate-400 text-sm font-medium transition-colors duration-150 active:bg-slate-100 dark:active:bg-slate-700">
               완전 종료
             </button>
+          )}
+          {!effectiveReadOnly && onOpenSettings && (
+            <motion.button whileTap={{ scale: 0.9 }} onClick={onOpenSettings}
+              className="p-2 rounded-xl text-slate-400 active:bg-slate-100 dark:active:bg-slate-700 transition-colors duration-150"
+              aria-label="세션 설정">
+              <MoreHorizontal size={20} />
+            </motion.button>
           )}
         </div>
       </div>
@@ -248,6 +256,7 @@ function MobileParticipantsTab({ sessionId, onlineList, count, studentUrl }) {
 /* ─── Main Mobile View ─── */
 export default function MobileAdminView({ s }) {
   const [activeTab, setActiveTab] = useState('progress');
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const currentMode = s.session?.currentMode;
   const isSpecialMode = ['roulette', 'lottery', 'prizeDraw', 'leaderboard', 'teamBattle'].includes(currentMode);
@@ -273,6 +282,7 @@ export default function MobileAdminView({ s }) {
         isSetting={s.isSetting}
         activeTab={activeTab}
         onBackToTab={() => setActiveTab('progress')}
+        onOpenSettings={() => setSettingsOpen(true)}
       />
 
       {/* Tab content */}
@@ -292,20 +302,7 @@ export default function MobileAdminView({ s }) {
                   speedQuizActive={s.speedQuizActive} onStartSpeedQuiz={s.startSpeedQuiz} onEndSpeedQuiz={s.endSpeedQuiz} speedQuizCount={s.speedQuizCount}
                 />
               </div>
-              {!s.effectiveReadOnly && (
-                <div className="bg-white dark:bg-slate-800 mt-2 p-5 space-y-4">
-                  <TeamBattleControl
-                    isActive={s.teamBattleActive}
-                    teamCount={s.teamBattleCount}
-                    participantCount={s.count}
-                    onStart={(count) => s.startTeamBattle(s.onlineList.map((p) => p.id), count)}
-                    onEnd={s.endTeamBattle}
-                  />
-                  <ModeSwitcher currentMode={currentMode} isSpecialMode={isSpecialMode} totalTickets={s.totalTickets}
-                    leaderboard={s.leaderboard} modeOpen={s.modeOpen} onToggle={s.handleModeToggle} onSwitchMode={s.switchMode}
-                    teamBattleActive={s.teamBattleActive} />
-                </div>
-              )}
+              {/* Team battle + mode switcher moved to header ⋯ bottom sheet */}
             </motion.div>
           )}
 
@@ -340,6 +337,24 @@ export default function MobileAdminView({ s }) {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Session settings bottom sheet (team battle + mode switcher) */}
+      <BottomSheet open={settingsOpen} onClose={() => setSettingsOpen(false)} ariaLabel="세션 설정">
+        <div className="space-y-5">
+          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">세션 설정</h3>
+          <TeamBattleControl
+            isActive={s.teamBattleActive}
+            teamCount={s.teamBattleCount}
+            participantCount={s.count}
+            onStart={(count) => { s.startTeamBattle(s.onlineList.map((p) => p.id), count); setSettingsOpen(false); }}
+            onEnd={() => { s.endTeamBattle(); setSettingsOpen(false); }}
+          />
+          <ModeSwitcher currentMode={currentMode} isSpecialMode={isSpecialMode} totalTickets={s.totalTickets}
+            leaderboard={s.leaderboard} modeOpen={s.modeOpen} onToggle={s.handleModeToggle}
+            onSwitchMode={(mode) => { s.switchMode(mode); setSettingsOpen(false); }}
+            teamBattleActive={s.teamBattleActive} />
+        </div>
+      </BottomSheet>
 
       <MobileTabBar activeTab={activeTab} onTabChange={setActiveTab} hasUnreadChat={s.hasUnreadChat} />
     </div>
