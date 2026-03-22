@@ -109,9 +109,9 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
     <>
       <motion.div key="dm-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
         className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50" onClick={onClose} />
-      <motion.div key="dm-panel" initial={{ opacity: 0, scale: 0.95, y: 12 }} animate={{ opacity: 1, scale: 1, y: 0 }}
+      <motion.div key="dm-panel" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-        className="fixed inset-4 sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-[400px] sm:h-[520px] bg-white dark:bg-slate-800 rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden">
+        className="fixed inset-0 sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-[400px] sm:h-[520px] bg-white dark:bg-slate-800 sm:rounded-2xl sm:shadow-2xl z-50 flex flex-col overflow-hidden">
 
         {currentDM ? (
           <>

@@ -121,7 +121,7 @@ export default function WaitingPage({ sessionId, pendingEvent = null, courseName
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.15, duration: 0.3 }}
-              className="text-slate-500 dark:text-slate-400 text-sm font-medium"
+              className="text-slate-500 dark:text-slate-400 text-base font-medium"
             >
               {courseName}
             </motion.p>
@@ -144,7 +144,7 @@ export default function WaitingPage({ sessionId, pendingEvent = null, courseName
             transition={{ delay: 0.3, duration: 0.35, ease: 'easeOut' }}
             className="flex items-center justify-center gap-2"
           >
-            <div className="flex items-center gap-2 bg-white dark:bg-slate-800 rounded-xl px-4 py-2.5 border border-slate-100 dark:border-slate-700 shadow-sm">
+            <div className="flex items-center gap-2 bg-white dark:bg-slate-800 rounded-xl px-4 py-2.5">
               <motion.div
                 key={count}
                 initial={{ scale: 1.2 }}
