@@ -34,7 +34,7 @@ export default memo(function ConfidenceStats({ sessionId, questionId }) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 25 }}
-      className="mt-4 px-4"
+      className="mt-4 px-4 max-w-xl mx-auto"
     >
       <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-2">
         응답 자신감
