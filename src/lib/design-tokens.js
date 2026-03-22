@@ -82,6 +82,42 @@ export const spacing = {
   '3xl': '3rem',   // 48px
 };
 
+// ─── Icons ──────────────────────────────────────────
+export const icons = {
+  // Size scale — lucide-react `size` prop
+  inline: 12,       // inline with text
+  accordion: 14,    // accordion headers
+  button: 16,       // inside buttons
+  header: 18,       // header actions
+  headerLg: 20,     // large header icons
+  action: 22,       // bottom bar (mobile)
+  tab: 24,          // tab bar (mobile)
+  // Stroke
+  default: 2,
+  active: 2,
+  inactive: 1.5,
+  // Color
+  color: 'text-slate-400',
+  colorActive: 'text-slate-700 dark:text-slate-200',
+};
+
+// ─── Press Feedback (Web + Mobile) ──────────────────
+export const press = {
+  // Web (desktop hover + click)
+  button: { scale: 0.97 },          // CTA, secondary buttons
+  buttonSm: { scale: 0.9 },         // icon-only buttons (send, close)
+  card: { scale: 0.98 },            // clickable cards
+  accordion: 'active:bg-slate-100', // accordion headers (CSS only)
+  iconBtn: { scale: 0.9 },          // small icon buttons
+  // Mobile (touch — stronger feedback as haptic substitute)
+  mobileButton: { scale: 0.95 },    // choice/quiz options
+  mobileTab: { scale: 0.92 },       // bottom tab bar
+  mobileSend: { scale: 0.9 },       // send buttons
+  mobileCard: { scale: 0.98 },      // tappable cards
+  // Selection bounce (after selecting an option)
+  selectionBounce: { scale: [0.95, 1.04, 1] },
+};
+
 // ─── Radius ──────────────────────────────────────────
 export const radius = {
   sm: 'rounded-md',          // 6px — small buttons
@@ -262,13 +298,5 @@ export const mobile = {
     tablet: 'fixed inset-auto 420x600', // centered
     animation: 'y: 20→0',              // slide up from bottom
   },
-  // Press feedback (iOS haptic substitute)
-  press: {
-    button: { scale: 0.97 },
-    card: { scale: 0.98 },
-    tab: { scale: 0.92 },
-    send: { scale: 0.9 },
-    choice: { scale: 0.95 },
-    selection: { scale: [0.95, 1.04, 1] }, // bounce on select
-  },
+  // Press feedback → use top-level `press` export instead
 };

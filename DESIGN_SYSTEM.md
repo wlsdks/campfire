@@ -4,6 +4,49 @@
 > 모든 값은 `src/lib/design-tokens.js`에 코드로도 정의됨.
 > 2026-03-22 기준 최신 업데이트.
 
+## 다른 프로젝트에서 사용하기 (Quick Start)
+
+```bash
+# 1. 이 파일을 프로젝트 루트에 복사
+cp DESIGN_SYSTEM.md /your-project/
+
+# 2. 디자인 토큰 JS 파일 복사
+cp src/lib/design-tokens.js /your-project/src/lib/
+
+# 3. CSS 기본 설정 복사 (index.css에 추가)
+# - 폰트: Pretendard + Inter
+# - 다크모드: @custom-variant dark
+# - 모바일: overscroll-behavior, touch-action, iOS zoom 방지
+# - 스켈레톤 shimmer 키프레임
+
+# 4. 코드에서 토큰 import
+import { colors, typography, motion, mobile, press, icons } from '@/lib/design-tokens'
+```
+
+### 토큰 구조 요약
+```
+colors      — 브랜드, 기능색, 표면, 텍스트, 차트
+typography  — 크기 체계, 굵기
+spacing     — 4px 기본 단위 (xs~3xl)
+radius      — sm(6px) ~ full
+shadows     — sm ~ xl
+icons       — 크기 12~24px, 스트로크, 색상
+press       — 웹/모바일 프레스 피드백 (scale 값)
+motion      — spring 4프리셋, duration, easing, 진입 애니메이션
+tw          — Tailwind 컴포넌트 레시피 (복사 가능)
+timing      — 토스트, 쿨다운, 애니메이션 지속시간
+limits      — 닉네임, 채팅, 질문 글자수 제한
+touch       — 터치 타겟 최소 크기
+mobile      — 모바일 전용 타이포, 간격, 컴포넌트, 섹션 구분, 모달
+```
+
+### 디자인 철학 (5줄 요약)
+1. **빼는 디자인** — 요소를 추가하지 말고 불필요한 것을 제거
+2. **여백이 디자인** — 공백은 비어있는 것이 아니라 의도적으로 설계된 것
+3. **타이포가 위계** — 색상 대신 크기/두께/투명도로 구분
+4. **모션은 의미만** — 피드백/전환/관계 표현. 장식 모션 0
+5. **앱처럼 보여야 한다** — PWA이지만 네이티브 앱 수준의 UX
+
 ---
 
 ## 1. 핵심 원칙
@@ -441,10 +484,23 @@ transition={{ delay: index * 0.05 }}
 
 ## 9. 아이콘 (Icons)
 
+> 토큰: `import { icons } from '@/lib/design-tokens'`
+
 - **라이브러리**: lucide-react only
-- **크기 체계**: 12px (인라인), 14px (아코디언), 16px (버튼), 18-20px (헤더), 22px (큰 액션)
-- **스트로크**: 기본 2, 선택됨 2, 비선택 1.6
-- **색상**: `text-slate-400` (기본), `text-slate-700` (활성), `text-white` (반전)
+- **크기 체계** (`icons.inline` ~ `icons.tab`):
+
+| 토큰 | 크기 | 용도 |
+|------|------|------|
+| `inline` | 12px | 인라인 텍스트 |
+| `accordion` | 14px | 아코디언 헤더 |
+| `button` | 16px | 버튼 내부 |
+| `header` | 18px | 헤더 액션 |
+| `headerLg` | 20px | 큰 헤더 아이콘 |
+| `action` | 22px | 모바일 하단 바 |
+| `tab` | 24px | 모바일 탭 바 |
+
+- **스트로크**: `icons.default` (2), `icons.active` (2), `icons.inactive` (1.5)
+- **색상**: `icons.color` (`text-slate-400`), `icons.colorActive` (`text-slate-700`)
 - **다크**: `dark:text-slate-400` (기본), `dark:text-slate-200` (활성)
 - **절대 금지**: Sparkles, Wand, Stars (AI 느낌), emoji
 
@@ -846,6 +902,20 @@ text-slate-400은 bg-slate-50 위에서 WCAG AA 미달 가능
 ---
 
 ## 16. 버튼 & 인터랙션 표준 (2026-03-21 확정)
+
+> 토큰: `import { press } from '@/lib/design-tokens'`
+
+### 프레스 피드백 (whileTap scale 값)
+| 토큰 | scale | 용도 |
+|------|-------|------|
+| `press.button` | 0.97 | CTA, secondary 버튼 |
+| `press.buttonSm` | 0.9 | 아이콘 전용 버튼 (send, close) |
+| `press.card` | 0.98 | 클릭 가능한 카드 |
+| `press.iconBtn` | 0.9 | 작은 아이콘 버튼 |
+| `press.mobileButton` | 0.95 | 모바일 선택지 (Choice/OX/Quiz) |
+| `press.mobileTab` | 0.92 | 모바일 하단 탭 |
+| `press.mobileSend` | 0.9 | 모바일 보내기 |
+| `press.selectionBounce` | [0.95, 1.04, 1] | 선택 확인 bounce |
 
 ### 버튼 transition 규칙
 ```
