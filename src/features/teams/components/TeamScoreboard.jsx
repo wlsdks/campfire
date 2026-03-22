@@ -55,7 +55,7 @@ function TeamBar({ team, rank, maxScore, isLeading }) {
           <span className="text-xs text-slate-400 ml-1">점</span>
         </div>
       </div>
-      <div className="w-full h-5 bg-slate-100 rounded-lg overflow-hidden">
+      <div className="w-full h-5 bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden">
         <motion.div
           className={`h-full rounded-lg ${team.colors.bar}`}
           initial={{ width: 0 }}
@@ -74,7 +74,7 @@ export default memo(function TeamScoreboard({ teamScores, title = '팀 대항전
   if (!teamScores || teamScores.length === 0) {
     return (
       <div className="text-center py-10 space-y-2">
-        <Trophy size={32} className="text-slate-200 mx-auto" />
+        <Trophy size={32} className="text-slate-200 dark:text-slate-700 mx-auto" />
         <p className="text-slate-400 text-sm">팀 점수가 없습니다</p>
       </div>
     );
