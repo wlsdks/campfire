@@ -46,7 +46,12 @@ export default function Roulette({ participants, scores = {}, onResult }) {
       return { name: p.nickname, weight };
     });
     const total = segs.reduce((sum, s) => sum + s.weight, 0) || 1;
-    return segs.map(s => ({ ...s, angle: (s.weight / total) * 360 }));
+    return segs.reduce((acc, s) => {
+      const angle = (s.weight / total) * 360;
+      const startAngle = acc.length > 0 ? acc[acc.length - 1].startAngle + acc[acc.length - 1].angle : 0;
+      acc.push({ ...s, angle, startAngle });
+      return acc;
+    }, []);
   }, [participants, scores]);
 
   const names = useMemo(() => segmentsWithAngle.map(s => s.name), [segmentsWithAngle]);
@@ -112,39 +117,35 @@ export default function Roulette({ participants, scores = {}, onResult }) {
           transition={{ duration: 4.5, ease: [0.12, 0.56, 0.08, 0.99] }}
         >
           <circle cx="100" cy="100" r="99" fill="none" stroke="white" strokeWidth="2" opacity="0.2" />
-          {(() => {
-            let cum = 0;
-            return segmentsWithAngle.map((seg, i) => {
-              const sa = cum;
-              const ea = sa + seg.angle;
-              cum = ea;
-              const sr = (sa - 90) * Math.PI / 180;
-              const er = (ea - 90) * Math.PI / 180;
-              const x1 = 100 + 97 * Math.cos(sr), y1 = 100 + 97 * Math.sin(sr);
-              const x2 = 100 + 97 * Math.cos(er), y2 = 100 + 97 * Math.sin(er);
-              const la = seg.angle > 180 ? 1 : 0;
-              const mr = ((sa + ea) / 2 - 90) * Math.PI / 180;
-              const tx = 100 + textR * Math.cos(mr), ty = 100 + textR * Math.sin(mr);
-              const tr = (sa + ea) / 2;
-              const dn = seg.name.length > 5 ? seg.name.slice(0, 5) + '..' : seg.name;
-              return (
-                <g key={i}>
-                  <path
-                    d={`M100,100 L${x1},${y1} A97,97 0 ${la},1 ${x2},${y2} Z`}
-                    fill={SEGMENT_COLORS[i % SEGMENT_COLORS.length]}
-                    stroke="rgba(255,255,255,0.12)"
-                    strokeWidth="0.8"
-                  />
-                  <text
-                    x={tx} y={ty} fill="white" fontSize={fontSize} fontWeight="700"
-                    fontFamily="'Pretendard','Inter',system-ui,sans-serif"
-                    textAnchor="middle" dominantBaseline="central"
-                    transform={`rotate(${tr},${tx},${ty})`}
-                  >{dn}</text>
-                </g>
-              );
-            });
-          })()}
+          {segmentsWithAngle.map((seg, i) => {
+            const sa = seg.startAngle;
+            const ea = sa + seg.angle;
+            const sr = (sa - 90) * Math.PI / 180;
+            const er = (ea - 90) * Math.PI / 180;
+            const x1 = 100 + 97 * Math.cos(sr), y1 = 100 + 97 * Math.sin(sr);
+            const x2 = 100 + 97 * Math.cos(er), y2 = 100 + 97 * Math.sin(er);
+            const la = seg.angle > 180 ? 1 : 0;
+            const mr = ((sa + ea) / 2 - 90) * Math.PI / 180;
+            const tx = 100 + textR * Math.cos(mr), ty = 100 + textR * Math.sin(mr);
+            const tr = (sa + ea) / 2;
+            const dn = seg.name.length > 5 ? seg.name.slice(0, 5) + '..' : seg.name;
+            return (
+              <g key={i}>
+                <path
+                  d={`M100,100 L${x1},${y1} A97,97 0 ${la},1 ${x2},${y2} Z`}
+                  fill={SEGMENT_COLORS[i % SEGMENT_COLORS.length]}
+                  stroke="rgba(255,255,255,0.12)"
+                  strokeWidth="0.8"
+                />
+                <text
+                  x={tx} y={ty} fill="white" fontSize={fontSize} fontWeight="700"
+                  fontFamily="'Pretendard','Inter',system-ui,sans-serif"
+                  textAnchor="middle" dominantBaseline="central"
+                  transform={`rotate(${tr},${tx},${ty})`}
+                >{dn}</text>
+              </g>
+            );
+          })}
           <circle cx="100" cy="100" r="22" fill="white" />
           <circle cx="100" cy="100" r="20" fill="#FAFAFA" stroke="#E2E8F0" strokeWidth="0.8" />
           <text x="100" y="100" fill="#4F46E5" fontSize="7" fontWeight="800" fontFamily="'Pretendard',system-ui" textAnchor="middle" dominantBaseline="central">PICK</text>
