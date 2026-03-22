@@ -14,7 +14,7 @@ export default memo(function StreakBadge({ streak = 0, compact = false }) {
   const isOnFire = streak >= 10;
   const isHot = streak >= 5;
 
-  const label = isOnFire ? `${streak}연속🔥` : `${streak}연속!`;
+  const label = `${streak}연속!`;
   const flameDuration = isOnFire ? 0.35 : isHot ? 0.5 : 0.8;
   const flameScale = isOnFire ? [1, 1.25, 1] : [1, 1.15, 1];
 
