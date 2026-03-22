@@ -63,7 +63,7 @@ export default function StaffMobileView({ sessionId, session, adminUser, onBack,
       {/* Tab content */}
       <div className="flex-1 overflow-hidden">
         <div className={`h-full ${activeTab === 'chat' ? 'flex flex-col' : 'overflow-y-auto overscroll-contain scrollbar-hide'}`}>
-          <div className={`w-full ${activeTab === 'chat' ? 'flex-1 flex flex-col min-h-0' : 'px-5 py-5 space-y-4'}`}>
+          <div className={`w-full min-h-full ${activeTab === 'chat' ? 'flex-1 flex flex-col min-h-0' : 'px-5 py-5 space-y-4 flex flex-col'}`}>
             {activeTab === 'questions' && <StaffQuestionsTab sessionId={sessionId} adminUser={adminUser} />}
             {activeTab === 'handRaise' && <StaffHandRaisesTab sessionId={sessionId} />}
             {activeTab === 'chat' && (

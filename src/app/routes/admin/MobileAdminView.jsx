@@ -52,18 +52,6 @@ function MobileHeader({ session, count, onBack, onEndSession, isReviewing, onFul
               수업 시작
             </button>
           )}
-          {isActive && !effectiveReadOnly && (
-            <button onClick={() => setConfirmEnd(true)}
-              className="px-4 py-2 rounded-xl text-slate-500 dark:text-slate-400 text-sm font-medium transition-colors duration-150 active:bg-slate-100 dark:active:bg-slate-700">
-              종료
-            </button>
-          )}
-          {isReviewing && (
-            <button onClick={onFullEndSession}
-              className="px-4 py-2 rounded-xl text-slate-500 dark:text-slate-400 text-sm font-medium transition-colors duration-150 active:bg-slate-100 dark:active:bg-slate-700">
-              완전 종료
-            </button>
-          )}
           {!effectiveReadOnly && onOpenSettings && (
             <motion.button whileTap={{ scale: 0.9 }} onClick={onOpenSettings}
               className="p-2 rounded-xl text-slate-400 active:bg-slate-100 dark:active:bg-slate-700 transition-colors duration-150"
@@ -73,8 +61,7 @@ function MobileHeader({ session, count, onBack, onEndSession, isReviewing, onFul
           )}
         </div>
       </div>
-      <ConfirmModal open={confirmEnd} onCancel={() => setConfirmEnd(false)} onConfirm={() => { setConfirmEnd(false); onEndSession(); }}
-        title="수업을 종료하시겠습니까?" description="학생들에게 요약 카드가 표시됩니다." confirmLabel="종료" variant="danger" />
+      {/* 종료 확인은 바텀시트 내에서 처리 */}
     </>
   );
 }
@@ -309,7 +296,7 @@ export default function MobileAdminView({ s }) {
           {activeTab === 'results' && (
             <motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}
               className="h-full overflow-y-auto overscroll-contain scrollbar-hide">
-              <div className="bg-white dark:bg-slate-800 min-h-full p-5">
+              <div className="bg-white dark:bg-slate-800 min-h-full p-5 flex flex-col">
                 <CenterContent showCenterForm={s.showCenterForm} onHideCenterForm={s.handleHideCenterForm} onCenterFormSubmit={s.handleCenterFormSubmit}
                   effectiveReadOnly={s.effectiveReadOnly} session={s.session} currentMode={currentMode} sessionId={s.sessionId}
                   onlineList={s.onlineList} leaderboard={s.leaderboard} drawParticipants={s.drawParticipants}
@@ -342,6 +329,18 @@ export default function MobileAdminView({ s }) {
       <BottomSheet open={settingsOpen} onClose={() => setSettingsOpen(false)} ariaLabel="세션 설정">
         <div className="space-y-5">
           <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">세션 설정</h3>
+          {(s.session?.status === 'active') && (
+            <button onClick={() => { setSettingsOpen(false); setTimeout(() => { if (window.confirm('수업을 종료하시겠습니까?')) s.handleEndSession(); }, 100); }}
+              className="w-full py-3 rounded-xl text-red-500 font-medium text-[15px] bg-red-50 dark:bg-red-900/20 active:bg-red-100 dark:active:bg-red-900/30 transition-colors duration-150">
+              수업 종료
+            </button>
+          )}
+          {s.isReviewing && (
+            <button onClick={() => { setSettingsOpen(false); s.handleFullEndSession(); }}
+              className="w-full py-3 rounded-xl text-red-500 font-medium text-[15px] bg-red-50 dark:bg-red-900/20 active:bg-red-100 dark:active:bg-red-900/30 transition-colors duration-150">
+              완전 종료
+            </button>
+          )}
           <TeamBattleControl
             isActive={s.teamBattleActive}
             teamCount={s.teamBattleCount}
