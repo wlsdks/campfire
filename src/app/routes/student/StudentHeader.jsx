@@ -1,6 +1,6 @@
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { Trophy, Volume2, VolumeOff } from 'lucide-react';
+import { Trophy, Ticket, Volume2, VolumeOff } from 'lucide-react';
 import PickMascot from '@/components/ui/PickMascot';
 import Avatar from '@/components/ui/Avatar';
 import ConnectionBanner from '@/components/ui/ConnectionBanner';
@@ -34,6 +34,7 @@ export default function StudentHeader({ sessionId }) {
   const nickname = getNickname();
   const myScore = scores[getParticipantId()];
   const totalScore = myScore?.total || 0;
+  const tickets = myScore?.tickets || 0;
 
   // Sound mute toggle
   const [muted, setMuted] = useState(
@@ -73,6 +74,18 @@ export default function StudentHeader({ sessionId }) {
               >
                 <Trophy size={14} className="text-slate-500 dark:text-slate-400" />
                 <HeaderScore value={totalScore} />
+              </motion.span>
+            )}
+            {tickets > 0 && (
+              <motion.span
+                key="tickets"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
+                className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1"
+              >
+                <Ticket size={14} className="text-slate-500 dark:text-slate-400" />
+                {tickets}
               </motion.span>
             )}
             <motion.button
