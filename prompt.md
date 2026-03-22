@@ -422,7 +422,8 @@ Pick에서:
 ## 사이클 로그
 > 최근 10개만 유지.
 
-2026-03-23 | improve: confetti 스케일업 + 브랜드 색상, BreakTimer 프로젝터 사이징
+2026-03-23 | feat: 핀볼(Plinko) 게임 — 핀 보드 공 떨어뜨리기 당첨 게임
+2026-03-23 | improve: 프로젝터 전체 최적화 — 차트/리더보드/팀 스코어보드 확대 + confetti 스케일업
 2026-03-23 | improve: 학생 WaitingPage 게임 모드 인디케이터 (돌림판/추첨/쉬는시간 표시)
 2026-03-23 | improve: 모바일 모드 피커 — 헤더 인디케이터 + 3열 그리드 BottomSheet
 2026-03-23 | fix: PrizeDraw SlotReel 프리즈 + 전체 게임 스케일업

@@ -132,7 +132,7 @@ function getModeVariants(mode) {
   if (mode === 'leaderboard') {
     return { initial: { opacity: 0, y: -30 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 30 } };
   }
-  if (['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'breakTime', 'teamBattle'].includes(mode)) {
+  if (['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'teamBattle'].includes(mode)) {
     return { initial: { opacity: 0, scale: 0.88 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 1.06 } };
   }
   if (['poll', 'quiz'].includes(mode)) {
