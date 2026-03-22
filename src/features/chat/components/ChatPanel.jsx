@@ -88,15 +88,8 @@ export default function ChatPanel({ sessionId, senderName, senderType, open, onC
   if (inline && open) {
     return (
       <div className="flex flex-col h-full bg-white dark:bg-slate-800">
-        {/* Header with close + channel tabs */}
-        <div className="flex items-center justify-between px-5 py-3 shrink-0">
-          <span className="font-bold text-base text-slate-900 dark:text-slate-100 tracking-tight">채팅</span>
-          <button onClick={onClose} className="p-2 -mr-2 rounded-xl text-slate-400 active:bg-slate-100 dark:active:bg-slate-700 transition-colors duration-150" aria-label="채팅 닫기">
-            <X size={20} />
-          </button>
-        </div>
         {isStaffOrInstructor && (
-          <div className="flex gap-1 px-4 pb-2 shrink-0">
+          <div className="flex gap-1 px-4 py-2.5 shrink-0">
             <button onClick={() => handleChannelSwitch('public')} className={tabCls(channel === 'public')}>전체 채팅</button>
             <button onClick={() => handleChannelSwitch('staff')} className={`relative ${tabCls(channel === 'staff')} flex items-center justify-center gap-1`}>
               <Shield size={12} />
