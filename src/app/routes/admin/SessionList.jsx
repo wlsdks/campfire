@@ -65,7 +65,7 @@ const SessionRow = memo(function SessionRow({ session, onClick, onDelete, onDupl
         <span className="text-xs text-slate-400 shrink-0">완료</span>
       )}
       {!hideActions && (
-        <div className="flex items-center gap-0.5 shrink-0">
+        <div className="flex items-center gap-0.5 shrink-0 max-sm:hidden">
           {session.questionCount > 0 && (
             <button
               onClick={handleDuplicate}

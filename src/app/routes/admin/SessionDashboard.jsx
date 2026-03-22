@@ -125,19 +125,19 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
   return (
     <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col">
       {/* Header */}
-      <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6 py-5 flex items-center justify-between">
-        <div className="flex items-center gap-2">
+      <div className="bg-white dark:bg-slate-800 px-6 max-sm:px-5 py-5 max-sm:py-4 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
           <PickMascot size="sm" />
           <div>
             <h1 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">Pick</h1>
             <p className="text-slate-400 text-xs">{TABS.find((t) => t.key === activeTab)?.label}</p>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          {adminUser && <span className="text-sm text-slate-500 font-medium">{adminUser.displayName}</span>}
+        <div className="flex items-center gap-3">
+          {adminUser && <span className="text-sm text-slate-500 font-medium max-sm:hidden">{adminUser.displayName}</span>}
           {isMaster && <AdminApproval pendingAdmins={pendingAdmins} pendingCount={pendingCount} approveAdmin={approveAdmin} rejectAdmin={rejectAdmin} />}
           <button onClick={onLogout} className="flex items-center gap-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 text-sm transition-colors duration-150 active:scale-[0.97]">
-            <LogOut size={16} />로그아웃
+            <LogOut size={16} /><span className="max-sm:hidden">로그아웃</span>
           </button>
         </div>
       </div>
