@@ -93,22 +93,27 @@ export default function Plinko({ participants, onResult }) {
     const path = computePath(winnerIdx, slots.length, ROWS);
     setBallPath(path);
 
-    // Animate step by step
+    // Animate step by step — accelerating (gravity feel)
+    const totalSteps = path.length - 1;
     path.forEach((_, i) => {
       if (i === 0) return;
+      // Each step gets slightly faster: 280ms → 150ms
+      const stepDelay = Array.from({ length: i }, (__, s) =>
+        Math.max(150, 280 - s * 15)
+      ).reduce((a, b) => a + b, 0);
       timersRef.current.push(setTimeout(() => {
         if (!mountedRef.current) return;
         setBallStep(i);
-        if (i === path.length - 1) {
+        if (i === totalSteps) {
           setTimeout(() => {
             if (!mountedRef.current) return;
             setDropping(false);
             setWinner(slots[winnerIdx]);
             hapticSuccess();
             onResult?.(slots[winnerIdx]);
-          }, 300);
+          }, 400);
         }
-      }, i * 220));
+      }, stepDelay));
     });
   }, [dropping, names, slots, onResult]);
 
@@ -170,30 +175,29 @@ export default function Plinko({ participants, onResult }) {
             );
           })}
 
-          {/* Ball */}
-          {ballPos && (
+          {/* Ball — persistent element that moves smoothly between positions */}
+          {ballPos ? (
             <motion.circle
-              cx={ballPos.x}
-              cy={ballPos.y}
               r={BALL_R}
               className="fill-slate-900 dark:fill-slate-100"
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+              animate={{ cx: ballPos.x, cy: ballPos.y, opacity: 1 }}
+              transition={{
+                type: 'spring',
+                stiffness: 180,
+                damping: 12,
+                mass: 0.8,
+              }}
             />
-          )}
-
-          {/* Drop zone indicator */}
-          {!dropping && !winner && (
+          ) : !dropping && !winner ? (
             <motion.circle
               cx={BOARD_W / 2}
               cy={8}
               r={BALL_R}
               className="fill-slate-900 dark:fill-slate-100"
-              animate={{ y: [0, -4, 0] }}
+              animate={{ cy: [8, 4, 8] }}
               transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
             />
-          )}
+          ) : null}
         </svg>
       </div>
 
