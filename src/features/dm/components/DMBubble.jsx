@@ -3,27 +3,28 @@ import { motion } from 'framer-motion';
 import { MessageSquare, Send, X, Plus, ArrowLeft, Headset } from 'lucide-react';
 import { formatChatTime } from '@/lib/utils';
 import Button from '@/components/ui/Button';
+import PickMascot from '@/components/ui/PickMascot';
 
 const DMMessage = memo(function DMMessage({ msg, isOwn }) {
   return (
     <motion.div initial={{ opacity: 0, x: isOwn ? 8 : -8 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.15 }}
       className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'} gap-0.5`}>
       {!isOwn && (
-        <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 px-1">
+        <span className="text-[13px] font-medium text-slate-500 dark:text-slate-400 px-1">
           {msg.sender}
           {msg.senderType === 'staff' && (
-            <span className="ml-1 text-[9px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-600 px-1 py-0.5 rounded-full">스태프</span>
+            <span className="ml-1.5 text-[11px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-600 px-1.5 py-0.5 rounded-full">스태프</span>
           )}
         </span>
       )}
-      <div className={`px-3.5 py-2.5 text-sm leading-relaxed rounded-2xl max-w-[75%] ${
+      <div className={`inline-block px-4 py-2.5 text-[15px] leading-relaxed rounded-2xl max-w-[80%] ${
         isOwn
           ? 'bg-slate-900 dark:bg-slate-200 text-white dark:text-slate-900 rounded-br-sm'
           : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-tl-sm'
       }`}>
         {msg.text}
       </div>
-      <span className="text-[10px] text-slate-300 dark:text-slate-500 px-1">{formatChatTime(msg.timestamp)}</span>
+      <span className="text-[11px] text-slate-300 dark:text-slate-500 px-1">{formatChatTime(msg.timestamp)}</span>
     </motion.div>
   );
 });
@@ -161,7 +162,7 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
             {/* Header with tabs */}
             <div className="px-5 pt-4 pb-0 shrink-0">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-bold tracking-tight text-slate-900 dark:text-slate-100">도움</span>
+                <span className="text-base font-bold tracking-tight text-slate-900 dark:text-slate-100">도움</span>
                 <button onClick={onClose} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150" aria-label="닫기"><X size={16} /></button>
               </div>
               <div className="flex gap-1 bg-slate-100 dark:bg-slate-700 rounded-lg p-1">
@@ -177,13 +178,13 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
             {tab === 'list' ? (
               <div className="flex-1 overflow-y-auto px-3 py-3 scrollbar-hide">
                 {allDMs.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-full gap-3 py-8">
-                    <Headset size={24} className="text-slate-300 dark:text-slate-600" />
-                    <p className="text-sm text-slate-400 dark:text-slate-500 text-center">도움 요청 내역이 없습니다</p>
-                    <button onClick={() => setTab('new')}
-                      className="text-xs font-medium text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-colors duration-150">
-                      새 도움 요청하기 →
-                    </button>
+                  <div className="flex flex-col items-center justify-center h-full gap-4 py-12">
+                    <PickMascot size="sm" mood="waiting" />
+                    <p className="text-[15px] text-slate-400 dark:text-slate-500 text-center">도움 요청 내역이 없습니다</p>
+                    <motion.button whileTap={{ scale: 0.96 }} onClick={() => setTab('new')}
+                      className="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-sm font-medium transition-colors duration-150">
+                      새 도움 요청하기
+                    </motion.button>
                   </div>
                 ) : (
                   allDMs.map((dm) => <DMListItem key={dm.id} dm={dm} onClick={() => setSelectedDM(dm)} />)
