@@ -4,7 +4,7 @@ import Button from '@/components/ui/Button';
 import Avatar from '@/components/ui/Avatar';
 import { hapticSuccess } from '@/lib/haptics';
 
-const ConfettiBurst = lazy(() => import('@/features/quiz/components/ConfettiBurst'));
+const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 
 /**
  * Single reel — uses direct DOM manipulation for cycling (no state updates).

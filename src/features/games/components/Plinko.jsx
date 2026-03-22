@@ -4,7 +4,7 @@ import { CircleDot } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { hapticSuccess } from '@/lib/haptics';
 
-const ConfettiBurst = lazy(() => import('@/features/quiz/components/ConfettiBurst'));
+const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 
 const ROWS = 8;
 const PIN_R = 3;

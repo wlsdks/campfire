@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Gift, Loader2, Minus, Plus } from 'lucide-react';
 import Button from '@/components/ui/Button';
-import ConfettiBurst from '@/features/quiz/components/ConfettiBurst';
+import ConfettiBurst from '@/components/ui/ConfettiBurst';
 
 function pickWinners(participants, count) {
   const pool = [...participants];

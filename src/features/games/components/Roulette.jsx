@@ -4,7 +4,7 @@ import { RotateCcw } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { hapticSuccess } from '@/lib/haptics';
 
-const ConfettiBurst = lazy(() => import('@/features/quiz/components/ConfettiBurst'));
+const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 
 // Indigo gradient — all dark enough for white text
 const SEGMENT_COLORS = [

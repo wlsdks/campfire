@@ -2,7 +2,7 @@ import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import { Check, Ticket, X, Flame } from 'lucide-react';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
-import ConfettiBurst from './ConfettiBurst';
+import ConfettiBurst from '@/components/ui/ConfettiBurst';
 
 function CountUp({ value, prefix = '+', suffix = '점' }) {
   const motionVal = useMotionValue(0);

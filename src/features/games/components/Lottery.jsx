@@ -4,7 +4,7 @@ import { Ticket, Loader2, Minus, Plus, Trophy, RotateCcw } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Avatar from '@/components/ui/Avatar';
 
-const ConfettiBurst = lazy(() => import('@/features/quiz/components/ConfettiBurst'));
+const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 
 const CARD_COLORS = [
   'bg-slate-900', 'bg-slate-700', 'bg-slate-800',
