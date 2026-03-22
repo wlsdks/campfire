@@ -126,8 +126,26 @@ const GameFallback = () => (
   </div>
 );
 
+// Mode-specific transition variants
+function getModeVariants(mode) {
+  if (mode === 'leaderboard') {
+    return { initial: { opacity: 0, y: -30 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 30 } };
+  }
+  if (['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'breakTime', 'teamBattle'].includes(mode)) {
+    return { initial: { opacity: 0, scale: 0.88 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 1.06 } };
+  }
+  if (['poll', 'quiz'].includes(mode)) {
+    return { initial: { opacity: 0, y: 24 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -16 } };
+  }
+  return { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } };
+}
+
 function MainContent({ currentMode, sessionId, session, onlineList, leaderboard, drawParticipants, presentMode, studentUrl, count, teamScores, scores }) {
-  // Game modes — centered vertically
+  const currentQId = session?.currentQuestion;
+  const isActive = ['poll', 'quiz'].includes(currentMode) && currentQId;
+
+  // Determine content + animation key
+  let contentKey, content;
   const gameContent = (() => {
     if (currentMode === 'roulette') return <Roulette participants={onlineList} scores={scores} />;
     if (currentMode === 'lottery') return <Lottery participants={drawParticipants} />;
@@ -138,22 +156,35 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     if (currentMode === 'teamBattle') return <TeamScoreboard teamScores={teamScores || []} />;
     return null;
   })();
+
   if (gameContent) {
-    return (
-      <div className="flex-1 flex items-center justify-center">
-        <Suspense fallback={<GameFallback />}>{gameContent}</Suspense>
-      </div>
-    );
+    contentKey = `game-${currentMode}`;
+    content = <Suspense fallback={<GameFallback />}>{gameContent}</Suspense>;
+  } else if (isActive) {
+    contentKey = `question-${currentQId}`;
+    content = <VizRenderer sessionId={sessionId} session={session} />;
+  } else if (presentMode) {
+    contentKey = 'empty';
+    content = <PresentEmptyState sessionId={sessionId} studentUrl={studentUrl} count={count} />;
+  } else {
+    contentKey = 'viz-empty';
+    content = <VizRenderer sessionId={sessionId} session={session} />;
   }
 
-  const currentQId = session?.currentQuestion;
-  const isActive = ['poll', 'quiz'].includes(currentMode) && currentQId;
+  const variants = getModeVariants(gameContent ? currentMode : isActive ? currentMode : 'waiting');
 
-  if (presentMode && !isActive) {
-    return <PresentEmptyState sessionId={sessionId} studentUrl={studentUrl} count={count} />;
-  }
-
-  return <VizRenderer sessionId={sessionId} session={session} />;
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={contentKey}
+        {...variants}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        className="flex-1 flex items-center justify-center w-full"
+      >
+        {content}
+      </motion.div>
+    </AnimatePresence>
+  );
 }
 
 export { MainContent };

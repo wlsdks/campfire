@@ -111,7 +111,14 @@ export default function LivePage() {
         <div className="w-full max-w-5xl mx-auto">
           <AnimatePresence mode="wait">
             {isGameMode ? (
-              <motion.div key="game" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="w-full">
+              <motion.div
+                key={`game-${currentMode}`}
+                initial={currentMode === 'leaderboard' ? { opacity: 0, y: -30 } : { opacity: 0, scale: 0.88 }}
+                animate={currentMode === 'leaderboard' ? { opacity: 1, y: 0 } : { opacity: 1, scale: 1 }}
+                exit={currentMode === 'leaderboard' ? { opacity: 0, y: 30 } : { opacity: 0, scale: 1.06 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                className="w-full"
+              >
                 <Suspense fallback={<GameFallback />}>
                   {currentMode === 'roulette' && <Roulette participants={onlineList} scores={scores} />}
                   {currentMode === 'lottery' && <Lottery participants={onlineList} />}
@@ -123,7 +130,14 @@ export default function LivePage() {
                 </Suspense>
               </motion.div>
             ) : hasActiveQuestion ? (
-              <motion.div key="question" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ type: 'spring', stiffness: 300, damping: 25 }} className="w-full space-y-6">
+              <motion.div
+                key={`question-${currentQId}`}
+                initial={{ opacity: 0, y: 24 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -16 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                className="w-full space-y-6"
+              >
                 {isRunning && endTime && (
                   <div className="max-w-xl mx-auto">
                     <TimerCountdown endTime={endTime} duration={duration} />
