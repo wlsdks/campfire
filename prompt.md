@@ -324,6 +324,15 @@ Pick에서:
 - 세션 요약 카드의 시각적 임팩트 강화
 - 리더보드 애니메이션 드라마틱하게
 
+**F. 리서치 기반 UX 패턴 적용 (2025-2026)**
+아래 패턴을 우선순위대로 적용:
+1. BottomSheet — 긴급질문 모달 → 바텀시트 (25-30% engagement↑)
+2. Thumb Zone — 강사 "시작/종료" 버튼 하단 배치
+3. One Screen One Purpose — VotePage 보조 요소 접힘 처리
+4. Progressive Disclosure — 질문 생성 폼 단계별 공개
+5. Layout-Matching Skeleton — 학생 투표, 강사 결과에 적용
+6. Gesture Navigation — 스와이프 액션 (질문 삭제, 도움 해결)
+
 ### 검증 뷰포트
 - Desktop: 1280x800 (강사)
 - Tablet: 768x1024 (스태프)
