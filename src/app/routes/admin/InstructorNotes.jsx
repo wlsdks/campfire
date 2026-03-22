@@ -82,7 +82,7 @@ export default function InstructorNotes({ sessionId }) {
   const read = notes.filter((n) => n.done);
 
   return (
-    <div className="rounded-xl bg-white dark:bg-slate-800 overflow-hidden">
+    <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden">
       <button
         onClick={() => setExpanded(!expanded)}
         className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150"

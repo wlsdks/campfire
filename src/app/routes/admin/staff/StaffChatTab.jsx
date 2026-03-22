@@ -49,7 +49,7 @@ export default function StaffChatTab({ sessionId, senderName }) {
       <div
         ref={containerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto px-1 py-3 flex flex-col gap-3 scrollbar-hide"
+        className="flex-1 overflow-y-auto overscroll-contain px-4 py-3 flex flex-col gap-3 scrollbar-hide"
       >
         {loading && messages.length === 0 && (
           <div className="flex-1 flex items-center justify-center">
@@ -75,7 +75,7 @@ export default function StaffChatTab({ sessionId, senderName }) {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="flex items-center gap-2 py-3 shrink-0">
+      <div className="flex items-center gap-2 px-4 py-3 border-t border-slate-100 dark:border-slate-700 shrink-0">
         <input
           ref={inputRef}
           type="text"

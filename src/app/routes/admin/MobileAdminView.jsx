@@ -23,7 +23,7 @@ const TABS = [
 ];
 
 /* ─── Header ─── */
-function MobileHeader({ session, count, onBack, onEndSession, isReviewing, onFullEndSession, effectiveReadOnly, isSetting, onStartSession }) {
+function MobileHeader({ session, count, onBack, onEndSession, isReviewing, onFullEndSession, effectiveReadOnly, isSetting, onStartSession, activeTab, onBackToTab }) {
   const [confirmEnd, setConfirmEnd] = useState(false);
   const courseName = session?.courseName || 'Pick';
   const round = session?.roundNumber ? `${session.roundNumber}차` : '';
@@ -33,7 +33,7 @@ function MobileHeader({ session, count, onBack, onEndSession, isReviewing, onFul
     <>
       <div className="flex items-center justify-between px-5 py-3.5 bg-white dark:bg-slate-800 shrink-0">
         <div className="flex items-center gap-3 min-w-0">
-          <button onClick={onBack} className="p-2 -ml-2 rounded-xl text-slate-400 active:bg-slate-100 dark:active:bg-slate-700 transition-colors duration-150" aria-label="뒤로">
+          <button onClick={activeTab !== 'progress' ? onBackToTab : onBack} className="p-2 -ml-2 rounded-xl text-slate-400 active:bg-slate-100 dark:active:bg-slate-700 transition-colors duration-150" aria-label="뒤로">
             <ArrowLeft size={22} />
           </button>
           <div className="min-w-0">
@@ -271,6 +271,8 @@ export default function MobileAdminView({ s }) {
         onFullEndSession={s.handleFullEndSession}
         effectiveReadOnly={s.effectiveReadOnly}
         isSetting={s.isSetting}
+        activeTab={activeTab}
+        onBackToTab={() => setActiveTab('progress')}
       />
 
       {/* Tab content */}

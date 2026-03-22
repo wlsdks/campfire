@@ -35,7 +35,7 @@ export default function StaffMobileView({ sessionId, session, adminUser, onBack,
       {/* Header — mobile app style (no border, backdrop blur) */}
       <header className="bg-white dark:bg-slate-800 shrink-0">
         <div className="flex items-center gap-3 px-5 py-3.5">
-          <button onClick={onBack}
+          <button onClick={activeTab !== 'questions' ? () => setActiveTab('questions') : onBack}
             className="p-2 -ml-2 rounded-xl text-slate-400 active:bg-slate-100 dark:active:bg-slate-700 transition-colors duration-150"
             aria-label="뒤로가기">
             <ArrowLeft size={22} />
