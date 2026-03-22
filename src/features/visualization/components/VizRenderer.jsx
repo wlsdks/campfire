@@ -24,7 +24,7 @@ export default memo(function VizRenderer({ sessionId, session }) {
   if (!['poll', 'quiz'].includes(currentMode) || !currentQId) {
     const hasQuestions = session?.questions && Object.keys(session.questions).length > 0;
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex-1 flex items-center justify-center">
         <EmptyState
           title={hasQuestions ? '질문이 준비되어 있습니다' : '아직 질문이 없습니다'}
           description={hasQuestions
