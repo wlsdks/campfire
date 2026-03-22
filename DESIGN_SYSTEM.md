@@ -1079,11 +1079,79 @@ button, a { -webkit-tap-highlight-color: transparent; }  /* 파란 탭 플래시
 <body ontouchstart="">  /* iOS :active 활성화 */
 ```
 
+### 모바일 애니메이션 & 모션
+```
+원칙: 부드러움 + 역동적 + 의미있는 모션
+
+탭 전환: AnimatePresence mode="wait", fade 0.15s
+모달 등장: y: 20→0, 0.2s ease-out (아래에서 올라옴)
+리스트 아이템: stagger 0.03s per item
+숫자 변경: motion.span key={value}, scale 1.1→1 spring
+히어로 숫자: scale 1.1→1, spring 300/25
+카드 프레스: active:scale-[0.98], 0.15s
+버튼 프레스: active:scale-[0.96], 즉각 피드백
+
+금지:
+- 장식 모션 (반짝임, 무한 루프)
+- 400ms 초과 전환
+- scale 0.8 미만 축소 (과도한 줄어듦)
+- 모바일에서 복잡한 layout 애니메이션 (성능)
+```
+
+### 모바일 디자인 토큰 상수 (design-tokens.js 연동)
+```
+// 모바일 타이포
+mobile.body:          15px (text-[15px])
+mobile.bodyLarge:     16px (text-base)
+mobile.sectionTitle:  16-17px (text-[16px] ~ text-[17px])
+mobile.pageTitle:     16-18px (text-base ~ text-lg)
+mobile.hero:          36px (text-4xl)
+mobile.caption:       13px (text-[13px])
+mobile.tabLabel:      11px (text-[11px])
+mobile.chatBubble:    15px (text-[15px])
+mobile.chatSender:    13px (text-[13px])
+mobile.chatTime:      11px (text-[11px])
+
+// 모바일 간격
+mobile.pagePadding:   20px (px-5)
+mobile.cardPadding:   20px (p-5)
+mobile.sectionGap:    8px (space-y-2)
+mobile.itemGap:       4px (space-y-1)
+mobile.headerPadding: px-5 py-3.5
+
+// 모바일 컴포넌트
+mobile.touchTarget:   44px min, 48-56px 권장
+mobile.tabBarHeight:  56px + safe area
+mobile.iconSize:      22-24px (탭바/하단바)
+mobile.avatarSize:    36px (w-9, 채팅)
+mobile.buttonRadius:  12px (rounded-xl)
+mobile.cardRadius:    16px (rounded-2xl)
+
+// 웹 타이포 (비교용)
+web.body:             14px (text-sm)
+web.sectionTitle:     14px semibold
+web.pageTitle:        20-24px (text-xl ~ text-2xl)
+web.hero:             36-48px (text-4xl ~ text-5xl)
+web.caption:          10-12px (text-[10px] ~ text-xs)
+```
+
+### 모바일에서 사용하면 안 되는 패턴
+```
+❌ border + shadow 동시 사용 (이중 깊이)
+❌ shadow로 섹션 구분 (배경색 대비 사용)
+❌ 데스크탑 사이드바를 그대로 모바일에 표시
+❌ 햄버거 메뉴 (하단 탭 사용)
+❌ hover 전용 UI (모바일은 hover 없음)
+❌ text-sm 미만 본문 (14px 이하 → iOS 줌 유발)
+❌ 44px 미만 터치 타겟
+❌ 모달에 inset-4 (전체 화면 inset-0 사용)
+```
+
 ### 래퍼런스 요약
 | 출처 | 핵심 교훈 |
 |------|----------|
 | 토스 | 배경색 대비, border 없음, 큰 숫자, 패딩 내장 리스트 |
-| 당근 | 8px 회색 구분선, thin hairline 아이템 구분 |
-| 카카오 | 배경색 버블, 8px 구분선, 사용자 설정 글씨 크기 |
-| Apple | 17pt 본문, 44pt 터치 타겟, inset grouped 카드 |
-| Linear | 모노크롬 + spacing 위계, 3변수 색상 체계 |
+| 당근 | 8px 회색 구분선, thin hairline 아이템 구분, SEED 디자인 시스템 |
+| 카카오 | 배경색 버블, 8px 구분선, 15-16pt 채팅 본문 |
+| Apple | 17pt 본문, 44pt 터치 타겟, inset grouped 카드, backdrop-blur 헤더 |
+| Linear | 모노크롬 + spacing 위계, 3변수 색상 체계, 밀도 적응 |
