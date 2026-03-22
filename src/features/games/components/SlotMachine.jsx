@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, lazy, Suspense } from 'react';
+import { useState, useRef, useEffect, useMemo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles } from 'lucide-react';
 import Button from '@/components/ui/Button';
@@ -29,11 +29,15 @@ export default function SlotMachine({ participants, onResult }) {
     };
   }, []);
 
-  const names = participants.map(p => p.nickname);
+  const names = useMemo(() => participants.map(p => p.nickname), [participants]);
 
   function pickRandom() {
     return names[Math.floor(Math.random() * names.length)];
   }
+
+  // Prevent re-render loops — memoize stable reference
+  const namesRef = useRef(names);
+  namesRef.current = names;
 
   function spin() {
     if (spinning || names.length === 0) return;
@@ -112,9 +116,6 @@ export default function SlotMachine({ participants, onResult }) {
   }
 
   const isMatch = results[0] && results[0] === results[1] && results[1] === results[2];
-
-  // Pick 3 random names to show as cycling placeholder per reel
-  const cycleNames = [0, 1, 2].map(() => [pickRandom(), pickRandom(), pickRandom()]);
 
   return (
     <div className="flex flex-col items-center gap-8">
