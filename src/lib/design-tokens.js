@@ -107,7 +107,7 @@ export const motion = {
     gentle: { type: 'spring', stiffness: 200, damping: 20 },
     bouncy: { type: 'spring', stiffness: 400, damping: 22 },
     stiff: { type: 'spring', stiffness: 500, damping: 30 },
-    smooth: { type: 'spring', stiffness: 80, damping: 20 },  // progress bars, data viz
+    // Note: smooth(80/20) was replaced by gentle(200/20) across all files
   },
   // Duration presets
   duration: {
@@ -180,7 +180,7 @@ export const tw = {
   accordionTitle: 'text-sm font-semibold text-slate-600',
 
   // Skeleton
-  skeleton: 'animate-pulse bg-slate-200 rounded-lg',
+  skeleton: 'animate-shimmer rounded-lg',
 };
 
 // ─── Timing ──────────────────────────────────────────
@@ -212,4 +212,63 @@ export const limits = {
 export const touch = {
   minTarget: '48px',         // minimum touch target on mobile
   dragActivation: 5,         // px distance before drag starts
+};
+
+// ─── Mobile Design Tokens (< 768px) ─────────────────
+// Reference: 토스, 당근, 카카오, Apple HIG
+// These values override web defaults on mobile breakpoints.
+export const mobile = {
+  // Typography — all sizes +1~2px from web
+  typography: {
+    body: '15px',            // text-[15px] — web: 14px
+    bodyLarge: '16px',       // text-base
+    sectionTitle: '16px',    // text-[16px] — web: 14px
+    pageTitle: '16px',       // text-base — web: 20px (space-saving)
+    hero: '36px',            // text-4xl — big numbers
+    caption: '13px',         // text-[13px] — web: 12px
+    tabLabel: '11px',        // text-[11px] — Apple HIG standard
+    chatBubble: '15px',      // text-[15px] — KakaoTalk reference
+    chatSender: '13px',      // text-[13px]
+    chatTime: '11px',        // text-[11px]
+  },
+  // Spacing — generous padding, bg contrast sections
+  spacing: {
+    pagePadding: '20px',     // px-5
+    cardPadding: '20px',     // p-5
+    sectionGap: '8px',       // space-y-2 (당근/카카오 thick divider)
+    itemGap: '4px',          // space-y-1
+    headerPadding: 'px-5 py-3.5',
+  },
+  // Components
+  components: {
+    touchTarget: '44px',     // Apple HIG minimum
+    tabBarHeight: '56px',    // + safe area inset
+    iconSize: '22px',        // bottom bar icons
+    tabIconSize: '24px',     // tab bar icons
+    avatarChat: '36px',      // w-9 chat avatar
+    buttonRadius: '12px',    // rounded-xl
+    cardRadius: '16px',      // rounded-2xl
+  },
+  // Section separation — no borders, bg contrast only
+  separation: {
+    method: 'bg-contrast',   // bg-slate-50 page + bg-white cards
+    sectionDivider: 'h-2 bg-slate-100', // 8px gray bar (당근 pattern)
+    itemDivider: 'border-b border-slate-100', // thin hairline
+    forbidden: ['shadow', 'border+shadow', 'colored-borders'],
+  },
+  // Modal behavior
+  modal: {
+    mobile: 'fixed inset-0',           // fullscreen
+    tablet: 'fixed inset-auto 420x600', // centered
+    animation: 'y: 20→0',              // slide up from bottom
+  },
+  // Press feedback (iOS haptic substitute)
+  press: {
+    button: { scale: 0.97 },
+    card: { scale: 0.98 },
+    tab: { scale: 0.92 },
+    send: { scale: 0.9 },
+    choice: { scale: 0.95 },
+    selection: { scale: [0.95, 1.04, 1] }, // bounce on select
+  },
 };
