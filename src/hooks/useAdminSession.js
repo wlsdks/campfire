@@ -52,7 +52,7 @@ export function useAdminSession() {
 
   const { session, loading } = useSession(sessionId);
   const { participants, onlineList, count } = useParticipants(sessionId);
-  const { scores, leaderboard, totalTickets } = useScores(sessionId);
+  const { scores, leaderboard, totalTickets, resetScores } = useScores(sessionId);
   const { isRunning: timerRunning, endTime, duration, startTimer, stopTimer } = useTimer(sessionId);
   const { pendingAdmins, pendingCount, approveAdmin, rejectAdmin } = useAdminApprovals();
 
@@ -181,7 +181,7 @@ export function useAdminSession() {
     // Approvals
     pendingAdmins, pendingCount, approveAdmin, rejectAdmin,
     // Participants & scores
-    participants, onlineList, count, scores, leaderboard, totalTickets,
+    participants, onlineList, count, scores, leaderboard, totalTickets, resetScores,
     voteCounts, drawParticipants, studentUrl, questionProgress,
     // Timer
     timerRunning, endTime, duration, startTimer, stopTimer,

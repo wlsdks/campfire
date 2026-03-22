@@ -341,6 +341,12 @@ export default function MobileAdminView({ s }) {
               완전 종료
             </button>
           )}
+          {s.totalTickets > 0 && (
+            <button onClick={() => { if (window.confirm('모든 학습자의 포인트와 티켓을 초기화하시겠습니까?')) { s.resetScores(); setSettingsOpen(false); } }}
+              className="w-full py-3 rounded-xl text-slate-500 font-medium text-[15px] bg-slate-50 dark:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150">
+              포인트 · 티켓 초기화
+            </button>
+          )}
           <TeamBattleControl
             isActive={s.teamBattleActive}
             teamCount={s.teamBattleCount}

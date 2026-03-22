@@ -1,5 +1,5 @@
-import { ref, onValue } from 'firebase/database';
-import { useState, useEffect, useMemo } from 'react';
+import { ref, onValue, set } from 'firebase/database';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { db } from '@/lib/firebase';
 
 export function useScores(sessionId) {
@@ -26,5 +26,15 @@ export function useScores(sessionId) {
     [leaderboard]
   );
 
-  return { scores, leaderboard, totalTickets };
+  const resetScores = useCallback(async () => {
+    if (!sessionId) return;
+    // Reset all scores to 0 but keep nicknames
+    const resetData = {};
+    Object.entries(scores).forEach(([id, data]) => {
+      resetData[id] = { nickname: data.nickname, total: 0, tickets: 0 };
+    });
+    await set(ref(db, `sessions/${sessionId}/scores`), resetData);
+  }, [sessionId, scores]);
+
+  return { scores, leaderboard, totalTickets, resetScores };
 }
