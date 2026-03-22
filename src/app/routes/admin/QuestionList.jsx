@@ -42,9 +42,9 @@ const SortableItem = memo(function SortableItem({ qId, q, currentQuestion, readO
       }`}
     >
       <div className="flex items-start gap-2">
-        {/* Drag indicator */}
+        {/* Drag indicator — hidden on mobile */}
         {!readOnly && (
-          <div className="shrink-0 -ml-1 text-slate-300 dark:text-slate-600 group-hover:text-slate-400 dark:group-hover:text-slate-500 transition-colors duration-150 pt-0.5 cursor-grab active:cursor-grabbing">
+          <div className="shrink-0 -ml-1 text-slate-300 dark:text-slate-600 group-hover:text-slate-400 dark:group-hover:text-slate-500 transition-colors duration-150 pt-0.5 cursor-grab active:cursor-grabbing max-sm:hidden">
             <GripVertical size={14} />
           </div>
         )}
@@ -89,6 +89,8 @@ const SortableItem = memo(function SortableItem({ qId, q, currentQuestion, readO
                 </button></Tooltip>
               </>
             )}
+            {/* Secondary actions — hidden on mobile for cleaner UI */}
+            <span className="contents max-sm:hidden">
             {onSaveToLibrary && (
               <Tooltip label="보관함에 저장"><button onClick={() => onSaveToLibrary(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="보관함에 저장">
                 <BookmarkPlus size={12} />
@@ -100,6 +102,7 @@ const SortableItem = memo(function SortableItem({ qId, q, currentQuestion, readO
             <Tooltip label="질문 삭제"><button onClick={() => onDelete(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-700 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="질문 삭제">
               <Trash2 size={12} />
             </button></Tooltip>
+            </span>
           </div>
         )}
       </div>
