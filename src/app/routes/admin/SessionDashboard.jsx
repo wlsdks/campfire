@@ -150,8 +150,8 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
           <div className="flex gap-1 mb-4 relative">
             {TABS.map((tab) => (
               <button key={tab.key} onClick={() => handleTabChange(tab.key)}
-                className={`relative px-4 max-sm:px-3 py-1.5 text-sm font-medium rounded-lg transition-colors duration-200 active:scale-[0.97] whitespace-nowrap ${
-                  activeTab === tab.key ? 'text-white dark:text-slate-900' : 'text-slate-500 border border-slate-200 dark:border-slate-700 hover:text-slate-700 hover:bg-slate-50 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800'}`}>
+                className={`relative px-4 max-sm:px-3 py-2 text-sm font-medium rounded-lg transition-colors duration-200 active:scale-[0.97] whitespace-nowrap ${
+                  activeTab === tab.key ? 'text-white dark:text-slate-900' : 'text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300'}`}>
                 {activeTab === tab.key && (
                   <motion.div
                     layoutId="tab-indicator"
