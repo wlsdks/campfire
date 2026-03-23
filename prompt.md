@@ -427,13 +427,16 @@ Pick에서:
 ## 사이클 로그
 > 최근 10개만 유지.
 
-2026-03-24 | fix: border+shadow-sm 이중 깊이 제거 — 토큰/Card/투표 컴포넌트 7개 파일
-2026-03-24 | improve: 모바일 참여 탭 — 독립 카드 + shadow-sm + 간격 (토스 패턴)
+2026-03-24 | fix: VoteConfirm + TimerCountdown border → shadow-sm
+2026-03-24 | improve: 모바일 UX 감사 — 터치 타겟/글자 크기/transition duration 15개 수정
+2026-03-24 | fix: border+shadow-sm 이중 깊이 3배치 완료 (20+ 파일, 25+ 위반)
+2026-03-24 | feat: 과제 심사 기능 전체 구현 (ai-judge 이관 — 9개 태스크)
+2026-03-24 | fix: 모바일 모드 선택 → 결과 탭 자동 이동
+2026-03-24 | improve: 모바일 참여 탭 — 독립 카드 + shadow-sm (토스 패턴)
 2026-03-24 | fix: design system audit — spring 프리셋 + 모노크롬 리액션
-2026-03-24 | fix: 게임 3종 StrictMode mountedRef + 돌림판 각도 + 휠 축소
-2026-03-24 | improve: 모드 드롭다운 + 팀 대항전 통합 + 쉬는시간 dark pill
-2026-03-24 | improve: 긴급 질문 Modal + 익명 토글 + 메모 우측 패널 이동
-2026-03-24 | merged to main + firebase deploy (v3→v4 브랜치 전환)
+2026-03-24 | fix: 게임 3종 StrictMode + 돌림판 각도 + 휠 축소 + BreakMascot
+2026-03-24 | improve: 모드 드롭다운 + 팀 대항전 통합 + 긴급 질문 Modal + 메모 이동
+2026-03-24 | merged to main + firebase deploy (v3→v4)
 
 ---
 
