@@ -414,7 +414,7 @@ Pick에서:
 2. Thumb Zone — 강사 "시작/종료" 버튼 하단 배치
 3. One Screen One Purpose — VotePage 보조 요소 접힘 처리
 4. Progressive Disclosure — 질문 생성 폼 단계별 공개
-5. Layout-Matching Skeleton — 학생 투표, 강사 결과에 적용
+5. ~~Layout-Matching Skeleton — VotePageSkeleton 적용 완료 (헤더+질문+선택지+하단바 매칭)~~
 6. Gesture Navigation — 스와이프 액션 (질문 삭제, 도움 해결)
 
 ### 검증 뷰포트
