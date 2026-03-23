@@ -82,7 +82,7 @@ export default function ChatPanel({ sessionId, senderName, senderType, open, onC
   }
 
   const emptyMsg = channel === 'staff' ? '운영팀 내부 채팅입니다' : senderType === 'instructor' ? '학생들과 실시간으로 소통하세요' : '강사와 학생들에게 메시지를 보내세요';
-  const tabCls = (active) => `flex-1 py-1.5 text-xs font-medium rounded-lg transition-colors duration-150 ${active ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'}`;
+  const tabCls = (active) => `flex-1 py-2.5 text-xs font-medium rounded-lg transition-colors duration-150 ${active ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : 'text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-700'}`;
 
   // Inline mode: render without modal wrapper (for mobile tab view)
   if (inline && open) {

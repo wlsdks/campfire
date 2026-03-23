@@ -150,7 +150,7 @@ export default function ClassQAPanel({ sessionId, open, onClose, onNewQuestion }
                   { key: 'mine', label: `내 질문${questions.filter((q) => q.participantId === participantId).length > 0 ? ` (${questions.filter((q) => q.participantId === participantId).length})` : ''}` },
                 ].map((t) => (
                   <button key={t.key} onClick={() => setTab(t.key)}
-                    className={`flex-1 py-2 text-xs font-medium rounded-lg transition-colors duration-150 ${
+                    className={`flex-1 py-2.5 text-xs font-medium rounded-lg transition-colors duration-150 ${
                       tab === t.key ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
                     }`}>{t.label}</button>
                 ))}

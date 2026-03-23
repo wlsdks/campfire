@@ -80,7 +80,7 @@ export default memo(function BetSelector({ onSelect }) {
                 </p>
               </div>
 
-              <span className={`text-2xl font-bold shrink-0 ${
+              <span className={`text-2xl font-bold tracking-tight shrink-0 ${
                 isSelected ? 'text-white' : 'text-slate-200'
               }`}>
                 {option.multiplier}x

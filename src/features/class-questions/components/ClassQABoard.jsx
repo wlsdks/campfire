@@ -71,7 +71,7 @@ export default function ClassQABoard({ sessionId, showInput = true }) {
             <button
               key={t.key}
               onClick={() => setTab(t.key)}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+              className={`px-3 py-2.5 text-sm font-medium rounded-md transition-colors duration-150 ${
                 tab === t.key
                   ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 shadow-sm'
                   : 'text-slate-500 dark:text-slate-400'
@@ -113,11 +113,11 @@ export default function ClassQABoard({ sessionId, showInput = true }) {
             <button
               type="button"
               onClick={() => setAnonymous(!anonymous)}
-              className={`flex items-center gap-1.5 text-xs transition-colors ${
+              className={`flex items-center gap-1.5 text-sm transition-colors duration-150 ${
                 anonymous ? 'text-slate-900 dark:text-slate-100 font-medium' : 'text-slate-400'
               }`}
             >
-              <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors ${
+              <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors duration-150 ${
                 anonymous ? 'bg-slate-900 border-slate-900 dark:bg-slate-100 dark:border-slate-100' : 'border-slate-300 dark:border-slate-600'
               }`}>
                 {anonymous && <svg viewBox="0 0 12 12" className="w-2.5 h-2.5 text-white dark:text-slate-900"><path d="M2 6l3 3 5-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>}
@@ -125,7 +125,7 @@ export default function ClassQABoard({ sessionId, showInput = true }) {
               익명으로 질문
             </button>
             {!canPost && (
-              <span className="text-xs text-slate-400">잠시 후 다시 질문할 수 있어요</span>
+              <span className="text-sm text-slate-400">잠시 후 다시 질문할 수 있어요</span>
             )}
           </div>
         </motion.div>
@@ -205,7 +205,7 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
         <div className="flex items-center gap-4 pt-0.5">
           <button
             onClick={() => onUpvote(q.id, pid)}
-            className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
+            className={`flex items-center gap-1.5 text-sm font-medium transition-colors duration-150 ${
               hasUpvoted
                 ? 'text-slate-900 dark:text-slate-100'
                 : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
@@ -217,7 +217,7 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
 
           <button
             onClick={() => setExpanded(!expanded)}
-            className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+            className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150"
           >
             <MessageSquare size={14} />
             <span>{q.answerCount > 0 ? `답변 ${q.answerCount}개` : '답변하기'}</span>
@@ -298,7 +298,7 @@ function AnswerItem({ answer: a, questionId, pid, onUpvote }) {
         <p className="text-sm text-slate-700 dark:text-slate-200 mt-0.5 leading-relaxed">{a.text}</p>
         <button
           onClick={() => onUpvote(questionId, a.id, pid)}
-          className={`flex items-center gap-1 mt-1 text-xs transition-colors ${
+          className={`flex items-center gap-1 mt-1 text-xs transition-colors duration-150 ${
             hasUpvoted
               ? 'text-slate-900 dark:text-slate-100 font-semibold'
               : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
