@@ -139,7 +139,7 @@ export default function ClassQABoard({ sessionId, showInput = true }) {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
           <AnimatePresence mode="popLayout">
             {filtered.map((q, i) => (
               <QuestionCard
@@ -187,7 +187,7 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
         q.answered ? 'opacity-60' : ''
       }`}
     >
-      <div className="flex min-h-[80px]">
+      <div className="flex h-[120px]">
         {/* Upvote column — big number, always visible */}
         <button
           onClick={() => onUpvote(q.id, pid)}
@@ -218,7 +218,7 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
             <span className="text-[11px] text-slate-400 shrink-0">{timeAgo(q.timestamp)}</span>
           </div>
 
-          <p className="text-base md:text-lg text-slate-900 dark:text-slate-100 leading-relaxed">{q.text}</p>
+          <p className="text-base md:text-lg text-slate-900 dark:text-slate-100 leading-snug line-clamp-2">{q.text}</p>
 
           {/* Answer toggle */}
           <button
