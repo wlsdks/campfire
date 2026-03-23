@@ -21,6 +21,7 @@ const Plinko = lazy(() => import('@/features/games/components/Plinko'));
 const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
 const ClassQABoard = lazy(() => import('@/features/class-questions/components/ClassQABoard'));
 const AwardsCeremony = lazy(() => import('@/features/assignments/components/AwardsCeremony'));
+const RandomPicker = lazy(() => import('@/features/games/components/RandomPicker'));
 
 function PresentEmptyState({ sessionId, studentUrl, count }) {
   return (
@@ -136,7 +137,7 @@ function getModeVariants(mode) {
   if (mode === 'leaderboard') {
     return { initial: { opacity: 0, y: -30 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 30 } };
   }
-  if (['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'teamBattle', 'awards', 'focus'].includes(mode)) {
+  if (['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'teamBattle', 'awards', 'randomPicker', 'focus'].includes(mode)) {
     return { initial: { opacity: 0, scale: 0.88 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 1.06 } };
   }
   if (['poll', 'quiz'].includes(mode)) {
@@ -219,6 +220,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     }
     if (currentMode === 'qaBoard') return <div className="w-full max-w-4xl"><ClassQABoard sessionId={sessionId} showInput={false} /></div>;
     if (currentMode === 'awards') return <AwardsCeremony assignmentId={session?.activeAssignmentId} />;
+    if (currentMode === 'randomPicker') return <RandomPicker participants={onlineList} />;
     if (currentMode === 'focus') return (
       <div className="flex flex-col items-center justify-center gap-6 text-center">
         <Eye size={48} className="text-white/60" />
