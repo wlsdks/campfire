@@ -189,21 +189,23 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
     >
       <div className="flex">
         {/* Upvote column — big number, always visible */}
-        <button
-          onClick={() => onUpvote(q.id, pid)}
-          className={`flex flex-col items-center justify-center gap-1 px-4 border-r border-slate-100 dark:border-slate-700 transition-colors shrink-0 w-[60px] ${
-            hasUpvoted
-              ? 'bg-slate-50 dark:bg-slate-700/50'
-              : 'hover:bg-slate-50 dark:hover:bg-slate-700/30'
-          }`}
-        >
-          <ThumbsUp size={16} className={`transition-colors ${hasUpvoted ? 'text-slate-900 dark:text-slate-100 fill-current' : 'text-slate-300 dark:text-slate-600'}`} />
-          <span className={`text-lg font-bold tabular-nums ${
-            q.upvoteCount > 0
-              ? 'text-slate-900 dark:text-slate-100'
-              : 'text-slate-300 dark:text-slate-600'
-          }`}>{q.upvoteCount}</span>
-        </button>
+        <div className="border-r border-slate-100 dark:border-slate-700 shrink-0 w-[60px]">
+          <button
+            onClick={() => onUpvote(q.id, pid)}
+            className={`w-full h-full flex flex-col items-center justify-center gap-1 transition-colors ${
+              hasUpvoted
+                ? 'bg-slate-50/80 dark:bg-slate-700/50'
+                : 'hover:bg-slate-50/80 dark:hover:bg-slate-700/30'
+            }`}
+          >
+            <ThumbsUp size={16} className={`transition-colors ${hasUpvoted ? 'text-slate-900 dark:text-slate-100 fill-current' : 'text-slate-300 dark:text-slate-600'}`} />
+            <span className={`text-lg font-bold tabular-nums ${
+              q.upvoteCount > 0
+                ? 'text-slate-900 dark:text-slate-100'
+                : 'text-slate-300 dark:text-slate-600'
+            }`}>{q.upvoteCount}</span>
+          </button>
+        </div>
 
         {/* Content column */}
         <div className="flex-1 min-w-0 p-4 space-y-2">
