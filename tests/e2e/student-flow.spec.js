@@ -159,7 +159,7 @@ test.describe('학생 플로우', () => {
     await expect(page.getByText('좋아하는 프로그래밍 언어는?')).toBeVisible({ timeout: 10000 });
 
     // "긴급" button opens urgent question bottom sheet
-    const urgentBtn = page.locator('button').filter({ hasText: '긴급' });
+    const urgentBtn = page.getByRole('button', { name: '긴급 질문 보내기' });
     if (await urgentBtn.isVisible()) {
       await urgentBtn.click();
 
@@ -167,7 +167,7 @@ test.describe('학생 플로우', () => {
       const textarea = page.getByLabel('긴급 질문 내용');
       await expect(textarea).toBeVisible({ timeout: 5000 });
       await textarea.fill('이해가 안 되는 부분이 있습니다');
-      await page.getByRole('button', { name: /보내기/i }).click();
+      await page.getByRole('button', { name: '보내기', exact: true }).click();
 
       await waitForSync(page, 2000);
 
