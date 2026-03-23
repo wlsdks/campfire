@@ -27,6 +27,7 @@ const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
 const Leaderboard = lazy(() => import('@/features/quiz/components/Leaderboard'));
 const TeamScoreboard = lazy(() => import('@/features/teams/components/TeamScoreboard'));
 const ClassQABoard = lazy(() => import('@/features/class-questions/components/ClassQABoard'));
+const AwardsCeremony = lazy(() => import('@/features/assignments/components/AwardsCeremony'));
 
 const GameFallback = () => (
   <div className="flex items-center justify-center min-h-[300px]">
@@ -73,7 +74,7 @@ export default function LivePage() {
   const onSlotMachineResult = useCallback((names) => handleGameResult(names, 'slotMachine'), [handleGameResult]);
   const onPlinkoResult = useCallback((names) => handleGameResult(names, 'plinko'), [handleGameResult]);
 
-  const isGameMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard'].includes(currentMode);
+  const isGameMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards'].includes(currentMode);
   const isEnded = session?.status === 'ended';
   const hasActiveQuestion = ['poll', 'quiz'].includes(currentMode) && currentQId && question;
 
@@ -153,6 +154,7 @@ export default function LivePage() {
                   {currentMode === 'leaderboard' && <div className="w-full max-w-2xl mx-auto [&_.max-w-xl]:max-w-2xl"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" /></div>}
                   {currentMode === 'teamBattle' && <div className="w-full max-w-2xl mx-auto [&_.max-w-lg]:max-w-2xl"><TeamScoreboard teamScores={teamScores || []} /></div>}
                   {currentMode === 'qaBoard' && <div className="w-full max-w-4xl mx-auto"><ClassQABoard sessionId={sessionId} showInput={false} /></div>}
+                  {currentMode === 'awards' && <AwardsCeremony assignmentId={session?.activeAssignmentId} readOnly />}
                 </Suspense>
               </motion.div>
             ) : hasActiveQuestion ? (

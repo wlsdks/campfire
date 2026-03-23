@@ -1,6 +1,6 @@
 import { memo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Target, Ticket, Trophy, Swords, Gift, Dices, Coffee, X, ChevronDown, CircleDot, MessageSquare, Zap } from 'lucide-react';
+import { Target, Ticket, Trophy, Swords, Gift, Dices, Coffee, X, ChevronDown, CircleDot, MessageSquare, Zap, Award } from 'lucide-react';
 
 export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTickets, leaderboard, modeOpen, onToggle, onSwitchMode, teamBattleActive = false }) {
   const containerRef = useRef(null);
@@ -25,6 +25,7 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTic
     { mode: 'qaBoard', label: 'Q&A 보드', icon: MessageSquare },
     ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
     { mode: 'teamBattle', label: teamBattleActive ? '팀 스코어보드' : '팀 대항전', icon: Swords },
+    { mode: 'awards', label: '시상식', icon: Award },
   ];
 
   const activeLabel = modes.find(m => m.mode === currentMode)?.label;

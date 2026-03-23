@@ -62,7 +62,7 @@ export default function AdminPage() {
   }
 
   const currentMode = s.session?.currentMode;
-  const isSpecialMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard'].includes(currentMode);
+  const isSpecialMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards'].includes(currentMode);
 
   if (s.presentMode) {
     return (
