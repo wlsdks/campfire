@@ -17,6 +17,7 @@ const SessionEndedPage = lazy(() => import('./SessionEndedPage'));
 const ClassQABoard = lazy(() => import('@/features/class-questions/components/ClassQABoard'));
 const FocusOverlay = lazy(() => import('@/features/session/components/FocusOverlay'));
 const ComprehensionCheck = lazy(() => import('@/features/session/components/ComprehensionCheck'));
+const QuickSurvey = lazy(() => import('@/features/session/components/QuickSurvey'));
 import { QuizResultFromVote, TimerExpiredOverlay } from './VoteHelpers';
 import { TYPE_LABELS } from '@/lib/question-types';
 import Badge from '@/components/ui/Badge';
@@ -124,6 +125,7 @@ export default memo(function VotePage({ sessionId }) {
   if (currentMode === 'leaderboard') return <Suspense fallback={<SuspenseFallback />}><LeaderboardPage sessionId={sessionId} /></Suspense>;
   if (currentMode === 'focus') return <Suspense fallback={<SuspenseFallback />}><FocusOverlay /></Suspense>;
   if (currentMode === 'comprehension') return <Suspense fallback={<SuspenseFallback />}><ComprehensionCheck sessionId={sessionId} /></Suspense>;
+  if (currentMode === 'quickSurvey') return <Suspense fallback={<SuspenseFallback />}><QuickSurvey sessionId={sessionId} /></Suspense>;
   if (currentMode === 'qaBoard') {
     return (
       <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pb-8 pt-16">
