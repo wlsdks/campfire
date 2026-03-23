@@ -30,6 +30,7 @@ export default function QuestionManager({
   onStartSpeedQuiz,
   onEndSpeedQuiz,
   speedQuizCount = 0,
+  modeSlot = null,
 }) {
   const [showForm, setShowForm] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
@@ -127,6 +128,8 @@ export default function QuestionManager({
           </p>
         </button>
       )}
+
+      {modeSlot}
 
       {!readOnly && (
         <AnimatePresence>

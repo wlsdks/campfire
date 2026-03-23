@@ -80,21 +80,21 @@ export default function AdminPage() {
         formOpen={s.showCenterForm} onAddClick={s.effectiveReadOnly ? undefined : s.handleShowCenterForm}
         onViewQuestion={s.handleViewQuestion} adminUid={s.adminUser?.uid}
         speedQuizActive={s.speedQuizActive} onStartSpeedQuiz={s.startSpeedQuiz} onEndSpeedQuiz={s.endSpeedQuiz} speedQuizCount={s.speedQuizCount}
+        modeSlot={!s.effectiveReadOnly ? (
+          <>
+            <ModeSwitcher currentMode={currentMode} isSpecialMode={isSpecialMode} totalTickets={s.totalTickets}
+              leaderboard={s.leaderboard} modeOpen={s.modeOpen} onToggle={s.handleModeToggle} onSwitchMode={s.switchMode}
+              teamBattleActive={s.teamBattleActive} />
+            <TeamBattleControl
+              isActive={s.teamBattleActive}
+              teamCount={s.teamBattleCount}
+              participantCount={s.count}
+              onStart={(count) => s.startTeamBattle(s.onlineList.map((p) => p.id), count)}
+              onEnd={s.endTeamBattle}
+            />
+          </>
+        ) : null}
       />
-      {!s.effectiveReadOnly && (
-        <>
-          <ModeSwitcher currentMode={currentMode} isSpecialMode={isSpecialMode} totalTickets={s.totalTickets}
-            leaderboard={s.leaderboard} modeOpen={s.modeOpen} onToggle={s.handleModeToggle} onSwitchMode={s.switchMode}
-            teamBattleActive={s.teamBattleActive} />
-          <TeamBattleControl
-            isActive={s.teamBattleActive}
-            teamCount={s.teamBattleCount}
-            participantCount={s.count}
-            onStart={(count) => s.startTeamBattle(s.onlineList.map((p) => p.id), count)}
-            onEnd={s.endTeamBattle}
-          />
-        </>
-      )}
     </>
   );
 
