@@ -279,6 +279,29 @@
           ".write": true
         }
       }
+    },
+
+    "assignments": {
+      ".read": true,
+      "$assignmentId": {
+        ".write": true,
+        "submissions": {
+          "$submissionId": {
+            ".read": true,
+            ".write": true
+          }
+        },
+        "results": {
+          "$submissionId": {
+            ".read": true,
+            ".write": true
+          }
+        },
+        "awards": {
+          ".read": true,
+          ".write": true
+        }
+      }
     }
   }
 }
