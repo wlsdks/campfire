@@ -87,7 +87,6 @@ export default function Roulette({ participants, scores = {}, onResult }) {
   }
 
   const fontSize = names.length > 20 ? 5 : names.length > 12 ? 6 : names.length > 6 ? 8 : 10;
-  const textR = names.length > 20 ? 55 : names.length > 12 ? 58 : 62;
 
   return (
     <div className="flex flex-col items-center gap-8 w-full max-w-2xl mx-auto" onClick={e => e.stopPropagation()}>
@@ -120,10 +119,12 @@ export default function Roulette({ participants, scores = {}, onResult }) {
           {segmentsWithAngle.map((seg, i) => {
             const sa = seg.startAngle;
             const ea = sa + seg.angle;
-            const mr = ((sa + ea) / 2 - 90) * Math.PI / 180;
-            const tx = 100 + textR * Math.cos(mr), ty = 100 + textR * Math.sin(mr);
-            const tr = (sa + ea) / 2;
-            const dn = seg.name.length > 5 ? seg.name.slice(0, 5) + '..' : seg.name;
+            const midAngle = (sa + ea) / 2;
+            const mr = (midAngle - 90) * Math.PI / 180;
+            const labelR = names.length > 12 ? 55 : names.length > 6 ? 58 : 62;
+            const tx = 100 + labelR * Math.cos(mr), ty = 100 + labelR * Math.sin(mr);
+            const maxChars = seg.angle > 50 ? 5 : seg.angle > 30 ? 4 : 3;
+            const dn = seg.name.length > maxChars ? seg.name.slice(0, maxChars) + '..' : seg.name;
 
             // Full circle (1 participant) — SVG arc can't draw 360°
             const isFull = seg.angle >= 359.9;
@@ -144,7 +145,6 @@ export default function Roulette({ participants, scores = {}, onResult }) {
                   x={tx} y={ty} fill="white" fontSize={fontSize} fontWeight="700"
                   fontFamily="'Pretendard','Inter',system-ui,sans-serif"
                   textAnchor="middle" dominantBaseline="central"
-                  transform={`rotate(${tr},${tx},${ty})`}
                 >{dn}</text>
               </g>
             );

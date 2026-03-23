@@ -24,7 +24,7 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
   }, [counts]);
 
   return (
-    <div className="space-y-4 w-full max-w-xl mx-auto px-4">
+    <div className="space-y-5 w-full max-w-xl mx-auto px-4">
       {options.map((option, i) => {
         const count = counts[i];
         const pct = totalVotes > 0 ? (count / totalVotes) * 100 : 0;
@@ -65,7 +65,7 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
                     <Check size={12} strokeWidth={3} />
                   </motion.span>
                 )}
-                <span className={`font-medium text-base truncate ${isCorrect ? 'text-indigo-700 dark:text-indigo-400 font-semibold' : isWrong ? 'text-slate-400' : 'text-slate-700 dark:text-slate-200'}`}>
+                <span className={`font-medium text-lg truncate ${isCorrect ? 'text-indigo-700 dark:text-indigo-400 font-semibold' : isWrong ? 'text-slate-400' : 'text-slate-700 dark:text-slate-200'}`}>
                   {option}
                 </span>
               </div>
@@ -74,7 +74,7 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
                   key={count}
                   initial={{ scale: 1.2 }}
                   animate={{ scale: 1 }}
-                  className={`font-bold text-lg ${isCorrect ? 'text-indigo-700 dark:text-indigo-400' : countColor}`}
+                  className={`font-bold text-2xl ${isCorrect ? 'text-indigo-700 dark:text-indigo-400' : countColor}`}
                 >
                   {count}
                 </motion.span>
@@ -83,7 +83,7 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
                 </span>
               </div>
             </div>
-            <div className={`h-8 ${isWrong ? 'bg-slate-50 dark:bg-slate-800' : 'bg-slate-100 dark:bg-slate-700'} rounded-lg overflow-hidden`}>
+            <div className={`h-11 ${isWrong ? 'bg-slate-50 dark:bg-slate-800' : 'bg-slate-100 dark:bg-slate-700'} rounded-lg overflow-hidden`}>
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.max(pct, count > 0 ? 2 : 0)}%` }}

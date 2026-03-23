@@ -31,24 +31,24 @@ export default function EmptyState({
     >
       <PickMascot size={mascotSize} mood={mood} />
 
-      <div className="mt-6 space-y-1.5">
-        <p className="text-slate-600 text-lg font-semibold tracking-tight">{title}</p>
+      <div className="mt-6 space-y-2">
+        <p className="text-slate-800 dark:text-slate-200 text-xl font-bold tracking-tight">{title}</p>
         {description && (
-          <p className="text-slate-400 text-sm leading-relaxed">{description}</p>
+          <p className="text-slate-400 dark:text-slate-500 text-sm leading-relaxed max-w-sm">{description}</p>
         )}
       </div>
 
       {steps && steps.length > 0 && (
-        <div className="mt-5 space-y-2 w-full max-w-xs">
+        <div className="mt-6 space-y-2.5 w-full max-w-xs">
           {steps.map((step, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.25, delay: 0.15 + i * 0.06 }}
-              className="flex items-start gap-2.5 text-left"
+              className="flex items-start gap-3 text-left"
             >
-              <span className="text-xs font-bold text-slate-400 mt-0.5 w-4 shrink-0 text-center">
+              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-700 text-[11px] font-bold text-slate-500 dark:text-slate-400 shrink-0 mt-0.5">
                 {i + 1}
               </span>
               <span className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{step}</span>
