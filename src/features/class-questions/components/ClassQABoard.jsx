@@ -22,8 +22,10 @@ export default function ClassQABoard({ sessionId, showInput = true }) {
 
   const [tab, setTab] = useState('all');
   const [inputText, setInputText] = useState('');
+  const [anonymous, setAnonymous] = useState(false);
   const pid = getParticipantId();
   const nickname = getNickname() || '익명';
+  const displayName = anonymous ? '익명' : nickname;
 
   const filtered = useMemo(() => {
     if (tab === 'all') return questions;
@@ -34,9 +36,9 @@ export default function ClassQABoard({ sessionId, showInput = true }) {
   const handlePostQuestion = useCallback(async () => {
     const trimmed = inputText.trim();
     if (!trimmed) return;
-    const success = await postQuestion(trimmed, nickname, pid);
+    const success = await postQuestion(trimmed, displayName, anonymous ? '' : pid);
     if (success) setInputText('');
-  }, [inputText, postQuestion, nickname, pid]);
+  }, [inputText, postQuestion, displayName, anonymous, pid]);
 
   if (questions.length === 0 && !showInput) {
     return (
@@ -86,12 +88,9 @@ export default function ClassQABoard({ sessionId, showInput = true }) {
         <motion.div
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
+          className="mb-6 space-y-2"
         >
-          <div className="flex gap-2 relative">
-            {!canPost && (
-              <p className="absolute -bottom-5 left-0 text-xs text-slate-400">잠시 후 다시 질문할 수 있어요</p>
-            )}
+          <div className="flex gap-2">
             <input
               type="text"
               value={inputText}
@@ -109,6 +108,25 @@ export default function ClassQABoard({ sessionId, showInput = true }) {
             >
               <Send size={16} />
             </Button>
+          </div>
+          <div className="flex items-center justify-between px-1">
+            <button
+              type="button"
+              onClick={() => setAnonymous(!anonymous)}
+              className={`flex items-center gap-1.5 text-xs transition-colors ${
+                anonymous ? 'text-slate-900 dark:text-slate-100 font-medium' : 'text-slate-400'
+              }`}
+            >
+              <div className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-colors ${
+                anonymous ? 'bg-slate-900 border-slate-900 dark:bg-slate-100 dark:border-slate-100' : 'border-slate-300 dark:border-slate-600'
+              }`}>
+                {anonymous && <svg viewBox="0 0 12 12" className="w-2.5 h-2.5 text-white dark:text-slate-900"><path d="M2 6l3 3 5-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>}
+              </div>
+              익명으로 질문
+            </button>
+            {!canPost && (
+              <span className="text-xs text-slate-400">잠시 후 다시 질문할 수 있어요</span>
+            )}
           </div>
         </motion.div>
       )}
@@ -173,7 +191,7 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
         {/* Upvote column — big number, always visible */}
         <button
           onClick={() => onUpvote(q.id, pid)}
-          className={`flex flex-col items-center justify-center gap-1 px-4 py-5 border-r border-slate-100 dark:border-slate-700 transition-colors shrink-0 min-w-[56px] ${
+          className={`flex flex-col items-center justify-center gap-1 px-4 py-5 border-r border-slate-100 dark:border-slate-700 transition-colors shrink-0 min-w-[56px] self-stretch ${
             hasUpvoted
               ? 'bg-slate-50 dark:bg-slate-700/50'
               : 'hover:bg-slate-50 dark:hover:bg-slate-700/30'
