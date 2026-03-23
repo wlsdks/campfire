@@ -405,7 +405,7 @@ export default function MobileAdminView({ s }) {
         open={modesOpen}
         onClose={() => setModesOpen(false)}
         currentMode={currentMode}
-        onSwitchMode={s.switchMode}
+        onSwitchMode={(mode) => { s.switchMode(mode); setActiveTab('results'); }}
         leaderboard={s.leaderboard}
         teamBattleActive={s.teamBattleActive}
       />
@@ -434,7 +434,7 @@ export default function MobileAdminView({ s }) {
           )}
           <ModeSwitcher currentMode={currentMode} isSpecialMode={isSpecialMode} totalTickets={s.totalTickets}
             leaderboard={s.leaderboard} modeOpen={s.modeOpen} onToggle={s.handleModeToggle}
-            onSwitchMode={(mode) => { s.switchMode(mode); setSettingsOpen(false); }}
+            onSwitchMode={(mode) => { s.switchMode(mode); setSettingsOpen(false); setActiveTab('results'); }}
             teamBattleActive={s.teamBattleActive} />
           <TeamBattleControl
             isActive={s.teamBattleActive}
