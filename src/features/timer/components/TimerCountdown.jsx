@@ -54,7 +54,7 @@ export default function TimerCountdown({ endTime, duration, onExpire }) {
       animate={{ opacity: 1, y: 0, height: 'auto' }}
       exit={{ opacity: 0, y: -8, height: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-      className={`rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 ${color.bg} transition-colors duration-300`}
+      className={`rounded-xl px-4 py-3 shadow-sm ${color.bg} transition-colors duration-300`}
     >
       <motion.div
         animate={isUrgent ? { x: [0, -3, 3, -2, 2, 0], scale: [1, 1.04, 1] } : isPulsing ? { scale: [1, 1.03, 1] } : {}}
