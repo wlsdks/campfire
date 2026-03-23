@@ -16,7 +16,7 @@ function SubmitConfirm({ type, value }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-      className="w-full rounded-xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 px-5 py-8 shadow-sm"
+      className="w-full rounded-xl bg-white dark:bg-slate-800 px-5 py-8 shadow-sm"
     >
       <div className="flex flex-col items-center gap-4">
         <motion.div

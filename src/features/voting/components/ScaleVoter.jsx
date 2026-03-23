@@ -41,7 +41,7 @@ function ScaleLiveAverage({ sessionId, questionId, myValue }) {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4, type: 'spring', stiffness: 300, damping: 25 }}
-      className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 shadow-sm"
+      className="w-full rounded-xl bg-white dark:bg-slate-800 p-4 shadow-sm"
     >
       <div className="flex items-center justify-between mb-3">
         <p className="text-xs font-semibold text-slate-500 tracking-tight">실시간 평균</p>
@@ -114,7 +114,7 @@ export default memo(function ScaleVoter({ sessionId, questionId, disabled = fals
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-      className="w-full rounded-xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 p-5 shadow-sm space-y-5"
+      className="w-full rounded-xl bg-white dark:bg-slate-800 p-5 shadow-sm space-y-5"
     >
       {/* Big centered value display */}
       <div className="text-center">

@@ -23,7 +23,7 @@ export function SkeletonText({ lines = 3, className = '' }) {
 
 export function SkeletonCard({ className = '' }) {
   return (
-    <div className={`bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 ${className}`}>
+    <div className={`bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5 ${className}`}>
       <div className="animate-shimmer rounded-lg h-5 w-2/3 mb-3" />
       <div className="space-y-2">
         <div className="animate-shimmer rounded h-4 w-full" />

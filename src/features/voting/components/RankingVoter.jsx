@@ -126,7 +126,7 @@ export default memo(function RankingVoter({ sessionId, questionId, options = [],
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-      className="w-full rounded-xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 p-4 shadow-sm space-y-4"
+      className="w-full rounded-xl bg-white dark:bg-slate-800 p-4 shadow-sm space-y-4"
     >
       <p className="text-xs text-slate-400 text-center">
         드래그하여 올바른 순서로 배열하세요

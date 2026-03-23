@@ -180,9 +180,9 @@ export const motion = {
 // ─── Component Recipes (Tailwind) ────────────────────
 export const tw = {
   // Cards
-  card: 'bg-white rounded-xl shadow-sm border border-slate-200 p-5',
-  cardHover: 'bg-white rounded-xl shadow-sm border border-slate-200 p-5 hover:shadow-md transition-shadow',
-  cardInteractive: 'bg-white rounded-xl border border-slate-200 hover:border-slate-300 transition-all active:scale-[0.98]',
+  card: 'bg-white rounded-xl shadow-sm p-5',
+  cardHover: 'bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow',
+  cardInteractive: 'bg-white rounded-xl shadow-sm hover:shadow-md transition-all active:scale-[0.98]',
 
   // Buttons
   btnBase: 'font-medium rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.97]',
