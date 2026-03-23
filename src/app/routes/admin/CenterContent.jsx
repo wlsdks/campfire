@@ -39,7 +39,7 @@ export default function CenterContent({
           transition={{ duration: 0.2 }}
           className="w-full max-w-2xl mx-auto"
         >
-          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-6 lg:p-8">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-6 lg:p-8">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">새 질문 추가</h2>

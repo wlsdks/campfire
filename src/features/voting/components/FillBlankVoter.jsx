@@ -60,7 +60,7 @@ function AnswerDistribution({ sessionId, questionId, correctAnswer }) {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4, type: 'spring', stiffness: 300, damping: 25 }}
-      className="w-full rounded-xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 p-4 shadow-sm space-y-3"
+      className="w-full rounded-xl bg-white dark:bg-slate-800 p-4 shadow-sm space-y-3"
     >
       <div className="flex items-center justify-between">
         <p className="text-xs font-semibold text-slate-500 tracking-tight">실시간 응답</p>
@@ -146,7 +146,7 @@ export default memo(function FillBlankVoter({ sessionId, questionId, title, corr
       className="w-full space-y-4"
     >
       {/* Sentence with blank */}
-      <div className="rounded-xl border border-slate-200 bg-white dark:bg-slate-800 dark:border-slate-700 p-4 shadow-sm">
+      <div className="rounded-xl bg-white dark:bg-slate-800 p-4 shadow-sm">
         <SentencePreview title={title} answer={answer} />
       </div>
 

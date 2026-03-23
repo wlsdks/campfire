@@ -195,7 +195,7 @@ export default memo(function QuestionLibraryView({ adminUid }) {
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-5">
+            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5">
               <QuestionForm
                 onSubmit={handleSubmit}
                 onCancel={() => setShowForm(false)}

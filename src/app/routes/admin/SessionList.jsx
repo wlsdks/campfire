@@ -106,7 +106,7 @@ export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, s
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: groupIndex * 0.05, ease: 'easeOut' }}
-      className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
+      className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
     >
       <button
         onClick={() => setCollapsed(!collapsed)}

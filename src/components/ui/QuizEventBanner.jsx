@@ -9,13 +9,13 @@ const STATE_STYLES = {
     title: '다음 퀴즈 이벤트',
   },
   active: {
-    card: 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 shadow-sm',
+    card: 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 shadow-sm',
     label: 'text-slate-900 dark:text-slate-100',
     icon: 'text-slate-900 dark:text-slate-100',
     title: '보너스 라운드',
   },
   result: {
-    card: 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 shadow-sm',
+    card: 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 shadow-sm',
     label: 'text-slate-500 dark:text-slate-400',
     icon: 'text-slate-500 dark:text-slate-400',
     title: '적용된 이벤트',

@@ -105,7 +105,7 @@ export default function Lottery({ participants, onResult }) {
       {/* Count selector */}
       <div className="flex items-center gap-3">
         <span className="text-slate-500 text-sm font-medium">추첨 인원</span>
-        <div className="flex items-center bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+        <div className="flex items-center bg-white dark:bg-slate-800 rounded-lg shadow-sm overflow-hidden">
           <button onClick={() => setCount(Math.max(1, count - 1))} aria-label="추첨 인원 감소" className="px-2.5 py-2 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150">
             <Minus size={14} />
           </button>
