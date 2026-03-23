@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, BarChart3, Users, MessageSquare, Play, Hand, AlertCircle, HelpCircle, Copy, Check, ChevronDown, MoreHorizontal, Target, Ticket, Gift, Dices, CircleDot, Coffee, Trophy, Swords, X, Gamepad2 } from 'lucide-react';
+import { ArrowLeft, BarChart3, Users, MessageSquare, Play, Hand, AlertCircle, HelpCircle, Copy, Check, ChevronDown, MoreHorizontal, Target, Ticket, Gift, Dices, CircleDot, Coffee, Trophy, Swords, X, Gamepad2, Activity, UserCircle, Eye, Timer, Award } from 'lucide-react';
 import JoinToast from '@/features/participants/components/JoinToast';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import QuestionManager from './QuestionManager';
@@ -100,6 +100,12 @@ function MobileModePicker({ open, onClose, currentMode, onSwitchMode, leaderboar
     { mode: 'breakTime', label: '쉬는 시간', icon: Coffee },
     ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
     ...(teamBattleActive ? [{ mode: 'teamBattle', label: '팀 대항전', icon: Swords }] : []),
+    { mode: 'comprehension', label: '이해도 체크', icon: Activity },
+    { mode: 'quickSurvey', label: '빠른 설문', icon: BarChart3 },
+    { mode: 'discussion', label: '그룹 토론', icon: Timer },
+    { mode: 'randomPicker', label: '발표자 뽑기', icon: UserCircle },
+    { mode: 'awards', label: '시상식', icon: Award },
+    { mode: 'focus', label: '집중!', icon: Eye },
   ];
 
   const isSpecial = modes.some(m => m.mode === currentMode);
@@ -321,7 +327,7 @@ export default function MobileAdminView({ s }) {
   const [modesOpen, setModesOpen] = useState(false);
 
   const currentMode = s.session?.currentMode;
-  const isSpecialMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'leaderboard', 'teamBattle'].includes(currentMode);
+  const isSpecialMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
 
   const onNewChatMsg = s.handleNewChatMessage;
   const handleNewChatMessage = useCallback(() => {
