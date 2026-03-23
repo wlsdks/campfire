@@ -2,12 +2,7 @@ import { useMemo } from 'react';
 import { useSession } from '@/features/session/api/useSession';
 import { useScores } from '@/features/quiz/api/useScores';
 import { computeAchievements } from '@/features/quiz/api/useAchievements';
-
-const TYPE_LABELS = {
-  choice: '객관식', ox: 'O/X', quiz: '퀴즈', wordcloud: '워드클라우드',
-  qna: 'Q&A', scale: '감정 온도계', debate: '찬반 토론',
-  ranking: '순위 맞추기', fillinblank: '빈칸 채우기',
-};
+import { TYPE_LABELS } from '@/lib/question-types';
 
 /**
  * Loads all data needed for a student's learning report.

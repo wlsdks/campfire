@@ -3,18 +3,6 @@ import { Clock } from 'lucide-react';
 import QuizResult from '@/features/quiz/components/QuizResult';
 import { getQuizReward } from '@/lib/quiz';
 
-export const TYPE_LABELS = {
-  choice: '객관식',
-  ox: 'O/X',
-  quiz: '퀴즈',
-  wordcloud: '워드클라우드',
-  qna: 'Q&A',
-  scale: '감정 온도계',
-  debate: '찬반 토론',
-  ranking: '순위 맞추기',
-  fillinblank: '빈칸 채우기',
-};
-
 /** Renders QuizResult from vote data passed by QuizVoter. */
 export function QuizResultFromVote({ question, currentVote, streak = 0 }) {
   if (!currentVote) return null;

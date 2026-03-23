@@ -24,3 +24,8 @@ export const QUESTION_TYPES = [
 export const QUESTION_TYPE_MAP = Object.fromEntries(
   QUESTION_TYPES.map((t) => [t.value, { label: t.label, icon: t.icon }])
 );
+
+/** Simple label-only map for display without icons. */
+export const TYPE_LABELS = Object.fromEntries(
+  QUESTION_TYPES.map((t) => [t.value, t.label])
+);

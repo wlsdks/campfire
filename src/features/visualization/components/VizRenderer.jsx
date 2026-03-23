@@ -14,8 +14,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import { isQuizQuestion } from '@/lib/quiz';
-
-const TYPE_LABELS = { choice: '객관식', ox: 'O/X', wordcloud: '워드클라우드', qna: 'Q&A', quiz: '퀴즈', scale: '감정 온도계', debate: '찬반 토론', ranking: '순위 맞추기', fillinblank: '빈칸 채우기' };
+import { TYPE_LABELS } from '@/lib/question-types';
 
 export default memo(function VizRenderer({ sessionId, session }) {
   const currentQId = session?.currentQuestion;

@@ -58,17 +58,8 @@ function getSortedQuestions(questions) {
     .sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
 }
 
-const QTYPE_LABELS = {
-  choice: '객관식',
-  quiz: '퀴즈',
-  ox: 'O/X',
-  wordcloud: '워드클라우드',
-  qna: 'Q&A',
-  scale: '감정 온도계',
-  debate: '찬반 토론',
-  ranking: '순위 맞추기',
-  fillinblank: '빈칸 채우기',
-};
+// Imported from question-types.js but aliased to match existing usage
+import { TYPE_LABELS as QTYPE_LABELS } from '@/lib/question-types';
 
 /**
  * Exports question-level summary CSV.
