@@ -60,10 +60,10 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
             initial={{ opacity: 0, scale: 0.6 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.15, type: 'spring', stiffness: 400, damping: 22 }}
-            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border shadow-sm ${
+            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full shadow-sm ${
               streak >= 5
-                ? 'bg-slate-900 text-white border-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:border-slate-200'
-                : 'bg-white text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700'
+                ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
+                : 'bg-white text-slate-700 dark:bg-slate-800 dark:text-slate-200'
             }`}
           >
             <motion.div
