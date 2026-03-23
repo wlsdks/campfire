@@ -64,7 +64,7 @@ test.describe('Q&A 보드', () => {
     await expect(page.getByText('Q&A 보드')).toBeVisible({ timeout: 10000 });
 
     // Should have question input
-    await expect(page.getByPlaceholder('질문을 입력하세요...')).toBeVisible();
+    await expect(page.getByPlaceholder('궁금한 점을 자유롭게 질문하세요')).toBeVisible();
   });
 
   test('질문에 좋아요 + 답변 펼치기', async ({ page }) => {
