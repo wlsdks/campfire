@@ -175,7 +175,7 @@ function MobileTabBar({ activeTab, onTabChange, hasUnreadChat }) {
 function MobileSection({ icon: Icon, title, count, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden">
+    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm overflow-hidden">
       <button onClick={() => setOpen(!open)} aria-expanded={open}
         className="w-full flex items-center justify-between px-5 py-4 active:bg-slate-50 dark:active:bg-slate-700/50 transition-colors duration-150">
         <span className="flex items-center gap-2.5 text-[16px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight">
@@ -219,8 +219,8 @@ function MobileParticipantsTab({ sessionId, onlineList, count, studentUrl }) {
   return (
     <div className="bg-slate-50 dark:bg-slate-900 min-h-full">
       {/* Hero stat */}
-      <div className="px-4 pt-4">
-        <div className="bg-white dark:bg-slate-800 rounded-2xl text-center py-6">
+      <div className="px-4 pt-5">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl text-center py-7 shadow-sm">
           <div className="flex items-center justify-center gap-2 mb-2">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
             <span className="text-[15px] text-slate-400">실시간 접속</span>
@@ -234,7 +234,7 @@ function MobileParticipantsTab({ sessionId, onlineList, count, studentUrl }) {
       </div>
 
       {/* 섹션들 — 독립 카드, 배경 대비로 영역 구분 (토스/당근 패턴) */}
-      <div className="px-4 pb-8 space-y-3">
+      <div className="px-4 pt-4 pb-8 space-y-3">
         <MobileSection icon={Hand} title="손들기" count={handCount} defaultOpen={handCount > 0}>
           {handCount === 0 ? (
             <p className="text-[15px] text-slate-400 text-center py-4">손든 학생이 없습니다</p>
