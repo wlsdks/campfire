@@ -35,7 +35,8 @@ export default memo(function FillBlankChart({ sessionId, questionId, title, corr
   const { voteList, totalVotes } = useVotes(sessionId, questionId);
 
   const { correctCount, topAnswers } = useMemo(() => {
-    const freq = {};
+    // Map: normalized → { display (first-seen casing), count }
+    const groupMap = new Map();
     let correct = 0;
     const normalizedCorrect = (correctAnswer || '').trim().toLowerCase();
 
@@ -43,19 +44,21 @@ export default memo(function FillBlankChart({ sessionId, questionId, title, corr
       const raw = (v.value || '').trim();
       if (!raw) return;
       const normalized = raw.toLowerCase();
-      // Group by display form (first seen casing wins)
-      const existing = Object.keys(freq).find((k) => k.toLowerCase() === normalized);
-      const key = existing || raw;
-      freq[key] = (freq[key] || 0) + 1;
+      const existing = groupMap.get(normalized);
+      if (existing) {
+        existing.count++;
+      } else {
+        groupMap.set(normalized, { display: raw, count: 1 });
+      }
       if (normalizedCorrect && normalized === normalizedCorrect) correct++;
     });
 
-    const sorted = Object.entries(freq)
-      .sort((a, b) => b[1] - a[1])
-      .map(([answer, count]) => ({
-        answer,
+    const sorted = Array.from(groupMap.values())
+      .sort((a, b) => b.count - a.count)
+      .map(({ display, count }) => ({
+        answer: display,
         count,
-        isCorrect: normalizedCorrect && answer.toLowerCase() === normalizedCorrect,
+        isCorrect: normalizedCorrect && display.toLowerCase() === normalizedCorrect,
       }));
 
     return { correctCount: correct, topAnswers: sorted };

@@ -1,13 +1,21 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import compression from 'vite-plugin-compression'
 import path from 'path'
 import { fileURLToPath } from 'node:url'
 
 const srcDir = fileURLToPath(new URL('./src', import.meta.url))
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [
+    react(),
+    tailwindcss(),
+    // Brotli pre-compression — ~15-25% smaller than gzip
+    compression({ algorithm: 'brotliCompress', ext: '.br', threshold: 1024 }),
+    // Gzip fallback for older clients
+    compression({ algorithm: 'gzip', ext: '.gz', threshold: 1024 }),
+  ],
   resolve: {
     alias: {
       '@': path.resolve(srcDir),
