@@ -29,6 +29,7 @@ const TeamScoreboard = lazy(() => import('@/features/teams/components/TeamScoreb
 const ClassQABoard = lazy(() => import('@/features/class-questions/components/ClassQABoard'));
 const AwardsCeremony = lazy(() => import('@/features/assignments/components/AwardsCeremony'));
 const RandomPicker = lazy(() => import('@/features/games/components/RandomPicker'));
+const ComprehensionPresenter = lazy(() => import('@/features/session/components/ComprehensionCheck').then(m => ({ default: m.ComprehensionPresenter })));
 
 const GameFallback = () => (
   <div className="flex items-center justify-center min-h-[300px]">
@@ -75,7 +76,7 @@ export default function LivePage() {
   const onSlotMachineResult = useCallback((names) => handleGameResult(names, 'slotMachine'), [handleGameResult]);
   const onPlinkoResult = useCallback((names) => handleGameResult(names, 'plinko'), [handleGameResult]);
 
-  const isGameMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'focus'].includes(currentMode);
+  const isGameMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'focus'].includes(currentMode);
   const isEnded = session?.status === 'ended';
   const hasActiveQuestion = ['poll', 'quiz'].includes(currentMode) && currentQId && question;
 
@@ -157,6 +158,7 @@ export default function LivePage() {
                   {currentMode === 'qaBoard' && <div className="w-full max-w-4xl mx-auto"><ClassQABoard sessionId={sessionId} showInput={false} /></div>}
                   {currentMode === 'awards' && <AwardsCeremony assignmentId={session?.activeAssignmentId} readOnly />}
                   {currentMode === 'randomPicker' && <RandomPicker participants={onlineList} />}
+                  {currentMode === 'comprehension' && <ComprehensionPresenter sessionId={sessionId} />}
                 </Suspense>
               </motion.div>
             ) : hasActiveQuestion ? (
