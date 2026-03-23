@@ -131,11 +131,11 @@ export function useAdminSession() {
     try {
       await update(ref(db, `sessions/${sessionId}`), mode === 'leaderboard'
         ? { currentMode: mode } : { currentMode: mode, currentQuestion: null });
-    } catch {}
+    } catch { /* silent */ }
   }, [sessionId, effectiveReadOnly]);
 
   const handleStartSession = useCallback(async () => {
-    try { await update(ref(db, `sessions/${sessionId}`), { status: 'active', startedAt: serverTimestamp() }); } catch {}
+    try { await update(ref(db, `sessions/${sessionId}`), { status: 'active', startedAt: serverTimestamp() }); } catch { /* silent */ }
   }, [sessionId]);
 
   const handleEndSession = useCallback(async () => {
@@ -147,13 +147,13 @@ export function useAdminSession() {
         currentQuestion: null,
         reviewingUntil,
       });
-    } catch {}
+    } catch { /* silent */ }
   }, [sessionId]);
 
   const handleFullEndSession = useCallback(async () => {
     try {
       await update(ref(db, `sessions/${sessionId}`), { status: 'ended' });
-    } catch {}
+    } catch { /* silent */ }
   }, [sessionId]);
 
   const handleCenterFormSubmit = useCallback(async (formData) => {
@@ -168,7 +168,7 @@ export function useAdminSession() {
       try {
         if (qId === '__summary__') { await update(ref(db, `sessions/${sessionId}`), { currentQuestion: null, currentMode: 'waiting' }); }
         else { await update(ref(db, `sessions/${sessionId}`), { currentQuestion: qId, currentMode: 'poll' }); }
-      } catch {}
+      } catch { /* silent */ }
     };
   }, [effectiveReadOnly, sessionId]);
 

@@ -106,5 +106,5 @@ export function getLastSeen(sessionId, channel) {
 export function saveLastSeen(sessionId, channel, count) {
   try {
     localStorage.setItem(`pick_${channel}_seen_${sessionId}`, String(count));
-  } catch {}
+  } catch { /* silent */ }
 }
