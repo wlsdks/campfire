@@ -18,6 +18,7 @@ const PrizeDraw = lazy(() => import('@/features/games/components/PrizeDraw'));
 const SlotMachine = lazy(() => import('@/features/games/components/SlotMachine'));
 const Plinko = lazy(() => import('@/features/games/components/Plinko'));
 const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
+const ClassQABoard = lazy(() => import('@/features/class-questions/components/ClassQABoard'));
 
 function PresentEmptyState({ sessionId, studentUrl, count }) {
   return (
@@ -157,6 +158,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     if (currentMode === 'breakTime') return <BreakTimer />;
     if (currentMode === 'leaderboard') return <div className="w-full max-w-2xl [&_.max-w-xl]:max-w-2xl"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" /></div>;
     if (currentMode === 'teamBattle') return <div className="w-full max-w-2xl [&_.max-w-lg]:max-w-2xl"><TeamScoreboard teamScores={teamScores || []} /></div>;
+    if (currentMode === 'qaBoard') return <div className="w-full max-w-4xl"><ClassQABoard sessionId={sessionId} showInput={false} /></div>;
     return null;
   })();
 

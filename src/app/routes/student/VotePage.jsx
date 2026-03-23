@@ -14,6 +14,7 @@ import StudentBottomBar from './StudentBottomBar';
 
 const LeaderboardPage = lazy(() => import('./LeaderboardPage'));
 const SessionEndedPage = lazy(() => import('./SessionEndedPage'));
+const ClassQABoard = lazy(() => import('@/features/class-questions/components/ClassQABoard'));
 import { TYPE_LABELS, QuizResultFromVote, TimerExpiredOverlay } from './VoteHelpers';
 import Badge from '@/components/ui/Badge';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
@@ -129,6 +130,17 @@ export default memo(function VotePage({ sessionId }) {
   }
 
   if (currentMode === 'leaderboard') return <Suspense fallback={<SuspenseFallback />}><LeaderboardPage sessionId={sessionId} /></Suspense>;
+  if (currentMode === 'qaBoard') {
+    return (
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pb-32 pt-16">
+        <StudentHeader sessionId={sessionId} />
+        <Suspense fallback={<SuspenseFallback />}>
+          <ClassQABoard sessionId={sessionId} showInput />
+        </Suspense>
+        <StudentBottomBar sessionId={sessionId} />
+      </div>
+    );
+  }
   if (!['poll', 'quiz'].includes(currentMode) || !currentQId) {
     return <WaitingPage sessionId={sessionId} pendingEvent={session?.pendingEvent || null} courseName={session?.courseName} currentMode={currentMode} />;
   }

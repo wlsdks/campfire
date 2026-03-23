@@ -36,6 +36,12 @@ export function useClassQuestions(sessionId) {
       id,
       ...data,
       upvoteCount: data.upvotes ? Object.keys(data.upvotes).length : 0,
+      answerList: data.answers
+        ? Object.entries(data.answers)
+            .map(([aId, a]) => ({ id: aId, ...a, upvoteCount: a.upvotes ? Object.keys(a.upvotes).length : 0 }))
+            .sort((a, b) => b.upvoteCount - a.upvoteCount || (a.timestamp || 0) - (b.timestamp || 0))
+        : [],
+      answerCount: data.answers ? Object.keys(data.answers).length : 0,
     }))
     .sort((a, b) => {
       if (a.answered !== b.answered) return a.answered ? 1 : -1;
@@ -118,6 +124,50 @@ export function useClassQuestions(sessionId) {
     [sessionId],
   );
 
+  const postAnswer = useCallback(
+    async (questionId, text, nickname, participantId) => {
+      const trimmed = text?.trim();
+      if (!sessionId || !questionId || !trimmed) return false;
+      try {
+        await push(ref(db, `sessions/${sessionId}/classQuestions/${questionId}/answers`), {
+          text: trimmed,
+          nickname: nickname || '익명',
+          participantId: participantId || '',
+          timestamp: serverTimestamp(),
+        });
+        return true;
+      } catch (err) {
+        logger.error('Post answer failed:', err);
+        return false;
+      }
+    },
+    [sessionId],
+  );
+
+  const toggleAnswerUpvote = useCallback(
+    async (questionId, answerId, participantId) => {
+      if (!sessionId || !questionId || !answerId || !participantId) return;
+      const upRef = ref(
+        db,
+        `sessions/${sessionId}/classQuestions/${questionId}/answers/${answerId}/upvotes/${participantId}`,
+      );
+      const current = raw[questionId]?.answers?.[answerId]?.upvotes?.[participantId];
+      try {
+        if (current) {
+          await remove(upRef);
+        } else {
+          await update(
+            ref(db, `sessions/${sessionId}/classQuestions/${questionId}/answers/${answerId}/upvotes`),
+            { [participantId]: true },
+          );
+        }
+      } catch (err) {
+        logger.error('Toggle answer upvote failed:', err);
+      }
+    },
+    [sessionId, raw],
+  );
+
   return {
     questions,
     unansweredCount,
@@ -125,6 +175,8 @@ export function useClassQuestions(sessionId) {
     toggleUpvote,
     markAnswered,
     dismissQuestion,
+    postAnswer,
+    toggleAnswerUpvote,
     loading,
     canPost,
   };
