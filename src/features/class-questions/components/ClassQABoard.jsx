@@ -183,45 +183,43 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25, delay: index * 0.03 }}
-      className={`bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transition-opacity duration-300 ${
+      className={`bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden transition-opacity duration-300 ${
         q.answered ? 'opacity-60' : ''
       }`}
     >
-      <div className="flex">
-        {/* Upvote column — big number, always visible */}
-        <button
-          onClick={() => onUpvote(q.id, pid)}
-          className="flex flex-col items-center justify-center gap-1 shrink-0 w-[56px] hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-        >
-          <ThumbsUp size={15} className={`transition-colors ${hasUpvoted ? 'text-slate-900 dark:text-slate-100 fill-current' : 'text-slate-400 dark:text-slate-500'}`} />
-          <span className={`text-base font-bold tabular-nums ${
-            q.upvoteCount > 0
-              ? 'text-slate-900 dark:text-slate-100'
-              : 'text-slate-400 dark:text-slate-500'
-          }`}>{q.upvoteCount}</span>
-        </button>
-
-        {/* Content column */}
-        <div className="flex-1 min-w-0 p-4 space-y-2">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5 min-w-0">
-              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 truncate">
-                {q.nickname}
-              </span>
-              {isOwn && <Badge variant="neutral">나</Badge>}
-              {q.answered && <Badge variant="neutral">답변 완료</Badge>}
-            </div>
-            <span className="text-[11px] text-slate-400 shrink-0">{timeAgo(q.timestamp)}</span>
+      <div className="p-4 space-y-2.5">
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 truncate">
+              {q.nickname}
+            </span>
+            {isOwn && <Badge variant="neutral">나</Badge>}
+            {q.answered && <Badge variant="neutral">답변 완료</Badge>}
           </div>
+          <span className="text-[11px] text-slate-400 shrink-0">{timeAgo(q.timestamp)}</span>
+        </div>
 
-          <p className="text-sm md:text-base text-slate-900 dark:text-slate-100 leading-snug line-clamp-2">{q.text}</p>
+        <p className="text-sm md:text-base text-slate-900 dark:text-slate-100 leading-snug line-clamp-2">{q.text}</p>
 
-          {/* Answer toggle */}
+        {/* Actions row */}
+        <div className="flex items-center gap-4 pt-0.5">
+          <button
+            onClick={() => onUpvote(q.id, pid)}
+            className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
+              hasUpvoted
+                ? 'text-slate-900 dark:text-slate-100'
+                : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
+            }`}
+          >
+            <ThumbsUp size={15} className={hasUpvoted ? 'fill-current' : ''} />
+            <span className="tabular-nums font-bold">{q.upvoteCount}</span>
+          </button>
+
           <button
             onClick={() => setExpanded(!expanded)}
-            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+            className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
           >
-            <MessageSquare size={13} />
+            <MessageSquare size={14} />
             <span>{q.answerCount > 0 ? `답변 ${q.answerCount}개` : '답변하기'}</span>
             {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
           </button>
