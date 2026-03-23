@@ -163,10 +163,12 @@ export default function ClassQABoard({ sessionId, showInput = true }) {
 
 function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswer, onAnswerUpvote }) {
   const [expanded, setExpanded] = useState(false);
+  const [textExpanded, setTextExpanded] = useState(false);
   const [answerText, setAnswerText] = useState('');
   const [posting, setPosting] = useState(false);
   const isOwn = q.participantId === pid;
   const hasUpvoted = q.upvotes?.[pid];
+  const isLong = q.text.length > 60;
 
   async function handlePostAnswer() {
     if (!answerText.trim() || posting) return;
@@ -218,7 +220,19 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
             <span className="text-[11px] text-slate-400 shrink-0">{timeAgo(q.timestamp)}</span>
           </div>
 
-          <p className="text-base md:text-lg text-slate-900 dark:text-slate-100 leading-snug">{q.text}</p>
+          <p
+            className={`text-base md:text-lg text-slate-900 dark:text-slate-100 leading-snug ${!textExpanded && isLong ? 'line-clamp-2' : ''}`}
+            onClick={isLong ? () => setTextExpanded(!textExpanded) : undefined}
+            role={isLong ? 'button' : undefined}
+            style={isLong ? { cursor: 'pointer' } : undefined}
+          >
+            {q.text}
+          </p>
+          {isLong && !textExpanded && (
+            <button onClick={() => setTextExpanded(true)} className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+              더보기
+            </button>
+          )}
 
           {/* Answer toggle */}
           <button
