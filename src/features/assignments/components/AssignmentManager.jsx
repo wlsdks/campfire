@@ -25,11 +25,13 @@ function AssignmentCard({ assignment, onClick }) {
     : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300';
 
   return (
-    <motion.button
+    <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       onClick={onClick}
-      className="w-full bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 text-left active:scale-[0.98] transition-transform"
+      role="button"
+      tabIndex={0}
+      className="w-full bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 text-left active:scale-[0.98] transition-transform cursor-pointer"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0 space-y-1">
@@ -52,7 +54,7 @@ function AssignmentCard({ assignment, onClick }) {
           <ChevronRight size={16} className="text-slate-300" />
         </div>
       </div>
-    </motion.button>
+    </motion.div>
   );
 }
 
