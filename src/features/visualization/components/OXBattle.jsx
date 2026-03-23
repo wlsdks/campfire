@@ -18,7 +18,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
     <div className="w-full max-w-xl mx-auto space-y-6">
       {/* Split display */}
       <div className="flex items-center justify-between text-center">
-        <div className={`flex-1 space-y-2 py-4 rounded-xl transition-all ${oCorrect ? 'ring-2 ring-indigo-500/30 bg-slate-50/50 dark:bg-slate-800/50' : ''}`}>
+        <div className={`flex-1 space-y-2 py-4 rounded-xl transition-all duration-300 ${oCorrect ? 'ring-2 ring-indigo-500/30 bg-slate-50/50 dark:bg-slate-800/50' : revealed && !oCorrect ? 'opacity-50' : ''}`}>
           <div className="relative inline-block">
             <motion.div
               key={oCount}
@@ -34,8 +34,9 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
             </motion.div>
             {oCorrect && (
               <motion.span
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
+                initial={{ scale: 0, rotate: -45 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 18, delay: 0.1 }}
                 className="absolute -top-1 -right-3 flex items-center justify-center w-6 h-6 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900"
               >
                 <Check size={14} strokeWidth={3} />
@@ -57,7 +58,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
           <div className="text-slate-200 dark:text-slate-700 text-2xl font-bold">VS</div>
         </div>
 
-        <div className={`flex-1 space-y-2 py-4 rounded-xl transition-all ${xCorrect ? 'bg-slate-100/80 dark:bg-slate-700/50 ring-2 ring-slate-400/30 dark:ring-slate-500/30' : ''}`}>
+        <div className={`flex-1 space-y-2 py-4 rounded-xl transition-all duration-300 ${xCorrect ? 'bg-slate-100/80 dark:bg-slate-700/50 ring-2 ring-slate-400/30 dark:ring-slate-500/30' : revealed && !xCorrect ? 'opacity-50' : ''}`}>
           <div className="relative inline-block">
             <motion.div
               key={xCount}
@@ -73,8 +74,9 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
             </motion.div>
             {xCorrect && (
               <motion.span
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
+                initial={{ scale: 0, rotate: -45 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 18, delay: 0.1 }}
                 className="absolute -top-1 -right-3 flex items-center justify-center w-6 h-6 rounded-full bg-slate-700 dark:bg-slate-300 text-white dark:text-slate-900"
               >
                 <Check size={14} strokeWidth={3} />

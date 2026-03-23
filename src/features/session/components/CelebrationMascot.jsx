@@ -9,9 +9,14 @@ export default function CelebrationMascot() {
       viewBox="0 0 120 120"
       fill="none"
       aria-hidden="true"
-      initial={{ opacity: 0, scale: 0.7 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
+      initial={{ opacity: 0, scale: 0.5, rotate: -8 }}
+      animate={{ opacity: 1, scale: 1, rotate: 0, y: [0, -6, 0] }}
+      transition={{
+        opacity: { duration: 0.3 },
+        scale: { type: 'spring', stiffness: 400, damping: 18, delay: 0.1 },
+        rotate: { type: 'spring', stiffness: 300, damping: 20, delay: 0.1 },
+        y: { duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 },
+      }}
     >
       {/* Mane — fluffy bumps */}
       <circle cx="60" cy="30" r="16" fill="#F59E0B" />

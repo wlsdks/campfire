@@ -10,6 +10,7 @@ const SIZES = {
 /**
  * Pick mascot — minimal cute lion with fluffy mane.
  * Round face, cloud-like mane bumps, big eyes, tiny smile.
+ * Now with breathing motion, mood-based expressions, and subtle head tilt.
  *
  * @param {'xs' | 'sm' | 'md' | 'lg'} size
  * @param {string} mood — 'happy' | 'waiting' | 'thinking'
@@ -20,7 +21,41 @@ export default function PickMascot({ size = 'md', mood = 'happy' }) {
   const mouthPath =
     mood === 'thinking'
       ? 'M55 72 L65 72'
-      : 'M53 71 Q60 77 67 71';
+      : mood === 'waiting'
+        ? 'M55 71 Q60 74 65 71'
+        : 'M53 71 Q60 77 67 71';
+
+  // Breathing: subtle scale pulse
+  const breathe = {
+    scale: [1, 1.015, 1],
+  };
+  const breatheTiming = {
+    duration: 3.5,
+    repeat: Infinity,
+    ease: 'easeInOut',
+  };
+
+  // Bob: gentle float
+  const bob = {
+    y: [0, -4, 0],
+  };
+  const bobTiming = {
+    duration: 3.5,
+    repeat: Infinity,
+    ease: 'easeInOut',
+  };
+
+  // Subtle head tilt for waiting/thinking
+  const tilt = mood === 'waiting'
+    ? { rotate: [0, -2, 0, 2, 0] }
+    : mood === 'thinking'
+      ? { rotate: [0, -3, 0] }
+      : {};
+  const tiltTiming = {
+    duration: mood === 'thinking' ? 4 : 6,
+    repeat: Infinity,
+    ease: 'easeInOut',
+  };
 
   return (
     <motion.svg
@@ -29,8 +64,12 @@ export default function PickMascot({ size = 'md', mood = 'happy' }) {
       viewBox="0 0 120 120"
       fill="none"
       aria-hidden="true"
-      animate={{ y: [0, -4, 0] }}
-      transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+      animate={{ ...bob, ...breathe, ...tilt }}
+      transition={{
+        y: bobTiming,
+        scale: breatheTiming,
+        rotate: tiltTiming,
+      }}
     >
       {/* Mane — fluffy bumps around head */}
       <circle cx="60" cy="30" r="16" fill="#F59E0B" />
@@ -85,18 +124,29 @@ export default function PickMascot({ size = 'md', mood = 'happy' }) {
       {/* Nose */}
       <ellipse cx="60" cy="66" rx="3.5" ry="2.5" fill="#D97706" />
 
-      {/* Mouth */}
-      <path
+      {/* Mouth — mood-dependent */}
+      <motion.path
         d={mouthPath}
         stroke="#D97706"
         strokeWidth="2"
         strokeLinecap="round"
         fill="none"
+        initial={false}
+        animate={{ d: mouthPath }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
       />
 
-      {/* Cheeks — subtle blush */}
-      <circle cx="39" cy="66" r="5" fill="#FBBF24" opacity="0.4" />
-      <circle cx="81" cy="66" r="5" fill="#FBBF24" opacity="0.4" />
+      {/* Cheeks — subtle blush, pulses gently */}
+      <motion.circle
+        cx="39" cy="66" r="5" fill="#FBBF24"
+        animate={{ opacity: [0.35, 0.5, 0.35] }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.circle
+        cx="81" cy="66" r="5" fill="#FBBF24"
+        animate={{ opacity: [0.35, 0.5, 0.35] }}
+        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+      />
     </motion.svg>
   );
 }

@@ -23,9 +23,9 @@ export default memo(function SpeedQuizCombo({ streak = 0 }) {
         >
           <motion.div
             key={streak}
-            initial={{ scale: 1.15 }}
+            initial={{ scale: 1.35 }}
             animate={{ scale: 1 }}
-            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 22 }}
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border shadow-sm ${
               combo.level >= 3
                 ? 'bg-slate-900 text-white border-slate-800 dark:bg-slate-100 dark:text-slate-900 dark:border-slate-200'
@@ -36,13 +36,16 @@ export default memo(function SpeedQuizCombo({ streak = 0 }) {
           >
             {/* Fire icon */}
             <motion.div
-              animate={combo.level >= 2 ? {
+              animate={combo.level >= 3 ? {
+                rotate: [-6, 6, -6],
+                scale: [1, 1.2, 1],
+              } : combo.level >= 2 ? {
                 rotate: [-3, 3, -3],
                 scale: [1, 1.1, 1],
               } : {}}
               transition={combo.level >= 2 ? {
                 repeat: Infinity,
-                duration: 0.6,
+                duration: combo.level >= 3 ? 0.35 : 0.6,
                 ease: 'easeInOut',
               } : {}}
             >

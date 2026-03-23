@@ -51,14 +51,19 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08, duration: 0.3, ease: 'easeOut' }}
-            className={`space-y-1.5 ${isCorrect ? 'rounded-lg ring-2 ring-indigo-500/30 p-3 -mx-3 bg-slate-50/50 dark:bg-slate-800/50' : ''}`}
+            className={`space-y-1.5 transition-opacity duration-300 ${isCorrect ? 'rounded-lg ring-2 ring-indigo-500/30 p-3 -mx-3 bg-slate-50/50 dark:bg-slate-800/50' : isWrong ? 'opacity-60' : ''}`}
           >
             <div className="flex justify-between items-baseline gap-2">
               <div className="flex items-center gap-2 min-w-0 flex-1">
                 {isCorrect && (
-                  <span className="flex items-center justify-center w-5 h-5 rounded-full bg-indigo-600 text-white shrink-0">
+                  <motion.span
+                    initial={{ scale: 0, rotate: -45 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 20, delay: 0.15 }}
+                    className="flex items-center justify-center w-5 h-5 rounded-full bg-indigo-600 text-white shrink-0"
+                  >
                     <Check size={12} strokeWidth={3} />
-                  </span>
+                  </motion.span>
                 )}
                 <span className={`font-medium text-base truncate ${isCorrect ? 'text-indigo-700 dark:text-indigo-400 font-semibold' : isWrong ? 'text-slate-400' : 'text-slate-700 dark:text-slate-200'}`}>
                   {option}

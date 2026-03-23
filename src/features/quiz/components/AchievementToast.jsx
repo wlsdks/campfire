@@ -15,6 +15,7 @@ const DISPLAY_DURATION = 3500;
 /**
  * AchievementToast — shows a small toast when a new achievement is earned.
  * Tracks previously shown achievements and only shows new ones.
+ * Now with icon spin animation and timer progress bar.
  *
  * @param {{ achievements: Array<{id, label, description, icon}> }} props
  */
@@ -68,14 +69,32 @@ export default function AchievementToast({ achievements }) {
           transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
         >
-          <div className="flex items-center gap-3 bg-slate-900 text-white pl-3 pr-5 py-2.5 rounded-xl shadow-lg">
-            <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
-              <Icon size={16} className="text-white" />
+          <div className="relative overflow-hidden bg-slate-900 text-white rounded-xl shadow-lg">
+            <div className="flex items-center gap-3 pl-3 pr-5 py-2.5">
+              {/* Animated icon */}
+              <motion.div
+                className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0"
+                initial={{ rotate: -90, scale: 0.5 }}
+                animate={{ rotate: 0, scale: [1, 1.15, 1] }}
+                transition={{
+                  rotate: { type: 'spring', stiffness: 300, damping: 20 },
+                  scale: { duration: 0.6, delay: 0.2, times: [0, 0.5, 1] },
+                }}
+              >
+                <Icon size={16} className="text-white" />
+              </motion.div>
+              <div className="min-w-0">
+                <p className="text-sm font-bold leading-tight">{visible.label}</p>
+                <p className="text-xs text-slate-300 leading-tight mt-0.5">{visible.description}</p>
+              </div>
             </div>
-            <div className="min-w-0">
-              <p className="text-sm font-bold leading-tight">{visible.label}</p>
-              <p className="text-xs text-slate-300 leading-tight mt-0.5">{visible.description}</p>
-            </div>
+            {/* Timer progress bar */}
+            <motion.div
+              className="absolute bottom-0 left-0 h-[2px] bg-white/25"
+              initial={{ width: '100%' }}
+              animate={{ width: '0%' }}
+              transition={{ duration: DISPLAY_DURATION / 1000, ease: 'linear' }}
+            />
           </div>
         </motion.div>
       )}
