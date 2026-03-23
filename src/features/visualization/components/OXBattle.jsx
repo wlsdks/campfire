@@ -36,7 +36,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
               <motion.span
                 initial={{ scale: 0, rotate: -45 }}
                 animate={{ scale: 1, rotate: 0 }}
-                transition={{ type: 'spring', stiffness: 500, damping: 18, delay: 0.1 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 30, delay: 0.1 }}
                 className="absolute -top-1 -right-3 flex items-center justify-center w-6 h-6 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900"
               >
                 <Check size={14} strokeWidth={3} />
@@ -76,7 +76,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
               <motion.span
                 initial={{ scale: 0, rotate: -45 }}
                 animate={{ scale: 1, rotate: 0 }}
-                transition={{ type: 'spring', stiffness: 500, damping: 18, delay: 0.1 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 30, delay: 0.1 }}
                 className="absolute -top-1 -right-3 flex items-center justify-center w-6 h-6 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900"
               >
                 <Check size={14} strokeWidth={3} />

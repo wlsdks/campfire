@@ -59,8 +59,8 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
                   <motion.span
                     initial={{ scale: 0, rotate: -45 }}
                     animate={{ scale: 1, rotate: 0 }}
-                    transition={{ type: 'spring', stiffness: 500, damping: 20, delay: 0.15 }}
-                    className="flex items-center justify-center w-5 h-5 rounded-full bg-indigo-600 text-white shrink-0"
+                    transition={{ type: 'spring', stiffness: 500, damping: 30, delay: 0.15 }}
+                    className="flex items-center justify-center w-5 h-5 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shrink-0"
                   >
                     <Check size={12} strokeWidth={3} />
                   </motion.span>

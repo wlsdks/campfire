@@ -40,7 +40,7 @@ export default function SessionEndedPage({ sessionId, session, reviewing = false
       <motion.div
         initial={{ opacity: 0, y: 24, scale: 0.96 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ type: 'spring', stiffness: 260, damping: 24 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         className="w-full"
       >
         <SessionSummaryCard session={session} sessionId={sessionId} reviewing={reviewing} />

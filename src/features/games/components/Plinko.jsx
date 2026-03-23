@@ -65,9 +65,12 @@ export default function Plinko({ participants, onResult }) {
   const mountedRef = useRef(true);
   const timersRef = useRef([]);
 
-  useEffect(() => () => {
-    mountedRef.current = false;
-    timersRef.current.forEach(clearTimeout);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      timersRef.current.forEach(clearTimeout);
+    };
   }, []);
 
   const names = useMemo(() => participants.map(p => p.nickname), [participants]);
@@ -187,9 +190,8 @@ export default function Plinko({ participants, onResult }) {
               animate={{ cx: ballPos.x, cy: ballPos.y, opacity: 1 }}
               transition={{
                 type: 'spring',
-                stiffness: 180,
-                damping: 12,
-                mass: 0.8,
+                stiffness: 200,
+                damping: 20,
               }}
             />
           ) : !dropping && !winner ? (

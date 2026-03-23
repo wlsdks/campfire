@@ -27,7 +27,7 @@ export default memo(function BottomSheet({ open, onClose, ariaLabel, children })
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             drag="y"
             dragConstraints={{ top: 0 }}
             dragElastic={0.15}
@@ -36,7 +36,7 @@ export default memo(function BottomSheet({ open, onClose, ariaLabel, children })
             }}
             role="dialog"
             aria-label={ariaLabel}
-            className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 rounded-t-2xl shadow-xl z-50 max-h-[85dvh] flex flex-col overflow-hidden"
+            className="fixed bottom-0 left-0 right-0 mx-auto max-w-lg bg-white dark:bg-slate-800 rounded-t-2xl shadow-xl z-50 max-h-[85dvh] flex flex-col overflow-hidden"
             style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
           >
             {/* Drag handle */}
