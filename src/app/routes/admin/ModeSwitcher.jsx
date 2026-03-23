@@ -1,6 +1,6 @@
 import { memo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Target, Ticket, Trophy, Swords, Gift, Dices, Coffee, X, ChevronDown, CircleDot, MessageSquare, Zap, Award, Eye, UserCircle, Activity, BarChart3 } from 'lucide-react';
+import { Target, Ticket, Trophy, Swords, Gift, Dices, Coffee, X, ChevronDown, CircleDot, MessageSquare, Zap, Award, Eye, UserCircle, Activity, BarChart3, Timer } from 'lucide-react';
 
 export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTickets, leaderboard, modeOpen, onToggle, onSwitchMode, teamBattleActive = false }) {
   const containerRef = useRef(null);
@@ -28,6 +28,7 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTic
     { mode: 'awards', label: '시상식', icon: Award },
     { mode: 'comprehension', label: '이해도 체크', icon: Activity },
     { mode: 'quickSurvey', label: '빠른 설문', icon: BarChart3 },
+    { mode: 'discussion', label: '그룹 토론', icon: Timer },
     { mode: 'randomPicker', label: '발표자 뽑기', icon: UserCircle },
     { mode: 'focus', label: '집중!', icon: Eye },
   ];

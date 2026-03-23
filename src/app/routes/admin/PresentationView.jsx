@@ -24,6 +24,7 @@ const AwardsCeremony = lazy(() => import('@/features/assignments/components/Awar
 const RandomPicker = lazy(() => import('@/features/games/components/RandomPicker'));
 const ComprehensionPresenter = lazy(() => import('@/features/session/components/ComprehensionCheck').then(m => ({ default: m.ComprehensionPresenter })));
 const SurveyPresenter = lazy(() => import('@/features/session/components/QuickSurvey').then(m => ({ default: m.SurveyPresenter })));
+const DiscussionPresenter = lazy(() => import('@/features/session/components/GroupDiscussion').then(m => ({ default: m.DiscussionPresenter })));
 
 function PresentEmptyState({ sessionId, studentUrl, count }) {
   return (
@@ -139,7 +140,7 @@ function getModeVariants(mode) {
   if (mode === 'leaderboard') {
     return { initial: { opacity: 0, y: -30 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 30 } };
   }
-  if (['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'teamBattle', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'focus'].includes(mode)) {
+  if (['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'teamBattle', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(mode)) {
     return { initial: { opacity: 0, scale: 0.88 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 1.06 } };
   }
   if (['poll', 'quiz'].includes(mode)) {
@@ -225,6 +226,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     if (currentMode === 'randomPicker') return <RandomPicker participants={onlineList} />;
     if (currentMode === 'comprehension') return <ComprehensionPresenter sessionId={sessionId} />;
     if (currentMode === 'quickSurvey') return <SurveyPresenter sessionId={sessionId} />;
+    if (currentMode === 'discussion') return <DiscussionPresenter sessionId={sessionId} />;
     if (currentMode === 'focus') return (
       <div className="flex flex-col items-center justify-center gap-6 text-center">
         <Eye size={48} className="text-white/60" />
