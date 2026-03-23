@@ -31,7 +31,7 @@ function AssignmentCard({ assignment, onClick }) {
       onClick={onClick}
       role="button"
       tabIndex={0}
-      className="w-full bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 text-left active:scale-[0.98] transition-transform cursor-pointer"
+      className="w-full bg-slate-50 dark:bg-slate-800 rounded-xl p-4 text-left active:scale-[0.98] transition-transform cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0 space-y-1">
@@ -88,7 +88,7 @@ export default function AssignmentManager({ courseName }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 pt-2 mt-4 border-t border-slate-200 dark:border-slate-700">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">과제</h3>
         <Button onClick={() => setShowForm(!showForm)} variant={showForm ? 'ghost' : 'primary'} size="sm">
