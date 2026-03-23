@@ -433,6 +433,10 @@ export default function MobileAdminView({ s }) {
               포인트 · 티켓 초기화
             </button>
           )}
+          <ModeSwitcher currentMode={currentMode} isSpecialMode={isSpecialMode} totalTickets={s.totalTickets}
+            leaderboard={s.leaderboard} modeOpen={s.modeOpen} onToggle={s.handleModeToggle}
+            onSwitchMode={(mode) => { s.switchMode(mode); setSettingsOpen(false); }}
+            teamBattleActive={s.teamBattleActive} />
           <TeamBattleControl
             isActive={s.teamBattleActive}
             teamCount={s.teamBattleCount}
@@ -440,10 +444,6 @@ export default function MobileAdminView({ s }) {
             onStart={(count) => { s.startTeamBattle(s.onlineList.map((p) => p.id), count); setSettingsOpen(false); }}
             onEnd={() => { s.endTeamBattle(); setSettingsOpen(false); }}
           />
-          <ModeSwitcher currentMode={currentMode} isSpecialMode={isSpecialMode} totalTickets={s.totalTickets}
-            leaderboard={s.leaderboard} modeOpen={s.modeOpen} onToggle={s.handleModeToggle}
-            onSwitchMode={(mode) => { s.switchMode(mode); setSettingsOpen(false); }}
-            teamBattleActive={s.teamBattleActive} />
         </div>
       </BottomSheet>
 

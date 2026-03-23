@@ -83,6 +83,9 @@ export default function AdminPage() {
       />
       {!s.effectiveReadOnly && (
         <>
+          <ModeSwitcher currentMode={currentMode} isSpecialMode={isSpecialMode} totalTickets={s.totalTickets}
+            leaderboard={s.leaderboard} modeOpen={s.modeOpen} onToggle={s.handleModeToggle} onSwitchMode={s.switchMode}
+            teamBattleActive={s.teamBattleActive} />
           <TeamBattleControl
             isActive={s.teamBattleActive}
             teamCount={s.teamBattleCount}
@@ -90,9 +93,6 @@ export default function AdminPage() {
             onStart={(count) => s.startTeamBattle(s.onlineList.map((p) => p.id), count)}
             onEnd={s.endTeamBattle}
           />
-          <ModeSwitcher currentMode={currentMode} isSpecialMode={isSpecialMode} totalTickets={s.totalTickets}
-            leaderboard={s.leaderboard} modeOpen={s.modeOpen} onToggle={s.handleModeToggle} onSwitchMode={s.switchMode}
-            teamBattleActive={s.teamBattleActive} />
         </>
       )}
     </>
