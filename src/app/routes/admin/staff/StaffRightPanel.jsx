@@ -108,7 +108,7 @@ function UrgentQuestionSection({ sessionId }) {
               }`}
             >
               <p className="text-slate-700 dark:text-slate-200 leading-relaxed">{q.text}</p>
-              <span className="text-slate-400 text-xs mt-1 block">익명</span>
+              <span className="text-slate-400 text-xs mt-1 block">{q.anonymous === false && q.nickname ? q.nickname : '익명'}</span>
             </div>
           ))}
         </div>

@@ -64,7 +64,7 @@ export default function BreakTimer() {
       <div className="flex flex-col items-center gap-8" onClick={e => e.stopPropagation()}>
         <BreakMascot size={120} />
         <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">쉬는 시간</h3>
-        <div className="grid grid-cols-4 gap-3 w-full max-w-md">
+        <div className="flex gap-3">
           {PRESETS.map((p, i) => (
             <motion.button
               key={p.seconds}
@@ -72,8 +72,9 @@ export default function BreakTimer() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25, delay: i * 0.05 }}
               whileTap={{ scale: 0.93 }}
+              whileHover={{ y: -2 }}
               onClick={() => start(p.seconds)}
-              className="py-5 rounded-2xl bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 font-bold text-xl tracking-tight active:bg-slate-50 dark:active:bg-slate-700 transition-colors duration-150 shadow-sm"
+              className="px-6 py-3 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold text-base tracking-tight hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150"
             >
               {p.label}
             </motion.button>

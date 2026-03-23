@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, QrCode, X, Copy, Check } from 'lucide-react';
+import { Users, QrCode, X, Copy, Check, Swords } from 'lucide-react';
+import Button from '@/components/ui/Button';
 import QRCode from '@/components/ui/QRCode';
 import VizRenderer from '@/features/visualization/components/VizRenderer';
 import JoinToast from '@/features/participants/components/JoinToast';
@@ -143,7 +144,52 @@ function getModeVariants(mode) {
   return { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } };
 }
 
-function MainContent({ currentMode, sessionId, session, onlineList, leaderboard, drawParticipants, presentMode, studentUrl, count, teamScores, scores, onGameResult }) {
+function TeamBattleSetup({ participantCount, onStart }) {
+  const [selectedCount, setSelectedCount] = useState(2);
+  const canStart = participantCount >= 4;
+
+  return (
+    <div className="flex flex-col items-center gap-6 w-full max-w-md mx-auto" onClick={e => e.stopPropagation()}>
+      <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+        <Swords size={28} className="text-slate-400" />
+      </div>
+      <div className="text-center space-y-1">
+        <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">팀 대항전</h3>
+        <p className="text-slate-400 text-sm">참여자를 팀으로 나누고 퀴즈 점수를 경쟁합니다</p>
+      </div>
+      <div className="w-full space-y-4">
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-slate-500 dark:text-slate-400">팀 수</label>
+          <div className="flex gap-3">
+            {[2, 3, 4].map((n) => (
+              <button
+                key={n}
+                onClick={() => setSelectedCount(n)}
+                className={`flex-1 py-3 rounded-xl text-base font-bold transition-colors duration-150 active:scale-[0.96] ${
+                  selectedCount === n
+                    ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                }`}
+              >
+                {n}팀
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="flex items-center gap-1.5 text-sm text-slate-400">
+          <Users size={14} />
+          <span>현재 {participantCount}명 접속 중</span>
+          {!canStart && <span className="text-red-400">(최소 4명 필요)</span>}
+        </div>
+        <Button onClick={() => onStart(selectedCount)} variant="primary" size="lg" className="w-full" disabled={!canStart}>
+          <Swords size={18} /> 팀 배정 시작
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function MainContent({ currentMode, sessionId, session, onlineList, leaderboard, drawParticipants, presentMode, studentUrl, count, teamScores, scores, onGameResult, teamBattleActive, teamBattleCount, onStartTeamBattle, onEndTeamBattle }) {
   const currentQId = session?.currentQuestion;
   const isActive = ['poll', 'quiz'].includes(currentMode) && currentQId;
 
@@ -157,7 +203,19 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     if (currentMode === 'plinko') return <Plinko participants={onlineList} onResult={onGameResult ? (names) => onGameResult(names, 'plinko') : undefined} />;
     if (currentMode === 'breakTime') return <BreakTimer />;
     if (currentMode === 'leaderboard') return <div className="w-full max-w-2xl [&_.max-w-xl]:max-w-2xl"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" /></div>;
-    if (currentMode === 'teamBattle') return <div className="w-full max-w-2xl [&_.max-w-lg]:max-w-2xl"><TeamScoreboard teamScores={teamScores || []} /></div>;
+    if (currentMode === 'teamBattle') {
+      if (!teamBattleActive) return <TeamBattleSetup participantCount={count || onlineList.length} onStart={onStartTeamBattle} />;
+      return (
+        <div className="w-full max-w-2xl [&_.max-w-lg]:max-w-2xl space-y-4">
+          <TeamScoreboard teamScores={teamScores || []} />
+          {onEndTeamBattle && (
+            <div className="text-center">
+              <Button onClick={onEndTeamBattle} variant="ghost" size="sm"><X size={16} /> 팀 대항전 종료</Button>
+            </div>
+          )}
+        </div>
+      );
+    }
     if (currentMode === 'qaBoard') return <div className="w-full max-w-4xl"><ClassQABoard sessionId={sessionId} showInput={false} /></div>;
     return null;
   })();
@@ -184,7 +242,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
         key={contentKey}
         {...variants}
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-        className="flex-1 flex items-center justify-center w-full"
+        className={`flex-1 flex justify-center w-full ${contentKey === 'game-qaBoard' ? 'items-start overflow-y-auto' : 'items-center'}`}
       >
         {content}
       </motion.div>

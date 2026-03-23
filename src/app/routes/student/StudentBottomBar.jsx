@@ -7,7 +7,7 @@ import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { useStudentDM } from '@/features/dm/api/useDM';
 import { motion } from 'framer-motion';
 import { Hand, MessageCircle, MessageSquare, HelpCircle, Headset, Send } from 'lucide-react';
-import BottomSheet from '@/components/ui/BottomSheet';
+import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 import ReactionBar from '@/features/reactions/components/ReactionBar';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
@@ -29,6 +29,7 @@ export default memo(function StudentBottomBar({ sessionId }) {
   const [hasUnread, setHasUnread] = useState(false);
   const [hasNewQuestion, setHasNewQuestion] = useState(false);
   const [questionText, setQuestionText] = useState('');
+  const [isAnonymous, setIsAnonymous] = useState(true);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const { handRaises } = useHandRaises(sessionId);
@@ -60,7 +61,7 @@ export default memo(function StudentBottomBar({ sessionId }) {
     if (!questionText.trim()) return;
     setSubmitError(null);
     try {
-      await push(ref(db, `sessions/${sessionId}/urgentQuestions`), { text: questionText.trim(), timestamp: serverTimestamp(), read: false });
+      await push(ref(db, `sessions/${sessionId}/urgentQuestions`), { text: questionText.trim(), nickname: isAnonymous ? null : nickname, anonymous: isAnonymous, timestamp: serverTimestamp(), read: false });
       setQuestionText('');
       setShowQuestionInput(false);
       setSubmitted(true);
@@ -88,17 +89,24 @@ export default memo(function StudentBottomBar({ sessionId }) {
         />
       )}
 
-      <BottomSheet open={showQuestionInput} onClose={() => setShowQuestionInput(false)} ariaLabel="익명 긴급 질문">
+      <Modal open={showQuestionInput} onClose={() => setShowQuestionInput(false)} ariaLabel="긴급 질문">
         <form onSubmit={submitUrgentQuestion} className="space-y-5">
           <div className="text-center space-y-1">
             <MessageCircle size={24} className="text-slate-900 dark:text-slate-100 mx-auto mb-2" />
-            <p className="text-slate-900 dark:text-slate-100 font-bold text-lg tracking-tight">익명 긴급 질문</p>
-            <p className="text-slate-400 text-[13px]">이름이 표시되지 않습니다</p>
+            <p className="text-slate-900 dark:text-slate-100 font-bold text-lg tracking-tight">긴급 질문</p>
           </div>
+          <button type="button" onClick={() => setIsAnonymous(prev => !prev)} className="w-full flex items-center justify-between py-3 px-4 rounded-xl bg-slate-50 dark:bg-slate-700 transition-colors">
+            <span className="text-sm text-slate-600 dark:text-slate-300">익명으로 보내기</span>
+            <span className={`relative inline-flex h-6 w-11 shrink-0 rounded-full transition-colors duration-200 ${isAnonymous ? 'bg-slate-900 dark:bg-slate-100' : 'bg-slate-200 dark:bg-slate-600'}`}>
+              <span className={`inline-block h-5 w-5 rounded-full bg-white dark:bg-slate-900 shadow-sm transform transition-transform duration-200 mt-0.5 ${isAnonymous ? 'translate-x-5.5 ml-0.5' : 'translate-x-0.5'}`} />
+            </span>
+          </button>
+          {!isAnonymous && <p className="text-center text-slate-400 text-[13px] -mt-2">{nickname} (으)로 표시됩니다</p>}
+          {isAnonymous && <p className="text-center text-slate-400 text-[13px] -mt-2">이름이 표시되지 않습니다</p>}
           <textarea value={questionText} onChange={(e) => setQuestionText(e.target.value)} placeholder="질문을 입력하세요..." aria-label="긴급 질문 내용" maxLength={300} rows={3} className="w-full bg-slate-50 dark:bg-slate-700 rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-600 focus:ring-2 focus:ring-slate-900/10 dark:focus:ring-slate-300/15 resize-none transition-all" autoFocus />
           <Button type="submit" variant="primary" size="lg" disabled={!questionText.trim()} className="w-full"><Send size={16} />보내기</Button>
         </form>
-      </BottomSheet>
+      </Modal>
 
       <StudentToasts submitted={submitted} submitError={submitError} />
 

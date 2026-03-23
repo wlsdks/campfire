@@ -23,8 +23,7 @@ function getWeightedSpinResult(segments) {
   let angleToCenter = 0;
   for (let i = 0; i < winnerIndex; i++) angleToCenter += segments[i].angle;
   angleToCenter += segments[winnerIndex].angle / 2;
-  const extraRotations = (6 + Math.random() * 3) * 360;
-  return { winnerIndex, targetAngle: extraRotations + (360 - angleToCenter) };
+  return { winnerIndex, angleToCenter };
 }
 
 export default function Roulette({ participants, scores = {}, onResult }) {
@@ -34,9 +33,12 @@ export default function Roulette({ participants, scores = {}, onResult }) {
   const mountedRef = useRef(true);
   const timerRef = useRef(null);
 
-  useEffect(() => () => {
-    mountedRef.current = false;
-    if (timerRef.current) clearTimeout(timerRef.current);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
   }, []);
 
   const segmentsWithAngle = useMemo(() => {
@@ -60,8 +62,16 @@ export default function Roulette({ participants, scores = {}, onResult }) {
     if (spinning || names.length === 0) return;
     setSpinning(true);
     setWinner(null);
-    const { winnerIndex, targetAngle } = getWeightedSpinResult(segmentsWithAngle);
-    setRotation(prev => prev + targetAngle);
+    const { winnerIndex, angleToCenter } = getWeightedSpinResult(segmentsWithAngle);
+    setRotation(prev => {
+      // Desired final position: (360 - angleToCenter) so winner is under pointer
+      const desired = ((360 - angleToCenter) % 360 + 360) % 360;
+      const current = ((prev % 360) + 360) % 360;
+      let delta = desired - current;
+      if (delta <= 0) delta += 360;
+      const extraSpins = (6 + Math.floor(Math.random() * 3)) * 360;
+      return prev + extraSpins + delta;
+    });
     timerRef.current = setTimeout(() => {
       if (!mountedRef.current) return;
       setSpinning(false);
@@ -91,7 +101,7 @@ export default function Roulette({ participants, scores = {}, onResult }) {
   return (
     <div className="flex flex-col items-center gap-8 w-full max-w-2xl mx-auto" onClick={e => e.stopPropagation()}>
       {/* Wheel */}
-      <div className="relative w-full max-w-lg aspect-square mx-auto">
+      <div className={`relative w-full aspect-square mx-auto transition-all duration-500 ${winner ? 'max-w-xs' : 'max-w-lg'}`}>
         {/* Pointer */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1 z-10">
           <svg width="36" height="30" viewBox="0 0 36 30" fill="none">

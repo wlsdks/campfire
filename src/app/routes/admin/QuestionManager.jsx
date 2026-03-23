@@ -11,7 +11,7 @@ import QuestionForm from './QuestionForm';
 import QuestionList from './QuestionList';
 import QuickProgressCard from './QuickProgressCard';
 import ImportFromLibraryModal from './ImportFromLibraryModal';
-import InstructorNotes from './InstructorNotes';
+
 
 export default function QuestionManager({
   sessionId,
@@ -31,6 +31,7 @@ export default function QuestionManager({
   onEndSpeedQuiz,
   speedQuizCount = 0,
   modeSlot = null,
+  modeButton = null,
 }) {
   const [showForm, setShowForm] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
@@ -75,8 +76,9 @@ export default function QuestionManager({
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">질문 목록</h2>
         <div className="flex items-center gap-1.5">
+          {!readOnly && modeButton}
           {!readOnly && adminUid && (
-            <Button onClick={() => setLibraryOpen(true)} variant="ghost" size="sm">
+            <Button onClick={() => setLibraryOpen(true)} variant="secondary" size="sm">
               <BookmarkPlus size={14} /> 보관함
             </Button>
           )}
@@ -148,8 +150,6 @@ export default function QuestionManager({
         readOnly={readOnly} onView={readOnly ? onViewQuestion : undefined}
         onSaveToLibrary={!readOnly && adminUid ? handleSaveToLibrary : undefined}
       />
-
-      {!readOnly && <InstructorNotes sessionId={sessionId} />}
 
       {!readOnly && adminUid && (
         <ImportFromLibraryModal open={libraryOpen} onClose={() => setLibraryOpen(false)}

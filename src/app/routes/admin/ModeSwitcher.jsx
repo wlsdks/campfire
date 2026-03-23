@@ -1,97 +1,89 @@
 import { memo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Target, Ticket, Trophy, Swords, Gift, Dices, Coffee, X, ChevronDown, CircleDot, MessageSquare } from 'lucide-react';
-import Button from '@/components/ui/Button';
+import { Target, Ticket, Trophy, Swords, Gift, Dices, Coffee, X, ChevronDown, CircleDot, MessageSquare, Zap } from 'lucide-react';
 
 export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTickets, leaderboard, modeOpen, onToggle, onSwitchMode, teamBattleActive = false }) {
   const containerRef = useRef(null);
 
+  // Close on outside click
   useEffect(() => {
-    if (modeOpen && containerRef.current) {
-      setTimeout(() => {
-        // Scroll parent container to absolute bottom
-        const scrollParent = containerRef.current.closest('[class*="overflow-y"]') || containerRef.current.parentElement;
-        if (scrollParent) {
-          scrollParent.scrollTo({ top: scrollParent.scrollHeight, behavior: 'smooth' });
-        }
-      }, 250);
-    }
-  }, [modeOpen]);
+    if (!modeOpen) return;
+    const handler = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) onToggle();
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [modeOpen, onToggle]);
+
+  const modes = [
+    { mode: 'roulette', label: '돌림판', icon: Target },
+    { mode: 'lottery', label: totalTickets > 0 ? '보상 추첨' : '제비뽑기', icon: Ticket },
+    { mode: 'prizeDraw', label: '경품 추첨', icon: Gift },
+    { mode: 'slotMachine', label: '777 슬롯', icon: Dices },
+    { mode: 'plinko', label: '핀볼', icon: CircleDot },
+    { mode: 'breakTime', label: '쉬는 시간', icon: Coffee },
+    { mode: 'qaBoard', label: 'Q&A 보드', icon: MessageSquare },
+    ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
+    { mode: 'teamBattle', label: teamBattleActive ? '팀 스코어보드' : '팀 대항전', icon: Swords },
+  ];
+
+  const activeLabel = modes.find(m => m.mode === currentMode)?.label;
 
   return (
-    <div ref={containerRef} className="mt-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden shadow-sm">
+    <div ref={containerRef} className="relative">
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150"
+        className={`inline-flex items-center gap-1.5 text-sm font-medium py-1.5 px-3 rounded-lg transition-colors duration-150 active:scale-[0.97] ${
+          isSpecialMode
+            ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
+            : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'
+        }`}
       >
-        <div className="flex items-center gap-2">
-          <p className="text-slate-500 dark:text-slate-400 text-sm font-semibold">모드 전환</p>
-          {isSpecialMode && (
-            <span className="text-xs font-medium text-slate-600 dark:text-slate-200 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded">
-              {{ roulette: '돌림판', lottery: '제비뽑기', prizeDraw: '경품 추첨', slotMachine: '777 슬롯', plinko: '핀볼', breakTime: '쉬는 시간', teamBattle: '팀 스코어보드', leaderboard: '리더보드' }[currentMode] || currentMode}
-            </span>
-          )}
-        </div>
-        <motion.div animate={{ rotate: modeOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
-          <ChevronDown size={14} className="text-slate-400" />
+        <Zap size={14} />
+        {isSpecialMode ? activeLabel : '모드'}
+        <motion.div animate={{ rotate: modeOpen ? 180 : 0 }} transition={{ duration: 0.15 }}>
+          <ChevronDown size={12} />
         </motion.div>
       </button>
+
       <AnimatePresence>
         {modeOpen && (
           <motion.div
-            initial={{ height: 0 }}
-            animate={{ height: 'auto' }}
-            exit={{ height: 0 }}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
-            className="overflow-hidden"
+            initial={{ opacity: 0, y: 4, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 4, scale: 0.96 }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
+            className="absolute top-full left-0 mt-1.5 w-48 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg z-40 py-1.5 overflow-hidden"
           >
-            <div className="px-3 pb-3 space-y-2">
-              {[
-                { mode: 'roulette', label: '돌림판', icon: Target },
-                { mode: 'lottery', label: totalTickets > 0 ? '보상 추첨' : '제비뽑기', icon: Ticket },
-                { mode: 'prizeDraw', label: '경품 추첨', icon: Gift },
-                { mode: 'slotMachine', label: '777 슬롯', icon: Dices },
-                { mode: 'plinko', label: '핀볼', icon: CircleDot },
-                { mode: 'breakTime', label: '쉬는 시간', icon: Coffee },
-                { mode: 'qaBoard', label: 'Q&A 보드', icon: MessageSquare },
-                ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
-                ...(teamBattleActive ? [{ mode: 'teamBattle', label: '팀 스코어보드', icon: Swords }] : []),
-              ].map(({ mode, label, icon: Icon }) => {
-                const isActive = currentMode === mode;
-                return isActive ? (
-                  <button
-                    key={mode}
-                    onClick={() => onSwitchMode(mode)}
-                    className="w-full inline-flex items-center gap-1.5 py-1.5 px-3 text-sm font-medium rounded-lg bg-slate-900 text-white transition-colors duration-150 active:scale-[0.97]"
-                    aria-label={`${label} 모드로 전환`}
-                  >
-                    <Icon size={16} /> {label}
-                  </button>
-                ) : (
-                  <Button
-                    key={mode}
-                    onClick={() => onSwitchMode(mode)}
-                    variant="secondary"
-                    size="sm"
-                    className="w-full"
-                    aria-label={`${label} 모드로 전환`}
-                  >
-                    <Icon size={16} /> {label}
-                  </Button>
-                );
-              })}
-              {isSpecialMode && (
-                <Button
-                  onClick={() => onSwitchMode('waiting')}
-                  variant="ghost"
-                  size="sm"
-                  className="w-full"
-                  aria-label="특수 화면 종료"
+            {modes.map(({ mode, label, icon: Icon }) => {
+              const isActive = currentMode === mode;
+              return (
+                <button
+                  key={mode}
+                  onClick={() => { onSwitchMode(mode); onToggle(); }}
+                  className={`w-full flex items-center gap-2 px-3 py-2 text-sm transition-colors duration-100 ${
+                    isActive
+                      ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 font-semibold'
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium'
+                  }`}
                 >
-                  <X size={16} /> 화면 종료
-                </Button>
-              )}
-            </div>
+                  <Icon size={15} />
+                  {label}
+                </button>
+              );
+            })}
+            {isSpecialMode && (
+              <>
+                <div className="border-t border-slate-100 dark:border-slate-700 my-1" />
+                <button
+                  onClick={() => { onSwitchMode('waiting'); onToggle(); }}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-100"
+                >
+                  <X size={15} />
+                  화면 종료
+                </button>
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

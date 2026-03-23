@@ -124,7 +124,7 @@ export default function UrgentQuestionList({ sessionId }) {
                       <div className="flex-1 min-w-0">
                         <p className="text-slate-700 dark:text-slate-200 leading-relaxed">{q.text}</p>
                         <div className="flex justify-between items-center mt-1.5">
-                          <span className="text-slate-400 text-xs">익명</span>
+                          <span className="text-slate-400 text-xs">{q.anonymous === false && q.nickname ? q.nickname : '익명'}</span>
                           <button
                             aria-label="질문 삭제"
                             onClick={(e) => { e.stopPropagation(); dismissOne(q.id); }}
@@ -171,7 +171,7 @@ export default function UrgentQuestionList({ sessionId }) {
               transition={{ duration: 0.25, ease: 'easeOut', delay: 0.08 }}
               className="text-xs text-slate-400 mt-1"
             >
-              익명
+              {selectedQuestion.anonymous === false && selectedQuestion.nickname ? selectedQuestion.nickname : '익명'}
             </motion.p>
             <motion.p
               initial={{ opacity: 0, y: 8 }}

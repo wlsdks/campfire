@@ -8,6 +8,7 @@ import UrgentQuestionList from '@/features/questions/components/UrgentQuestionLi
 import ClassQuestionList from '@/features/class-questions/components/ClassQuestionList';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
 import TeamScoreboard from '@/features/teams/components/TeamScoreboard';
+import InstructorNotes from './InstructorNotes';
 import Button from '@/components/ui/Button';
 
 function RightPanelAccordion({ title, count, defaultOpen = false, children }) {
@@ -102,6 +103,9 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
           </div>
         </div>
       )}
+
+      {/* Instructor notes */}
+      <InstructorNotes sessionId={sessionId} />
 
       {/* Hand raises, urgent questions & class questions */}
       <HandRaiseList sessionId={sessionId} />

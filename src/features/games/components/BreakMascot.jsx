@@ -13,7 +13,7 @@ export default memo(function BreakMascot({ size = 140 }) {
       <motion.g
         animate={{ rotate: 360 }}
         transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
-        style={{ originX: '60px', originY: '60px' }}
+        style={{ transformOrigin: '60px 60px' }}
       >
         <circle cx="60" cy="18" r="14" fill="#F59E0B" />
         <circle cx="35" cy="24" r="13" fill="#FBBF24" />

@@ -181,7 +181,7 @@ export default memo(function StaffQuestionDetail({ question, onAction, loading, 
       {/* Meta info */}
       <div className="flex items-center gap-3 mt-4">
         <span className="text-sm text-slate-400">
-          {isUrgent ? '익명' : question.nickname || '익명'}
+          {isUrgent && question.anonymous !== false ? '익명' : question.nickname || '익명'}
         </span>
         <span className="text-slate-300 dark:text-slate-600">·</span>
         <span className="text-sm text-slate-400">{timeAgo(question.timestamp)}</span>

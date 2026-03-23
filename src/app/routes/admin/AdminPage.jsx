@@ -15,7 +15,7 @@ import PresentationView from './PresentationView';
 import ModeSwitcher from './ModeSwitcher';
 import TabletDrawers from './TabletDrawers';
 import CenterContent from './CenterContent';
-import TeamBattleControl from '@/features/teams/components/TeamBattleControl';
+
 import MobileAdminView from './MobileAdminView';
 
 const StaffPage = lazy(() => import('./StaffPage'));
@@ -80,19 +80,10 @@ export default function AdminPage() {
         formOpen={s.showCenterForm} onAddClick={s.effectiveReadOnly ? undefined : s.handleShowCenterForm}
         onViewQuestion={s.handleViewQuestion} adminUid={s.adminUser?.uid}
         speedQuizActive={s.speedQuizActive} onStartSpeedQuiz={s.startSpeedQuiz} onEndSpeedQuiz={s.endSpeedQuiz} speedQuizCount={s.speedQuizCount}
-        modeSlot={!s.effectiveReadOnly ? (
-          <>
-            <ModeSwitcher currentMode={currentMode} isSpecialMode={isSpecialMode} totalTickets={s.totalTickets}
-              leaderboard={s.leaderboard} modeOpen={s.modeOpen} onToggle={s.handleModeToggle} onSwitchMode={s.switchMode}
-              teamBattleActive={s.teamBattleActive} />
-            <TeamBattleControl
-              isActive={s.teamBattleActive}
-              teamCount={s.teamBattleCount}
-              participantCount={s.count}
-              onStart={(count) => s.startTeamBattle(s.onlineList.map((p) => p.id), count)}
-              onEnd={s.endTeamBattle}
-            />
-          </>
+        modeButton={!s.effectiveReadOnly ? (
+          <ModeSwitcher currentMode={currentMode} isSpecialMode={isSpecialMode} totalTickets={s.totalTickets}
+            leaderboard={s.leaderboard} modeOpen={s.modeOpen} onToggle={s.handleModeToggle} onSwitchMode={s.switchMode}
+            teamBattleActive={s.teamBattleActive} />
         ) : null}
       />
     </>
@@ -151,7 +142,10 @@ export default function AdminPage() {
             effectiveReadOnly={s.effectiveReadOnly} session={s.session} currentMode={currentMode} sessionId={s.sessionId}
             onlineList={s.onlineList} leaderboard={s.leaderboard} drawParticipants={s.drawParticipants}
             participants={s.participants} scores={s.scores} count={s.count}
-            teamScores={s.teamScores} />
+            teamScores={s.teamScores}
+            teamBattleActive={s.teamBattleActive} teamBattleCount={s.teamBattleCount}
+            onStartTeamBattle={(count) => s.startTeamBattle(s.onlineList.map((p) => p.id), count)}
+            onEndTeamBattle={s.endTeamBattle} />
         </div>
 
         {!isTablet && (

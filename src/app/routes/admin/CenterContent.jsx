@@ -22,6 +22,10 @@ export default function CenterContent({
   scores,
   count,
   teamScores,
+  teamBattleActive,
+  teamBattleCount,
+  onStartTeamBattle,
+  onEndTeamBattle,
 }) {
   return (
     <div className="h-full flex flex-col">
@@ -85,6 +89,11 @@ export default function CenterContent({
               drawParticipants={drawParticipants}
               teamScores={teamScores}
               scores={scores}
+              count={count}
+              teamBattleActive={teamBattleActive}
+              teamBattleCount={teamBattleCount}
+              onStartTeamBattle={onStartTeamBattle}
+              onEndTeamBattle={onEndTeamBattle}
             />
           )}
         </motion.div>

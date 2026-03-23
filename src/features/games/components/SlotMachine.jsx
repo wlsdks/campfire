@@ -71,9 +71,12 @@ export default function SlotMachine({ participants, onResult }) {
   const mountedRef = useRef(true);
   const timersRef = useRef([]);
 
-  useEffect(() => () => {
-    mountedRef.current = false;
-    timersRef.current.forEach(clearTimeout);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      timersRef.current.forEach(clearTimeout);
+    };
   }, []);
 
   const names = useMemo(() => participants.map(p => p.nickname), [participants]);
