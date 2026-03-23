@@ -15,6 +15,7 @@ const VotePage = lazy(() => import('@/app/routes/student/VotePage'));
 const AdminPage = lazy(() => import('@/app/routes/admin/AdminPage'));
 const LivePage = lazy(() => import('@/app/routes/live/LivePage'));
 const ReportPage = lazy(() => import('@/app/routes/report/ReportPage'));
+const SubmitPage = lazy(() => import('@/app/routes/submit/SubmitPage'));
 
 function StudentRouter() {
   const [searchParams] = useSearchParams();
@@ -140,6 +141,13 @@ function App() {
           <ErrorBoundary scope="report">
             <Suspense fallback={<SuspenseFallback />}>
               <ReportPage />
+            </Suspense>
+          </ErrorBoundary>
+        } />
+        <Route path="/submit" element={
+          <ErrorBoundary scope="submit">
+            <Suspense fallback={<SuspenseFallback />}>
+              <SubmitPage />
             </Suspense>
           </ErrorBoundary>
         } />
