@@ -187,7 +187,7 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
         q.answered ? 'opacity-60' : ''
       }`}
     >
-      <div className="flex h-[120px]">
+      <div className="flex">
         {/* Upvote column — big number, always visible */}
         <button
           onClick={() => onUpvote(q.id, pid)}
@@ -218,7 +218,7 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
             <span className="text-[11px] text-slate-400 shrink-0">{timeAgo(q.timestamp)}</span>
           </div>
 
-          <p className="text-base md:text-lg text-slate-900 dark:text-slate-100 leading-snug line-clamp-2">{q.text}</p>
+          <p className="text-base md:text-lg text-slate-900 dark:text-slate-100 leading-snug">{q.text}</p>
 
           {/* Answer toggle */}
           <button
