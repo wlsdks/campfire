@@ -34,7 +34,7 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTic
     <div ref={containerRef} className="relative">
       <button
         onClick={onToggle}
-        className={`inline-flex items-center gap-1.5 text-sm font-medium py-1.5 px-3 rounded-lg transition-colors duration-150 active:scale-[0.97] ${
+        className={`inline-flex items-center gap-1.5 text-sm font-medium py-1.5 px-3 rounded-lg whitespace-nowrap transition-colors duration-150 active:scale-[0.97] ${
           isSpecialMode
             ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
             : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700'
