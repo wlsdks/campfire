@@ -156,7 +156,7 @@ export default function ReportPage() {
         >
           {stats.nickname && (
             <div className="flex justify-center">
-              <div className="flex items-center gap-2.5 bg-white dark:bg-slate-800 rounded-full py-1.5 pl-1.5 pr-4 shadow-sm border border-slate-100 dark:border-slate-700">
+              <div className="flex items-center gap-2.5 bg-white dark:bg-slate-800 rounded-full py-1.5 pl-1.5 pr-4 shadow-sm">
                 <Avatar name={stats.nickname} size="sm" />
                 <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">{stats.nickname}</span>
               </div>
@@ -175,7 +175,7 @@ export default function ReportPage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden"
+          className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm overflow-hidden"
         >
           <div className="flex items-start divide-x divide-slate-100 dark:divide-slate-700">
             <StatCard icon={Hash} label="참여" value={`${stats.answeredCount}/${stats.totalQuestions}`} delay={0.15} />
@@ -211,7 +211,7 @@ export default function ReportPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5"
+            className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-5"
           >
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">획득한 업적</p>
             <div className="space-y-2.5">
@@ -245,7 +245,7 @@ export default function ReportPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5"
+            className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-5"
           >
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">질문별 기록</p>
             <div className="divide-y divide-slate-100 dark:divide-slate-700">

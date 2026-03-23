@@ -182,7 +182,7 @@ export default memo(function VotePage({ sessionId }) {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6"
+            className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-6"
           >
             {questionProgress && (
               <div className="flex items-center gap-2 mb-4">

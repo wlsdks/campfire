@@ -183,7 +183,7 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25, delay: index * 0.03 }}
-      className={`bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden transition-opacity duration-300 ${
+      className={`bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden transition-opacity duration-300 ${
         q.answered ? 'opacity-60' : ''
       }`}
     >

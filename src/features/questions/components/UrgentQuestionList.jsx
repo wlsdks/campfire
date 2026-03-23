@@ -115,7 +115,7 @@ export default function UrgentQuestionList({ sessionId }) {
                     className={`p-2.5 rounded-lg text-sm transition-colors duration-150 cursor-pointer ${
                       q.read
                         ? 'bg-slate-50 dark:bg-slate-800 opacity-60'
-                        : 'bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 shadow-sm hover:shadow-md'
+                        : 'bg-white dark:bg-slate-700 shadow-sm hover:shadow-md'
                     }`}
                     onClick={() => handleQuestionClick(q)}
                   >

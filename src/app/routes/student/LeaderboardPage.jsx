@@ -135,7 +135,7 @@ export default function LeaderboardPage({ sessionId }) {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm p-4"
+            className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4"
           >
             <TeamScoreboard teamScores={teamScores} title="팀 대항전" />
           </motion.div>

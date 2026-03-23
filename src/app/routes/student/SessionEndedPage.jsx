@@ -58,14 +58,14 @@ export default function SessionEndedPage({ sessionId, session, reviewing = false
             href={reportUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center gap-2 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150"
           >
             <FileText size={16} />
             내 학습 리포트
           </a>
           <button
             onClick={handleCopyReport}
-            className="flex items-center justify-center gap-2 px-5 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 text-sm font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+            className="flex items-center justify-center gap-2 px-5 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm text-sm font-medium text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150"
           >
             {copied ? <Check size={16} className="text-slate-900 dark:text-slate-100" /> : <Copy size={16} />}
             {copied ? '복사됨' : '링크 복사'}
