@@ -183,7 +183,7 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25, delay: index * 0.03 }}
-      className={`bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden transition-opacity duration-300 ${
+      className={`bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transition-opacity duration-300 ${
         q.answered ? 'opacity-60' : ''
       }`}
     >
@@ -191,7 +191,7 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
         {/* Upvote column — big number, always visible */}
         <button
           onClick={() => onUpvote(q.id, pid)}
-          className="flex flex-col items-center justify-center gap-1 shrink-0 w-[56px] rounded-l-xl bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+          className="flex flex-col items-center justify-center gap-1 shrink-0 w-[56px] hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
         >
           <ThumbsUp size={15} className={`transition-colors ${hasUpvoted ? 'text-slate-900 dark:text-slate-100 fill-current' : 'text-slate-400 dark:text-slate-500'}`} />
           <span className={`text-base font-bold tabular-nums ${
