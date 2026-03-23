@@ -25,9 +25,11 @@ function AssignmentCard({ assignment, onClick }) {
   }
 
   return (
-    <button
+    <div
       onClick={onClick}
-      className="w-full text-left p-4 rounded-xl bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition-shadow duration-150 active:scale-[0.98]"
+      role="button"
+      tabIndex={0}
+      className="w-full text-left p-4 rounded-xl bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition-shadow duration-150 active:scale-[0.98] cursor-pointer"
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex-1 min-w-0">
@@ -50,7 +52,7 @@ function AssignmentCard({ assignment, onClick }) {
           <ChevronRight size={16} className="text-slate-300" />
         </div>
       </div>
-    </button>
+    </div>
   );
 }
 
@@ -58,7 +60,7 @@ function CourseAssignments({ courseName, onSelectAssignment }) {
   const { assignments } = useAssignmentList(courseName);
   const { createAssignment } = useAssignmentActions();
   const [showForm, setShowForm] = useState(false);
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(assignments.length > 0);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
@@ -72,18 +74,27 @@ function CourseAssignments({ courseName, onSelectAssignment }) {
 
   return (
     <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm overflow-hidden">
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150"
-      >
-        <div>
-          <p className="text-base font-bold text-slate-900 dark:text-slate-100 tracking-tight">{courseName}</p>
-          <p className="text-xs text-slate-400 mt-0.5">{assignments.length}개 과제</p>
-        </div>
-        <motion.div animate={{ rotate: expanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
-          <ChevronDown size={18} className="text-slate-400" />
-        </motion.div>
-      </button>
+      <div className="flex items-center justify-between px-5 py-4">
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="flex items-center gap-3 flex-1 min-w-0 text-left hover:opacity-80 transition-opacity duration-150"
+        >
+          <div className="flex-1 min-w-0">
+            <p className="text-base font-bold text-slate-900 dark:text-slate-100 tracking-tight truncate">{courseName}</p>
+            <p className="text-xs text-slate-400 mt-0.5">{assignments.length}개 과제</p>
+          </div>
+          <motion.div animate={{ rotate: expanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
+            <ChevronDown size={18} className="text-slate-400" />
+          </motion.div>
+        </button>
+        <button
+          onClick={(e) => { e.stopPropagation(); setExpanded(true); setShowForm(true); }}
+          className="ml-3 p-2 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150"
+          title="새 과제 추가"
+        >
+          <Plus size={18} />
+        </button>
+      </div>
 
       <AnimatePresence>
         {expanded && (
@@ -127,10 +138,6 @@ function CourseAssignments({ courseName, onSelectAssignment }) {
                   </motion.div>
                 )}
               </AnimatePresence>
-
-              <Button onClick={() => setShowForm(!showForm)} variant="secondary" size="sm" className="w-full">
-                {showForm ? '취소' : <><Plus size={14} /> 새 과제</>}
-              </Button>
             </div>
           </motion.div>
         )}
