@@ -1,24 +1,24 @@
-// Pick Service Worker — app shell caching for PWA "Add to Home Screen"
-// Strategy: Network-first for all requests, cache app shell for offline launch
+// Pick Service Worker — safe static asset caching
+//
+// Strategy:
+// - Hashed assets (/assets/*): Cache-first (immutable by design — content change = new filename)
+// - Navigation (HTML): Network-only (always get latest asset references)
+// - Firebase/external: Never cache (real-time data must be fresh)
+// - Everything else: Network-only
+//
+// This is the safest possible caching strategy because:
+// 1. Hashed files can NEVER be stale (hash changes when content changes)
+// 2. index.html is never cached → new deployments work immediately
+// 3. Firebase data is never cached → always real-time
 
-const CACHE_NAME = 'pick-v1';
+const CACHE_NAME = 'pick-assets-v2';
 
-// App shell files to pre-cache on install
-const APP_SHELL = [
-  '/',
-  '/favicon.svg',
-  '/manifest.json',
-];
-
-// Install: pre-cache app shell
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL))
-  );
+// Install: activate immediately
+self.addEventListener('install', () => {
   self.skipWaiting();
 });
 
-// Activate: clean up old caches
+// Activate: clean up old caches, take control immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
@@ -30,54 +30,31 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch: network-first, fallback to cache
-// Never cache Firebase/API requests
+// Fetch: only cache hashed static assets from /assets/
 self.addEventListener('fetch', (event) => {
   const { request } = event;
-  const url = new URL(request.url);
 
-  // Skip non-GET requests
+  // Only handle GET requests
   if (request.method !== 'GET') return;
 
-  // Skip Firebase, analytics, external API calls — always network
-  if (
-    url.hostname.includes('firebaseio.com') ||
-    url.hostname.includes('googleapis.com') ||
-    url.hostname.includes('firebaseapp.com') ||
-    url.hostname.includes('google-analytics.com') ||
-    url.hostname.includes('firebase.googleapis.com')
-  ) {
-    return;
-  }
+  const url = new URL(request.url);
 
-  // For navigation requests (HTML pages), network-first with offline fallback
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-          return response;
-        })
-        .catch(() => caches.match('/'))
-    );
-    return;
-  }
+  // Only cache same-origin requests under /assets/ (Vite's hashed output)
+  if (url.origin !== self.location.origin) return;
+  if (!url.pathname.startsWith('/assets/')) return;
 
-  // For static assets (JS, CSS, fonts, images), stale-while-revalidate
+  // Cache-first for hashed assets (they're immutable)
   event.respondWith(
     caches.match(request).then((cached) => {
-      const networkFetch = fetch(request)
-        .then((response) => {
-          if (response.ok) {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-          }
-          return response;
-        })
-        .catch(() => cached);
+      if (cached) return cached;
 
-      return cached || networkFetch;
+      return fetch(request).then((response) => {
+        if (response.ok) {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+        }
+        return response;
+      });
     })
   );
 });
