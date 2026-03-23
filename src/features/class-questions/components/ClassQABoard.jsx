@@ -270,7 +270,7 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
                 <button
                   onClick={handlePostAnswer}
                   disabled={!answerText.trim() || posting}
-                  className="px-3 py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-lg text-sm font-medium disabled:opacity-40 transition-colors hover:bg-slate-800 dark:hover:bg-slate-200"
+                  className="px-3 py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-lg text-sm font-medium disabled:opacity-40 transition-colors duration-150 hover:bg-slate-800 dark:hover:bg-slate-200"
                 >
                   <Send size={14} />
                 </button>

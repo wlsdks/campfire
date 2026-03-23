@@ -98,7 +98,7 @@ export default function GameResultOverlay({ isWinner, winnerNames, gameResult, s
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
               onClick={dismiss}
-              className="text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors pt-2"
+              className="text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150 pt-2"
             >
               닫기
             </motion.button>
@@ -131,7 +131,7 @@ export default function GameResultOverlay({ isWinner, winnerNames, gameResult, s
                 다음 기회에 도전해보세요
               </p>
             </div>
-            <button onClick={dismiss} aria-label="결과 닫기" className="text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-400 transition-colors shrink-0">
+            <button onClick={dismiss} aria-label="결과 닫기" className="text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-400 transition-colors duration-150 shrink-0">
               <X size={16} />
             </button>
           </div>

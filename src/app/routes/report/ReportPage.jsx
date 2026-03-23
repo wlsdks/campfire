@@ -138,7 +138,7 @@ export default function ReportPage() {
           </div>
           <button
             onClick={handleCopy}
-            className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+            className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150"
           >
             {copied ? <Check size={14} /> : <Share2 size={14} />}
             {copied ? '복사됨' : '링크 공유'}
@@ -265,7 +265,7 @@ export default function ReportPage() {
         >
           <button
             onClick={handleCopy}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-lg text-sm font-semibold hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-lg text-sm font-semibold hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150"
           >
             {copied ? <Check size={16} /> : <Copy size={16} />}
             {copied ? '링크 복사됨!' : '리포트 링크 복사'}
