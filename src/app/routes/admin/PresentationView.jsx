@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, QrCode, X, Copy, Check, Swords } from 'lucide-react';
+import { Users, QrCode, X, Copy, Check, Swords, Eye } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import QRCode from '@/components/ui/QRCode';
 import VizRenderer from '@/features/visualization/components/VizRenderer';
@@ -136,7 +136,7 @@ function getModeVariants(mode) {
   if (mode === 'leaderboard') {
     return { initial: { opacity: 0, y: -30 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 30 } };
   }
-  if (['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'teamBattle', 'awards'].includes(mode)) {
+  if (['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'teamBattle', 'awards', 'focus'].includes(mode)) {
     return { initial: { opacity: 0, scale: 0.88 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 1.06 } };
   }
   if (['poll', 'quiz'].includes(mode)) {
@@ -219,6 +219,13 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     }
     if (currentMode === 'qaBoard') return <div className="w-full max-w-4xl"><ClassQABoard sessionId={sessionId} showInput={false} /></div>;
     if (currentMode === 'awards') return <AwardsCeremony assignmentId={session?.activeAssignmentId} />;
+    if (currentMode === 'focus') return (
+      <div className="flex flex-col items-center justify-center gap-6 text-center">
+        <Eye size={48} className="text-white/60" />
+        <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">집중 모드</p>
+        <p className="text-white/40 text-lg">학생 화면이 잠겼습니다</p>
+      </div>
+    );
     return null;
   })();
 

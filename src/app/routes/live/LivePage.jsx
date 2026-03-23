@@ -74,7 +74,7 @@ export default function LivePage() {
   const onSlotMachineResult = useCallback((names) => handleGameResult(names, 'slotMachine'), [handleGameResult]);
   const onPlinkoResult = useCallback((names) => handleGameResult(names, 'plinko'), [handleGameResult]);
 
-  const isGameMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards'].includes(currentMode);
+  const isGameMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'focus'].includes(currentMode);
   const isEnded = session?.status === 'ended';
   const hasActiveQuestion = ['poll', 'quiz'].includes(currentMode) && currentQId && question;
 
