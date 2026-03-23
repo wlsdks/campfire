@@ -47,7 +47,6 @@ export default memo(function StudentLiveResults({ sessionId, questionId, options
       <div className="space-y-2">
         {options.map((option) => {
           const count = countByValue(option);
-          const pct = totalVotes > 0 ? (count / totalVotes) * 100 : 0;
           const barWidth = maxCount > 0 ? (count / maxCount) * 100 : 0;
           const isMine = option === myAnswer;
 

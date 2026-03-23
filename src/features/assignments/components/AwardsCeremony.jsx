@@ -139,7 +139,6 @@ export default function AwardsCeremony({ assignmentId, readOnly = false }) {
           {/* Progress dots */}
           <div className="flex items-center justify-center gap-2">
             {orderedAwards.map((a, i) => {
-              const info = getAwardById(a.id);
               return (
                 <motion.div
                   key={a.id}

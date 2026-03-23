@@ -11,7 +11,7 @@ import { useToast } from '@/hooks/useToast';
 import QuestionForm from './QuestionForm';
 
 export default function CourseEditor({ courseId, courseName, onBack }) {
-  const { template, loading, addQuestion, deleteQuestion, duplicateQuestion, swapQuestionOrder, refresh } = useCourseTemplate(courseId);
+  const { template, loading, addQuestion, deleteQuestion, duplicateQuestion, swapQuestionOrder } = useCourseTemplate(courseId);
   const [showForm, setShowForm] = useState(false);
   const { toast, showToast } = useToast();
 

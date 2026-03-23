@@ -46,7 +46,7 @@ function ActiveQuestionBanner({ session }) {
   );
 }
 
-function ChatReplyInput({ sessionId, senderName, questionText }) {
+function ChatReplyInput({ sessionId, senderName }) {
   const [replyText, setReplyText] = useState('');
   const [sending, setSending] = useState(false);
 

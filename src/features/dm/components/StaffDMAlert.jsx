@@ -79,8 +79,6 @@ export default function StaffDMAlert({ sessionId, staffId, staffName, senderType
     setOpenDM({ ...dm, status: 'active', staffName });
   }
 
-  const hasActiveDMs = activeDMs.length > 0;
-
   return (
     <>
       {/* Waiting DM alerts */}

@@ -62,7 +62,7 @@ export default function AssignmentDetail({ assignmentId, onBack }) {
   const { assignment } = useAssignment(assignmentId);
   const { submissions } = useSubmissionList(assignmentId);
   const { results } = useAllResults(assignmentId);
-  const { closeAssignment, deleteAssignment } = useAssignmentActions();
+  const { closeAssignment } = useAssignmentActions();
   const [expandedId, setExpandedId] = useState(null);
   const [copied, setCopied] = useState(false);
 
@@ -125,7 +125,7 @@ export default function AssignmentDetail({ assignmentId, onBack }) {
         {sortedSubmissions.length === 0 ? (
           <p className="text-sm text-slate-400 text-center py-6">아직 제출된 과제가 없습니다</p>
         ) : (
-          sortedSubmissions.map((sub, i) => (
+          sortedSubmissions.map((sub) => (
             <SubmissionRow
               key={sub.id}
               submission={sub}

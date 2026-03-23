@@ -63,7 +63,7 @@ function AssignmentCard({ assignment, onClick }) {
  */
 export default function AssignmentManager({ courseName }) {
   const { assignments, loading } = useAssignmentList(courseName);
-  const { createAssignment, deleteAssignment } = useAssignmentActions();
+  const { createAssignment } = useAssignmentActions();
   const [showForm, setShowForm] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [title, setTitle] = useState('');

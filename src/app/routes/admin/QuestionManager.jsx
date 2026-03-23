@@ -19,7 +19,6 @@ export default function QuestionManager({
   currentQuestion,
   scores = {},
   participants = {},
-  pendingEvent = null,
   onAddClick,
   onCollapse,
   readOnly = false,

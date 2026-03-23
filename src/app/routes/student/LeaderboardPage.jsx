@@ -72,7 +72,7 @@ function MyRankCard({ rank, entry, total }) {
 }
 
 /** Sticky footer showing own rank when scrolled out of leaderboard view. */
-function StickyMyRank({ rank, entry, total }) {
+function StickyMyRank({ rank, entry }) {
   if (!entry || rank <= 0) return null;
 
   return (

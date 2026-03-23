@@ -89,7 +89,6 @@ export function useTeamScores(teams, scores) {
         const members = team.members ? Object.keys(team.members) : [];
         let totalScore = 0;
         let memberCount = members.length;
-        let correctCount = 0;
 
         members.forEach((pid) => {
           const s = scores[pid];

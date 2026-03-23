@@ -101,7 +101,7 @@ function RecentQuestions({ questions, loading, courseFilter }) {
   }
   return (
     <motion.div variants={stagger.container} initial="initial" animate="animate" className="space-y-1">
-      {filtered.map((q, i) => {
+      {filtered.map((q) => {
         const typeInfo = QUESTION_TYPE_MAP[q.type] || { label: q.type, icon: MessageSquare };
         const Icon = typeInfo.icon;
         const noResponses = q.responseCount === 0;

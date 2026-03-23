@@ -70,7 +70,7 @@ export function DifficultQuestions({ questions, loading }) {
   return (
     <motion.div variants={stagger.container} initial="initial" animate="animate"
       className="space-y-1">
-      {questions.map((q, i) => {
+      {questions.map((q) => {
         const typeInfo = QUESTION_TYPE_MAP[q.type] || { label: q.type, icon: MessageSquare };
         const Icon = typeInfo.icon;
         const isVeryHard = q.correctRate < 30;

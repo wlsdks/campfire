@@ -7,7 +7,6 @@ import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
 import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
-import { useChat } from '@/features/chat/api/useChat';
 import Badge from '@/components/ui/Badge';
 import ChatPanel from '@/features/chat/components/ChatPanel';
 import StaffDMAlert from '@/features/dm/components/StaffDMAlert';
