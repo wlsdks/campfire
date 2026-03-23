@@ -124,16 +124,13 @@ export default function PickMascot({ size = 'md', mood = 'happy' }) {
       {/* Nose */}
       <ellipse cx="60" cy="66" rx="3.5" ry="2.5" fill="#D97706" />
 
-      {/* Mouth — mood-dependent */}
-      <motion.path
+      {/* Mouth — mood-dependent (no path animation, Framer Motion doesn't support SVG d) */}
+      <path
         d={mouthPath}
         stroke="#D97706"
         strokeWidth="2"
         strokeLinecap="round"
         fill="none"
-        initial={false}
-        animate={{ d: mouthPath }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
       />
 
       {/* Cheeks — subtle blush, pulses gently */}

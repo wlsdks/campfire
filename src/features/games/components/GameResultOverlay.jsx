@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, PartyPopper, X } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
@@ -23,8 +23,16 @@ const MODE_LABELS = {
  * @param {{ isWinner, winnerNames, gameResult, showOverlay, dismiss }} props
  */
 export default function GameResultOverlay({ isWinner, winnerNames, gameResult, showOverlay, dismiss }) {
-  const nickname = getNickname();
+  const nickname = getNickname() || '참여자';
   const modeName = MODE_LABELS[gameResult?.mode] || '게임';
+
+  // Auto-dismiss non-winner banner after 5 seconds
+  useEffect(() => {
+    if (showOverlay && !isWinner) {
+      const timer = setTimeout(dismiss, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [showOverlay, isWinner, dismiss]);
 
   return (
     <AnimatePresence>

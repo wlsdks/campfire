@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, lazy, Suspense, useMemo } from 'react';
+import { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, QrCode, X, Copy, Check } from 'lucide-react';
 import QRCode from '@/components/ui/QRCode';
@@ -149,11 +149,11 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
   // Determine content + animation key
   let contentKey, content;
   const gameContent = (() => {
-    if (currentMode === 'roulette') return <Roulette participants={onlineList} scores={scores} onResult={onGameResult?.('roulette')} />;
-    if (currentMode === 'lottery') return <Lottery participants={drawParticipants} onResult={onGameResult?.('lottery')} />;
-    if (currentMode === 'prizeDraw') return <PrizeDraw participants={onlineList} onResult={onGameResult?.('prizeDraw')} />;
-    if (currentMode === 'slotMachine') return <SlotMachine participants={onlineList} onResult={onGameResult?.('slotMachine')} />;
-    if (currentMode === 'plinko') return <Plinko participants={onlineList} onResult={onGameResult?.('plinko')} />;
+    if (currentMode === 'roulette') return <Roulette participants={onlineList} scores={scores} onResult={onGameResult ? (names) => onGameResult(names, 'roulette') : undefined} />;
+    if (currentMode === 'lottery') return <Lottery participants={drawParticipants} onResult={onGameResult ? (names) => onGameResult(names, 'lottery') : undefined} />;
+    if (currentMode === 'prizeDraw') return <PrizeDraw participants={onlineList} onResult={onGameResult ? (names) => onGameResult(names, 'prizeDraw') : undefined} />;
+    if (currentMode === 'slotMachine') return <SlotMachine participants={onlineList} onResult={onGameResult ? (names) => onGameResult(names, 'slotMachine') : undefined} />;
+    if (currentMode === 'plinko') return <Plinko participants={onlineList} onResult={onGameResult ? (names) => onGameResult(names, 'plinko') : undefined} />;
     if (currentMode === 'breakTime') return <BreakTimer />;
     if (currentMode === 'leaderboard') return <div className="w-full max-w-2xl [&_.max-w-xl]:max-w-2xl"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" /></div>;
     if (currentMode === 'teamBattle') return <div className="w-full max-w-2xl [&_.max-w-lg]:max-w-2xl"><TeamScoreboard teamScores={teamScores || []} /></div>;
@@ -196,7 +196,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
   const exitPresent = useCallback(() => onExit(), [onExit]);
   const { publishResult } = usePublishGameResult(sessionId);
 
-  const handleGameResult = useCallback((mode) => (resultNames) => {
+  const handleGameResult = useCallback((resultNames, mode) => {
     const nameArr = Array.isArray(resultNames) ? resultNames : [resultNames];
     const allList = mode === 'lottery' ? drawParticipants : onlineList;
     const winners = nameArr.map((name) => {
