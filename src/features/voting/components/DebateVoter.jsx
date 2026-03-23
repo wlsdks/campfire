@@ -1,5 +1,6 @@
 import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 import { getParticipantId } from '@/lib/participant';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useCallback, useMemo, memo } from 'react';
@@ -90,7 +91,7 @@ export default memo(function DebateVoter({ sessionId, questionId, disabled = fal
       });
       setSubmitted(true);
     } catch (err) {
-      console.error('Debate vote failed:', err);
+      logger.error('Debate vote failed:', err);
       setSubmitting(false);
     }
   }, [sessionId, questionId, side, opinion, disabled, submitting]);

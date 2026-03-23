@@ -1,6 +1,7 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, memo } from 'react';
 import { ref, push, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 import { motion } from 'framer-motion';
 import { MessageCircle, HelpCircle, ThumbsUp, Radio, Send, MessageSquare } from 'lucide-react';
 import { QUESTION_TYPE_MAP } from '@/lib/question-types';
@@ -64,7 +65,7 @@ function ChatReplyInput({ sessionId, senderName, questionText }) {
       });
       setReplyText('');
     } catch (err) {
-      console.error('채팅 답변 전송 실패:', err);
+      logger.error('채팅 답변 전송 실패:', err);
     }
     setSending(false);
   }, [replyText, sessionId, senderName]);
@@ -94,7 +95,7 @@ function ChatReplyInput({ sessionId, senderName, questionText }) {
   );
 }
 
-export default function StaffQuestionDetail({ question, onAction, loading, session, sessionId, senderName, staffId }) {
+export default memo(function StaffQuestionDetail({ question, onAction, loading, session, sessionId, senderName, staffId }) {
   const [openDM, setOpenDM] = useState(null);
   const { activeDMs, resolveDM, sendMessage } = useStaffDMs(sessionId);
 
@@ -120,7 +121,7 @@ export default function StaffQuestionDetail({ question, onAction, loading, sessi
       });
       setOpenDM({ id: dmRef.key, studentName: q.nickname || '학생', status: 'active', staffName: senderName });
     } catch (err) {
-      console.error('1:1 답변 생성 실패:', err);
+      logger.error('1:1 답변 생성 실패:', err);
     }
   }, [sessionId, staffId, senderName]);
 
@@ -251,4 +252,4 @@ export default function StaffQuestionDetail({ question, onAction, loading, sessi
       />
     </motion.div>
   );
-}
+});

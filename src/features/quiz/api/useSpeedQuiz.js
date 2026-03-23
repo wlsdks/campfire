@@ -2,6 +2,7 @@ import { ref, onValue, update, set, remove } from 'firebase/database';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { db } from '@/lib/firebase';
 import { isQuizQuestion, getQuizReward } from '@/lib/quiz';
+import { logger } from '@/lib/logger';
 
 const SPEED_QUIZ_TIMER = 10; // seconds per question
 const REVEAL_PAUSE = 3500;   // ms to show answer before next question
@@ -76,7 +77,7 @@ export function useSpeedQuiz(sessionId, session, { scores, participants, startTi
       setPhase('question');
       advancingRef.current = false;
     } catch (e) {
-      console.error('Speed quiz: activate failed', e);
+      logger.error('Speed quiz: activate failed', e);
       advancingRef.current = false;
     }
   }, [sessionId, startTimer]);
@@ -164,12 +165,12 @@ export function useSpeedQuiz(sessionId, session, { scores, participants, startTi
               await endSpeedQuizInternal();
             }, 5000);
           } catch (e) {
-            console.error('Speed quiz: leaderboard failed', e);
+            logger.error('Speed quiz: leaderboard failed', e);
           }
         }
       }, REVEAL_PAUSE);
     } catch (e) {
-      console.error('Speed quiz: reveal failed', e);
+      logger.error('Speed quiz: reveal failed', e);
       advancingRef.current = false;
     }
   }, [sessionId, stopTimer, getQuizQuestions, activateQuizQuestion]);
@@ -223,7 +224,7 @@ export function useSpeedQuiz(sessionId, session, { scores, participants, startTi
       // Activate first quiz question
       await activateQuizQuestion(quizQs[0][0]);
     } catch (e) {
-      console.error('Speed quiz: start failed', e);
+      logger.error('Speed quiz: start failed', e);
     }
   }, [sessionId, getQuizQuestions, activateQuizQuestion]);
 
@@ -236,7 +237,7 @@ export function useSpeedQuiz(sessionId, session, { scores, participants, startTi
       setPhase('idle');
       advancingRef.current = false;
     } catch (e) {
-      console.error('Speed quiz: end failed', e);
+      logger.error('Speed quiz: end failed', e);
     }
   }, [sessionId]);
 
@@ -254,7 +255,7 @@ export function useSpeedQuiz(sessionId, session, { scores, participants, startTi
       setPhase('idle');
       advancingRef.current = false;
     } catch (e) {
-      console.error('Speed quiz: end failed', e);
+      logger.error('Speed quiz: end failed', e);
     }
   }, [sessionId, stopTimer]);
 

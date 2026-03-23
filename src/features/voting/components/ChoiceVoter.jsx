@@ -1,5 +1,6 @@
 import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 import { getParticipantId } from '@/lib/participant';
 import { motion } from 'framer-motion';
 import { useState, memo } from 'react';
@@ -30,7 +31,7 @@ export default memo(function ChoiceVoter({ sessionId, questionId, options, disab
       });
       setVoted(true);
     } catch (err) {
-      console.error('Vote failed:', err);
+      logger.error('Vote failed:', err);
       setSelected(null);
     }
   }

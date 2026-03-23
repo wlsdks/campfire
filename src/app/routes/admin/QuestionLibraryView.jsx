@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, MessageSquare, Plus, Trash2, Search, X } from 'lucide-react';
 import { useQuestionLibrary } from '@/features/questions/api/useQuestionLibrary';
@@ -87,7 +87,7 @@ function LibraryQuestionCard({ question, onDelete, index }) {
   );
 }
 
-export default function QuestionLibraryView({ adminUid }) {
+export default memo(function QuestionLibraryView({ adminUid }) {
   const { questions, loading, saveQuestion, deleteQuestion } = useQuestionLibrary(adminUid);
   const [showForm, setShowForm] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -300,4 +300,4 @@ export default function QuestionLibraryView({ adminUid }) {
       <Toast message={toast} />
     </div>
   );
-}
+});

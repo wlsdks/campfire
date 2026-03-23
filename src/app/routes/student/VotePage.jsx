@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef, useMemo, lazy, Suspense } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo, lazy, Suspense, memo } from 'react';
 import { useSession } from '@/features/session/api/useSession';
 import ChoiceVoter from '@/features/voting/components/ChoiceVoter';
 import OXVoter from '@/features/voting/components/OXVoter';
@@ -36,7 +36,7 @@ import { getParticipantId } from '@/lib/participant';
 import { useQuestionChime } from '@/hooks/useQuestionChime';
 import ReviewingBanner from '@/components/ui/ReviewingBanner';
 
-export default function VotePage({ sessionId }) {
+export default memo(function VotePage({ sessionId }) {
   const { session, loading } = useSession(sessionId);
   const { isRunning: timerRunning, endTime, duration } = useTimer(sessionId);
   const [timerExpired, setTimerExpired] = useState(false);
@@ -289,4 +289,4 @@ export default function VotePage({ sessionId }) {
       <AchievementToast achievements={achievements} />
     </div>
   );
-}
+});

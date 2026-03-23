@@ -1,6 +1,7 @@
 import { useState, useMemo, memo } from 'react';
 import { ref, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Hand, Users, ChevronDown, AlertTriangle, Radio, MessageSquare, ArrowRight, Copy, Check } from 'lucide-react';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
@@ -123,7 +124,7 @@ function HandRaiseSection({ sessionId }) {
     try {
       await set(ref(db, `sessions/${sessionId}/handRaises/${participantId}/raised`), false);
     } catch (err) {
-      console.error('손들기 해제 실패:', err);
+      logger.error('손들기 해제 실패:', err);
     }
   }
 
@@ -312,7 +313,7 @@ function LinkSection({ sessionId }) {
   );
 }
 
-export default function StaffRightPanel({ sessionId, session, staffId, staffName, senderType }) {
+export default memo(function StaffRightPanel({ sessionId, session, staffId, staffName, senderType }) {
   return (
     <div className="h-full overflow-y-auto p-4 space-y-4">
       <DMSection sessionId={sessionId} staffId={staffId} staffName={staffName} senderType={senderType} />
@@ -323,4 +324,4 @@ export default function StaffRightPanel({ sessionId, session, staffId, staffName
       <LinkSection sessionId={sessionId} />
     </div>
   );
-}
+});

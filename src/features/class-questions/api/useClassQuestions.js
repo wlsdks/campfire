@@ -1,6 +1,7 @@
 import { ref, onValue, push, update, remove, serverTimestamp } from 'firebase/database';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 
 const COOLDOWN_MS = 3000;
 
@@ -59,7 +60,7 @@ export function useClassQuestions(sessionId) {
         cooldownRef.current = setTimeout(() => setCanPost(true), COOLDOWN_MS);
         return true;
       } catch (err) {
-        console.error('Post class question failed:', err);
+        logger.error('Post class question failed:', err);
         return false;
       }
     },
@@ -84,7 +85,7 @@ export function useClassQuestions(sessionId) {
           );
         }
       } catch (err) {
-        console.error('Toggle upvote failed:', err);
+        logger.error('Toggle upvote failed:', err);
       }
     },
     [sessionId, raw],
@@ -99,7 +100,7 @@ export function useClassQuestions(sessionId) {
         if (answeredByRole) data.answeredByRole = answeredByRole;
         await update(ref(db, `sessions/${sessionId}/classQuestions/${questionId}`), data);
       } catch (err) {
-        console.error('Mark answered failed:', err);
+        logger.error('Mark answered failed:', err);
       }
     },
     [sessionId],
@@ -111,7 +112,7 @@ export function useClassQuestions(sessionId) {
       try {
         await remove(ref(db, `sessions/${sessionId}/classQuestions/${questionId}`));
       } catch (err) {
-        console.error('Dismiss class question failed:', err);
+        logger.error('Dismiss class question failed:', err);
       }
     },
     [sessionId],

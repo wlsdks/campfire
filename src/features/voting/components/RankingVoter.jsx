@@ -1,5 +1,6 @@
 import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 import { getParticipantId } from '@/lib/participant';
 import { motion } from 'framer-motion';
 import { useState, useCallback, useMemo, memo } from 'react';
@@ -101,7 +102,7 @@ export default memo(function RankingVoter({ sessionId, questionId, options = [],
       });
       setSubmitted(true);
     } catch (err) {
-      console.error('Ranking vote failed:', err);
+      logger.error('Ranking vote failed:', err);
       setSubmitting(false);
     }
   }, [sessionId, questionId, order, pid, disabled, submitting]);

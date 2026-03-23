@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle, Trash2, ChevronDown, MessageCircle } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
+import { logger } from '@/lib/logger';
 
 export default function UrgentQuestionList({ sessionId }) {
   const { questionList, unreadCount } = useUrgentQuestions(sessionId);
@@ -17,7 +18,7 @@ export default function UrgentQuestionList({ sessionId }) {
     try {
       await update(ref(db, `sessions/${sessionId}/urgentQuestions/${questionId}`), { read: true });
     } catch (err) {
-      console.error('질문 읽음 처리 실패:', err);
+      logger.error('질문 읽음 처리 실패:', err);
     }
   }
 
@@ -25,7 +26,7 @@ export default function UrgentQuestionList({ sessionId }) {
     try {
       await remove(ref(db, `sessions/${sessionId}/urgentQuestions/${questionId}`));
     } catch (err) {
-      console.error('질문 삭제 실패:', err);
+      logger.error('질문 삭제 실패:', err);
     }
   }
 
@@ -33,7 +34,7 @@ export default function UrgentQuestionList({ sessionId }) {
     try {
       await update(ref(db, `sessions/${sessionId}/urgentQuestions/${questionId}`), { reviewing: value });
     } catch (err) {
-      console.error('질문 reviewing 상태 변경 실패:', err);
+      logger.error('질문 reviewing 상태 변경 실패:', err);
     }
   }
 

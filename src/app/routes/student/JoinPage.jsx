@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { ref, set, get, serverTimestamp, onDisconnect } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 import { getParticipantId, getNickname, setNickname as saveNickname } from '@/lib/participant';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, ArrowRight } from 'lucide-react';
@@ -64,7 +65,7 @@ export default function JoinPage({ sessionId, onJoin }) {
 
       onJoin(participantId, trimmed);
     } catch (err) {
-      console.error('Join failed:', err);
+      logger.error('Join failed:', err);
       setError('참여에 실패했습니다. 다시 시도해주세요.');
       setJoining(false);
     }

@@ -99,10 +99,10 @@ export function useAdminSession() {
   );
 
   // Navigation
-  function handleLogin() { setAdminUser(getAdminUser()); }
-  function handleSelectSession(id, isReadOnly) { setSessionId(id); setReadOnly(isReadOnly); setUrlParams({ s: id }); }
+  const handleLogin = useCallback(() => { setAdminUser(getAdminUser()); }, []);
+  const handleSelectSession = useCallback((id, isReadOnly) => { setSessionId(id); setReadOnly(isReadOnly); setUrlParams({ s: id }); }, []);
   const handleBack = useCallback(() => { setSessionId(''); setReadOnly(false); setPresentMode(false); setUrlParams({}); }, []);
-  function handleLogout() { sessionStorage.removeItem('pinggo_admin'); setAdminUser(null); setSessionId(''); setUrlParams({}); }
+  const handleLogout = useCallback(() => { sessionStorage.removeItem('pinggo_admin'); setAdminUser(null); setSessionId(''); setUrlParams({}); }, []);
 
   // UI toggles
   const handleChatToggle = useCallback(() => {
@@ -162,15 +162,13 @@ export function useAdminSession() {
     return success;
   }, [submitQuestion]);
 
-  const handleViewQuestion = useMemo(() => {
-    if (!effectiveReadOnly) return undefined;
-    return async (qId) => {
-      try {
-        if (qId === '__summary__') { await update(ref(db, `sessions/${sessionId}`), { currentQuestion: null, currentMode: 'waiting' }); }
-        else { await update(ref(db, `sessions/${sessionId}`), { currentQuestion: qId, currentMode: 'poll' }); }
-      } catch {}
-    };
-  }, [effectiveReadOnly, sessionId]);
+  const _viewQuestion = useCallback(async (qId) => {
+    try {
+      if (qId === '__summary__') { await update(ref(db, `sessions/${sessionId}`), { currentQuestion: null, currentMode: 'waiting' }); }
+      else { await update(ref(db, `sessions/${sessionId}`), { currentQuestion: qId, currentMode: 'poll' }); }
+    } catch {}
+  }, [sessionId]);
+  const handleViewQuestion = effectiveReadOnly ? _viewQuestion : undefined;
 
   return {
     // Auth

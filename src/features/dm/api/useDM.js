@@ -1,6 +1,7 @@
 import { ref, push, onValue, update, serverTimestamp } from 'firebase/database';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 
 /**
  * Student-side DM hook. Subscribes to DM threads for this student.
@@ -73,7 +74,7 @@ export function useStudentDM(sessionId, participantId) {
       });
       return true;
     } catch (err) {
-      console.error('Request help failed:', err);
+      logger.error('Request help failed:', err);
       return false;
     }
   }, [sessionId, participantId]);
@@ -89,7 +90,7 @@ export function useStudentDM(sessionId, participantId) {
       });
       return true;
     } catch (err) {
-      console.error('DM send failed:', err);
+      logger.error('DM send failed:', err);
       return false;
     }
   }, [sessionId, activeDM?.id]);
@@ -143,7 +144,7 @@ export function useStaffDMs(sessionId) {
         status: 'active',
       });
     } catch (err) {
-      console.error('Respond to DM failed:', err);
+      logger.error('Respond to DM failed:', err);
     }
   }, [sessionId]);
 
@@ -154,7 +155,7 @@ export function useStaffDMs(sessionId) {
         status: 'resolved',
       });
     } catch (err) {
-      console.error('Resolve DM failed:', err);
+      logger.error('Resolve DM failed:', err);
     }
   }, [sessionId]);
 
@@ -169,7 +170,7 @@ export function useStaffDMs(sessionId) {
       });
       return true;
     } catch (err) {
-      console.error('DM send failed:', err);
+      logger.error('DM send failed:', err);
       return false;
     }
   }, [sessionId]);

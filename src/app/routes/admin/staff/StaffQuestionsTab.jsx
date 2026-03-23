@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { ref, remove } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, HelpCircle, Check } from 'lucide-react';
 import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
@@ -27,7 +28,7 @@ export default function StaffQuestionsTab({ sessionId, adminUser }) {
       try {
         await remove(ref(db, `sessions/${sessionId}/urgentQuestions/${selected.id}`));
       } catch (err) {
-        console.error('긴급 질문 삭제 실패:', err);
+        logger.error('긴급 질문 삭제 실패:', err);
       }
     } else {
       const staffName = adminUser?.displayName || '스태프';

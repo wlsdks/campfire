@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ref, get } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 
 export function useRecentQuestions(sessions) {
   const [questions, setQuestions] = useState([]);
@@ -94,7 +95,7 @@ export function useRecentQuestions(sessions) {
           setDifficultQuestions(difficult);
         }
       } catch (err) {
-        console.error('Failed to fetch recent questions:', err);
+        logger.error('Failed to fetch recent questions:', err);
         if (!cancelled) {
           setQuestions([]);
           setDifficultQuestions([]);

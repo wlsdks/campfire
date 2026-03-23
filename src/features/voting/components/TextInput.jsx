@@ -1,5 +1,6 @@
 import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 import { getParticipantId } from '@/lib/participant';
 import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -74,7 +75,7 @@ export default memo(function TextInput({ sessionId, questionId, type = 'wordclou
       setSubmittedValue(text.trim());
       setSubmitted(true);
     } catch (err) {
-      console.error('Submit failed:', err);
+      logger.error('Submit failed:', err);
       setError('제출에 실패했습니다. 다시 시도해주세요.');
     }
   }

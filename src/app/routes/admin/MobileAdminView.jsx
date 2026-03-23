@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, BarChart3, Users, MessageSquare, Play, Hand, AlertCircle, HelpCircle, Copy, Check, ChevronDown, MoreHorizontal, Target, Ticket, Gift, Dices, CircleDot, Coffee, Trophy, Swords, X, Gamepad2 } from 'lucide-react';
 import JoinToast from '@/features/participants/components/JoinToast';
@@ -315,7 +315,7 @@ function MobileParticipantsTab({ sessionId, onlineList, count, studentUrl }) {
 }
 
 /* ─── Main Mobile View ─── */
-export default function MobileAdminView({ s }) {
+export default memo(function MobileAdminView({ s }) {
   const [activeTab, setActiveTab] = useState('progress');
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [modesOpen, setModesOpen] = useState(false);
@@ -450,4 +450,4 @@ export default function MobileAdminView({ s }) {
       <MobileTabBar activeTab={activeTab} onTabChange={setActiveTab} hasUnreadChat={s.hasUnreadChat} />
     </div>
   );
-}
+});

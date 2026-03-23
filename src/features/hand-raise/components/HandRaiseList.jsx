@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Hand, X, ChevronDown } from 'lucide-react';
 import PickMascot from '@/components/ui/PickMascot';
 import IconButton from '@/components/ui/IconButton';
+import { logger } from '@/lib/logger';
 
 export default function HandRaiseList({ sessionId }) {
   const { raisedList, count } = useHandRaises(sessionId);
@@ -27,7 +28,7 @@ export default function HandRaiseList({ sessionId }) {
     try {
       await set(ref(db, `sessions/${sessionId}/handRaises/${participantId}/raised`), false);
     } catch (err) {
-      console.error('손들기 해제 실패:', err);
+      logger.error('손들기 해제 실패:', err);
     }
   }
 
@@ -39,7 +40,7 @@ export default function HandRaiseList({ sessionId }) {
       });
       await update(ref(db), updates);
     } catch (err) {
-      console.error('전체 손들기 해제 실패:', err);
+      logger.error('전체 손들기 해제 실패:', err);
     }
   }
 

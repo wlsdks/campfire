@@ -1,5 +1,6 @@
 import { ref, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { motion, AnimatePresence } from 'framer-motion';
 import Avatar from '@/components/ui/Avatar';
@@ -13,7 +14,7 @@ export default function StaffHandRaisesTab({ sessionId }) {
     try {
       await set(ref(db, `sessions/${sessionId}/handRaises/${participantId}/raised`), false);
     } catch (err) {
-      console.error('손들기 해제 실패:', err);
+      logger.error('손들기 해제 실패:', err);
     }
   }
 

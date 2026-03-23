@@ -4,6 +4,7 @@ import { hapticTap } from '@/lib/haptics';
 import { ref, set, serverTimestamp } from 'firebase/database';
 import { Lock } from 'lucide-react';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 import { getNickname, getParticipantId } from '@/lib/participant';
 import { useVotes } from '@/hooks/useVotes';
 import VoteConfirm from './VoteConfirm';
@@ -59,7 +60,7 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
       }
       await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${participantId}`), voteData);
     } catch (err) {
-      console.error('Quiz vote failed:', err);
+      logger.error('Quiz vote failed:', err);
       setSelected(null);
       setPendingAnswer(null);
     }

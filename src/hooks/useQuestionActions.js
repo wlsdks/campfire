@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { ref, set, remove, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { generateQuestionId } from '@/lib/utils';
@@ -19,7 +19,10 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
   const [error, setError] = useState(null);
   const { toast, showToast } = useToast();
 
-  const questionList = Object.entries(questions || {}).sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
+  const questionList = useMemo(
+    () => Object.entries(questions || {}).sort((a, b) => (a[1].order || 0) - (b[1].order || 0)),
+    [questions]
+  );
 
   async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting }) {
     try {
@@ -86,13 +89,13 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     }
   }
 
-  async function clearActive() {
+  const clearActive = useCallback(async () => {
     try {
       await update(ref(db, `sessions/${sessionId}`), { currentQuestion: null, currentMode: 'waiting' });
     } catch {
       // Silently fail
     }
-  }
+  }, [sessionId]);
 
   async function deleteQuestion(qId) {
     try {
@@ -215,31 +218,31 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     }
   }
 
-  async function showLeaderboard() {
+  const showLeaderboard = useCallback(async () => {
     try {
       await update(ref(db, `sessions/${sessionId}`), { currentMode: 'leaderboard' });
     } catch {
       setError('리더보드 전환에 실패했습니다. 다시 시도해주세요.');
     }
-  }
+  }, [sessionId]);
 
-  async function armEvent(eventPreset) {
+  const armEvent = useCallback(async (eventPreset) => {
     try {
       setError(null);
       await set(ref(db, `sessions/${sessionId}/pendingEvent`), eventPreset);
     } catch {
       setError('이벤트 예약에 실패했습니다. 다시 시도해주세요.');
     }
-  }
+  }, [sessionId]);
 
-  async function clearPendingEvent() {
+  const clearPendingEvent = useCallback(async () => {
     try {
       setError(null);
       await remove(ref(db, `sessions/${sessionId}/pendingEvent`));
     } catch {
       setError('이벤트 해제에 실패했습니다. 다시 시도해주세요.');
     }
-  }
+  }, [sessionId]);
 
   return {
     error,

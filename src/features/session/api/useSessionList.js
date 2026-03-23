@@ -2,6 +2,7 @@ import { ref, get, remove, set, serverTimestamp } from 'firebase/database';
 import { useState, useEffect, useCallback } from 'react';
 import { db } from '@/lib/firebase';
 import { generateSessionId, generateQuestionId } from '@/lib/utils';
+import { logger } from '@/lib/logger';
 
 /**
  * Fetches all sessions from Firebase with metadata including course info.
@@ -64,7 +65,7 @@ export function useSessionList() {
       list.sort((a, b) => b.createdAt - a.createdAt);
       setSessions(list);
     } catch (err) {
-      console.error('Failed to fetch sessions:', err);
+      logger.error('Failed to fetch sessions:', err);
       setSessions([]);
     } finally {
       setLoading(false);
@@ -81,7 +82,7 @@ export function useSessionList() {
       setSessions((prev) => prev.filter((s) => s.id !== sessionId));
       return true;
     } catch (err) {
-      console.error('Failed to delete session:', err);
+      logger.error('Failed to delete session:', err);
       return false;
     }
   }, []);
@@ -155,7 +156,7 @@ export function useSessionList() {
 
       return newId;
     } catch (err) {
-      console.error('Failed to duplicate session:', err);
+      logger.error('Failed to duplicate session:', err);
       return null;
     }
   }, [sessions]);

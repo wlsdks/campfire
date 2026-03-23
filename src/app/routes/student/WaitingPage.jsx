@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Zap, Hand, MessageSquare, Trophy, Heart, Copy, Check, Target, Ticket, Gift, Dices, CircleDot, Coffee } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
@@ -95,7 +95,7 @@ const GAME_MODES = {
   teamBattle: { label: '팀 대항전 진행 중', icon: Trophy },
 };
 
-export default function WaitingPage({ sessionId, pendingEvent = null, courseName = null, currentMode = null }) {
+export default memo(function WaitingPage({ sessionId, pendingEvent = null, courseName = null, currentMode = null }) {
   const { count } = useParticipants(sessionId);
   const nickname = getNickname();
 
@@ -226,4 +226,4 @@ export default function WaitingPage({ sessionId, pendingEvent = null, courseName
       <StudentBottomBar sessionId={sessionId} />
     </div>
   );
-}
+});

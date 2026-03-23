@@ -1,5 +1,6 @@
 import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 import { getParticipantId } from '@/lib/participant';
 import { motion } from 'framer-motion';
 import { useState, useCallback, useRef, memo, useMemo } from 'react';
@@ -87,7 +88,7 @@ export default memo(function ScaleVoter({ sessionId, questionId, disabled = fals
       });
       setSubmitted(true);
     } catch (err) {
-      console.error('Scale vote failed:', err);
+      logger.error('Scale vote failed:', err);
       setSubmitting(false);
     }
   }, [sessionId, questionId, value, disabled, submitting]);

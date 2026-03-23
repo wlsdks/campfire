@@ -1,5 +1,6 @@
 import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 import { getParticipantId } from '@/lib/participant';
 import { useState, useCallback, useMemo, memo } from 'react';
 import { motion } from 'framer-motion';
@@ -116,7 +117,7 @@ export default memo(function FillBlankVoter({ sessionId, questionId, title, corr
       });
       setSubmitted(true);
     } catch (err) {
-      console.error('Fill-in-blank vote failed:', err);
+      logger.error('Fill-in-blank vote failed:', err);
       setSubmitting(false);
     }
   }, [sessionId, questionId, answer, disabled, submitting]);

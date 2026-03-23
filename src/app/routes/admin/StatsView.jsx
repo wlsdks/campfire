@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, memo } from 'react';
 import { motion } from 'framer-motion';
 import EmptyState from '@/components/ui/EmptyState';
 import { MessageSquare, Users, Loader2 } from 'lucide-react';
@@ -190,7 +190,7 @@ function QuestionsTab({ questions, difficultQuestions, questionsLoading, courseN
   );
 }
 
-export default function StatsView({ sessions }) {
+export default memo(function StatsView({ sessions }) {
   const [activeSubTab, setActiveSubTab] = useState('overview');
 
   const stats = useMemo(() => {
@@ -271,4 +271,4 @@ export default function StatsView({ sessions }) {
       )}
     </div>
   );
-}
+});

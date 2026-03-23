@@ -1,6 +1,7 @@
 import { ref, push, onValue, serverTimestamp, query, limitToLast } from 'firebase/database';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 
 const MAX_MESSAGES = 100;
 const COOLDOWN_MS = 2000;
@@ -64,7 +65,7 @@ export function useChat(sessionId) {
 
       return true;
     } catch (err) {
-      console.error('Send message failed:', err);
+      logger.error('Send message failed:', err);
       return false;
     }
   }, [sessionId, canSend]);

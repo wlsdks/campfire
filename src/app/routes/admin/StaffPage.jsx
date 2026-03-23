@@ -1,6 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
 import { ref, remove } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 import { ArrowLeft, Users, MessageSquare, LogOut } from 'lucide-react';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { useParticipants } from '@/features/participants/api/useParticipants';
@@ -57,7 +58,7 @@ export default function StaffPage({ sessionId, session, adminUser, onBack, onLog
       );
       setSelected(nextUnread || null);
     } catch (err) {
-      console.error('질문 처리 실패:', err);
+      logger.error('질문 처리 실패:', err);
     }
     setActionLoading(false);
   }, [sessionId, markAnswered, unified]);

@@ -1,6 +1,7 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, memo } from 'react';
 import { ref, set, push, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 import { getParticipantId, getNickname, getLastSeen, saveLastSeen } from '@/lib/participant';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { useStudentDM } from '@/features/dm/api/useDM';
@@ -19,7 +20,7 @@ import { timing } from '@/lib/design-tokens';
 const UNREAD_DOT = 'absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full animate-pulse';
 const BTN = 'h-[56px] rounded-xl bg-slate-50 text-slate-600 font-medium text-sm active:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:active:bg-slate-600 transition-all flex flex-col items-center justify-center gap-1';
 
-export default function StudentBottomBar({ sessionId }) {
+export default memo(function StudentBottomBar({ sessionId }) {
   const [showQuestionInput, setShowQuestionInput] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [showQA, setShowQA] = useState(false);
@@ -51,7 +52,7 @@ export default function StudentBottomBar({ sessionId }) {
         ? { nickname: getNickname(), raised: false, raisedAt: null }
         : { nickname: getNickname(), raised: true, raisedAt: serverTimestamp() }
       );
-    } catch (err) { console.error('Toggle hand failed:', err); }
+    } catch (err) { logger.error('Toggle hand failed:', err); }
   }
 
   async function submitUrgentQuestion(e) {
@@ -65,7 +66,7 @@ export default function StudentBottomBar({ sessionId }) {
       setSubmitted(true);
       setTimeout(() => setSubmitted(false), timing.successToastDuration);
     } catch (err) {
-      console.error('Submit question failed:', err);
+      logger.error('Submit question failed:', err);
       setSubmitError('전송에 실패했습니다. 다시 시도해주세요.');
       setTimeout(() => setSubmitError(null), 3000);
     }
@@ -142,4 +143,4 @@ export default function StudentBottomBar({ sessionId }) {
       </motion.div>
     </>
   );
-}
+});
