@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, lazy, Suspense, memo } from 'react';
+import { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, QrCode, X, Copy, Check } from 'lucide-react';
 import QRCode from '@/components/ui/QRCode';
@@ -191,7 +191,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
 
 export { MainContent };
 
-export default memo(function PresentationView({ sessionId, session, currentMode, onlineList, leaderboard, drawParticipants, studentUrl, count, onExit, teamScores, scores }) {
+export default function PresentationView({ sessionId, session, currentMode, onlineList, leaderboard, drawParticipants, studentUrl, count, onExit, teamScores, scores }) {
   const exitPresent = useCallback(() => onExit(), [onExit]);
 
   useEffect(() => {
@@ -232,4 +232,4 @@ export default memo(function PresentationView({ sessionId, session, currentMode,
       </div>
     </div>
   );
-});
+}

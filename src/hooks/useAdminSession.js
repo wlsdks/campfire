@@ -162,13 +162,15 @@ export function useAdminSession() {
     return success;
   }, [submitQuestion]);
 
-  const _viewQuestion = useCallback(async (qId) => {
-    try {
-      if (qId === '__summary__') { await update(ref(db, `sessions/${sessionId}`), { currentQuestion: null, currentMode: 'waiting' }); }
-      else { await update(ref(db, `sessions/${sessionId}`), { currentQuestion: qId, currentMode: 'poll' }); }
-    } catch {}
-  }, [sessionId]);
-  const handleViewQuestion = effectiveReadOnly ? _viewQuestion : undefined;
+  const handleViewQuestion = useMemo(() => {
+    if (!effectiveReadOnly) return undefined;
+    return async (qId) => {
+      try {
+        if (qId === '__summary__') { await update(ref(db, `sessions/${sessionId}`), { currentQuestion: null, currentMode: 'waiting' }); }
+        else { await update(ref(db, `sessions/${sessionId}`), { currentQuestion: qId, currentMode: 'poll' }); }
+      } catch {}
+    };
+  }, [effectiveReadOnly, sessionId]);
 
   return {
     // Auth
