@@ -187,11 +187,11 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
         q.answered ? 'opacity-60' : ''
       }`}
     >
-      <div className="flex">
+      <div className="flex min-h-[80px]">
         {/* Upvote column — big number, always visible */}
         <button
           onClick={() => onUpvote(q.id, pid)}
-          className={`flex flex-col items-center justify-center gap-1 px-4 py-5 border-r border-slate-100 dark:border-slate-700 transition-colors shrink-0 min-w-[56px] self-stretch ${
+          className={`flex flex-col items-center justify-center gap-1 px-4 border-r border-slate-100 dark:border-slate-700 transition-colors shrink-0 w-[60px] ${
             hasUpvoted
               ? 'bg-slate-50 dark:bg-slate-700/50'
               : 'hover:bg-slate-50 dark:hover:bg-slate-700/30'
