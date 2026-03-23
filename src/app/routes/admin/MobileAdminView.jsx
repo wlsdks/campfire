@@ -171,13 +171,13 @@ function MobileTabBar({ activeTab, onTabChange, hasUnreadChat }) {
   );
 }
 
-/* ─── Section Accordion (Apple inset grouped style: inside a card) ─── */
-function MobileSection({ icon: Icon, title, count, children, defaultOpen = true, isLast = false }) {
+/* ─── Section Accordion (토스 style: 독립 카드, 배경 대비) ─── */
+function MobileSection({ icon: Icon, title, count, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
-    <div className={!isLast ? 'border-b border-slate-100 dark:border-slate-700/50' : ''}>
+    <div className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden">
       <button onClick={() => setOpen(!open)} aria-expanded={open}
-        className="w-full flex items-center justify-between px-5 py-3.5 active:bg-slate-50 dark:active:bg-slate-700/50 transition-colors duration-150">
+        className="w-full flex items-center justify-between px-5 py-4 active:bg-slate-50 dark:active:bg-slate-700/50 transition-colors duration-150">
         <span className="flex items-center gap-2.5 text-[16px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight">
           <Icon size={18} className="text-slate-400" />
           {title}
@@ -195,7 +195,7 @@ function MobileSection({ icon: Icon, title, count, children, defaultOpen = true,
         {open && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }} className="overflow-hidden">
-            <div className="px-5 pb-4">{children}</div>
+            <div className="px-5 pb-5">{children}</div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -219,21 +219,22 @@ function MobileParticipantsTab({ sessionId, onlineList, count, studentUrl }) {
   return (
     <div className="bg-slate-50 dark:bg-slate-900 min-h-full">
       {/* Hero stat */}
-      <div className="text-center py-6">
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-[15px] text-slate-400">실시간 접속</span>
+      <div className="px-4 pt-4">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl text-center py-6">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-[15px] text-slate-400">실시간 접속</span>
+          </div>
+          <motion.p key={count} initial={{ scale: 1.1 }} animate={{ scale: 1 }}
+            className="text-5xl font-bold text-slate-900 dark:text-slate-100 tracking-tight tabular-nums">
+            {count}
+          </motion.p>
+          <p className="text-[15px] text-slate-400 mt-1">명 접속 중</p>
         </div>
-        <motion.p key={count} initial={{ scale: 1.1 }} animate={{ scale: 1 }}
-          className="text-4xl font-bold text-slate-900 dark:text-slate-100 tracking-tight tabular-nums">
-          {count}
-        </motion.p>
-        <p className="text-[15px] text-slate-400 mt-1">명 접속 중</p>
       </div>
 
-      {/* 섹션들 — Apple inset grouped: 하나의 카드 안에 hairline divider */}
+      {/* 섹션들 — 독립 카드, 배경 대비로 영역 구분 (토스/당근 패턴) */}
       <div className="px-4 pb-8 space-y-3">
-        <div className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden">
         <MobileSection icon={Hand} title="손들기" count={handCount} defaultOpen={handCount > 0}>
           {handCount === 0 ? (
             <p className="text-[15px] text-slate-400 text-center py-4">손든 학생이 없습니다</p>
@@ -282,7 +283,7 @@ function MobileParticipantsTab({ sessionId, onlineList, count, studentUrl }) {
           )}
         </MobileSection>
 
-        <MobileSection icon={Users} title="참여자" count={onlineList.length} isLast>
+        <MobileSection icon={Users} title="참여자" count={onlineList.length}>
           {onlineList.length === 0 ? (
             <div className="text-center py-8 space-y-3">
               <PickMascot size="sm" mood="waiting" />
@@ -299,8 +300,6 @@ function MobileParticipantsTab({ sessionId, onlineList, count, studentUrl }) {
             </div>
           )}
         </MobileSection>
-
-        </div>
 
         {/* 초대 링크 */}
         <div className="pt-1">
