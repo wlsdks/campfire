@@ -15,7 +15,7 @@ import PresentationView from './PresentationView';
 import ModeSwitcher from './ModeSwitcher';
 import TabletDrawers from './TabletDrawers';
 import CenterContent from './CenterContent';
-import AssignmentManager from '@/features/assignments/components/AssignmentManager';
+
 
 import MobileAdminView from './MobileAdminView';
 
@@ -87,9 +87,6 @@ export default function AdminPage() {
             teamBattleActive={s.teamBattleActive} />
         ) : null}
       />
-      {s.session?.courseName && !s.effectiveReadOnly && (
-        <AssignmentManager courseName={s.session.courseName} />
-      )}
     </>
   );
 

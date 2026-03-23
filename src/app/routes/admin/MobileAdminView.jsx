@@ -4,7 +4,7 @@ import { ArrowLeft, BarChart3, Users, MessageSquare, Play, Hand, AlertCircle, He
 import JoinToast from '@/features/participants/components/JoinToast';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import QuestionManager from './QuestionManager';
-import AssignmentManager from '@/features/assignments/components/AssignmentManager';
+
 import CenterContent from './CenterContent';
 import ChatPanel from '@/features/chat/components/ChatPanel';
 import TeamBattleControl from '@/features/teams/components/TeamBattleControl';
@@ -384,9 +384,6 @@ export default function MobileAdminView({ s }) {
                   adminUid={s.adminUser?.uid}
                   speedQuizActive={s.speedQuizActive} onStartSpeedQuiz={s.startSpeedQuiz} onEndSpeedQuiz={s.endSpeedQuiz} speedQuizCount={s.speedQuizCount}
                 />
-                {s.session?.courseName && !s.effectiveReadOnly && (
-                  <AssignmentManager courseName={s.session.courseName} />
-                )}
               </div>
             </motion.div>
           )}

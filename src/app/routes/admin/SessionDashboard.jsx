@@ -17,11 +17,13 @@ import { Plus, Loader2, LogOut } from 'lucide-react';
 const StatsView = lazy(() => import('./StatsView'));
 const QuestionLibraryView = lazy(() => import('./QuestionLibraryView'));
 const MoreView = lazy(() => import('./MoreView'));
+const AssignmentsTab = lazy(() => import('./AssignmentsTab'));
 
 const TABS = [
   { key: 'classes', label: '내 클래스' },
   { key: 'history', label: '수업 기록' },
   { key: 'library', label: '질문 보관함' },
+  { key: 'assignments', label: '과제' },
   { key: 'more', label: '더보기' },
 ];
 
@@ -32,7 +34,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
   const isStaff = adminUser?.role === 'staff';
   const [activeTab, setActiveTab] = useState(() => {
     const hash = window.location.hash.replace('#', '');
-    return ['classes', 'history', 'library', 'more'].includes(hash) ? hash : 'classes';
+    return ['classes', 'history', 'library', 'assignments', 'more'].includes(hash) ? hash : 'classes';
   });
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -276,6 +278,11 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
                 <QuestionLibraryView adminUid={adminUser?.uid} />
               </Suspense>
             </motion.div>
+          )}
+          {activeTab === 'assignments' && (
+            <Suspense fallback={<SuspenseFallback fullPage={false} />}>
+              <AssignmentsTab sessions={sessions} />
+            </Suspense>
           )}
           {activeTab === 'more' && (
             <motion.div key="more" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }}>
