@@ -132,7 +132,11 @@ export default function Lottery({ participants, onResult }) {
       </div>
 
       {/* Cards area */}
-      <div className="flex flex-wrap gap-5 justify-center min-h-[280px] items-center px-4">
+      <div className={`min-h-[280px] px-4 ${
+        count >= 4
+          ? 'grid grid-cols-2 gap-5 items-center justify-items-center'
+          : 'flex flex-wrap gap-5 justify-center items-center'
+      }`}>
         <AnimatePresence mode="popLayout">
           {winners.map((winner, i) => (
             <motion.div
