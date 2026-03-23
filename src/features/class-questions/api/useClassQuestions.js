@@ -27,6 +27,7 @@ export function useClassQuestions(sessionId) {
     return () => {
       unsub();
       if (cooldownRef.current) clearTimeout(cooldownRef.current);
+      if (answerCooldownRef.current) clearTimeout(answerCooldownRef.current);
     };
   }, [sessionId]);
 
@@ -124,10 +125,13 @@ export function useClassQuestions(sessionId) {
     [sessionId],
   );
 
+  const [canAnswer, setCanAnswer] = useState(true);
+  const answerCooldownRef = useRef(null);
+
   const postAnswer = useCallback(
     async (questionId, text, nickname, participantId) => {
       const trimmed = text?.trim();
-      if (!sessionId || !questionId || !trimmed) return false;
+      if (!sessionId || !questionId || !trimmed || !canAnswer) return false;
       try {
         await push(ref(db, `sessions/${sessionId}/classQuestions/${questionId}/answers`), {
           text: trimmed,
@@ -135,13 +139,15 @@ export function useClassQuestions(sessionId) {
           participantId: participantId || '',
           timestamp: serverTimestamp(),
         });
+        setCanAnswer(false);
+        answerCooldownRef.current = setTimeout(() => setCanAnswer(true), COOLDOWN_MS);
         return true;
       } catch (err) {
         logger.error('Post answer failed:', err);
         return false;
       }
     },
-    [sessionId],
+    [sessionId, canAnswer],
   );
 
   const toggleAnswerUpvote = useCallback(
@@ -179,5 +185,6 @@ export function useClassQuestions(sessionId) {
     toggleAnswerUpvote,
     loading,
     canPost,
+    canAnswer,
   };
 }

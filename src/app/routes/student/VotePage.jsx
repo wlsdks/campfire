@@ -132,12 +132,11 @@ export default memo(function VotePage({ sessionId }) {
   if (currentMode === 'leaderboard') return <Suspense fallback={<SuspenseFallback />}><LeaderboardPage sessionId={sessionId} /></Suspense>;
   if (currentMode === 'qaBoard') {
     return (
-      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pb-32 pt-16">
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pb-8 pt-16">
         <StudentHeader sessionId={sessionId} />
         <Suspense fallback={<SuspenseFallback />}>
           <ClassQABoard sessionId={sessionId} showInput />
         </Suspense>
-        <StudentBottomBar sessionId={sessionId} />
       </div>
     );
   }
