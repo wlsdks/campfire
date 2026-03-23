@@ -113,13 +113,17 @@ export default function GameResultOverlay({ isWinner, winnerNames, gameResult, s
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                {winnerNames.length === 1 ? `${winnerNames[0]}님 당첨!` : `${winnerNames[0]}님 외 ${winnerNames.length - 1}명 당첨!`}
+                {winnerNames.length === 0
+                  ? '당첨자가 발표되었습니다'
+                  : winnerNames.length === 1
+                    ? `${winnerNames[0]}님 당첨!`
+                    : `${winnerNames[0]}님 외 ${winnerNames.length - 1}명 당첨!`}
               </p>
               <p className="text-xs text-slate-400 dark:text-slate-500">
                 다음 기회에 도전해보세요
               </p>
             </div>
-            <button onClick={dismiss} className="text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-400 transition-colors shrink-0">
+            <button onClick={dismiss} aria-label="결과 닫기" className="text-slate-300 hover:text-slate-500 dark:text-slate-600 dark:hover:text-slate-400 transition-colors shrink-0">
               <X size={16} />
             </button>
           </div>

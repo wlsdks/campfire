@@ -28,7 +28,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     try {
       setError(null);
       const qId = generateQuestionId();
-      const questionData = { type, title: title.trim(), order: Object.keys(questions).length + 1 };
+      const questionData = { type, title: title.trim(), order: Object.keys(questions || {}).length + 1 };
       const isChoiceLike = type === 'choice' || type === 'quiz';
 
       if (isChoiceLike) {

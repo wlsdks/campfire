@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ref, onValue, set, serverTimestamp } from 'firebase/database';
+import { ref, onValue, set } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId } from '@/lib/participant';
 
@@ -18,7 +18,8 @@ export function usePublishGameResult(sessionId) {
       mode,
       winners, // Array of { id, nickname }
       allParticipantIds,
-      timestamp: serverTimestamp(),
+      resultId: `${mode}_${Date.now()}`,
+      timestamp: Date.now(),
     };
 
     await set(ref(db, `sessions/${sessionId}/gameResult`), result);
@@ -32,19 +33,18 @@ export function usePublishGameResult(sessionId) {
  * Returns the current game result and whether this student won.
  *
  * @param {string} sessionId
- * @returns {{ gameResult, isWinner, winnerNames, dismissed, dismiss }}
+ * @returns {{ gameResult, isWinner, winnerNames, showOverlay, dismiss }}
  */
 export function useGameResult(sessionId) {
   const [gameResult, setGameResult] = useState(null);
-  const [dismissed, setDismissed] = useState(null); // timestamp of dismissed result
+  const [dismissedId, setDismissedId] = useState(null);
 
   useEffect(() => {
     if (!sessionId) return;
 
     const resultRef = ref(db, `sessions/${sessionId}/gameResult`);
     const unsub = onValue(resultRef, (snap) => {
-      const val = snap.val();
-      setGameResult(val || null);
+      setGameResult(snap.val() || null);
     });
 
     return () => unsub();
@@ -55,15 +55,15 @@ export function useGameResult(sessionId) {
   const isWinner = gameResult?.winners?.some((w) => w.id === participantId) ?? false;
   const winnerNames = gameResult?.winners?.map((w) => w.nickname) ?? [];
 
-  // Dismiss: hide the overlay but remember which result was dismissed
+  // Dismiss: hide the overlay using stable resultId
   const dismiss = useCallback(() => {
-    if (gameResult?.timestamp) {
-      setDismissed(gameResult.timestamp);
+    if (gameResult) {
+      setDismissedId(gameResult.resultId || null);
     }
-  }, [gameResult?.timestamp]);
+  }, [gameResult]);
 
   // Show overlay only if result exists and hasn't been dismissed
-  const showOverlay = gameResult && gameResult.timestamp !== dismissed;
+  const showOverlay = Boolean(gameResult && gameResult.resultId && gameResult.resultId !== dismissedId);
 
   return { gameResult, isWinner, winnerNames, showOverlay, dismiss };
 }
