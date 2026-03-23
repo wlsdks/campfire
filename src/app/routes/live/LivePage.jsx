@@ -15,6 +15,7 @@ import JoinToast from '@/features/participants/components/JoinToast';
 import TimerCountdown from '@/features/timer/components/TimerCountdown';
 import Badge from '@/components/ui/Badge';
 import PickMascot from '@/components/ui/PickMascot';
+import { Eye } from 'lucide-react';
 import LiveHeader from './LiveHeader';
 import LiveParticipation from './LiveParticipation';
 
@@ -163,6 +164,13 @@ export default function LivePage() {
                   {currentMode === 'comprehension' && <ComprehensionPresenter sessionId={sessionId} />}
                   {currentMode === 'quickSurvey' && <SurveyPresenter sessionId={sessionId} />}
                   {currentMode === 'discussion' && <DiscussionPresenter sessionId={sessionId} />}
+                  {currentMode === 'focus' && (
+                    <div className="flex flex-col items-center justify-center gap-6 text-center">
+                      <Eye size={48} className="text-white/60" />
+                      <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">집중 모드</p>
+                      <p className="text-white/40 text-lg">학생 화면이 잠겼습니다</p>
+                    </div>
+                  )}
                 </Suspense>
               </motion.div>
             ) : hasActiveQuestion ? (
