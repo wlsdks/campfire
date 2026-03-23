@@ -191,11 +191,7 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
         {/* Upvote column — big number, always visible */}
         <button
           onClick={() => onUpvote(q.id, pid)}
-          className={`flex flex-col items-center justify-center gap-1 shrink-0 w-[56px] rounded-l-xl transition-colors ${
-            hasUpvoted
-              ? 'bg-slate-100 dark:bg-slate-700'
-              : 'bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700'
-          }`}
+          className="flex flex-col items-center justify-center gap-1 shrink-0 w-[56px] rounded-l-xl bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
         >
           <ThumbsUp size={15} className={`transition-colors ${hasUpvoted ? 'text-slate-900 dark:text-slate-100 fill-current' : 'text-slate-400 dark:text-slate-500'}`} />
           <span className={`text-base font-bold tabular-nums ${
