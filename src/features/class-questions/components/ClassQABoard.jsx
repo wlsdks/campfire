@@ -187,7 +187,7 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
         q.answered ? 'opacity-60' : ''
       }`}
     >
-      <div className="flex h-[110px]">
+      <div className="flex">
         {/* Upvote column — big number, always visible */}
         <button
           onClick={() => onUpvote(q.id, pid)}
