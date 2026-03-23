@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, memo } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { ref, set, onValue, remove, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId } from '@/lib/participant';

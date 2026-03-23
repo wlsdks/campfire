@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, memo } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { ref, set, onValue, remove, push, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId, getNickname } from '@/lib/participant';
@@ -60,7 +60,6 @@ function StudentDiscussion({ sessionId }) {
     setSubmitted(true);
   }
 
-  const isActive = discussion?.endTime && remaining > 0;
   const isFinished = discussion?.endTime && remaining === 0;
   const progress = discussion?.duration > 0 ? remaining / discussion.duration : 0;
   const isUrgent = remaining <= 10 && remaining > 0;
@@ -171,7 +170,6 @@ export function DiscussionPresenter({ sessionId }) {
     await remove(ref(db, `sessions/${sessionId}/discussion`));
   }
 
-  const isActive = discussion?.endTime && remaining > 0;
   const isFinished = discussion?.endTime && remaining === 0;
   const memos = discussion?.memos ? Object.values(discussion.memos) : [];
   const progress = discussion?.duration > 0 ? remaining / discussion.duration : 0;
