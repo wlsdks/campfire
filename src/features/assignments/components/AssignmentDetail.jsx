@@ -84,14 +84,15 @@ export default function AssignmentDetail({ assignmentId, onBack }) {
   });
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 pt-2 mt-4 border-t border-slate-200 dark:border-slate-700">
       {/* Header */}
       <div className="flex items-center gap-3">
         <button onClick={onBack} className="p-2 -ml-2 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 active:bg-slate-100 dark:active:bg-slate-700 transition-colors duration-150">
           <ArrowLeft size={20} />
         </button>
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight truncate">{assignment.title}</h3>
+          <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">과제</p>
+          <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 tracking-tight truncate">{assignment.title}</h3>
           <p className="text-sm text-slate-400">{submissions.length}건 제출</p>
         </div>
       </div>
@@ -100,7 +101,7 @@ export default function AssignmentDetail({ assignmentId, onBack }) {
       <div className="flex items-center gap-2">
         <button
           onClick={handleCopy}
-          className="flex-1 flex items-center gap-2 px-4 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm text-sm text-slate-600 dark:text-slate-300 active:scale-[0.98] transition-transform"
+          className="flex-1 flex items-center gap-2 px-4 py-3 bg-slate-50 dark:bg-slate-700 rounded-xl text-sm text-slate-600 dark:text-slate-300 active:scale-[0.98] transition-transform"
         >
           {copied ? <Check size={14} className="text-emerald-500 shrink-0" /> : <Copy size={14} className="text-slate-400 shrink-0" />}
           <span className="truncate">{copied ? '복사됨!' : '제출 링크 복사'}</span>
@@ -112,7 +113,7 @@ export default function AssignmentDetail({ assignmentId, onBack }) {
 
       {/* Judging panel */}
       {assignment.status !== 'judged' && (
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4">
+        <div className="bg-slate-50 dark:bg-slate-700 rounded-xl p-4">
           <JudgingPanel assignmentId={assignmentId} submissionCount={submissions.length} />
         </div>
       )}
