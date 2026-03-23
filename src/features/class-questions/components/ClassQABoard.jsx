@@ -56,10 +56,10 @@ export default function ClassQABoard({ sessionId, showInput = true }) {
     <div className="w-full max-w-4xl mx-auto" onClick={(e) => e.stopPropagation()}>
       {/* Header + Tabs */}
       <div className="flex items-center justify-between mb-5">
-        <h2 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+        <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
           Q&A 보드
           {questions.length > 0 && (
-            <span className="ml-2 text-base font-normal text-slate-400">{questions.length}개</span>
+            <span className="ml-2 text-lg font-normal text-slate-400">{questions.length}개</span>
           )}
         </h2>
         <div className="flex bg-slate-100 dark:bg-slate-800 rounded-lg p-0.5">
@@ -180,7 +180,7 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
           <span className="text-xs text-slate-400 shrink-0">{timeAgo(q.timestamp)}</span>
         </div>
 
-        <p className="text-base text-slate-900 dark:text-slate-100 leading-relaxed">{q.text}</p>
+        <p className="text-base md:text-lg text-slate-900 dark:text-slate-100 leading-relaxed">{q.text}</p>
 
         {/* Actions */}
         <div className="flex items-center gap-3 pt-1">
@@ -198,11 +198,11 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
 
           <button
             onClick={() => setExpanded(!expanded)}
-            className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+            className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 px-2 py-1 -mx-2 rounded-lg transition-colors"
           >
             <MessageSquare size={14} />
-            {q.answerCount > 0 && <span className="tabular-nums">{q.answerCount}</span>}
-            {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+            <span>{q.answerCount > 0 ? `답변 ${q.answerCount}` : '답변'}</span>
+            {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
           </button>
 
           {q.answered && (

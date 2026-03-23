@@ -95,6 +95,7 @@ const GAME_MODES = {
   plinko: { label: '핀볼 진행 중', icon: CircleDot },
   breakTime: { label: '쉬는 시간', icon: Coffee },
   teamBattle: { label: '팀 대항전 진행 중', icon: Trophy },
+  qaBoard: { label: 'Q&A 보드 진행 중', icon: Users },
 };
 
 export default memo(function WaitingPage({ sessionId, pendingEvent = null, courseName = null, currentMode = null }) {
