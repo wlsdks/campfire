@@ -16,5 +16,11 @@ export async function hashPassword(password) {
  * @returns {string} ID prefixed with "adm_"
  */
 export function generateId() {
-  return 'adm_' + crypto.randomUUID().slice(0, 12);
+  // Fallback for browsers without crypto.randomUUID (Safari <15.3)
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return 'adm_' + crypto.randomUUID().slice(0, 12);
+  }
+  const bytes = new Uint8Array(6);
+  crypto.getRandomValues(bytes);
+  return 'adm_' + [...bytes].map((b) => b.toString(16).padStart(2, '0')).join('');
 }

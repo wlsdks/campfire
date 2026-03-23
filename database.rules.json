@@ -252,6 +252,16 @@
           }
         },
 
+        "gameResult": {
+          ".write": true,
+          ".validate": "newData.hasChild('mode') && newData.hasChild('winners') && newData.hasChild('resultId')",
+          "mode": { ".validate": "newData.isString() && newData.val().length <= 20" },
+          "winners": { ".validate": true },
+          "resultId": { ".validate": "newData.isString() && newData.val().length <= 50" },
+          "timestamp": { ".validate": "newData.isNumber()" },
+          "allParticipantIds": { ".validate": true }
+        },
+
         "$other": {
           ".write": true
         }

@@ -21,7 +21,17 @@ function writeJoinedSessions(nextSessions) {
 export function getParticipantId() {
   let id = localStorage.getItem(PARTICIPANT_ID_KEY);
   if (!id) {
-    id = crypto.randomUUID();
+    // Inline UUID v4 with fallback for older browsers (Safari <15.3)
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+      id = crypto.randomUUID();
+    } else {
+      const bytes = new Uint8Array(16);
+      crypto.getRandomValues(bytes);
+      bytes[6] = (bytes[6] & 0x0f) | 0x40;
+      bytes[8] = (bytes[8] & 0x3f) | 0x80;
+      const h = [...bytes].map((b) => b.toString(16).padStart(2, '0')).join('');
+      id = `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
+    }
     localStorage.setItem(PARTICIPANT_ID_KEY, id);
   }
   return id;

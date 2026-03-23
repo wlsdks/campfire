@@ -1,9 +1,27 @@
 /**
+ * Generate a UUID v4 with fallback for older browsers (Safari <15.3, Android).
+ * Uses crypto.randomUUID() when available, falls back to crypto.getRandomValues().
+ * @returns {string} UUID v4 string
+ */
+export function uuid() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  // Fallback: construct from crypto.getRandomValues (supported in all modern browsers)
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  bytes[6] = (bytes[6] & 0x0f) | 0x40; // version 4
+  bytes[8] = (bytes[8] & 0x3f) | 0x80; // variant 1
+  const hex = [...bytes].map((b) => b.toString(16).padStart(2, '0')).join('');
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}
+
+/**
  * Generates a short unique ID for a question (e.g. "q_a1b2c3d4").
  * @returns {string} Question ID prefixed with "q_"
  */
 export function generateQuestionId() {
-  return 'q_' + crypto.randomUUID().slice(0, 8);
+  return 'q_' + uuid().slice(0, 8);
 }
 
 /**
@@ -11,7 +29,7 @@ export function generateQuestionId() {
  * @returns {string} Session ID prefixed with "s_"
  */
 export function generateSessionId() {
-  return 's_' + crypto.randomUUID().slice(0, 8);
+  return 's_' + uuid().slice(0, 8);
 }
 
 /**
