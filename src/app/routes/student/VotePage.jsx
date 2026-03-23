@@ -19,10 +19,10 @@ import { TYPE_LABELS, QuizResultFromVote, TimerExpiredOverlay } from './VoteHelp
 import Badge from '@/components/ui/Badge';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
-import { SkeletonCard, SuspenseFallback } from '@/components/ui/Skeleton';
+import { SuspenseFallback, VotePageSkeleton } from '@/components/ui/Skeleton';
 import TimerCountdown from '@/features/timer/components/TimerCountdown';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+
 import { useTimer } from '@/features/timer/api/useTimer';
 import { useScores } from '@/features/quiz/api/useScores';
 import { useAchievements } from '@/features/quiz/api/useAchievements';
@@ -98,18 +98,7 @@ export default memo(function VotePage({ sessionId }) {
   }, [session?.questions, session?.currentQuestion]);
 
   if (loading) {
-    return (
-      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
-        <div className="w-full max-w-xl space-y-4">
-          <div className="flex items-center justify-center gap-2 text-slate-400">
-            <Loader2 size={18} className="animate-spin" />
-            <span className="text-sm">불러오는 중...</span>
-          </div>
-          <SkeletonCard />
-          <SkeletonCard />
-        </div>
-      </div>
-    );
+    return <VotePageSkeleton />;
   }
 
   const currentQId = session?.currentQuestion;
