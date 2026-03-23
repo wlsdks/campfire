@@ -1,7 +1,7 @@
 # Pick Background Improvement Loop
 
 > 10분 간격 자동 실행. 매 사이클 시작 시 CLAUDE.md + DESIGN_SYSTEM.md 참조.
-> 브랜치: `background-improve-v3`에서만 작업. main은 절대 건드리지 않음.
+> 브랜치: `background-improve-v4`에서만 작업. main은 절대 건드리지 않음.
 
 ## 서비스 정체성
 
@@ -232,6 +232,11 @@ JoinPage → WaitingPage → VotePage(투표) → VoteConfirm → 결과 대기 
 - 세팅중 세션에 학생이 접속하면 대기 화면이 나오는가?
 - 수업 종료 후 학생이 새로고침하면 요약 카드가 보이는가?
 
+### 🔴 모드 전환 UX 연계 (즉시 수정 필요)
+- **강사 모바일: 모드 선택 시 자동으로 결과 탭으로 이동** — 현재 모드 선택해도 "진행" 탭에 그대로 있어서 혼란. switchMode 호출 후 결과 탭으로 자동 전환해야 함
+- **전자칠판(/live)에서 Q&A 보드 모드 지원** — 강사가 qaBoard 모드 선택 시 전자칠판에서도 Q&A 보드가 표시되어야 함. 현재는 퀴즈 결과만 보이는 상태
+- **모드 전환 시 학생 화면 즉시 반영** — 강사가 모드 전환하면 학생 WaitingPage의 모드 인디케이터가 즉시 변경
+
 ---
 
 ## 다음 구현 목표
@@ -422,16 +427,13 @@ Pick에서:
 ## 사이클 로그
 > 최근 10개만 유지.
 
-2026-03-24 | fix: 게임 3종 StrictMode mountedRef 버그 수정 (영원히 "돌리는 중" 해결)
-2026-03-24 | fix: 돌림판 연속 스핀 시 당첨자 불일치 — 누적 각도 delta 계산 방식으로 수정
-2026-03-24 | fix: 돌림판 당첨 화면 오버플로우 — 휠 축소 transition
-2026-03-24 | fix: BreakMascot 갈기 회전 중심 이탈 — transformOrigin 수정
-2026-03-24 | improve: 쉬는시간 프리셋 버튼 dark pill 스타일
-2026-03-24 | improve: 모드 전환 드롭다운 버튼 (아코디언→헤더 드롭다운)
-2026-03-24 | improve: 팀 대항전을 모드 드롭다운에 통합, 설정 UI 센터 표시
-2026-03-24 | improve: 긴급 질문 BottomSheet→Modal + 익명/이름표시 토글
-2026-03-24 | improve: 메모를 우측 패널(손들기 위)로 이동
-2026-03-23 | feat: 핀볼(Plinko) 게임 — 핀 보드 공 떨어뜨리기 당첨 게임
+2026-03-24 | fix: border+shadow-sm 이중 깊이 제거 — 토큰/Card/투표 컴포넌트 7개 파일
+2026-03-24 | improve: 모바일 참여 탭 — 독립 카드 + shadow-sm + 간격 (토스 패턴)
+2026-03-24 | fix: design system audit — spring 프리셋 + 모노크롬 리액션
+2026-03-24 | fix: 게임 3종 StrictMode mountedRef + 돌림판 각도 + 휠 축소
+2026-03-24 | improve: 모드 드롭다운 + 팀 대항전 통합 + 쉬는시간 dark pill
+2026-03-24 | improve: 긴급 질문 Modal + 익명 토글 + 메모 우측 패널 이동
+2026-03-24 | merged to main + firebase deploy (v3→v4 브랜치 전환)
 
 ---
 
