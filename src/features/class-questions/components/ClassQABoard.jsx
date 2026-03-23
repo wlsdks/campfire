@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ThumbsUp, MessageSquare, Send, ChevronDown, ChevronUp } from 'lucide-react';
 import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
 import { getParticipantId, getNickname } from '@/lib/participant';
-import Avatar from '@/components/ui/Avatar';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
@@ -173,9 +172,8 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
       {/* Question header */}
       <div className="p-4 space-y-2.5">
         <div className="flex items-start justify-between gap-2">
-          <div className="flex items-center gap-2 min-w-0">
-            <Avatar name={q.nickname} size="xs" />
-            <span className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 truncate">
               {q.nickname}
             </span>
             {isOwn && <Badge variant="neutral">나</Badge>}
@@ -273,10 +271,9 @@ function AnswerItem({ answer: a, questionId, pid, onUpvote }) {
 
   return (
     <div className="flex gap-2.5">
-      <Avatar name={a.nickname} size="xs" />
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-slate-600 dark:text-slate-300">{a.nickname}</span>
+          <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">{a.nickname}</span>
           {isOwn && <span className="text-[10px] text-slate-400">나</span>}
           <span className="text-[10px] text-slate-400">{timeAgo(a.timestamp)}</span>
         </div>
