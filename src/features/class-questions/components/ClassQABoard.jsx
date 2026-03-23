@@ -191,22 +191,22 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
         {/* Upvote column — big number, always visible */}
         <button
           onClick={() => onUpvote(q.id, pid)}
-          className={`flex flex-col items-center justify-center gap-1 shrink-0 w-[60px] transition-colors ${
+          className={`flex flex-col items-center justify-center gap-1 shrink-0 w-[56px] rounded-l-xl transition-colors ${
             hasUpvoted
-              ? 'bg-slate-100/60 dark:bg-slate-700/50'
-              : 'hover:bg-slate-100/40 dark:hover:bg-slate-700/30'
+              ? 'bg-slate-100 dark:bg-slate-700'
+              : 'bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700'
           }`}
         >
-          <ThumbsUp size={16} className={`transition-colors ${hasUpvoted ? 'text-slate-900 dark:text-slate-100 fill-current' : 'text-slate-300 dark:text-slate-600'}`} />
-          <span className={`text-lg font-bold tabular-nums ${
+          <ThumbsUp size={15} className={`transition-colors ${hasUpvoted ? 'text-slate-900 dark:text-slate-100 fill-current' : 'text-slate-400 dark:text-slate-500'}`} />
+          <span className={`text-base font-bold tabular-nums ${
             q.upvoteCount > 0
               ? 'text-slate-900 dark:text-slate-100'
-              : 'text-slate-300 dark:text-slate-600'
+              : 'text-slate-400 dark:text-slate-500'
           }`}>{q.upvoteCount}</span>
         </button>
 
         {/* Content column */}
-        <div className="flex-1 min-w-0 p-4 space-y-2 border-l border-slate-100 dark:border-slate-700">
+        <div className="flex-1 min-w-0 p-4 space-y-2">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1.5 min-w-0">
               <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 truncate">
