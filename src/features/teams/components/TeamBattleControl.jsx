@@ -23,7 +23,7 @@ export default memo(function TeamBattleControl({
   const canStart = participantCount >= 4;
 
   return (
-    <div ref={containerRef} className="mt-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden shadow-sm">
+    <div ref={containerRef} className="mt-3 rounded-xl bg-white dark:bg-slate-800 overflow-hidden shadow-sm">
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150"

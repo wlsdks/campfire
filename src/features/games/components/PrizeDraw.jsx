@@ -145,7 +145,7 @@ export default function PrizeDraw({ participants, onResult }) {
           className="flex items-center gap-3"
         >
           <span className="text-slate-500 text-sm font-medium">추첨 인원</span>
-          <div className="flex items-center bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+          <div className="flex items-center bg-white dark:bg-slate-800 rounded-lg shadow-sm overflow-hidden">
             <button
               onClick={() => setCount(Math.max(1, count - 1))}
               aria-label="추첨 인원 감소"

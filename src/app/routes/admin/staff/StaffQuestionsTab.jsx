@@ -61,7 +61,7 @@ export default function StaffQuestionsTab({ sessionId, adminUser }) {
               className={`p-3.5 rounded-xl text-sm cursor-pointer transition-colors duration-150 ${
                 isDimmed
                   ? 'bg-slate-50 dark:bg-slate-800/60 opacity-60'
-                  : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm active:bg-slate-50 dark:active:bg-slate-700'
+                  : 'bg-white dark:bg-slate-800 shadow-sm active:bg-slate-50 dark:active:bg-slate-700'
               }`}
             >
               <div className="flex items-start gap-2.5">
