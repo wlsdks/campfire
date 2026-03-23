@@ -139,7 +139,7 @@ export default function ClassQABoard({ sessionId, showInput = true }) {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <AnimatePresence mode="popLayout">
             {filtered.map((q, i) => (
               <QuestionCard
@@ -163,12 +163,10 @@ export default function ClassQABoard({ sessionId, showInput = true }) {
 
 function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswer, onAnswerUpvote }) {
   const [expanded, setExpanded] = useState(false);
-  const [textExpanded, setTextExpanded] = useState(false);
   const [answerText, setAnswerText] = useState('');
   const [posting, setPosting] = useState(false);
   const isOwn = q.participantId === pid;
   const hasUpvoted = q.upvotes?.[pid];
-  const isLong = q.text.length > 60;
 
   async function handlePostAnswer() {
     if (!answerText.trim() || posting) return;
@@ -189,7 +187,7 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
         q.answered ? 'opacity-60' : ''
       }`}
     >
-      <div className="flex">
+      <div className="flex h-[110px]">
         {/* Upvote column — big number, always visible */}
         <button
           onClick={() => onUpvote(q.id, pid)}
@@ -220,19 +218,7 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
             <span className="text-[11px] text-slate-400 shrink-0">{timeAgo(q.timestamp)}</span>
           </div>
 
-          <p
-            className={`text-base md:text-lg text-slate-900 dark:text-slate-100 leading-snug ${!textExpanded && isLong ? 'line-clamp-2' : ''}`}
-            onClick={isLong ? () => setTextExpanded(!textExpanded) : undefined}
-            role={isLong ? 'button' : undefined}
-            style={isLong ? { cursor: 'pointer' } : undefined}
-          >
-            {q.text}
-          </p>
-          {isLong && !textExpanded && (
-            <button onClick={() => setTextExpanded(true)} className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
-              더보기
-            </button>
-          )}
+          <p className="text-sm md:text-base text-slate-900 dark:text-slate-100 leading-snug line-clamp-2">{q.text}</p>
 
           {/* Answer toggle */}
           <button
@@ -257,6 +243,10 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
             className="overflow-hidden"
           >
             <div className="border-t border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 px-4 py-3 space-y-3">
+              {/* Full question text (visible when expanded) */}
+              {q.text.length > 60 && (
+                <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed pb-2 border-b border-slate-100 dark:border-slate-700">{q.text}</p>
+              )}
               {/* Existing answers */}
               {q.answerList.length > 0 ? (
                 q.answerList.map((a) => (
