@@ -165,50 +165,52 @@ function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswe
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25, delay: index * 0.03 }}
-      className={`bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden ${
-        q.answered ? 'opacity-70' : ''
+      className={`bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm overflow-hidden transition-opacity duration-300 ${
+        q.answered ? 'opacity-60' : ''
       }`}
     >
-      {/* Question header */}
-      <div className="p-4 space-y-2.5">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex items-center gap-1.5 min-w-0">
-            <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 truncate">
-              {q.nickname}
-            </span>
-            {isOwn && <Badge variant="neutral">나</Badge>}
+      <div className="flex">
+        {/* Upvote column — big number, always visible */}
+        <button
+          onClick={() => onUpvote(q.id, pid)}
+          className={`flex flex-col items-center justify-center gap-1 px-4 py-5 border-r border-slate-100 dark:border-slate-700 transition-colors shrink-0 min-w-[56px] ${
+            hasUpvoted
+              ? 'bg-slate-50 dark:bg-slate-700/50'
+              : 'hover:bg-slate-50 dark:hover:bg-slate-700/30'
+          }`}
+        >
+          <ThumbsUp size={16} className={`transition-colors ${hasUpvoted ? 'text-slate-900 dark:text-slate-100 fill-current' : 'text-slate-300 dark:text-slate-600'}`} />
+          <span className={`text-lg font-bold tabular-nums ${
+            q.upvoteCount > 0
+              ? 'text-slate-900 dark:text-slate-100'
+              : 'text-slate-300 dark:text-slate-600'
+          }`}>{q.upvoteCount}</span>
+        </button>
+
+        {/* Content column */}
+        <div className="flex-1 min-w-0 p-4 space-y-2">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 truncate">
+                {q.nickname}
+              </span>
+              {isOwn && <Badge variant="neutral">나</Badge>}
+              {q.answered && <Badge variant="neutral">답변 완료</Badge>}
+            </div>
+            <span className="text-[11px] text-slate-400 shrink-0">{timeAgo(q.timestamp)}</span>
           </div>
-          <span className="text-xs text-slate-400 shrink-0">{timeAgo(q.timestamp)}</span>
-        </div>
 
-        <p className="text-base md:text-lg text-slate-900 dark:text-slate-100 leading-relaxed">{q.text}</p>
+          <p className="text-base md:text-lg text-slate-900 dark:text-slate-100 leading-relaxed">{q.text}</p>
 
-        {/* Actions */}
-        <div className="flex items-center gap-3 pt-1">
-          <button
-            onClick={() => onUpvote(q.id, pid)}
-            className={`flex items-center gap-1.5 text-sm transition-colors ${
-              hasUpvoted
-                ? 'text-slate-900 dark:text-slate-100 font-semibold'
-                : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'
-            }`}
-          >
-            <ThumbsUp size={14} className={hasUpvoted ? 'fill-current' : ''} />
-            {q.upvoteCount > 0 && <span className="tabular-nums">{q.upvoteCount}</span>}
-          </button>
-
+          {/* Answer toggle */}
           <button
             onClick={() => setExpanded(!expanded)}
-            className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 px-2 py-1 -mx-2 rounded-lg transition-colors"
+            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
           >
-            <MessageSquare size={14} />
-            <span>{q.answerCount > 0 ? `답변 ${q.answerCount}` : '답변'}</span>
-            {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            <MessageSquare size={13} />
+            <span>{q.answerCount > 0 ? `답변 ${q.answerCount}개` : '답변하기'}</span>
+            {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
           </button>
-
-          {q.answered && (
-            <Badge variant="neutral">답변 완료</Badge>
-          )}
         </div>
       </div>
 
