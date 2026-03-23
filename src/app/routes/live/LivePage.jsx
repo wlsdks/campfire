@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSession } from '@/features/session/api/useSession';
@@ -8,6 +8,7 @@ import { useVotes } from '@/hooks/useVotes';
 import { useScores } from '@/features/quiz/api/useScores';
 import { useTeamBattle } from '@/features/teams/api/useTeamBattle';
 import { useTeamScores } from '@/features/teams/api/useTeamBattle';
+import { usePublishGameResult } from '@/features/games/api/useGameResult';
 import VizRenderer from '@/features/visualization/components/VizRenderer';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import JoinToast from '@/features/participants/components/JoinToast';
@@ -49,6 +50,20 @@ export default function LivePage() {
   const currentMode = session?.currentMode;
   const question = currentQId ? session?.questions?.[currentQId] : null;
   const { totalVotes } = useVotes(sessionId, currentQId);
+
+  const { publishResult } = usePublishGameResult(sessionId);
+
+  // Publish game results to Firebase so students can see them.
+  // Games call onResult with nickname(s). We resolve IDs from onlineList.
+  const handleGameResult = useCallback((mode) => (resultNames) => {
+    const nameArr = Array.isArray(resultNames) ? resultNames : [resultNames];
+    const winners = nameArr.map((name) => {
+      const p = onlineList.find((x) => x.nickname === name);
+      return { id: p?.id || name, nickname: name };
+    });
+    const allIds = onlineList.map((p) => p.id);
+    publishResult(mode, winners, allIds);
+  }, [onlineList, publishResult]);
 
   const isGameMode = ['roulette', 'lottery', 'prizeDraw', 'slotMachine', 'plinko', 'breakTime', 'leaderboard', 'teamBattle'].includes(currentMode);
   const isEnded = session?.status === 'ended';
@@ -121,11 +136,11 @@ export default function LivePage() {
                 className="w-full"
               >
                 <Suspense fallback={<GameFallback />}>
-                  {currentMode === 'roulette' && <Roulette participants={onlineList} scores={scores} />}
-                  {currentMode === 'lottery' && <Lottery participants={onlineList} />}
-                  {currentMode === 'prizeDraw' && <PrizeDraw participants={onlineList} />}
-                  {currentMode === 'slotMachine' && <SlotMachine participants={onlineList} />}
-                  {currentMode === 'plinko' && <Plinko participants={onlineList} />}
+                  {currentMode === 'roulette' && <Roulette participants={onlineList} scores={scores} onResult={handleGameResult('roulette')} />}
+                  {currentMode === 'lottery' && <Lottery participants={onlineList} onResult={handleGameResult('lottery')} />}
+                  {currentMode === 'prizeDraw' && <PrizeDraw participants={onlineList} onResult={handleGameResult('prizeDraw')} />}
+                  {currentMode === 'slotMachine' && <SlotMachine participants={onlineList} onResult={handleGameResult('slotMachine')} />}
+                  {currentMode === 'plinko' && <Plinko participants={onlineList} onResult={handleGameResult('plinko')} />}
                   {currentMode === 'breakTime' && <BreakTimer />}
                   {currentMode === 'leaderboard' && <div className="w-full max-w-2xl mx-auto [&_.max-w-xl]:max-w-2xl"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" /></div>}
                   {currentMode === 'teamBattle' && <div className="w-full max-w-2xl mx-auto [&_.max-w-lg]:max-w-2xl"><TeamScoreboard teamScores={teamScores || []} /></div>}

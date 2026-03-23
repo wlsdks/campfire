@@ -9,6 +9,8 @@ import StudentBottomBar from './StudentBottomBar';
 import IdleMascot from './IdleMascot';
 import { getNickname } from '@/lib/participant';
 import ReviewingBanner from '@/components/ui/ReviewingBanner';
+import { useGameResult } from '@/features/games/api/useGameResult';
+import GameResultOverlay from '@/features/games/components/GameResultOverlay';
 
 const TIPS = [
   { text: '강사가 질문을 활성화하면 자동으로 전환됩니다', icon: Zap },
@@ -98,10 +100,18 @@ const GAME_MODES = {
 export default memo(function WaitingPage({ sessionId, pendingEvent = null, courseName = null, currentMode = null }) {
   const { count } = useParticipants(sessionId);
   const nickname = getNickname();
+  const { isWinner, winnerNames, gameResult, showOverlay, dismiss } = useGameResult(sessionId);
 
   return (
     <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center p-4 pb-32 pt-16">
       <StudentHeader sessionId={sessionId} />
+      <GameResultOverlay
+        isWinner={isWinner}
+        winnerNames={winnerNames}
+        gameResult={gameResult}
+        showOverlay={showOverlay}
+        dismiss={dismiss}
+      />
 
       <motion.div
         initial={{ opacity: 0 }}

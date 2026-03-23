@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, lazy, Suspense } from 'react';
+import { useState, useCallback, useEffect, lazy, Suspense, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, QrCode, X, Copy, Check } from 'lucide-react';
 import QRCode from '@/components/ui/QRCode';
@@ -8,6 +8,7 @@ import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
 import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
 import Badge from '@/components/ui/Badge';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
+import { usePublishGameResult } from '@/features/games/api/useGameResult';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
 import TeamScoreboard from '@/features/teams/components/TeamScoreboard';
 
@@ -141,18 +142,18 @@ function getModeVariants(mode) {
   return { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } };
 }
 
-function MainContent({ currentMode, sessionId, session, onlineList, leaderboard, drawParticipants, presentMode, studentUrl, count, teamScores, scores }) {
+function MainContent({ currentMode, sessionId, session, onlineList, leaderboard, drawParticipants, presentMode, studentUrl, count, teamScores, scores, onGameResult }) {
   const currentQId = session?.currentQuestion;
   const isActive = ['poll', 'quiz'].includes(currentMode) && currentQId;
 
   // Determine content + animation key
   let contentKey, content;
   const gameContent = (() => {
-    if (currentMode === 'roulette') return <Roulette participants={onlineList} scores={scores} />;
-    if (currentMode === 'lottery') return <Lottery participants={drawParticipants} />;
-    if (currentMode === 'prizeDraw') return <PrizeDraw participants={onlineList} />;
-    if (currentMode === 'slotMachine') return <SlotMachine participants={onlineList} />;
-    if (currentMode === 'plinko') return <Plinko participants={onlineList} />;
+    if (currentMode === 'roulette') return <Roulette participants={onlineList} scores={scores} onResult={onGameResult?.('roulette')} />;
+    if (currentMode === 'lottery') return <Lottery participants={drawParticipants} onResult={onGameResult?.('lottery')} />;
+    if (currentMode === 'prizeDraw') return <PrizeDraw participants={onlineList} onResult={onGameResult?.('prizeDraw')} />;
+    if (currentMode === 'slotMachine') return <SlotMachine participants={onlineList} onResult={onGameResult?.('slotMachine')} />;
+    if (currentMode === 'plinko') return <Plinko participants={onlineList} onResult={onGameResult?.('plinko')} />;
     if (currentMode === 'breakTime') return <BreakTimer />;
     if (currentMode === 'leaderboard') return <div className="w-full max-w-2xl [&_.max-w-xl]:max-w-2xl"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" /></div>;
     if (currentMode === 'teamBattle') return <div className="w-full max-w-2xl [&_.max-w-lg]:max-w-2xl"><TeamScoreboard teamScores={teamScores || []} /></div>;
@@ -193,6 +194,18 @@ export { MainContent };
 
 export default function PresentationView({ sessionId, session, currentMode, onlineList, leaderboard, drawParticipants, studentUrl, count, onExit, teamScores, scores }) {
   const exitPresent = useCallback(() => onExit(), [onExit]);
+  const { publishResult } = usePublishGameResult(sessionId);
+
+  const handleGameResult = useCallback((mode) => (resultNames) => {
+    const nameArr = Array.isArray(resultNames) ? resultNames : [resultNames];
+    const allList = mode === 'lottery' ? drawParticipants : onlineList;
+    const winners = nameArr.map((name) => {
+      const p = allList.find((x) => x.nickname === name);
+      return { id: p?.id || name, nickname: name };
+    });
+    const allIds = allList.map((p) => p.id);
+    publishResult(mode, winners, allIds);
+  }, [onlineList, drawParticipants, publishResult]);
 
   useEffect(() => {
     const handler = (e) => { if (e.key === 'Escape') exitPresent(); };
@@ -221,6 +234,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
           count={count}
           teamScores={teamScores}
           scores={scores}
+          onGameResult={handleGameResult}
         />
       </div>
       <PresentQROverlay sessionId={sessionId} studentUrl={studentUrl} count={count} />
