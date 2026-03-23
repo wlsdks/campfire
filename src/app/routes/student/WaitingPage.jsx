@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Zap, Hand, MessageSquare, Trophy, Heart, Copy, Check, Target, Ticket, Gift, Dices, CircleDot, Coffee } from 'lucide-react';
+import { Users, Zap, Hand, MessageSquare, Trophy, Heart, Copy, Check, Target, Ticket, Gift, Dices, CircleDot, Coffee, UserCircle, Award } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
@@ -96,6 +96,8 @@ const GAME_MODES = {
   breakTime: { label: '쉬는 시간', icon: Coffee },
   teamBattle: { label: '팀 대항전 진행 중', icon: Trophy },
   qaBoard: { label: 'Q&A 보드 진행 중', icon: Users },
+  randomPicker: { label: '발표자 뽑기 진행 중', icon: UserCircle },
+  awards: { label: '시상식 진행 중', icon: Award },
 };
 
 export default memo(function WaitingPage({ sessionId, pendingEvent = null, courseName = null, currentMode = null }) {
