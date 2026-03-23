@@ -14,6 +14,7 @@ import { useTheme } from '@/hooks/useTheme';
 const VotePage = lazy(() => import('@/app/routes/student/VotePage'));
 const AdminPage = lazy(() => import('@/app/routes/admin/AdminPage'));
 const LivePage = lazy(() => import('@/app/routes/live/LivePage'));
+const ReportPage = lazy(() => import('@/app/routes/report/ReportPage'));
 
 function StudentRouter() {
   const [searchParams] = useSearchParams();
@@ -132,6 +133,13 @@ function App() {
           <ErrorBoundary scope="live">
             <Suspense fallback={<SuspenseFallback />}>
               <LivePage />
+            </Suspense>
+          </ErrorBoundary>
+        } />
+        <Route path="/report" element={
+          <ErrorBoundary scope="report">
+            <Suspense fallback={<SuspenseFallback />}>
+              <ReportPage />
             </Suspense>
           </ErrorBoundary>
         } />

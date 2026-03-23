@@ -1,0 +1,283 @@
+import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Hash, Target, Trophy, Flame, Copy, Check, Share2, CheckCircle, XCircle, Minus, Sparkle, CheckCheck, Zap, Crown } from 'lucide-react';
+import { useReportData } from '@/features/report/api/useReportData';
+import PickMascot from '@/components/ui/PickMascot';
+import Badge from '@/components/ui/Badge';
+import Avatar from '@/components/ui/Avatar';
+
+const ACHIEVEMENT_ICONS = { Sparkle, Flame, CheckCheck, Zap, Crown };
+
+function getTitle({ answeredCount, correctRate, rank, totalParticipants, bestStreak, totalScore, achievementCount }) {
+  if (answeredCount === 0) return '참여해주셔서 감사합니다';
+  if (rank === 1 && totalParticipants > 2) return '오늘의 1등!';
+  if (achievementCount >= 4) return '업적 마스터!';
+  if (rank <= 3 && totalParticipants > 3) return '상위권 달성!';
+  if (bestStreak >= 5) return '연승의 달인';
+  if (correctRate >= 90 && answeredCount >= 3) return '완벽에 가까운 정답률';
+  if (correctRate >= 70) return '잘 해냈어요!';
+  if (totalScore > 0) return '수고했어요!';
+  return '오늘도 수업 완료!';
+}
+
+function StatCard({ icon: Icon, label, value, delay = 0 }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25, delay }}
+      className="flex flex-col items-center gap-1.5 flex-1 min-w-0 py-4"
+    >
+      <Icon size={18} className="text-slate-400" />
+      <span className="text-3xl font-black tracking-tight text-slate-900 dark:text-slate-100 tabular-nums">{value}</span>
+      <span className="text-xs text-slate-400 font-medium">{label}</span>
+    </motion.div>
+  );
+}
+
+function QuestionRow({ q, index }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -8 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.3 + index * 0.04 }}
+      className="flex items-start gap-3 py-3"
+    >
+      {/* Result icon */}
+      <div className="mt-0.5 shrink-0">
+        {q.isCorrect === true && <CheckCircle size={18} className="text-slate-900 dark:text-slate-100" />}
+        {q.isCorrect === false && <XCircle size={18} className="text-slate-300 dark:text-slate-600" />}
+        {q.isCorrect === null && <Minus size={16} className="text-slate-300 dark:text-slate-600" />}
+      </div>
+
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-medium text-slate-800 dark:text-slate-200 leading-snug">{q.title}</p>
+        <div className="flex items-center gap-2 mt-1">
+          <Badge variant="neutral">{q.typeLabel}</Badge>
+          {q.answered ? (
+            <span className={`text-xs ${q.isCorrect ? 'text-slate-700 dark:text-slate-300 font-semibold' : q.isCorrect === false ? 'text-slate-400 line-through' : 'text-slate-400'}`}>
+              내 답: {q.myAnswer}
+            </span>
+          ) : (
+            <span className="text-xs text-slate-300">미응답</span>
+          )}
+          {q.isCorrect === false && q.correctAnswer && (
+            <span className="text-xs text-slate-500 dark:text-slate-400">
+              정답: {q.correctAnswer}
+            </span>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+export default function ReportPage() {
+  const [searchParams] = useSearchParams();
+  const sessionId = searchParams.get('s');
+  const participantId = searchParams.get('p');
+  const [copied, setCopied] = useState(false);
+
+  const { stats, achievements, loading } = useReportData(sessionId, participantId);
+
+  if (!sessionId || !participantId) {
+    return (
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
+        <div className="text-center space-y-4">
+          <PickMascot size="lg" mood="thinking" />
+          <p className="text-slate-500 text-base">유효하지 않은 리포트 링크입니다</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+        <div className="flex items-center gap-2 text-slate-400">
+          <div className="w-5 h-5 border-2 border-slate-300 border-t-slate-500 rounded-full animate-spin" />
+          <span className="text-sm">리포트 불러오는 중...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!stats) {
+    return (
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
+        <div className="text-center space-y-4">
+          <PickMascot size="lg" mood="thinking" />
+          <p className="text-slate-500 text-base">세션을 찾을 수 없습니다</p>
+        </div>
+      </div>
+    );
+  }
+
+  const title = getTitle({ ...stats, achievementCount: achievements.length });
+  const reportUrl = window.location.href;
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(reportUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Fallback: do nothing
+    }
+  }
+
+  return (
+    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900">
+      {/* Header */}
+      <div className="bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700">
+        <div className="max-w-xl mx-auto px-5 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <PickMascot size="xs" />
+            <span className="text-base font-bold text-slate-900 dark:text-slate-100">Pick</span>
+          </div>
+          <button
+            onClick={handleCopy}
+            className="flex items-center gap-1.5 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+          >
+            {copied ? <Check size={14} /> : <Share2 size={14} />}
+            {copied ? '복사됨' : '링크 공유'}
+          </button>
+        </div>
+      </div>
+
+      <div className="max-w-xl mx-auto px-5 py-8 space-y-6">
+        {/* Title section */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+          className="text-center space-y-3"
+        >
+          {stats.nickname && (
+            <div className="flex justify-center">
+              <div className="flex items-center gap-2.5 bg-white dark:bg-slate-800 rounded-full py-1.5 pl-1.5 pr-4 shadow-sm border border-slate-100 dark:border-slate-700">
+                <Avatar name={stats.nickname} size="sm" />
+                <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">{stats.nickname}</span>
+              </div>
+            </div>
+          )}
+          <h1 className="text-2xl font-black tracking-tight text-slate-900 dark:text-slate-100">{title}</h1>
+          <div className="flex items-center justify-center gap-2">
+            {stats.courseName && (
+              <Badge variant="primary">{stats.courseName} {stats.roundNumber ? `${stats.roundNumber}차` : ''}</Badge>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Stats */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden"
+        >
+          <div className="flex items-start divide-x divide-slate-100 dark:divide-slate-700">
+            <StatCard icon={Hash} label="참여" value={`${stats.answeredCount}/${stats.totalQuestions}`} delay={0.15} />
+            {stats.correctRate !== null && (
+              <StatCard icon={Target} label="정답률" value={`${stats.correctRate}%`} delay={0.2} />
+            )}
+            {stats.totalScore > 0 && (
+              <StatCard icon={Trophy} label="점수" value={stats.totalScore} delay={0.25} />
+            )}
+          </div>
+
+          {/* Rank */}
+          {stats.rank > 0 && (
+            <div className="border-t border-slate-100 dark:border-slate-700 px-5 py-3 flex items-center justify-center gap-2">
+              <Trophy size={14} className="text-slate-400" />
+              <span className="text-sm text-slate-600 dark:text-slate-300">
+                <span className="font-bold">{stats.totalParticipants}</span>명 중 <span className="font-bold">{stats.rank}</span>위
+              </span>
+              {stats.bestStreak > 0 && (
+                <>
+                  <span className="text-slate-300 dark:text-slate-600">·</span>
+                  <Flame size={14} className="text-slate-400" />
+                  <span className="text-sm text-slate-600 dark:text-slate-300">최고 <span className="font-bold">{stats.bestStreak}</span>연속</span>
+                </>
+              )}
+            </div>
+          )}
+        </motion.div>
+
+        {/* Achievements */}
+        {achievements.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5"
+          >
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">획득한 업적</p>
+            <div className="space-y-2.5">
+              {achievements.map((a, i) => {
+                const Icon = ACHIEVEMENT_ICONS[a.icon] || Sparkle;
+                return (
+                  <motion.div
+                    key={a.id}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 + i * 0.06 }}
+                    className="flex items-center gap-3"
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center shrink-0">
+                      <Icon size={15} className="text-slate-600 dark:text-slate-300" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">{a.label}</p>
+                      <p className="text-xs text-slate-400">{a.description}</p>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Question-by-question breakdown */}
+        {stats.questionDetails.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 p-5"
+          >
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">질문별 기록</p>
+            <div className="divide-y divide-slate-100 dark:divide-slate-700">
+              {stats.questionDetails.map((q, i) => (
+                <QuestionRow key={q.id} q={q} index={i} />
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* Share CTA */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="text-center space-y-3 pt-2"
+        >
+          <button
+            onClick={handleCopy}
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-lg text-sm font-semibold hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors"
+          >
+            {copied ? <Check size={16} /> : <Copy size={16} />}
+            {copied ? '링크 복사됨!' : '리포트 링크 복사'}
+          </button>
+          <p className="text-xs text-slate-400">이 링크를 저장하면 언제든 다시 볼 수 있어요</p>
+        </motion.div>
+
+        {/* Footer */}
+        <div className="text-center pt-4 pb-8">
+          <p className="text-xs text-slate-300 dark:text-slate-600">Pick — 실시간 강의 참여 플랫폼</p>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -146,5 +146,16 @@ export function computeAchievementStats(questions, scores, participantIds) {
     .filter((a) => a.count > 0);
 }
 
+/**
+ * Compute achievements for a specific participant (no hooks).
+ * Used by report page where participantId comes from URL, not localStorage.
+ */
+export function computeAchievements(questions, participantId, scores) {
+  const ctx = computeContext(questions, participantId, scores);
+  return ACHIEVEMENTS
+    .filter((a) => a.check(ctx))
+    .map(({ id, label, description, icon }) => ({ id, label, description, icon }));
+}
+
 /** Export achievement definitions for admin views. */
 export { ACHIEVEMENTS };
