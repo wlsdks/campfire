@@ -6,11 +6,13 @@ import { hapticSuccess } from '@/lib/haptics';
 
 const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 
-// Indigo gradient — all dark enough for white text
-const SEGMENT_COLORS = [
-  '#1E1B4B', '#312E81', '#3730A3', '#4338CA',
-  '#4F46E5', '#6366F1', '#4338CA', '#312E81',
-];
+// Alternating slate tones — clean, professional, easy on eyes
+const SEGMENT_COLORS_LIGHT = ['#1E293B', '#334155', '#1E293B', '#334155', '#1E293B', '#334155', '#1E293B', '#334155'];
+const SEGMENT_COLORS_DARK = ['#1E293B', '#0F172A', '#1E293B', '#0F172A', '#1E293B', '#0F172A', '#1E293B', '#0F172A'];
+
+function getSegmentColors() {
+  return document.documentElement.classList.contains('dark') ? SEGMENT_COLORS_DARK : SEGMENT_COLORS_LIGHT;
+}
 
 function getWeightedSpinResult(segments) {
   const totalWeight = segments.reduce((sum, s) => sum + s.weight, 0);
@@ -113,7 +115,7 @@ export default function Roulette({ participants, scores = {}, onResult }) {
         {spinning && (
           <motion.div
             className="absolute inset-0 rounded-full"
-            style={{ boxShadow: '0 0 40px 8px rgba(79,70,229,0.25)' }}
+            style={{ boxShadow: '0 0 40px 8px rgba(100,116,139,0.2)' }}
             animate={{ opacity: [0.4, 0.8, 0.4] }}
             transition={{ duration: 1.5, repeat: Infinity }}
           />
@@ -142,13 +144,13 @@ export default function Roulette({ participants, scores = {}, onResult }) {
             return (
               <g key={i}>
                 {isFull ? (
-                  <circle cx="100" cy="100" r="97" fill={SEGMENT_COLORS[i % SEGMENT_COLORS.length]} />
+                  <circle cx="100" cy="100" r="97" fill={getSegmentColors()[i % 8]} />
                 ) : (
                   <path
                     d={`M100,100 L${100 + 97 * Math.cos((sa - 90) * Math.PI / 180)},${100 + 97 * Math.sin((sa - 90) * Math.PI / 180)} A97,97 0 ${seg.angle > 180 ? 1 : 0},1 ${100 + 97 * Math.cos((ea - 90) * Math.PI / 180)},${100 + 97 * Math.sin((ea - 90) * Math.PI / 180)} Z`}
-                    fill={SEGMENT_COLORS[i % SEGMENT_COLORS.length]}
-                    stroke="rgba(255,255,255,0.12)"
-                    strokeWidth="0.8"
+                    fill={getSegmentColors()[i % 8]}
+                    stroke="rgba(255,255,255,0.15)"
+                    strokeWidth="1"
                   />
                 )}
                 <text
@@ -161,7 +163,7 @@ export default function Roulette({ participants, scores = {}, onResult }) {
           })}
           <circle cx="100" cy="100" r="22" fill="white" />
           <circle cx="100" cy="100" r="20" fill="#FAFAFA" stroke="#E2E8F0" strokeWidth="0.8" />
-          <text x="100" y="100" fill="#4F46E5" fontSize="7" fontWeight="800" fontFamily="'Pretendard',system-ui" textAnchor="middle" dominantBaseline="central">PICK</text>
+          <text x="100" y="100" fill="#0F172A" fontSize="7" fontWeight="800" fontFamily="'Pretendard',system-ui" textAnchor="middle" dominantBaseline="central">PICK</text>
         </motion.svg>
       </div>
 
