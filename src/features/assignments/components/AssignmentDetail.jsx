@@ -82,9 +82,15 @@ function SubmissionCard({ submission, result, rank, awardInfo }) {
               <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums leading-none">
                 {summary.avgScore}
               </p>
-              <p className="text-[11px] text-slate-400 mt-1 tabular-nums">
-                {summary.selectedCount}/{summary.totalJudges}명 선택
-              </p>
+              <div className="flex items-center gap-1.5 justify-end mt-1">
+                <span className={`text-[11px] font-medium ${summary.passed ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400'}`}>
+                  {summary.passed ? '합격' : '불합격'}
+                </span>
+                <span className="text-[11px] text-slate-300">·</span>
+                <span className="text-[11px] text-slate-400 tabular-nums">
+                  {summary.selectedCount}/{summary.totalJudges}
+                </span>
+              </div>
             </div>
           )}
         </div>

@@ -1,10 +1,11 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Clock, CheckCircle2, Search, FileCode2, FileText, Link, ExternalLink, Trash2, Pencil, Send, Scale } from 'lucide-react';
+import { ArrowLeft, Clock, CheckCircle2, Search, FileCode2, FileText, Link, ExternalLink, Trash2, Pencil, Send, Scale, Trophy } from 'lucide-react';
 import { useAssignment } from '@/features/assignments/api/useAssignments';
 import { ASSIGNMENT_STATUS } from '@/features/assignments/api/useAssignments';
 import { submitWork, lookupSubmission, withdrawSubmission, useSubmissionResults } from '@/features/assignments/api/useSubmissions';
 import { useAwards } from '@/features/assignments/api/useAwards';
+import { getAwardById } from '@/features/assignments/api/judges';
 import SubmissionForm from './SubmissionForm';
 import SubmissionResult from './SubmissionResult';
 import PickMascot from '@/components/ui/PickMascot';
@@ -165,7 +166,7 @@ function LookupForm({ assignmentId, onFound }) {
 export default function SubmissionPage({ assignmentId }) {
   const { assignment, loading } = useAssignment(assignmentId);
   const { awards } = useAwards(assignmentId);
-  // 'landing' | 'submit' | 'lookup' | 'mySubmission' | 'edit' | 'result'
+  // 'landing' | 'submit' | 'lookup' | 'mySubmission' | 'edit' | 'result' | 'awardsView'
   const [view, setView] = useState('landing');
   const [foundSubmission, setFoundSubmission] = useState(null);
   const [lookupName, setLookupName] = useState('');
@@ -325,16 +326,17 @@ export default function SubmissionPage({ assignmentId }) {
                 </div>
               )}
 
-              {/* Judged: 결과 확인 */}
+              {/* Judged: 결과 확인 + 시상 보기 */}
               {isJudged && (
                 <div className="flex flex-col justify-center" style={{ minHeight: 'calc(100dvh - 160px)' }}>
                   <div className="flex flex-col items-center">
                     <div className="w-14 h-14 rounded-2xl bg-slate-900 dark:bg-slate-100 flex items-center justify-center">
                       <CheckCircle2 size={24} className="text-white dark:text-slate-900" />
                     </div>
-                    <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mt-5">심사 결과 확인</h2>
-                    <p className="text-sm text-slate-400 mt-1.5">제출할 때 입력한 이름과 비밀번호를 입력하세요</p>
+                    <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mt-5">심사가 완료되었습니다</h2>
+                    <p className="text-sm text-slate-400 mt-1.5">이름과 비밀번호로 내 결과를 확인하세요</p>
                   </div>
+
                   <div className="space-y-3 mt-8">
                     <input type="text" value={lookupName}
                       onChange={(e) => { setLookupName(e.target.value); setResultLookupError(''); }}
@@ -353,9 +355,20 @@ export default function SubmissionPage({ assignmentId }) {
                     />
                     {resultLookupError && <p className="text-xs text-red-500">{resultLookupError}</p>}
                     <Button onClick={handleResultLookup} variant="primary" size="lg" disabled={!lookupName.trim() || lookupPin.length !== 4 || resultLookupLoading} className="w-full">
-                      {resultLookupLoading ? '조회 중...' : '결과 확인'}
+                      {resultLookupLoading ? '조회 중...' : '내 결과 확인'}
                     </Button>
                   </div>
+
+                  {/* 시상 결과 보기 */}
+                  {awards && Object.keys(awards).length > 0 && (
+                    <button
+                      onClick={() => setView('awardsView')}
+                      className="w-full mt-4 flex items-center justify-center gap-2 py-3 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                    >
+                      <Trophy size={14} />
+                      <span className="underline underline-offset-2">시상 결과 보기</span>
+                    </button>
+                  )}
                 </div>
               )}
 
@@ -467,6 +480,77 @@ export default function SubmissionPage({ assignmentId }) {
               transition={{ duration: 0.2 }}
             >
               <SubmissionResult submission={foundSubmission} results={results} awards={awards} />
+            </motion.div>
+          )}
+
+          {/* ── 시상 결과 (학생용) ── */}
+          {view === 'awardsView' && awards && (
+            <motion.div
+              key="awardsView"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-6"
+            >
+              <div className="text-center">
+                <Trophy size={28} className="mx-auto text-slate-400" />
+                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mt-3">시상 결과</h2>
+              </div>
+
+              {/* Top 3 */}
+              {['grand', 'excellence', 'outstanding'].filter(id => awards[id]).map((awardId, i) => {
+                const info = getAwardById(awardId);
+                const winner = awards[awardId];
+                const isGrand = i === 0;
+                return (
+                  <div
+                    key={awardId}
+                    className={`rounded-2xl p-5 ${
+                      isGrand
+                        ? 'bg-slate-900 dark:bg-slate-100'
+                        : 'bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className={`text-xs font-medium ${isGrand ? 'text-white/40 dark:text-slate-500' : 'text-slate-400'}`}>
+                          {info?.description}
+                        </p>
+                        <p className={`text-base font-bold mt-0.5 ${isGrand ? 'text-white dark:text-slate-900' : 'text-slate-900 dark:text-slate-100'}`}>
+                          {info?.name}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className={`text-2xl font-bold tabular-nums ${isGrand ? 'text-white dark:text-slate-900' : 'text-slate-900 dark:text-slate-100'}`}>
+                          {winner.name}
+                        </p>
+                        <p className={`text-xs mt-0.5 tabular-nums ${isGrand ? 'text-white/50 dark:text-slate-400' : 'text-slate-400'}`}>
+                          {winner.score}점
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {/* Special awards */}
+              {['planning', 'creative', 'design', 'practical'].filter(id => awards[id]).length > 0 && (
+                <div className="grid grid-cols-2 gap-3">
+                  {['planning', 'creative', 'design', 'practical'].filter(id => awards[id]).map(awardId => {
+                    const info = getAwardById(awardId);
+                    const winner = awards[awardId];
+                    return (
+                      <div key={awardId} className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-4">
+                        <p className="text-[11px] text-slate-400">{info?.description}</p>
+                        <p className="text-sm font-bold text-slate-900 dark:text-slate-100 mt-0.5">{info?.name}</p>
+                        <p className="text-sm font-medium text-slate-600 dark:text-slate-300 mt-2">{winner.name}</p>
+                        <p className="text-xs text-slate-400 tabular-nums">{winner.score}점</p>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </motion.div>
           )}
 
