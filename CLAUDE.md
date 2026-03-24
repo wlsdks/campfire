@@ -1,7 +1,7 @@
 # Pick - Project Guidelines
 
 ## What is Pick?
-Real-time classroom engagement platform. Instructors create sessions, students join via QR/code and participate in polls, quizzes, word clouds, Q&A. Korean market (한국어 UI).
+Real-time classroom engagement platform. Instructors create sessions, students join via QR/code and participate in polls, quizzes, word clouds, Q&A. Post-class assignment submission with AI judging (7 Gemini-powered judges). Korean market (한국어 UI).
 
 ## Tech Stack
 - React 19 + Vite 7 + Tailwind CSS v4 + Firebase Realtime DB + Framer Motion
@@ -23,10 +23,11 @@ src/
     questions/      → useUrgentQuestions, UrgentQuestionList
     hand-raise/     → useHandRaises, HandRaiseList
     visualization/  → BarChart, OXBattle, WordCloud, QACards, VizRenderer
-    games/          → Roulette, Lottery
-    timer/          → useTimer, TimerRing (new)
-    reactions/      → useReactions, ReactionBar, ReactionOverlay (new)
-    quiz/           → useScores, QuizResult, Leaderboard (new)
+    games/          → Roulette, Lottery, PrizeDraw, SlotMachine, Plinko
+    timer/          → useTimer, TimerRing
+    reactions/      → useReactions, ReactionBar, ReactionOverlay
+    quiz/           → useScores, QuizResult, Leaderboard
+    assignments/    → useAssignments, SubmissionPage, AssignmentDetail, JudgingPanel, AwardsCeremony
   hooks/            → Cross-feature shared hooks only
   lib/              → firebase.js, design-tokens.js, utils
   assets/lottie/    → Lottie JSON files
@@ -149,6 +150,16 @@ Firebase: timerEnd timestamp로 동기화 (서버 시간 기준, 클라이언트
 학생: 하단 리액션 바 (👍🔥❤️😂👏 → lucide 아이콘) → 탭 시 쿨다운 3초
 강사/프레젠터: 화면 위로 떠오르는 버블 애니메이션 (2초 fade-out) + 실시간 카운트
 Rate limit: 학생당 3초에 1회, Firebase에 최근 50개만 유지
+```
+
+**Assignment Flow (사후 과제):**
+```
+강사: 과제 등록 (클래스/차수 선택, AI 심사 토글) → 제출 링크 공유
+학생: 랜딩 (제출하기/조회) → 폼 (이름+PIN+URL/파일/PRD/설명) → 제출 완료
+학생 재방문: 이름+PIN으로 조회 → 수정/취소
+강사: 마감 → AI 심사 시작 (7명 × N건 순차) → 시상
+학생: 이름+PIN으로 결과 확인 (점수/합격/심사평) + 시상 결과 보기
+Firebase: assignments/{id}/submissions, results, awards
 ```
 
 ### User Personas (작업 시 반드시 해당 관점에서 생각하기)
