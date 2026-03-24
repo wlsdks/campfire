@@ -31,6 +31,35 @@ if (!genAI && import.meta.env.VITE_GEMINI_API_KEY) {
   initGemini(import.meta.env.VITE_GEMINI_API_KEY);
 }
 
+/**
+ * Retry wrapper with timeout for Gemini API calls.
+ * Retries up to 2 times on transient errors (429, 503, network, timeout).
+ */
+async function withRetry(fn, retries = 2, delayMs = 2000) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      return await Promise.race([
+        fn(),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('API 타임아웃 (30초)')), 30000)
+        ),
+      ]);
+    } catch (err) {
+      if (i === retries) throw err;
+      const msg = err.message || '';
+      const isTransient =
+        msg.includes('429') ||
+        msg.includes('503') ||
+        msg.includes('NETWORK') ||
+        msg.includes('network') ||
+        msg.includes('Failed to fetch') ||
+        msg.includes('타임아웃');
+      if (!isTransient) throw err;
+      await new Promise(r => setTimeout(r, delayMs));
+    }
+  }
+}
+
 const EVALUATION_PROMPT = `당신은 바이브코딩 강의의 사후 과제를 심사하는 심사위원입니다.
 
 [강의 배경]
@@ -91,18 +120,20 @@ ${contentParts.join('\n\n') || '(제출물 없음)'}
 
 위 제출물을 평가해주세요.`;
 
-  const result = await model.generateContent({
-    contents: [
-      { role: 'user', parts: [{ text: judge.systemPrompt }] },
-      { role: 'model', parts: [{ text: '네, 해당 심사위원으로서 평가하겠습니다.' }] },
-      { role: 'user', parts: [{ text: prompt }] },
-    ],
-    generationConfig: {
-      temperature: 0.7,
-      maxOutputTokens: 1024,
-      responseMimeType: 'application/json',
-    },
-  });
+  const result = await withRetry(() =>
+    model.generateContent({
+      contents: [
+        { role: 'user', parts: [{ text: judge.systemPrompt }] },
+        { role: 'model', parts: [{ text: '네, 해당 심사위원으로서 평가하겠습니다.' }] },
+        { role: 'user', parts: [{ text: prompt }] },
+      ],
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 1024,
+        responseMimeType: 'application/json',
+      },
+    })
+  );
 
   let text = result.response.text();
   text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();

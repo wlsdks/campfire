@@ -1,9 +1,9 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Copy, Check, Link2, Trophy, X, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Copy, Check, Link2, Trophy, X, ChevronRight, Download } from 'lucide-react';
 import { useAssignment, useAssignmentActions, ASSIGNMENT_STATUS } from '@/features/assignments/api/useAssignments';
 import Modal from '@/components/ui/Modal';
-import { useSubmissionList } from '@/features/assignments/api/useSubmissions';
+import { useSubmissionList, exportResultsCSV } from '@/features/assignments/api/useSubmissions';
 import { useAllResults, useAwards } from '@/features/assignments/api/useAwards';
 import JudgingPanel from './JudgingPanel';
 import JudgeResultCard from './JudgeResultCard';
@@ -199,9 +199,20 @@ function SubmissionsView({ assignmentId, submissions, results, awards, hasResult
         </div>
       ) : (
         <div>
-          <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-3">
-            {hasResults ? '심사 결과' : '제출 현황'}
-          </p>
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm font-semibold text-slate-500 dark:text-slate-400">
+              {hasResults ? '심사 결과' : '제출 현황'}
+            </p>
+            {hasResults && (
+              <button
+                onClick={() => exportResultsCSV(submissions, results)}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+              >
+                <Download size={13} />
+                CSV
+              </button>
+            )}
+          </div>
           <div className="space-y-2">
             {sorted.map((sub, i) => (
               <SubmissionCard
@@ -499,6 +510,15 @@ export default function AssignmentDetail({ assignmentId, onBack }) {
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 shrink-0">
                 {statusLabel}
               </span>
+              {assignment.status === 'open' && submissions.length > 0 && (
+                <span className="inline-flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 shrink-0">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                  </span>
+                  {submissions.length}건 제출
+                </span>
+              )}
             </div>
             <p className="text-xs text-slate-400 mt-1">
               {assignment.courseName}{assignment.roundNumber ? ` · ${assignment.roundNumber}차` : ''}

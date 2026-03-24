@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { ref, onValue, push, set, update, serverTimestamp, get } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
+import { JUDGES } from '@/features/assignments/api/judges';
 
 /**
  * useSubmissionList — 과제의 제출물 목록 구독.
@@ -108,6 +109,50 @@ export async function findSubmissionByName(assignmentId, name) {
   const data = snap.val() || {};
   const entry = Object.entries(data).find(([, v]) => v.name === name);
   return entry ? { id: entry[0], ...entry[1] } : null;
+}
+
+/**
+ * exportResultsCSV — 심사 결과를 CSV로 다운로드.
+ * BOM 포함하여 한국어 Excel 호환.
+ */
+export function exportResultsCSV(submissions, results) {
+  const header = ['순위', '이름', '평균점수', '합격', '선택수', ...JUDGES.map(j => j.name), 'URL'];
+
+  const sorted = [...submissions].sort((a, b) => {
+    const ra = results[a.id]?.summary?.avgScore || 0;
+    const rb = results[b.id]?.summary?.avgScore || 0;
+    return rb - ra;
+  });
+
+  const rows = sorted.map((sub, i) => {
+    const r = results[sub.id];
+    const summary = r?.summary;
+    const judgeScores = JUDGES.map(j => r?.judges?.[j.id]?.score ?? '');
+    return [
+      i + 1,
+      sub.name,
+      summary?.avgScore ?? '',
+      summary?.passed ? 'O' : 'X',
+      summary?.selectedCount ?? '',
+      ...judgeScores,
+      sub.projectUrl || '',
+    ];
+  });
+
+  const csvContent = [header, ...rows]
+    .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+    .join('\n');
+
+  const bom = '\uFEFF';
+  const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `심사결과_${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
 }
 
 /**
