@@ -83,16 +83,18 @@ export default function LivePage() {
   const isEnded = session?.status === 'ended';
   const hasActiveQuestion = ['poll', 'quiz'].includes(currentMode) && currentQId && question;
 
-  // Force dark mode on mount
+  // Apply saved theme (or default to dark for presenter)
   useEffect(() => {
-    document.documentElement.classList.add('dark');
-    return () => document.documentElement.classList.remove('dark');
+    const saved = localStorage.getItem('pinggo_theme');
+    if (!saved) {
+      document.documentElement.classList.add('dark');
+    }
   }, []);
 
   // No session ID provided
   if (!sessionId) {
     return (
-      <div className="min-h-dvh bg-slate-900 flex items-center justify-center">
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
         <div className="text-center space-y-4">
           <PickMascot size="lg" mood="thinking" />
           <p className="text-slate-400 text-sm">세션 ID가 없습니다</p>
@@ -104,7 +106,7 @@ export default function LivePage() {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-dvh bg-slate-900 flex items-center justify-center">
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
         <div className="flex items-center gap-2 text-slate-400">
           <div className="w-5 h-5 border-2 border-slate-600 border-t-slate-400 rounded-full animate-spin" />
           <span className="text-sm">불러오는 중...</span>
@@ -116,7 +118,7 @@ export default function LivePage() {
   // Session ended
   if (isEnded) {
     return (
-      <div className="min-h-dvh bg-slate-900 flex items-center justify-center">
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -124,7 +126,7 @@ export default function LivePage() {
           className="text-center space-y-5"
         >
           <PickMascot size="lg" mood="happy" />
-          <h1 className="text-2xl font-bold text-slate-100 tracking-tight">수업이 종료되었습니다</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">수업이 종료되었습니다</h1>
           <p className="text-slate-400 text-sm">참여해 주셔서 감사합니다</p>
         </motion.div>
       </div>
@@ -132,7 +134,7 @@ export default function LivePage() {
   }
 
   return (
-    <div className="h-dvh bg-slate-900 flex flex-col overflow-hidden">
+    <div className="h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col overflow-hidden">
       <LiveHeader courseName={session?.courseName} roundNumber={session?.roundNumber} count={count} />
       <JoinToast sessionId={sessionId} />
       <ReactionOverlay sessionId={sessionId} />
@@ -166,9 +168,9 @@ export default function LivePage() {
                   {currentMode === 'discussion' && <DiscussionPresenter sessionId={sessionId} />}
                   {currentMode === 'focus' && (
                     <div className="flex flex-col items-center justify-center gap-6 text-center">
-                      <Eye size={48} className="text-white/60" />
-                      <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">집중 모드</p>
-                      <p className="text-white/40 text-lg">학생 화면이 잠겼습니다</p>
+                      <Eye size={48} className="text-slate-300 dark:text-white/60" />
+                      <p className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">집중 모드</p>
+                      <p className="text-slate-400 dark:text-white/40 text-lg">학생 화면이 잠겼습니다</p>
                     </div>
                   )}
                 </Suspense>
@@ -199,10 +201,10 @@ export default function LivePage() {
                 <motion.div animate={{ scale: [1, 1.03, 1] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}>
                   <PickMascot size="lg" mood="waiting" />
                 </motion.div>
-                <h2 className="text-xl font-semibold text-slate-300 tracking-tight">
+                <h2 className="text-xl font-semibold text-slate-500 dark:text-slate-300 tracking-tight">
                   다음 질문을 기다리는 중...
                 </h2>
-                <Badge variant="neutral" className="!bg-slate-700 !text-slate-400">
+                <Badge variant="neutral">
                   {count}명 접속 중
                 </Badge>
               </motion.div>
