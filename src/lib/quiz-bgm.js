@@ -1,153 +1,172 @@
 /**
- * Quiz BGM — Haydn Trumpet Concerto 3rd Movement (Public Domain)
+ * Quiz Tension BGM — Original Composition (Web Audio API)
  *
- * Synthesizes the iconic opening melody of the Allegro using Web Audio API.
- * Trumpet-like timbre: square wave + slight detune + gain envelope.
- * Used when quiz questions activate for dramatic tension (나락 퀴즈쇼 스타일).
+ * Synthesizes a dramatic quiz show countdown BGM:
+ * - Tick-tock clock pattern (creates urgency)
+ * - Low bass pulse (heartbeat tension)
+ * - Rising chromatic tones (building suspense)
+ * - Tempo accelerates over time (increasing pressure)
  *
- * Original: Joseph Haydn (1796), died 1809 → Public Domain.
- * This is a programmatic synthesis, not a recording — no copyright issues.
+ * 100% original, synthesized in-browser. No copyright issues.
+ * Respects pinggo_sound_muted localStorage setting.
  */
 
 let audioCtx = null;
 let currentBgm = null;
 
-function getAudioContext() {
+function getCtx() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   }
-  if (audioCtx.state === 'suspended') {
-    audioCtx.resume().catch(() => {});
-  }
+  if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
   return audioCtx;
 }
 
-/** Note frequency helper (A4 = 440Hz) */
-function noteFreq(note, octave) {
-  const semitones = { C: -9, D: -7, Eb: -6, E: -5, F: -4, G: -2, Ab: -1, A: 0, Bb: 1, B: 2 };
-  return 440 * Math.pow(2, (semitones[note] + (octave - 4) * 12) / 12);
+/**
+ * Create a click/tick sound at a specific time.
+ */
+function scheduleTick(ctx, time, gain, high = false) {
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(high ? 1200 : 800, time);
+  osc.frequency.exponentialRampToValueAtTime(high ? 600 : 400, time + 0.03);
+  g.gain.setValueAtTime(0, time);
+  g.gain.linearRampToValueAtTime(high ? 0.15 : 0.08, time + 0.005);
+  g.gain.exponentialRampToValueAtTime(0.001, time + 0.06);
+  osc.connect(g);
+  g.connect(gain);
+  osc.start(time);
+  osc.stop(time + 0.08);
+  return osc;
 }
 
 /**
- * Haydn Trumpet Concerto 3rd Movement — opening theme
- * Key: Eb major, Tempo: Allegro (~140 BPM)
- * Simplified melody transcription for synthesis.
+ * Create a bass pulse (heartbeat effect).
  */
-const TEMPO = 150; // BPM
-const BEAT = 60 / TEMPO; // seconds per beat
-
-// [note, octave, duration_in_beats]
-const MELODY = [
-  // Bar 1-2: Opening fanfare
-  ['Eb', 5, 0.5], ['Eb', 5, 0.5], ['Eb', 5, 0.5], ['G', 5, 0.5],
-  ['Bb', 5, 1], ['Bb', 5, 0.5], ['Ab', 5, 0.5],
-  // Bar 3-4: Descending run
-  ['G', 5, 0.5], ['F', 5, 0.5], ['Eb', 5, 0.5], ['F', 5, 0.5],
-  ['G', 5, 1.5], ['Eb', 5, 0.5],
-  // Bar 5-6: Rising phrase
-  ['Ab', 5, 0.5], ['Ab', 5, 0.5], ['Ab', 5, 0.5], ['Bb', 5, 0.5],
-  ['G', 5, 1], ['F', 5, 0.5], ['Eb', 5, 0.5],
-  // Bar 7-8: Cadence
-  ['F', 5, 0.5], ['Eb', 5, 0.5], ['D', 5, 0.5], ['Eb', 5, 0.5],
-  ['Bb', 4, 2],
-];
-
-/**
- * Create a trumpet-like tone using layered oscillators.
- * Square wave (fundamental) + sine (octave above, soft) for brightness.
- */
-function createTrumpetNote(ctx, freq, startTime, duration, masterGain) {
-  const attack = 0.02;
-  const release = Math.min(0.08, duration * 0.3);
-  const sustain = duration - attack - release;
-
-  // Fundamental: square wave (trumpet character)
-  const osc1 = ctx.createOscillator();
-  osc1.type = 'square';
-  osc1.frequency.setValueAtTime(freq, startTime);
-
-  // Harmonic: sine one octave up (brightness)
-  const osc2 = ctx.createOscillator();
-  osc2.type = 'sine';
-  osc2.frequency.setValueAtTime(freq * 2, startTime);
-
-  // Slight detune for warmth
-  osc1.detune.setValueAtTime(-5, startTime);
-  osc2.detune.setValueAtTime(5, startTime);
-
-  // Individual gains
-  const gain1 = ctx.createGain();
-  const gain2 = ctx.createGain();
-
-  // Trumpet envelope
-  gain1.gain.setValueAtTime(0, startTime);
-  gain1.gain.linearRampToValueAtTime(0.12, startTime + attack);
-  gain1.gain.setValueAtTime(0.12, startTime + attack + sustain);
-  gain1.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
-
-  // Harmonic is softer
-  gain2.gain.setValueAtTime(0, startTime);
-  gain2.gain.linearRampToValueAtTime(0.04, startTime + attack);
-  gain2.gain.setValueAtTime(0.04, startTime + attack + sustain);
-  gain2.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
-
-  osc1.connect(gain1);
-  osc2.connect(gain2);
-  gain1.connect(masterGain);
-  gain2.connect(masterGain);
-
-  osc1.start(startTime);
-  osc1.stop(startTime + duration + 0.05);
-  osc2.start(startTime);
-  osc2.stop(startTime + duration + 0.05);
-
-  return [osc1, osc2];
+function scheduleBass(ctx, time, gain) {
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(55, time); // Low A
+  g.gain.setValueAtTime(0, time);
+  g.gain.linearRampToValueAtTime(0.12, time + 0.02);
+  g.gain.exponentialRampToValueAtTime(0.001, time + 0.25);
+  osc.connect(g);
+  g.connect(gain);
+  osc.start(time);
+  osc.stop(time + 0.3);
+  return osc;
 }
 
 /**
- * Play the quiz BGM melody.
- * Returns a stop function to cancel playback.
- * @param {number} volume - 0~1, default 0.5
+ * Create a tension tone (rising pad).
  */
-export function playQuizBgm(volume = 0.5) {
-  // Check mute
+function scheduleTone(ctx, time, freq, duration, gain) {
+  const osc = ctx.createOscillator();
+  const g = ctx.createGain();
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(freq, time);
+  osc.frequency.linearRampToValueAtTime(freq * 1.02, time + duration); // slight rise
+  g.gain.setValueAtTime(0, time);
+  g.gain.linearRampToValueAtTime(0.06, time + 0.1);
+  g.gain.setValueAtTime(0.06, time + duration - 0.1);
+  g.gain.exponentialRampToValueAtTime(0.001, time + duration);
+  osc.connect(g);
+  g.connect(gain);
+  osc.start(time);
+  osc.stop(time + duration + 0.05);
+  return osc;
+}
+
+/**
+ * Play quiz tension BGM.
+ *
+ * Structure (total ~8 seconds, loops):
+ * - Phase 1 (0-4s): Slow tick-tock + bass pulse + low pad
+ * - Phase 2 (4-6s): Faster ticking + rising tone
+ * - Phase 3 (6-8s): Rapid ticking + high tension
+ *
+ * @param {number} volume - 0~1, default 0.4
+ * @param {boolean} loop - whether to loop (default true)
+ */
+export function playQuizBgm(volume = 0.4, loop = true) {
   if (localStorage.getItem('pinggo_sound_muted') === 'true') return () => {};
 
   try {
-    stopQuizBgm(); // Stop any existing playback
+    stopQuizBgm();
 
-    const ctx = getAudioContext();
+    const ctx = getCtx();
     const now = ctx.currentTime;
+    const oscs = [];
 
-    // Master volume
-    const masterGain = ctx.createGain();
-    masterGain.gain.setValueAtTime(volume, now);
-    masterGain.connect(ctx.destination);
+    // Master gain
+    const master = ctx.createGain();
+    master.gain.setValueAtTime(volume, now);
+    master.connect(ctx.destination);
 
-    const oscillators = [];
-    let time = 0;
+    function scheduleLoop(startTime) {
+      let t = startTime;
 
-    for (const [note, octave, beats] of MELODY) {
-      const freq = noteFreq(note, octave);
-      const duration = beats * BEAT;
-      const oscs = createTrumpetNote(ctx, freq, now + time, duration * 0.9, masterGain);
-      oscillators.push(...oscs);
-      time += duration;
+      // Phase 1: Slow tick-tock (BPM ~100), 4 seconds
+      const slowInterval = 0.6; // 100 BPM
+      for (let i = 0; i < 7; i++) {
+        oscs.push(scheduleTick(ctx, t, master, i % 2 === 0));
+        if (i % 2 === 0) oscs.push(scheduleBass(ctx, t, master));
+        t += slowInterval;
+      }
+
+      // Background pad (Dm chord feel: D3 + A3)
+      oscs.push(scheduleTone(ctx, startTime, 147, 4, master)); // D3
+      oscs.push(scheduleTone(ctx, startTime, 220, 4, master)); // A3
+
+      // Phase 2: Medium tick (BPM ~140), 2 seconds
+      const medInterval = 0.43;
+      for (let i = 0; i < 5; i++) {
+        oscs.push(scheduleTick(ctx, t, master, i % 2 === 0));
+        t += medInterval;
+      }
+
+      // Rising pad (E3 + B3 — tension)
+      oscs.push(scheduleTone(ctx, startTime + 4, 165, 2, master)); // E3
+      oscs.push(scheduleTone(ctx, startTime + 4, 247, 2, master)); // B3
+
+      // Phase 3: Fast tick (BPM ~200), 2 seconds
+      const fastInterval = 0.3;
+      for (let i = 0; i < 7; i++) {
+        oscs.push(scheduleTick(ctx, t, master, true));
+        if (i % 3 === 0) oscs.push(scheduleBass(ctx, t, master));
+        t += fastInterval;
+      }
+
+      // High tension pad (F3 + C4)
+      oscs.push(scheduleTone(ctx, startTime + 6, 175, 2, master)); // F3
+      oscs.push(scheduleTone(ctx, startTime + 6, 262, 2, master)); // C4
+
+      return t - startTime; // total duration
     }
 
-    // Fade out at the end
-    const totalDuration = time;
-    masterGain.gain.setValueAtTime(volume, now + totalDuration - 0.3);
-    masterGain.gain.linearRampToValueAtTime(0, now + totalDuration);
+    const loopDuration = scheduleLoop(now);
 
-    currentBgm = { oscillators, masterGain, ctx };
-
-    // Auto-cleanup after melody ends
-    setTimeout(() => {
-      if (currentBgm?.oscillators === oscillators) {
-        currentBgm = null;
+    // Loop handling
+    let loopTimer = null;
+    if (loop) {
+      function nextLoop() {
+        if (!currentBgm) return;
+        const loopStart = ctx.currentTime + 0.05;
+        scheduleLoop(loopStart);
+        loopTimer = setTimeout(nextLoop, loopDuration * 1000 - 100);
       }
-    }, (totalDuration + 0.5) * 1000);
+      loopTimer = setTimeout(nextLoop, loopDuration * 1000 - 100);
+    }
+
+    currentBgm = { oscs, master, ctx, loopTimer };
+
+    if (!loop) {
+      setTimeout(() => {
+        if (currentBgm?.oscs === oscs) currentBgm = null;
+      }, (loopDuration + 0.5) * 1000);
+    }
 
     return stopQuizBgm;
   } catch {
@@ -155,27 +174,24 @@ export function playQuizBgm(volume = 0.5) {
   }
 }
 
-/** Stop currently playing quiz BGM. */
+/** Stop currently playing quiz BGM with fade-out. */
 export function stopQuizBgm() {
   if (!currentBgm) return;
   try {
-    const { oscillators, masterGain, ctx } = currentBgm;
+    const { oscs, master, ctx, loopTimer } = currentBgm;
     const now = ctx.currentTime;
 
-    // Quick fade out
-    masterGain.gain.cancelScheduledValues(now);
-    masterGain.gain.setValueAtTime(masterGain.gain.value, now);
-    masterGain.gain.linearRampToValueAtTime(0, now + 0.15);
+    if (loopTimer) clearTimeout(loopTimer);
 
-    // Stop oscillators after fade
+    // Fade out
+    master.gain.cancelScheduledValues(now);
+    master.gain.setValueAtTime(master.gain.value, now);
+    master.gain.linearRampToValueAtTime(0, now + 0.3);
+
     setTimeout(() => {
-      oscillators.forEach((osc) => {
-        try { osc.stop(); } catch { /* already stopped */ }
-      });
-    }, 200);
-  } catch {
-    // Silently fail
-  }
+      oscs.forEach((osc) => { try { osc.stop(); } catch { /* */ } });
+    }, 400);
+  } catch { /* */ }
   currentBgm = null;
 }
 
