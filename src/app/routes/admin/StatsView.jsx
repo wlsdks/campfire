@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import EmptyState from '@/components/ui/EmptyState';
-import { MessageSquare, Users, Loader2 } from 'lucide-react';
+import { MessageSquare, Users } from 'lucide-react';
+import PickMascot from '@/components/ui/PickMascot';
 import { QUESTION_TYPE_MAP } from '@/lib/question-types';
 import { useRecentQuestions } from '@/hooks/useRecentQuestions';
 import { useCountUp } from '@/hooks/useCountUp';
@@ -81,7 +82,7 @@ function RecentQuestions({ questions, loading, courseFilter }) {
     : questions.filter((q) => (q.courseName || '미분류') === courseFilter);
 
   if (loading) {
-    return <div className="flex items-center justify-center py-10 text-slate-400"><Loader2 size={16} className="animate-spin mr-2" /><span className="text-sm">질문 불러오는 중...</span></div>;
+    return <div className="flex flex-col items-center justify-center py-10 gap-3"><PickMascot size="sm" mood="thinking" /><p className="text-sm text-slate-400">불러오는 중...</p></div>;
   }
   if (filtered.length === 0) {
     return <EmptyState title="최근 질문이 없습니다" description="질문을 만들고 수업을 진행해보세요" mascotSize="sm" mood="thinking" className="py-8" />;

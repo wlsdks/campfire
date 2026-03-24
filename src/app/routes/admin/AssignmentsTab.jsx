@@ -256,7 +256,8 @@ export default function AssignmentsTab({ sessions }) {
       </div>
 
       {loading ? (
-        <div className="py-16 text-center">
+        <div className="flex flex-col items-center justify-center py-16 gap-3">
+          <PickMascot size="sm" mood="thinking" />
           <p className="text-sm text-slate-400">불러오는 중...</p>
         </div>
       ) : assignments.length === 0 ? (

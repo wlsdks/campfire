@@ -94,11 +94,9 @@ export default function ReportPage() {
 
   if (loading) {
     return (
-      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
-        <div className="flex items-center gap-2 text-slate-400">
-          <div className="w-5 h-5 border-2 border-slate-300 border-t-slate-500 rounded-full animate-spin" />
-          <span className="text-sm">리포트 불러오는 중...</span>
-        </div>
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center gap-4">
+        <PickMascot size="md" mood="thinking" />
+        <p className="text-sm text-slate-400">리포트 불러오는 중...</p>
       </div>
     );
   }
