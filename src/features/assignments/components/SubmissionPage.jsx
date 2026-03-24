@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Clock, CheckCircle2, Search, FileCode2, FileText, Link, ExternalLink, Trash2, Pencil, Send, Scale, Trophy } from 'lucide-react';
+import { ArrowLeft, Clock, CheckCircle2, Search, FileCode2, FileText, Link, ExternalLink, Trash2, Pencil, Send, Scale, Trophy, Sun, Moon } from 'lucide-react';
+import { useTheme } from '@/hooks/useTheme';
 import { useAssignment } from '@/features/assignments/api/useAssignments';
 import { ASSIGNMENT_STATUS } from '@/features/assignments/api/useAssignments';
 import { submitWork, lookupSubmission, withdrawSubmission, useSubmissionResults } from '@/features/assignments/api/useSubmissions';
@@ -225,11 +226,16 @@ export default function SubmissionPage({ assignmentId }) {
   const isJudging = assignment.status === 'judging';
   const isClosed = assignment.status === 'closed';
   const statusLabel = ASSIGNMENT_STATUS[assignment.status] || assignment.status;
+  const { isDark, setTheme } = useTheme();
   const showBackButton = view !== 'landing';
 
   function handleBack() {
     if (view === 'edit') setView('mySubmission');
     else { setView('landing'); setFoundSubmission(null); }
+  }
+
+  function toggleTheme() {
+    setTheme(isDark ? 'light' : 'dark');
   }
 
   return (
@@ -250,6 +256,13 @@ export default function SubmissionPage({ assignmentId }) {
               {assignment.courseName}{assignment.roundNumber ? ` · ${assignment.roundNumber}차` : ''}
             </p>
           </div>
+          <button
+            onClick={toggleTheme}
+            className="p-2 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors shrink-0"
+            title={isDark ? '라이트 모드' : '다크 모드'}
+          >
+            {isDark ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
           <span className={`shrink-0 inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-medium ${
             isJudged ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
             : isOpen ? 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
