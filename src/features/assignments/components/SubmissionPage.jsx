@@ -275,46 +275,52 @@ export default function SubmissionPage({ assignmentId }) {
               {/* Open: 제출 or 조회 */}
               {isOpen && (
                 <div className="flex flex-col items-center justify-center" style={{ minHeight: 'calc(100dvh - 160px)' }}>
-                  <div className="w-full max-w-sm space-y-6">
-                    {/* 과제 안내 */}
-                    {assignment.description && (
-                      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5">
-                        <p className="text-[15px] text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
-                          {assignment.description}
-                        </p>
-                        {assignment.hasJudging !== false && (
-                          <p className="text-xs text-slate-400 mt-3 pt-3 border-t border-slate-100 dark:border-slate-700 flex items-center gap-1.5">
-                            <Scale size={11} />
-                            제출 후 AI 심사위원 7명이 평가합니다
+                  <div className="w-full space-y-6">
+                    {/* 마스코트 + 과제 안내 */}
+                    <div className="flex flex-col items-center">
+                      <PickMascot size="md" mood="happy" />
+                      {assignment.description && (
+                        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 mt-5 w-full">
+                          <p className="text-[15px] text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+                            {assignment.description}
                           </p>
-                        )}
-                      </div>
-                    )}
+                          {assignment.hasJudging !== false && (
+                            <p className="text-xs text-slate-400 mt-3 pt-3 border-t border-slate-100 dark:border-slate-700 flex items-center gap-1.5">
+                              <Scale size={11} />
+                              제출 후 AI 심사위원 7명이 평가합니다
+                            </p>
+                          )}
+                        </div>
+                      )}
+                      {!assignment.description && assignment.hasJudging !== false && (
+                        <p className="text-xs text-slate-400 mt-4 flex items-center gap-1.5">
+                          <Scale size={11} />
+                          제출 후 AI 심사위원 7명이 평가합니다
+                        </p>
+                      )}
+                    </div>
 
-                    {!assignment.description && assignment.hasJudging !== false && (
-                      <p className="text-xs text-slate-400 text-center flex items-center justify-center gap-1.5">
-                        <Scale size={11} />
-                        제출 후 AI 심사위원 7명이 평가합니다
-                      </p>
-                    )}
-
-                    {/* CTA */}
-                    <Button
-                      onClick={() => setView('submit')}
-                      variant="primary"
-                      size="lg"
-                      className="w-full"
-                    >
-                      <Send size={16} />
-                      과제 제출하기
-                    </Button>
-
-                    <button
-                      onClick={() => setView('lookup')}
-                      className="w-full text-center py-2 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-                    >
-                      이미 제출했나요? <span className="underline underline-offset-2">내 제출물 조회</span>
-                    </button>
+                    {/* CTA 버튼 */}
+                    <div className="space-y-3">
+                      <Button
+                        onClick={() => setView('submit')}
+                        variant="primary"
+                        size="lg"
+                        className="w-full"
+                      >
+                        <Send size={16} />
+                        과제 제출하기
+                      </Button>
+                      <Button
+                        onClick={() => setView('lookup')}
+                        variant="secondary"
+                        size="lg"
+                        className="w-full"
+                      >
+                        <Search size={16} />
+                        내 제출물 조회
+                      </Button>
+                    </div>
                   </div>
                 </div>
               )}
