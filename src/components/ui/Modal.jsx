@@ -5,14 +5,19 @@ export default function Modal({ open, onClose, children, className = '', ariaLab
   const dialogRef = useRef(null);
   const previousFocusRef = useRef(null);
 
-  // ESC key handler
+  // ESC key handler + scroll lock
   useEffect(() => {
     if (!open) return;
     const onEscKey = (e) => {
       if (e.key === 'Escape') onClose?.();
     };
     document.addEventListener('keydown', onEscKey);
-    return () => document.removeEventListener('keydown', onEscKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', onEscKey);
+      document.body.style.overflow = prev;
+    };
   }, [open, onClose]);
 
   // Save previous focus and restore on close

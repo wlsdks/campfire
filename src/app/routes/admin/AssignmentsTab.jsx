@@ -217,22 +217,29 @@ export default function AssignmentsTab({ sessions }) {
   const [selectedAssignment, setSelectedAssignment] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
-  if (selectedAssignment) {
-    return (
-      <AssignmentDetail
-        assignmentId={selectedAssignment}
-        onBack={() => setSelectedAssignment(null)}
-      />
-    );
-  }
-
   return (
-    <motion.div
-      key="assignments"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.15 }}
-    >
+    <AnimatePresence mode="wait">
+    {selectedAssignment ? (
+      <motion.div
+        key="detail"
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -20 }}
+        transition={{ duration: 0.2 }}
+      >
+        <AssignmentDetail
+          assignmentId={selectedAssignment}
+          onBack={() => setSelectedAssignment(null)}
+        />
+      </motion.div>
+    ) : (
+      <motion.div
+        key="list"
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: 20 }}
+        transition={{ duration: 0.2 }}
+      >
       <div className="flex items-center justify-between mb-5">
         <div>
           <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">과제</h2>
@@ -281,5 +288,7 @@ export default function AssignmentsTab({ sessions }) {
         />
       </Modal>
     </motion.div>
+    )}
+    </AnimatePresence>
   );
 }

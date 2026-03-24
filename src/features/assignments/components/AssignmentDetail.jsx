@@ -534,7 +534,7 @@ export default function AssignmentDetail({ assignmentId, onBack }) {
         {TABS.map(tab => (
           <button
             key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
+            onClick={() => { setActiveTab(tab.key); window.scrollTo(0, 0); }}
             className={`px-3 py-2 pb-3 text-sm font-medium transition-colors relative ${
               activeTab === tab.key
                 ? 'text-slate-900 dark:text-slate-100'

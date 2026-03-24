@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FileCode2, FileText, Send, Check, X, Upload } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
@@ -103,11 +103,14 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
     }
   }
 
-  if (submitted) {
-    return (
+  return (
+    <AnimatePresence mode="wait">
+    {submitted ? (
       <motion.div
+        key="success"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         className="flex flex-col items-center justify-center py-16 space-y-4"
       >
@@ -123,11 +126,15 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
         <p className="text-sm text-slate-400">심사 결과는 이 링크에서 확인할 수 있어요</p>
         <Button onClick={() => setSubmitted(false)} variant="secondary" size="md">수정하기</Button>
       </motion.div>
-    );
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    ) : (
+      <motion.div
+        key="form"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0, y: -12 }}
+        transition={{ duration: 0.15 }}
+      >
+      <form onSubmit={handleSubmit} className="space-y-5">
       {/* 이름 */}
       <div>
         <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">이름</p>
@@ -237,5 +244,8 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
         </Button>
       </div>
     </form>
+      </motion.div>
+    )}
+    </AnimatePresence>
   );
 }
