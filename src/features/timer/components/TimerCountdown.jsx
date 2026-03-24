@@ -4,10 +4,10 @@ import { Clock } from 'lucide-react';
 
 function getColor(secondsLeft, totalSeconds) {
   const ratio = totalSeconds > 0 ? secondsLeft / totalSeconds : 0;
-  // Functional urgency colors — matches TimerRing + design-tokens pattern
-  if (ratio > 0.5) return { bar: '#0F172A', barDark: '#E2E8F0', bg: 'bg-white dark:bg-slate-800', text: 'text-slate-900 dark:text-slate-100' };
-  if (ratio > 0.2) return { bar: '#F59E0B', barDark: '#F59E0B', bg: 'bg-white dark:bg-slate-800', text: 'text-amber-600 dark:text-amber-400' };
-  return { bar: '#EF4444', barDark: '#EF4444', bg: 'bg-white dark:bg-slate-800', text: 'text-red-500 dark:text-red-400' };
+  // Functional urgency colors — Tailwind classes for dark mode support
+  if (ratio > 0.5) return { bar: 'bg-slate-900 dark:bg-slate-200', bg: 'bg-white dark:bg-slate-800', text: 'text-slate-900 dark:text-slate-100' };
+  if (ratio > 0.2) return { bar: 'bg-amber-500', bg: 'bg-white dark:bg-slate-800', text: 'text-amber-600 dark:text-amber-400' };
+  return { bar: 'bg-red-500', bg: 'bg-white dark:bg-slate-800', text: 'text-red-500 dark:text-red-400' };
 }
 
 function formatTime(seconds) {
@@ -78,8 +78,7 @@ export default function TimerCountdown({ endTime, duration, onExpire }) {
         </div>
         <div className="h-1.5 bg-slate-200/60 dark:bg-slate-600/60 rounded-full overflow-hidden">
           <motion.div
-            className="h-full rounded-full"
-            style={{ backgroundColor: color.bar }}
+            className={`h-full rounded-full ${color.bar}`}
             animate={{ width: `${progress * 100}%` }}
             transition={{ duration: 0.3, ease: 'linear' }}
           />
