@@ -6,13 +6,17 @@ import { hapticSuccess } from '@/lib/haptics';
 
 const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 
-// Alternating slate tones — clean, professional, easy on eyes
-const SEGMENT_COLORS_LIGHT = ['#1E293B', '#334155', '#1E293B', '#334155', '#1E293B', '#334155', '#1E293B', '#334155'];
-const SEGMENT_COLORS_DARK = ['#1E293B', '#0F172A', '#1E293B', '#0F172A', '#1E293B', '#0F172A', '#1E293B', '#0F172A'];
-
-function getSegmentColors() {
-  return document.documentElement.classList.contains('dark') ? SEGMENT_COLORS_DARK : SEGMENT_COLORS_LIGHT;
-}
+// 8색 — 충분한 대비 + 세련된 톤. 라이트/다크 모두 잘 보임
+const SEGMENT_COLORS = [
+  '#334155', // slate-700
+  '#475569', // slate-600
+  '#64748B', // slate-500
+  '#334155', // slate-700
+  '#475569', // slate-600
+  '#64748B', // slate-500
+  '#334155', // slate-700
+  '#475569', // slate-600
+];
 
 function getWeightedSpinResult(segments) {
   const totalWeight = segments.reduce((sum, s) => sum + s.weight, 0);
@@ -127,7 +131,8 @@ export default function Roulette({ participants, scores = {}, onResult }) {
           animate={{ rotate: rotation }}
           transition={{ duration: 4.5, ease: [0.12, 0.56, 0.08, 0.99] }}
         >
-          <circle cx="100" cy="100" r="99" fill="none" stroke="white" strokeWidth="2" opacity="0.2" />
+          <circle cx="100" cy="100" r="99" fill="none" stroke="white" strokeWidth="2.5" opacity="0.15" />
+          <circle cx="100" cy="100" r="97" fill="none" stroke="white" strokeWidth="0.5" opacity="0.08" />
           {segmentsWithAngle.map((seg, i) => {
             const sa = seg.startAngle;
             const ea = sa + seg.angle;
@@ -144,11 +149,11 @@ export default function Roulette({ participants, scores = {}, onResult }) {
             return (
               <g key={i}>
                 {isFull ? (
-                  <circle cx="100" cy="100" r="97" fill={getSegmentColors()[i % 8]} />
+                  <circle cx="100" cy="100" r="97" fill={SEGMENT_COLORS[0]} />
                 ) : (
                   <path
                     d={`M100,100 L${100 + 97 * Math.cos((sa - 90) * Math.PI / 180)},${100 + 97 * Math.sin((sa - 90) * Math.PI / 180)} A97,97 0 ${seg.angle > 180 ? 1 : 0},1 ${100 + 97 * Math.cos((ea - 90) * Math.PI / 180)},${100 + 97 * Math.sin((ea - 90) * Math.PI / 180)} Z`}
-                    fill={getSegmentColors()[i % 8]}
+                    fill={SEGMENT_COLORS[i % SEGMENT_COLORS.length]}
                     stroke="rgba(255,255,255,0.15)"
                     strokeWidth="1"
                   />
