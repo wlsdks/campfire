@@ -63,14 +63,14 @@ function LeaderboardRow({ entry, rank, isHighlighted, isPodium, podiumIndex, ran
     <motion.div
       layout
       layoutId={entry.id}
-      initial={{ opacity: 0, x: -16 }}
-      animate={{ opacity: 1, x: 0 }}
+      initial={rank === 0 ? { opacity: 0, scale: 0.9, y: 12 } : { opacity: 0, x: -16 }}
+      animate={rank === 0 ? { opacity: 1, scale: 1, y: 0 } : { opacity: 1, x: 0 }}
       transition={{
         layout: { type: 'spring', stiffness: 300, damping: 25 },
         delay: rank * 0.04,
         type: 'spring',
-        stiffness: 300,
-        damping: 25,
+        stiffness: rank === 0 ? 400 : 300,
+        damping: rank === 0 ? 22 : 25,
       }}
       className={`flex items-center gap-3 px-4 py-3 rounded-xl border ${podiumStyle} ${highlightStyle}`}
     >
