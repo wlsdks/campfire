@@ -1,15 +1,12 @@
 import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Link, FileCode2, FileText, Send, Check, X, Upload } from 'lucide-react';
+import { FileCode2, FileText, Send, Check, X, Upload } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
 function FileField({ label, icon: Icon, fileName, onFileChange, onClear, accept, hint }) {
   return (
     <div>
-      <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1.5">
-        <Icon size={13} className="text-slate-400" />
-        {label}
-      </p>
+      <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">{label}</p>
       {fileName ? (
         <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg px-4 py-3">
           <Icon size={15} className="text-slate-400 shrink-0" />
@@ -180,10 +177,7 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
 
       {/* 프로젝트 URL */}
       <div>
-        <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1.5">
-          <Link size={13} className="text-slate-400" />
-          프로젝트 URL
-        </p>
+        <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">프로젝트 URL</p>
         <input
           type="url"
           value={projectUrl}
@@ -236,8 +230,8 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
         <p className="text-xs text-slate-400 px-1">URL 또는 코드 파일 중 하나 이상 입력해주세요</p>
       )}
 
-      {/* Submit */}
-      <div className="pt-1">
+      {/* Submit — sticky bottom */}
+      <div className="sticky bottom-0 pt-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] -mx-5 px-5 bg-gradient-to-t from-slate-50 dark:from-slate-900 via-slate-50/95 dark:via-slate-900/95 to-transparent">
         <Button type="submit" variant="primary" size="lg" disabled={!canSubmit} className="w-full">
           {submitting ? '제출 중...' : existingSubmission ? '수정 제출' : <><Send size={16} /> 제출하기</>}
         </Button>

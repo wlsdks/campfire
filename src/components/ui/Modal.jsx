@@ -67,7 +67,7 @@ export default function Modal({ open, onClose, children, className = '', ariaLab
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.15 }}
-          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center sm:p-4"
           onClick={(e) => e.target === e.currentTarget && onClose?.()}
         >
           <motion.div
@@ -77,11 +77,11 @@ export default function Modal({ open, onClose, children, className = '', ariaLab
             aria-label={ariaLabel}
             tabIndex={-1}
             onKeyDown={trapFocus}
-            initial={{ opacity: 0, scale: 0.95, y: 8 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 8 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
-            className={`bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-6 w-full max-w-md outline-none ${className}`}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 40 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+            className={`bg-white dark:bg-slate-800 rounded-t-2xl sm:rounded-2xl shadow-lg p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] w-full sm:max-w-md outline-none ${className}`}
           >
             {children}
           </motion.div>

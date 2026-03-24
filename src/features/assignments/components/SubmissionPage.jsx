@@ -275,7 +275,7 @@ export default function SubmissionPage({ assignmentId }) {
         </div>
       </header>
 
-      <div className="max-w-lg mx-auto px-5 py-8">
+      <div className="max-w-lg mx-auto px-5 py-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
         <AnimatePresence mode="wait">
 
           {/* ── 랜딩: 선택 화면 ── */}
