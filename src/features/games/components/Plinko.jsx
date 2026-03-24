@@ -112,13 +112,13 @@ export default function Plinko({ participants, onResult }) {
         if (!mountedRef.current) return;
         setBallStep(i);
         if (i === totalSteps) {
-          setTimeout(() => {
+          timersRef.current.push(setTimeout(() => {
             if (!mountedRef.current) return;
             setDropping(false);
             setWinner(winnerName);
             hapticSuccess();
             onResult?.(winnerName);
-          }, 400);
+          }, 400));
         }
       }, stepDelay));
     });

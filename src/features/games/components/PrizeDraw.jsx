@@ -75,7 +75,7 @@ function WinnerCard({ winner, index, total }) {
       <span className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
         {winner.nickname}
       </span>
-      <span className="bg-slate-900 text-white px-3 py-1 rounded-full text-sm font-bold">
+      <span className="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-3 py-1 rounded-full text-sm font-bold">
         {total > 1 ? `#${index + 1} ` : ''}당첨!
       </span>
     </motion.div>

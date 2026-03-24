@@ -5,6 +5,8 @@ import { MessageSquare, Users, Loader2 } from 'lucide-react';
 import { QUESTION_TYPE_MAP } from '@/lib/question-types';
 import { useRecentQuestions } from '@/hooks/useRecentQuestions';
 import { useCountUp } from '@/hooks/useCountUp';
+import SummaryCard from './SummaryCard';
+import EngagementTab from './EngagementTab';
 import { TrendIndicator, MiniTrendLine, DifficultQuestions } from './StatsInsights';
 
 const stagger = {
@@ -18,6 +20,7 @@ const stagger = {
 const SUB_TABS = [
   { key: 'overview', label: '개요' },
   { key: 'questions', label: '질문 분석' },
+  { key: 'engagement', label: '학생 참여도' },
 ];
 
 function OverviewCards({ totalClasses, totalParticipants, avgActivity, courseCount }) {
@@ -27,25 +30,9 @@ function OverviewCards({ totalClasses, totalParticipants, avgActivity, courseCou
 
   return (
     <motion.div variants={stagger.container} initial="initial" animate="animate" className="grid grid-cols-3 gap-4 max-sm:gap-3">
-      <motion.div variants={stagger.item} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 max-sm:p-4">
-        <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-3">총 클래스</p>
-        <p className="text-3xl max-sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 tabular-nums">{animClasses}</p>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">{courseCount}개 강의</p>
-      </motion.div>
-      <motion.div variants={stagger.item} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 max-sm:p-4">
-        <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-3">총 참여자</p>
-        <p className="text-3xl max-sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 tabular-nums">{animParticipants}</p>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">누적 접속 수</p>
-      </motion.div>
-      <motion.div variants={stagger.item} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6 max-sm:p-4">
-        <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider mb-3">평균 참여율</p>
-        <p className="text-3xl max-sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 tabular-nums">{animActivity}%</p>
-        <div className="mt-3 h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
-          <motion.div className="h-full bg-slate-700 dark:bg-slate-300 rounded-full"
-            initial={{ width: 0 }} animate={{ width: `${avgActivity}%` }}
-            transition={{ type: 'spring', stiffness: 200, damping: 20, delay: 0.3 }} />
-        </div>
-      </motion.div>
+      <SummaryCard label="총 클래스" value={animClasses} subtitle={`${courseCount}개 강의`} />
+      <SummaryCard label="총 참여자" value={animParticipants} subtitle="누적 접속 수" />
+      <SummaryCard label="평균 참여율" value={`${animActivity}%`} progress={avgActivity} />
     </motion.div>
   );
 }
@@ -268,6 +255,9 @@ export default function StatsView({ sessions }) {
           questionsLoading={questionsLoading}
           courseNames={courseNames}
         />
+      )}
+      {activeSubTab === 'engagement' && (
+        <EngagementTab sessions={sessions} />
       )}
     </div>
   );
