@@ -274,46 +274,44 @@ export default function SubmissionPage({ assignmentId }) {
             >
               {/* Open: 제출 or 조회 */}
               {isOpen && (
-                <div className="flex flex-col justify-end pb-8" style={{ minHeight: 'calc(100dvh - 160px)' }}>
-                  {/* 과제 안내 카드 */}
-                  <div className="flex-1 flex flex-col items-center justify-center">
-                    <PickMascot size="md" mood="happy" className="mx-auto" />
-
+                <div className="flex flex-col items-center justify-center" style={{ minHeight: 'calc(100dvh - 160px)' }}>
+                  <div className="w-full max-w-sm space-y-6">
+                    {/* 과제 안내 */}
                     {assignment.description && (
-                      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 mt-6 w-full">
+                      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5">
                         <p className="text-[15px] text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
                           {assignment.description}
                         </p>
+                        {assignment.hasJudging !== false && (
+                          <p className="text-xs text-slate-400 mt-3 pt-3 border-t border-slate-100 dark:border-slate-700 flex items-center gap-1.5">
+                            <Scale size={11} />
+                            제출 후 AI 심사위원 7명이 평가합니다
+                          </p>
+                        )}
                       </div>
                     )}
 
-                    {/* AI 심사 안내 */}
-                    {assignment.hasJudging !== false && (
-                      <p className="text-xs text-slate-400 mt-4 flex items-center gap-1.5">
-                        <Scale size={12} />
+                    {!assignment.description && assignment.hasJudging !== false && (
+                      <p className="text-xs text-slate-400 text-center flex items-center justify-center gap-1.5">
+                        <Scale size={11} />
                         제출 후 AI 심사위원 7명이 평가합니다
                       </p>
                     )}
-                  </div>
 
-                  {/* 액션 버튼 */}
-                  <div className="w-full space-y-3 mt-8">
-                    <button
+                    {/* CTA */}
+                    <Button
                       onClick={() => setView('submit')}
-                      className="w-full bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-900 rounded-xl px-5 py-4 flex items-center gap-4 transition-colors active:scale-[0.98]"
+                      variant="primary"
+                      size="lg"
+                      className="w-full"
                     >
-                      <div className="w-10 h-10 rounded-lg bg-white/10 dark:bg-slate-900/10 flex items-center justify-center shrink-0">
-                        <Send size={18} />
-                      </div>
-                      <div className="text-left flex-1">
-                        <p className="text-[15px] font-semibold">과제 제출하기</p>
-                        <p className="text-xs opacity-50 mt-0.5">처음 제출하거나 새로 제출</p>
-                      </div>
-                    </button>
+                      <Send size={16} />
+                      과제 제출하기
+                    </Button>
 
                     <button
                       onClick={() => setView('lookup')}
-                      className="w-full text-center py-3 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
+                      className="w-full text-center py-2 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                     >
                       이미 제출했나요? <span className="underline underline-offset-2">내 제출물 조회</span>
                     </button>
