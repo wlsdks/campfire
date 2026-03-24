@@ -36,29 +36,22 @@ function AssignmentCard({ assignment, onClick }) {
       <div className="flex items-center justify-between gap-3">
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-semibold text-slate-900 dark:text-slate-100 truncate">{assignment.title}</p>
-          <div className="flex items-center gap-2 mt-1.5">
-            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${
+          <p className="text-xs text-slate-400 mt-1 truncate">
+            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium mr-1.5 align-middle ${
               isJudged
                 ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
                 : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
             }`}>
               {statusLabel}
             </span>
-            <span className="text-xs text-slate-400">
-              {assignment.courseName}{assignment.roundNumber ? ` ${assignment.roundNumber}차` : ''}
-            </span>
-            <span className="text-xs text-slate-300">·</span>
-            <span className="text-xs text-slate-400">{count}건 제출</span>
+            {assignment.courseName}{assignment.roundNumber ? ` ${assignment.roundNumber}차` : ''}
+            {' · '}{count}건 제출
             {assignment.hasJudging !== false && (
-              <>
-                <span className="text-xs text-slate-300">·</span>
-                <span className="inline-flex items-center gap-0.5 text-xs text-slate-500 dark:text-slate-400">
-                  <Scale size={10} />
-                  AI 심사
-                </span>
-              </>
+              <span className="inline-flex items-center gap-0.5 ml-1 align-middle text-slate-500 dark:text-slate-400">
+                <Scale size={10} />
+              </span>
             )}
-          </div>
+          </p>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
           <button
