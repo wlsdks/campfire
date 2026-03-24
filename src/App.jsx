@@ -1,7 +1,7 @@
 import { onDisconnect, ref, set, serverTimestamp } from 'firebase/database';
 import { BrowserRouter, Routes, Route, useSearchParams } from 'react-router-dom';
 import { lazy, Suspense, useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, MotionConfig } from 'framer-motion';
 import PickMascot from '@/components/ui/PickMascot';
 import JoinPage from '@/app/routes/student/JoinPage';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
@@ -115,6 +115,7 @@ function App() {
   useTheme();
 
   return (
+    <MotionConfig reducedMotion="user">
     <BrowserRouter>
       <Routes>
         <Route path="/" element={
@@ -153,6 +154,7 @@ function App() {
         } />
       </Routes>
     </BrowserRouter>
+    </MotionConfig>
   );
 }
 
