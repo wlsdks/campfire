@@ -87,7 +87,7 @@ export default function AwardsCeremony({ assignmentId, readOnly = false }) {
             >
               <p className="text-white/50 text-lg">{orderedAwards.length}개 수상 발표 예정</p>
               {!readOnly && (
-                <Button onClick={handleNext} variant="primary" size="lg">
+                <Button onClick={handleNext} size="lg" className="bg-white text-slate-900 hover:bg-slate-100">
                   시상 시작 <ChevronRight size={18} />
                 </Button>
               )}
@@ -118,7 +118,7 @@ export default function AwardsCeremony({ assignmentId, readOnly = false }) {
           className="flex items-center gap-3"
         >
           {!isComplete ? (
-            <Button onClick={handleNext} variant="primary" size="lg">
+            <Button onClick={handleNext} size="lg" className="bg-white text-slate-900 hover:bg-slate-100">
               다음 발표 <ChevronRight size={18} />
             </Button>
           ) : (

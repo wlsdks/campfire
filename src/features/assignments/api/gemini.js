@@ -26,6 +26,11 @@ if (stored) {
   initGemini(stored);
 }
 
+// Fallback to env variable if still not initialized
+if (!genAI && import.meta.env.VITE_GEMINI_API_KEY) {
+  initGemini(import.meta.env.VITE_GEMINI_API_KEY);
+}
+
 const EVALUATION_PROMPT = `당신은 바이브코딩 강의의 사후 과제를 심사하는 심사위원입니다.
 
 [강의 배경]
@@ -69,6 +74,9 @@ export async function evaluateSubmission(judge, submission) {
   }
   if (submission.fileContent) {
     contentParts.push(`[업로드된 코드]\n${submission.fileContent}`);
+  }
+  if (submission.prdContent) {
+    contentParts.push(`[PRD/기획서]\n${submission.prdContent}`);
   }
   if (submission.description) {
     contentParts.push(`[프로젝트 설명]\n${submission.description}`);

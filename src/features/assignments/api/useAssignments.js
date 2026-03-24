@@ -3,22 +3,27 @@ import { ref, onValue, push, set, update, remove, serverTimestamp } from 'fireba
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
 
+export const ASSIGNMENT_STATUS = {
+  open: '제출 중',
+  closed: '마감',
+  judging: '심사 중',
+  judged: '심사 완료',
+};
+
 /**
- * useAssignmentList — 특정 코스의 과제 목록 구독.
- * @param {string} courseName — 코스명 (세션의 courseName)
+ * useAssignmentList — 과제 목록 구독.
+ * courseName이 없으면 전체 목록, 있으면 해당 코스만 필터.
  */
 export function useAssignmentList(courseName) {
   const [assignments, setAssignments] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!courseName) { setAssignments([]); setLoading(false); return; }
-
     const assignmentsRef = ref(db, 'assignments');
     const unsub = onValue(assignmentsRef, (snap) => {
       const data = snap.val() || {};
       const list = Object.entries(data)
-        .filter(([, v]) => v.courseName === courseName)
+        .filter(([, v]) => !courseName || v.courseName === courseName)
         .map(([id, v]) => ({ id, ...v }))
         .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
       setAssignments(list);
@@ -63,13 +68,14 @@ export function useAssignment(assignmentId) {
  * useAssignmentActions — 과제 CRUD 액션.
  */
 export function useAssignmentActions() {
-  const createAssignment = useCallback(async (courseName, { title, description }) => {
+  const createAssignment = useCallback(async (courseName, { title, description, roundNumber }) => {
     const assignmentsRef = ref(db, 'assignments');
     const newRef = push(assignmentsRef);
     await set(newRef, {
       title,
       description: description || '',
       courseName,
+      roundNumber: roundNumber || null,
       status: 'open',
       createdAt: serverTimestamp(),
       closedAt: null,

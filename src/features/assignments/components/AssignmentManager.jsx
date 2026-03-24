@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, FileText, Copy, Check, ChevronRight, Trash2 } from 'lucide-react';
-import { useAssignmentList, useAssignmentActions } from '@/features/assignments/api/useAssignments';
+import { useAssignmentList, useAssignmentActions, ASSIGNMENT_STATUS } from '@/features/assignments/api/useAssignments';
 import { useSubmissionList } from '@/features/assignments/api/useSubmissions';
 import Button from '@/components/ui/Button';
 import AssignmentDetail from './AssignmentDetail';
@@ -19,7 +19,7 @@ function AssignmentCard({ assignment, onClick }) {
     setTimeout(() => setCopied(false), 2000);
   }
 
-  const statusLabel = { open: '제출 중', closed: '마감', judging: '심사 중', judged: '심사 완료' }[assignment.status] || assignment.status;
+  const statusLabel = ASSIGNMENT_STATUS[assignment.status] || assignment.status;
   const statusStyle = assignment.status === 'judged'
     ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
     : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300';

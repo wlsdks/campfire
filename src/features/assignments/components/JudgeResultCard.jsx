@@ -11,7 +11,7 @@ export default memo(function JudgeResultCard({ judge, result }) {
   const isError = result.error;
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 space-y-3">
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-4 space-y-3">
       {/* Header: avatar + name + score */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
