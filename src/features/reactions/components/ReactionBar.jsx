@@ -5,7 +5,7 @@ import { REACTIONS } from '@/features/reactions/reactionConfig';
 
 const COOLDOWN_MS = 500;
 const FLASH_MS = 500;
-const PARTICLE_COUNT = 6;
+const PARTICLE_COUNT = 8;
 
 /** Tiny dot particles that burst outward on tap. */
 function TapParticles({ color }) {
@@ -13,12 +13,12 @@ function TapParticles({ color }) {
     Array.from({ length: PARTICLE_COUNT }, (_, i) => {
       const angle = (i / PARTICLE_COUNT) * 360;
       const rad = (angle * Math.PI) / 180;
-      const distance = 18 + Math.random() * 10;
+      const distance = 22 + Math.random() * 14;
       return {
         id: i,
         x: Math.cos(rad) * distance,
         y: Math.sin(rad) * distance,
-        size: 3 + Math.random() * 2,
+        size: 3 + Math.random() * 3,
       };
     })
   ).current;
@@ -54,9 +54,9 @@ const ReactionButton = memo(function ReactionButton({ reaction, isFlash, isShaki
       <motion.button
         whileTap={{ scale: 0.9 }}
         animate={isFlash ? {
-          scale: [1, 1.15, 1],
-          rotate: [0, -6, 6, 0],
-          y: [0, -4, 0],
+          scale: [1, 1.25, 0.95, 1.05, 1],
+          rotate: [0, -8, 8, -3, 0],
+          y: [0, -6, 0],
         } : isShaking ? {
           x: [0, -2, 2, -1, 1, 0],
           scale: 1, rotate: 0, y: 0,

@@ -86,25 +86,27 @@ export default function ReactionOverlay({ sessionId }) {
           return (
             <motion.div
               key={bubble.id}
-              initial={{ opacity: 0, y: 0, scale: 0.3 }}
+              initial={{ opacity: 0, y: 0, scale: 0.2 }}
               animate={{
-                opacity: [0, 0.95, 0.9, 0],
-                y: [0, -80, -300, -600],
-                x: [0, bubble.drift * 0.3, -bubble.drift * 0.35, bubble.drift * 0.7],
-                scale: [0.3, 1.1, 1, 0.8],
-                rotate: [0, bubble.rotate, -bubble.rotate * 0.5, 0],
+                opacity: [0, 1, 0.95, 0.8, 0],
+                y: [0, -60, -200, -400, -650],
+                x: [0, bubble.drift * 0.4, -bubble.drift * 0.5, bubble.drift * 0.8, -bubble.drift * 0.3],
+                scale: [0.2, 1.2, 1.05, 0.9, 0.6],
+                rotate: [0, bubble.rotate * 1.5, -bubble.rotate, bubble.rotate * 0.5, 0],
               }}
-              exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.12 } }}
+              exit={{ opacity: 0, scale: 0.3, transition: { duration: 0.1 } }}
               transition={{
                 duration: bubble.duration,
-                ease: [0.2, 0.65, 0.3, 0.9],
-                times: [0, 0.12, 0.55, 1],
+                ease: [0.15, 0.7, 0.25, 0.95],
+                times: [0, 0.1, 0.4, 0.7, 1],
               }}
               className="absolute bottom-[max(4.75rem,env(safe-area-inset-bottom))]"
               style={{ left: `${bubble.left}%` }}
             >
-              <div
-                className={`flex items-center justify-center rounded-full border shadow-sm ${reaction.bubbleBg} ${reaction.bubbleBorder}`}
+              <motion.div
+                animate={{ scale: [1, 1.08, 1], rotate: [0, 3, -3, 0] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+                className={`flex items-center justify-center rounded-full border shadow-md ${reaction.bubbleBg} ${reaction.bubbleBorder}`}
                 style={{ width: bubble.size, height: bubble.size }}
               >
                 <Icon
@@ -112,7 +114,7 @@ export default function ReactionOverlay({ sessionId }) {
                   className={reaction.bubbleIcon}
                   fill={fillHeart ? 'currentColor' : 'none'}
                 />
-              </div>
+              </motion.div>
             </motion.div>
           );
         })}
