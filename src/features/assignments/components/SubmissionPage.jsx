@@ -389,7 +389,9 @@ export default function SubmissionPage({ assignmentId }) {
               {/* Judging: 심사 중 */}
               {isJudging && (
                 <div className="flex flex-col items-center justify-center" style={{ minHeight: 'calc(100dvh - 160px)' }}>
-                  <PickMascot size="lg" mood="happy" />
+                  <motion.div animate={{ scale: [1, 1.03, 1] }} transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}>
+                    <PickMascot size="lg" mood="happy" />
+                  </motion.div>
                   <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mt-6">심사가 진행 중입니다</h2>
                   <p className="text-sm text-slate-400 mt-2 text-center leading-relaxed">
                     심사가 완료되면<br />이 페이지에서 결과를 확인할 수 있어요

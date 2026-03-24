@@ -67,9 +67,9 @@ export default memo(function AwardReveal({ awardId, winner, revealed }) {
           <span className="inline-flex items-center px-4 py-1.5 bg-white/10 rounded-full text-sm font-bold text-white/90">
             {award.name}
           </span>
-          <span className="text-white/50 text-sm tabular-nums">{winner.score}점</span>
+          <span className="text-white/60 text-lg tabular-nums font-medium">{winner.score}점</span>
         </div>
-        {judge && <p className="text-sm text-white/40">{judge.name} ({judge.role}) 선정</p>}
+        {judge && <p className="text-base text-white/50">{judge.name} ({judge.role}) 선정</p>}
       </motion.div>
     </motion.div>
   );

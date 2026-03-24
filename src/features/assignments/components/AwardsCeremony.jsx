@@ -146,7 +146,7 @@ export default function AwardsCeremony({ assignmentId, readOnly = false }) {
                     scale: i === revealIndex ? 1.3 : 1,
                     opacity: i <= revealIndex ? 1 : 0.3,
                   }}
-                  className={`w-2 h-2 rounded-full ${i <= revealIndex ? 'bg-white' : 'bg-white/20'}`}
+                  className={`w-2.5 h-2.5 rounded-full ${i <= revealIndex ? 'bg-white' : 'bg-white/20'}`}
                 />
               );
             })}

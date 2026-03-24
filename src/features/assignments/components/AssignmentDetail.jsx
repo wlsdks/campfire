@@ -263,8 +263,11 @@ function JudgeView({ assignmentId, submissions, results, hasResults }) {
               const r = results[sub.id];
               if (!r) return null;
               return (
-                <button
+                <motion.button
                   key={sub.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.04, duration: 0.2 }}
                   onClick={() => setSelectedSub(sub)}
                   className="w-full flex items-center gap-3 p-4 text-left bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow active:scale-[0.99]"
                 >
@@ -284,7 +287,7 @@ function JudgeView({ assignmentId, submissions, results, hasResults }) {
                     {r.summary.avgScore}
                   </span>
                   <ChevronRight size={16} className="text-slate-300 shrink-0" />
-                </button>
+                </motion.button>
               );
             })}
           </div>
@@ -532,7 +535,7 @@ export default function AssignmentDetail({ assignmentId, onBack }) {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`px-1 py-2 pb-3 text-sm font-medium transition-colors relative ${
+            className={`px-3 py-2 pb-3 text-sm font-medium transition-colors relative ${
               activeTab === tab.key
                 ? 'text-slate-900 dark:text-slate-100'
                 : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'

@@ -36,7 +36,7 @@ export default memo(function JudgeResultCard({ judge, result }) {
       </div>
 
       {/* Comment */}
-      <p className="text-[15px] text-slate-600 dark:text-slate-300 leading-relaxed">
+      <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
         {result.comment}
       </p>
 
@@ -44,7 +44,7 @@ export default memo(function JudgeResultCard({ judge, result }) {
       {(result.strengths?.length > 0 || result.improvements?.length > 0) && (
         <div className="flex flex-wrap gap-1.5">
           {result.strengths?.map((s, i) => (
-            <span key={`s${i}`} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+            <span key={`s${i}`} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200">
               {s}
             </span>
           ))}

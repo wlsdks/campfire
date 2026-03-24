@@ -194,7 +194,7 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
       </div>
 
       {/* 파일 업로드 — 2칸 그리드 */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <FileField
           label="코드 파일"
           icon={FileCode2}
