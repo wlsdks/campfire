@@ -48,9 +48,9 @@ export default memo(function VotePage({ sessionId }) {
   const { isRunning: timerRunning, endTime, duration } = useTimer(sessionId);
   const [timerExpired, setTimerExpired] = useState(false);
 
-  // Play chime when a new question activates (+ Haydn BGM for quiz questions)
+  // Play chime when a new question activates (+ tension BGM for quiz questions)
   const currentQ = session?.questions?.[session?.currentQuestion];
-  useQuestionChime(session?.currentQuestion, isQuizQuestion(currentQ));
+  useQuestionChime(session?.currentQuestion, isQuizQuestion(currentQ), !!currentQ?.revealedAt);
 
   const handleTimerExpire = useCallback(() => {
     setTimerExpired(true);
