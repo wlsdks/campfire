@@ -184,6 +184,8 @@ export default function SubmissionPage({ assignmentId }) {
     await submitWork(assignmentId, data);
   }, [assignmentId]);
 
+  const { isDark, setTheme } = useTheme();
+
   const handleResultLookup = useCallback(async () => {
     if (!lookupName.trim() || lookupPin.length !== 4) return;
     setResultLookupLoading(true);
@@ -226,7 +228,6 @@ export default function SubmissionPage({ assignmentId }) {
   const isJudging = assignment.status === 'judging';
   const isClosed = assignment.status === 'closed';
   const statusLabel = ASSIGNMENT_STATUS[assignment.status] || assignment.status;
-  const { isDark, setTheme } = useTheme();
   const showBackButton = view !== 'landing';
 
   function handleBack() {
