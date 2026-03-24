@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Clock, CheckCircle2, Search, FileCode2, FileText, Link, ExternalLink, Trash2, Pencil, Send } from 'lucide-react';
+import { ArrowLeft, Clock, CheckCircle2, Search, FileCode2, FileText, Link, ExternalLink, Trash2, Pencil, Send, Scale } from 'lucide-react';
 import { useAssignment } from '@/features/assignments/api/useAssignments';
 import { ASSIGNMENT_STATUS } from '@/features/assignments/api/useAssignments';
 import { submitWork, lookupSubmission, withdrawSubmission, useSubmissionResults } from '@/features/assignments/api/useSubmissions';
@@ -274,16 +274,30 @@ export default function SubmissionPage({ assignmentId }) {
             >
               {/* Open: 제출 or 조회 */}
               {isOpen && (
-                <div className="flex flex-col items-center justify-center" style={{ minHeight: 'calc(100dvh - 160px)' }}>
-                  <PickMascot size="lg" mood="happy" className="mx-auto" />
+                <div className="flex flex-col justify-end pb-8" style={{ minHeight: 'calc(100dvh - 160px)' }}>
+                  {/* 과제 안내 카드 */}
+                  <div className="flex-1 flex flex-col items-center justify-center">
+                    <PickMascot size="md" mood="happy" className="mx-auto" />
 
-                  {assignment.description && (
-                    <p className="text-sm text-slate-500 dark:text-slate-400 text-center mt-5 leading-relaxed max-w-xs whitespace-pre-line">
-                      {assignment.description}
-                    </p>
-                  )}
+                    {assignment.description && (
+                      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 mt-6 w-full">
+                        <p className="text-[15px] text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
+                          {assignment.description}
+                        </p>
+                      </div>
+                    )}
 
-                  <div className="w-full mt-8 space-y-3">
+                    {/* AI 심사 안내 */}
+                    {assignment.hasJudging !== false && (
+                      <p className="text-xs text-slate-400 mt-4 flex items-center gap-1.5">
+                        <Scale size={12} />
+                        제출 후 AI 심사위원 7명이 평가합니다
+                      </p>
+                    )}
+                  </div>
+
+                  {/* 액션 버튼 */}
+                  <div className="w-full space-y-3 mt-8">
                     <button
                       onClick={() => setView('submit')}
                       className="w-full bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200 text-white dark:text-slate-900 rounded-xl px-5 py-4 flex items-center gap-4 transition-colors active:scale-[0.98]"
@@ -299,15 +313,9 @@ export default function SubmissionPage({ assignmentId }) {
 
                     <button
                       onClick={() => setView('lookup')}
-                      className="w-full bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 rounded-xl px-5 py-4 flex items-center gap-4 border border-slate-200 dark:border-slate-700 transition-colors active:scale-[0.98]"
+                      className="w-full text-center py-3 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                     >
-                      <div className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center shrink-0">
-                        <Search size={18} className="text-slate-500 dark:text-slate-400" />
-                      </div>
-                      <div className="text-left flex-1">
-                        <p className="text-[15px] font-semibold">내 제출물 조회</p>
-                        <p className="text-xs text-slate-400 mt-0.5">수정, 취소, 제출 내역 확인</p>
-                      </div>
+                      이미 제출했나요? <span className="underline underline-offset-2">내 제출물 조회</span>
                     </button>
                   </div>
                 </div>

@@ -12,10 +12,14 @@ import Button from '@/components/ui/Button';
 import Avatar from '@/components/ui/Avatar';
 import PickMascot from '@/components/ui/PickMascot';
 
-const TABS = [
+const TABS_WITH_JUDGING = [
   { key: 'submissions', label: '제출물' },
   { key: 'judge', label: 'AI 심사' },
   { key: 'awards', label: '시상' },
+];
+
+const TABS_WITHOUT_JUDGING = [
+  { key: 'submissions', label: '제출물' },
 ];
 
 /** Sort submissions by avgScore descending. */
@@ -413,6 +417,8 @@ export default function AssignmentDetail({ assignmentId, onBack }) {
   const [confirmClose, setConfirmClose] = useState(false);
 
   const hasResults = Object.keys(results).length > 0;
+  const hasJudging = assignment?.hasJudging !== false; // 기본값 true (하위 호환)
+  const TABS = hasJudging ? TABS_WITH_JUDGING : TABS_WITHOUT_JUDGING;
 
   if (!assignment) return null;
 

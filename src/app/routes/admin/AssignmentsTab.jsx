@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Copy, Check, ChevronRight, ChevronDown, X } from 'lucide-react';
+import { Plus, Copy, Check, ChevronRight, ChevronDown, X, Scale } from 'lucide-react';
 import { useAssignmentList, useAssignmentActions, ASSIGNMENT_STATUS } from '@/features/assignments/api/useAssignments';
 import { useSubmissionList } from '@/features/assignments/api/useSubmissions';
 import Button from '@/components/ui/Button';
@@ -49,6 +49,15 @@ function AssignmentCard({ assignment, onClick }) {
             </span>
             <span className="text-xs text-slate-300">·</span>
             <span className="text-xs text-slate-400">{count}건 제출</span>
+            {assignment.hasJudging !== false && (
+              <>
+                <span className="text-xs text-slate-300">·</span>
+                <span className="inline-flex items-center gap-0.5 text-xs text-slate-500 dark:text-slate-400">
+                  <Scale size={10} />
+                  AI 심사
+                </span>
+              </>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-1.5 shrink-0">
@@ -68,11 +77,11 @@ function AssignmentCard({ assignment, onClick }) {
 
 function CreateAssignmentContent({ sessions, onClose }) {
   const { createAssignment } = useAssignmentActions();
-  const [step, setStep] = useState('class'); // 'class' → 'round' → 'form'
   const [selectedCourse, setSelectedCourse] = useState('');
-  const [selectedRound, setSelectedRound] = useState(null);
+  const [selectedRound, setSelectedRound] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [hasJudging, setHasJudging] = useState(true);
   const [creating, setCreating] = useState(false);
 
   const courseNames = useMemo(() => {
@@ -81,7 +90,6 @@ function CreateAssignmentContent({ sessions, onClose }) {
     return [...names].sort();
   }, [sessions]);
 
-  // 선택된 클래스의 차수 목록 (roundNumber 기준 정렬)
   const rounds = useMemo(() => {
     if (!selectedCourse) return [];
     return sessions
@@ -91,14 +99,17 @@ function CreateAssignmentContent({ sessions, onClose }) {
       .sort((a, b) => a - b);
   }, [sessions, selectedCourse]);
 
+  const canCreate = title.trim() && selectedCourse;
+
   async function handleCreate() {
-    if (!title.trim() || !selectedCourse) return;
+    if (!canCreate) return;
     setCreating(true);
     try {
       await createAssignment(selectedCourse, {
         title: title.trim(),
         description: description.trim(),
-        roundNumber: selectedRound,
+        roundNumber: selectedRound ? Number(selectedRound) : null,
+        hasJudging,
       });
       onClose();
     } finally {
@@ -106,151 +117,101 @@ function CreateAssignmentContent({ sessions, onClose }) {
     }
   }
 
-  function handleSelectCourse(name) {
-    setSelectedCourse(name);
-    const courseRounds = sessions
-      .filter(s => s.courseName === name && s.roundNumber)
-      .map(s => s.roundNumber)
-      .filter((v, i, arr) => arr.indexOf(v) === i);
-    // 차수가 1개 이하면 바로 폼으로
-    if (courseRounds.length <= 1) {
-      setSelectedRound(courseRounds[0] || null);
-      setStep('form');
-    } else {
-      setStep('round');
-    }
-  }
-
-  function handleBack() {
-    if (step === 'form' && rounds.length > 1) {
-      setStep('round');
-    } else {
-      setStep('class');
-      setSelectedCourse('');
-      setSelectedRound(null);
-    }
-  }
-
-  const stepTitle = { class: '클래스 선택', round: '차수 선택', form: '과제 등록' }[step];
-  const breadcrumb = step === 'form'
-    ? `${selectedCourse}${selectedRound ? ` · ${selectedRound}차` : ''}`
-    : step === 'round'
-    ? selectedCourse
-    : null;
-
   return (
     <>
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">
-          {stepTitle}
-        </h3>
+      <div className="flex items-center justify-between mb-5">
+        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">과제 등록</h3>
         <button onClick={onClose} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
           <X size={18} />
         </button>
       </div>
 
-      <AnimatePresence mode="wait">
-        {step === 'class' && (
-          <motion.div
-            key="class"
-            initial={{ opacity: 0, x: -12 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -12 }}
-            transition={{ duration: 0.15 }}
-            className="space-y-2"
-          >
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">과제를 등록할 클래스를 선택하세요</p>
-            {courseNames.length === 0 ? (
-              <p className="text-sm text-slate-400 text-center py-6">등록된 클래스가 없습니다</p>
-            ) : (
-              courseNames.map(name => (
-                <button
-                  key={name}
-                  onClick={() => handleSelectCourse(name)}
-                  className="w-full flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors duration-150 text-left"
-                >
-                  <span className="text-[15px] font-medium text-slate-900 dark:text-slate-100">{name}</span>
-                  <ChevronRight size={16} className="text-slate-400" />
-                </button>
-              ))
-            )}
-          </motion.div>
-        )}
-
-        {step === 'round' && (
-          <motion.div
-            key="round"
-            initial={{ opacity: 0, x: 12 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -12 }}
-            transition={{ duration: 0.15 }}
-            className="space-y-2"
-          >
-            <button
-              onClick={() => { setStep('class'); setSelectedCourse(''); }}
-              className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors mb-2"
+      <div className="space-y-4">
+        {/* 클래스 + 차수 — 한 줄 */}
+        <div className="flex gap-3">
+          <div className="flex-1">
+            <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">클래스</p>
+            <select
+              value={selectedCourse}
+              onChange={(e) => { setSelectedCourse(e.target.value); setSelectedRound(''); }}
+              className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-[15px] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all appearance-none"
             >
-              <ChevronDown size={14} className="rotate-90" />
-              {selectedCourse}
-            </button>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-3">몇 차수에 등록할까요?</p>
-            <div className="grid grid-cols-3 gap-2">
-              {rounds.map(r => (
-                <button
-                  key={r}
-                  onClick={() => { setSelectedRound(r); setStep('form'); }}
-                  className="p-3 rounded-xl bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors text-center"
-                >
-                  <span className="text-lg font-bold text-slate-900 dark:text-slate-100">{r}</span>
-                  <span className="text-xs text-slate-400 ml-0.5">차</span>
-                </button>
+              <option value="">선택</option>
+              {courseNames.map(name => (
+                <option key={name} value={name}>{name}</option>
               ))}
+            </select>
+          </div>
+          {rounds.length > 0 && (
+            <div className="w-24">
+              <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">차수</p>
+              <select
+                value={selectedRound}
+                onChange={(e) => setSelectedRound(e.target.value)}
+                className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-[15px] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all appearance-none"
+              >
+                <option value="">전체</option>
+                {rounds.map(r => (
+                  <option key={r} value={r}>{r}차</option>
+                ))}
+              </select>
             </div>
-          </motion.div>
-        )}
+          )}
+        </div>
 
-        {step === 'form' && (
-          <motion.div
-            key="form"
-            initial={{ opacity: 0, x: 12 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 12 }}
-            transition={{ duration: 0.15 }}
-            className="space-y-4"
-          >
-            <button
-              onClick={handleBack}
-              className="flex items-center gap-1 text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-            >
-              <ChevronDown size={14} className="rotate-90" />
-              {breadcrumb}
-            </button>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="과제 제목"
-              maxLength={50}
-              autoFocus
-              className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-[15px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-            />
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="과제 설명 (선택)"
-              rows={3}
-              maxLength={300}
-              className="w-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-[15px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none transition-all"
-            />
-            <div className="flex gap-2 pt-1">
-              <Button onClick={onClose} variant="ghost" size="md" className="flex-1">취소</Button>
-              <Button onClick={handleCreate} variant="primary" size="md" disabled={!title.trim() || creating} className="flex-1">
-                {creating ? '생성 중...' : '과제 생성'}
-              </Button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        {/* 과제 제목 */}
+        <div>
+          <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">과제 제목</p>
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="과제 제목을 입력하세요"
+            maxLength={50}
+            autoFocus
+            className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-[15px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+          />
+        </div>
+
+        {/* 과제 설명 */}
+        <div>
+          <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">
+            과제 설명
+            <span className="text-slate-300 dark:text-slate-500 ml-1.5 font-normal">선택</span>
+          </p>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="학생들에게 보여줄 과제 설명"
+            rows={2}
+            maxLength={300}
+            className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-[15px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none transition-all"
+          />
+        </div>
+
+        {/* AI 심사 토글 */}
+        <button
+          type="button"
+          onClick={() => setHasJudging(!hasJudging)}
+          className="w-full flex items-center justify-between p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+        >
+          <div>
+            <p className="text-[15px] font-medium text-slate-900 dark:text-slate-100 text-left">AI 심사</p>
+            <p className="text-xs text-slate-400 mt-0.5 text-left">7명의 AI 심사위원이 제출물을 평가합니다</p>
+          </div>
+          <div className={`w-11 h-6 rounded-full p-0.5 transition-colors ${hasJudging ? 'bg-slate-900 dark:bg-slate-100' : 'bg-slate-200 dark:bg-slate-600'}`}>
+            <div className={`w-5 h-5 rounded-full bg-white dark:bg-slate-900 shadow-sm transition-transform ${hasJudging ? 'translate-x-5' : 'translate-x-0'}`} />
+          </div>
+        </button>
+
+        {/* 생성 버튼 */}
+        <div className="flex gap-2 pt-1">
+          <Button onClick={onClose} variant="ghost" size="md" className="flex-1">취소</Button>
+          <Button onClick={handleCreate} variant="primary" size="md" disabled={!canCreate || creating} className="flex-1">
+            {creating ? '생성 중...' : '과제 생성'}
+          </Button>
+        </div>
+      </div>
     </>
   );
 }

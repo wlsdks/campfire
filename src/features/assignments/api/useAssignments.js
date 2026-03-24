@@ -68,7 +68,7 @@ export function useAssignment(assignmentId) {
  * useAssignmentActions — 과제 CRUD 액션.
  */
 export function useAssignmentActions() {
-  const createAssignment = useCallback(async (courseName, { title, description, roundNumber }) => {
+  const createAssignment = useCallback(async (courseName, { title, description, roundNumber, hasJudging = true }) => {
     const assignmentsRef = ref(db, 'assignments');
     const newRef = push(assignmentsRef);
     await set(newRef, {
@@ -76,6 +76,7 @@ export function useAssignmentActions() {
       description: description || '',
       courseName,
       roundNumber: roundNumber || null,
+      hasJudging,
       status: 'open',
       createdAt: serverTimestamp(),
       closedAt: null,
