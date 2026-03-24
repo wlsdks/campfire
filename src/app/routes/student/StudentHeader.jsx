@@ -1,11 +1,26 @@
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { Trophy, Ticket, Volume2, VolumeOff } from 'lucide-react';
+import { Trophy, Ticket, Volume2, VolumeOff, Sun, Moon } from 'lucide-react';
+import { useTheme } from '@/hooks/useTheme';
 import PickMascot from '@/components/ui/PickMascot';
 import Avatar from '@/components/ui/Avatar';
 import ConnectionBanner from '@/components/ui/ConnectionBanner';
 import { useScores } from '@/features/quiz/api/useScores';
 import { getParticipantId, getNickname } from '@/lib/participant';
+
+function ThemeToggle() {
+  const { isDark, setTheme } = useTheme();
+  return (
+    <motion.button
+      whileTap={{ scale: 0.9 }}
+      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      aria-label={isDark ? '라이트 모드' : '다크 모드'}
+      className="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150"
+    >
+      {isDark ? <Sun size={16} /> : <Moon size={16} />}
+    </motion.button>
+  );
+}
 
 /** Animated score counter for the header. */
 function HeaderScore({ value }) {
@@ -100,6 +115,7 @@ export default function StudentHeader({ sessionId }) {
                 : <Volume2 size={16} />
               }
             </motion.button>
+            <ThemeToggle />
             <Avatar name={nickname} size="sm" />
           </div>
         </div>
