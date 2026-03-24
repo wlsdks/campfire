@@ -278,7 +278,7 @@ export default function SubmissionPage({ assignmentId }) {
                   <div className="w-full space-y-6">
                     {/* 마스코트 + 과제 안내 */}
                     <div className="flex flex-col items-center">
-                      <PickMascot size="md" mood="happy" />
+                      <PickMascot size="lg" mood="happy" />
                       {assignment.description && (
                         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 mt-5 w-full">
                           <p className="text-[15px] text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
@@ -362,11 +362,9 @@ export default function SubmissionPage({ assignmentId }) {
               {/* Judging: 심사 중 */}
               {isJudging && (
                 <div className="flex flex-col items-center justify-center" style={{ minHeight: 'calc(100dvh - 160px)' }}>
-                  <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                    <Clock size={24} className="text-slate-400" />
-                  </div>
-                  <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mt-5">심사가 진행 중입니다</h2>
-                  <p className="text-sm text-slate-400 mt-1.5 text-center leading-relaxed">
+                  <PickMascot size="lg" mood="happy" />
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mt-6">심사가 진행 중입니다</h2>
+                  <p className="text-sm text-slate-400 mt-2 text-center leading-relaxed">
                     심사가 완료되면<br />이 페이지에서 결과를 확인할 수 있어요
                   </p>
                 </div>
@@ -375,17 +373,17 @@ export default function SubmissionPage({ assignmentId }) {
               {/* Closed: 마감 */}
               {isClosed && (
                 <div className="flex flex-col items-center justify-center" style={{ minHeight: 'calc(100dvh - 160px)' }}>
-                  <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                    <Clock size={24} className="text-slate-400" />
-                  </div>
-                  <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mt-5">과제가 마감되었습니다</h2>
-                  <p className="text-sm text-slate-400 mt-1.5 text-center leading-relaxed">
+                  <PickMascot size="lg" mood="waiting" />
+                  <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mt-6">과제가 마감되었습니다</h2>
+                  <p className="text-sm text-slate-400 mt-2 text-center leading-relaxed">
                     심사 결과가 나오면<br />이 페이지에서 확인할 수 있어요
                   </p>
-                  <button onClick={() => setView('lookup')}
-                    className="text-sm text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors mt-6 underline underline-offset-2">
-                    내 제출물 조회
-                  </button>
+                  <div className="w-full mt-8">
+                    <Button onClick={() => setView('lookup')} variant="secondary" size="lg" className="w-full">
+                      <Search size={16} />
+                      내 제출물 조회
+                    </Button>
+                  </div>
                 </div>
               )}
             </motion.div>
