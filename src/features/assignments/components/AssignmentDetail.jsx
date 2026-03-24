@@ -228,14 +228,25 @@ function JudgeView({ assignmentId, submissions, results, hasResults }) {
 
   return (
     <div className="space-y-6">
-      {/* 심사위원단 — 컴팩트 가로 스크롤 */}
-      <div className="flex items-center gap-3 overflow-x-auto pb-1 -mx-1 px-1">
-        {JUDGES.map((judge) => (
-          <div key={judge.id} className="flex flex-col items-center gap-1.5 shrink-0">
-            <Avatar name={judge.name} size="sm" />
-            <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">{judge.name}</p>
-          </div>
-        ))}
+      {/* 심사위원단 */}
+      <div>
+        <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-3">심사위원단</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
+          {JUDGES.map((judge) => (
+            <div
+              key={judge.id}
+              className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-3.5"
+            >
+              <div className="flex items-center gap-2.5">
+                <Avatar name={judge.name} size="sm" />
+                <div className="min-w-0">
+                  <p className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 truncate">{judge.name}</p>
+                  <p className="text-[11px] text-slate-400 truncate">{judge.role}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* 심사 컨트롤 */}
@@ -247,7 +258,7 @@ function JudgeView({ assignmentId, submissions, results, hasResults }) {
       {hasResults && (
         <div>
           <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-3">순위</p>
-          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 divide-y divide-slate-100 dark:divide-slate-700">
+          <div className="space-y-2">
             {sorted.map((sub, i) => {
               const r = results[sub.id];
               if (!r) return null;
@@ -255,21 +266,24 @@ function JudgeView({ assignmentId, submissions, results, hasResults }) {
                 <button
                   key={sub.id}
                   onClick={() => setSelectedSub(sub)}
-                  className="w-full flex items-center gap-3 px-5 py-3.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+                  className="w-full flex items-center gap-3 p-4 text-left bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow active:scale-[0.99]"
                 >
-                  <span className={`text-sm font-bold tabular-nums w-5 text-center ${
+                  <span className={`text-sm font-bold tabular-nums w-6 text-center shrink-0 ${
                     i === 0 ? 'text-slate-900 dark:text-slate-100'
                     : i < 3 ? 'text-slate-600 dark:text-slate-300'
                     : 'text-slate-300 dark:text-slate-500'
                   }`}>{i + 1}</span>
-                  <p className="text-[15px] font-medium text-slate-900 dark:text-slate-100 flex-1 truncate">
-                    {sub.name}
-                  </p>
-                  <span className="text-xs text-slate-400 tabular-nums">{r.summary.selectedCount}/{r.summary.totalJudges}</span>
-                  <span className="text-base font-bold text-slate-900 dark:text-slate-100 tabular-nums w-10 text-right">
+                  <Avatar name={sub.name} size="sm" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[15px] font-medium text-slate-900 dark:text-slate-100 truncate">{sub.name}</p>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      {r.summary.passed ? '합격' : '불합격'} · {r.summary.selectedCount}/{r.summary.totalJudges}명 선택
+                    </p>
+                  </div>
+                  <span className="text-xl font-bold text-slate-900 dark:text-slate-100 tabular-nums shrink-0">
                     {r.summary.avgScore}
                   </span>
-                  <ChevronRight size={14} className="text-slate-300 shrink-0" />
+                  <ChevronRight size={16} className="text-slate-300 shrink-0" />
                 </button>
               );
             })}
