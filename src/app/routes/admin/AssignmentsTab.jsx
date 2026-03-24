@@ -31,7 +31,7 @@ function AssignmentCard({ assignment, onClick }) {
       onClick={onClick}
       role="button"
       tabIndex={0}
-      className="w-full text-left p-4 rounded-xl bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition-shadow duration-150 active:scale-[0.98] cursor-pointer"
+      className="w-full text-left p-4 rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow duration-150 active:scale-[0.98] cursor-pointer"
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex-1 min-w-0">

@@ -95,7 +95,7 @@ function MySubmissionView({ submission, assignmentId, onBack, onEdit, isOpen }) 
               제출 취소
             </button>
           ) : (
-            <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-4 space-y-3">
+            <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-4 space-y-3">
               <p className="text-sm text-red-600 dark:text-red-400 text-center">정말 제출을 취소하시겠어요?</p>
               <div className="flex gap-2">
                 <Button onClick={() => setConfirmDelete(false)} variant="ghost" size="sm" className="flex-1">아니요</Button>
