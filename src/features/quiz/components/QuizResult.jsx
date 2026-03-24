@@ -4,6 +4,7 @@ import { Check, Ticket, X, Flame } from 'lucide-react';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import ConfettiBurst from '@/components/ui/ConfettiBurst';
 import { hapticTap } from '@/lib/haptics';
+import { playCorrect, playIncorrect } from '@/lib/chime';
 
 function CountUp({ value, prefix = '+', suffix = '점' }) {
   const motionVal = useMotionValue(0);
@@ -35,6 +36,12 @@ function CountUp({ value, prefix = '+', suffix = '점' }) {
 }
 
 export default function QuizResult({ isCorrect, points, tickets = 0, correctAnswer, event = null, bet = 1, streak = 0 }) {
+  // Play correct/incorrect sound on mount
+  useEffect(() => {
+    if (isCorrect) playCorrect();
+    else playIncorrect();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
