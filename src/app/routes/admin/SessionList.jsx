@@ -94,7 +94,7 @@ export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, s
   const [collapsed, setCollapsed] = useState(false);
 
   const stats = useMemo(() => {
-    const totalParticipants = sessions.reduce((s, x) => s + x.participantCount, 0);
+    const totalParticipants = sessions.reduce((s, x) => s + (x.totalParticipants || x.participantCount), 0);
     const avgActivity = sessions.length > 0
       ? Math.round(sessions.reduce((s, x) => s + x.activityRate, 0) / sessions.length)
       : 0;
@@ -105,7 +105,7 @@ export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, s
     <motion.div
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: groupIndex * 0.05, ease: 'easeOut' }}
+      transition={{ delay: groupIndex * 0.05, type: 'spring', stiffness: 300, damping: 25 }}
       className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
     >
       <button
@@ -165,7 +165,7 @@ export function UngroupedSessions({ sessions, onSelect, onDelete, onDuplicate, s
   if (sessions.length === 0) return null;
 
   return (
-    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: groupIndex * 0.05, ease: 'easeOut' }}>
+    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: groupIndex * 0.05, type: 'spring', stiffness: 300, damping: 25 }}>
       <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden transition-shadow duration-200">
         <div className="px-5 py-3 border-b border-slate-100 dark:border-slate-700">
           <span className="text-sm font-semibold text-slate-500 dark:text-slate-400">미분류 클래스</span>

@@ -15,6 +15,7 @@ function AssignmentCard({ assignment, onClick }) {
   function handleCopy(e) {
     e.stopPropagation();
     navigator.clipboard?.writeText(submitUrl);
+    window.open(submitUrl, '_blank');
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }

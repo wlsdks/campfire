@@ -123,6 +123,7 @@ export default function SubmissionsView({ assignmentId, submissions, results, aw
 
   function handleCopy() {
     navigator.clipboard?.writeText(submitUrl);
+    window.open(submitUrl, '_blank');
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   }

@@ -264,7 +264,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
           {activeTab === 'history' && (
             <motion.div key="history" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }}>
               {loading ? (
-                <div className="flex items-center justify-center py-16 text-slate-400"><Loader2 size={20} className="animate-spin mr-2" />불러오는 중...</div>
+                <div className="flex flex-col items-center justify-center py-16 gap-3"><PickMascot size="sm" mood="thinking" /><p className="text-sm text-slate-400">불러오는 중...</p></div>
               ) : (
                 <Suspense fallback={<SuspenseFallback fullPage={false} />}>
                   <StatsView sessions={sessions} />

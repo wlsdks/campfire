@@ -45,7 +45,7 @@ export default function StaffMobileView({ sessionId, session, adminUser, onBack,
               {courseName} {round}
             </h1>
             <div className="flex items-center gap-1.5 text-[13px] text-slate-400">
-              <span>{count}명 접속</span>
+              <span><motion.span key={count} initial={{ scale: 1.15 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 400, damping: 22 }} className="inline-block tabular-nums">{count}</motion.span>명 접속</span>
               <span>·</span>
               <span>스태프</span>
             </div>

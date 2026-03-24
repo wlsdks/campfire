@@ -83,7 +83,7 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
     <>
       <div className="flex items-center gap-2">
         <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-        <span className="text-slate-900 dark:text-slate-100 font-bold text-2xl tabular-nums tracking-tight">{count}</span>
+        <motion.span key={count} initial={{ scale: 1.15 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 400, damping: 22 }} className="text-slate-900 dark:text-slate-100 font-bold text-2xl tabular-nums tracking-tight inline-block">{count}</motion.span>
         <span className="text-slate-500 dark:text-slate-400 text-xs">명 접속 중</span>
       </div>
 

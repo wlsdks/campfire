@@ -15,7 +15,7 @@ import JoinToast from '@/features/participants/components/JoinToast';
 import TimerCountdown from '@/features/timer/components/TimerCountdown';
 import Badge from '@/components/ui/Badge';
 import PickMascot from '@/components/ui/PickMascot';
-import { Eye } from 'lucide-react';
+
 import LiveHeader from './LiveHeader';
 import LiveParticipation from './LiveParticipation';
 
@@ -106,11 +106,9 @@ export default function LivePage() {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
-        <div className="flex items-center gap-2 text-slate-400">
-          <div className="w-5 h-5 border-2 border-slate-600 border-t-slate-400 rounded-full animate-spin" />
-          <span className="text-sm">불러오는 중...</span>
-        </div>
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center gap-4">
+        <PickMascot size="md" mood="thinking" />
+        <p className="text-sm text-slate-400">불러오는 중...</p>
       </div>
     );
   }
@@ -168,7 +166,7 @@ export default function LivePage() {
                   {currentMode === 'discussion' && <DiscussionPresenter sessionId={sessionId} />}
                   {currentMode === 'focus' && (
                     <div className="flex flex-col items-center justify-center gap-6 text-center">
-                      <Eye size={48} className="text-slate-300 dark:text-white/60" />
+                      <PickMascot size="lg" mood="focus" />
                       <p className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">집중 모드</p>
                       <p className="text-slate-400 dark:text-white/40 text-lg">학생 화면이 잠겼습니다</p>
                     </div>

@@ -50,7 +50,7 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
             key={option}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08, duration: 0.3, ease: 'easeOut' }}
+            transition={{ delay: i * 0.08, type: 'spring', stiffness: 300, damping: 25 }}
             className={`space-y-1.5 transition-opacity duration-300 ${isCorrect ? 'rounded-lg ring-2 ring-indigo-500/30 p-3 -mx-3 bg-slate-50/50 dark:bg-slate-800/50' : isWrong ? 'opacity-60' : ''}`}
           >
             <div className="flex justify-between items-baseline gap-2">
@@ -74,6 +74,7 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
                   key={count}
                   initial={{ scale: 1.2 }}
                   animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 22 }}
                   className={`font-bold text-2xl ${isCorrect ? 'text-indigo-700 dark:text-indigo-400' : countColor}`}
                 >
                   {count}

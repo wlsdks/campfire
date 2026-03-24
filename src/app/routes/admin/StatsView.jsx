@@ -13,7 +13,7 @@ const stagger = {
   container: { animate: { transition: { staggerChildren: 0.04 } } },
   item: {
     initial: { opacity: 0, y: 12 },
-    animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } },
+    animate: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 25 } },
   },
 };
 
@@ -185,7 +185,7 @@ export default function StatsView({ sessions }) {
       return { totalClasses: 0, totalParticipants: 0, avgActivity: 0, courseCount: 0, courseData: [] };
     }
     const totalClasses = sessions.length;
-    const totalParticipants = sessions.reduce((sum, s) => sum + s.participantCount, 0);
+    const totalParticipants = sessions.reduce((sum, s) => sum + (s.totalParticipants || s.participantCount), 0);
     const totalActive = sessions.reduce((sum, s) => sum + s.activeCount, 0);
     const avgActivity = totalParticipants > 0 ? Math.round((totalActive / totalParticipants) * 100) : 0;
     const courseNames = new Set(sessions.filter((s) => s.courseName).map((s) => s.courseName));
@@ -204,9 +204,9 @@ export default function StatsView({ sessions }) {
           name,
           rounds: list.length,
           conductedRounds: conducted.length,
-          totalParticipants: list.reduce((sum, s) => sum + s.participantCount, 0),
+          totalParticipants: list.reduce((sum, s) => sum + (s.totalParticipants || s.participantCount), 0),
           roundDetails: conducted
-            .map((s) => ({ roundNumber: s.roundNumber || '\u2014', activityRate: s.activityRate, participantCount: s.participantCount })),
+            .map((s) => ({ roundNumber: s.roundNumber || '\u2014', activityRate: s.activityRate, participantCount: s.totalParticipants || s.participantCount })),
         };
       })
       .filter((c) => c.conductedRounds > 0)

@@ -6,7 +6,8 @@ import AdminLogin from './AdminLogin';
 import SessionDashboard from './SessionDashboard';
 import QuestionManager from './QuestionManager';
 import JoinToast from '@/features/participants/components/JoinToast';
-import { Loader2, PanelLeftOpen } from 'lucide-react';
+import { PanelLeftOpen } from 'lucide-react';
+import PickMascot from '@/components/ui/PickMascot';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import ChatPanel from '@/features/chat/components/ChatPanel';
 import AdminSessionHeader from './AdminSessionHeader';
@@ -32,8 +33,9 @@ export default function AdminPage() {
       pendingAdmins={s.pendingAdmins} pendingCount={s.pendingCount} approveAdmin={s.approveAdmin} rejectAdmin={s.rejectAdmin} />
   );
   if (s.loading) return (
-    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
-      <div className="flex items-center gap-2 text-slate-400"><Loader2 size={20} className="animate-spin" /><span>불러오는 중...</span></div>
+    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center gap-4">
+      <PickMascot size="md" mood="thinking" />
+      <p className="text-sm text-slate-400">불러오는 중...</p>
     </div>
   );
   if (!s.session) { s.handleBack(); return null; }
@@ -41,8 +43,9 @@ export default function AdminPage() {
   if (s.adminUser?.role === 'staff') {
     return (
       <Suspense fallback={
-        <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
-          <div className="flex items-center gap-2 text-slate-400"><Loader2 size={20} className="animate-spin" /><span>불러오는 중...</span></div>
+        <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center gap-4">
+          <PickMascot size="md" mood="thinking" />
+          <p className="text-sm text-slate-400">불러오는 중...</p>
         </div>
       }>
         <StaffPage

@@ -8,9 +8,9 @@ const ChatMessage = memo(function ChatMessage({ msg, isOwn }) {
   if (isOwn) {
     return (
       <motion.div
-        initial={{ opacity: 0, x: 8 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.15 }}
+        initial={{ opacity: 0, x: 12, scale: 0.95 }}
+        animate={{ opacity: 1, x: 0, scale: 1 }}
+        transition={{ type: 'spring', stiffness: 500, damping: 30 }}
         className="flex flex-col items-end gap-1"
       >
         <div className="inline-block px-4 py-2.5 text-[15px] leading-relaxed bg-slate-900 dark:bg-slate-200 text-white dark:text-slate-900 rounded-2xl rounded-br-sm max-w-[80%]">
@@ -23,9 +23,9 @@ const ChatMessage = memo(function ChatMessage({ msg, isOwn }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: -8 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.15 }}
+      initial={{ opacity: 0, x: -12, scale: 0.95 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
       className="flex items-start gap-2.5 max-w-[85%]"
     >
       <div className="w-9 h-9 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[13px] font-semibold text-slate-600 dark:text-slate-300 shrink-0 mt-0.5">

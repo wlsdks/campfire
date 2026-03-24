@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, memo, useCallback } from 'react';
 import { ref, update, remove } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
@@ -7,6 +7,41 @@ import { AlertCircle, Trash2, ChevronDown, MessageCircle } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 import { logger } from '@/lib/logger';
+
+const UrgentQuestionItem = memo(function UrgentQuestionItem({ q, onClick, onDismiss }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      role="button"
+      aria-label={q.read ? '읽은 질문' : '읽지 않은 질문 -- 클릭하여 확인'}
+      className={`p-2.5 rounded-lg text-sm transition-colors duration-150 cursor-pointer ${
+        q.read
+          ? 'bg-slate-50 dark:bg-slate-800 opacity-60'
+          : 'bg-white dark:bg-slate-700 shadow-sm hover:shadow-md'
+      }`}
+      onClick={() => onClick(q)}
+    >
+      <div className="flex items-start gap-2">
+        {!q.read && <div className="w-2 h-2 rounded-full bg-red-500 mt-1.5 shrink-0" />}
+        <div className="flex-1 min-w-0">
+          <p className="text-slate-700 dark:text-slate-200 leading-relaxed">{q.text}</p>
+          <div className="flex justify-between items-center mt-1.5">
+            <span className="text-slate-400 text-xs">{q.anonymous === false && q.nickname ? q.nickname : '익명'}</span>
+            <button
+              aria-label="질문 삭제"
+              onClick={(e) => { e.stopPropagation(); onDismiss(q.id); }}
+              className="text-slate-300 hover:text-red-500 transition-colors duration-150 active:scale-90"
+            >
+              <Trash2 size={12} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+});
 
 export default function UrgentQuestionList({ sessionId }) {
   const { questionList, unreadCount } = useUrgentQuestions(sessionId);
@@ -22,27 +57,27 @@ export default function UrgentQuestionList({ sessionId }) {
     }
   }
 
-  async function dismissOne(questionId) {
+  const dismissOne = useCallback(async (questionId) => {
     try {
       await remove(ref(db, `sessions/${sessionId}/urgentQuestions/${questionId}`));
     } catch (err) {
       logger.error('질문 삭제 실패:', err);
     }
-  }
+  }, [sessionId]);
 
-  async function setReviewing(questionId, value) {
+  const setReviewing = useCallback(async (questionId, value) => {
     try {
       await update(ref(db, `sessions/${sessionId}/urgentQuestions/${questionId}`), { reviewing: value });
     } catch (err) {
       logger.error('질문 reviewing 상태 변경 실패:', err);
     }
-  }
+  }, [sessionId]);
 
-  function handleQuestionClick(q) {
+  const handleQuestionClick = useCallback((q) => {
     setSelectedQuestion(q);
     reviewingIdRef.current = q.id;
     setReviewing(q.id, true);
-  }
+  }, [setReviewing]);
 
   function handleConfirm() {
     if (selectedQuestion) {
@@ -105,37 +140,7 @@ export default function UrgentQuestionList({ sessionId }) {
               )}
               <AnimatePresence>
                 {questionList.map((q) => (
-                  <motion.div
-                    key={q.id}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    role="button"
-                    aria-label={q.read ? '읽은 질문' : '읽지 않은 질문 -- 클릭하여 확인'}
-                    className={`p-2.5 rounded-lg text-sm transition-colors duration-150 cursor-pointer ${
-                      q.read
-                        ? 'bg-slate-50 dark:bg-slate-800 opacity-60'
-                        : 'bg-white dark:bg-slate-700 shadow-sm hover:shadow-md'
-                    }`}
-                    onClick={() => handleQuestionClick(q)}
-                  >
-                    <div className="flex items-start gap-2">
-                      {!q.read && <div className="w-2 h-2 rounded-full bg-red-500 mt-1.5 shrink-0" />}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-slate-700 dark:text-slate-200 leading-relaxed">{q.text}</p>
-                        <div className="flex justify-between items-center mt-1.5">
-                          <span className="text-slate-400 text-xs">{q.anonymous === false && q.nickname ? q.nickname : '익명'}</span>
-                          <button
-                            aria-label="질문 삭제"
-                            onClick={(e) => { e.stopPropagation(); dismissOne(q.id); }}
-                            className="text-slate-300 hover:text-red-500 transition-colors duration-150 active:scale-90"
-                          >
-                            <Trash2 size={12} />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
+                  <UrgentQuestionItem key={q.id} q={q} onClick={handleQuestionClick} onDismiss={dismissOne} />
                 ))}
               </AnimatePresence>
             </div>

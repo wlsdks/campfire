@@ -1,9 +1,45 @@
-import { memo, useState, useRef, useEffect } from 'react';
+import { memo, useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, HelpCircle, ThumbsUp } from 'lucide-react';
 import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
+
+const ClassQuestionItem = memo(function ClassQuestionItem({ q, onClick }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      role="button"
+      aria-label={q.answered ? '답변 완료된 질문' : '미답변 질문 — 클릭하여 확인'}
+      className={`p-2.5 rounded-lg text-sm transition-colors duration-150 cursor-pointer ${
+        q.answered
+          ? 'bg-slate-50 dark:bg-slate-800 opacity-60'
+          : 'bg-white dark:bg-slate-700 shadow-sm hover:shadow-md'
+      }`}
+      onClick={() => onClick(q)}
+    >
+      <p className="text-slate-700 dark:text-slate-200 leading-relaxed">{q.text}</p>
+      <div className="flex items-center justify-between mt-1.5">
+        <div className="flex items-center gap-2">
+          <span className="text-slate-400 text-xs">{q.nickname}</span>
+          {q.upvoteCount > 0 && (
+            <span className="flex items-center gap-0.5 text-slate-400 text-xs" title="추천 수">
+              <ThumbsUp size={10} />
+              {q.upvoteCount}
+            </span>
+          )}
+        </div>
+        {q.answered && (
+          <span className="text-slate-400 dark:text-slate-500 text-[10px] font-medium">
+            {q.answeredByRole === 'staff' ? '스태프 답변 완료' : '강사 답변 완료'}
+          </span>
+        )}
+      </div>
+    </motion.div>
+  );
+});
 
 /**
  * Admin-side accordion list of class questions.
@@ -27,9 +63,9 @@ function ClassQuestionList({ sessionId }) {
     prevCountRef.current = questions.length;
   }, [questions.length]);
 
-  function handleQuestionClick(q) {
+  const handleQuestionClick = useCallback((q) => {
     setSelectedQuestion(q);
-  }
+  }, []);
 
   function handleMarkAnswered() {
     if (selectedQuestion) {
@@ -94,44 +130,7 @@ function ClassQuestionList({ sessionId }) {
               )}
               <AnimatePresence>
                 {questions.map((q) => (
-                  <motion.div
-                    key={q.id}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    role="button"
-                    aria-label={q.answered ? '답변 완료된 질문' : '미답변 질문 — 클릭하여 확인'}
-                    className={`p-2.5 rounded-lg text-sm transition-colors duration-150 cursor-pointer ${
-                      q.answered
-                        ? 'bg-slate-50 dark:bg-slate-800 opacity-60'
-                        : 'bg-white dark:bg-slate-700 shadow-sm hover:shadow-md'
-                    }`}
-                    onClick={() => handleQuestionClick(q)}
-                  >
-                    <p className="text-slate-700 dark:text-slate-200 leading-relaxed">
-                      {q.text}
-                    </p>
-                    <div className="flex items-center justify-between mt-1.5">
-                      <div className="flex items-center gap-2">
-                        <span className="text-slate-400 text-xs">{q.nickname}</span>
-                        {q.upvoteCount > 0 && (
-                          <span className="flex items-center gap-0.5 text-slate-400 text-xs" title="추천 수">
-                            <ThumbsUp size={10} />
-                            {q.upvoteCount}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        {q.answered && (
-                          <span className="text-slate-400 dark:text-slate-500 text-[10px] font-medium">
-                            {q.answeredByRole === 'staff'
-                              ? '스태프 답변 완료'
-                              : '강사 답변 완료'}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </motion.div>
+                  <ClassQuestionItem key={q.id} q={q} onClick={handleQuestionClick} />
                 ))}
               </AnimatePresence>
             </div>

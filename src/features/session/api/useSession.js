@@ -25,6 +25,11 @@ const SECONDARY_FIELDS = [
  * reactions, scores) are handled by their own dedicated hooks
  * and are NOT fetched here.
  *
+ * Each secondary field is a separate listener on a scalar path,
+ * which is efficient: Firebase RTDB only transfers the tiny scalar
+ * value, not the entire session. 10 lightweight listeners < 1 heavy
+ * listener on the session root (which would include participants etc.).
+ *
  * @param {string} sessionId
  * @returns {{ session: object|null, loading: boolean }}
  */

@@ -18,7 +18,7 @@ export default function EngagementTab({ sessions }) {
   const { data, loading, error, fetchEngagement } = useEngagementData();
 
   const conductedSessions = useMemo(() =>
-    (sessions || []).filter(s => s.status !== 'setting' && s.participantCount > 0),
+    (sessions || []).filter(s => s.status !== 'setting' && (s.totalParticipants || s.participantCount) > 0),
     [sessions]
   );
 
@@ -72,7 +72,7 @@ export default function EngagementTab({ sessions }) {
           <option value="">세션을 선택하세요</option>
           {conductedSessions.map(s => (
             <option key={s.id} value={s.id}>
-              {s.courseName || '미분류'}{s.roundNumber ? ` ${s.roundNumber}차` : ''} — {s.participantCount}명 참여
+              {s.courseName || '미분류'}{s.roundNumber ? ` ${s.roundNumber}차` : ''} — {s.totalParticipants || s.participantCount}명 참여
             </option>
           ))}
         </select>

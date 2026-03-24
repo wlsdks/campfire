@@ -6,7 +6,7 @@ import { useTheme } from '@/hooks/useTheme';
 
 const stagger = {
   container: { animate: { transition: { staggerChildren: 0.04 } } },
-  item: { initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } } },
+  item: { initial: { opacity: 0, y: 12 }, animate: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 300, damping: 25 } } },
 };
 
 // ─── Theme Switcher ──────────────────────────────────
@@ -104,7 +104,7 @@ function QuickStats({ sessions }) {
     return {
       total: sessions.length,
       ended: sessions.filter((s) => s.status === 'ended' || s.status === 'reviewing').length,
-      participants: sessions.reduce((sum, s) => sum + (s.participantCount || 0), 0),
+      participants: sessions.reduce((sum, s) => sum + (s.totalParticipants || s.participantCount || 0), 0),
       questions: sessions.reduce((sum, s) => sum + (s.questionCount || 0), 0),
     };
   }, [sessions]);

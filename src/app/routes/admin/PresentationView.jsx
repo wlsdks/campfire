@@ -1,7 +1,8 @@
 import { useState, useCallback, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, QrCode, X, Copy, Check, Swords, Eye } from 'lucide-react';
+import { Users, QrCode, X, Copy, Check, Swords } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import PickMascot from '@/components/ui/PickMascot';
 import QRCode from '@/components/ui/QRCode';
 import VizRenderer from '@/features/visualization/components/VizRenderer';
 import JoinToast from '@/features/participants/components/JoinToast';
@@ -67,7 +68,7 @@ function PresentQROverlay({ sessionId, studentUrl, count }) {
             initial={{ opacity: 0, scale: 0.9, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 8 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
+            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
             className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700 p-5 w-64"
           >
             <div className="flex items-center justify-between mb-3">
@@ -227,9 +228,9 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     if (currentMode === 'discussion') return <DiscussionPresenter sessionId={sessionId} />;
     if (currentMode === 'focus') return (
       <div className="flex flex-col items-center justify-center gap-6 text-center">
-        <Eye size={48} className="text-white/60" />
-        <p className="text-3xl md:text-4xl font-bold text-white tracking-tight">집중 모드</p>
-        <p className="text-white/40 text-lg">학생 화면이 잠겼습니다</p>
+        <PickMascot size="lg" mood="focus" />
+        <p className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">집중 모드</p>
+        <p className="text-slate-400 dark:text-white/40 text-lg">학생 화면이 잠겼습니다</p>
       </div>
     );
     return null;

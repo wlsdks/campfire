@@ -8,8 +8,8 @@ function AnimatedCheck() {
       {/* Dark circle scales in with overshoot */}
       <motion.div
         initial={{ scale: 0 }}
-        animate={{ scale: [0, 1.15, 1] }}
-        transition={{ duration: 0.4, times: [0, 0.6, 1], ease: 'easeOut' }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 22 }}
         className="absolute inset-0 bg-slate-900 dark:bg-slate-100 rounded-full"
       />
       {/* White checkmark draws */}
@@ -26,7 +26,7 @@ function AnimatedCheck() {
           strokeLinejoin="round"
           initial={{ pathLength: 0 }}
           animate={{ pathLength: 1 }}
-          transition={{ delay: 0.3, duration: 0.35, ease: 'easeOut' }}
+          transition={{ delay: 0.2, duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
         />
       </motion.svg>
     </div>
@@ -90,7 +90,7 @@ export default memo(function VoteConfirm({
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.3, ease: 'easeOut' }}
+            transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 25 }}
             className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-700 px-4 py-3 text-center w-full"
           >
             <p className="text-xs font-medium text-slate-400 mb-1">{selectedAnswerLabel}</p>

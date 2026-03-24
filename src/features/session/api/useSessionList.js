@@ -28,10 +28,11 @@ export function useSessionList() {
       const list = Object.entries(data).map(([id, session]) => {
         const participants = session.participants || {};
         const questions = session.questions || {};
-        const participantCount = Object.keys(participants).length;
+        const totalCount = Object.keys(participants).length;
+        const onlineCount = Object.values(participants).filter(p => p.online).length;
         const questionCount = Object.keys(questions).length;
 
-        // Calculate activity rate: participants who voted at least once
+        // Calculate activity rate: participants who voted at least once (based on total, not online)
         let activeCount = 0;
         const participantIds = new Set(Object.keys(participants));
         const allQuestions = Object.values(questions);
@@ -44,15 +45,16 @@ export function useSessionList() {
           }
         });
         activeCount = voterIds.size;
-        const activityRate = participantCount > 0
-          ? Math.round((activeCount / participantCount) * 100)
+        const activityRate = totalCount > 0
+          ? Math.round((activeCount / totalCount) * 100)
           : 0;
 
         return {
           id,
           status: session.status || 'active',
           createdAt: session.createdAt || 0,
-          participantCount,
+          participantCount: onlineCount,
+          totalParticipants: totalCount,
           questionCount,
           activityRate,
           activeCount,
@@ -146,6 +148,7 @@ export function useSessionList() {
         status: 'setting',
         createdAt: Date.now(),
         participantCount: 0,
+        totalParticipants: 0,
         questionCount: sourceQuestions ? Object.keys(sourceQuestions).length : 0,
         activityRate: 0,
         activeCount: 0,

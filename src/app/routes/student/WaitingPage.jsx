@@ -42,7 +42,7 @@ function RotatingTip() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.3, ease: 'easeOut' }}
+          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           className="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-[14px] text-center absolute px-4"
         >
           <Icon size={16} className="text-slate-400 shrink-0" />
@@ -117,9 +117,9 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
       />
 
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4, ease: 'easeOut' }}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 20 }}
         className="text-center w-full max-w-xs space-y-6"
       >
         {/* Mascot with idle animations */}
@@ -133,7 +133,7 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
             <motion.p
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.35, ease: 'easeOut' }}
+              transition={{ delay: 0.1, type: 'spring', stiffness: 300, damping: 25 }}
               className="text-slate-900 dark:text-slate-100 text-xl font-bold tracking-tight leading-tight"
             >
               {nickname}님, 준비 완료!
@@ -152,7 +152,7 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.35, ease: 'easeOut' }}
+            transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 25 }}
           >
             {GAME_MODES[currentMode] ? (
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-medium">
@@ -182,7 +182,7 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.35, ease: 'easeOut' }}
+            transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 25 }}
             className="flex items-center justify-center gap-2"
           >
             <div className="flex items-center gap-2 bg-white dark:bg-slate-800 rounded-xl px-4 py-2.5">
@@ -212,7 +212,7 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.35, ease: 'easeOut' }}
+          transition={{ delay: 0.35, type: 'spring', stiffness: 300, damping: 25 }}
           className="flex items-center justify-center"
         >
           <CopyableCode code={sessionId} />

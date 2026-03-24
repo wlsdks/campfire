@@ -15,7 +15,7 @@ function PackQuestionPreview({ question, index }) {
     <motion.div
       initial={{ opacity: 0, x: -8 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.2, delay: index * 0.05, ease: 'easeOut' }}
+      transition={{ duration: 0.2, delay: index * 0.05, type: 'spring', stiffness: 300, damping: 25 }}
       className="flex items-start gap-3 py-2.5"
     >
       <span className="w-5 h-5 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-[10px] font-bold text-slate-400 shrink-0 mt-0.5">
@@ -48,7 +48,7 @@ function PackCard({ pack, onImport, imported, index }) {
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, delay: index * 0.06, ease: 'easeOut' }}
+      transition={{ duration: 0.25, delay: index * 0.06, type: 'spring', stiffness: 300, damping: 25 }}
       ref={cardRef}
       className={`rounded-xl border overflow-hidden transition-all duration-200 ${
         expanded

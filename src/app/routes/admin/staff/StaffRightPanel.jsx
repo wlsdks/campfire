@@ -71,7 +71,7 @@ function CurrentQuestionStatus({ session }) {
   return (
     <div className="rounded-xl border border-slate-200 dark:border-slate-700 p-4">
       <div className="flex items-center gap-1.5 mb-2">
-        <Radio size={12} className="text-indigo-500 animate-pulse" />
+        <Radio size={12} className="text-emerald-500 animate-pulse" />
         <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
           진행 중인 질문
         </p>

@@ -79,14 +79,22 @@ export function VotePageSkeleton() {
   );
 }
 
-/** Lightweight Suspense fallback — centered spinner for lazy-loaded routes/sections. */
+/** Lightweight Suspense fallback — centered mascot for lazy-loaded routes/sections. */
 export function SuspenseFallback({ fullPage = true }) {
+  // Inline simple SVG to avoid importing PickMascot in this lightweight module
   return (
-    <div className={`${fullPage ? 'min-h-dvh' : 'min-h-[200px]'} bg-slate-50 dark:bg-slate-900 flex items-center justify-center`}>
-      <div className="flex items-center gap-2 text-slate-400">
-        <div className="w-5 h-5 border-2 border-slate-300 dark:border-slate-600 border-t-slate-500 dark:border-t-slate-400 rounded-full animate-spin" />
-        <span className="text-sm">불러오는 중...</span>
+    <div className={`${fullPage ? 'min-h-dvh' : 'min-h-[200px]'} bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center gap-3`}>
+      <div className="w-12 h-12 animate-pulse">
+        <svg viewBox="0 0 120 120" fill="none" width="48" height="48">
+          <circle cx="60" cy="60" r="38" fill="#F59E0B" />
+          <circle cx="60" cy="62" r="30" fill="#FDE68A" />
+          <ellipse cx="48" cy="57" rx="5" ry="3" fill="#1E293B" />
+          <ellipse cx="72" cy="57" rx="5" ry="3" fill="#1E293B" />
+          <ellipse cx="60" cy="66" rx="3.5" ry="2.5" fill="#D97706" />
+          <path d="M55 72 L65 72" stroke="#D97706" strokeWidth="2" strokeLinecap="round" />
+        </svg>
       </div>
+      <span className="text-sm text-slate-400">불러오는 중...</span>
     </div>
   );
 }

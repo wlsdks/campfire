@@ -1,31 +1,48 @@
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Check, Ticket, X, Flame } from 'lucide-react';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import ConfettiBurst from '@/components/ui/ConfettiBurst';
+import { hapticTap } from '@/lib/haptics';
 
 function CountUp({ value, prefix = '+', suffix = '점' }) {
   const motionVal = useMotionValue(0);
   const rounded = useTransform(motionVal, (v) => Math.round(v));
   const ref = useRef(null);
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
     const unsubscribe = rounded.on('change', (v) => {
       if (ref.current) ref.current.textContent = `${prefix}${v}${suffix}`;
     });
-    const controls = animate(motionVal, value, { duration: 0.8, ease: [0.25, 0.1, 0.25, 1] });
+    const controls = animate(motionVal, value, {
+      duration: 0.8,
+      ease: [0.25, 0.1, 0.25, 1],
+      onComplete: () => { setDone(true); hapticTap(); },
+    });
     return () => { controls.stop(); unsubscribe(); };
   }, [value, motionVal, rounded, prefix, suffix]);
 
-  return <span ref={ref}>{prefix}{value}{suffix}</span>;
+  return (
+    <motion.span
+      ref={ref}
+      animate={done ? { scale: [1, 1.18, 1] } : {}}
+      transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+    >
+      {prefix}{value}{suffix}
+    </motion.span>
+  );
 }
 
 export default function QuizResult({ isCorrect, points, tickets = 0, correctAnswer, event = null, bet = 1, streak = 0 }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+      animate={isCorrect ? { opacity: 1, y: 0 } : { opacity: 1, y: 0, x: [0, -4, 4, -3, 3, -1, 0] }}
+      transition={isCorrect
+        ? { type: 'spring', stiffness: 300, damping: 25 }
+        : { type: 'spring', stiffness: 300, damping: 25, x: { delay: 0.15, duration: 0.4 } }
+      }
       className="w-full rounded-xl bg-white dark:bg-slate-800 px-5 py-8 shadow-sm overflow-hidden relative"
     >
       {isCorrect && <ConfettiBurst />}
@@ -114,7 +131,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
               <motion.div
                 initial={{ opacity: 0, scaleY: 0 }}
                 animate={{ opacity: 1, scaleY: 1 }}
-                transition={{ delay: 0.35, duration: 0.25, ease: 'easeOut' }}
+                transition={{ delay: 0.35, type: 'spring', stiffness: 300, damping: 25 }}
                 className="w-px h-8 bg-slate-200"
               />
             )}

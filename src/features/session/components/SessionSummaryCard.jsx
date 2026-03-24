@@ -120,15 +120,15 @@ export default function SessionSummaryCard({ session, sessionId, reviewing = fal
         <div className="pt-6 pb-4 px-5 text-center">
           <CelebrationMascot />
           <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.3 }}
+            transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 25 }}
             className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 mt-3"
           >{title}</motion.p>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
+          <motion.p initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 25 }}
             className="text-sm text-slate-400 mt-1"
           >{nickname}님의 오늘 기록</motion.p>
           {session?.courseName && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }} className="mt-2">
+            <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, type: 'spring', stiffness: 300, damping: 25 }} className="mt-2">
               <Badge variant="neutral">
                 {session.courseName} {session.roundNumber ? `${session.roundNumber}차` : ''}
               </Badge>
@@ -154,9 +154,9 @@ export default function SessionSummaryCard({ session, sessionId, reviewing = fal
         {/* Rank badge */}
         {hasRank && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4, type: 'spring', stiffness: 400, damping: 22 }}
             className="px-5 pb-4 flex justify-center"
           >
             <Badge variant="primary">
@@ -184,9 +184,9 @@ export default function SessionSummaryCard({ session, sessionId, reviewing = fal
         {achievements.length > 0 && (
           <div className="px-5 pb-5">
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.45 }}
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45, type: 'spring', stiffness: 300, damping: 25 }}
             >
               <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">획득한 업적</p>
               <div className="bg-slate-50 dark:bg-slate-700/50 rounded-xl px-3.5 py-1 divide-y divide-slate-100 dark:divide-slate-600">

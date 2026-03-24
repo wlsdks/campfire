@@ -30,7 +30,7 @@ function ActiveQuestionBanner({ session }) {
       className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-5 max-w-md w-full"
     >
       <div className="flex items-center gap-1.5 mb-3">
-        <Radio size={14} className="text-indigo-500 animate-pulse" />
+        <Radio size={14} className="text-emerald-500 animate-pulse" />
         <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
           현재 진행 중
         </span>

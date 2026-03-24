@@ -119,7 +119,7 @@ export default function RegisterView({ onLogin, onSwitchToLogin }) {
 
   return (
     <motion.form key="register" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3, ease: 'easeOut' }}
+      exit={{ opacity: 0, x: -20 }} transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       onSubmit={handleSubmit} className="w-full max-w-sm">
       <Card className="p-8 space-y-5 overflow-visible">
         <motion.div className="flex justify-center -mt-20 mb-2"

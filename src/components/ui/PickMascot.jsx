@@ -13,13 +13,13 @@ const SIZES = {
  * Now with breathing motion, mood-based expressions, and subtle head tilt.
  *
  * @param {'xs' | 'sm' | 'md' | 'lg'} size
- * @param {string} mood — 'happy' | 'waiting' | 'thinking'
+ * @param {string} mood — 'happy' | 'waiting' | 'thinking' | 'focus'
  */
 export default function PickMascot({ size = 'md', mood = 'happy' }) {
   const px = SIZES[size] || SIZES.md;
 
   const mouthPath =
-    mood === 'thinking'
+    mood === 'thinking' || mood === 'focus'
       ? 'M55 72 L65 72'
       : mood === 'waiting'
         ? 'M55 71 Q60 74 65 71'
@@ -45,7 +45,7 @@ export default function PickMascot({ size = 'md', mood = 'happy' }) {
     ease: 'easeInOut',
   };
 
-  // Subtle head tilt for waiting/thinking
+  // Subtle head tilt for waiting/thinking (focus stays still — intense stare)
   const tilt = mood === 'waiting'
     ? { rotate: [0, -2, 0, 2, 0] }
     : mood === 'thinking'
@@ -56,6 +56,8 @@ export default function PickMascot({ size = 'md', mood = 'happy' }) {
     repeat: Infinity,
     ease: 'easeInOut',
   };
+
+  const isFocus = mood === 'focus';
 
   return (
     <motion.svg
@@ -98,28 +100,46 @@ export default function PickMascot({ size = 'md', mood = 'happy' }) {
       <circle cx="86" cy="34" r="5" fill="#FDE68A" />
 
       {/* Left eye */}
-      <motion.ellipse
-        cx="48"
-        cy="57"
-        rx="5"
-        ry="5.5"
-        fill="#1E293B"
-        animate={{ scaleY: [1, 1, 0.1, 1, 1] }}
-        transition={{ duration: 4, repeat: Infinity, times: [0, 0.45, 0.5, 0.55, 1] }}
-      />
-      <circle cx="46" cy="55" r="2" fill="white" />
+      {isFocus ? (
+        <>
+          <ellipse cx="48" cy="57" rx="5" ry="2.5" fill="#1E293B" />
+          <circle cx="47" cy="56.5" r="1.5" fill="white" />
+        </>
+      ) : (
+        <>
+          <motion.ellipse
+            cx="48"
+            cy="57"
+            rx="5"
+            ry="5.5"
+            fill="#1E293B"
+            animate={{ scaleY: [1, 1, 0.1, 1, 1] }}
+            transition={{ duration: 4, repeat: Infinity, times: [0, 0.45, 0.5, 0.55, 1] }}
+          />
+          <circle cx="46" cy="55" r="2" fill="white" />
+        </>
+      )}
 
       {/* Right eye */}
-      <motion.ellipse
-        cx="72"
-        cy="57"
-        rx="5"
-        ry="5.5"
-        fill="#1E293B"
-        animate={{ scaleY: [1, 1, 0.1, 1, 1] }}
-        transition={{ duration: 4, repeat: Infinity, times: [0, 0.45, 0.5, 0.55, 1] }}
-      />
-      <circle cx="70" cy="55" r="2" fill="white" />
+      {isFocus ? (
+        <>
+          <ellipse cx="72" cy="57" rx="5" ry="2.5" fill="#1E293B" />
+          <circle cx="71" cy="56.5" r="1.5" fill="white" />
+        </>
+      ) : (
+        <>
+          <motion.ellipse
+            cx="72"
+            cy="57"
+            rx="5"
+            ry="5.5"
+            fill="#1E293B"
+            animate={{ scaleY: [1, 1, 0.1, 1, 1] }}
+            transition={{ duration: 4, repeat: Infinity, times: [0, 0.45, 0.5, 0.55, 1] }}
+          />
+          <circle cx="70" cy="55" r="2" fill="white" />
+        </>
+      )}
 
       {/* Nose */}
       <ellipse cx="60" cy="66" rx="3.5" ry="2.5" fill="#D97706" />

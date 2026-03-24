@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import { ArrowLeft, BarChart3, Users, MessageSquare, Play, MoreHorizontal, Target, Ticket, Gift, Dices, CircleDot, Coffee, Trophy, Swords, Gamepad2 } from 'lucide-react';
 import JoinToast from '@/features/participants/components/JoinToast';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
@@ -8,7 +8,7 @@ import QuestionManager from './QuestionManager';
 import CenterContent from './CenterContent';
 import ChatPanel from '@/features/chat/components/ChatPanel';
 import TeamBattleControl from '@/features/teams/components/TeamBattleControl';
-import ModeSwitcher from './ModeSwitcher';
+
 import BottomSheet from '@/components/ui/BottomSheet';
 import MobileModePicker from './MobileModePicker';
 import MobileParticipantsTab from './MobileParticipantsTab';
@@ -49,7 +49,7 @@ function MobileHeader({ session, count, onBack, effectiveReadOnly, isSetting, on
           <h1 className="text-base font-bold text-slate-900 dark:text-slate-100 truncate tracking-tight">{courseName} {round}</h1>
           <div className="flex items-center gap-1.5 text-[13px] text-slate-400">
             {isActive && <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />}
-            <span>{count}명 접속</span>
+            <span><motion.span key={count} initial={{ scale: 1.15 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 400, damping: 22 }} className="inline-block tabular-nums">{count}</motion.span>명 접속</span>
           </div>
         </div>
       </div>
@@ -89,31 +89,40 @@ function MobileHeader({ session, count, onBack, effectiveReadOnly, isSetting, on
 /* ─── Bottom Tab Bar (Apple/토스 style: 56px + safe area) ─── */
 function MobileTabBar({ activeTab, onTabChange, hasUnreadChat }) {
   return (
-    <div className="flex bg-white dark:bg-slate-800 shrink-0"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
-      {TABS.map((tab) => {
-        const Icon = tab.icon;
-        const isActive = activeTab === tab.key;
-        return (
-          <motion.button
-            key={tab.key}
-            whileTap={{ scale: 0.92 }}
-            onClick={() => onTabChange(tab.key)}
-            className={`flex-1 flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium transition-colors duration-150 relative ${
-              isActive
-                ? 'text-slate-900 dark:text-slate-100'
-                : 'text-slate-400 dark:text-slate-500'
-            }`}
-          >
-            <Icon size={24} strokeWidth={isActive ? 2 : 1.5} />
-            <span>{tab.label}</span>
-            {tab.key === 'chat' && hasUnreadChat && (
-              <span className="absolute top-2 left-1/2 ml-2 w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
-            )}
-          </motion.button>
-        );
-      })}
-    </div>
+    <LayoutGroup>
+      <div className="flex bg-white dark:bg-slate-800 shrink-0"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+        {TABS.map((tab) => {
+          const Icon = tab.icon;
+          const isActive = activeTab === tab.key;
+          return (
+            <motion.button
+              key={tab.key}
+              whileTap={{ scale: 0.92 }}
+              onClick={() => onTabChange(tab.key)}
+              className={`flex-1 flex flex-col items-center justify-center gap-1 py-3 text-[11px] font-medium transition-colors duration-150 relative ${
+                isActive
+                  ? 'text-slate-900 dark:text-slate-100'
+                  : 'text-slate-400 dark:text-slate-500'
+              }`}
+            >
+              {isActive && (
+                <motion.div
+                  layoutId="mobile-tab-indicator"
+                  className="absolute top-0 left-3 right-3 h-[2px] rounded-full bg-slate-900 dark:bg-slate-100"
+                  transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                />
+              )}
+              <Icon size={24} strokeWidth={isActive ? 2 : 1.5} />
+              <span>{tab.label}</span>
+              {tab.key === 'chat' && hasUnreadChat && (
+                <span className="absolute top-2 left-1/2 ml-2 w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
+              )}
+            </motion.button>
+          );
+        })}
+      </div>
+    </LayoutGroup>
   );
 }
 
@@ -213,7 +222,7 @@ export default function MobileAdminView({ s }) {
         teamBattleActive={s.teamBattleActive}
       />
 
-      {/* Session settings bottom sheet (team battle + mode switcher) */}
+      {/* Session settings bottom sheet */}
       <BottomSheet open={settingsOpen} onClose={() => setSettingsOpen(false)} ariaLabel="세션 설정">
         <div className="space-y-5">
           <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">세션 설정</h3>
@@ -235,10 +244,6 @@ export default function MobileAdminView({ s }) {
               포인트 · 티켓 초기화
             </button>
           )}
-          <ModeSwitcher currentMode={currentMode} isSpecialMode={isSpecialMode} totalTickets={s.totalTickets}
-            leaderboard={s.leaderboard} modeOpen={s.modeOpen} onToggle={s.handleModeToggle}
-            onSwitchMode={(mode) => { s.switchMode(mode); setSettingsOpen(false); setActiveTab('results'); }}
-            teamBattleActive={s.teamBattleActive} />
           <TeamBattleControl
             isActive={s.teamBattleActive}
             teamCount={s.teamBattleCount}

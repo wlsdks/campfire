@@ -42,7 +42,7 @@ export default function GameResultOverlay({ isWinner, winnerNames, gameResult, s
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.2 }}
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-6"
           onClick={dismiss}
         >
@@ -70,7 +70,7 @@ export default function GameResultOverlay({ isWinner, winnerNames, gameResult, s
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+              transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 25 }}
               className="space-y-2"
             >
               <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-slate-100">
@@ -84,7 +84,7 @@ export default function GameResultOverlay({ isWinner, winnerNames, gameResult, s
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4 }}
+              transition={{ delay: 0.4, type: 'spring', stiffness: 400, damping: 22 }}
               className="flex justify-center"
             >
               <div className="flex items-center gap-2.5 bg-slate-50 dark:bg-slate-700 rounded-full py-2 pl-2 pr-5">

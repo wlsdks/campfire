@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Play, Square, Zap } from 'lucide-react';
+import { Play, Square, Zap, PartyPopper } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { QUIZ_EVENT_PRESETS, isQuizQuestion } from '@/lib/quiz';
 
@@ -118,7 +118,7 @@ export default function QuickProgressCard({
         >
           <Play size={14} />
           {currentEntry ? '다음 질문' : '첫 질문 시작'}
-          {nextEvent && ' ✦'}
+          {nextEvent && <PartyPopper size={14} />}
         </Button>
         <Button onClick={onClearActive} variant="secondary" size="sm" disabled={!currentEntry || speedQuizActive}>
           <Square size={14} />

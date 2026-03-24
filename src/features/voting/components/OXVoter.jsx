@@ -47,7 +47,7 @@ export default memo(function OXVoter({ sessionId, questionId, disabled = false }
       <motion.button
         initial={{ opacity: 0, x: -12 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         whileHover={!selected && !disabled ? { scale: 1.02 } : undefined}
         whileTap={{ scale: 0.95 }}
         onClick={() => { hapticTap(); handleVote('O'); }}
@@ -60,7 +60,7 @@ export default memo(function OXVoter({ sessionId, questionId, disabled = false }
       <motion.button
         initial={{ opacity: 0, x: 12 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         whileHover={!selected && !disabled ? { scale: 1.02 } : undefined}
         whileTap={{ scale: 0.95 }}
         onClick={() => { hapticTap(); handleVote('X'); }}

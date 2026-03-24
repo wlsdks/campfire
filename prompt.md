@@ -77,12 +77,148 @@
 ## 우선순위 매트릭스
 
 1. **🔴 깨진 것** — 빌드/런타임/콘솔 에러, 기능 동작 안 함 → 즉시 수정
-2. **🟠 디자인 시스템 기반 UI/UX 개선** — 모든 화면이 DESIGN_SYSTEM.md 규칙을 준수하는지 검증 + 개선 (현재 최우선)
-3. **🟡 모바일(앱) UI/UX** — 390x844에서 네이티브 앱 수준의 경험. 토스/당근 래퍼런스 (매우 중요)
-4. **🔵 게임 디자인 & 동작성** — 게임별 연출 품질, 부드러움, 역동적 애니메이션, 당첨 클라이맥스
-5. **🟣 기능 검증** — 강사/스태프/학생 전체 흐름이 실제로 잘 동작하는지 Playwright로 검증
-6. **🟢 전체적인 부드러움 & 애니메이션** — 모드 전환, 페이지 전환, 마이크로 인터랙션 고품질화
-7. **⚪ 코드 품질 & 문서** — 200줄+ 분리, 중복 제거, DESIGN_SYSTEM.md 동기화
+2. **🟠 부드러움 & 동적 애니메이션** — 모든 전환·인터랙션이 spring 물리로 자연스럽게. 끊김/깜빡임 0. (현재 최우선)
+3. **🟡 디자인 시스템 기반 UI/UX 개선** — DESIGN_SYSTEM.md 규칙 준수 + 래퍼런스 철학 반영
+4. **🔵 성능 최적화 (동접 40명 목표)** — Firebase 리스너 효율, React 리렌더 최소화, 번들 크기, 메모리 관리
+5. **🟣 래퍼런스 리서치 → 철학 적용** — 토스/Linear/Apple의 **왜**를 이해하고 우리 맥락에 맞게 적용 (그대로 베끼기 금지)
+6. **🟢 모바일(앱) UI/UX** — 390x844 네이티브 앱 수준. 터치/스와이프/제스처
+7. **⚪ 코드 품질** — 200줄+ 분리, 중복 제거, 미사용 코드 정리
+
+---
+
+## 성능 최적화 (동접 40명 목표)
+
+> Pick은 교실 환경에서 40명이 동시에 투표/채팅/리액션을 보내는 상황을 버텨야 한다.
+> 매 사이클마다 아래 항목 중 하나 이상을 점검·개선한다.
+
+### 매 사이클 성능 체크리스트
+```
+□ Firebase 리스너가 불필요하게 전체 노드를 구독하고 있지 않은가? → 필요한 하위 경로만 구독
+□ onValue 대신 onChildAdded/Changed/Removed를 쓸 수 있는 곳은? → 델타만 수신
+□ 컴포넌트 리렌더가 과도한 곳? → React.memo, useMemo, useCallback 적용
+□ 큰 리스트(참여자, 채팅)에 가상화가 필요한가? → 50개+ 시 windowing 고려
+□ Firebase write가 debounce 없이 빈번한 곳? → 리액션, 타이핑 인디케이터 등
+□ 번들에 불필요하게 큰 라이브러리가 포함되었나? → lazy import, tree-shake 확인
+□ useEffect cleanup이 빠진 리스너가 있는가? → 메모리 누수 방지
+□ 40명 동시 투표 시 바 차트 리렌더가 매끄러운가? → layout thrashing 확인
+```
+
+### 성능 측정 방법
+```bash
+# 번들 분석
+npx vite build && npx vite-bundle-visualizer
+
+# React DevTools Profiler (개발 모드)
+# → 가장 자주 리렌더되는 컴포넌트 식별
+
+# Firebase 사용량
+# → console.firebase.google.com에서 reads/writes/bandwidth 확인
+```
+
+### 핵심 병목 포인트
+| 시나리오 | 병목 | 대응 |
+|---------|------|------|
+| 40명 동시 투표 | votes 노드 write 폭주 | 클라이언트 debounce 불필요 (투표는 1회), 서버 규칙으로 중복 방지 |
+| 40명 채팅 | messages 노드 실시간 구독 | limitToLast(50)으로 최근만, onChildAdded로 델타 수신 |
+| 40명 리액션 | reactions 폭주 | 클라이언트 쿨다운 3초, Firebase에 최근 50개만 유지 |
+| 바 차트 실시간 | 매 vote마다 리렌더 | React.memo + layout 애니메이션으로 reflow 최소화 |
+| 프레젠터 뷰 | 모든 데이터 구독 | 표시 중인 모드의 데이터만 구독, 나머지 lazy |
+
+---
+
+## 래퍼런스 철학 적용 가이드
+
+> **절대 규칙: 래퍼런스를 그대로 베끼지 않는다.**
+> 래퍼런스에서 **왜 그렇게 했는지(철학)**를 이해하고, 우리 맥락에 맞는지 판단한 뒤 적용한다.
+> "이게 Pick에서도 맞는가?" 확인하고 아니면 하지 않는다.
+
+### 리서치 프로세스
+```
+1. 래퍼런스 앱의 특정 인터랙션/패턴을 웹 검색으로 조사
+2. "왜 이렇게 만들었을까?" — 그 패턴이 해결하는 문제를 파악
+3. "Pick에서도 같은 문제가 있는가?" — 없으면 적용하지 않음
+4. "적용한다면 우리 디자인 시스템과 충돌하지 않는가?" — 충돌하면 변형
+5. 구현 후 "이게 정말 나아졌는가?" — Playwright로 전/후 비교
+```
+
+### 래퍼런스별 배울 철학
+
+#### UI/UX 래퍼런스
+| 래퍼런스 | 철학 | Pick에 적용할 것 | 적용하지 않을 것 |
+|---------|------|----------------|----------------|
+| **토스** | 한 화면 한 액션, 큰 숫자, 여백 | 숫자 위계, 여백 활용, 단순한 흐름 | 금융 특화 UI (잔고 카드 등) |
+| **Linear** | 키보드 우선, 밀도 높은 정보 | 매끄러운 전환, 미니멀 디자인 | 고밀도 대시보드 (학생은 간단해야) |
+| **Apple HIG** | 물리 기반 모션, 일관성 | spring 물리, 제스처 피드백 | 네이티브 전용 패턴 (3D Touch 등) |
+| **Kahoot** | 게임화, 긴장감, 즉각 피드백 | 퀴즈 카운트다운, 결과 reveal 연출 | 과도한 색상/소리 (우리는 미니멀) |
+| **당근마켓** | 친근함, 스와이프 액션, FAB | 친근한 톤, 터치 제스처 | 커머스 패턴 (장바구니 등) |
+
+#### 애니메이션 & 동적 경험 래퍼런스 (핵심)
+> 아래 앱들은 **모션/애니메이션 품질**로 유명하다. 철학을 배우되 그대로 베끼지 않는다.
+
+| 래퍼런스 | 애니메이션 철학 | Pick에 적용할 것 | 적용하지 않을 것 |
+|---------|---------------|----------------|----------------|
+| **Duolingo** | 캐릭터가 감정을 표현, 축하/격려 모션, 연승 보상 연출 | 마스코트 리액션 (정답→기뻐함, 오답→위로), 연승 이펙트, 퀴즈 축하 confetti | Duo 캐릭터 자체, 과도한 3D 애니메이션 |
+| **Telegram** | 모든 것이 spring 물리, 메시지 slide-in, 스티커/리액션 float | 채팅 메시지 spring slide-in, 리액션 버블 물리, 매끄러운 리스트 전환 | 텔레그램 특유의 채팅 제스처 |
+| **Airbnb** | 카드→상세 shared element 전환, Lottie 활용, 자연스러운 레이아웃 모핑 | 질문 카드→결과 전환 모핑, 부드러운 레이아웃 shift, 의미있는 로딩 | 지도 기반 인터랙션, 복잡한 shared element |
+| **Stripe** | 정밀한 마이크로 인터랙션, 그라데이션 모션, 우아한 hover/focus 피드백 | 버튼/입력 hover 정교함, 포커스 전환 부드러움, 숫자 카운트업 | 랜딩 페이지용 3D/WebGL 효과 |
+| **Headspace** | 캐릭터 기반 가이드, 호흡 리듬 애니메이션, 차분하면서도 생동감 | 대기 화면 breathing 모션, 마스코트 idle 다양화, 부드러운 타이머 | 명상 특화 UI, 사운드스케이프 |
+
+#### 앱별 구체적으로 배울 패턴
+```
+[Duolingo]
+- 정답 시: 화면 전체가 초록으로 flash + 캐릭터 jump + 점수 pop-up bounce
+- 오답 시: 빨간 흔들림(shake) + 캐릭터 슬픈 표정 + 정답 부드럽게 표시
+- 연승: 불꽃 아이콘이 점점 커지고 흔들림 → 우리 StreakBadge에 적용 가능
+- 레벨업: 왕관 등장 + confetti + 숫자 spring bounce
+
+[Telegram]
+- 메시지 등장: 아래서 spring slide-up (발신), 좌에서 spring slide-in (수신)
+- 리액션: 이모지가 메시지 위로 float → scale bounce → fade (우리 ReactionOverlay)
+- 읽음 체크: ✓→✓✓ 전환이 spring으로 부드럽게 → 우리 투표 확인에 적용
+
+[Airbnb]
+- 카드 탭 → 상세: 카드가 확장되며 상세로 모핑 (layout animation)
+- 검색 바: 축소 → 확장 spring 전환 → 우리 모드 전환에 적용 가능
+- 이미지 로딩: shimmer → 이미지 fade-in (매끄러운 skeleton → content)
+
+[Stripe]
+- 숫자 변경: 자릿수별 spring counter (0→9 순환) → 우리 참여자 수, 점수 표시
+- 토글: 핸들이 spring bounce로 이동 → 우리 설정 토글에 적용
+- 탭 전환: 인디케이터가 spring으로 슬라이드 → 우리 탭 네비게이션
+
+[Headspace]
+- Breathing circle: 확대/축소 리듬 (3초 in, 3초 out) → 대기 화면 마스코트 breathing
+- 세션 완료: 성취감 있는 체크마크 draw + 부드러운 통계 reveal
+- 온보딩: 한 단계씩 부드럽게 진행 → 우리 JoinPage 흐름
+```
+
+### 부드러움 & 동적 효과 개선 영역
+> 매 사이클마다 아래 중 하나를 골라서 개선한다.
+
+```
+A. 페이지/모드 전환 — AnimatePresence exit/enter가 자연스러운가?
+   - 현재 → 다음의 관계가 모션으로 표현되는가? (앞으로 가면 slide-left, 뒤로 가면 slide-right)
+   - exit는 빠르게(150-200ms), enter는 여유있게(250-350ms)
+
+B. 마이크로 인터랙션 — 버튼/카드/토글의 피드백이 즉각적인가?
+   - whileTap scale, hover 전환, focus ring
+   - 숫자 변경 시 bounce (motion.span key={value})
+   - 토글/체크 시 spring snap
+
+C. 실시간 데이터 반영 — Firebase 상태 변경이 시각적으로 매끄럽게 반영되는가?
+   - 바 차트 grow: layout 애니메이션 or spring width
+   - 참여자 입장: slide-in + fade
+   - 리액션: 버블 float-up + fade-out
+
+D. 로딩 & 빈 상태 — 대기 시간이 지루하지 않은가?
+   - 스켈레톤이 실제 레이아웃과 일치하는가?
+   - 빈 상태에 PickMascot + 안내가 있는가?
+   - 로딩 → 콘텐츠 전환이 부드러운가?
+
+E. 게임 연출 — 긴장감 → 클라이맥스 → 환호 흐름이 있는가?
+   - 속도 변화(가속→감속), confetti, 이름 크게
+   - 당첨 순간의 spring bounce
+```
 
 ---
 
@@ -344,12 +480,26 @@ JoinPage → WaitingPage → VotePage(투표) → VoteConfirm → 결과 대기 
 ```
 0. git pull + npm run build (안전 점검)
 1. Read CLAUDE.md + Read DESIGN_SYSTEM.md (디자인 철학·규칙 숙지)
-2. git log --oneline -10 (최근 작업 확인)
-3. 우선순위 매트릭스에서 작업 선택
+2. git log --oneline -10 (최근 작업 확인, 중복 작업 방지)
+3. 우선순위 매트릭스에서 작업 선택:
+   - 🔴 깨진 것 있으면 즉시 수정
+   - 🟠 부드러움/애니메이션 개선 (한 화면 골라서 집중)
+   - 🟡 디자인 시스템 검증
+   - 🔵 성능 체크 (리스너/리렌더/번들 하나씩)
+   - 🟣 래퍼런스 리서치 (웹 검색 → 철학 이해 → Pick에 맞는지 확인 → 적용)
 4. 파일 Read → 수정 → npm run build
-5. Playwright 390x844 모바일 스크린샷 촬영 + 검증
-6. Apple/Toss 디자인 자문 + 모바일 체크리스트 확인
-7. git commit + push + firebase deploy
+5. Playwright 스크린샷 (390x844 + 1280x800) 전/후 비교
+6. "이게 정말 나아졌는가?" 자문 — 아니면 revert
+7. git commit + push
+```
+
+### 래퍼런스 리서치 사이클 (🟣일 때)
+```
+1. 웹 검색: "[래퍼런스앱] [패턴] UI UX design 2025 2026"
+2. 해당 패턴의 철학/이유를 정리
+3. "Pick에서도 이 문제가 있는가?" — 없으면 SKIP
+4. "적용하면 디자인 시스템과 충돌하는가?" — 충돌하면 변형 or SKIP
+5. 구현 → 스크린샷 비교 → 확실히 나으면 커밋
 ```
 
 ### 자율 UI/UX 개선 (할 일이 없을 때)
@@ -427,16 +577,16 @@ Pick에서:
 ## 사이클 로그
 > 최근 10개만 유지.
 
-2026-03-24 | feat: 현장 강의 5종 모드 전체 완료 — 이해도/발표자/포커스/설문/토론
-2026-03-24 | feat: 빠른 설문(1~5점) + 그룹 토론(타이머+메모수집)
-2026-03-24 | docs: DESIGN_SYSTEM.md 카드 레시피 동기화 (shadow-sm only)
-2026-03-24 | refactor: TYPE_LABELS 중복 → single source + ESLint 전체 정리 (23개 수정)
-2026-03-24 | improve: VotePageSkeleton + border+shadow 4배치 + transition duration 완전 정리
-2026-03-24 | improve: 모바일 UX 감사 — 터치 타겟/글자 크기/ModeSwitcher nowrap
-2026-03-24 | feat: 과제 심사 기능 전체 구현 (ai-judge 이관 — 9개 태스크)
-2026-03-24 | fix: 모바일 모드 선택 → 결과 탭 자동 이동
-2026-03-24 | improve: 모바일 참여 탭 — 독립 카드 + shadow-sm (토스 패턴)
-2026-03-24 | fix: 게임 3종 StrictMode + 돌림판 + spring + 리액션 + BreakMascot
+2026-03-24 | improve: spring 애니메이션 전면 통일 (50+ easeOut→spring, 95% 커버리지) + 래퍼런스 적용
+2026-03-24 | improve: Duolingo 퀴즈 결과 (점수 bounce+오답 shake), Telegram 채팅 spring, Stripe 숫자 bounce
+2026-03-24 | perf: React.memo 3개 리스트 최적화 (HandRaise/UrgentQuestion/ClassQuestion)
+2026-03-24 | improve: 로딩 상태 마스코트 교체 (AdminPage/LivePage/SuspenseFallback)
+2026-03-24 | improve: 모바일 탭 인디케이터 spring slide + SessionSummaryCard 순차 reveal
+2026-03-24 | improve: 모바일 문항 리스트 (드래그 비활성/세로 확대/정답공개 버튼)
+2026-03-24 | fix: 세션 목록 접속자 수 — online:true만 카운트 (전체→실시간)
+2026-03-24 | improve: 디자인 시스템 전체 감사 — Radio 아이콘 색상, 이모지→lucide, 집중모드 가시성
+2026-03-24 | fix: PresentationView 집중 모드 text-white on bg-white → 라이트/다크 분리
+2026-03-24 | feat: PickMascot focus mood 추가 (반쯤 감긴 집중 표정)
 
 ---
 
