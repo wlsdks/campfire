@@ -83,7 +83,7 @@ function StickyMyRank({ rank, entry }) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-          className="fixed bottom-[120px] left-1/2 -translate-x-1/2 z-20 w-[calc(100%-2rem)] max-w-xl"
+          className="fixed bottom-[120px] left-1/2 -translate-x-1/2 z-20 w-[calc(100%-2.5rem)] max-w-md"
         >
           <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md px-4 py-3 flex items-center gap-3">
             <span className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-sm font-bold text-slate-600 dark:text-slate-300 shrink-0">
@@ -118,10 +118,10 @@ export default function LeaderboardPage({ sessionId }) {
   }, [leaderboard, participantId]);
 
   return (
-    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center p-4 pb-32 pt-16">
+    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center px-5 pb-32 pt-16">
       <StudentHeader sessionId={sessionId} />
 
-      <div className="w-full max-w-xl space-y-5">
+      <div className="w-full max-w-md space-y-5">
         {/* Team badge */}
         {teamActive && myTeam && (
           <div className="flex justify-center">
