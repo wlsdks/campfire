@@ -31,9 +31,9 @@ function AssignmentCard({ assignment, onClick }) {
       onClick={onClick}
       role="button"
       tabIndex={0}
-      className="w-full text-left p-4 rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow duration-150 active:scale-[0.98] cursor-pointer"
+      className="w-full text-left p-4 rounded-xl bg-white dark:bg-slate-800 shadow-sm hover:shadow-md transition-shadow duration-150 active:scale-[0.98] cursor-pointer"
     >
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center justify-between gap-2">
         <div className="flex-1 min-w-0">
           <p className="text-[15px] font-semibold text-slate-900 dark:text-slate-100 truncate">{assignment.title}</p>
           <p className="text-xs text-slate-400 mt-1 truncate">
@@ -53,10 +53,10 @@ function AssignmentCard({ assignment, onClick }) {
             )}
           </p>
         </div>
-        <div className="flex items-center gap-1.5 shrink-0">
+        <div className="flex items-center gap-1 shrink-0">
           <button
             onClick={handleCopy}
-            className="p-2 rounded-lg text-slate-300 hover:text-slate-600 dark:hover:text-slate-400 transition-colors duration-150"
+            className="p-1.5 rounded-lg text-slate-300 hover:text-slate-600 dark:hover:text-slate-400 transition-colors duration-150"
             title="제출 링크 복사"
           >
             {copied ? <Check size={14} className="text-emerald-500" /> : <Copy size={14} />}

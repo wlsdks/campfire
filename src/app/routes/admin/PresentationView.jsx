@@ -155,9 +155,7 @@ function TeamBattleSetup({ participantCount, onStart }) {
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-md mx-auto" onClick={e => e.stopPropagation()}>
-      <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-        <Swords size={28} className="text-slate-400" />
-      </div>
+      <Swords size={28} className="text-slate-400" />
       <div className="text-center space-y-1">
         <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">팀 대항전</h3>
         <p className="text-slate-400 text-sm">참여자를 팀으로 나누고 퀴즈 점수를 경쟁합니다</p>

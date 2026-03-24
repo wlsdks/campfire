@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Hash, Target, Trophy, Flame, Copy, Check, Share2, CheckCircle, XCircle, Minus, Sparkle, CheckCheck, Zap, Crown } from 'lucide-react';
+import { Hash, Target, Trophy, Flame, Copy, Check, Share2, CheckCircle, XCircle, Minus, Award, CheckCheck, Zap, Crown } from 'lucide-react';
 import { useReportData } from '@/features/report/api/useReportData';
 import PickMascot from '@/components/ui/PickMascot';
 import Badge from '@/components/ui/Badge';
 import Avatar from '@/components/ui/Avatar';
 
-const ACHIEVEMENT_ICONS = { Sparkle, Flame, CheckCheck, Zap, Crown };
+const ACHIEVEMENT_ICONS = { Award, Flame, CheckCheck, Zap, Crown };
 
 function getTitle({ answeredCount, correctRate, rank, totalParticipants, bestStreak, totalScore, achievementCount }) {
   if (answeredCount === 0) return '참여해주셔서 감사합니다';
@@ -216,7 +216,7 @@ export default function ReportPage() {
             <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3">획득한 업적</p>
             <div className="space-y-2.5">
               {achievements.map((a, i) => {
-                const Icon = ACHIEVEMENT_ICONS[a.icon] || Sparkle;
+                const Icon = ACHIEVEMENT_ICONS[a.icon] || Award;
                 return (
                   <motion.div
                     key={a.id}

@@ -44,79 +44,32 @@ src/
 
 ## Design System
 
-### Brand Color: Indigo (#4F46E5 / indigo-600) — 악센트 전용
-- CTA 버튼: `bg-slate-900 hover:bg-slate-800` (dark CTA — Linear/Toss 스타일)
-- Dark mode CTA: `dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900`
-- Input focus: `focus:ring-indigo-500/20 focus:border-indigo-500`
-- 악센트 용도: 차트 바, 진행바, 포커스 링, 브랜드 아이콘(Radio)
-- 활성/선택 상태: `bg-slate-900` (탭, 토글)
-- Keep slate for text, cards, borders, backgrounds
+> 전체 디자인 시스템: `DESIGN_SYSTEM.md` 참조
+> 토큰 코드: `src/lib/design-tokens.js` (colors, typography, motion, press, icons, mobile, tw)
 
-### Colors (design-tokens.js)
-```
-Brand:          #4F46E5 (Indigo-600)     Brand Hover: #4338CA (Indigo-700)
-Brand Light:    #6366F1 (Indigo-500)     — dark mode CTA
+### 빠른 참조
+- **CTA**: `bg-slate-900` (dark CTA) / `dark:bg-slate-100 dark:text-slate-900`
+- **악센트**: indigo — 차트 바, 포커스 링, 진행바 전용
+- **색상 규칙**: 화면당 최대 2-3색 (slate + indigo + 기능색)
+- **폰트**: Pretendard + Inter, 크기 12~36px, weight 400~700
+- **간격**: 4px 기본 단위, 카드 p-5, 모달 p-6
+- **모션**: spring(300/25), entry y:12→0, stagger 0.05s, 모두 400ms 이하
+- **터치**: 모바일 최소 48px
 
-Success:        #10B981 (Emerald-500)    Warning:        #F59E0B (Amber-500)
-Error:          #EF4444 (Red-500)
-
-Background:     #F8FAFC (Slate-50)      Surface: #FFFFFF
-Border:         #E2E8F0 (Slate-200)     Border Light: #F1F5F9
-
-Text Primary:   #0F172A (Slate-900)     Text Secondary: #475569 (Slate-600)
-Text Muted:     #94A3B8 (Slate-400)     Text Inverse:   #FFFFFF
-
-Chart bars:     Indigo gradient (#4F46E5 → #818CF8 → #A5B4FC)
-```
-**Rule**: MAX 2-3 colors per screen. All colors from tokens only. No random hex values.
-
-### Typography
-```css
-font-family: 'Pretendard', 'Inter', -apple-system, system-ui, sans-serif;
-```
-- CDN: Pretendard (cdn.jsdelivr.net/gh/orioncactus/pretendard) + Inter (Google Fonts)
-- Weights: 400, 500, 600, 700
-- Scale: Display 36px / Title 24px / Section 18px / Body 16px / Small 14px / Caption 12px
-- Korean body: line-height 1.6-1.8, letter-spacing -0.01em for headings
-
-### Spacing & Components
-- Radius: xl (12px) cards, lg (8px) buttons/inputs, full for avatars
-- Shadows: shadow-sm resting, shadow-md hover, shadow-lg modals
-- Spacing rhythm: 4px base (8, 12, 16, 24, 32, 48)
-- Touch targets: min 48px on mobile
-- Cards: `bg-white rounded-xl shadow-sm border border-slate-100 p-5`
-
-### Framer Motion
-- Entry: `opacity: 0, y: 12 → opacity: 1, y: 0` (0.3s ease-out)
-- Spring: `stiffness: 400, damping: 25`
-- Stagger: 0.05s per item
-- Page transition: 0.2s fade
-
-### Component Patterns (Tailwind recipes — use these exactly)
+### Component Patterns (Tailwind — 이것을 그대로 사용)
 ```
 Button Primary:   bg-slate-900 hover:bg-slate-800 text-white font-medium py-2.5 px-5 rounded-lg transition-colors
                   dark: dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900
-Button Secondary: bg-white hover:bg-slate-50 text-slate-700 font-medium py-2.5 px-5 rounded-lg border border-slate-200 transition-colors
-Button Ghost:     hover:bg-slate-100 text-slate-600 font-medium py-2.5 px-5 rounded-lg transition-colors
-Button Danger:    bg-red-500 hover:bg-red-600 text-white font-medium py-2.5 px-5 rounded-lg transition-colors
+Button Secondary: bg-white hover:bg-slate-50 text-slate-700 font-medium py-2.5 px-5 rounded-lg border border-slate-200
+Button Ghost:     hover:bg-slate-100 text-slate-600 font-medium py-2.5 px-5 rounded-lg
+Button Danger:    bg-red-500 hover:bg-red-600 text-white font-medium py-2.5 px-5 rounded-lg
 
-Input:            w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all
-Input Error:      + border-red-400 focus:ring-red-500/20 focus:border-red-500
+Input:            w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500
 
 Card:             bg-white rounded-xl shadow-sm border border-slate-100 p-5
-Card Hover:       + hover:shadow-md transition-shadow
-
-Badge:            inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-Badge Primary:    bg-slate-100 text-slate-700
-Badge Neutral:    bg-slate-50 text-slate-500
-Badge Error:      bg-red-50 text-red-700
-
-Modal Backdrop:   fixed inset-0 bg-black/30 backdrop-blur-sm z-50
-Modal Content:    bg-white rounded-2xl shadow-xl p-6 max-w-md mx-auto
-
-Avatar:           w-9 h-9 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center text-sm font-semibold
-
-Toast:            fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-2.5 rounded-lg shadow-lg text-sm
+Badge:            inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-700
+Modal:            fixed inset-0 bg-black/30 backdrop-blur-sm z-50 → bg-white rounded-2xl shadow-xl p-6
+Toast:            fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-4 py-2.5 rounded-lg shadow-lg
 ```
 
 ### Key UX Flows
@@ -189,105 +142,18 @@ Firebase: assignments/{id}/submissions, results, awards
 
 ## Anti-AI Aesthetic (CRITICAL)
 
-Reference: Toss (토스), Linear, Notion, Vercel — restrained, dark CTA, monochromatic.
+> 상세: `DESIGN_SYSTEM.md` §1 참조
 
-### AI 생성 UI 체크리스트 (디자인 작업 전 반드시 확인)
+| AI 기본값 (금지) | Human 디자인 (우리) |
+|-----------------|-------------------|
+| `bg-indigo-600` CTA | `bg-slate-900` dark CTA |
+| 컬러 원형 아이콘 배경 | bare lucide 아이콘 |
+| `border-l-3` 악센트 바 | `ring-1` or bg change |
+| 5색 배지/선택지 | slate 모노크로매틱 |
+| `bg-indigo-50` tint 배경 | `bg-white` or `bg-slate-50` |
+| Sparkles/Stars 아이콘 | 사자 마스코트 (PickMascot) |
 
-작업 전 아래 항목을 하나씩 확인한다. 하나라도 해당되면 수정한다.
-
-```
-□ 한 화면에 3가지 이상 색상이 보이는가?
-  → 슬레이트 + 브랜드(indigo) 최대 2색. 그 외 색상 제거
-□ 왼쪽에 컬러 악센트 바(border-l-3)가 있는가?
-  → 제거. ring-1 또는 bg 변경으로 대체
-□ 아이콘이 색상 원형 배경 안에 있는가? (bg-XXX-100 rounded-XX)
-  → 장식적이면 제거. 아이콘만 표시
-□ Sparkles/Wand/Stars 아이콘을 사용하고 있는가?
-  → 맥락에 맞는 구체적 아이콘으로 교체
-□ 배지가 3종 이상 다른 색상인가? (success/warning/primary/error)
-  → primary(slate-100) + neutral(slate-50) + error(red)만 사용
-□ 박스/카드 배경에 색상 tint가 들어가 있는가? (bg-indigo-50, bg-amber-50)
-  → 제거. bg-white 또는 bg-slate-50만 사용
-□ 모든 요소에 동일한 hover 효과가 있는가?
-  → 맥락에 따라 다른 hover 사용 (일부는 hover 없음이 적절)
-□ 과도한 그라디언트/글래스모피즘이 있는가?
-  → backdrop-blur는 헤더 1곳만. 그라디언트 배경 금지
-□ 모든 카드/버튼이 동일한 크기와 간격인가?
-  → 의도적 변화를 주어 "디자인된" 느낌 부여
-```
-
-### 우리 앱의 색상 체계 (확정)
-```
-CTA 버튼:        bg-slate-900 (#0F172A) — dark CTA (Linear/Toss 스타일)
-CTA hover:       hover:bg-slate-800 (#1E293B)
-CTA dark mode:   dark:bg-slate-100 dark:text-slate-900
-
-악센트(indigo):  차트 바, 포커스 링, 진행바, 브랜드 아이콘(Radio)
-브랜드 아이콘:   사자 마스코트 (PickMascot) — 헤더, 로그인, 빈 상태
-Input focus:     focus:ring-indigo-500/20 focus:border-indigo-500
-
-배지 primary:    bg-slate-100 text-slate-700
-배지 neutral:    bg-slate-50 text-slate-500
-배지 error:      bg-red-50 text-red-700
-
-활성/선택 상태:  bg-slate-900 text-white (탭, 토글, 선택지)
-그 외 모든 UI:   slate-50 ~ slate-900 범위
-
-절대 사용 금지:  bg-amber-50 (장식), bg-emerald-50 (장식), indigo를 CTA 버튼에 사용
-```
-
-### AI Default vs Human-Crafted 비교표
-| 요소 | AI 기본값 (피할 것) | Human 디자인 (우리) |
-|------|-------------------|-------------------|
-| CTA 버튼 | `bg-indigo-600` | `bg-slate-900` (dark CTA) |
-| 배지 | `bg-indigo-50 text-indigo-700` | `bg-slate-100 text-slate-700` |
-| 아이콘 | Sparkles in colored circle | 사자 마스코트 또는 bare lucide 아이콘 |
-| 카드 좌측 | `border-l-3 border-indigo-500` | `ring-1` or bg change |
-| 선택지 색상 | A=인디고 B=에메랄드 C=앰버 D=바이올렛 | 전부 slate 모노크로매틱 |
-| 바 차트 | 5색 레인보우 | 인디고 그라데이션 (브랜드) |
-| 빈 상태 | Sparkles + "데이터 없음" | 마스코트 + 도움말 텍스트 |
-| 레이아웃 | 3열 대칭 그리드 | 비대칭, 콘텐츠 중심 |
-| 폰트 | Inter only, 균일 weight | Pretendard, 명확한 위계 |
-
-### 한국 앱 참고 (토스/카카오 스타일)
-- 큰 제목 + 넉넉한 여백 + 최소 장식
-- 색상은 기능에만 (상태, 에러), 장식에 사용하지 않음
-- 숫자/금액은 크고 굵게, 라벨은 작고 연하게
-- 애니메이션은 상태 전환에만, 장식적 모션 없음
-- 모든 아이콘/버튼에 한국어 텍스트 라벨 필수
-
-### Motion 원칙
-- **부드럽고 유기적** — ease-out 또는 spring (stiffness 260-340, damping 22-30)
-- **목적 있는 모션만** — 피드백/가이드/연결. 장식 모션 없음
-- **400ms 이하** — UI 피드백은 빠르게
-- **스태거는 미세하게** — 0.03-0.06s per item, 눈에 띄면 과함
-- **Lottie 인라인 JSON 사용 금지** — 브라우저 호환 불안정. Framer Motion SVG로 대체
-- **SVG path 애니메이션 추천** — `motion.path` + `pathLength` 조합이 가장 안정적
-- **과한 것보다 없는 게 낫다**
-
----
-
-## Design Reference (2025-2026 트렌드)
-
-> 상세 내용은 `DESIGN_SYSTEM.md` §16 참조. 아래는 핵심 요약.
-
-### 핵심 원칙 (디자인 작업 전 항상 확인)
-- **전략적 미니멀리즘**: 요소를 추가하지 말고 불필요한 것을 제거. 타이포가 위계를 진다.
-- **여백이 디자인**: 같은 그룹 `gap-3~4`, 다른 섹션 `gap-5~8`, 탭↔콘텐츠 최소 `mb-5`
-- **컬러 최소주의**: slate 모노크롬 + indigo 악센트(차트/포커스) + 기능색(red/emerald)만
-- **숫자 강조**: 지표는 크고 굵게(3xl~5xl bold), 라벨은 작고 연하게(xs slate-400)
-- **접근성**: 읽는 텍스트 최소 `text-slate-500`, 알림점 최소 `w-2.5`, 헤더 `bg-white/90+`
-
-### 디자인 자문 체크리스트
-```
-□ 이 요소를 빼도 화면이 작동하는가? → 빼라
-□ 색상 대신 크기/두께/여백으로 위계를 만들 수 있는가? → 그렇게 하라
-□ 섹션 사이 여백이 충분한가? → 의심되면 늘려라 (4px 단위)
-□ 숫자/지표가 라벨보다 시각적으로 우선하는가? → 숫자를 크고 굵게
-□ 하나의 화면에 사용자가 해야 할 일이 즉시 보이는가? → 1초 규칙
-□ 프로젝터에서도 뒷자리에서 읽을 수 있는가? → 강사 화면은 큰 글자, 높은 대비
-□ 모바일에서 한 손으로 조작할 수 있는가? → 주요 액션은 thumb zone에
-```
+**체크**: 화면당 2-3색 이하 / 장식 색상 0 / 장식 모션 0 / 한국어 라벨 필수
 
 ---
 

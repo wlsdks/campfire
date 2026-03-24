@@ -25,9 +25,7 @@ export default function DeleteSessionModal({ open, onClose, session, onConfirm }
   return (
     <Modal open={open} onClose={deleting ? undefined : onClose} ariaLabel="세션 삭제 확인">
       <div className="flex flex-col items-center text-center gap-4">
-        <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-red-900/30 flex items-center justify-center">
-          <AlertTriangle size={24} className="text-red-500" />
-        </div>
+        <AlertTriangle size={24} className="text-red-500" />
         <div>
           <h3 className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 mb-1">
             세션을 삭제하시겠습니까?

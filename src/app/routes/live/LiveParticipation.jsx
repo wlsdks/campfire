@@ -33,7 +33,7 @@ export default memo(function LiveParticipation({ voted, total }) {
             <AnimatedNumber value={voted} className="text-2xl font-bold tracking-tight" />
             <span className="text-sm text-slate-500 ml-0.5">/ {total}명</span>
           </span>
-          <span className="text-lg font-bold tracking-tight text-indigo-400 tabular-nums">
+          <span className="text-lg font-bold tracking-tight text-slate-100 tabular-nums">
             <AnimatedNumber value={pct} className="" />%
           </span>
         </div>

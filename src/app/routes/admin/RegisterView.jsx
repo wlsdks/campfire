@@ -8,13 +8,11 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import PickMascot from '@/components/ui/PickMascot';
 
-const inputClass = (hasError, isFocused) =>
-  `w-full bg-slate-50 dark:bg-slate-700 border-2 rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:bg-white dark:focus:bg-slate-600 transition-all duration-200 ${
+const inputClass = (hasError) =>
+  `w-full bg-white dark:bg-slate-700 border rounded-lg px-4 py-3 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 transition-all duration-200 ${
     hasError
-      ? 'border-red-300 focus:border-red-400 focus:shadow-[0_0_0_3px_rgba(239,68,68,0.1)]'
-      : isFocused
-        ? 'border-slate-400 shadow-[0_0_0_3px_rgba(15,23,42,0.06)]'
-        : 'border-slate-200 dark:border-slate-600'
+      ? 'border-red-400 focus:ring-red-500/20 focus:border-red-500'
+      : 'border-slate-200 dark:border-slate-600 focus:ring-indigo-500/20 focus:border-indigo-500'
   }`;
 
 export default function RegisterView({ onLogin, onSwitchToLogin }) {
@@ -24,7 +22,6 @@ export default function RegisterView({ onLogin, onSwitchToLogin }) {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [focusedField, setFocusedField] = useState(null);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -142,21 +139,18 @@ export default function RegisterView({ onLogin, onSwitchToLogin }) {
           transition={{ duration: 0.4, delay: 0.4 }}>
           <input type="text" value={username}
             onChange={(e) => { setUsername(e.target.value); setError(''); }}
-            onFocus={() => setFocusedField('username')} onBlur={() => setFocusedField(null)}
             placeholder="아이디" aria-label="아이디"
-            className={inputClass(!!error, focusedField === 'username')}
+            className={inputClass(!!error)}
             autoComplete="username" autoFocus />
           <input type="password" value={password}
             onChange={(e) => { setPassword(e.target.value); setError(''); }}
-            onFocus={() => setFocusedField('password')} onBlur={() => setFocusedField(null)}
             placeholder="비밀번호" aria-label="비밀번호"
-            className={inputClass(!!error, focusedField === 'password')}
+            className={inputClass(!!error)}
             autoComplete="new-password" />
           <input type="text" value={displayName}
             onChange={(e) => { setDisplayName(e.target.value); setError(''); }}
-            onFocus={() => setFocusedField('displayName')} onBlur={() => setFocusedField(null)}
             placeholder="이름" aria-label="이름"
-            className={inputClass(!!error, focusedField === 'displayName')}
+            className={inputClass(!!error)}
             autoComplete="name" />
 
           <AnimatePresence>

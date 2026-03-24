@@ -219,13 +219,13 @@ export default function MobileAdminView({ s }) {
           <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">세션 설정</h3>
           {(s.session?.status === 'active') && (
             <button onClick={() => { setSettingsOpen(false); setTimeout(() => { if (window.confirm('수업을 종료하시겠습니까?')) s.handleEndSession(); }, 100); }}
-              className="w-full py-3 rounded-xl text-red-500 font-medium text-[15px] bg-red-50 dark:bg-red-900/20 active:bg-red-100 dark:active:bg-red-900/30 transition-colors duration-150">
+              className="w-full py-3 rounded-xl text-red-500 font-medium text-[15px] bg-slate-50 dark:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150">
               수업 종료
             </button>
           )}
           {s.isReviewing && (
             <button onClick={() => { setSettingsOpen(false); s.handleFullEndSession(); }}
-              className="w-full py-3 rounded-xl text-red-500 font-medium text-[15px] bg-red-50 dark:bg-red-900/20 active:bg-red-100 dark:active:bg-red-900/30 transition-colors duration-150">
+              className="w-full py-3 rounded-xl text-red-500 font-medium text-[15px] bg-slate-50 dark:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150">
               완전 종료
             </button>
           )}

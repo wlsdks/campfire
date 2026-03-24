@@ -83,7 +83,7 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTic
                 <div className="border-t border-slate-100 dark:border-slate-700 my-1" />
                 <button
                   onClick={() => { onSwitchMode('waiting'); onToggle(); }}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-100"
+                  className="w-full flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-500 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-100"
                 >
                   <X size={15} />
                   화면 종료
