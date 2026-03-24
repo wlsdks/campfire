@@ -16,7 +16,7 @@ export default function ReviewingBanner({ sessionId }) {
       const data = snap.val() || {};
       const anyReviewing = Object.values(data).some(q => q.reviewing === true);
       setReviewing(anyReviewing);
-    });
+    }, () => {});
     return () => unsub();
   }, [sessionId]);
 

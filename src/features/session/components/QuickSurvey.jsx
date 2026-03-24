@@ -123,7 +123,7 @@ export function SurveyPresenter({ sessionId, onReset }) {
   useEffect(() => {
     if (!sessionId) return;
     const surveyRef = ref(db, `sessions/${sessionId}/quickSurvey`);
-    const unsub = onValue(surveyRef, snap => setResponses(snap.val() || {}));
+    const unsub = onValue(surveyRef, snap => setResponses(snap.val() || {}), () => {});
     return () => unsub();
   }, [sessionId]);
 

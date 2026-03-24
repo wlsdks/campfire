@@ -31,7 +31,7 @@ function StudentDiscussion({ sessionId }) {
 
   useEffect(() => {
     const discRef = ref(db, `sessions/${sessionId}/discussion`);
-    const unsub = onValue(discRef, snap => setDiscussion(snap.val()));
+    const unsub = onValue(discRef, snap => setDiscussion(snap.val()), () => {});
     return () => unsub();
   }, [sessionId]);
 
@@ -142,7 +142,7 @@ export function DiscussionPresenter({ sessionId }) {
 
   useEffect(() => {
     const discRef = ref(db, `sessions/${sessionId}/discussion`);
-    const unsub = onValue(discRef, snap => setDiscussion(snap.val()));
+    const unsub = onValue(discRef, snap => setDiscussion(snap.val()), () => {});
     return () => unsub();
   }, [sessionId]);
 

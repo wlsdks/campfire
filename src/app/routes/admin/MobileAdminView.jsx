@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, BarChart3, Users, MessageSquare, Play, Hand, AlertCircle, HelpCircle, Copy, Check, ChevronDown, MoreHorizontal, Target, Ticket, Gift, Dices, CircleDot, Coffee, Trophy, Swords, X, Gamepad2, Activity, UserCircle, Eye, Timer, Award } from 'lucide-react';
+import { ArrowLeft, BarChart3, Users, MessageSquare, Play, MoreHorizontal, Target, Ticket, Gift, Dices, CircleDot, Coffee, Trophy, Swords, Gamepad2 } from 'lucide-react';
 import JoinToast from '@/features/participants/components/JoinToast';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import QuestionManager from './QuestionManager';
@@ -10,11 +10,8 @@ import ChatPanel from '@/features/chat/components/ChatPanel';
 import TeamBattleControl from '@/features/teams/components/TeamBattleControl';
 import ModeSwitcher from './ModeSwitcher';
 import BottomSheet from '@/components/ui/BottomSheet';
-import Avatar from '@/components/ui/Avatar';
-import PickMascot from '@/components/ui/PickMascot';
-import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
-import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
-import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
+import MobileModePicker from './MobileModePicker';
+import MobileParticipantsTab from './MobileParticipantsTab';
 
 const TABS = [
   { key: 'progress', label: '진행', icon: Play },
@@ -89,78 +86,6 @@ function MobileHeader({ session, count, onBack, effectiveReadOnly, isSetting, on
   );
 }
 
-/* ─── Mode Picker BottomSheet (grid layout, one-tap switch) ─── */
-function MobileModePicker({ open, onClose, currentMode, onSwitchMode, leaderboard, teamBattleActive }) {
-  const sections = [
-    { title: '수업 도구', modes: [
-      { mode: 'comprehension', label: '이해도 체크', icon: Activity },
-      { mode: 'quickSurvey', label: '빠른 설문', icon: BarChart3 },
-      { mode: 'discussion', label: '그룹 토론', icon: Timer },
-      { mode: 'randomPicker', label: '발표자 뽑기', icon: UserCircle },
-      { mode: 'focus', label: '집중!', icon: Eye },
-    ]},
-    { title: '게임 & 이벤트', modes: [
-      { mode: 'roulette', label: '돌림판', icon: Target },
-      { mode: 'lottery', label: '추첨', icon: Ticket },
-      { mode: 'prizeDraw', label: '경품 추첨', icon: Gift },
-      { mode: 'slotMachine', label: '777 슬롯', icon: Dices },
-      { mode: 'plinko', label: '핀볼', icon: CircleDot },
-    ]},
-    { title: '기타', modes: [
-      { mode: 'breakTime', label: '쉬는 시간', icon: Coffee },
-      { mode: 'qaBoard', label: 'Q&A 보드', icon: MessageSquare },
-      ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
-      ...(teamBattleActive ? [{ mode: 'teamBattle', label: '팀 대항전', icon: Swords }] : []),
-      { mode: 'awards', label: '시상식', icon: Award },
-    ]},
-  ];
-
-  const allModes = sections.flatMap(s => s.modes);
-  const isSpecial = allModes.some(m => m.mode === currentMode);
-
-  function ModeButton({ mode, label, icon: Icon }) {
-    const isActive = currentMode === mode;
-    return (
-      <motion.button
-        whileTap={{ scale: 0.93 }}
-        onClick={() => { onSwitchMode(mode); onClose(); }}
-        className={`flex flex-col items-center gap-2 py-4 px-2 rounded-2xl text-center transition-colors duration-150 ${
-          isActive
-            ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
-            : 'bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 active:bg-slate-100 dark:active:bg-slate-700'
-        }`}
-      >
-        <Icon size={24} strokeWidth={isActive ? 2 : 1.5} />
-        <span className="text-xs font-medium leading-tight">{label}</span>
-      </motion.button>
-    );
-  }
-
-  return (
-    <BottomSheet open={open} onClose={onClose} ariaLabel="모드 전환">
-      <div className="space-y-5">
-        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">모드 전환</h3>
-        {sections.map(section => (
-          <div key={section.title}>
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">{section.title}</p>
-            <div className="grid grid-cols-3 gap-2.5">
-              {section.modes.map(m => <ModeButton key={m.mode} {...m} />)}
-            </div>
-          </div>
-        ))}
-        {isSpecial && (
-          <button
-            onClick={() => { onSwitchMode('waiting'); onClose(); }}
-            className="w-full py-3 rounded-xl text-slate-500 dark:text-slate-400 font-medium text-[15px] bg-slate-50 dark:bg-slate-800 active:bg-slate-100 dark:active:bg-slate-700 transition-colors duration-150 flex items-center justify-center gap-2"
-          >
-            <X size={16} /> 화면 종료
-          </button>
-        )}
-      </div>
-    </BottomSheet>
-  );
-}
-
 /* ─── Bottom Tab Bar (Apple/토스 style: 56px + safe area) ─── */
 function MobileTabBar({ activeTab, onTabChange, hasUnreadChat }) {
   return (
@@ -188,148 +113,6 @@ function MobileTabBar({ activeTab, onTabChange, hasUnreadChat }) {
           </motion.button>
         );
       })}
-    </div>
-  );
-}
-
-/* ─── Section Accordion (토스 style: 독립 카드, 배경 대비) ─── */
-function MobileSection({ icon: Icon, title, count, children, defaultOpen = true }) {
-  const [open, setOpen] = useState(defaultOpen);
-  return (
-    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm overflow-hidden">
-      <button onClick={() => setOpen(!open)} aria-expanded={open}
-        className="w-full flex items-center justify-between px-5 py-4 active:bg-slate-50 dark:active:bg-slate-700/50 transition-colors duration-150">
-        <span className="flex items-center gap-2.5 text-[16px] font-semibold text-slate-900 dark:text-slate-100 tracking-tight">
-          <Icon size={18} className="text-slate-400" />
-          {title}
-          {count > 0 && (
-            <span className="inline-flex items-center justify-center min-w-[22px] h-[22px] px-1.5 rounded-full text-[11px] font-bold bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900">
-              {count}
-            </span>
-          )}
-        </span>
-        <motion.div animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
-          <ChevronDown size={18} className="text-slate-300 dark:text-slate-600" />
-        </motion.div>
-      </button>
-      <AnimatePresence>
-        {open && (
-          <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }} className="overflow-hidden">
-            <div className="px-5 pb-5">{children}</div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-/* ─── Participants Tab (토스 style: hero number, spacious lists) ─── */
-function MobileParticipantsTab({ sessionId, onlineList, count, studentUrl }) {
-  const { raisedList, count: handCount } = useHandRaises(sessionId);
-  const { questionList: urgentList, unreadCount: urgentCount } = useUrgentQuestions(sessionId);
-  const { questions: classQuestions, unansweredCount } = useClassQuestions(sessionId);
-  const [copied, setCopied] = useState(false);
-
-  function handleCopy() {
-    navigator.clipboard?.writeText(studentUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  }
-
-  return (
-    <div className="bg-slate-50 dark:bg-slate-900 min-h-full">
-      {/* Hero stat */}
-      <div className="px-4 pt-5">
-        <div className="bg-white dark:bg-slate-800 rounded-2xl text-center py-7 shadow-sm">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span className="text-[15px] text-slate-400">실시간 접속</span>
-          </div>
-          <motion.p key={count} initial={{ scale: 1.1 }} animate={{ scale: 1 }}
-            className="text-5xl font-bold text-slate-900 dark:text-slate-100 tracking-tight tabular-nums">
-            {count}
-          </motion.p>
-          <p className="text-[15px] text-slate-400 mt-1">명 접속 중</p>
-        </div>
-      </div>
-
-      {/* 섹션들 — 독립 카드, 배경 대비로 영역 구분 (토스/당근 패턴) */}
-      <div className="px-4 pt-4 pb-8 space-y-3">
-        <MobileSection icon={Hand} title="손들기" count={handCount} defaultOpen={handCount > 0}>
-          {handCount === 0 ? (
-            <p className="text-[15px] text-slate-400 text-center py-4">손든 학생이 없습니다</p>
-          ) : (
-            <div className="space-y-1">
-              {raisedList.map((p) => (
-                <div key={p.id} className="flex items-center gap-3 py-3">
-                  <Avatar name={p.nickname} size="md" />
-                  <span className="text-[16px] font-medium text-slate-700 dark:text-slate-200">{p.nickname}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </MobileSection>
-
-        <MobileSection icon={AlertCircle} title="긴급 질문" count={urgentCount} defaultOpen={urgentCount > 0}>
-          {urgentList.length === 0 ? (
-            <p className="text-[15px] text-slate-400 text-center py-4">수신된 질문이 없습니다</p>
-          ) : (
-            <div className="space-y-3">
-              {urgentList.map((q) => (
-                <div key={q.id} className={`p-4 rounded-xl ${q.read ? 'bg-slate-50 dark:bg-slate-700/50 opacity-50' : 'bg-slate-50 dark:bg-slate-700'}`}>
-                  <p className="text-[16px] text-slate-700 dark:text-slate-200 leading-relaxed">{q.text}</p>
-                  <span className="text-[13px] text-slate-400 mt-2 block">익명</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </MobileSection>
-
-        <MobileSection icon={HelpCircle} title="수업 질문" count={unansweredCount} defaultOpen={unansweredCount > 0}>
-          {classQuestions.length === 0 ? (
-            <p className="text-[15px] text-slate-400 text-center py-4">학생 질문이 없습니다</p>
-          ) : (
-            <div className="space-y-3">
-              {classQuestions.slice(0, 10).map((q) => (
-                <div key={q.id} className={`p-4 rounded-xl ${q.answered ? 'opacity-50' : 'bg-slate-50 dark:bg-slate-700'}`}>
-                  <p className="text-[16px] text-slate-700 dark:text-slate-200 leading-relaxed">{q.text}</p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <span className="text-[13px] text-slate-400">{q.nickname}</span>
-                    {q.answered && <span className="text-[13px] text-slate-400">답변 완료</span>}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </MobileSection>
-
-        <MobileSection icon={Users} title="참여자" count={onlineList.length}>
-          {onlineList.length === 0 ? (
-            <div className="text-center py-8 space-y-3">
-              <PickMascot size="sm" mood="waiting" />
-              <p className="text-[15px] text-slate-400">아직 참여자가 없습니다</p>
-            </div>
-          ) : (
-            <div className="divide-y divide-slate-50 dark:divide-slate-700">
-              {onlineList.map((p) => (
-                <div key={p.id} className="flex items-center gap-3.5 py-3.5">
-                  <Avatar name={p.nickname} size="md" />
-                  <span className="text-[16px] font-medium text-slate-700 dark:text-slate-200 flex-1">{p.nickname}</span>
-                </div>
-              ))}
-            </div>
-          )}
-        </MobileSection>
-
-        {/* 초대 링크 */}
-        <div className="pt-1">
-          <button onClick={handleCopy}
-            className="w-full flex items-center justify-center gap-2.5 py-4 rounded-2xl bg-white dark:bg-slate-800 text-[16px] font-medium text-slate-700 dark:text-slate-200 transition-colors duration-150 active:scale-[0.98] active:bg-slate-50 dark:active:bg-slate-700">
-            {copied ? <><Check size={18} className="text-emerald-500" />복사됨!</> : <><Copy size={18} className="text-slate-400" />초대 링크 복사</>}
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

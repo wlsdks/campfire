@@ -140,7 +140,7 @@ export function ComprehensionPresenter({ sessionId, onReset }) {
   useEffect(() => {
     if (!sessionId) return;
     const compRef = ref(db, `sessions/${sessionId}/comprehension`);
-    const unsub = onValue(compRef, snap => setResponses(snap.val() || {}));
+    const unsub = onValue(compRef, snap => setResponses(snap.val() || {}), () => {});
     return () => unsub();
   }, [sessionId]);
 
