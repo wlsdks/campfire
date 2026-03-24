@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Clock, CheckCircle2, Search, FileCode2, FileText, Link, ExternalLink, Trash2, Pencil, Send, Scale, Trophy, Sun, Moon } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, Search, FileCode2, FileText, Link, ExternalLink, Trash2, Pencil, Send, Scale, Trophy, Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 import { useAssignment } from '@/features/assignments/api/useAssignments';
 import { ASSIGNMENT_STATUS } from '@/features/assignments/api/useAssignments';
@@ -22,6 +22,8 @@ function MySubmissionView({ submission, assignmentId, onBack, onEdit, isOpen }) 
     try {
       await withdrawSubmission(assignmentId, submission.id);
       onBack();
+    } catch {
+      alert('제출 취소에 실패했습니다');
     } finally {
       setDeleting(false);
     }

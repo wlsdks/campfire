@@ -328,8 +328,7 @@ function JudgeView({ assignmentId, submissions, results, hasResults }) {
 }
 
 // ─── Awards Tab ────────────────────────────────────
-function AwardsView({ assignmentId, hasResults }) {
-  const { awards, loading } = useAwards(assignmentId);
+function AwardsView({ assignmentId, awards, awardsLoading, hasResults }) {
   const [showCeremony, setShowCeremony] = useState(false);
 
   const closeCeremony = useCallback(() => setShowCeremony(false), []);
@@ -352,7 +351,7 @@ function AwardsView({ assignmentId, hasResults }) {
     );
   }
 
-  if (loading) {
+  if (awardsLoading) {
     return <div className="py-16 text-center"><p className="text-sm text-slate-400">불러오는 중...</p></div>;
   }
 
@@ -463,7 +462,7 @@ export default function AssignmentDetail({ assignmentId, onBack }) {
   const { assignment } = useAssignment(assignmentId);
   const { submissions } = useSubmissionList(assignmentId);
   const { results } = useAllResults(assignmentId);
-  const { awards } = useAwards(assignmentId);
+  const { awards, loading: awardsLoading } = useAwards(assignmentId);
   const { closeAssignment } = useAssignmentActions();
   const [activeTab, setActiveTab] = useState('submissions');
   const [confirmClose, setConfirmClose] = useState(false);
@@ -578,7 +577,7 @@ export default function AssignmentDetail({ assignmentId, onBack }) {
             />
           )}
           {activeTab === 'awards' && (
-            <AwardsView assignmentId={assignmentId} hasResults={hasResults} />
+            <AwardsView assignmentId={assignmentId} awards={awards} awardsLoading={awardsLoading} hasResults={hasResults} />
           )}
         </motion.div>
       </AnimatePresence>

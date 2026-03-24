@@ -110,7 +110,13 @@ ${contentParts.join('\n\n') || '(제출물 없음)'}
     return JSON.parse(text);
   } catch {
     const match = text.match(/\{[\s\S]*\}/);
-    if (match) return JSON.parse(match[0]);
+    if (match) {
+      try {
+        return JSON.parse(match[0]);
+      } catch {
+        throw new Error(`심사 응답 파싱 실패: ${text.slice(0, 200)}`);
+      }
+    }
     throw new Error(`심사 응답 파싱 실패: ${text.slice(0, 200)}`);
   }
 }

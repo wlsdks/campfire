@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Copy, Check, ChevronRight, ChevronDown, X, Scale } from 'lucide-react';
+import { Plus, Copy, Check, ChevronRight, X, Scale } from 'lucide-react';
 import { useAssignmentList, useAssignmentActions, ASSIGNMENT_STATUS } from '@/features/assignments/api/useAssignments';
 import { useSubmissionList } from '@/features/assignments/api/useSubmissions';
 import Button from '@/components/ui/Button';
@@ -105,6 +105,8 @@ function CreateAssignmentContent({ sessions, onClose }) {
         hasJudging,
       });
       onClose();
+    } catch {
+      alert('과제 생성에 실패했습니다');
     } finally {
       setCreating(false);
     }

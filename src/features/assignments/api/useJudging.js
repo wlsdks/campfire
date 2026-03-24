@@ -12,9 +12,11 @@ export function useJudging(assignmentId) {
   const [isJudging, setIsJudging] = useState(false);
   const [progress, setProgress] = useState(null); // { current, total, currentJudge, currentSubmission }
   const abortRef = useRef(false);
+  const judgingRef = useRef(false);
 
   const startJudging = useCallback(async () => {
-    if (!assignmentId || isJudging) return;
+    if (!assignmentId || judgingRef.current) return;
+    judgingRef.current = true;
     abortRef.current = false;
     setIsJudging(true);
 
@@ -81,10 +83,11 @@ export function useJudging(assignmentId) {
       logger.error('심사 실행 실패:', err);
       await update(ref(db, `assignments/${assignmentId}`), { status: 'open' });
     } finally {
+      judgingRef.current = false;
       setIsJudging(false);
       setProgress(null);
     }
-  }, [assignmentId, isJudging]);
+  }, [assignmentId]);
 
   const abort = useCallback(() => {
     abortRef.current = true;
