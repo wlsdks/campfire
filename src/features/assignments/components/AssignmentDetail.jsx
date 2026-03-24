@@ -1,7 +1,8 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Copy, Check, Link2, Trophy, X } from 'lucide-react';
+import { ArrowLeft, Copy, Check, Link2, Trophy, X, ChevronRight } from 'lucide-react';
 import { useAssignment, useAssignmentActions, ASSIGNMENT_STATUS } from '@/features/assignments/api/useAssignments';
+import Modal from '@/components/ui/Modal';
 import { useSubmissionList } from '@/features/assignments/api/useSubmissions';
 import { useAllResults, useAwards } from '@/features/assignments/api/useAwards';
 import JudgingPanel from './JudgingPanel';
@@ -221,35 +222,28 @@ function SubmissionsView({ assignmentId, submissions, results, awards, hasResult
 // ─── Judge Tab ─────────────────────────────────────
 function JudgeView({ assignmentId, submissions, results, hasResults }) {
   const sorted = useMemo(() => sortByScore(submissions, results), [submissions, results]);
+  const [selectedSub, setSelectedSub] = useState(null);
+
+  const selectedResult = selectedSub ? results[selectedSub.id] : null;
 
   return (
     <div className="space-y-6">
-      <div>
-        <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-3">심사위원단</p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
-          {JUDGES.map((judge) => (
-            <div
-              key={judge.id}
-              className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-3.5"
-            >
-              <div className="flex items-center gap-2.5">
-                <Avatar name={judge.name} size="sm" />
-                <div className="min-w-0">
-                  <p className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 truncate">
-                    {judge.name}
-                  </p>
-                  <p className="text-[11px] text-slate-400 truncate">{judge.role}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* 심사위원단 — 컴팩트 가로 스크롤 */}
+      <div className="flex items-center gap-3 overflow-x-auto pb-1 -mx-1 px-1">
+        {JUDGES.map((judge) => (
+          <div key={judge.id} className="flex flex-col items-center gap-1.5 shrink-0">
+            <Avatar name={judge.name} size="sm" />
+            <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">{judge.name}</p>
+          </div>
+        ))}
       </div>
 
+      {/* 심사 컨트롤 */}
       <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5">
         <JudgingPanel assignmentId={assignmentId} submissionCount={submissions.length} />
       </div>
 
+      {/* 순위 — 클릭 시 심사평 모달 */}
       {hasResults && (
         <div>
           <p className="text-sm font-semibold text-slate-500 dark:text-slate-400 mb-3">순위</p>
@@ -258,7 +252,11 @@ function JudgeView({ assignmentId, submissions, results, hasResults }) {
               const r = results[sub.id];
               if (!r) return null;
               return (
-                <div key={sub.id} className="flex items-center gap-3 px-5 py-3.5">
+                <button
+                  key={sub.id}
+                  onClick={() => setSelectedSub(sub)}
+                  className="w-full flex items-center gap-3 px-5 py-3.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+                >
                   <span className={`text-sm font-bold tabular-nums w-5 text-center ${
                     i === 0 ? 'text-slate-900 dark:text-slate-100'
                     : i < 3 ? 'text-slate-600 dark:text-slate-300'
@@ -271,12 +269,43 @@ function JudgeView({ assignmentId, submissions, results, hasResults }) {
                   <span className="text-base font-bold text-slate-900 dark:text-slate-100 tabular-nums w-10 text-right">
                     {r.summary.avgScore}
                   </span>
-                </div>
+                  <ChevronRight size={14} className="text-slate-300 shrink-0" />
+                </button>
               );
             })}
           </div>
         </div>
       )}
+
+      {/* 심사평 모달 */}
+      <Modal
+        open={!!selectedSub}
+        onClose={() => setSelectedSub(null)}
+        ariaLabel="심사평 상세"
+        className="!max-w-lg !max-h-[80vh] !overflow-y-auto"
+      >
+        {selectedSub && selectedResult && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">{selectedSub.name}</h3>
+                <p className="text-sm text-slate-400 mt-0.5">
+                  평균 {selectedResult.summary.avgScore}점 · {selectedResult.summary.selectedCount}/{selectedResult.summary.totalJudges}명 선택
+                  · {selectedResult.summary.passed ? '합격' : '불합격'}
+                </p>
+              </div>
+              <button onClick={() => setSelectedSub(null)} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                <X size={18} />
+              </button>
+            </div>
+            <div className="space-y-3">
+              {JUDGES.map((judge) => (
+                <JudgeResultCard key={judge.id} judge={judge} result={selectedResult.judges?.[judge.id]} />
+              ))}
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }
@@ -445,22 +474,20 @@ export default function AssignmentDetail({ assignmentId, onBack }) {
           <span>과제 목록</span>
         </button>
 
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center justify-between gap-4">
           <div className="min-w-0">
             <div className="flex items-center gap-2.5">
-              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight truncate">
                 {assignment.title}
               </h2>
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 shrink-0">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 shrink-0">
                 {statusLabel}
               </span>
             </div>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="text-xs text-slate-400 mt-1">
               {assignment.courseName}{assignment.roundNumber ? ` · ${assignment.roundNumber}차` : ''}
+              {assignment.description && assignment.description !== assignment.title ? ` — ${assignment.description}` : ''}
             </p>
-            {assignment.description && (
-              <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">{assignment.description}</p>
-            )}
           </div>
 
           {assignment.status === 'open' && !confirmClose && (
