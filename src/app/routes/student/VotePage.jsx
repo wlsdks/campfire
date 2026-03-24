@@ -40,6 +40,7 @@ import TeamBadge from '@/features/teams/components/TeamBadge';
 import { useMyTeam } from '@/features/teams/api/useTeamBattle';
 import { getParticipantId } from '@/lib/participant';
 import { useQuestionChime } from '@/hooks/useQuestionChime';
+import { isQuizQuestion } from '@/lib/quiz';
 import ReviewingBanner from '@/components/ui/ReviewingBanner';
 
 export default memo(function VotePage({ sessionId }) {
@@ -47,8 +48,9 @@ export default memo(function VotePage({ sessionId }) {
   const { isRunning: timerRunning, endTime, duration } = useTimer(sessionId);
   const [timerExpired, setTimerExpired] = useState(false);
 
-  // Play chime when a new question activates
-  useQuestionChime(session?.currentQuestion);
+  // Play chime when a new question activates (+ Haydn BGM for quiz questions)
+  const currentQ = session?.questions?.[session?.currentQuestion];
+  useQuestionChime(session?.currentQuestion, isQuizQuestion(currentQ));
 
   const handleTimerExpire = useCallback(() => {
     setTimerExpired(true);
