@@ -1,7 +1,7 @@
 # Pick Background Improvement Loop
 
 > 10분 간격 자동 실행. 매 사이클 시작 시 CLAUDE.md + DESIGN_SYSTEM.md 참조.
-> 브랜치: `background-improve-v4`에서만 작업. main은 절대 건드리지 않음.
+> 브랜치: `improve/animation-perf-ux`에서만 작업. main은 절대 건드리지 않음.
 
 ## 서비스 정체성
 
@@ -577,16 +577,16 @@ Pick에서:
 ## 사이클 로그
 > 최근 10개만 유지.
 
-2026-03-24 | improve: spring 애니메이션 전면 통일 (50+ easeOut→spring, 95% 커버리지) + 래퍼런스 적용
-2026-03-24 | improve: Duolingo 퀴즈 결과 (점수 bounce+오답 shake), Telegram 채팅 spring, Stripe 숫자 bounce
-2026-03-24 | perf: React.memo 3개 리스트 최적화 (HandRaise/UrgentQuestion/ClassQuestion)
-2026-03-24 | improve: 로딩 상태 마스코트 교체 (AdminPage/LivePage/SuspenseFallback)
-2026-03-24 | improve: 모바일 탭 인디케이터 spring slide + SessionSummaryCard 순차 reveal
+2026-03-25 | improve: 로딩 마스코트 3곳 추가 (AssignmentsTab/StatsView/ReportPage) — 총 8곳 교체 완료
+2026-03-25 | improve: 퀴즈 정답 공개 시 BGM 자동 정지 (긴장→해소 연계)
+2026-03-25 | feat: 퀴즈 BGM — 오리지널 긴장감 틱톡 카운트다운 (Web Audio, 저작권 무관)
+2026-03-24 | improve: spring 애니메이션 전면 통일 (50+ easeOut→spring, 95%) + easeOut 최종 정리
+2026-03-24 | improve: Duolingo 퀴즈(bounce+shake), Telegram 채팅, Stripe 숫자+탭 슬라이드
+2026-03-24 | perf: React.memo 3개 리스트 + whileTap 100% 커버리지
+2026-03-24 | improve: 로딩 마스코트 (AdminPage/LivePage/SuspenseFallback/SessionDashboard)
 2026-03-24 | improve: 모바일 문항 리스트 (드래그 비활성/세로 확대/정답공개 버튼)
-2026-03-24 | fix: 세션 목록 접속자 수 — online:true만 카운트 (전체→실시간)
-2026-03-24 | improve: 디자인 시스템 전체 감사 — Radio 아이콘 색상, 이모지→lucide, 집중모드 가시성
-2026-03-24 | fix: PresentationView 집중 모드 text-white on bg-white → 라이트/다크 분리
-2026-03-24 | feat: PickMascot focus mood 추가 (반쯤 감긴 집중 표정)
+2026-03-24 | fix: 세션 접속자 수 online:true + PresentationView 집중모드 가시성
+2026-03-24 | improve: 디자인 시스템 감사 + PickMascot focus mood + GameResultOverlay spring
 
 ---
 
