@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Download } from 'lucide-react';
+import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
 import Avatar from '@/components/ui/Avatar';
 import { useEngagementData } from '@/features/report/api/useEngagementData';
@@ -25,6 +26,37 @@ export default function EngagementTab({ sessions }) {
     const value = e.target.value;
     setSelectedSession(value);
     if (value) fetchEngagement(value);
+  }
+
+  function exportAttendanceCSV() {
+    if (!data) return;
+    const session = conductedSessions.find(s => s.id === selectedSession);
+    const sessionLabel = session ? `${session.courseName || '미분류'}${session.roundNumber ? ` ${session.roundNumber}차` : ''}` : '';
+
+    const header = ['이름', '참여율(%)', '정답률(%)', '점수', '응답수', '접속시간'];
+    const rows = data.students.map(st => [
+      st.nickname,
+      st.engagementRate,
+      st.correctRate ?? '',
+      st.totalScore,
+      `${st.answered}/${st.totalQuestions}`,
+      st.joinedAt ? new Date(st.joinedAt).toLocaleString('ko-KR') : '',
+    ]);
+
+    const csvContent = [header, ...rows]
+      .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+      .join('\n');
+
+    const bom = '\uFEFF';
+    const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `출석부_${sessionLabel}_${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   }
 
   return (
@@ -82,7 +114,13 @@ export default function EngagementTab({ sessions }) {
           </motion.div>
 
           <div>
-            <h3 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-4">학생별 참여 현황</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-sm font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">학생별 참여 현황</h3>
+              <Button onClick={exportAttendanceCSV} variant="ghost" size="sm">
+                <Download size={14} />
+                CSV 내보내기
+              </Button>
+            </div>
             <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden" role="table" aria-label="학생별 참여 현황">
               <div className={`${GRID} px-5 py-3 border-b border-slate-100 dark:border-slate-700 text-xs font-semibold text-slate-400 uppercase tracking-wider`} role="row">
                 <span role="columnheader">학생</span>

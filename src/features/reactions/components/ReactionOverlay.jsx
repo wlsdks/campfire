@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, memo } from 'react';
 import { limitToLast, onChildAdded, query, ref } from 'firebase/database';
 import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '@/lib/firebase';
@@ -24,7 +24,7 @@ function createBubbleConfig(key, type) {
   };
 }
 
-export default function ReactionOverlay({ sessionId }) {
+export default memo(function ReactionOverlay({ sessionId }) {
   const [bubbles, setBubbles] = useState([]);
   const mountedRef = useRef(true);
   const warmupTimerRef = useRef(null);
@@ -121,4 +121,4 @@ export default function ReactionOverlay({ sessionId }) {
       </AnimatePresence>
     </div>
   );
-}
+});

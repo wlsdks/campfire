@@ -69,6 +69,8 @@ export function useEngagementData() {
           engagementRate,
           correctRate,
           totalScore: scoreData?.total || 0,
+          joinedAt: pData.joinedAt || null,
+          online: pData.online || false,
         };
       });
 

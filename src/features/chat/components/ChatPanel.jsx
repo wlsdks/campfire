@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, X, MessageCircle, Shield } from 'lucide-react';
 import { hapticTap } from '@/lib/haptics';
@@ -10,7 +10,7 @@ import ChatMessage from '@/features/chat/components/ChatMessage';
 
 const MAX_LENGTH = 500;
 
-export default function ChatPanel({ sessionId, senderName, senderType, open, onClose, onNewMessage, inline = false }) {
+export default memo(function ChatPanel({ sessionId, senderName, senderType, open, onClose, onNewMessage, inline = false }) {
   const isStaffOrInstructor = senderType === 'staff' || senderType === 'instructor';
   const [channel, setChannel] = useState('public');
 
@@ -173,4 +173,4 @@ export default function ChatPanel({ sessionId, senderName, senderType, open, onC
       )}
     </AnimatePresence>
   );
-}
+});

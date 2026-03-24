@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, X, ThumbsUp, Check, HelpCircle } from 'lucide-react';
 import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
@@ -7,7 +7,7 @@ import { timeAgo } from '@/lib/utils';
 
 const MAX_LENGTH = 200;
 
-function QuestionCard({ q, participantId, onUpvote, index = 0 }) {
+const QuestionCard = memo(function QuestionCard({ q, participantId, onUpvote, index = 0 }) {
   const hasUpvoted = q.upvotes?.[participantId];
   const isMine = q.participantId === participantId;
 
@@ -58,9 +58,9 @@ function QuestionCard({ q, participantId, onUpvote, index = 0 }) {
       </div>
     </motion.div>
   );
-}
+});
 
-export default function ClassQAPanel({ sessionId, open, onClose, onNewQuestion }) {
+export default memo(function ClassQAPanel({ sessionId, open, onClose, onNewQuestion }) {
   const { questions, unansweredCount, postQuestion, toggleUpvote, canPost, loading } =
     useClassQuestions(sessionId);
   const [inputText, setInputText] = useState('');
@@ -224,4 +224,4 @@ export default function ClassQAPanel({ sessionId, open, onClose, onNewQuestion }
       )}
     </AnimatePresence>
   );
-}
+});
