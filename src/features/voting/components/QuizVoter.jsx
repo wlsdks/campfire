@@ -104,15 +104,80 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
   }
 
   if (question?.revealedAt) {
+    const correctAnswer = question.correctAnswer;
+    const options = question?.options || [];
     return (
-      <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 p-6 text-center space-y-3">
-        <Lock size={32} className="text-slate-400 mx-auto" />
-        <div className="space-y-1">
-          <p className="text-slate-900 dark:text-slate-100 font-bold text-lg">정답이 공개되었습니다</p>
-          <p className="text-slate-500 dark:text-slate-400 text-sm">이번 라운드 응답은 마감되었습니다</p>
-          <p className="text-slate-700 dark:text-slate-200 font-medium">정답: {question.correctAnswer}</p>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-5 space-y-4"
+      >
+        {/* Header */}
+        <div className="flex items-center gap-3">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 22, delay: 0.1 }}
+            className="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center shrink-0"
+          >
+            <Lock size={18} className="text-slate-400 dark:text-slate-500" />
+          </motion.div>
+          <div>
+            <p className="text-slate-900 dark:text-slate-100 font-bold text-base">정답이 공개되었습니다</p>
+            <p className="text-slate-400 dark:text-slate-500 text-sm">이번 라운드에 참여하지 않았습니다</p>
+          </div>
         </div>
-      </div>
+
+        {/* Options with correct highlight */}
+        {options.length > 0 && (
+          <div className="space-y-2">
+            {options.map((option, index) => {
+              const style = OPTION_STYLES[index % OPTION_STYLES.length];
+              const isCorrect = option === correctAnswer;
+              return (
+                <motion.div
+                  key={option}
+                  initial={{ opacity: 0, x: -8 }}
+                  animate={{ opacity: isCorrect ? 1 : 0.45, x: 0 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.12 + index * 0.05 }}
+                  className={`w-full py-3 px-4 rounded-xl border flex items-center gap-3 ${
+                    isCorrect
+                      ? 'bg-slate-900 dark:bg-slate-100 border-slate-900 dark:border-slate-100'
+                      : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'
+                  }`}
+                >
+                  <span className={`w-7 h-7 rounded-lg flex items-center justify-center text-sm font-bold shrink-0 ${
+                    isCorrect
+                      ? 'bg-white/20 dark:bg-slate-900/20 text-white dark:text-slate-900'
+                      : `${style.badge} text-white`
+                  }`}>
+                    {style.letter}
+                  </span>
+                  <span className={`text-sm font-medium leading-snug ${
+                    isCorrect ? 'text-white dark:text-slate-900' : 'text-slate-600 dark:text-slate-400'
+                  }`}>
+                    {option}
+                  </span>
+                </motion.div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Fallback for non-choice types */}
+        {options.length === 0 && correctAnswer && (
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.2 }}
+            className="rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 px-4 py-3 text-center"
+          >
+            <p className="text-xs font-medium text-slate-400 mb-0.5">정답</p>
+            <p className="text-base font-semibold text-slate-900 dark:text-slate-100">{correctAnswer}</p>
+          </motion.div>
+        )}
+      </motion.div>
     );
   }
 
