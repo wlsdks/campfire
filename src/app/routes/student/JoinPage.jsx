@@ -149,7 +149,7 @@ export default function JoinPage({ sessionId, onJoin }) {
               maxLength={NICKNAME_MAX}
               autoComplete="off"
               enterKeyHint="go"
-              className={`w-full bg-slate-50 dark:bg-slate-700 border rounded-xl px-4 py-4 text-lg text-slate-900 dark:text-slate-100 text-center font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 placeholder:font-normal focus:outline-none focus:ring-2 focus:bg-white dark:focus:bg-slate-600 transition-all ${
+              className={`w-full bg-slate-50 dark:bg-slate-700 border rounded-xl px-4 py-4 text-lg text-slate-900 dark:text-slate-100 text-center font-medium placeholder:text-slate-400 dark:placeholder:text-slate-500 placeholder:font-normal focus:outline-none focus:ring-2 focus:bg-white dark:focus:bg-slate-600 transition-colors duration-150 ${
                 tooShort || error
                   ? 'border-red-300 focus:ring-red-500/15 focus:border-red-400'
                   : 'border-slate-200 dark:border-slate-600 focus:ring-indigo-500/20 dark:focus:ring-indigo-400/20 focus:border-indigo-500 dark:focus:border-indigo-400'

@@ -34,7 +34,7 @@ const SessionRow = memo(function SessionRow({ session, onClick, onDelete, onDupl
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.2, delay: index * 0.02 }}
-      className="w-full flex items-center gap-4 max-sm:gap-3 px-5 max-sm:px-3.5 py-4.5 text-left transition-all hover:bg-slate-50 dark:hover:bg-slate-700/50 active:bg-slate-100 dark:active:bg-slate-700 group cursor-pointer"
+      className="w-full flex items-center gap-4 max-sm:gap-3 px-5 max-sm:px-3.5 py-4.5 text-left transition-colors duration-150 hover:bg-slate-50 dark:hover:bg-slate-700/50 active:bg-slate-100 dark:active:bg-slate-700 group cursor-pointer"
       onClick={onClick}
     >
       <span className={`text-sm font-bold w-8 shrink-0 ${isSetting ? 'text-slate-500' : isActive || isReviewing ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400'}`}>
@@ -110,7 +110,7 @@ export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, s
     >
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="w-full text-left px-5 py-6 transition-all hover:bg-slate-50/50 dark:hover:bg-slate-700/30 active:bg-slate-100/50 dark:active:bg-slate-700/50"
+        className="w-full text-left px-5 py-6 transition-colors duration-150 hover:bg-slate-50/50 dark:hover:bg-slate-700/30 active:bg-slate-100/50 dark:active:bg-slate-700/50"
       >
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 leading-tight tracking-tight">{name}</h3>

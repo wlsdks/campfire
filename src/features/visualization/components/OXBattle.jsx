@@ -18,7 +18,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
     <div className="w-full max-w-xl mx-auto space-y-6">
       {/* Split display */}
       <div className="flex items-center justify-between text-center">
-        <div className={`flex-1 space-y-2 py-4 rounded-xl transition-all duration-300 ${oCorrect ? 'ring-2 ring-indigo-500/30 bg-slate-50/50 dark:bg-slate-800/50' : revealed && !oCorrect ? 'opacity-50' : ''}`}>
+        <div className={`flex-1 space-y-2 py-4 rounded-xl transition-[opacity,background-color,box-shadow] duration-300 ${oCorrect ? 'ring-2 ring-indigo-500/30 bg-slate-50/50 dark:bg-slate-800/50' : revealed && !oCorrect ? 'opacity-50' : ''}`}>
           <div className="relative inline-block">
             <motion.div
               key={oCount}
@@ -58,7 +58,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
           <div className="text-slate-200 dark:text-slate-700 text-2xl font-bold">VS</div>
         </div>
 
-        <div className={`flex-1 space-y-2 py-4 rounded-xl transition-all duration-300 ${xCorrect ? 'bg-slate-100/80 dark:bg-slate-700/50 ring-2 ring-slate-400/30 dark:ring-slate-500/30' : revealed && !xCorrect ? 'opacity-50' : ''}`}>
+        <div className={`flex-1 space-y-2 py-4 rounded-xl transition-[opacity,background-color,box-shadow] duration-300 ${xCorrect ? 'bg-slate-100/80 dark:bg-slate-700/50 ring-2 ring-slate-400/30 dark:ring-slate-500/30' : revealed && !xCorrect ? 'opacity-50' : ''}`}>
           <div className="relative inline-block">
             <motion.div
               key={xCount}

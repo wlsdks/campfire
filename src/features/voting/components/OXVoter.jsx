@@ -48,26 +48,24 @@ export default memo(function OXVoter({ sessionId, questionId, disabled = false }
         initial={{ opacity: 0, x: -12 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-        whileHover={!selected && !disabled ? { scale: 1.02 } : undefined}
         whileTap={{ scale: 0.95 }}
         onClick={() => { hapticTap(); handleVote('O'); }}
         disabled={selected !== null || disabled}
-        className={`flex-1 py-12 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border transition-colors duration-150 flex flex-col items-center gap-2 ${selected === 'O' ? 'ring-2 ring-slate-400 dark:ring-slate-500 border-slate-300 dark:border-slate-500' : 'border-slate-200 dark:border-slate-700'} ${(selected !== null && selected !== 'O') || disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
+        className={`flex-1 min-h-[140px] py-10 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border transition-colors duration-150 flex flex-col items-center justify-center gap-2 ${selected === 'O' ? 'ring-2 ring-slate-400 dark:ring-slate-500 border-slate-300 dark:border-slate-500' : 'border-slate-200 dark:border-slate-700'} ${(selected !== null && selected !== 'O') || disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
       >
-        <span className="text-6xl font-black text-slate-900 dark:text-slate-100">O</span>
+        <span className="text-6xl font-black text-slate-900 dark:text-slate-100 leading-none">O</span>
         <span className="text-xs font-medium text-slate-400 dark:text-slate-500">맞아요</span>
       </motion.button>
       <motion.button
         initial={{ opacity: 0, x: 12 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-        whileHover={!selected && !disabled ? { scale: 1.02 } : undefined}
         whileTap={{ scale: 0.95 }}
         onClick={() => { hapticTap(); handleVote('X'); }}
         disabled={selected !== null || disabled}
-        className={`flex-1 py-12 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border transition-colors duration-150 flex flex-col items-center gap-2 ${selected === 'X' ? 'ring-2 ring-slate-400 dark:ring-slate-500 border-slate-300 dark:border-slate-500' : 'border-slate-200 dark:border-slate-700'} ${(selected !== null && selected !== 'X') || disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
+        className={`flex-1 min-h-[140px] py-10 rounded-xl bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border transition-colors duration-150 flex flex-col items-center justify-center gap-2 ${selected === 'X' ? 'ring-2 ring-slate-400 dark:ring-slate-500 border-slate-300 dark:border-slate-500' : 'border-slate-200 dark:border-slate-700'} ${(selected !== null && selected !== 'X') || disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
       >
-        <span className="text-6xl font-black text-slate-900 dark:text-slate-100">X</span>
+        <span className="text-6xl font-black text-slate-900 dark:text-slate-100 leading-none">X</span>
         <span className="text-xs font-medium text-slate-400 dark:text-slate-500">아니에요</span>
       </motion.button>
     </div>

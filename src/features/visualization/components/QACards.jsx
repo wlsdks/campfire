@@ -77,7 +77,7 @@ export default memo(function QACards({ sessionId, questionId, title }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.03, type: 'spring', stiffness: 300, damping: 25 }}
               onClick={() => setSelected(vote)}
-              className="w-full text-left rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-sm transition-all group"
+              className="w-full text-left rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 hover:border-slate-300 dark:hover:border-slate-600 transition-colors duration-150 group"
             >
               <div className="flex items-center gap-3">
                 <Avatar name={vote.nickname || '익명'} size="sm" />

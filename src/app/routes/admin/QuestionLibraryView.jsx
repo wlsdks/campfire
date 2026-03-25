@@ -27,7 +27,7 @@ function LibraryQuestionCard({ question, onDelete, index }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -8 }}
       transition={{ duration: 0.2, delay: index * 0.03 }}
-      className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 transition-all group"
+      className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 transition-colors duration-150 group"
     >
       <div className="flex items-start gap-3">
         <div className="flex-1 min-w-0">

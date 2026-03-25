@@ -43,7 +43,7 @@ function SortableRankItem({ id, label, position }) {
       style={style}
       {...attributes}
       {...listeners}
-      className={`flex items-center gap-3 px-4 py-3.5 rounded-xl border bg-white dark:bg-slate-800 touch-none transition-all ${
+      className={`flex items-center gap-3 px-4 py-3.5 rounded-xl border bg-white dark:bg-slate-800 touch-none transition-colors duration-150 ${
         isDragging
           ? 'shadow-lg border-slate-300 scale-[1.02] cursor-grabbing'
           : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 cursor-grab active:scale-[0.98]'
