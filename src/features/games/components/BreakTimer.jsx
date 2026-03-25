@@ -72,7 +72,6 @@ export default function BreakTimer() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25, delay: i * 0.05 }}
               whileTap={{ scale: 0.93 }}
-              whileHover={{ y: -2 }}
               onClick={() => start(p.seconds)}
               className="px-6 py-3 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 font-bold text-base tracking-tight hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150"
             >

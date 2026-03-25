@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { colors } from '@/lib/design-tokens';
 
 const RADIUS = 44;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 function getColor(secondsLeft, totalSeconds) {
   const ratio = secondsLeft / totalSeconds;
-  if (ratio > 0.5) return { ring: '#10B981', text: 'text-emerald-600' }; // green
-  if (ratio > 0.2) return { ring: '#F59E0B', text: 'text-amber-600' };  // amber
-  return { ring: '#EF4444', text: 'text-red-500' };                     // red
+  if (ratio > 0.5) return { ring: colors.success, text: 'text-emerald-600' }; // green
+  if (ratio > 0.2) return { ring: colors.warning, text: 'text-amber-600' };   // amber
+  return { ring: colors.error, text: 'text-red-500' };                        // red
 }
 
 export default function TimerRing({ endTime, duration, onExpire, size = 'md' }) {

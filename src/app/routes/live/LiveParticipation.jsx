@@ -40,7 +40,7 @@ export default memo(function LiveParticipation({ voted, total }) {
       </div>
       <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
         <motion.div
-          className="h-full bg-gradient-to-r from-indigo-600 to-indigo-400 rounded-full"
+          className="h-full bg-indigo-500 rounded-full"
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
           transition={{ type: 'spring', stiffness: 200, damping: 20 }}

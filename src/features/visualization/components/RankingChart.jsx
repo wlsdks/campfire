@@ -113,14 +113,13 @@ export default memo(function RankingChart({ sessionId, questionId, items = [] })
               </div>
               <div className="h-6 bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden relative">
                 <motion.div
-                  className="h-full rounded-lg"
-                  style={{
-                    background: pos.pct >= 70
-                      ? 'linear-gradient(90deg, #334155, #475569)'
+                  className={`h-full rounded-lg ${
+                    pos.pct >= 70
+                      ? 'bg-slate-700 dark:bg-slate-300'
                       : pos.pct >= 40
-                        ? 'linear-gradient(90deg, #94A3B8, #CBD5E1)'
-                        : '#E2E8F0',
-                  }}
+                        ? 'bg-slate-400 dark:bg-slate-500'
+                        : 'bg-slate-200 dark:bg-slate-600'
+                  }`}
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.max(pos.pct, 2)}%` }}
                   transition={{ type: 'spring', stiffness: 200, damping: 20, delay: i * 0.05 + 0.1 }}
