@@ -85,7 +85,7 @@ export default function Modal({ open, onClose, children, className = '', ariaLab
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 40 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 22 }}
             className={`bg-white dark:bg-slate-800 rounded-t-2xl sm:rounded-2xl shadow-lg p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] w-full sm:max-w-md outline-none ${className}`}
           >
             {children}

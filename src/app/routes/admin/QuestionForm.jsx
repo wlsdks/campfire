@@ -68,7 +68,7 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
                   setType(t.value); setLocalError(null);
                   if (t.value === 'ranking' && options.length < 3) setOptions(['', '', '']);
                 }}
-                className={`flex flex-col items-center justify-center gap-1 py-3 rounded-xl transition-all duration-150 ${
+                className={`flex flex-col items-center justify-center gap-1 py-3 rounded-xl transition-colors duration-150 ${
                   selected ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-sm'
                     : 'text-slate-400 bg-slate-50 dark:bg-slate-700 hover:bg-slate-100 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-300'}`}>
                 <Icon size={20} strokeWidth={selected ? 2 : 1.6} />

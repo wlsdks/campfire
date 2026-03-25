@@ -18,7 +18,7 @@ import StudentToasts from '@/app/routes/student/StudentToasts';
 import { timing } from '@/lib/design-tokens';
 
 const UNREAD_DOT = 'absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full animate-pulse';
-const BTN = 'h-[56px] rounded-xl bg-slate-50 text-slate-600 font-medium text-sm active:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:active:bg-slate-600 transition-all flex flex-col items-center justify-center gap-1';
+const BTN = 'h-[56px] rounded-xl bg-slate-50 text-slate-600 font-medium text-sm active:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:active:bg-slate-600 transition-colors duration-150 flex flex-col items-center justify-center gap-1';
 
 export default memo(function StudentBottomBar({ sessionId }) {
   const [showQuestionInput, setShowQuestionInput] = useState(false);
@@ -115,7 +115,7 @@ export default memo(function StudentBottomBar({ sessionId }) {
           <ReactionBar sessionId={sessionId} />
           <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
             <div className="grid grid-cols-5 gap-2">
-              <motion.button whileTap={{ scale: 0.96 }} onClick={toggleHand} aria-pressed={isRaised} aria-label={isRaised ? '손 내리기' : '손들기'} className={`h-[56px] rounded-xl font-medium text-sm transition-all flex flex-col items-center justify-center gap-0.5 ${isRaised ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : BTN.replace('bg-white ', '')}`}>
+              <motion.button whileTap={{ scale: 0.96 }} onClick={toggleHand} aria-pressed={isRaised} aria-label={isRaised ? '손 내리기' : '손들기'} className={`h-[56px] rounded-xl font-medium text-sm transition-colors duration-150 flex flex-col items-center justify-center gap-0.5 ${isRaised ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : BTN.replace('bg-white ', '')}`}>
                 <motion.div animate={isRaised ? { rotate: [0, -15, 15, -10, 10, 0] } : { rotate: 0 }} transition={isRaised ? { duration: 0.6, repeat: Infinity, repeatDelay: 2 } : {}}>
                   <Hand size={22} />
                 </motion.div>

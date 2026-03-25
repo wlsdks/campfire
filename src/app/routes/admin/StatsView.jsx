@@ -236,7 +236,7 @@ export default function StatsView({ sessions }) {
           <button
             key={tab.key}
             onClick={() => setActiveSubTab(tab.key)}
-            className={`px-1 pb-2.5 text-sm font-medium transition-all border-b-2 -mb-px ${
+            className={`px-1 pb-2.5 text-sm font-medium transition-colors duration-150 border-b-2 -mb-px ${
               activeSubTab === tab.key
                 ? 'border-slate-900 dark:border-slate-100 text-slate-900 dark:text-slate-100'
                 : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'

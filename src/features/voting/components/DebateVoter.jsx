@@ -125,26 +125,26 @@ export default memo(function DebateVoter({ sessionId, questionId, disabled = fal
           whileTap={{ scale: 0.95 }}
           onClick={() => setSide('for')}
           disabled={disabled}
-          className={`flex-1 py-6 rounded-xl border transition-all flex flex-col items-center gap-1.5 ${
+          className={`flex-1 py-6 rounded-xl border transition-colors duration-150 flex flex-col items-center gap-1.5 ${
             side === 'for'
               ? 'bg-slate-900 text-white border-slate-900 shadow-sm dark:bg-slate-100 dark:text-slate-900 dark:border-slate-100'
               : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-600 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-700 dark:text-slate-300'
           } ${disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
         >
-          <span className="text-3xl font-black">찬성</span>
+          <span className="text-3xl font-black tracking-tight">찬성</span>
           <span className={`text-xs font-medium ${side === 'for' ? 'text-indigo-200' : 'text-slate-400'}`}>동의합니다</span>
         </motion.button>
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => setSide('against')}
           disabled={disabled}
-          className={`flex-1 py-6 rounded-xl border transition-all flex flex-col items-center gap-1.5 ${
+          className={`flex-1 py-6 rounded-xl border transition-colors duration-150 flex flex-col items-center gap-1.5 ${
             side === 'against'
               ? 'bg-slate-900 text-white border-slate-900 shadow-sm dark:bg-slate-100 dark:text-slate-900 dark:border-slate-100'
               : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-600 dark:bg-slate-800 dark:hover:bg-slate-700 dark:border-slate-700 dark:text-slate-300'
           } ${disabled ? 'opacity-40 cursor-not-allowed' : ''}`}
         >
-          <span className="text-3xl font-black">반대</span>
+          <span className="text-3xl font-black tracking-tight">반대</span>
           <span className={`text-xs font-medium ${side === 'against' ? 'text-slate-300 dark:text-slate-600' : 'text-slate-400'}`}>동의하지 않습니다</span>
         </motion.button>
       </div>

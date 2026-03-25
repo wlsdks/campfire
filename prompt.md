@@ -1,7 +1,8 @@
 # Pick Background Improvement Loop
 
-> 10분 간격 자동 실행. 매 사이클 시작 시 CLAUDE.md + DESIGN_SYSTEM.md 참조.
-> 브랜치: `improve/animation-perf-ux`에서만 작업. main은 절대 건드리지 않음.
+> 20분 간격 자동 실행. 매 사이클 시작 시 CLAUDE.md + DESIGN_SYSTEM.md 참조.
+> **브랜치**: 매 사이클마다 새 브랜치 생성 (`improve/YYYYMMDD-HHMM-{주제}`). main은 절대 건드리지 않음.
+> 브랜치명 예시: `improve/20260326-1430-quiz-animation`, `improve/20260326-1450-mobile-ux`
 
 ## 서비스 정체성
 
@@ -475,22 +476,45 @@ JoinPage → WaitingPage → VotePage(투표) → VoteConfirm → 결과 대기 
 
 ---
 
-## 사이클 워크플로우
+## 사이클 워크플로우 (20분 1사이클)
+
+> 각 사이클은 독립적. 새 브랜치에서 시작하고, 완료되면 커밋+푸시.
+> **한 사이클 = 한 주제**에 집중. 여러 주제를 한꺼번에 하지 않는다.
 
 ```
-0. git pull + npm run build (안전 점검)
-1. Read CLAUDE.md + Read DESIGN_SYSTEM.md (디자인 철학·규칙 숙지)
-2. git log --oneline -10 (최근 작업 확인, 중복 작업 방지)
-3. 우선순위 매트릭스에서 작업 선택:
-   - 🔴 깨진 것 있으면 즉시 수정
-   - 🟠 부드러움/애니메이션 개선 (한 화면 골라서 집중)
-   - 🟡 디자인 시스템 검증
-   - 🔵 성능 체크 (리스너/리렌더/번들 하나씩)
-   - 🟣 래퍼런스 리서치 (웹 검색 → 철학 이해 → Pick에 맞는지 확인 → 적용)
-4. 파일 Read → 수정 → npm run build
-5. Playwright 스크린샷 (390x844 + 1280x800) 전/후 비교
-6. "이게 정말 나아졌는가?" 자문 — 아니면 revert
-7. git commit + push
+── 0. 준비 (2분) ──────────────────────
+  git checkout main && git pull
+  git checkout -b improve/YYYYMMDD-HHMM-{주제}
+  npm run build  (빌드 실패 → 즉시 수정이 이 사이클의 주제)
+
+── 1. 컨텍스트 로딩 (1분) ─────────────
+  Read CLAUDE.md + Read DESIGN_SYSTEM.md
+  git log --oneline -20  (최근 작업 확인 → 중복 방지)
+  Read progress.md  (진행 상황 확인)
+
+── 2. 작업 선택 (2분) ─────────────────
+  우선순위 매트릭스 순서대로:
+    🔴 빌드/런타임 에러 → 즉시 수정
+    🟠 부드러움/애니메이션 → 한 화면 골라서 집중
+    🟡 디자인 시스템 검증 → 체크리스트 대조
+    🔵 성능 최적화 → Firebase/리렌더/번들 하나
+    🟣 래퍼런스 리서치 → 웹 검색 → 철학 이해 → 적용
+    🟢 모바일 UX → 390x844 스크린샷 검증
+    ⚪ 코드 품질 → 200줄+ 분리, 미사용 정리
+
+  선택한 작업을 브랜치명 {주제}에 반영했는지 확인
+
+── 3. 구현 (12분) ─────────────────────
+  파일 Read → 수정 → npm run build (빌드 통과 필수)
+  Playwright 스크린샷 (390x844 + 1280x800) 전/후 비교
+  "이게 정말 나아졌는가?" — 아니면 git checkout . 으로 revert
+
+── 4. 완료 (3분) ──────────────────────
+  npm run build  (최종 검증)
+  git add -A && git commit  (의미있는 커밋 메시지)
+  git push -u origin HEAD
+  progress.md에 사이클 로그 추가
+  git add progress.md && git commit && git push
 ```
 
 ### 래퍼런스 리서치 사이클 (🟣일 때)
@@ -501,6 +525,13 @@ JoinPage → WaitingPage → VotePage(투표) → VoteConfirm → 결과 대기 
 4. "적용하면 디자인 시스템과 충돌하는가?" — 충돌하면 변형 or SKIP
 5. 구현 → 스크린샷 비교 → 확실히 나으면 커밋
 ```
+
+### 사이클 규칙
+- **한 사이클에 한 주제만** — 산만하게 여러 파일 건드리지 않음
+- **빌드 깨지면 커밋 금지** — npm run build 통과 필수
+- **revert 두려워하지 않기** — 나아지지 않으면 되돌린다
+- **변경 없으면 빈 커밋 하지 않기** — "Build clean. 변경 없음." 금지, 다른 작업 찾기
+- **progress.md 업데이트 필수** — 매 사이클 완료 후 로그 기록
 
 ### 자율 UI/UX 개선 (할 일이 없을 때)
 > 기계적 검사가 전부 통과하고 할 일이 없으면, 아래 중 하나를 선택하여 진행한다.
@@ -575,18 +606,10 @@ Pick에서:
 ---
 
 ## 사이클 로그
-> 최근 10개만 유지.
+> 최근 10개만 유지. 오래된 로그는 progress.md로 이동.
+> 형식: `YYYY-MM-DD HH:MM | 브랜치명 | 카테고리: 설명`
 
-2026-03-25 | improve: 로딩 마스코트 3곳 추가 (AssignmentsTab/StatsView/ReportPage) — 총 8곳 교체 완료
-2026-03-25 | improve: 퀴즈 정답 공개 시 BGM 자동 정지 (긴장→해소 연계)
-2026-03-25 | feat: 퀴즈 BGM — 오리지널 긴장감 틱톡 카운트다운 (Web Audio, 저작권 무관)
-2026-03-24 | improve: spring 애니메이션 전면 통일 (50+ easeOut→spring, 95%) + easeOut 최종 정리
-2026-03-24 | improve: Duolingo 퀴즈(bounce+shake), Telegram 채팅, Stripe 숫자+탭 슬라이드
-2026-03-24 | perf: React.memo 3개 리스트 + whileTap 100% 커버리지
-2026-03-24 | improve: 로딩 마스코트 (AdminPage/LivePage/SuspenseFallback/SessionDashboard)
-2026-03-24 | improve: 모바일 문항 리스트 (드래그 비활성/세로 확대/정답공개 버튼)
-2026-03-24 | fix: 세션 접속자 수 online:true + PresentationView 집중모드 가시성
-2026-03-24 | improve: 디자인 시스템 감사 + PickMascot focus mood + GameResultOverlay spring
+(새 루프 시작 — 2026-03-26)
 
 ---
 

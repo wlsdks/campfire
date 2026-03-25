@@ -46,7 +46,7 @@ export default memo(function CheckVoter({ sessionId, questionId, disabled = fals
       whileTap={{ scale: 0.95 }}
       onClick={handleCheck}
       disabled={disabled}
-      className={`w-full py-16 rounded-xl border transition-all flex flex-col items-center gap-3 ${
+      className={`w-full py-16 rounded-xl border transition-colors duration-150 flex flex-col items-center gap-3 ${
         disabled
           ? 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 opacity-40 cursor-not-allowed'
           : 'bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700 active:bg-slate-200 dark:active:bg-slate-600'

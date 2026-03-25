@@ -60,7 +60,7 @@ export default function GameResultOverlay({ isWinner, winnerNames, gameResult, s
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1, rotate: [0, -10, 10, 0] }}
-              transition={{ type: 'spring', stiffness: 500, damping: 15, delay: 0.2 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 22, delay: 0.2 }}
             >
               <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mx-auto">
                 <Trophy size={32} className="text-slate-900 dark:text-slate-100" />
