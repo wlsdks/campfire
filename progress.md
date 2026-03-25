@@ -85,6 +85,7 @@
 ## Cycle Log
 | # | Time | Task | Notes |
 |---|------|------|-------|
+| 41 | 2026-03-26 | VotePage 컴포넌트 분리 (5파일) | VotePage 448줄→134줄: QuestionCard(59줄) 진행도바+질문카드, ActivePollView(180줄) 활성투표 레이아웃, VoteModeContent(117줄) 모드별 lazy 디스패치, VoteHelpers(97줄) getModeVariants+ENTER_TRANSITION+TimerExpiredOverlay. VotePage는 훅/상태 오케스트레이션만 담당. 빌드 통과, 전 파일 200줄 미만 |
 | 40 | 2026-03-26 | VoteConfirm 축하 애니메이션 강화 (1파일) | ParticleBurst: 8개 도트 방사형 scatter (0.55s, 0.18s 딜레이 stagger). AnimatedCheck: 원형 ring pulse expand (scale 0.6→1.6→fade), 체크원 scale keyframe [0,1.22,0.92,1.06,1] 강한 overshoot, 체크마크 pathLength w7→w8. 텍스트: scale pop keyframe [0.85,1.08,0.97,1] + stagger. 선택 답변: border→ring-1 indigo (anti-AI 패턴 준수). 총 1파일 |
 | 39 | 2026-03-26 | 퀴즈 정답 공개 화면 연출 개선 (2파일) | QuizResult: 아이콘 원형 강화(scale keyframe 0→1.25→0.9→1.05→1 + 확산 ring pulse), 오답 shake 강화(x: [0,-7,6,-5,4,-2,0]), 점수 카운트업 후 pop keyframe [1,1.22,0.96,1.06,1], 점수 text-3xl, 단계별 stagger (icon→text 0.18→score 0.32s). QuizVoter 정답 미참여 화면: 단순 텍스트 → 선택지 목록 + 정답 슬레이트-900 하이라이트 (x:-8→0 stagger) |
 | 38 | 2026-03-26 | 게임 결과 위너 공개 연출 개선 (6파일) | Roulette/Plinko/SlotMachine/PrizeDraw: 단일 scale:0→1 → Avatar·이름·배지 3단계 스태거 reveal (delay 0/0.15/0.3s, spring 400/22→300/25→500/22). Plinko 볼 낙착 느낌으로 y:30 bounce-in. SlotMachine 잭팟: scale keyframe [0,1.3,0.95,1.08,1] 잭팟 feel. Lottery 카드: perspective 자식→부모 이동(3D 플립 실제 적용), rotateY 180→90(더 자연스러운 언폴드), sheen sweep 효과 추가. GameResultOverlay(학생): 트로피 원형 확대(w16→w20, 내부 아이콘 trophy), 진동(rotate keyframe), 반복 pulse ring, 당첨! 폰트 3xl→4xl, 카드 더 극적인 entrance (scale 0.75, y:28) |
