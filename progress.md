@@ -85,6 +85,7 @@
 ## Cycle Log
 | # | Time | Task | Notes |
 |---|------|------|-------|
+| 44 | 2026-03-26 | ChatMessage React.memo + ChatPanel 렌더 최적화 (3파일) | useChat: sendMessage deps에서 canSend 제거 → canSendRef로 ref 패턴 전환 (canSend 변경마다 sendMessage 재생성 방지). useStaffChat: 동일 ref 패턴 + enabled 옵션 추가 — enabled=false 시 Firebase onValue 구독 완전 생략. ChatPanel: 학생(senderType="student") 호출 시 useStaffChat에 enabled:false 전달 → 40명 수업 중 학생 전원 불필요한 staffChat Firebase 리스너 제거. inline 모드 input transition-all→transition-colors duration-150 (디자인 시스템 규칙). |
 | 43 | 2026-03-26 | 강사 MobileAdminView 질문 관리 터치 UX 개선 (4파일) | QuickProgressCard: 퀴즈 상태별 컨텍스트 인지 CTA — 일반질문(다음질문/대기화면), 퀴즈미공개(정답공개/대기화면), 퀴즈공개(리더보드/다음질문). min-h-[52px] 모바일 버튼. mobileStickyProgress prop — 스크롤 중에도 컨트롤 sticky 노출. QuestionList 모바일 액션 버튼 min-h-[48px]+rounded-xl+active:scale-[0.96] 48px 터치 타겟 준수. |
 | 42 | 2026-03-26 | 200줄+ 컴포넌트 분리 — CreateSessionModal, ClassQABoard (7파일) | CreateSessionModal(365→179줄): CreateSessionStepCourse(51줄)+CreateSessionStepNewCourse(46줄)+CreateSessionStepConfirm(146줄)로 3스텝 분리. ClassQABoard(313→162줄): QuestionCard(128줄)+AnswerItem(31줄) 분리. Modal/Board는 오케스트레이션만 담당. 빌드 통과, 전 파일 200줄 미만 |
 | 41 | 2026-03-26 | VotePage 컴포넌트 분리 (5파일) | VotePage 448줄→134줄: QuestionCard(59줄) 진행도바+질문카드, ActivePollView(180줄) 활성투표 레이아웃, VoteModeContent(117줄) 모드별 lazy 디스패치, VoteHelpers(97줄) getModeVariants+ENTER_TRANSITION+TimerExpiredOverlay. VotePage는 훅/상태 오케스트레이션만 담당. 빌드 통과, 전 파일 200줄 미만 |
