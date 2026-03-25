@@ -85,6 +85,7 @@
 ## Cycle Log
 | # | Time | Task | Notes |
 |---|------|------|-------|
+| 25 | 2026-03-26 | 디자인 시스템 spring/transition 규칙 적용 | spring 프리셋 위반 3건(Modal/SpeedQuizCombo/GameResultOverlay) + transition-all→transition-colors 8곳 + DebateVoter tracking-tight |
 | 1 | 2026-03-19 | 1.0 Architecture migration | Bulletproof React structure, @ alias, all imports updated, build passing |
 | 2 | 2026-03-19 | 1.1 Deps + fonts + tokens | lucide-react, lottie-react, Pretendard+Inter CDN, design-tokens.js, global CSS |
 | 3 | 2026-03-19 | 1.2 Shared UI components | Button, Card, Badge, IconButton, Skeleton, Avatar, Modal — all from design tokens |
