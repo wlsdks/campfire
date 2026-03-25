@@ -108,29 +108,29 @@ function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView, onActi
         <div className="flex gap-2 mt-3 sm:hidden">
           {!isActive ? (
             <>
-              <button onClick={() => onActivate(qId)} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-medium ${primaryBtnClass}`} aria-label="질문 활성화">
-                <Play size={14} /> 시작
+              <button onClick={() => onActivate(qId)} className={`flex-1 flex items-center justify-center gap-1.5 min-h-[48px] rounded-xl text-sm font-semibold active:scale-[0.96] ${primaryBtnClass}`} aria-label="질문 활성화">
+                <Play size={16} /> 시작
               </button>
               {onEdit && (
-                <button onClick={() => onEdit(qId)} className={`flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-lg text-xs font-medium ${stopBtnClass}`} aria-label="질문 수정">
-                  <Pencil size={14} />
+                <button onClick={() => onEdit(qId)} className={`flex items-center justify-center gap-1.5 min-h-[48px] px-4 rounded-xl text-sm font-medium active:scale-[0.96] ${stopBtnClass}`} aria-label="질문 수정">
+                  <Pencil size={16} />
                 </button>
               )}
             </>
           ) : (
             <>
               {isQuiz && !q.revealedAt && (
-                <button onClick={() => onReveal(qId)} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-medium ${primaryBtnClass}`} aria-label="정답 공개">
-                  <Check size={14} /> 정답 공개
+                <button onClick={() => onReveal(qId)} className={`flex-1 flex items-center justify-center gap-1.5 min-h-[48px] rounded-xl text-sm font-semibold active:scale-[0.96] ${primaryBtnClass}`} aria-label="정답 공개">
+                  <Check size={16} /> 정답 공개
                 </button>
               )}
               {isQuiz && q.revealedAt && (
-                <button onClick={onShowLeaderboard} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-medium ${primaryBtnClass}`} aria-label="리더보드">
-                  <Trophy size={14} /> 리더보드
+                <button onClick={onShowLeaderboard} className={`flex-1 flex items-center justify-center gap-1.5 min-h-[48px] rounded-xl text-sm font-semibold active:scale-[0.96] ${primaryBtnClass}`} aria-label="리더보드">
+                  <Trophy size={16} /> 리더보드
                 </button>
               )}
-              <button onClick={onClearActive} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-medium ${stopBtnClass}`} aria-label="중지">
-                <Square size={14} /> 중지
+              <button onClick={onClearActive} className={`flex-1 flex items-center justify-center gap-1.5 min-h-[48px] rounded-xl text-sm font-semibold active:scale-[0.96] ${stopBtnClass}`} aria-label="중지">
+                <Square size={16} /> 중지
               </button>
             </>
           )}

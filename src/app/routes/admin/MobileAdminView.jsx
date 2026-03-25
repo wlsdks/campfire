@@ -176,6 +176,7 @@ export default function MobileAdminView({ s }) {
                   onViewQuestion={(qId) => { s.handleViewQuestion(qId); setActiveTab('results'); }}
                   adminUid={s.adminUser?.uid}
                   speedQuizActive={s.speedQuizActive} onStartSpeedQuiz={s.startSpeedQuiz} onEndSpeedQuiz={s.endSpeedQuiz} speedQuizCount={s.speedQuizCount}
+                  mobileStickyProgress
                 />
               </div>
             </motion.div>

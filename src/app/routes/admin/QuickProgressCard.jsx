@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Play, Square, Zap, PartyPopper } from 'lucide-react';
+import { Play, Square, Zap, PartyPopper, Check, Trophy } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { QUIZ_EVENT_PRESETS, isQuizQuestion } from '@/lib/quiz';
 
@@ -21,6 +21,8 @@ export default function QuickProgressCard({
   nextEntry,
   onActivate,
   onClearActive,
+  onReveal,
+  onShowLeaderboard,
   onNextEvent,
   speedQuizActive,
   onStartSpeedQuiz,
@@ -38,6 +40,87 @@ export default function QuickProgressCard({
     }
   }
 
+  const currentQ = currentEntry?.[1];
+  const isActiveQuiz = currentQ ? isQuizQuestion(currentQ) : false;
+  const quizRevealed = isActiveQuiz && currentQ?.revealedAt;
+  const quizUnrevealed = isActiveQuiz && !currentQ?.revealedAt;
+
+  /* Determine primary + secondary CTA based on session state */
+  let primaryBtn, secondaryBtn;
+
+  if (!currentEntry) {
+    /* No active question */
+    primaryBtn = (
+      <Button onClick={handleActivateNext} variant="primary" size="md"
+        disabled={!nextEntry || speedQuizActive}
+        className="min-h-[52px] sm:min-h-0 sm:py-1.5 sm:text-sm sm:gap-1.5">
+        <Play size={16} className="sm:w-3.5 sm:h-3.5" />
+        {nextEvent && <PartyPopper size={16} className="sm:w-3.5 sm:h-3.5" />}
+        첫 질문 시작
+      </Button>
+    );
+    secondaryBtn = (
+      <Button onClick={onClearActive} variant="secondary" size="md" disabled
+        className="min-h-[52px] sm:min-h-0 sm:py-1.5 sm:text-sm sm:gap-1.5">
+        <Square size={16} className="sm:w-3.5 sm:h-3.5" />
+        대기 화면
+      </Button>
+    );
+  } else if (quizUnrevealed) {
+    /* Active quiz — waiting for reveal */
+    primaryBtn = (
+      <Button onClick={() => onReveal?.(currentEntry[0])} variant="primary" size="md"
+        disabled={speedQuizActive}
+        className="min-h-[52px] sm:min-h-0 sm:py-1.5 sm:text-sm sm:gap-1.5">
+        <Check size={16} className="sm:w-3.5 sm:h-3.5" />
+        정답 공개
+      </Button>
+    );
+    secondaryBtn = (
+      <Button onClick={onClearActive} variant="secondary" size="md" disabled={speedQuizActive}
+        className="min-h-[52px] sm:min-h-0 sm:py-1.5 sm:text-sm sm:gap-1.5">
+        <Square size={16} className="sm:w-3.5 sm:h-3.5" />
+        대기 화면
+      </Button>
+    );
+  } else if (quizRevealed) {
+    /* Quiz revealed — show leaderboard or next */
+    primaryBtn = (
+      <Button onClick={onShowLeaderboard} variant="primary" size="md"
+        disabled={speedQuizActive}
+        className="min-h-[52px] sm:min-h-0 sm:py-1.5 sm:text-sm sm:gap-1.5">
+        <Trophy size={16} className="sm:w-3.5 sm:h-3.5" />
+        리더보드
+      </Button>
+    );
+    secondaryBtn = (
+      <Button onClick={handleActivateNext} variant="secondary" size="md"
+        disabled={!nextEntry || speedQuizActive}
+        className="min-h-[52px] sm:min-h-0 sm:py-1.5 sm:text-sm sm:gap-1.5">
+        <Play size={16} className="sm:w-3.5 sm:h-3.5" />
+        다음 질문
+      </Button>
+    );
+  } else {
+    /* Active non-quiz (poll, word cloud, etc.) */
+    primaryBtn = (
+      <Button onClick={handleActivateNext} variant="primary" size="md"
+        disabled={!nextEntry || speedQuizActive}
+        className="min-h-[52px] sm:min-h-0 sm:py-1.5 sm:text-sm sm:gap-1.5">
+        <Play size={16} className="sm:w-3.5 sm:h-3.5" />
+        다음 질문
+        {nextEvent && <PartyPopper size={16} className="sm:w-3.5 sm:h-3.5" />}
+      </Button>
+    );
+    secondaryBtn = (
+      <Button onClick={onClearActive} variant="secondary" size="md" disabled={speedQuizActive}
+        className="min-h-[52px] sm:min-h-0 sm:py-1.5 sm:text-sm sm:gap-1.5">
+        <Square size={16} className="sm:w-3.5 sm:h-3.5" />
+        대기 화면
+      </Button>
+    );
+  }
+
   return (
     <div className="rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-5 space-y-4">
       <div className="space-y-1.5">
@@ -47,19 +130,20 @@ export default function QuickProgressCard({
             ? `${activeIndex + 1}/${questionList.length}번째 질문 진행 중`
             : `질문 ${questionList.length}개 준비됨`}
         </p>
-        <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+        <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed line-clamp-2">
           {currentEntry
             ? currentEntry[1].title
             : '아직 활성화된 질문이 없습니다. 첫 질문을 바로 시작할 수 있습니다.'}
         </p>
-        {currentEntry?.[1]?.type === 'quiz' && (
+        {currentQ?.type === 'quiz' && (
           <p className="text-slate-500 dark:text-slate-400 text-xs font-medium">
-            {currentEntry[1].revealedAt
+            {quizRevealed
               ? '정답 공개가 완료되었습니다. 리더보드로 이어서 보여줄 수 있습니다.'
               : '정답 공개 전까지 답안을 모으는 중입니다.'}
           </p>
         )}
       </div>
+
       {/* Event toggle — shown when next question is quiz */}
       {nextEntry && isQuizQuestion(nextEntry[1]) && (
         <div className="flex flex-wrap gap-1.5">
@@ -81,6 +165,7 @@ export default function QuickProgressCard({
           })}
         </div>
       )}
+
       {/* Speed Quiz toggle */}
       {speedQuizCount >= 2 && (
         <div>
@@ -109,36 +194,28 @@ export default function QuickProgressCard({
           )}
         </div>
       )}
+
+      {/* Context-aware CTA buttons — taller touch targets on mobile */}
       <div className="grid grid-cols-2 gap-2">
-        <Button
-          onClick={handleActivateNext}
-          variant="primary"
-          size="sm"
-          disabled={!nextEntry || speedQuizActive}
-        >
-          <Play size={14} />
-          {currentEntry ? '다음 질문' : '첫 질문 시작'}
-          {nextEvent && <PartyPopper size={14} />}
-        </Button>
-        <Button onClick={onClearActive} variant="secondary" size="sm" disabled={!currentEntry || speedQuizActive}>
-          <Square size={14} />
-          대기 화면
-        </Button>
+        {primaryBtn}
+        {secondaryBtn}
       </div>
-      {nextEntry && currentEntry && (
+
+      {nextEntry && currentEntry && !quizUnrevealed && !quizRevealed && (
         <p className="text-slate-400 text-xs">
           다음 예정: <span className="text-slate-600 dark:text-slate-300">{nextEntry[1].title}</span>
         </p>
       )}
+
       {/* Keyboard shortcut hints — hidden on mobile (no keyboard) */}
       <div className="flex flex-wrap gap-1.5 pt-1 max-sm:hidden">
         <KeyHint keys="← →" label="질문 이동" />
         <KeyHint keys="Space" label="다음" />
         <KeyHint keys="Esc" label="대기" />
-        {currentEntry?.[1]?.type === 'quiz' && !currentEntry[1].revealedAt && (
+        {currentQ?.type === 'quiz' && !currentQ.revealedAt && (
           <KeyHint keys="R" label="정답 공개" />
         )}
-        {currentEntry?.[1]?.type === 'quiz' && currentEntry[1].revealedAt && (
+        {currentQ?.type === 'quiz' && currentQ.revealedAt && (
           <KeyHint keys="L" label="리더보드" />
         )}
       </div>

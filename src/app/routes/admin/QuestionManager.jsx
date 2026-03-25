@@ -12,7 +12,6 @@ import QuestionList from './QuestionList';
 import QuickProgressCard from './QuickProgressCard';
 import ImportFromLibraryModal from './ImportFromLibraryModal';
 
-
 export default function QuestionManager({
   sessionId,
   questions,
@@ -32,6 +31,7 @@ export default function QuestionManager({
   speedQuizCount = 0,
   modeSlot = null,
   modeButton = null,
+  mobileStickyProgress = false,
 }) {
   const [showForm, setShowForm] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
@@ -102,19 +102,23 @@ export default function QuestionManager({
       </div>
 
       {questionList.length > 0 && !readOnly && (
-        <QuickProgressCard
-          questionList={questionList}
-          activeIndex={activeIndex}
-          currentEntry={currentEntry}
-          nextEntry={nextEntry}
-          onActivate={handleActivate}
-          onClearActive={clearActive}
-          onNextEvent={() => {}}
-          speedQuizActive={speedQuizActive}
-          onStartSpeedQuiz={onStartSpeedQuiz}
-          onEndSpeedQuiz={onEndSpeedQuiz}
-          speedQuizCount={speedQuizCount}
-        />
+        <div className={mobileStickyProgress ? 'sticky top-0 z-10 -mx-5 px-5 pt-3 pb-3 bg-white dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 sm:static sm:mx-0 sm:px-0 sm:pt-0 sm:pb-0 sm:bg-transparent sm:border-none' : ''}>
+          <QuickProgressCard
+            questionList={questionList}
+            activeIndex={activeIndex}
+            currentEntry={currentEntry}
+            nextEntry={nextEntry}
+            onActivate={handleActivate}
+            onClearActive={clearActive}
+            onReveal={revealQuiz}
+            onShowLeaderboard={showLeaderboard}
+            onNextEvent={() => {}}
+            speedQuizActive={speedQuizActive}
+            onStartSpeedQuiz={onStartSpeedQuiz}
+            onEndSpeedQuiz={onEndSpeedQuiz}
+            speedQuizCount={speedQuizCount}
+          />
+        </div>
       )}
 
       {questionList.length > 0 && readOnly && (
