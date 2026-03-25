@@ -139,24 +139,32 @@ export default function Lottery({ participants, onResult }) {
       }`}>
         <AnimatePresence mode="popLayout">
           {winners.map((winner, i) => (
-            <motion.div
-              key={winner.id}
-              initial={{ rotateY: 180, opacity: 0, scale: 0.5 }}
-              animate={{ rotateY: 0, opacity: 1, scale: 1 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 25, delay: i * 0.05 }}
-              className={`w-40 h-52 ${CARD_COLORS[i % CARD_COLORS.length]} rounded-2xl flex flex-col items-center justify-center shadow-lg`}
-              style={{ perspective: 1000 }}
-            >
-              {i === 0 && <Suspense fallback={null}><ConfettiBurst /></Suspense>}
-              <Avatar name={winner.nickname} size="lg" />
-              <div className="text-white font-bold text-lg mt-2">{winner.nickname}</div>
-              <span className="mt-1 px-2 py-0.5 bg-white/20 rounded-full text-white/90 text-[10px] font-bold">
-                #{i + 1} 당첨
-              </span>
-              {hasTicketMode && (
-                <div className="text-white/60 text-[10px] mt-1">티켓 {winner.tickets || 0}장</div>
-              )}
-            </motion.div>
+            <div key={winner.id} style={{ perspective: 1000 }}>
+              <motion.div
+                initial={{ rotateY: 90, opacity: 0, scale: 0.85 }}
+                animate={{ rotateY: 0, opacity: 1, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 280, damping: 22 }}
+                className={`w-40 h-52 ${CARD_COLORS[i % CARD_COLORS.length]} rounded-2xl flex flex-col items-center justify-center shadow-xl relative overflow-hidden`}
+                style={{ transformStyle: 'preserve-3d' }}
+              >
+                {/* Sheen sweep */}
+                <motion.div
+                  className="absolute inset-0 bg-white/15 rounded-2xl"
+                  initial={{ x: '-100%', skewX: '-20deg' }}
+                  animate={{ x: '200%' }}
+                  transition={{ duration: 0.45, ease: 'easeOut', delay: 0.1 }}
+                />
+                {i === 0 && <Suspense fallback={null}><ConfettiBurst /></Suspense>}
+                <Avatar name={winner.nickname} size="lg" />
+                <div className="text-white font-bold text-lg mt-2">{winner.nickname}</div>
+                <span className="mt-1 px-2 py-0.5 bg-white/20 rounded-full text-white/90 text-[10px] font-bold">
+                  #{i + 1} 당첨
+                </span>
+                {hasTicketMode && (
+                  <div className="text-white/60 text-[10px] mt-1">티켓 {winner.tickets || 0}장</div>
+                )}
+              </motion.div>
+            </div>
           ))}
         </AnimatePresence>
 

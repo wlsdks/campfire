@@ -54,27 +54,49 @@ const SlotReel = memo(function SlotReel({ names, running, finalName }) {
 });
 
 function WinnerCard({ winner, index, total }) {
+  const delay = index * 0.12;
   return (
     <motion.div
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{
-        type: 'spring',
-        stiffness: 300,
-        damping: 25,
-        delay: index * 0.08,
-      }}
-      className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 flex flex-col items-center gap-3"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25, delay }}
+      className="relative bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 flex flex-col items-center gap-3 overflow-hidden"
       data-sound="winner-reveal"
     >
-      <ConfettiBurst />
-      <Avatar name={winner.nickname} size="lg" />
-      <span className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
+      {/* Sheen sweep on reveal */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+        initial={{ x: '-100%' }}
+        animate={{ x: '200%' }}
+        transition={{ duration: 0.55, ease: 'easeOut', delay: delay + 0.1 }}
+      />
+      {index === 0 && <ConfettiBurst />}
+      {/* Avatar drops in */}
+      <motion.div
+        initial={{ scale: 0, y: -12 }}
+        animate={{ scale: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 22, delay: delay + 0.05 }}
+      >
+        <Avatar name={winner.nickname} size="lg" />
+      </motion.div>
+      {/* Name */}
+      <motion.span
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25, delay: delay + 0.15 }}
+        className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight"
+      >
         {winner.nickname}
-      </span>
-      <span className="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-3 py-1 rounded-full text-sm font-bold">
+      </motion.span>
+      {/* Badge */}
+      <motion.span
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', stiffness: 500, damping: 22, delay: delay + 0.28 }}
+        className="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-3 py-1 rounded-full text-sm font-bold"
+      >
         {total > 1 ? `#${index + 1} ` : ''}당첨!
-      </span>
+      </motion.span>
     </motion.div>
   );
 }

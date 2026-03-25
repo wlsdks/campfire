@@ -50,30 +50,44 @@ export default function GameResultOverlay({ isWinner, winnerNames, gameResult, s
             <ConfettiBurst />
           </Suspense>
           <motion.div
-            initial={{ scale: 0.7, opacity: 0, y: 20 }}
+            initial={{ scale: 0.75, opacity: 0, y: 28 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.9, opacity: 0 }}
+            exit={{ scale: 0.92, opacity: 0, y: 12 }}
             transition={{ type: 'spring', stiffness: 400, damping: 22 }}
             className="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 max-w-sm w-full text-center space-y-4"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Trophy with pulsing ring */}
             <motion.div
               initial={{ scale: 0 }}
-              animate={{ scale: 1, rotate: [0, -10, 10, 0] }}
-              transition={{ type: 'spring', stiffness: 400, damping: 22, delay: 0.2 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 22, delay: 0.1 }}
+              className="relative w-20 h-20 mx-auto"
             >
-              <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center mx-auto">
-                <Trophy size={32} className="text-slate-900 dark:text-slate-100" />
+              {/* Pulsing ring */}
+              <motion.div
+                className="absolute inset-0 rounded-full bg-slate-900/10 dark:bg-slate-100/10"
+                animate={{ scale: [1, 1.6, 1], opacity: [0.6, 0, 0.6] }}
+                transition={{ duration: 1.6, repeat: Infinity, ease: 'easeOut', delay: 0.4 }}
+              />
+              <div className="w-20 h-20 rounded-full bg-slate-900 dark:bg-slate-100 flex items-center justify-center">
+                <motion.div
+                  animate={{ rotate: [0, -12, 12, -6, 6, 0] }}
+                  transition={{ duration: 0.5, delay: 0.3, ease: 'easeInOut' }}
+                >
+                  <Trophy size={36} className="text-white dark:text-slate-900" />
+                </motion.div>
               </div>
             </motion.div>
 
+            {/* 당첨! heading */}
             <motion.div
-              initial={{ opacity: 0, y: 8 }}
+              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 25 }}
-              className="space-y-2"
+              transition={{ delay: 0.25, type: 'spring', stiffness: 300, damping: 25 }}
+              className="space-y-1"
             >
-              <h2 className="text-3xl font-black tracking-tight text-slate-900 dark:text-slate-100">
+              <h2 className="text-4xl font-black tracking-tight text-slate-900 dark:text-slate-100">
                 당첨!
               </h2>
               <p className="text-slate-500 dark:text-slate-400 text-sm">
@@ -81,6 +95,7 @@ export default function GameResultOverlay({ isWinner, winnerNames, gameResult, s
               </p>
             </motion.div>
 
+            {/* Avatar + name pill */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}

@@ -177,18 +177,39 @@ export default function Roulette({ participants, scores = {}, onResult }) {
       <AnimatePresence>
         {winner && (
           <motion.div
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            transition={{ duration: 0.2 }}
             className="relative text-center space-y-4"
           >
             <Suspense fallback={null}><ConfettiBurst /></Suspense>
-            <Avatar name={winner} size="xl" className="mx-auto ring-4 ring-slate-200 dark:ring-slate-700" />
-            <div className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">{winner}</div>
-            <span className="inline-flex items-center px-5 py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-full text-base font-bold">
+            {/* Avatar — drops in first */}
+            <motion.div
+              initial={{ scale: 0, y: -20 }}
+              animate={{ scale: 1, y: 0 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+            >
+              <Avatar name={winner} size="xl" className="mx-auto ring-4 ring-slate-200 dark:ring-slate-700" />
+            </motion.div>
+            {/* Name — slides up with delay */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.15 }}
+              className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 tracking-tight"
+            >
+              {winner}
+            </motion.div>
+            {/* Badge — pops in last */}
+            <motion.span
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 22, delay: 0.3 }}
+              className="inline-flex items-center px-5 py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-full text-base font-bold"
+            >
               당첨!
-            </span>
+            </motion.span>
           </motion.div>
         )}
       </AnimatePresence>
