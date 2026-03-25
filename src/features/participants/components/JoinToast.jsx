@@ -36,6 +36,7 @@ export default function JoinToast({ sessionId }) {
             initial={{ opacity: 0, x: 100, scale: 0.9 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 100, scale: 0.9 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             className="bg-white dark:bg-slate-800 shadow-lg border border-slate-100 dark:border-slate-700 px-4 py-2.5 rounded-lg text-sm font-medium text-slate-900 dark:text-slate-100 flex items-center gap-2"
           >
             <Avatar name={toast.nickname} size="sm" />

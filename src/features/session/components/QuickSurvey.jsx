@@ -53,7 +53,7 @@ function StudentSurvey({ sessionId }) {
                 whileTap={{ scale: 0.85 }}
                 onClick={() => handleVote(rating)}
                 disabled={hasVoted}
-                className={`w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-bold transition-all duration-150 ${
+                className={`w-14 h-14 rounded-2xl flex items-center justify-center text-xl font-bold transition-colors duration-150 ${
                   isSelected
                     ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shadow-lg'
                     : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 shadow-sm'

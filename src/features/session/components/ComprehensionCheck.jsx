@@ -54,7 +54,7 @@ function StudentComprehension({ sessionId }) {
                 whileTap={{ scale: 0.9 }}
                 onClick={() => handleVote(level.key)}
                 disabled={hasVoted}
-                className={`flex flex-col items-center gap-3 p-6 rounded-2xl transition-all duration-150 ${
+                className={`flex flex-col items-center gap-3 p-6 rounded-2xl transition-colors duration-150 ${
                   isSelected
                     ? `${level.color} text-white ring-4 ${level.ring} shadow-lg`
                     : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 shadow-sm'

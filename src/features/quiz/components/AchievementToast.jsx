@@ -77,7 +77,7 @@ export default function AchievementToast({ achievements }) {
                 initial={{ rotate: -90, scale: 0.5 }}
                 animate={{ rotate: 0, scale: [1, 1.15, 1] }}
                 transition={{
-                  rotate: { type: 'spring', stiffness: 300, damping: 20 },
+                  rotate: { type: 'spring', stiffness: 300, damping: 25 },
                   scale: { duration: 0.6, delay: 0.2, times: [0, 0.5, 1] },
                 }}
               >

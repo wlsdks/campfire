@@ -45,7 +45,7 @@ function ScoreDelta({ points, questionId, isLeader }) {
         initial={{ opacity: 0, y: 0, scale: 0.8 }}
         animate={{ opacity: 1, y: -2, scale: 1 }}
         exit={{ opacity: 0, y: -12, scale: 0.9 }}
-        transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         className={`text-xs font-bold tabular-nums ${
           isLeader ? 'text-white/80 dark:text-slate-900/70' : 'text-emerald-500 dark:text-emerald-400'
         }`}
@@ -124,7 +124,7 @@ export default function LeaderboardRow({ entry, rank, isHighlighted, isPodium, p
             key="flash"
             initial={{ opacity: 0.35 }}
             animate={{ opacity: 0 }}
-            transition={{ duration: 0.55, ease: 'easeOut' }}
+            transition={{ duration: 0.4, ease: 'easeOut' }}
             className="absolute inset-0 bg-emerald-400 pointer-events-none"
           />
         )}

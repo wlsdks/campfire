@@ -117,7 +117,7 @@ function StudentDiscussion({ sessionId }) {
             placeholder="토론 내용을 메모하세요..."
             rows={4}
             maxLength={500}
-            className="flex-1 bg-white dark:bg-slate-800 rounded-xl px-4 py-3.5 text-[16px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm resize-none transition-all"
+            className="flex-1 bg-white dark:bg-slate-800 rounded-xl px-4 py-3.5 text-[16px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm resize-none transition-colors"
           />
           <Button type="submit" variant="primary" size="lg" disabled={!memo.trim()} className="w-full">
             <Send size={16} /> 메모 제출
@@ -186,7 +186,7 @@ export function DiscussionPresenter({ sessionId }) {
           onChange={e => setTopic(e.target.value)}
           placeholder="토론 주제 (선택)"
           maxLength={100}
-          className="w-full bg-white dark:bg-slate-800 rounded-xl px-4 py-3.5 text-[16px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm transition-all"
+          className="w-full bg-white dark:bg-slate-800 rounded-xl px-4 py-3.5 text-[16px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm transition-colors"
         />
         <div className="flex gap-3">
           {PRESETS.map(p => (
