@@ -84,7 +84,7 @@ export default function AwardsView({ assignmentId, awards, awardsLoading, hasRes
                 className={`rounded-2xl p-6 ${
                   isGrand
                     ? 'bg-slate-900 dark:bg-slate-100'
-                    : 'bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700'
+                    : 'bg-white dark:bg-slate-800 shadow-sm'
                 }`}
               >
                 <div className="flex items-center justify-between">
@@ -97,7 +97,7 @@ export default function AwardsView({ assignmentId, awards, awardsLoading, hasRes
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className={`text-3xl font-bold tabular-nums leading-none ${isGrand ? 'text-white dark:text-slate-900' : 'text-slate-900 dark:text-slate-100'}`}>
+                    <p className={`text-3xl font-bold tracking-tight tabular-nums leading-none ${isGrand ? 'text-white dark:text-slate-900' : 'text-slate-900 dark:text-slate-100'}`}>
                       {winner.name}
                     </p>
                     <p className={`text-sm mt-1 tabular-nums ${isGrand ? 'text-white/50 dark:text-slate-400' : 'text-slate-400'}`}>
@@ -119,7 +119,7 @@ export default function AwardsView({ assignmentId, awards, awardsLoading, hasRes
             return (
               <div
                 key={awardId}
-                className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-4"
+                className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4"
               >
                 <p className="text-[11px] text-slate-400">{info?.description}</p>
                 <p className="text-sm font-bold text-slate-900 dark:text-slate-100 mt-0.5">{info?.name}</p>

@@ -146,7 +146,7 @@ export default function SubmissionPage({ assignmentId }) {
                     <div className="flex flex-col items-center">
                       <PickMascot size="lg" mood="happy" />
                       {assignment.description && (
-                        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5 mt-5 w-full">
+                        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5 mt-5 w-full">
                           <p className="text-[15px] text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-line">
                             {assignment.description}
                           </p>
@@ -389,7 +389,7 @@ export default function SubmissionPage({ assignmentId }) {
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className={`text-2xl font-bold tabular-nums ${isGrand ? 'text-white dark:text-slate-900' : 'text-slate-900 dark:text-slate-100'}`}>
+                        <p className={`text-2xl font-bold tracking-tight tabular-nums ${isGrand ? 'text-white dark:text-slate-900' : 'text-slate-900 dark:text-slate-100'}`}>
                           {winner.name}
                         </p>
                         <p className={`text-xs mt-0.5 tabular-nums ${isGrand ? 'text-white/50 dark:text-slate-400' : 'text-slate-400'}`}>
@@ -408,7 +408,7 @@ export default function SubmissionPage({ assignmentId }) {
                     const info = getAwardById(awardId);
                     const winner = awards[awardId];
                     return (
-                      <div key={awardId} className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-4">
+                      <div key={awardId} className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4">
                         <p className="text-[11px] text-slate-400">{info?.description}</p>
                         <p className="text-sm font-bold text-slate-900 dark:text-slate-100 mt-0.5">{info?.name}</p>
                         <p className="text-sm font-medium text-slate-600 dark:text-slate-300 mt-2">{winner.name}</p>

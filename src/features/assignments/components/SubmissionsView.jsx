@@ -19,10 +19,16 @@ function sortByScore(submissions, results) {
 // ─── Stats Card ────────────────────────────────────
 function StatCard({ value, label }) {
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 py-4 px-3 text-center">
-      <p className="text-3xl font-bold text-slate-900 dark:text-slate-100 tabular-nums leading-none">
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm py-4 px-3 text-center">
+      <motion.p
+        key={String(value)}
+        initial={{ scale: 0.85, opacity: 0.5 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+        className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 tabular-nums leading-none"
+      >
         {value}
-      </p>
+      </motion.p>
       <p className="text-xs text-slate-400 mt-2">{label}</p>
     </div>
   );
@@ -37,7 +43,7 @@ function SubmissionCard({ submission, result, rank, awardInfo }) {
     <motion.div
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden"
+      className="bg-white dark:bg-slate-800 rounded-xl shadow-sm overflow-hidden"
     >
       <button
         onClick={() => setExpanded(!expanded)}
@@ -76,9 +82,15 @@ function SubmissionCard({ submission, result, rank, awardInfo }) {
 
           {summary && (
             <div className="text-right shrink-0">
-              <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 tabular-nums leading-none">
+              <motion.p
+                key={String(summary.avgScore)}
+                initial={{ scale: 0.85, opacity: 0.5 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+                className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 tabular-nums leading-none"
+              >
                 {summary.avgScore}
-              </p>
+              </motion.p>
               <div className="flex items-center gap-1.5 justify-end mt-1">
                 <span className={`text-[11px] font-medium ${summary.passed ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400'}`}>
                   {summary.passed ? '합격' : '불합격'}
@@ -154,7 +166,7 @@ export default function SubmissionsView({ assignmentId, submissions, results, aw
     <div className="space-y-6">
       <button
         onClick={handleCopy}
-        className="w-full flex items-center gap-3 px-4 py-3.5 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow active:scale-[0.99]"
+        className="w-full flex items-center gap-3 px-4 py-3.5 bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-[0.99]"
       >
         {copied
           ? <Check size={16} className="text-emerald-500 shrink-0" />

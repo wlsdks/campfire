@@ -91,7 +91,7 @@ export default function AssignmentDetail({ assignmentId, onBack }) {
       </div>
 
       {confirmClose && (
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-4 mb-6">
+        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4 mb-6">
           <p className="text-sm text-slate-600 dark:text-slate-300 mb-3">마감하면 학생들이 더 이상 제출할 수 없습니다</p>
           <div className="flex items-center gap-2 justify-end">
             <Button onClick={() => setConfirmClose(false)} variant="ghost" size="sm">취소</Button>

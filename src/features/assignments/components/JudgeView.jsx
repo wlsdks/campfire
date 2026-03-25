@@ -32,7 +32,7 @@ export default function JudgeView({ assignmentId, submissions, results, hasResul
           {JUDGES.map((judge) => (
             <div
               key={judge.id}
-              className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-3.5"
+              className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-3.5"
             >
               <div className="flex items-center gap-2.5">
                 <Avatar name={judge.name} size="sm" />
@@ -47,7 +47,7 @@ export default function JudgeView({ assignmentId, submissions, results, hasResul
       </div>
 
       {/* 심사 컨트롤 */}
-      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-5">
+      <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5">
         <JudgingPanel assignmentId={assignmentId} submissionCount={submissions.length} />
       </div>
 
@@ -64,9 +64,9 @@ export default function JudgeView({ assignmentId, submissions, results, hasResul
                   key={sub.id}
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.04, duration: 0.2 }}
+                  transition={{ delay: i * 0.04, type: 'spring', stiffness: 300, damping: 25 }}
                   onClick={() => setSelectedSub(sub)}
-                  className="w-full flex items-center gap-3 p-4 text-left bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow active:scale-[0.99]"
+                  className="w-full flex items-center gap-3 p-4 text-left bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-[0.99]"
                 >
                   <span className={`text-sm font-bold tabular-nums w-6 text-center shrink-0 ${
                     i === 0 ? 'text-slate-900 dark:text-slate-100'
@@ -80,9 +80,15 @@ export default function JudgeView({ assignmentId, submissions, results, hasResul
                       {r.summary.passed ? '합격' : '불합격'} · {r.summary.selectedCount}/{r.summary.totalJudges}명 선택
                     </p>
                   </div>
-                  <span className="text-xl font-bold text-slate-900 dark:text-slate-100 tabular-nums shrink-0">
+                  <motion.span
+                    key={String(r.summary.avgScore)}
+                    initial={{ scale: 0.85, opacity: 0.5 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+                    className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100 tabular-nums shrink-0"
+                  >
                     {r.summary.avgScore}
-                  </span>
+                  </motion.span>
                   <ChevronRight size={16} className="text-slate-300 shrink-0" />
                 </motion.button>
               );
