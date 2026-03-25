@@ -1,6 +1,6 @@
-import { useState, useCallback, useEffect, lazy, Suspense } from 'react';
+import { useState, useCallback, useEffect, lazy, Suspense, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, QrCode, X, Copy, Check, Swords } from 'lucide-react';
+import { Users, QrCode, X, Copy, Check, Swords, Hand, MessageSquare, ChevronDown } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import PickMascot from '@/components/ui/PickMascot';
 import QRCode from '@/components/ui/QRCode';
@@ -29,11 +29,11 @@ const DiscussionPresenter = lazy(() => import('@/features/session/components/Gro
 
 function PresentEmptyState({ sessionId, studentUrl, count }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-6">
-      <QRCode url={studentUrl} size={200} />
-      <p className="text-slate-500 dark:text-slate-400 text-base break-all max-w-md text-center">{studentUrl}</p>
-      <p className="text-slate-400 dark:text-slate-500 text-sm">학생들이 QR코드를 스캔하여 참여할 수 있습니다</p>
-      <div className="flex items-center gap-3">
+    <div className="flex flex-col items-center justify-center gap-4 md:gap-6 px-2">
+      <QRCode url={studentUrl} size={180} />
+      <p className="text-slate-500 dark:text-slate-400 text-sm md:text-base break-all max-w-xs md:max-w-md text-center">{studentUrl}</p>
+      <p className="text-slate-400 dark:text-slate-500 text-xs md:text-sm text-center">학생들이 QR코드를 스캔하여 참여할 수 있습니다</p>
+      <div className="flex items-center gap-2 md:gap-3 flex-wrap justify-center">
         <Badge variant="neutral"><Users size={14} className="mr-1" />{count}명 접속 중</Badge>
         <Badge variant="neutral">{sessionId}</Badge>
       </div>
@@ -60,7 +60,7 @@ function PresentQROverlay({ sessionId, studentUrl, count }) {
   }
 
   return (
-    <div className="fixed bottom-5 right-5 z-20" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed bottom-3 right-3 md:bottom-5 md:right-5 z-20" onClick={(e) => e.stopPropagation()}>
       <AnimatePresence mode="wait">
         {expanded ? (
           <motion.div
@@ -69,7 +69,7 @@ function PresentQROverlay({ sessionId, studentUrl, count }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 8 }}
             transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-            className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700 p-5 w-64"
+            className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700 p-4 md:p-5 w-56 md:w-64"
           >
             <div className="flex items-center justify-between mb-3">
               <span className="text-slate-900 dark:text-slate-100 text-sm font-semibold">참여 QR코드</span>
@@ -82,7 +82,7 @@ function PresentQROverlay({ sessionId, studentUrl, count }) {
               </button>
             </div>
             <div className="flex justify-center">
-              <QRCode url={studentUrl} size={180} />
+              <QRCode url={studentUrl} size={160} />
             </div>
             <div className="mt-3 text-center">
               <span className="text-slate-900 dark:text-slate-100 text-xl font-bold tracking-wider">{sessionId}</span>
@@ -169,7 +169,7 @@ function TeamBattleSetup({ participantCount, onStart }) {
               <button
                 key={n}
                 onClick={() => setSelectedCount(n)}
-                className={`flex-1 py-3 rounded-xl text-base font-bold transition-colors duration-150 active:scale-[0.96] ${
+                className={`flex-1 min-h-[48px] py-3 rounded-xl text-base font-bold transition-colors duration-150 active:scale-[0.96] ${
                   selectedCount === n
                     ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
@@ -206,7 +206,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     if (currentMode === 'slotMachine') return <SlotMachine participants={onlineList} onResult={onGameResult ? (names) => onGameResult(names, 'slotMachine') : undefined} />;
     if (currentMode === 'plinko') return <Plinko participants={onlineList} onResult={onGameResult ? (names) => onGameResult(names, 'plinko') : undefined} />;
     if (currentMode === 'breakTime') return <BreakTimer />;
-    if (currentMode === 'leaderboard') return <div className="w-full max-w-2xl [&_.max-w-xl]:max-w-2xl"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" /></div>;
+    if (currentMode === 'leaderboard') return <div className="w-full max-w-xl md:max-w-2xl [&_.max-w-xl]:max-w-2xl px-2 md:px-0"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" /></div>;
     if (currentMode === 'teamBattle') {
       if (!teamBattleActive) return <TeamBattleSetup participantCount={count || onlineList.length} onStart={onStartTeamBattle} />;
       return (
@@ -227,10 +227,10 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     if (currentMode === 'quickSurvey') return <SurveyPresenter sessionId={sessionId} />;
     if (currentMode === 'discussion') return <DiscussionPresenter sessionId={sessionId} />;
     if (currentMode === 'focus') return (
-      <div className="flex flex-col items-center justify-center gap-6 text-center">
+      <div className="flex flex-col items-center justify-center gap-4 md:gap-6 text-center">
         <PickMascot size="lg" mood="focus" />
-        <p className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">집중 모드</p>
-        <p className="text-slate-400 dark:text-white/40 text-lg">학생 화면이 잠겼습니다</p>
+        <p className="text-2xl md:text-3xl lg:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">집중 모드</p>
+        <p className="text-slate-400 dark:text-white/40 text-sm md:text-lg">학생 화면이 잠겼습니다</p>
       </div>
     );
     return null;
@@ -241,7 +241,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     content = <Suspense fallback={<GameFallback />}>{gameContent}</Suspense>;
   } else if (isActive) {
     contentKey = `question-${currentQId}`;
-    content = <div className="w-full [&_.max-w-xl]:max-w-2xl"><VizRenderer sessionId={sessionId} session={session} /></div>;
+    content = <div className="w-full px-2 md:px-0 [&_.max-w-xl]:max-w-2xl"><VizRenderer sessionId={sessionId} session={session} /></div>;
   } else if (presentMode) {
     contentKey = 'empty';
     content = <PresentEmptyState sessionId={sessionId} studentUrl={studentUrl} count={count} />;
@@ -268,6 +268,61 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
 
 export { MainContent };
 
+/** Collapsible panel for HandRaiseList + UrgentQuestionList on small screens. */
+function SideNoticesPanel({ sessionId }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      {/* Desktop: fixed top-left panel */}
+      <div className="hidden md:block fixed top-5 left-5 w-72 space-y-3 z-10">
+        <HandRaiseList sessionId={sessionId} />
+        <UrgentQuestionList sessionId={sessionId} />
+      </div>
+
+      {/* Mobile: pill toggle at top-left + slide-down sheet */}
+      <div className="md:hidden fixed top-3 left-3 z-20">
+        <motion.button
+          onClick={(e) => { e.stopPropagation(); setOpen((v) => !v); }}
+          whileTap={{ scale: 0.94 }}
+          className="flex items-center gap-1.5 bg-slate-900/80 dark:bg-slate-800/90 backdrop-blur-sm text-white px-3 py-2 rounded-xl text-xs font-medium shadow-lg"
+          aria-label="알림 패널 열기"
+        >
+          <Hand size={13} />
+          <MessageSquare size={13} />
+          <ChevronDown size={12} className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+        </motion.button>
+
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              key="notices"
+              initial={{ opacity: 0, y: -8, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8, scale: 0.96 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+              onClick={(e) => e.stopPropagation()}
+              className="mt-2 w-[min(calc(100vw-24px),288px)] space-y-2 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 p-3"
+            >
+              <HandRaiseList sessionId={sessionId} />
+              <UrgentQuestionList sessionId={sessionId} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </>
+  );
+}
+
+/** Exit hint — ESC on desktop, tap hint on touch. */
+function ExitHint() {
+  const isTouchRef = useRef(typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches);
+  return (
+    <div className="fixed top-3 right-3 md:top-5 md:right-5 bg-slate-900/80 dark:bg-slate-700/80 text-white px-2.5 py-1.5 md:px-3 rounded-lg text-xs md:text-sm pointer-events-none select-none">
+      {isTouchRef.current ? '탭하여 나가기' : 'ESC 또는 클릭으로 나가기'}
+    </div>
+  );
+}
+
 export default function PresentationView({ sessionId, session, currentMode, onlineList, leaderboard, drawParticipants, studentUrl, count, onExit, teamScores, scores }) {
   const exitPresent = useCallback(() => onExit(), [onExit]);
   const { publishResult } = usePublishGameResult(sessionId);
@@ -293,11 +348,11 @@ export default function PresentationView({ sessionId, session, currentMode, onli
     <div className="min-h-dvh bg-white dark:bg-slate-900 relative cursor-pointer" onClick={exitPresent}>
       <JoinToast sessionId={sessionId} />
       <ReactionOverlay sessionId={sessionId} />
-      <div className="fixed top-5 left-5 w-72 space-y-3 z-10">
-        <HandRaiseList sessionId={sessionId} />
-        <UrgentQuestionList sessionId={sessionId} />
-      </div>
-      <div className="flex items-center justify-center min-h-dvh p-12 text-lg">
+
+      <SideNoticesPanel sessionId={sessionId} />
+
+      {/* Main content — responsive padding */}
+      <div className="flex items-center justify-center min-h-dvh p-4 sm:p-8 lg:p-12 text-lg">
         <MainContent
           currentMode={currentMode}
           sessionId={sessionId}
@@ -313,13 +368,15 @@ export default function PresentationView({ sessionId, session, currentMode, onli
           onGameResult={handleGameResult}
         />
       </div>
+
       <PresentQROverlay sessionId={sessionId} studentUrl={studentUrl} count={count} />
-      <div className="fixed bottom-5 left-5 flex items-center gap-2">
+
+      {/* Participant count badge — bottom-left */}
+      <div className="fixed bottom-3 left-3 md:bottom-5 md:left-5 flex items-center gap-2 pointer-events-none">
         <Badge variant="neutral"><Users size={12} className="mr-1" />{count}명</Badge>
       </div>
-      <div className="fixed top-5 right-5 bg-slate-900/80 dark:bg-slate-700/80 text-white px-3 py-1.5 rounded-lg text-sm">
-        ESC 또는 클릭으로 나가기
-      </div>
+
+      <ExitHint />
     </div>
   );
 }
