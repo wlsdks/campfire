@@ -16,6 +16,8 @@ export function useChat(sessionId) {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [canSend, setCanSend] = useState(true);
+  // Use ref to track canSend in sendMessage without adding it to deps
+  const canSendRef = useRef(true);
   const cooldownRef = useRef(null);
 
   useEffect(() => {
@@ -47,7 +49,7 @@ export function useChat(sessionId) {
 
   const sendMessage = useCallback(async (text, sender, senderType) => {
     const trimmed = text?.trim();
-    if (!sessionId || !trimmed || !canSend) return false;
+    if (!sessionId || !trimmed || !canSendRef.current) return false;
 
     try {
       await push(ref(db, `sessions/${sessionId}/chat`), {
@@ -58,8 +60,10 @@ export function useChat(sessionId) {
       });
 
       // Start cooldown
+      canSendRef.current = false;
       setCanSend(false);
       cooldownRef.current = setTimeout(() => {
+        canSendRef.current = true;
         setCanSend(true);
       }, COOLDOWN_MS);
 
@@ -68,7 +72,7 @@ export function useChat(sessionId) {
       logger.error('Send message failed:', err);
       return false;
     }
-  }, [sessionId, canSend]);
+  }, [sessionId]);
 
   return { messages, sendMessage, loading, canSend };
 }

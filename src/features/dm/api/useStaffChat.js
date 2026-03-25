@@ -6,20 +6,31 @@ import { logger } from '@/lib/logger';
 const MAX_MESSAGES = 100;
 const COOLDOWN_MS = 2000;
 
+// Stable empty return for non-staff callers (avoids Firebase subscription)
+const NOOP_CHAT = {
+  messages: [],
+  sendMessage: async () => false,
+  loading: false,
+  canSend: false,
+};
+
 /**
  * Real-time staff-only chat hook.
- * Subscribes to sessions/{sessionId}/staffChat.
+ * Pass enabled=false for non-staff users to skip Firebase subscription entirely.
  * @param {string} sessionId
+ * @param {{ enabled?: boolean }} options
  * @returns {{ messages, sendMessage, loading, canSend }}
  */
-export function useStaffChat(sessionId) {
+export function useStaffChat(sessionId, { enabled = true } = {}) {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [canSend, setCanSend] = useState(true);
+  // Use ref to track canSend in sendMessage without adding it to deps
+  const canSendRef = useRef(true);
   const cooldownRef = useRef(null);
 
   useEffect(() => {
-    if (!sessionId) return;
+    if (!sessionId || !enabled) return;
 
     const chatRef = query(
       ref(db, `sessions/${sessionId}/staffChat`),
@@ -43,11 +54,11 @@ export function useStaffChat(sessionId) {
       unsub();
       if (cooldownRef.current) clearTimeout(cooldownRef.current);
     };
-  }, [sessionId]);
+  }, [sessionId, enabled]);
 
   const sendMessage = useCallback(async (text, senderName, senderType) => {
     const trimmed = text?.trim();
-    if (!sessionId || !trimmed || !canSend) return false;
+    if (!sessionId || !trimmed || !canSendRef.current) return false;
 
     try {
       await push(ref(db, `sessions/${sessionId}/staffChat`), {
@@ -57,8 +68,10 @@ export function useStaffChat(sessionId) {
         timestamp: serverTimestamp(),
       });
 
+      canSendRef.current = false;
       setCanSend(false);
       cooldownRef.current = setTimeout(() => {
+        canSendRef.current = true;
         setCanSend(true);
       }, COOLDOWN_MS);
 
@@ -67,7 +80,9 @@ export function useStaffChat(sessionId) {
       logger.error('Staff chat send failed:', err);
       return false;
     }
-  }, [sessionId, canSend]);
+  }, [sessionId]);
+
+  if (!enabled) return NOOP_CHAT;
 
   return { messages, sendMessage, loading, canSend };
 }
