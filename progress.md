@@ -85,6 +85,7 @@
 ## Cycle Log
 | # | Time | Task | Notes |
 |---|------|------|-------|
+| 37 | 2026-03-26 | 실시간 바 차트 grow + 워드클라우드 형성 모션 (4파일) | BarChart: spring 200/20→120/18 유동적 grow + AnimatedCount RAF 카운터 (투표 수/총합), tabular-nums. WordCloud: layout prop 추가 → 단어 재배치 smooth, scale 팝인 0.8→0.6, stiffness 200→260, hover:scale 장식 모션 제거. OXBattle: progress bar spring 일관성 120/18. WaitingPage: GameResultOverlay eager→lazy (코드 스플리팅) |
 | 36 | 2026-03-26 | 코드 품질 + WaitingPage 마스코트 idle 다양화 | useAwards.js err 미사용 변수 2개 제거. SubmissionsView.jsx 미사용 useSubmissionList import 제거. no-unused-vars 에러 0개. IdleMascot: nod(앞뒤 기울기+overshoot) + bounce(scale pulse+happy squint) 2가지 idle 액션 추가 (5→7종). WaitingPage 참여자 카운트: 증가 시 전체 컨테이너 scale bounce + Users 아이콘 rotate 연출 추가 |
 | 35 | 2026-03-26 | 디자인 토큰 감사 — quiz/session/participants/hand-raise (7파일) | transition-all→colors: ComprehensionCheck/GroupDiscussion(2)/QuickSurvey. HandRaiseList 흔들기 duration/ease→spring 300/25. JoinToast 누락 spring transition 추가. AchievementToast damping 20→25. LeaderboardRow ScoreDelta custom bezier→spring, 플래시 0.55→0.4s |
 | 34 | 2026-03-26 | 리더보드 순위 변동 애니메이션 드라마틱 개선 (3파일) | delta useRef→useState 버그 수정. RankChange 4초 자동 숨김. ScoreDelta Kahoot 스타일 위로 떠오름. AnimatedCrown spring 500/18 회전+스케일. 순위 상승 emerald 플래시. layout spring 500/30 강화. AnimatedScore.jsx + LeaderboardRow.jsx 분리 |
