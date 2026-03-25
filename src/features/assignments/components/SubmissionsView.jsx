@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Copy, Check, Link2, Download } from 'lucide-react';
-import { useSubmissionList, exportResultsCSV } from '@/features/assignments/api/useSubmissions';
+import { exportResultsCSV } from '@/features/assignments/api/useSubmissions';
 import { JUDGES, getAwardById } from '@/features/assignments/api/judges';
 import JudgeResultCard from './JudgeResultCard';
 import Avatar from '@/components/ui/Avatar';

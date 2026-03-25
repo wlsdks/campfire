@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, useAnimationControls } from 'framer-motion';
 
-const IDLE_ACTIONS = ['lookLeft', 'lookRight', 'tilt', 'doubleBlink', 'earWiggle'];
+const IDLE_ACTIONS = ['lookLeft', 'lookRight', 'tilt', 'doubleBlink', 'earWiggle', 'nod', 'bounce'];
 
 function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
@@ -12,7 +12,8 @@ function pick(arr) {
  *
  * Continuous: breathing float.
  * Random (3-6s): look left/right (eyes translate), curious tilt (body rotate),
- * double-blink (eye scaleY), ear wiggle (ears rotate).
+ * double-blink (eye scaleY), ear wiggle (ears rotate),
+ * nod (body dips down then up), bounce (quick happy bounce).
  *
  * Uses useAnimationControls for imperative sequencing.
  * Eye look uses translateX on a <g> wrapper (reliable SVG transform).
@@ -77,6 +78,26 @@ export default function IdleMascot() {
               transition: { duration: 0.65, ease: 'easeInOut', delay: 0.08 },
             }),
           ]);
+          break;
+
+        // Gentle head nod: body tilts forward then snaps back with slight overshoot
+        case 'nod':
+          await body.start({ rotate: 10, transition: { duration: 0.18 } });
+          await new Promise((r) => setTimeout(r, 150));
+          await body.start({ rotate: -5, transition: { type: 'spring', stiffness: 400, damping: 20 } });
+          await new Promise((r) => setTimeout(r, 80));
+          await body.start({ rotate: 0, transition: s });
+          break;
+
+        // Happy bounce: quick scale pulse + happy blink
+        case 'bounce':
+          await body.start({ scale: 1.08, transition: { type: 'spring', stiffness: 500, damping: 18 } });
+          await body.start({ scale: 0.97, transition: { type: 'spring', stiffness: 400, damping: 20 } });
+          await body.start({ scale: 1, transition: s });
+          // Happy squint
+          await blink.start({ scaleY: 0.3, transition: { duration: 0.08 } });
+          await new Promise((r) => setTimeout(r, 200));
+          await blink.start({ scaleY: 1, transition: { duration: 0.12 } });
           break;
 
         default:

@@ -16,7 +16,7 @@ export function useAwards(assignmentId) {
     const unsub = onValue(awardsRef, (snap) => {
       setAwards(snap.exists() ? snap.val() : null);
       setLoading(false);
-    }, (err) => {
+    }, () => {
       setLoading(false);
     });
 
@@ -40,7 +40,7 @@ export function useAllResults(assignmentId) {
     const unsub = onValue(resultsRef, (snap) => {
       setResults(snap.val() || {});
       setLoading(false);
-    }, (err) => {
+    }, () => {
       setLoading(false);
     });
 

@@ -185,26 +185,32 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
             transition={{ delay: 0.3, type: 'spring', stiffness: 300, damping: 25 }}
             className="flex items-center justify-center gap-2"
           >
-            <div className="flex items-center gap-2 bg-white dark:bg-slate-800 rounded-xl px-4 py-2.5">
+            <motion.div
+              key={count}
+              initial={{ scale: 1.05 }}
+              animate={{ scale: 1 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 20 }}
+              className="flex items-center gap-2 bg-white dark:bg-slate-800 rounded-xl px-4 py-2.5"
+            >
               <motion.div
-                key={count}
-                initial={{ scale: 1.2 }}
-                animate={{ scale: 1 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                key={`icon-${count}`}
+                initial={{ rotate: -12, scale: 1.3 }}
+                animate={{ rotate: 0, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 18 }}
               >
                 <Users size={16} className="text-slate-400" />
               </motion.div>
               <span className="text-slate-700 dark:text-slate-300 text-sm font-medium">
                 <motion.span
                   key={count}
-                  initial={{ scale: 1.2 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                  initial={{ y: -10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 22 }}
                   className="text-slate-900 dark:text-slate-100 text-lg font-bold tracking-tight tabular-nums inline-block"
                 >{count}</motion.span>
                 <span className="ml-0.5 text-xs text-slate-400">명 참여 중</span>
               </span>
-            </div>
+            </motion.div>
           </motion.div>
         )}
 
