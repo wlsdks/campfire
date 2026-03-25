@@ -85,6 +85,7 @@
 ## Cycle Log
 | # | Time | Task | Notes |
 |---|------|------|-------|
+| 34 | 2026-03-26 | 리더보드 순위 변동 애니메이션 드라마틱 개선 (3파일) | delta useRef→useState 버그 수정. RankChange 4초 자동 숨김. ScoreDelta Kahoot 스타일 위로 떠오름. AnimatedCrown spring 500/18 회전+스케일. 순위 상승 emerald 플래시. layout spring 500/30 강화. AnimatedScore.jsx + LeaderboardRow.jsx 분리 |
 | 33 | 2026-03-26 | 디자인 토큰 감사 — games/timer/reactions/visualization (5파일) | TimerRing hex 색상 → design-tokens colors. LiveParticipation 진행 바 gradient → solid. BreakTimer whileHover 장식 모션 제거. ReactionBar custom bezier → spring bouncy. RankingChart inline gradient style → Tailwind 클래스 |
 | 32 | 2026-03-26 | 200줄+ 컴포넌트 분리 (코드 품질) | SessionDashboard(320→246줄): ClassesTab.jsx 분리. SubmissionPage(428→260줄): SubmissionLanding.jsx + SubmissionAwardsView.jsx 분리. 3개 신규 파일 모두 200줄 미만. 미사용 import 정리 (5파일) |
 | 31 | 2026-03-26 | 페이지/모드 전환 AnimatePresence 애니메이션 | VotePage: 대기→질문→리더보드→특수모드 전환 AnimatePresence mode="wait" + getModeVariants (방향성 있는 spring). App.jsx: JoinPage→VotePage 전환 AnimatePresence. SessionDashboard: 탭 전환 mode="wait"+spring. MobileAdminView: 탭 opacity→spring y (4파일) |
