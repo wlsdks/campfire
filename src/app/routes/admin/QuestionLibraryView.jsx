@@ -1,6 +1,6 @@
 import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, MessageSquare, Plus, Trash2, Search, X } from 'lucide-react';
+import { Loader2, Plus } from 'lucide-react';
 import { useQuestionLibrary } from '@/features/questions/api/useQuestionLibrary';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
@@ -8,84 +8,10 @@ import PickMascot from '@/components/ui/PickMascot';
 import Toast from '@/components/ui/Toast';
 import QuestionForm from './QuestionForm';
 import TemplatePacks from './TemplatePacks';
+import LibraryQuestionCard from './LibraryQuestionCard';
+import LibrarySearchFilter from './LibrarySearchFilter';
 import { QUIZ_DEFAULTS } from '@/lib/quiz';
-import { QUESTION_TYPES } from '@/lib/question-types';
 import { useToast } from '@/hooks/useToast';
-
-const TYPE_FILTERS = [
-  { value: 'all', label: '전체' },
-  ...QUESTION_TYPES,
-];
-
-function LibraryQuestionCard({ question, onDelete, index }) {
-  const qType = QUESTION_TYPES.find((t) => t.value === question.type);
-  const Icon = qType?.icon || MessageSquare;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
-      transition={{ duration: 0.2, delay: index * 0.03 }}
-      className="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 transition-colors duration-150 group"
-    >
-      <div className="flex items-start gap-3">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5 mb-1">
-            <Icon size={13} className="text-slate-400 shrink-0" />
-            <span className="text-xs font-medium text-slate-400">{qType?.label}</span>
-            {question.tag && (
-              <span className="text-[11px] px-1.5 py-0.5 bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 rounded-md border border-slate-100 dark:border-slate-600">
-                {question.tag}
-              </span>
-            )}
-          </div>
-          <p className="text-slate-800 dark:text-slate-200 text-sm leading-relaxed">{question.title}</p>
-          {question.options && (
-            <div className="flex flex-wrap gap-1 mt-2">
-              {question.options.map((opt, i) => (
-                <span
-                  key={i}
-                  className={`text-xs px-2 py-0.5 rounded-md ${
-                    question.correctAnswer === opt
-                      ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
-                      : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
-                  }`}
-                >
-                  {opt}
-                </span>
-              ))}
-            </div>
-          )}
-          {question.type === 'ox' && question.correctAnswer && (
-            <div className="flex gap-1.5 mt-2">
-              {['O', 'X'].map((v) => (
-                <span
-                  key={v}
-                  className={`text-xs px-2.5 py-0.5 rounded-md font-semibold ${
-                    question.correctAnswer === v
-                      ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
-                      : 'bg-slate-50 dark:bg-slate-700 text-slate-400'
-                  }`}
-                >
-                  {v}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-        <button
-          onClick={() => onDelete(question.id)}
-          className="p-1.5 rounded-lg text-slate-200 dark:text-slate-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950 transition-colors duration-150 active:scale-90 opacity-0 group-hover:opacity-100"
-          title="삭제"
-          aria-label="질문 삭제"
-        >
-          <Trash2 size={14} />
-        </button>
-      </div>
-    </motion.div>
-  );
-}
 
 export default memo(function QuestionLibraryView({ adminUid }) {
   const { questions, loading, saveQuestion, deleteQuestion } = useQuestionLibrary(adminUid);
@@ -206,51 +132,14 @@ export default memo(function QuestionLibraryView({ adminUid }) {
         )}
       </AnimatePresence>
 
-      {/* Search + filter — right below header, before content */}
+      {/* Search + filter */}
       {questions.length > 0 && (
-        <div className="space-y-2">
-          {/* Search */}
-          <div className="relative">
-            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300 dark:text-slate-500" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="질문 검색..."
-              aria-label="질문 검색"
-              className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl pl-10 pr-9 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-slate-400 dark:focus:border-slate-500 transition-colors duration-150"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-500 dark:text-slate-500 dark:hover:text-slate-300 transition-colors duration-150"
-                aria-label="검색어 지우기"
-              >
-                <X size={14} />
-              </button>
-            )}
-          </div>
-
-          {/* Type filter — horizontally scrollable */}
-          <div className="flex gap-1 overflow-x-auto scrollbar-hide -mx-1 px-1 pb-1">
-            {TYPE_FILTERS.map((f) => {
-              const isSelected = typeFilter === f.value;
-              return (
-                <button
-                  key={f.value}
-                  onClick={() => setTypeFilter(f.value)}
-                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors duration-150 active:scale-[0.96] whitespace-nowrap shrink-0 ${
-                    isSelected
-                      ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
-                      : 'bg-slate-50 dark:bg-slate-700 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-600'
-                  }`}
-                >
-                  {f.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        <LibrarySearchFilter
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          typeFilter={typeFilter}
+          onTypeChange={setTypeFilter}
+        />
       )}
 
       {/* Question list */}
