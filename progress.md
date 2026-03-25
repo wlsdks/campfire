@@ -85,6 +85,7 @@
 ## Cycle Log
 | # | Time | Task | Notes |
 |---|------|------|-------|
+| 33 | 2026-03-26 | 디자인 토큰 감사 — games/timer/reactions/visualization (5파일) | TimerRing hex 색상 → design-tokens colors. LiveParticipation 진행 바 gradient → solid. BreakTimer whileHover 장식 모션 제거. ReactionBar custom bezier → spring bouncy. RankingChart inline gradient style → Tailwind 클래스 |
 | 32 | 2026-03-26 | 200줄+ 컴포넌트 분리 (코드 품질) | SessionDashboard(320→246줄): ClassesTab.jsx 분리. SubmissionPage(428→260줄): SubmissionLanding.jsx + SubmissionAwardsView.jsx 분리. 3개 신규 파일 모두 200줄 미만. 미사용 import 정리 (5파일) |
 | 31 | 2026-03-26 | 페이지/모드 전환 AnimatePresence 애니메이션 | VotePage: 대기→질문→리더보드→특수모드 전환 AnimatePresence mode="wait" + getModeVariants (방향성 있는 spring). App.jsx: JoinPage→VotePage 전환 AnimatePresence. SessionDashboard: 탭 전환 mode="wait"+spring. MobileAdminView: 탭 opacity→spring y (4파일) |
 | 30 | 2026-03-26 | 게임 위너 표시 Avatar 컴포넌트 통일 | Roulette/SlotMachine/Plinko/PrizeDraw/RandomPicker raw 초성 원형 DIV → Avatar. Avatar에 xl(w-20)/2xl(w-32) 사이즈 추가 (5파일) |
