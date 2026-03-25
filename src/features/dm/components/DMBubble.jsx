@@ -7,7 +7,7 @@ import PickMascot from '@/components/ui/PickMascot';
 
 const DMMessage = memo(function DMMessage({ msg, isOwn }) {
   return (
-    <motion.div initial={{ opacity: 0, x: isOwn ? 8 : -8 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.15 }}
+    <motion.div initial={{ opacity: 0, x: isOwn ? 8 : -8 }} animate={{ opacity: 1, x: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'} gap-0.5`}>
       {!isOwn && (
         <span className="text-[13px] font-medium text-slate-500 dark:text-slate-400 px-1">
@@ -110,10 +110,14 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
     <>
       <motion.div key="dm-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
         className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50" onClick={onClose} />
-      <motion.div key="dm-panel" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+      <motion.div key="dm-panel" initial={{ opacity: 0, y: '100%' }} animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-        className="fixed inset-0 sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-[400px] sm:h-[520px] bg-white dark:bg-slate-800 sm:rounded-2xl sm:shadow-2xl z-50 flex flex-col overflow-hidden">
+        className="fixed inset-x-0 bottom-0 top-[10vh] sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-[400px] sm:h-[520px] bg-white dark:bg-slate-800 rounded-t-2xl sm:rounded-2xl sm:shadow-2xl z-50 flex flex-col overflow-hidden">
 
+        {/* Drag handle (mobile only) */}
+        <div className="sm:hidden flex justify-center pt-3 pb-1 shrink-0">
+          <div className="w-10 h-1 rounded-full bg-slate-200 dark:bg-slate-600" />
+        </div>
         {currentDM ? (
           <>
             {/* Chat view */}
@@ -147,11 +151,11 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
               {currentDM.messageList?.map((msg) => <DMMessage key={msg.id} msg={msg} isOwn={msg.senderType === 'student'} />)}
               <div ref={messagesEndRef} />
             </div>
-            <div className="flex items-center gap-2 px-4 py-3 border-t border-slate-100 dark:border-slate-700 shrink-0">
+            <div className="flex items-center gap-2 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:py-3 border-t border-slate-100 dark:border-slate-700 shrink-0">
               <input type="text" value={inputText} onChange={(e) => setInputText(e.target.value)}
                 onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
                 placeholder="메시지를 입력하세요" aria-label="도움 요청 메시지" maxLength={200} autoFocus
-                className="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white dark:focus:bg-slate-600 transition-all" />
+                className="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white dark:focus:bg-slate-600 transition-colors duration-150" />
               <button onClick={handleSend} disabled={!inputText.trim() || sending}
                 className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 disabled:opacity-30 hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150 shrink-0"
                 aria-label="보내기"><Send size={16} /></button>
@@ -194,7 +198,7 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
               <div className="flex-1 overflow-y-auto overscroll-contain px-5 py-5 scrollbar-hide">
                 {requestSent ? (
                   <div className="flex flex-col items-center justify-center h-full gap-3">
-                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+                    <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 25 }}
                       className="w-12 h-12 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center">
                       <Headset size={20} className="text-emerald-600 dark:text-emerald-400" />
                     </motion.div>

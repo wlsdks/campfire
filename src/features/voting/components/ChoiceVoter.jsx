@@ -69,7 +69,7 @@ export default memo(function ChoiceVoter({ sessionId, questionId, options, disab
               scale: isSelected ? [0.95, 1.04, 1] : 1,
             }}
             transition={isSelected
-              ? { scale: { type: 'spring', stiffness: 400, damping: 22 }, opacity: { duration: 0.2 } }
+              ? { scale: { type: 'spring', stiffness: 300, damping: 25 }, opacity: { duration: 0.2 } }
               : { delay: hasSelection ? 0 : i * 0.05, type: 'spring', stiffness: 300, damping: 25, opacity: { duration: 0.15 } }
             }
             whileTap={!hasSelection ? { scale: 0.95 } : undefined}
