@@ -85,6 +85,7 @@
 ## Cycle Log
 | # | Time | Task | Notes |
 |---|------|------|-------|
+| 32 | 2026-03-26 | 200줄+ 컴포넌트 분리 (코드 품질) | SessionDashboard(320→246줄): ClassesTab.jsx 분리. SubmissionPage(428→260줄): SubmissionLanding.jsx + SubmissionAwardsView.jsx 분리. 3개 신규 파일 모두 200줄 미만. 미사용 import 정리 (5파일) |
 | 31 | 2026-03-26 | 페이지/모드 전환 AnimatePresence 애니메이션 | VotePage: 대기→질문→리더보드→특수모드 전환 AnimatePresence mode="wait" + getModeVariants (방향성 있는 spring). App.jsx: JoinPage→VotePage 전환 AnimatePresence. SessionDashboard: 탭 전환 mode="wait"+spring. MobileAdminView: 탭 opacity→spring y (4파일) |
 | 30 | 2026-03-26 | 게임 위너 표시 Avatar 컴포넌트 통일 | Roulette/SlotMachine/Plinko/PrizeDraw/RandomPicker raw 초성 원형 DIV → Avatar. Avatar에 xl(w-20)/2xl(w-32) 사이즈 추가 (5파일) |
 | 29 | 2026-03-26 | Firebase 훅 파생 데이터 메모이제이션 | useHandRaises/useUrgentQuestions/useClassQuestions/useSpeedQuiz — 매 렌더 재계산 연산을 useMemo로 감싸 Firebase 변경 시에만 재실행 (4파일) |
