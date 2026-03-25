@@ -5,7 +5,7 @@ import { logger } from '@/lib/logger';
 import { getParticipantId, getNickname, getLastSeen, saveLastSeen } from '@/lib/participant';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { useStudentDM } from '@/features/dm/api/useDM';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Hand, MessageCircle, MessageSquare, HelpCircle, Headset, Send } from 'lucide-react';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
@@ -18,7 +18,11 @@ import StudentToasts from '@/app/routes/student/StudentToasts';
 import { timing } from '@/lib/design-tokens';
 
 const UNREAD_DOT = 'absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full animate-pulse';
-const BTN = 'h-[56px] rounded-xl bg-slate-50 text-slate-600 font-medium text-sm active:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:active:bg-slate-600 transition-colors duration-150 flex flex-col items-center justify-center gap-1';
+
+// Base button style — 48px+ touch target, consistent look
+const BTN_BASE = 'h-[56px] w-full rounded-xl font-medium text-sm flex flex-col items-center justify-center gap-0.5 transition-colors duration-150 relative active:scale-[0.96]';
+const BTN_DEFAULT = `${BTN_BASE} bg-slate-50 text-slate-600 active:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:active:bg-slate-700`;
+const BTN_ACTIVE = `${BTN_BASE} bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900`;
 
 export default memo(function StudentBottomBar({ sessionId }) {
   const [showQuestionInput, setShowQuestionInput] = useState(false);
@@ -110,32 +114,106 @@ export default memo(function StudentBottomBar({ sessionId }) {
 
       <StudentToasts submitted={submitted} submitError={submitError} />
 
-      <motion.div initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }} role="toolbar" aria-label="참여 도구" className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 z-30">
+      <motion.div
+        initial={{ y: 80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
+        role="toolbar"
+        aria-label="참여 도구"
+        className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 z-30"
+      >
         <div className="max-w-[620px] mx-auto px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
           <ReactionBar sessionId={sessionId} />
           <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
             <div className="grid grid-cols-5 gap-2">
-              <motion.button whileTap={{ scale: 0.96 }} onClick={toggleHand} aria-pressed={isRaised} aria-label={isRaised ? '손 내리기' : '손들기'} className={`h-[56px] rounded-xl font-medium text-sm transition-colors duration-150 flex flex-col items-center justify-center gap-0.5 ${isRaised ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900' : BTN.replace('bg-white ', '')}`}>
-                <motion.div animate={isRaised ? { rotate: [0, -15, 15, -10, 10, 0] } : { rotate: 0 }} transition={isRaised ? { duration: 0.6, repeat: Infinity, repeatDelay: 2 } : {}}>
+
+              {/* 손들기 — raised state has pulsing ring + waving icon */}
+              <motion.button
+                whileTap={{ scale: 0.93 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+                onClick={toggleHand}
+                aria-pressed={isRaised}
+                aria-label={isRaised ? '손 내리기' : '손들기'}
+                className={isRaised ? BTN_ACTIVE : BTN_DEFAULT}
+              >
+                {/* Pulse ring when raised */}
+                <AnimatePresence>
+                  {isRaised && (
+                    <motion.span
+                      key="ring"
+                      initial={{ opacity: 0.6, scale: 0.8 }}
+                      animate={{ opacity: 0, scale: 1.8 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 1.2, repeat: Infinity, ease: 'easeOut' }}
+                      className="absolute inset-0 rounded-xl bg-slate-900 dark:bg-slate-100 pointer-events-none"
+                    />
+                  )}
+                </AnimatePresence>
+                <motion.div
+                  animate={isRaised
+                    ? { rotate: [0, -18, 14, -10, 8, 0], y: [0, -2, 0] }
+                    : { rotate: 0, y: 0 }}
+                  transition={isRaised
+                    ? { duration: 0.7, repeat: Infinity, repeatDelay: 2.5, ease: 'easeInOut' }
+                    : { type: 'spring', stiffness: 300, damping: 25 }}
+                >
                   <Hand size={22} />
                 </motion.div>
                 <span className="text-[11px]">{isRaised ? '내리기' : '손들기'}</span>
               </motion.button>
-              <motion.button whileTap={{ scale: 0.96 }} onClick={() => setShowQuestionInput(true)} aria-label="긴급 질문 보내기" className={BTN}>
-                <MessageCircle size={22} /><span className="text-[11px]">긴급</span>
+
+              {/* 긴급 질문 */}
+              <motion.button
+                whileTap={{ scale: 0.93 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+                onClick={() => setShowQuestionInput(true)}
+                aria-label="긴급 질문 보내기"
+                className={BTN_DEFAULT}
+              >
+                <MessageCircle size={22} />
+                <span className="text-[11px]">긴급</span>
               </motion.button>
-              <motion.button whileTap={{ scale: 0.96 }} onClick={() => { setShowQA(true); setHasNewQuestion(false); }} aria-label="수업 질문" className={`${BTN} relative`}>
-                <HelpCircle size={22} /><span className="text-[11px]">질문</span>
+
+              {/* 수업 질문 */}
+              <motion.button
+                whileTap={{ scale: 0.93 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+                onClick={() => { setShowQA(true); setHasNewQuestion(false); }}
+                aria-label="수업 질문"
+                className={BTN_DEFAULT}
+              >
+                <HelpCircle size={22} />
+                <span className="text-[11px]">질문</span>
                 {hasNewQuestion && <span className={`${UNREAD_DOT} bg-red-500`} />}
               </motion.button>
-              <motion.button whileTap={{ scale: 0.96 }} onClick={() => { setShowChat(true); setHasUnread(false); }} aria-label="채팅 열기" className={`${BTN} relative`}>
-                <MessageSquare size={22} /><span className="text-[11px]">채팅</span>
+
+              {/* 채팅 */}
+              <motion.button
+                whileTap={{ scale: 0.93 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+                onClick={() => { setShowChat(true); setHasUnread(false); }}
+                aria-label="채팅 열기"
+                className={BTN_DEFAULT}
+              >
+                <MessageSquare size={22} />
+                <span className="text-[11px]">채팅</span>
                 {hasUnread && <span className={`${UNREAD_DOT} bg-red-500`} />}
               </motion.button>
-              <motion.button whileTap={{ scale: 0.96 }} onClick={() => {
-                setShowDMChat(true); setDmLastSeen(totalDMMessages); saveLastSeen(sessionId, 'dm', totalDMMessages);
-              }} aria-label="도움 요청" className={`${BTN} relative`}>
-                <Headset size={22} /><span className="text-[11px]">도움</span>
+
+              {/* 도움 요청 */}
+              <motion.button
+                whileTap={{ scale: 0.93 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+                onClick={() => {
+                  setShowDMChat(true);
+                  setDmLastSeen(totalDMMessages);
+                  saveLastSeen(sessionId, 'dm', totalDMMessages);
+                }}
+                aria-label="도움 요청"
+                className={`${BTN_DEFAULT} ${allActiveDMs.length > 0 && dmUnread === 0 ? 'text-emerald-600 dark:text-emerald-400' : ''}`}
+              >
+                <Headset size={22} />
+                <span className="text-[11px]">도움</span>
                 {dmUnread > 0 && (
                   <span className={`${UNREAD_DOT} bg-red-500 flex items-center justify-center`}>
                     <span className="text-white text-[8px] font-bold">{dmUnread}</span>
@@ -145,6 +223,7 @@ export default memo(function StudentBottomBar({ sessionId }) {
                   <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-500 dark:bg-emerald-400" />
                 )}
               </motion.button>
+
             </div>
           </div>
         </div>
