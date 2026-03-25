@@ -16,7 +16,7 @@ export default memo(function LiveHeader({ courseName, roundNumber, count }) {
 
       <div className="flex items-center gap-2">
         {courseName && (
-          <span className="text-slate-500 dark:text-slate-300 text-sm font-medium truncate max-w-[240px]">
+          <span className="text-slate-500 dark:text-slate-300 text-base font-medium truncate max-w-[400px]">
             {courseName}
           </span>
         )}
@@ -46,7 +46,7 @@ export default memo(function LiveHeader({ courseName, roundNumber, count }) {
         >
           {count}
         </motion.span>
-        <span className="text-slate-400 dark:text-slate-500 text-xs">명</span>
+        <span className="text-slate-400 dark:text-slate-500 text-sm">명</span>
       </div>
     </header>
   );

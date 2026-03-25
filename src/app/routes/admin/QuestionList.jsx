@@ -84,19 +84,19 @@ function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView, onActi
               </>
             )}
             {onSaveToLibrary && (
-              <Tooltip label="보관함에 저장"><button onClick={() => onSaveToLibrary(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="보관함에 저장">
+              <Tooltip label="보관함에 저장"><button onClick={() => onSaveToLibrary(qId)} className="p-1.5 rounded-md text-slate-400 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="보관함에 저장">
                 <BookmarkPlus size={12} />
               </button></Tooltip>
             )}
             {onEdit && (
-              <Tooltip label="질문 수정"><button onClick={() => onEdit(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="질문 수정">
+              <Tooltip label="질문 수정"><button onClick={() => onEdit(qId)} className="p-1.5 rounded-md text-slate-400 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="질문 수정">
                 <Pencil size={12} />
               </button></Tooltip>
             )}
-            <Tooltip label="질문 복제"><button onClick={() => onDuplicate(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="질문 복제">
+            <Tooltip label="질문 복제"><button onClick={() => onDuplicate(qId)} className="p-1.5 rounded-md text-slate-400 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="질문 복제">
               <Copy size={12} />
             </button></Tooltip>
-            <Tooltip label="질문 삭제"><button onClick={() => onDelete(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-700 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="질문 삭제">
+            <Tooltip label="질문 삭제"><button onClick={() => onDelete(qId)} className="p-1.5 rounded-md text-slate-400 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-700 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="질문 삭제">
               <Trash2 size={12} />
             </button></Tooltip>
           </div>
