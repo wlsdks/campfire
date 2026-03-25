@@ -85,6 +85,7 @@
 ## Cycle Log
 | # | Time | Task | Notes |
 |---|------|------|-------|
+| 28 | 2026-03-26 | 모바일 voter UX + transition-all 전면 정리 | StudentLiveResults uppercase 제거, OXVoter whileHover 제거+min-h, ChoiceVoter/QuizVoter min-h-[56px], QuizVoter 다크배지 색상 완성, OXBattle transition 정밀화, Card/QACards/QuestionList/SessionList/QuestionLibraryView/JoinPage/StudentBottomBar transition-all→colors (15파일) |
 | 27 | 2026-03-26 | 모바일 바텀시트 UX + spring 프리셋 일관성 | ChatPanel/ClassQAPanel/DMBubble 바텀시트 전환 (y:100%→0 spring, rounded-t-2xl, drag handle), pb-safe 입력영역, ChatMessage/DMMessage/ChoiceVoter spring 프리셋 통일, OXVoter transition-all→transition-colors |
 | 26 | 2026-03-26 | assignments 디자인 시스템 정합성 개선 | shadow-sm+border 이중 깊이 단서 제거 10곳, tracking-tight 추가 4곳, motion.span bounce 숫자 5곳, transition-shadow→transition-colors 2곳, spring 프리셋 1곳 |
 | 25 | 2026-03-26 | 디자인 시스템 spring/transition 규칙 적용 | spring 프리셋 위반 3건(Modal/SpeedQuizCombo/GameResultOverlay) + transition-all→transition-colors 8곳 + DebateVoter tracking-tight |
