@@ -1,7 +1,7 @@
 # Pick UI/UX Improvement Progress
 
 > Auto-updated each cycle. [x] = done, [ ] = pending, [~] = in progress
-> Last updated: 2026-03-19
+> Last updated: 2026-03-26
 
 ## Current: Phase 10 - Continuous Improvement
 
@@ -85,6 +85,7 @@
 ## Cycle Log
 | # | Time | Task | Notes |
 |---|------|------|-------|
+| 26 | 2026-03-26 | assignments 디자인 시스템 정합성 개선 | shadow-sm+border 이중 깊이 단서 제거 10곳, tracking-tight 추가 4곳, motion.span bounce 숫자 5곳, transition-shadow→transition-colors 2곳, spring 프리셋 1곳 |
 | 25 | 2026-03-26 | 디자인 시스템 spring/transition 규칙 적용 | spring 프리셋 위반 3건(Modal/SpeedQuizCombo/GameResultOverlay) + transition-all→transition-colors 8곳 + DebateVoter tracking-tight |
 | 1 | 2026-03-19 | 1.0 Architecture migration | Bulletproof React structure, @ alias, all imports updated, build passing |
 | 2 | 2026-03-19 | 1.1 Deps + fonts + tokens | lucide-react, lottie-react, Pretendard+Inter CDN, design-tokens.js, global CSS |
