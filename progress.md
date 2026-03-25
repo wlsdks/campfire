@@ -85,6 +85,7 @@
 ## Cycle Log
 | # | Time | Task | Notes |
 |---|------|------|-------|
+| 43 | 2026-03-26 | 강사 MobileAdminView 질문 관리 터치 UX 개선 (4파일) | QuickProgressCard: 퀴즈 상태별 컨텍스트 인지 CTA — 일반질문(다음질문/대기화면), 퀴즈미공개(정답공개/대기화면), 퀴즈공개(리더보드/다음질문). min-h-[52px] 모바일 버튼. mobileStickyProgress prop — 스크롤 중에도 컨트롤 sticky 노출. QuestionList 모바일 액션 버튼 min-h-[48px]+rounded-xl+active:scale-[0.96] 48px 터치 타겟 준수. |
 | 42 | 2026-03-26 | 200줄+ 컴포넌트 분리 — CreateSessionModal, ClassQABoard (7파일) | CreateSessionModal(365→179줄): CreateSessionStepCourse(51줄)+CreateSessionStepNewCourse(46줄)+CreateSessionStepConfirm(146줄)로 3스텝 분리. ClassQABoard(313→162줄): QuestionCard(128줄)+AnswerItem(31줄) 분리. Modal/Board는 오케스트레이션만 담당. 빌드 통과, 전 파일 200줄 미만 |
 | 41 | 2026-03-26 | VotePage 컴포넌트 분리 (5파일) | VotePage 448줄→134줄: QuestionCard(59줄) 진행도바+질문카드, ActivePollView(180줄) 활성투표 레이아웃, VoteModeContent(117줄) 모드별 lazy 디스패치, VoteHelpers(97줄) getModeVariants+ENTER_TRANSITION+TimerExpiredOverlay. VotePage는 훅/상태 오케스트레이션만 담당. 빌드 통과, 전 파일 200줄 미만 |
 | 40 | 2026-03-26 | VoteConfirm 축하 애니메이션 강화 (1파일) | ParticleBurst: 8개 도트 방사형 scatter (0.55s, 0.18s 딜레이 stagger). AnimatedCheck: 원형 ring pulse expand (scale 0.6→1.6→fade), 체크원 scale keyframe [0,1.22,0.92,1.06,1] 강한 overshoot, 체크마크 pathLength w7→w8. 텍스트: scale pop keyframe [0.85,1.08,0.97,1] + stagger. 선택 답변: border→ring-1 indigo (anti-AI 패턴 준수). 총 1파일 |
