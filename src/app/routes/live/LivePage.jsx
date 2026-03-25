@@ -16,6 +16,7 @@ import TimerCountdown from '@/features/timer/components/TimerCountdown';
 import Badge from '@/components/ui/Badge';
 import PickMascot from '@/components/ui/PickMascot';
 
+import { useTheme } from '@/hooks/useTheme';
 import LiveHeader from './LiveHeader';
 import LiveParticipation from './LiveParticipation';
 
@@ -83,13 +84,26 @@ export default function LivePage() {
   const isEnded = session?.status === 'ended';
   const hasActiveQuestion = ['poll', 'quiz'].includes(currentMode) && currentQId && question;
 
-  // Apply saved theme (or default to dark for presenter)
+  // Force dark mode for presenter/projector view
+  const { theme: savedTheme, setTheme } = useTheme();
   useEffect(() => {
-    const saved = localStorage.getItem('pinggo_theme');
-    if (!saved) {
-      document.documentElement.classList.add('dark');
+    setTheme('dark');
+    return () => {
+      // Restore user's previous theme preference when leaving live page
+      const prev = localStorage.getItem('pinggo_theme_prev');
+      if (prev) {
+        setTheme(prev);
+        localStorage.removeItem('pinggo_theme_prev');
+      }
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Save previous theme on first mount so we can restore it
+  useEffect(() => {
+    if (savedTheme !== 'dark') {
+      localStorage.setItem('pinggo_theme_prev', savedTheme);
     }
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // No session ID provided
   if (!sessionId) {
