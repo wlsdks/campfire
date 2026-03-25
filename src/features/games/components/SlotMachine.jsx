@@ -197,9 +197,7 @@ export default function SlotMachine({ participants, onResult }) {
             className="relative text-center space-y-4"
           >
             <Suspense fallback={null}><ConfettiBurst /></Suspense>
-            <div className="w-20 h-20 mx-auto rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-3xl font-bold text-slate-900 dark:text-slate-100 ring-4 ring-slate-200 dark:ring-slate-700">
-              {winner.charAt(0).toUpperCase()}
-            </div>
+            <Avatar name={winner} size="xl" className="mx-auto ring-4 ring-slate-200 dark:ring-slate-700" />
             <div className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">{winner}</div>
             <span className="inline-flex items-center px-5 py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-full text-base font-bold">
               777 당첨!

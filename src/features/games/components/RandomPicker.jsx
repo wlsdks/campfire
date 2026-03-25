@@ -95,32 +95,51 @@ export default function RandomPicker({ participants }) {
 
       {/* Name display area */}
       <div className="w-full flex flex-col items-center gap-6">
-        <div className="w-32 h-32 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden">
-          <AnimatePresence mode="wait">
-            {(picking || selected) && (displayName || selected) ? (
-              <motion.div
-                key={displayName || selected}
-                initial={{ opacity: 0, y: picking ? 20 : 0, scale: selected ? 0.8 : 1 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={selected
-                  ? { type: 'spring', stiffness: 400, damping: 22 }
-                  : { duration: 0.06 }
-                }
+        <AnimatePresence mode="wait">
+          {selected ? (
+            <motion.div
+              key="selected-avatar"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+            >
+              <Avatar name={selected} size="2xl" />
+            </motion.div>
+          ) : picking && displayName ? (
+            <motion.div
+              key="cycling"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="w-32 h-32 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden"
+            >
+              <motion.span
+                key={displayName}
+                initial={{ opacity: 0.3 }}
+                animate={{ opacity: 0.6 }}
                 className="text-4xl font-bold text-slate-900 dark:text-slate-100"
               >
-                {(displayName || selected)?.charAt(0)}
-              </motion.div>
-            ) : (
+                {displayName.charAt(0).toUpperCase()}
+              </motion.span>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="idle"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="w-32 h-32 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center"
+            >
               <motion.div
                 animate={{ opacity: [0.5, 1, 0.5] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
                 <UserCircle size={48} className="text-slate-300 dark:text-slate-600" />
               </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Name text */}
         <div className="h-16 flex items-center justify-center">

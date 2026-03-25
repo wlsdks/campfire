@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Gift, Loader2, Minus, Plus } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import Avatar from '@/components/ui/Avatar';
 import ConfettiBurst from '@/components/ui/ConfettiBurst';
 
 function pickWinners(participants, count) {
@@ -53,8 +54,6 @@ const SlotReel = memo(function SlotReel({ names, running, finalName }) {
 });
 
 function WinnerCard({ winner, index, total }) {
-  const initial = (winner.nickname || '?')[0].toUpperCase();
-
   return (
     <motion.div
       initial={{ scale: 0, opacity: 0 }}
@@ -69,9 +68,7 @@ function WinnerCard({ winner, index, total }) {
       data-sound="winner-reveal"
     >
       <ConfettiBurst />
-      <div className="w-16 h-16 rounded-full bg-slate-100 text-slate-900 dark:bg-slate-700 dark:text-slate-100 flex items-center justify-center text-2xl font-bold">
-        {initial}
-      </div>
+      <Avatar name={winner.nickname} size="lg" />
       <span className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">
         {winner.nickname}
       </span>
