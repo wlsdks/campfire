@@ -1,5 +1,5 @@
 import { ref, onValue } from 'firebase/database';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { db } from '@/lib/firebase';
 
 export function useHandRaises(sessionId) {
@@ -14,10 +14,14 @@ export function useHandRaises(sessionId) {
     return () => unsub();
   }, [sessionId]);
 
-  const raisedList = Object.entries(handRaises)
-    .filter(([, data]) => data.raised)
-    .map(([id, data]) => ({ id, ...data }))
-    .sort((a, b) => (a.raisedAt || 0) - (b.raisedAt || 0));
+  const raisedList = useMemo(
+    () =>
+      Object.entries(handRaises)
+        .filter(([, data]) => data.raised)
+        .map(([id, data]) => ({ id, ...data }))
+        .sort((a, b) => (a.raisedAt || 0) - (b.raisedAt || 0)),
+    [handRaises]
+  );
 
   return { handRaises, raisedList, count: raisedList.length };
 }

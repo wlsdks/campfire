@@ -1,5 +1,5 @@
 import { ref, onValue, push, update, remove, serverTimestamp } from 'firebase/database';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
 
@@ -32,24 +32,31 @@ export function useClassQuestions(sessionId) {
   }, [sessionId]);
 
   // Sorted: unanswered first (by upvote count desc), then answered
-  const questions = Object.entries(raw)
-    .map(([id, data]) => ({
-      id,
-      ...data,
-      upvoteCount: data.upvotes ? Object.keys(data.upvotes).length : 0,
-      answerList: data.answers
-        ? Object.entries(data.answers)
-            .map(([aId, a]) => ({ id: aId, ...a, upvoteCount: a.upvotes ? Object.keys(a.upvotes).length : 0 }))
-            .sort((a, b) => b.upvoteCount - a.upvoteCount || (a.timestamp || 0) - (b.timestamp || 0))
-        : [],
-      answerCount: data.answers ? Object.keys(data.answers).length : 0,
-    }))
-    .sort((a, b) => {
-      if (a.answered !== b.answered) return a.answered ? 1 : -1;
-      return b.upvoteCount - a.upvoteCount || (b.timestamp || 0) - (a.timestamp || 0);
-    });
+  const questions = useMemo(
+    () =>
+      Object.entries(raw)
+        .map(([id, data]) => ({
+          id,
+          ...data,
+          upvoteCount: data.upvotes ? Object.keys(data.upvotes).length : 0,
+          answerList: data.answers
+            ? Object.entries(data.answers)
+                .map(([aId, a]) => ({ id: aId, ...a, upvoteCount: a.upvotes ? Object.keys(a.upvotes).length : 0 }))
+                .sort((a, b) => b.upvoteCount - a.upvoteCount || (a.timestamp || 0) - (b.timestamp || 0))
+            : [],
+          answerCount: data.answers ? Object.keys(data.answers).length : 0,
+        }))
+        .sort((a, b) => {
+          if (a.answered !== b.answered) return a.answered ? 1 : -1;
+          return b.upvoteCount - a.upvoteCount || (b.timestamp || 0) - (a.timestamp || 0);
+        }),
+    [raw]
+  );
 
-  const unansweredCount = questions.filter((q) => !q.answered).length;
+  const unansweredCount = useMemo(
+    () => questions.filter((q) => !q.answered).length,
+    [questions]
+  );
 
   const postQuestion = useCallback(
     async (text, nickname, participantId) => {

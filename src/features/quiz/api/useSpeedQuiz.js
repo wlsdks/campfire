@@ -1,5 +1,5 @@
 import { ref, onValue, update, set, remove } from 'firebase/database';
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { db } from '@/lib/firebase';
 import { isQuizQuestion, getQuizReward } from '@/lib/quiz';
 import { logger } from '@/lib/logger';
@@ -259,13 +259,18 @@ export function useSpeedQuiz(sessionId, session, { scores, participants, startTi
     }
   }, [sessionId, stopTimer]);
 
+  // Derive stable counts from the session ref — these only update when session changes.
+  // Using useMemo avoids calling the functions on every render when other state changes.
+  const quizCount = useMemo(() => getQuizQuestions().length, [getQuizQuestions]);
+  const currentQuizIndex = useMemo(() => getCurrentQuizIndex(), [getCurrentQuizIndex]);
+
   return {
     active,
     phase,
     startSpeedQuiz,
     endSpeedQuiz,
-    quizCount: getQuizQuestions().length,
-    currentQuizIndex: getCurrentQuizIndex(),
+    quizCount,
+    currentQuizIndex,
   };
 }
 
