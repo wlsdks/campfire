@@ -85,6 +85,7 @@
 ## Cycle Log
 | # | Time | Task | Notes |
 |---|------|------|-------|
+| 31 | 2026-03-26 | 페이지/모드 전환 AnimatePresence 애니메이션 | VotePage: 대기→질문→리더보드→특수모드 전환 AnimatePresence mode="wait" + getModeVariants (방향성 있는 spring). App.jsx: JoinPage→VotePage 전환 AnimatePresence. SessionDashboard: 탭 전환 mode="wait"+spring. MobileAdminView: 탭 opacity→spring y (4파일) |
 | 30 | 2026-03-26 | 게임 위너 표시 Avatar 컴포넌트 통일 | Roulette/SlotMachine/Plinko/PrizeDraw/RandomPicker raw 초성 원형 DIV → Avatar. Avatar에 xl(w-20)/2xl(w-32) 사이즈 추가 (5파일) |
 | 29 | 2026-03-26 | Firebase 훅 파생 데이터 메모이제이션 | useHandRaises/useUrgentQuestions/useClassQuestions/useSpeedQuiz — 매 렌더 재계산 연산을 useMemo로 감싸 Firebase 변경 시에만 재실행 (4파일) |
 | 28 | 2026-03-26 | 모바일 voter UX + transition-all 전면 정리 | StudentLiveResults uppercase 제거, OXVoter whileHover 제거+min-h, ChoiceVoter/QuizVoter min-h-[56px], QuizVoter 다크배지 색상 완성, OXBattle transition 정밀화, Card/QACards/QuestionList/SessionList/QuestionLibraryView/JoinPage/StudentBottomBar transition-all→colors (15파일) |
