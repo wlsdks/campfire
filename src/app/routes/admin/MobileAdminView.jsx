@@ -164,7 +164,7 @@ export default function MobileAdminView({ s }) {
       <div className="flex-1 overflow-hidden">
         <AnimatePresence mode="wait">
           {activeTab === 'progress' && (
-            <motion.div key="progress" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}
+            <motion.div key="progress" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ type: 'spring', stiffness: 320, damping: 28 }}
               className="h-full overflow-y-auto overscroll-contain scrollbar-hide">
               <div className="bg-white dark:bg-slate-800 p-5 space-y-5">
                 <QuestionManager
@@ -182,7 +182,7 @@ export default function MobileAdminView({ s }) {
           )}
 
           {activeTab === 'results' && (
-            <motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}
+            <motion.div key="results" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ type: 'spring', stiffness: 320, damping: 28 }}
               className="h-full flex flex-col overflow-y-auto overscroll-contain scrollbar-hide">
               <div className="bg-white dark:bg-slate-800 flex-1 p-5 flex flex-col">
                 <CenterContent showCenterForm={s.showCenterForm} onHideCenterForm={s.handleHideCenterForm} onCenterFormSubmit={s.handleCenterFormSubmit} editingQuestion={s.editingQuestion}
@@ -195,7 +195,7 @@ export default function MobileAdminView({ s }) {
           )}
 
           {activeTab === 'participants' && (
-            <motion.div key="participants" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}
+            <motion.div key="participants" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ type: 'spring', stiffness: 320, damping: 28 }}
               className="h-full overflow-y-auto overscroll-contain scrollbar-hide">
               <MobileParticipantsTab sessionId={s.sessionId} onlineList={s.onlineList} count={s.count}
                 studentUrl={s.studentUrl} />
@@ -203,7 +203,7 @@ export default function MobileAdminView({ s }) {
           )}
 
           {activeTab === 'chat' && (
-            <motion.div key="chat" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}
+            <motion.div key="chat" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ type: 'spring', stiffness: 320, damping: 28 }}
               className="h-full">
               <ChatPanel sessionId={s.sessionId} senderName={s.adminUser?.displayName || '강사'} senderType="instructor"
                 open={true} onClose={() => setActiveTab('results')} onNewMessage={handleNewChatMessage}

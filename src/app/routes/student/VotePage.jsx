@@ -43,6 +43,54 @@ import { getParticipantId } from '@/lib/participant';
 import { useQuestionChime } from '@/hooks/useQuestionChime';
 import ReviewingBanner from '@/components/ui/ReviewingBanner';
 
+// --- Mode transition variants ---
+// Direction semantics:
+//   poll/quiz: slide up (content comes from below — new activity)
+//   leaderboard: curtain from top (reveals from above — reward)
+//   games/special: scale-in (dramatic entrance)
+//   waiting: fade (neutral, low-priority)
+//   ended/reviewing: slide up from below (terminal state)
+
+function getModeVariants(modeKey) {
+  if (modeKey === 'leaderboard') {
+    return {
+      initial: { opacity: 0, y: -24 },
+      animate: { opacity: 1, y: 0 },
+      exit:    { opacity: 0, y: 24 },
+    };
+  }
+  if (modeKey === 'ended' || modeKey === 'reviewing') {
+    return {
+      initial: { opacity: 0, y: 24, scale: 0.97 },
+      animate: { opacity: 1, y: 0, scale: 1 },
+      exit:    { opacity: 0, y: -12, scale: 0.98 },
+    };
+  }
+  if (['focus', 'comprehension', 'quickSurvey', 'discussion', 'qaBoard'].includes(modeKey)) {
+    return {
+      initial: { opacity: 0, scale: 0.94 },
+      animate: { opacity: 1, scale: 1 },
+      exit:    { opacity: 0, scale: 1.02 },
+    };
+  }
+  if (modeKey === 'waiting') {
+    return {
+      initial: { opacity: 0, y: 8 },
+      animate: { opacity: 1, y: 0 },
+      exit:    { opacity: 0, y: -8 },
+    };
+  }
+  // poll / quiz
+  return {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    exit:    { opacity: 0, y: -12 },
+  };
+}
+
+// Spring transition used for mode changes (enter feel: ~0.3s)
+const ENTER_TRANSITION = { type: 'spring', stiffness: 280, damping: 26 };
+
 export default memo(function VotePage({ sessionId }) {
   const { session, loading } = useSession(sessionId);
   const { isRunning: timerRunning, endTime, duration } = useTimer(sessionId);
@@ -109,49 +157,124 @@ export default memo(function VotePage({ sessionId }) {
 
   const currentQId = session?.currentQuestion;
   const currentMode = session?.currentMode;
+  const status = session?.status;
 
-  // Show summary card when session is ended
-  if (session?.status === 'ended') {
-    return <Suspense fallback={<SuspenseFallback />}><SessionEndedPage sessionId={sessionId} session={session} /></Suspense>;
+  // Determine current modeKey for AnimatePresence key & variants
+  let modeKey;
+  if (status === 'ended') {
+    modeKey = 'ended';
+  } else if (status === 'reviewing') {
+    modeKey = 'reviewing';
+  } else if (currentMode === 'leaderboard') {
+    modeKey = 'leaderboard';
+  } else if (currentMode === 'focus') {
+    modeKey = 'focus';
+  } else if (currentMode === 'comprehension') {
+    modeKey = 'comprehension';
+  } else if (currentMode === 'quickSurvey') {
+    modeKey = 'quickSurvey';
+  } else if (currentMode === 'discussion') {
+    modeKey = 'discussion';
+  } else if (currentMode === 'qaBoard') {
+    modeKey = 'qaBoard';
+  } else if (['poll', 'quiz'].includes(currentMode) && currentQId && session?.questions?.[currentQId]) {
+    modeKey = `poll-${currentQId}`;
+  } else {
+    modeKey = `waiting-${currentMode || 'idle'}`;
   }
 
-  // Reviewing: show summary + keep bottom bar for questions/chat
-  if (session?.status === 'reviewing') {
-    return (
-      <Suspense fallback={<SuspenseFallback />}>
-        <SessionEndedPage sessionId={sessionId} session={session} reviewing />
-      </Suspense>
-    );
-  }
+  const variants = getModeVariants(
+    modeKey.startsWith('poll-') ? 'poll' :
+    modeKey.startsWith('waiting-') ? 'waiting' : modeKey
+  );
 
-  if (currentMode === 'leaderboard') return <Suspense fallback={<SuspenseFallback />}><LeaderboardPage sessionId={sessionId} /></Suspense>;
-  if (currentMode === 'focus') return <Suspense fallback={<SuspenseFallback />}><FocusOverlay /></Suspense>;
-  if (currentMode === 'comprehension') return <Suspense fallback={<SuspenseFallback />}><ComprehensionCheck sessionId={sessionId} /></Suspense>;
-  if (currentMode === 'quickSurvey') return <Suspense fallback={<SuspenseFallback />}><QuickSurvey sessionId={sessionId} /></Suspense>;
-  if (currentMode === 'discussion') return <Suspense fallback={<SuspenseFallback />}><GroupDiscussion sessionId={sessionId} /></Suspense>;
-  if (currentMode === 'qaBoard') {
-    return (
-      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pb-8 pt-16">
-        <StudentHeader sessionId={sessionId} />
+  // Render content for current mode
+  function renderContent() {
+    if (status === 'ended') {
+      return (
         <Suspense fallback={<SuspenseFallback />}>
-          <ClassQABoard sessionId={sessionId} showInput />
+          <SessionEndedPage sessionId={sessionId} session={session} />
         </Suspense>
-      </div>
-    );
-  }
-  if (!['poll', 'quiz'].includes(currentMode) || !currentQId) {
-    return <WaitingPage sessionId={sessionId} pendingEvent={session?.pendingEvent || null} courseName={session?.courseName} currentMode={currentMode} />;
-  }
+      );
+    }
 
-  const question = session?.questions?.[currentQId];
+    if (status === 'reviewing') {
+      return (
+        <Suspense fallback={<SuspenseFallback />}>
+          <SessionEndedPage sessionId={sessionId} session={session} reviewing />
+        </Suspense>
+      );
+    }
 
-  if (!question) return <WaitingPage sessionId={sessionId} pendingEvent={session?.pendingEvent || null} courseName={session?.courseName} currentMode={currentMode} />;
+    if (currentMode === 'leaderboard') {
+      return (
+        <Suspense fallback={<SuspenseFallback />}>
+          <LeaderboardPage sessionId={sessionId} />
+        </Suspense>
+      );
+    }
 
-  return (
-    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center px-5 pb-40 pt-16">
-      <StudentHeader sessionId={sessionId} />
+    if (currentMode === 'focus') {
+      return (
+        <Suspense fallback={<SuspenseFallback />}>
+          <FocusOverlay />
+        </Suspense>
+      );
+    }
 
-      <div className="w-full max-w-xl space-y-5">
+    if (currentMode === 'comprehension') {
+      return (
+        <Suspense fallback={<SuspenseFallback />}>
+          <ComprehensionCheck sessionId={sessionId} />
+        </Suspense>
+      );
+    }
+
+    if (currentMode === 'quickSurvey') {
+      return (
+        <Suspense fallback={<SuspenseFallback />}>
+          <QuickSurvey sessionId={sessionId} />
+        </Suspense>
+      );
+    }
+
+    if (currentMode === 'discussion') {
+      return (
+        <Suspense fallback={<SuspenseFallback />}>
+          <GroupDiscussion sessionId={sessionId} />
+        </Suspense>
+      );
+    }
+
+    if (currentMode === 'qaBoard') {
+      return (
+        <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pb-8 pt-16">
+          <StudentHeader sessionId={sessionId} />
+          <Suspense fallback={<SuspenseFallback />}>
+            <ClassQABoard sessionId={sessionId} showInput />
+          </Suspense>
+        </div>
+      );
+    }
+
+    const question = session?.questions?.[currentQId];
+    if (!['poll', 'quiz'].includes(currentMode) || !currentQId || !question) {
+      return (
+        <WaitingPage
+          sessionId={sessionId}
+          pendingEvent={session?.pendingEvent || null}
+          courseName={session?.courseName}
+          currentMode={currentMode}
+        />
+      );
+    }
+
+    // Active poll/quiz view
+    return (
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center px-5 pb-40 pt-16">
+        <StudentHeader sessionId={sessionId} />
+
+        <div className="w-full max-w-xl space-y-5">
           {/* Speed quiz banner */}
           {isSpeedQuiz && question?.type === 'quiz' && (
             <SpeedQuizBanner
@@ -295,11 +418,31 @@ export default memo(function VotePage({ sessionId }) {
             </motion.div>
            </AnimatePresence>
           </ErrorBoundary>
-      </div>
+        </div>
 
-      <ReviewingBanner sessionId={sessionId} />
-      <StudentBottomBar sessionId={sessionId} />
+        <ReviewingBanner sessionId={sessionId} />
+        <StudentBottomBar sessionId={sessionId} />
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={modeKey}
+          initial={variants.initial}
+          animate={variants.animate}
+          exit={variants.exit}
+          transition={ENTER_TRANSITION}
+          style={{ willChange: 'transform, opacity' }}
+        >
+          {renderContent()}
+        </motion.div>
+      </AnimatePresence>
+
+      {/* AchievementToast is persistent — outside AnimatePresence to avoid re-mounting on mode change */}
       <AchievementToast achievements={achievements} />
-    </div>
+    </>
   );
 });

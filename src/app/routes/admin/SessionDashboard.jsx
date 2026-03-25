@@ -167,8 +167,9 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
           </div>
         </LayoutGroup>
 
+        <AnimatePresence mode="wait">
           {activeTab === 'classes' && (
-            <motion.div key="classes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }} className="space-y-4">
+            <motion.div key="classes" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ type: 'spring', stiffness: 300, damping: 26 }} className="space-y-4">
               {loading ? (
                 <div className="space-y-4">
                   {[1, 2, 3].map((i) => (
@@ -262,7 +263,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
             </motion.div>
           )}
           {activeTab === 'history' && (
-            <motion.div key="history" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }}>
+            <motion.div key="history" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ type: 'spring', stiffness: 300, damping: 26 }}>
               {loading ? (
                 <div className="flex flex-col items-center justify-center py-16 gap-3"><PickMascot size="sm" mood="thinking" /><p className="text-sm text-slate-400">불러오는 중...</p></div>
               ) : (
@@ -273,24 +274,27 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
             </motion.div>
           )}
           {activeTab === 'library' && (
-            <motion.div key="library" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }}>
+            <motion.div key="library" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ type: 'spring', stiffness: 300, damping: 26 }}>
               <Suspense fallback={<SuspenseFallback fullPage={false} />}>
                 <QuestionLibraryView adminUid={adminUser?.uid} />
               </Suspense>
             </motion.div>
           )}
           {activeTab === 'assignments' && (
-            <Suspense fallback={<SuspenseFallback fullPage={false} />}>
-              <AssignmentsTab sessions={sessions} />
-            </Suspense>
+            <motion.div key="assignments" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ type: 'spring', stiffness: 300, damping: 26 }}>
+              <Suspense fallback={<SuspenseFallback fullPage={false} />}>
+                <AssignmentsTab sessions={sessions} />
+              </Suspense>
+            </motion.div>
           )}
           {activeTab === 'more' && (
-            <motion.div key="more" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.15 }}>
+            <motion.div key="more" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ type: 'spring', stiffness: 300, damping: 26 }}>
               <Suspense fallback={<SuspenseFallback fullPage={false} />}>
                 <MoreView adminUser={adminUser} sessions={sessions} />
               </Suspense>
             </motion.div>
           )}
+        </AnimatePresence>
       </div>
 
       <CreateSessionModal open={modalOpen} onClose={() => setModalOpen(false)} onCreated={handleCreated} sessions={sessions} />

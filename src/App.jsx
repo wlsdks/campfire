@@ -1,7 +1,7 @@
 import { onDisconnect, ref, set, serverTimestamp } from 'firebase/database';
 import { BrowserRouter, Routes, Route, useSearchParams } from 'react-router-dom';
 import { lazy, Suspense, useEffect, useState } from 'react';
-import { motion, MotionConfig } from 'framer-motion';
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import PickMascot from '@/components/ui/PickMascot';
 import JoinPage from '@/app/routes/student/JoinPage';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
@@ -90,23 +90,38 @@ function StudentRouter() {
     );
   }
 
-  if (!joined) {
-    return (
-      <JoinPage
-        key={sessionId}
-        sessionId={sessionId}
-        onJoin={(participantId) => {
-          markSessionJoined(sessionId, participantId);
-          setJoined(true);
-        }}
-      />
-    );
-  }
-
   return (
-    <Suspense fallback={<SuspenseFallback />}>
-      <VotePage key={sessionId} sessionId={sessionId} />
-    </Suspense>
+    <AnimatePresence mode="wait">
+      {!joined ? (
+        <motion.div
+          key="join"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20, scale: 0.97 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 26 }}
+        >
+          <JoinPage
+            sessionId={sessionId}
+            onJoin={(participantId) => {
+              markSessionJoined(sessionId, participantId);
+              setJoined(true);
+            }}
+          />
+        </motion.div>
+      ) : (
+        <motion.div
+          key="vote"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 280, damping: 26 }}
+        >
+          <Suspense fallback={<SuspenseFallback />}>
+            <VotePage key={sessionId} sessionId={sessionId} />
+          </Suspense>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
