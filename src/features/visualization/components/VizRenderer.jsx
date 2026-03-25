@@ -7,6 +7,7 @@ import ScaleChart from './ScaleChart';
 import DebateChart from './DebateChart';
 import RankingChart from './RankingChart';
 import FillBlankChart from './FillBlankChart';
+import CheckProgress from './CheckProgress';
 import BetDistribution from './BetDistribution';
 import ConfidenceStats from './ConfidenceStats';
 import Badge from '@/components/ui/Badge';
@@ -117,6 +118,7 @@ export default memo(function VizRenderer({ sessionId, session }) {
               revealed={answerRevealed}
             />
           )}
+          {question.type === 'check' && <CheckProgress sessionId={sessionId} questionId={currentQId} />}
           {isQA && <QACards sessionId={sessionId} questionId={currentQId} title={question.title} />}
         </div>
       </ErrorBoundary>

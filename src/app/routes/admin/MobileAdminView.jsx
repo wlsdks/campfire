@@ -172,6 +172,7 @@ export default function MobileAdminView({ s }) {
                   scores={s.scores} participants={s.participants} pendingEvent={null} readOnly={s.effectiveReadOnly}
                   formOpen={s.showCenterForm}
                   onAddClick={s.effectiveReadOnly ? undefined : () => { s.handleShowCenterForm(); setActiveTab('results'); }}
+                  onEditClick={s.effectiveReadOnly ? undefined : (qId) => { s.handleEditQuestion(qId); setActiveTab('results'); }}
                   onViewQuestion={(qId) => { s.handleViewQuestion(qId); setActiveTab('results'); }}
                   adminUid={s.adminUser?.uid}
                   speedQuizActive={s.speedQuizActive} onStartSpeedQuiz={s.startSpeedQuiz} onEndSpeedQuiz={s.endSpeedQuiz} speedQuizCount={s.speedQuizCount}
@@ -184,7 +185,7 @@ export default function MobileAdminView({ s }) {
             <motion.div key="results" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }}
               className="h-full flex flex-col overflow-y-auto overscroll-contain scrollbar-hide">
               <div className="bg-white dark:bg-slate-800 flex-1 p-5 flex flex-col">
-                <CenterContent showCenterForm={s.showCenterForm} onHideCenterForm={s.handleHideCenterForm} onCenterFormSubmit={s.handleCenterFormSubmit}
+                <CenterContent showCenterForm={s.showCenterForm} onHideCenterForm={s.handleHideCenterForm} onCenterFormSubmit={s.handleCenterFormSubmit} editingQuestion={s.editingQuestion}
                   effectiveReadOnly={s.effectiveReadOnly} session={s.session} currentMode={currentMode} sessionId={s.sessionId}
                   onlineList={s.onlineList} leaderboard={s.leaderboard} drawParticipants={s.drawParticipants}
                   participants={s.participants} scores={s.scores} count={s.count}

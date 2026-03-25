@@ -1,9 +1,9 @@
 /**
- * 놀뭐클 바이브코딩 수업용 세션 생성
+ * 놀뭐클 바이브코딩 수업용 — DB 초기화 + 세션 생성
  * Run: node scripts/seed-vibe-class.mjs
  *
- * 강의명: 바이브코딩으로 나만의 서비스 만들기
- * 퀴즈/문항: 프레젠테이션 흐름에 맞춘 8개 문항
+ * 1) 기존 sessions, courseTemplates, questionLibrary 전체 삭제
+ * 2) "바이브코딩으로 나만의 서비스 만들기" 1차 세션 생성
  */
 
 const DB_URL = 'https://jinan-6c884-default-rtdb.asia-southeast1.firebasedatabase.app';
@@ -13,7 +13,6 @@ function sid() { return `s_${uid()}`; }
 function qid() { return `q_${uid()}`; }
 
 const sessionId = sid();
-
 const questions = {};
 let order = 1;
 
@@ -22,87 +21,191 @@ function addQuestion(q) {
   questions[id] = { ...q, order: order++ };
 }
 
-// ===== 1. 아이스 브레이킹 퀴즈 (p2) =====
+// ═══════════════════════════════════════════════════
+// 퀴즈 1: 아이스브레이킹 — 오늘 주제 감잡기 (2문항)
+// ═══════════════════════════════════════════════════
+
 addQuestion({
-  title: 'ChatGPT 출시 후 100만 사용자 도달까지 걸린 시간은?',
+  title: '"바이브코딩(Vibe Coding)"이라는 용어를 처음 사용한 사람은?',
   type: 'quiz',
-  options: ['1주일', '5일', '1년', '3개월'],
-  correctAnswer: '5일',
+  options: ['일론 머스크', '샘 알트만', '안드레이 카파시', '빌 게이츠'],
+  correctAnswer: '안드레이 카파시',
   timer: 15,
 });
 
 addQuestion({
-  title: '2025년 기준 전 세계에서 가장 많이 쓰이는 AI 도구는?',
-  type: 'quiz',
-  options: ['ChatGPT', 'Claude', 'Copilot', 'Gemini'],
-  correctAnswer: 'ChatGPT',
-  timer: 15,
-});
-
-// ===== 2. 바이브코딩 개념 퀴즈 (p10) =====
-addQuestion({
-  title: '바이브코딩에서 가장 중요한 것은?',
-  type: 'quiz',
-  options: ['코딩 실력', '아이디어와 설명 능력', '수학 능력', '디자인 실력'],
-  correctAnswer: '아이디어와 설명 능력',
-  timer: 15,
-});
-
-// ===== 3. OX 퀴즈 — 바이브코딩 실무 활용 (p14) =====
-addQuestion({
-  title: '바이브코딩으로 만든 서비스는 실제 업무에 쓸 수 없다',
-  type: 'ox',
-  correctAnswer: 'X',
-  timer: 10,
-});
-
-// ===== 4. Claude/GPT 관련 퀴즈 (p19) =====
-addQuestion({
-  title: 'Claude Desktop에서 바이브코딩을 하려면 상단에서 어떤 모드를 선택해야 할까요?',
-  type: 'quiz',
-  options: ['Chat', 'Code', 'Search', 'Write'],
-  correctAnswer: 'Code',
-  timer: 15,
-});
-
-addQuestion({
-  title: 'AI에게 요청할 때 가장 중요한 원칙은?',
+  title: '바이브코딩의 핵심은?',
   type: 'quiz',
   options: [
-    '짧게 요청한다',
+    '코드를 직접 타이핑하는 것',
+    '자연어로 AI에게 설명하면 코드가 만들어지는 것',
+    '디자인 툴로 화면을 그리는 것',
+    '기존 코드를 복사하는 것',
+  ],
+  correctAnswer: '자연어로 AI에게 설명하면 코드가 만들어지는 것',
+  timer: 15,
+});
+
+// ═══════════════════════════════════════════════════
+// 세팅 완료 체크
+// ═══════════════════════════════════════════════════
+
+addQuestion({
+  title: '세팅 완료 체크 — Claude Desktop 앱 열고, 로그인하고, Code 모드 선택까지 완료되면 체크해주세요',
+  type: 'check',
+});
+
+// ═══════════════════════════════════════════════════
+// 퀴즈 2: 바이브코딩 개념 확인 (2문항)
+// ═══════════════════════════════════════════════════
+
+addQuestion({
+  title: '바이브코딩으로 만들 수 없는 것은?',
+  type: 'quiz',
+  options: ['웹사이트', '앱', '자동화 도구', '남자/여자 친구'],
+  correctAnswer: '남자/여자 친구',
+  timer: 15,
+});
+
+addQuestion({
+  title: '바이브코딩을 하려면 가장 먼저 필요한 것은?',
+  type: 'quiz',
+  options: ['코딩 실력', 'AI 도구', '영어 실력', '개발 경력'],
+  correctAnswer: 'AI 도구',
+  timer: 15,
+});
+
+// ═══════════════════════════════════════════════════
+// Part 1 실습 (실습 1~3: 말로만 만들어보기)
+// ═══════════════════════════════════════════════════
+
+addQuestion({
+  title: '실습 1 완료 체크 — 나만의 디지털 명함 웹페이지를 만들어보셨으면 체크해주세요',
+  type: 'check',
+});
+
+addQuestion({
+  title: '실습 2 완료 체크 — 우리 팀 칭찬 생성기를 만들어보셨으면 체크해주세요',
+  type: 'check',
+});
+
+addQuestion({
+  title: '실습 3 완료 체크 — 나의 MBTI 동물 뽑기를 만들어보셨으면 체크해주세요',
+  type: 'check',
+});
+
+// ═══════════════════════════════════════════════════
+// 퀴즈 3: 바이브코딩의 가치 (1문항)
+// ═══════════════════════════════════════════════════
+
+addQuestion({
+  title: '다음 중 바이브코딩이 가장 빛나는 순간은?',
+  type: 'quiz',
+  options: [
+    '코드를 직접 짤 때',
+    '아이디어를 빠르게 현실로 만들 때',
+    '개발자한테 맡길 때',
+    '기획서 쓸 때',
+  ],
+  correctAnswer: '아이디어를 빠르게 현실로 만들 때',
+  timer: 15,
+});
+
+// ═══════════════════════════════════════════════════
+// Part 1 실습 (실습 4~8: 데이터 활용)
+// ═══════════════════════════════════════════════════
+
+addQuestion({
+  title: '실습 4 완료 체크 — 포케지수 대시보드를 만들어보셨으면 체크해주세요',
+  type: 'check',
+});
+
+addQuestion({
+  title: '실습 5 완료 체크 — 대시보드에 팀별 필터/랭킹 기능을 추가해보셨으면 체크해주세요',
+  type: 'check',
+});
+
+addQuestion({
+  title: '실습 6 완료 체크 — 클로드랑 문답하며 대시보드를 개선해보셨으면 체크해주세요',
+  type: 'check',
+});
+
+addQuestion({
+  title: '실습 7 완료 체크 — 날것 데이터 vs 정돈된 데이터 비교를 해보셨으면 체크해주세요',
+  type: 'check',
+});
+
+addQuestion({
+  title: '실습 8 완료 체크 — 프로젝트 진행률 체커를 만들어보셨으면 체크해주세요',
+  type: 'check',
+});
+
+// ═══════════════════════════════════════════════════
+// 퀴즈 4: Part 1 마무리 (3문항)
+// ═══════════════════════════════════════════════════
+
+addQuestion({
+  title: '바이브코딩과 챗봇의 가장 큰 차이는?',
+  type: 'quiz',
+  options: [
+    '사용하는 AI가 다르다',
+    '대화로 끝나느냐, 결과물이 생기느냐',
+    '영어로 써야 한다',
+    '코딩 실력이 필요하다',
+  ],
+  correctAnswer: '대화로 끝나느냐, 결과물이 생기느냐',
+  timer: 15,
+});
+
+addQuestion({
+  title: 'AI에게 더 좋은 결과물을 받으려면?',
+  type: 'quiz',
+  options: [
+    '짧게 한 줄로 요청한다',
     '영어로 요청한다',
-    '구체적인 맥락을 준다',
-    '한 번에 모든 걸 요청한다',
+    '궁금한 건 AI한테 질문하게 유도한다',
+    '여러 번 새로 시작한다',
   ],
-  correctAnswer: '구체적인 맥락을 준다',
+  correctAnswer: '궁금한 건 AI한테 질문하게 유도한다',
   timer: 15,
 });
 
-// ===== 5. 프롬프트 품질 퀴즈 (p37) =====
 addQuestion({
-  title: '다음 중 AI에게 가장 좋은 요청은?',
+  title: '데이터 품질이 중요한 이유는?',
   type: 'quiz',
   options: [
-    '이 대시보드 개선해줘',
-    '이 대시보드 개선해줘. 궁금한 건 나한테 질문해도 좋아',
-    '대시보드 만들어줘',
-    '좋은 대시보드 보여줘',
+    'AI가 한글을 못 읽어서',
+    '데이터가 정돈될수록 AI 결과물도 정확해져서',
+    '날것 데이터는 업로드가 안 돼서',
+    '파일 크기가 커서',
   ],
-  correctAnswer: '이 대시보드 개선해줘. 궁금한 건 나한테 질문해도 좋아',
-  timer: 20,
+  correctAnswer: '데이터가 정돈될수록 AI 결과물도 정확해져서',
+  timer: 15,
 });
 
-// ===== 6. 실습 전 마무리 — 감정 온도계 (수업 이해도) =====
+// ═══════════════════════════════════════════════════
+// Part 2 실습 (기획 → 바이브코딩 → 평가)
+// ═══════════════════════════════════════════════════
+
 addQuestion({
-  title: '지금까지 설명한 바이브코딩, 얼마나 이해되셨나요?',
-  type: 'scale',
-  scaleMin: 1,
-  scaleMax: 5,
-  scaleMinLabel: '아직 모르겠어요',
-  scaleMaxLabel: '완전 이해!',
+  title: '실습 1단계 완료 체크 — PRD 작성 완료되셨으면 체크해주세요 (AI와 대화하며 배경/문제/기능 정의)',
+  type: 'check',
 });
 
-// ===== 세션 데이터 =====
+addQuestion({
+  title: '실습 2단계 완료 체크 — 나만의 문제를 정의하고 PRD를 만들어보셨으면 체크해주세요',
+  type: 'check',
+});
+
+addQuestion({
+  title: '실습 3단계 완료 체크 — AI 평가 & 개선점 찾기까지 완료되셨으면 체크해주세요',
+  type: 'check',
+});
+
+// ═══════════════════════════════════════════════════
+// 세션 데이터
+// ═══════════════════════════════════════════════════
+
 const sessionData = {
   status: 'setting',
   currentQuestion: null,
@@ -113,35 +216,68 @@ const sessionData = {
   questions,
 };
 
-// ===== Firebase에 저장 =====
-async function seed() {
-  console.log(`세션 ID: ${sessionId}`);
-  console.log(`문항 수: ${Object.keys(questions).length}`);
-  console.log('');
+// ═══════════════════════════════════════════════════
+// 실행
+// ═══════════════════════════════════════════════════
 
-  Object.entries(questions).forEach(([id, q]) => {
-    console.log(`  ${q.order}. [${q.type}] ${q.title}`);
-    if (q.correctAnswer) console.log(`     정답: ${q.correctAnswer}`);
-  });
-
-  console.log('');
-  console.log('Firebase에 저장 중...');
-
-  const res = await fetch(`${DB_URL}/sessions/${sessionId}.json`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(sessionData),
-  });
-
-  if (!res.ok) {
-    console.error('저장 실패:', await res.text());
-    process.exit(1);
-  }
-
-  console.log('저장 완료!');
-  console.log('');
-  console.log(`접속 URL: https://jinan-6c884.web.app/?s=${sessionId}`);
-  console.log(`관리자: https://jinan-6c884.web.app/admin?s=${sessionId}`);
+async function fbDelete(path) {
+  const res = await fetch(`${DB_URL}/${path}.json`, { method: 'DELETE' });
+  if (!res.ok) throw new Error(`DELETE ${path} 실패: ${await res.text()}`);
 }
 
-seed();
+async function fbGet(path) {
+  const res = await fetch(`${DB_URL}/${path}.json?shallow=true`);
+  if (!res.ok) return null;
+  return res.json();
+}
+
+async function fbPut(path, data) {
+  const res = await fetch(`${DB_URL}/${path}.json`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error(`PUT ${path} 실패: ${await res.text()}`);
+}
+
+async function deleteAllChildren(parentPath) {
+  const keys = await fbGet(parentPath);
+  if (!keys) return 0;
+  const ids = Object.keys(keys);
+  await Promise.all(ids.map((id) => fbDelete(`${parentPath}/${id}`)));
+  return ids.length;
+}
+
+async function seed() {
+  console.log('═══ 놀뭐클 바이브코딩 세션 세팅 ═══\n');
+
+  // 1) 기존 데이터 삭제 (개별 키 단위)
+  console.log('1) 기존 데이터 삭제 중...');
+  const [sDel, cDel, qDel] = await Promise.all([
+    deleteAllChildren('sessions'),
+    deleteAllChildren('courseTemplates'),
+    deleteAllChildren('questionLibrary'),
+  ]);
+  console.log(`   sessions(${sDel}), courseTemplates(${cDel}), questionLibrary(${qDel}) 삭제 완료\n`);
+
+  // 2) 새 세션 생성
+  console.log(`2) 세션 생성: ${sessionId}`);
+  console.log(`   강의: ${sessionData.courseName}`);
+  console.log(`   문항: ${Object.keys(questions).length}개\n`);
+
+  Object.entries(questions).forEach(([, q]) => {
+    console.log(`   ${q.order}. [${q.type}] ${q.title}`);
+    if (q.correctAnswer) console.log(`      → 정답: ${q.correctAnswer}`);
+  });
+
+  await fbPut(`sessions/${sessionId}`, sessionData);
+
+  console.log('\n저장 완료!\n');
+  console.log(`학생 URL: https://jinan-6c884.web.app/?s=${sessionId}`);
+  console.log(`관리자:   https://jinan-6c884.web.app/admin?s=${sessionId}`);
+}
+
+seed().catch((err) => {
+  console.error('오류:', err.message);
+  process.exit(1);
+});

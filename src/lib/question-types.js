@@ -1,4 +1,4 @@
-import { ArrowUpDown, BarChart3, Circle, Cloud, MessageSquare, Swords, TextCursorInput, Thermometer, Trophy } from 'lucide-react';
+import { ArrowUpDown, BarChart3, CheckCircle, Circle, Cloud, MessageSquare, Swords, TextCursorInput, Thermometer, Trophy } from 'lucide-react';
 
 /**
  * Canonical question type definitions.
@@ -15,6 +15,7 @@ export const QUESTION_TYPES = [
   { value: 'debate', label: '찬반 토론', icon: Swords },
   { value: 'ranking', label: '순위 맞추기', icon: ArrowUpDown },
   { value: 'fillinblank', label: '빈칸 채우기', icon: TextCursorInput },
+  { value: 'check', label: '실습 체크', icon: CheckCircle },
 ];
 
 /**

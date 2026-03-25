@@ -97,6 +97,58 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     }
   }, [sessionId]);
 
+  async function updateQuestion(qId, { type, title, options: cleanOptions, correctAnswer, points, event, betting }) {
+    try {
+      setError(null);
+      const existing = questions?.[qId];
+      if (!existing) return false;
+
+      const questionData = { ...existing, type, title: title.trim() };
+      // Remove stale fields that may not apply to new type
+      delete questionData.options;
+      delete questionData.correctAnswer;
+      delete questionData.points;
+      delete questionData.participationTickets;
+      delete questionData.correctBonusTickets;
+      delete questionData.speedWindowMs;
+      delete questionData.maxSpeedBonus;
+      delete questionData.event;
+      delete questionData.betting;
+
+      const isChoiceLike = type === 'choice' || type === 'quiz';
+      if (isChoiceLike) {
+        questionData.options = cleanOptions;
+        questionData.correctAnswer = cleanOptions.includes(correctAnswer) ? correctAnswer : cleanOptions[0];
+      }
+      if (type === 'ranking') {
+        questionData.options = cleanOptions;
+        questionData.correctAnswer = cleanOptions.map((_, i) => String(i)).join(',');
+      }
+      if (type === 'fillinblank') {
+        questionData.correctAnswer = correctAnswer?.trim() || '';
+      }
+      if (type === 'ox') {
+        questionData.correctAnswer = correctAnswer || 'O';
+      }
+      if (type === 'quiz') {
+        questionData.points = points || QUIZ_DEFAULTS.points;
+        questionData.participationTickets = QUIZ_DEFAULTS.participationTickets;
+        questionData.correctBonusTickets = QUIZ_DEFAULTS.correctBonusTickets;
+        questionData.speedWindowMs = QUIZ_DEFAULTS.speedWindowMs;
+        questionData.maxSpeedBonus = QUIZ_DEFAULTS.maxSpeedBonus;
+        if (event) questionData.event = event;
+        if (betting) questionData.betting = true;
+      }
+
+      await set(ref(db, `sessions/${sessionId}/questions/${qId}`), questionData);
+      showToast('질문이 수정되었습니다');
+      return true;
+    } catch {
+      setError('질문 수정에 실패했습니다. 다시 시도해주세요.');
+      return false;
+    }
+  }
+
   async function deleteQuestion(qId) {
     try {
       await remove(ref(db, `sessions/${sessionId}/questions/${qId}`));
@@ -251,6 +303,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     showToast,
     questionList,
     handleSubmit,
+    updateQuestion,
     activateQuestion,
     clearActive,
     deleteQuestion,

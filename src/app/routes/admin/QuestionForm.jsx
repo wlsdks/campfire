@@ -15,14 +15,17 @@ import {
 
 const INPUT = 'w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors duration-150';
 
-export default function QuestionForm({ onSubmit, onCancel, error }) {
-  const [type, setType] = useState('choice');
-  const [title, setTitle] = useState('');
-  const [options, setOptions] = useState(['', '']);
-  const [correctAnswer, setCorrectAnswer] = useState('');
-  const [points, setPoints] = useState(QUIZ_DEFAULTS.points);
-  const [event, setEvent] = useState(null);
-  const [betting, setBetting] = useState(false);
+export default function QuestionForm({ onSubmit, onCancel, error, initialData }) {
+  const isEdit = !!initialData;
+  const [type, setType] = useState(initialData?.type || 'choice');
+  const [title, setTitle] = useState(initialData?.title || '');
+  const [options, setOptions] = useState(
+    initialData?.options?.length ? [...initialData.options] : ['', '']
+  );
+  const [correctAnswer, setCorrectAnswer] = useState(initialData?.correctAnswer || '');
+  const [points, setPoints] = useState(initialData?.points || QUIZ_DEFAULTS.points);
+  const [event, setEvent] = useState(initialData?.event || null);
+  const [betting, setBetting] = useState(initialData?.betting || false);
   const [localError, setLocalError] = useState(null);
 
   const isChoiceLike = type === 'choice' || type === 'quiz';
@@ -81,7 +84,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
         <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">질문 내용</p>
         <textarea value={title}
           onChange={(e) => { setTitle(e.target.value); setLocalError(null); }}
-          placeholder={isFillInBlank ? 'HTTP 상태코드 ___는 페이지를 찾을 수 없음을 의미한다' : '학생들에게 보여줄 질문을 입력하세요'}
+          placeholder={isFillInBlank ? 'HTTP 상태코드 ___는 페이지를 찾을 수 없음을 의미한다' : type === 'check' ? '실습을 완료하셨으면 체크해주세요' : '학생들에게 보여줄 질문을 입력하세요'}
           aria-label="질문 내용" rows={3}
           className={`${INPUT} resize-none text-base leading-relaxed`} autoFocus />
       </div>
@@ -125,7 +128,7 @@ export default function QuestionForm({ onSubmit, onCancel, error }) {
       {/* Buttons */}
       <div className="flex gap-3 pt-4">
         <Button onClick={onCancel} variant="secondary" size="md" className="flex-1">취소</Button>
-        <Button onClick={handleAdd} variant="primary" size="md" className="flex-[2]">추가하기</Button>
+        <Button onClick={handleAdd} variant="primary" size="md" className="flex-[2]">{isEdit ? '수정하기' : '추가하기'}</Button>
       </div>
     </div>
   );

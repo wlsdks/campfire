@@ -20,6 +20,7 @@ export default function QuestionManager({
   scores = {},
   participants = {},
   onAddClick,
+  onEditClick,
   onCollapse,
   readOnly = false,
   onViewQuestion,
@@ -143,7 +144,8 @@ export default function QuestionManager({
       <QuestionList
         questionList={questionList} currentQuestion={currentQuestion}
         onActivate={handleActivate} onReveal={revealQuiz} onShowLeaderboard={showLeaderboard}
-        onClearActive={clearActive} onDuplicate={duplicateQuestion} onDelete={deleteQuestion}
+        onClearActive={clearActive} onEdit={!readOnly ? (onEditClick || undefined) : undefined}
+        onDuplicate={duplicateQuestion} onDelete={deleteQuestion}
         onReorder={reorderQuestion}
         onMoveUp={(qId) => moveQuestion(qId, 'up')} onMoveDown={(qId) => moveQuestion(qId, 'down')}
         readOnly={readOnly} onView={readOnly ? onViewQuestion : undefined}

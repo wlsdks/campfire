@@ -8,6 +8,7 @@ import ScaleVoter from '@/features/voting/components/ScaleVoter';
 import DebateVoter from '@/features/voting/components/DebateVoter';
 import RankingVoter from '@/features/voting/components/RankingVoter';
 import FillBlankVoter from '@/features/voting/components/FillBlankVoter';
+import CheckVoter from '@/features/voting/components/CheckVoter';
 import WaitingPage from './WaitingPage';
 import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
@@ -40,7 +41,6 @@ import TeamBadge from '@/features/teams/components/TeamBadge';
 import { useMyTeam } from '@/features/teams/api/useTeamBattle';
 import { getParticipantId } from '@/lib/participant';
 import { useQuestionChime } from '@/hooks/useQuestionChime';
-import { isQuizQuestion } from '@/lib/quiz';
 import ReviewingBanner from '@/components/ui/ReviewingBanner';
 
 export default memo(function VotePage({ sessionId }) {
@@ -48,9 +48,8 @@ export default memo(function VotePage({ sessionId }) {
   const { isRunning: timerRunning, endTime, duration } = useTimer(sessionId);
   const [timerExpired, setTimerExpired] = useState(false);
 
-  // Play chime when a new question activates (+ tension BGM for quiz questions)
-  const currentQ = session?.questions?.[session?.currentQuestion];
-  useQuestionChime(session?.currentQuestion, isQuizQuestion(currentQ), !!currentQ?.revealedAt);
+  // Play chime when a new question activates
+  useQuestionChime(session?.currentQuestion);
 
   const handleTimerExpire = useCallback(() => {
     setTimerExpired(true);
@@ -284,6 +283,9 @@ export default memo(function VotePage({ sessionId }) {
                   correctAnswer={question.correctAnswer}
                   disabled={timerExpired}
                 />
+              )}
+              {question.type === 'check' && (
+                <CheckVoter sessionId={sessionId} questionId={currentQId} disabled={timerExpired} />
               )}
 
               {/* Time's up overlay */}

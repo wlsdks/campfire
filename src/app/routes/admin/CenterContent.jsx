@@ -11,6 +11,7 @@ export default function CenterContent({
   showCenterForm,
   onHideCenterForm,
   onCenterFormSubmit,
+  editingQuestion,
   effectiveReadOnly,
   session,
   currentMode,
@@ -42,8 +43,12 @@ export default function CenterContent({
           <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-sm p-6 lg:p-8">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">새 질문 추가</h2>
-                <p className="text-slate-400 text-sm mt-1">질문을 작성하고 추가하세요</p>
+                <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+                  {editingQuestion ? '질문 수정' : '새 질문 추가'}
+                </h2>
+                <p className="text-slate-400 text-sm mt-1">
+                  {editingQuestion ? '질문 내용을 수정하세요' : '질문을 작성하고 추가하세요'}
+                </p>
               </div>
               <button
                 onClick={onHideCenterForm}
@@ -54,9 +59,11 @@ export default function CenterContent({
               </button>
             </div>
             <QuestionForm
+              key={editingQuestion?.qId || 'new'}
               onSubmit={onCenterFormSubmit}
               onCancel={onHideCenterForm}
               error={null}
+              initialData={editingQuestion?.data}
             />
           </div>
         </motion.div>

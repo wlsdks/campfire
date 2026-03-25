@@ -38,6 +38,7 @@ export function isQuizQuestion(question) {
 
 export function getQuestionMode(question) {
   if (isQuizQuestion(question)) return 'quiz';
+  if (question?.type === 'check') return 'poll';
   return 'poll';
 }
 

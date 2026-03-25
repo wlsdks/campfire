@@ -6,14 +6,14 @@ import { CSS } from '@dnd-kit/utilities';
 import Tooltip from '@/components/ui/Tooltip';
 import Toast from '@/components/ui/Toast';
 import { useToast } from '@/hooks/useToast';
-import { GripVertical, BookmarkPlus, Check, ChevronDown, Copy, MessageSquare, Play, Square, Trash2, Trophy } from 'lucide-react';
+import { GripVertical, BookmarkPlus, Check, ChevronDown, Copy, MessageSquare, Pencil, Play, Square, Trash2, Trophy } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import PickMascot from '@/components/ui/PickMascot';
 import { isQuizQuestion } from '@/lib/quiz';
 import { QUESTION_TYPES } from '@/lib/question-types';
 
 /** Shared question item UI — used both sortable (desktop) and static (mobile/readOnly). */
-function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView, onActivate, onReveal, onShowLeaderboard, onClearActive, onDuplicate, onDelete, onSaveToLibrary, isDragging = false, dragProps = {} }) {
+function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView, onActivate, onReveal, onShowLeaderboard, onClearActive, onEdit, onDuplicate, onDelete, onSaveToLibrary, isDragging = false, dragProps = {} }) {
   const qType = QUESTION_TYPES.find((t) => t.value === q.type);
   const Icon = qType?.icon || MessageSquare;
   const isActive = currentQuestion === qId;
@@ -88,6 +88,11 @@ function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView, onActi
                 <BookmarkPlus size={12} />
               </button></Tooltip>
             )}
+            {onEdit && (
+              <Tooltip label="질문 수정"><button onClick={() => onEdit(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="질문 수정">
+                <Pencil size={12} />
+              </button></Tooltip>
+            )}
             <Tooltip label="질문 복제"><button onClick={() => onDuplicate(qId)} className="p-1.5 rounded-md text-slate-300 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="질문 복제">
               <Copy size={12} />
             </button></Tooltip>
@@ -102,9 +107,16 @@ function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView, onActi
       {!readOnly && (
         <div className="flex gap-2 mt-3 sm:hidden">
           {!isActive ? (
-            <button onClick={() => onActivate(qId)} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-medium ${primaryBtnClass}`} aria-label="질문 활성화">
-              <Play size={14} /> 시작
-            </button>
+            <>
+              <button onClick={() => onActivate(qId)} className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-xs font-medium ${primaryBtnClass}`} aria-label="질문 활성화">
+                <Play size={14} /> 시작
+              </button>
+              {onEdit && (
+                <button onClick={() => onEdit(qId)} className={`flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-lg text-xs font-medium ${stopBtnClass}`} aria-label="질문 수정">
+                  <Pencil size={14} />
+                </button>
+              )}
+            </>
           ) : (
             <>
               {isQuiz && !q.revealedAt && (
@@ -157,7 +169,7 @@ function useIsMobile() {
 
 export default memo(function QuestionList({
   questionList, currentQuestion, onActivate, onReveal, onShowLeaderboard, onClearActive,
-  onDuplicate, onDelete, readOnly = false, onView, onReorder, onSaveToLibrary,
+  onEdit, onDuplicate, onDelete, readOnly = false, onView, onReorder, onSaveToLibrary,
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const { toast, showToast } = useToast();
@@ -208,7 +220,7 @@ export default memo(function QuestionList({
                       <SortableItem
                         key={qId} qId={qId} q={q} currentQuestion={currentQuestion} readOnly={readOnly}
                         onActivate={onActivate} onReveal={onReveal} onShowLeaderboard={onShowLeaderboard}
-                        onClearActive={onClearActive}
+                        onClearActive={onClearActive} onEdit={onEdit}
                         onDuplicate={handleDuplicateWithToast}
                         onDelete={handleDeleteWithToast}
                         onSaveToLibrary={onSaveToLibrary ? handleSaveWithToast : null}
@@ -221,7 +233,7 @@ export default memo(function QuestionList({
                   <QuestionItemContent
                     key={qId} qId={qId} q={q} currentQuestion={currentQuestion} readOnly={readOnly}
                     onView={onView} onActivate={onActivate} onReveal={onReveal} onShowLeaderboard={onShowLeaderboard}
-                    onClearActive={onClearActive}
+                    onClearActive={onClearActive} onEdit={onEdit}
                     onDuplicate={handleDuplicateWithToast}
                     onDelete={handleDeleteWithToast}
                     onSaveToLibrary={onSaveToLibrary ? handleSaveWithToast : null}

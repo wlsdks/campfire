@@ -46,6 +46,7 @@ export function useAdminSession() {
   const [hasUnreadChat, setHasUnreadChat] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showCenterForm, setShowCenterForm] = useState(false);
+  const [editingQuestion, setEditingQuestion] = useState(null); // { qId, data } or null
   const [modeOpen, setModeOpen] = useState(false);
   const [leftDrawerOpen, setLeftDrawerOpen] = useState(false);
   const [rightDrawerOpen, setRightDrawerOpen] = useState(false);
@@ -63,7 +64,7 @@ export function useAdminSession() {
   const { isActive: teamBattleActive, teamCount: teamBattleCount, teams, startTeamBattle, endTeamBattle } = useTeamBattle(sessionId);
   const teamScores = useTeamScores(teams, scores);
 
-  const { handleSubmit: submitQuestion } = useQuestionActions(sessionId, session?.questions || {}, session?.currentQuestion, scores, participants);
+  const { handleSubmit: submitQuestion, updateQuestion } = useQuestionActions(sessionId, session?.questions || {}, session?.currentQuestion, scores, participants);
 
   const isSetting = session?.status === 'setting';
   const isReviewing = session?.status === 'reviewing';
@@ -118,8 +119,14 @@ export function useAdminSession() {
   const handleModeToggle = useCallback(() => setModeOpen(prev => !prev), []);
   const handleCollapseOpen = useCallback(() => setSidebarCollapsed(false), []);
   const handleCollapseClose = useCallback(() => setSidebarCollapsed(true), []);
-  const handleShowCenterForm = useCallback(() => setShowCenterForm(true), []);
-  const handleHideCenterForm = useCallback(() => setShowCenterForm(false), []);
+  const handleShowCenterForm = useCallback(() => { setEditingQuestion(null); setShowCenterForm(true); }, []);
+  const handleHideCenterForm = useCallback(() => { setShowCenterForm(false); setEditingQuestion(null); }, []);
+  const handleEditQuestion = useCallback((qId) => {
+    const q = session?.questions?.[qId];
+    if (!q) return;
+    setEditingQuestion({ qId, data: q });
+    setShowCenterForm(true);
+  }, [session?.questions]);
   const handleLeftDrawerOpen = useCallback(() => setLeftDrawerOpen(true), []);
   const handleLeftDrawerClose = useCallback(() => setLeftDrawerOpen(false), []);
   const handleRightDrawerOpen = useCallback(() => setRightDrawerOpen(true), []);
@@ -157,10 +164,15 @@ export function useAdminSession() {
   }, [sessionId]);
 
   const handleCenterFormSubmit = useCallback(async (formData) => {
+    if (editingQuestion) {
+      const success = await updateQuestion(editingQuestion.qId, formData);
+      if (success) { setShowCenterForm(false); setEditingQuestion(null); }
+      return success;
+    }
     const success = await submitQuestion(formData);
     if (success) setShowCenterForm(false);
     return success;
-  }, [submitQuestion]);
+  }, [submitQuestion, updateQuestion, editingQuestion]);
 
   const handleViewQuestion = useMemo(() => {
     if (!effectiveReadOnly) return undefined;
@@ -197,7 +209,7 @@ export function useAdminSession() {
     handlePresentMode, handleExitPresent,
     handleModeToggle, switchMode,
     handleCollapseOpen, handleCollapseClose,
-    handleShowCenterForm, handleHideCenterForm,
+    handleShowCenterForm, handleHideCenterForm, handleEditQuestion, editingQuestion,
     handleLeftDrawerOpen, handleLeftDrawerClose,
     handleRightDrawerOpen, handleRightDrawerClose,
     // Question form

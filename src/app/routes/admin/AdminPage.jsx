@@ -81,7 +81,7 @@ export default function AdminPage() {
         onCollapse={isTablet ? undefined : (s.effectiveReadOnly ? undefined : s.handleCollapseClose)}
         sessionId={s.sessionId} questions={s.session?.questions || {}} currentQuestion={s.session?.currentQuestion}
         scores={s.scores} participants={s.participants} pendingEvent={null} readOnly={s.effectiveReadOnly}
-        formOpen={s.showCenterForm} onAddClick={s.effectiveReadOnly ? undefined : s.handleShowCenterForm}
+        formOpen={s.showCenterForm} onAddClick={s.effectiveReadOnly ? undefined : s.handleShowCenterForm} onEditClick={s.effectiveReadOnly ? undefined : s.handleEditQuestion}
         onViewQuestion={s.handleViewQuestion} adminUid={s.adminUser?.uid}
         speedQuizActive={s.speedQuizActive} onStartSpeedQuiz={s.startSpeedQuiz} onEndSpeedQuiz={s.endSpeedQuiz} speedQuizCount={s.speedQuizCount}
         modeButton={!s.effectiveReadOnly ? (
@@ -142,7 +142,7 @@ export default function AdminPage() {
         )}
 
         <div className={`flex-1 min-w-0 overflow-auto relative h-full scrollbar-hide ${isTablet ? 'p-4' : 'p-8'}`}>
-          <CenterContent showCenterForm={s.showCenterForm} onHideCenterForm={s.handleHideCenterForm} onCenterFormSubmit={s.handleCenterFormSubmit}
+          <CenterContent showCenterForm={s.showCenterForm} onHideCenterForm={s.handleHideCenterForm} onCenterFormSubmit={s.handleCenterFormSubmit} editingQuestion={s.editingQuestion}
             effectiveReadOnly={s.effectiveReadOnly} session={s.session} currentMode={currentMode} sessionId={s.sessionId}
             onlineList={s.onlineList} leaderboard={s.leaderboard} drawParticipants={s.drawParticipants}
             participants={s.participants} scores={s.scores} count={s.count}
