@@ -100,12 +100,12 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
         <div className="h-8 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden flex">
           <motion.div
             animate={{ width: `${oPct}%` }}
-            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+            transition={{ type: 'spring', stiffness: 120, damping: 18 }}
             className="bg-indigo-500 h-full rounded-l-full"
           />
           <motion.div
             animate={{ width: `${xPct}%` }}
-            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+            transition={{ type: 'spring', stiffness: 120, damping: 18 }}
             className="bg-slate-400 h-full rounded-r-full"
           />
         </div>

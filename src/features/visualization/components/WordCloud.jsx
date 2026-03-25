@@ -33,17 +33,21 @@ export default memo(function WordCloud({ sessionId, questionId }) {
 
   return (
     <div className="w-full max-w-3xl mx-auto">
-      <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2.5 p-6 min-h-[300px]">
+      <motion.div
+        layout
+        className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2.5 p-6 min-h-[300px]"
+      >
         <AnimatePresence>
           {words.map((word, i) => (
             <motion.span
+              layout
               key={word.text}
-              initial={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0, scale: 0.6 }}
               animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ type: 'spring', stiffness: 200, damping: 20, delay: i * 0.03 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 22, delay: i * 0.025 }}
               style={{ fontSize: getFontSize(word.count) }}
-              className={`font-bold whitespace-nowrap transition-transform hover:scale-105 cursor-default ${WORD_CLASSES[i % WORD_CLASSES.length]}`}
+              className={`font-bold whitespace-nowrap cursor-default ${WORD_CLASSES[i % WORD_CLASSES.length]}`}
               title={`${word.text}: ${word.count}회`}
             >
               {word.text}
@@ -56,7 +60,7 @@ export default memo(function WordCloud({ sessionId, questionId }) {
             <p className="text-slate-400 dark:text-slate-500 text-base">아직 입력이 없습니다</p>
           </div>
         )}
-      </div>
+      </motion.div>
       {totalVotes > 0 && (
         <div className="text-center text-slate-400 dark:text-slate-500 text-sm mt-2">
           총 {totalVotes}개 응답

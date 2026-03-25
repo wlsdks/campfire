@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, memo } from 'react';
+import { useState, useEffect, useCallback, memo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Zap, Hand, MessageSquare, Trophy, Heart, Copy, Check, Target, Ticket, Gift, Dices, CircleDot, Coffee, UserCircle, Award } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
@@ -10,7 +10,8 @@ import IdleMascot from './IdleMascot';
 import { getNickname } from '@/lib/participant';
 import ReviewingBanner from '@/components/ui/ReviewingBanner';
 import { useGameResult } from '@/features/games/api/useGameResult';
-import GameResultOverlay from '@/features/games/components/GameResultOverlay';
+
+const GameResultOverlay = lazy(() => import('@/features/games/components/GameResultOverlay'));
 
 const TIPS = [
   { text: '강사가 질문을 활성화하면 자동으로 전환됩니다', icon: Zap },
@@ -108,13 +109,15 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
   return (
     <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center p-4 pb-32 pt-16">
       <StudentHeader sessionId={sessionId} />
-      <GameResultOverlay
-        isWinner={isWinner}
-        winnerNames={winnerNames}
-        gameResult={gameResult}
-        showOverlay={showOverlay}
-        dismiss={dismiss}
-      />
+      <Suspense fallback={null}>
+        <GameResultOverlay
+          isWinner={isWinner}
+          winnerNames={winnerNames}
+          gameResult={gameResult}
+          showOverlay={showOverlay}
+          dismiss={dismiss}
+        />
+      </Suspense>
 
       <motion.div
         initial={{ opacity: 0, y: 12 }}
