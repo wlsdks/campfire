@@ -114,7 +114,7 @@ export default function AssignmentManager({ courseName }) {
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="과제 제목"
                 maxLength={50}
-                className="w-full bg-slate-50 dark:bg-slate-700 rounded-xl px-4 py-3 text-[15px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all"
+                className="w-full bg-slate-50 dark:bg-slate-700 rounded-xl px-4 py-3 text-[15px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-colors duration-150"
                 autoFocus
               />
               <textarea
@@ -123,7 +123,7 @@ export default function AssignmentManager({ courseName }) {
                 placeholder="과제 설명 (선택)"
                 rows={2}
                 maxLength={300}
-                className="w-full bg-slate-50 dark:bg-slate-700 rounded-xl px-4 py-3 text-[15px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 resize-none transition-all"
+                className="w-full bg-slate-50 dark:bg-slate-700 rounded-xl px-4 py-3 text-[15px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 resize-none transition-colors duration-150"
               />
               <Button onClick={handleCreate} variant="primary" size="sm" disabled={!title.trim()} className="w-full">
                 과제 생성

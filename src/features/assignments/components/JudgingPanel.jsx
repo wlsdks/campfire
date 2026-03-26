@@ -31,7 +31,7 @@ export default function JudgingPanel({ assignmentId, submissionCount }) {
           value={apiKey}
           onChange={(e) => setApiKey(e.target.value)}
           placeholder="AIza..."
-          className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-[15px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+          className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-[15px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors duration-150"
           onKeyDown={(e) => e.key === 'Enter' && handleSaveKey()}
         />
         <p className="text-xs text-slate-400">Google AI Studio에서 발급받은 키를 입력하세요. 브라우저에만 저장됩니다.</p>
