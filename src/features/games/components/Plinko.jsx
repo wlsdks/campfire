@@ -176,7 +176,7 @@ export default function Plinko({ participants, onResult }) {
                 fontSize={activeSlots.length > 6 ? 9 : 11}
                 fontWeight="700"
                 fontFamily="'Pretendard','Inter',system-ui,sans-serif"
-                className={isWinnerSlot ? 'fill-indigo-600 dark:fill-indigo-400' : 'fill-slate-500 dark:fill-slate-400'}
+                className={isWinnerSlot ? 'fill-slate-900 dark:fill-slate-100' : 'fill-slate-500 dark:fill-slate-400'}
               >
                 {displayName}
               </text>
