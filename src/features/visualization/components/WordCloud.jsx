@@ -47,7 +47,7 @@ export default memo(function WordCloud({ sessionId, questionId }) {
               exit={{ opacity: 0, scale: 0.5 }}
               transition={{ type: 'spring', stiffness: 260, damping: 22, delay: i * 0.008 }}
               style={{ fontSize: getFontSize(word.count) }}
-              className={`font-bold whitespace-nowrap cursor-default ${WORD_CLASSES[i % WORD_CLASSES.length]}`}
+              className={`font-bold cursor-default max-w-full truncate ${WORD_CLASSES[i % WORD_CLASSES.length]}`}
               title={`${word.text}: ${word.count}회`}
             >
               {word.text}

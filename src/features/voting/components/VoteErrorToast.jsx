@@ -11,8 +11,8 @@ export default function VoteErrorToast({ message, onRetry }) {
       role="alert"
       className="w-full rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40 px-4 py-3 flex items-center gap-3"
     >
-      <WifiOff size={16} className="text-red-400 shrink-0" />
-      <p className="text-sm text-red-600 dark:text-red-400 flex-1">{message}</p>
+      <WifiOff size={16} className="text-red-500 shrink-0" />
+      <p className="text-sm text-red-700 dark:text-red-400 font-medium flex-1">{message}</p>
       {onRetry && (
         <button
           onClick={onRetry}

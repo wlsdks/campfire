@@ -1,8 +1,8 @@
 import { memo, useMemo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-const PARTICLE_COUNT = 32;
-const COLORS = ['#0F172A', '#334155', '#4F46E5', '#6366F1', '#94A3B8', '#CBD5E1'];
+const PARTICLE_COUNT = 24;
+const COLORS = ['#475569', '#6366F1', '#818CF8', '#94A3B8', '#CBD5E1', '#E2E8F0'];
 const MAX_DURATION = 1.4;
 
 function seededRandom(seed) {

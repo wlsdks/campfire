@@ -189,8 +189,16 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
       )}
 
       {/* 비밀번호 확인 — 신규 제출 시만 */}
+      <AnimatePresence>
       {!isEditMode && pin.length === 4 && (
-        <div>
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+          className="overflow-hidden"
+        >
+          <div className="pt-1">
           <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">
             비밀번호 확인
           </p>
@@ -211,8 +219,10 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
           {pinConfirm.length === 4 && pin !== pinConfirm && (
             <p className="text-xs text-red-500 mt-1.5">비밀번호가 일치하지 않습니다</p>
           )}
-        </div>
+          </div>
+        </motion.div>
       )}
+      </AnimatePresence>
 
       {/* 프로젝트 URL */}
       <div>

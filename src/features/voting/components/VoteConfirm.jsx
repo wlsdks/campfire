@@ -120,6 +120,8 @@ export default memo(function VoteConfirm({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+      role="status"
+      aria-live="polite"
       className="w-full rounded-xl bg-white dark:bg-slate-800 px-5 py-8 shadow-sm"
     >
       <div className="flex flex-col items-center gap-5">
@@ -173,7 +175,7 @@ export default memo(function VoteConfirm({
             className="rounded-xl ring-1 ring-slate-200 dark:ring-slate-600 bg-slate-50 dark:bg-slate-700/80 px-4 py-3 text-center w-full"
           >
             <p className="text-xs font-medium text-slate-400 mb-1">{selectedAnswerLabel}</p>
-            <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{selectedAnswer}</p>
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 line-clamp-3">{selectedAnswer}</p>
           </motion.div>
         )}
       </div>

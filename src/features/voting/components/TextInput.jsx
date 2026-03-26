@@ -98,6 +98,8 @@ export default memo(function TextInput({ sessionId, questionId, type = 'wordclou
           placeholder={placeholder || '입력해주세요'}
           aria-label={type === 'qna' ? '질문 입력' : '단어 입력'}
           maxLength={maxLength}
+          enterKeyHint="send"
+          onKeyDown={(e) => { if (e.key === 'Enter' && !e.nativeEvent.isComposing) handleSubmit(e); }}
           className="w-full bg-slate-50 border border-slate-200 dark:bg-slate-700 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-500 rounded-xl px-4 py-3.5 pr-16 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white transition-colors duration-150"
           autoFocus
         />

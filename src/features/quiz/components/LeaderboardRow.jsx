@@ -131,7 +131,7 @@ export default function LeaderboardRow({ entry, rank, isHighlighted, isPodium, p
       </AnimatePresence>
 
       {/* Rank number / crown / medal */}
-      <span className={`w-6 text-center font-bold text-sm shrink-0 ${rank >= 3 ? 'text-slate-400' : ''}`}>
+      <span className={`w-6 text-center font-bold text-sm shrink-0 ${rank >= 3 ? 'text-slate-500 dark:text-slate-400' : ''}`}>
         {isLeader ? (
           <AnimatedCrown leaderId={entry.id} />
         ) : rank === 1 ? (

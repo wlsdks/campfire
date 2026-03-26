@@ -58,7 +58,7 @@ export default function TimerRing({ endTime, duration, onExpire, size = 'md', da
     >
       <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
         {/* Track */}
-        <circle cx="50" cy="50" r={RADIUS} fill="none" stroke="currentColor" strokeWidth="6" className="text-slate-200 dark:text-slate-700" />
+        <circle cx="50" cy="50" r={RADIUS} fill="none" stroke="currentColor" strokeWidth="6" className="text-slate-200 dark:text-slate-600" />
         {/* Progress ring */}
         <motion.circle
           cx="50" cy="50" r={RADIUS}

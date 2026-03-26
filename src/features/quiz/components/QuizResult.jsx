@@ -1,8 +1,8 @@
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState, useCallback } from 'react';
 import { Check, Ticket, X, Flame } from 'lucide-react';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
-import ConfettiBurst from '@/components/ui/ConfettiBurst';
+const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 import { hapticTap } from '@/lib/haptics';
 import { playCorrect, playIncorrect } from '@/lib/chime';
 
@@ -114,7 +114,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
           : 'bg-white dark:bg-slate-800 shadow-sm'
       }`}
     >
-      {isCorrect && <ConfettiBurst />}
+      {isCorrect && <Suspense fallback={null}><ConfettiBurst /></Suspense>}
 
       <div className="flex flex-col items-center gap-5 relative z-[1]">
         {/* Icon */}

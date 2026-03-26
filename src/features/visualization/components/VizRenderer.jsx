@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useMemo } from 'react';
 import BarChart from './BarChart';
 import OXBattle from './OXBattle';
 import WordCloud from './WordCloud';
@@ -48,6 +48,7 @@ export default memo(function VizRenderer({ sessionId, session }) {
   const isEnded = session?.status === 'ended' || session?.status === 'reviewing';
   const hasCorrectAnswer = Boolean(question.correctAnswer);
   const answerRevealed = Boolean(question.revealedAt) || isEnded;
+  const options = useMemo(() => options, [question.options]);
 
   return (
     <div className={`flex flex-col w-full h-full ${isQA ? 'pt-4' : 'justify-center gap-6'}`}>
@@ -77,7 +78,7 @@ export default memo(function VizRenderer({ sessionId, session }) {
             <BarChart
               sessionId={sessionId}
               questionId={currentQId}
-              options={question.options || []}
+              options={options}
               correctValue={question.correctAnswer}
               revealed={hasCorrectAnswer && answerRevealed}
             />
@@ -87,7 +88,7 @@ export default memo(function VizRenderer({ sessionId, session }) {
               <BarChart
                 sessionId={sessionId}
                 questionId={currentQId}
-                options={question.options || []}
+                options={options}
                 correctValue={question.correctAnswer}
                 revealed={answerRevealed}
               />
@@ -108,7 +109,7 @@ export default memo(function VizRenderer({ sessionId, session }) {
           {question.type === 'wordcloud' && <WordCloud sessionId={sessionId} questionId={currentQId} />}
           {question.type === 'scale' && <ScaleChart sessionId={sessionId} questionId={currentQId} />}
           {question.type === 'debate' && <DebateChart sessionId={sessionId} questionId={currentQId} />}
-          {question.type === 'ranking' && <RankingChart sessionId={sessionId} questionId={currentQId} items={question.options || []} />}
+          {question.type === 'ranking' && <RankingChart sessionId={sessionId} questionId={currentQId} items={options} />}
           {question.type === 'fillinblank' && (
             <FillBlankChart
               sessionId={sessionId}
