@@ -8,6 +8,7 @@ import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSe
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical } from 'lucide-react';
+import { useMyVote } from '@/hooks/useMyVote';
 import VoteConfirm from './VoteConfirm';
 import VoteErrorToast from './VoteErrorToast';
 
@@ -74,10 +75,15 @@ export default memo(function RankingVoter({ sessionId, questionId, options = [],
     return shuffleWithSeed(options, seed);
   }, [questionId, options, pid]);
 
+  const { myVote } = useMyVote(sessionId, questionId);
   const [order, setOrder] = useState(initialOrder);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (myVote && !submitted) setSubmitted(true);
+  }, [myVote, submitted]);
 
   useEffect(() => {
     if (!error) return;

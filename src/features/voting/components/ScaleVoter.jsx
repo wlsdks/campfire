@@ -7,6 +7,7 @@ import { useState, useCallback, useEffect, useRef, memo, useMemo } from 'react';
 import VoteConfirm from './VoteConfirm';
 import VoteErrorToast from './VoteErrorToast';
 import { useVotes } from '@/hooks/useVotes';
+import { useMyVote } from '@/hooks/useMyVote';
 import { Users } from 'lucide-react';
 
 /**
@@ -73,11 +74,16 @@ function ScaleLiveAverage({ sessionId, questionId, myValue }) {
 }
 
 export default memo(function ScaleVoter({ sessionId, questionId, disabled = false }) {
+  const { myVote } = useMyVote(sessionId, questionId);
   const [value, setValue] = useState(50);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const trackRef = useRef(null);
+
+  useEffect(() => {
+    if (myVote != null && !submitted) { setValue(Number(myVote)); setSubmitted(true); }
+  }, [myVote, submitted]);
 
   useEffect(() => {
     if (!error) return;

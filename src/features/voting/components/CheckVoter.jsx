@@ -6,12 +6,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { hapticTap } from '@/lib/haptics';
 import { useState, useEffect, memo } from 'react';
 import { Check } from 'lucide-react';
+import { useMyVote } from '@/hooks/useMyVote';
 import VoteConfirm from './VoteConfirm';
 import VoteErrorToast from './VoteErrorToast';
 
 export default memo(function CheckVoter({ sessionId, questionId, disabled = false }) {
+  const { myVote } = useMyVote(sessionId, questionId);
   const [voted, setVoted] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (myVote && !voted) setVoted(true);
+  }, [myVote, voted]);
 
   useEffect(() => {
     if (!error) return;

@@ -5,6 +5,7 @@ import { getParticipantId } from '@/lib/participant';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useCallback, useEffect, useMemo, memo } from 'react';
 import { useVotes } from '@/hooks/useVotes';
+import { useMyVote } from '@/hooks/useMyVote';
 import { Users } from 'lucide-react';
 import VoteConfirm from './VoteConfirm';
 import VoteErrorToast from './VoteErrorToast';
@@ -74,11 +75,16 @@ function DebateLiveRatio({ sessionId, questionId, mySide }) {
 }
 
 export default memo(function DebateVoter({ sessionId, questionId, disabled = false }) {
+  const { myVote } = useMyVote(sessionId, questionId);
   const [side, setSide] = useState(null); // 'for' | 'against'
   const [opinion, setOpinion] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (myVote && !submitted) { setSide(myVote); setSubmitted(true); }
+  }, [myVote, submitted]);
 
   useEffect(() => {
     if (!error) return;

@@ -5,14 +5,20 @@ import { getParticipantId } from '@/lib/participant';
 import { motion, AnimatePresence } from 'framer-motion';
 import { hapticTap } from '@/lib/haptics';
 import { useState, useEffect, memo } from 'react';
+import { useMyVote } from '@/hooks/useMyVote';
 import VoteConfirm from './VoteConfirm';
 import StudentLiveResults from './StudentLiveResults';
 import VoteErrorToast from './VoteErrorToast';
 
 export default memo(function OXVoter({ sessionId, questionId, disabled = false }) {
+  const { myVote } = useMyVote(sessionId, questionId);
   const [voted, setVoted] = useState(false);
   const [selected, setSelected] = useState(null);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (myVote && !voted) { setSelected(myVote); setVoted(true); }
+  }, [myVote, voted]);
 
   useEffect(() => {
     if (!error) return;

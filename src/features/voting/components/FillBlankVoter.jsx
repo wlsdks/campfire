@@ -9,6 +9,7 @@ import Button from '@/components/ui/Button';
 import VoteConfirm from './VoteConfirm';
 import VoteErrorToast from './VoteErrorToast';
 import { useVotes } from '@/hooks/useVotes';
+import { useMyVote } from '@/hooks/useMyVote';
 import { Users } from 'lucide-react';
 
 /** Shows the sentence with the blank filled by the student's answer or a placeholder. */
@@ -103,10 +104,15 @@ function AnswerDistribution({ sessionId, questionId, correctAnswer }) {
 }
 
 export default memo(function FillBlankVoter({ sessionId, questionId, title, correctAnswer, disabled = false }) {
+  const { myVote } = useMyVote(sessionId, questionId);
   const [answer, setAnswer] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (myVote && !submitted) { setAnswer(myVote); setSubmitted(true); }
+  }, [myVote, submitted]);
 
   useEffect(() => {
     if (!error) return;

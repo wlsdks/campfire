@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 import { useState, useEffect, memo } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { hapticTap } from '@/lib/haptics';
+import { useMyVote } from '@/hooks/useMyVote';
 import VoteConfirm from './VoteConfirm';
 import StudentLiveResults from './StudentLiveResults';
 import VoteErrorToast from './VoteErrorToast';
@@ -19,9 +20,18 @@ const OPTION_STYLES = [
 ];
 
 export default memo(function ChoiceVoter({ sessionId, questionId, options, disabled = false }) {
+  const { myVote } = useMyVote(sessionId, questionId);
   const [voted, setVoted] = useState(false);
   const [selected, setSelected] = useState(null);
   const [error, setError] = useState(null);
+
+  // Restore vote state from Firebase (handles refresh/re-activation)
+  useEffect(() => {
+    if (myVote && !voted) {
+      setSelected(myVote);
+      setVoted(true);
+    }
+  }, [myVote, voted]);
 
   useEffect(() => {
     if (!error) return;
