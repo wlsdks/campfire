@@ -16,6 +16,8 @@ export default function AnswerItem({ answer: a, questionId, pid, onUpvote }) {
         <p className="text-sm text-slate-700 dark:text-slate-200 mt-0.5 leading-relaxed">{a.text}</p>
         <button
           onClick={() => onUpvote(questionId, a.id, pid)}
+          aria-label={hasUpvoted ? '추천 취소' : '추천'}
+          aria-pressed={!!hasUpvoted}
           className={`flex items-center gap-1 mt-1 text-xs transition-colors duration-150 ${
             hasUpvoted
               ? 'text-slate-900 dark:text-slate-100 font-semibold'
