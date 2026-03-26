@@ -122,7 +122,7 @@ export default function InstructorNotes({ sessionId }) {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   placeholder="실습 중 할 말을 적어두세요"
-                  className="w-full bg-slate-50 dark:bg-slate-700 rounded-xl px-4 py-3 pr-12 text-[15px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-600 transition-all"
+                  className="w-full bg-slate-50 dark:bg-slate-700 rounded-xl px-4 py-3 pr-12 text-[15px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-600 transition-colors duration-150"
                 />
                 <motion.button
                   whileTap={{ scale: 0.85 }}
