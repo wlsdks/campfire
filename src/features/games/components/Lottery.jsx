@@ -106,17 +106,17 @@ export default function Lottery({ participants, onResult }) {
       <div className="flex items-center gap-3">
         <span className="text-slate-500 text-sm font-medium">추첨 인원</span>
         <div className="flex items-center bg-white dark:bg-slate-800 rounded-lg shadow-sm overflow-hidden">
-          <button onClick={() => setCount(Math.max(1, count - 1))} aria-label="추첨 인원 감소" className="px-2.5 py-2 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150">
-            <Minus size={14} />
+          <button onClick={() => setCount(Math.max(1, count - 1))} aria-label="추첨 인원 감소" className="flex items-center justify-center w-12 h-12 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150">
+            <Minus size={16} />
           </button>
           <input
             type="number" min={1} max={eligibleParticipants.length} value={count}
             onChange={(e) => setCount(Math.max(1, Math.min(eligibleParticipants.length, Number(e.target.value))))}
             aria-label="추첨 인원 수"
-            className="w-12 py-2 bg-transparent text-slate-900 dark:text-slate-100 dark:bg-transparent text-center font-bold text-sm focus:outline-none"
+            className="w-12 h-12 bg-transparent text-slate-900 dark:text-slate-100 dark:bg-transparent text-center font-bold text-sm focus:outline-none"
           />
-          <button onClick={() => setCount(Math.min(eligibleParticipants.length, count + 1))} aria-label="추첨 인원 증가" className="px-2.5 py-2 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150">
-            <Plus size={14} />
+          <button onClick={() => setCount(Math.min(eligibleParticipants.length, count + 1))} aria-label="추첨 인원 증가" className="flex items-center justify-center w-12 h-12 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150">
+            <Plus size={16} />
           </button>
         </div>
         <span className="text-slate-400 text-sm">/ {eligibleParticipants.length}명</span>

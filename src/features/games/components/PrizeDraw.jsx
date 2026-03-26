@@ -1,9 +1,10 @@
-import { useState, useRef, useEffect, useCallback, memo } from 'react';
+import { useState, useRef, useEffect, useCallback, memo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Gift, Loader2, Minus, Plus } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Avatar from '@/components/ui/Avatar';
-import ConfettiBurst from '@/components/ui/ConfettiBurst';
+
+const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 
 function pickWinners(participants, count) {
   const pool = [...participants];
@@ -70,7 +71,7 @@ function WinnerCard({ winner, index, total }) {
         animate={{ x: '200%' }}
         transition={{ duration: 0.55, ease: 'easeOut', delay: delay + 0.1 }}
       />
-      {index === 0 && <ConfettiBurst />}
+      {index === 0 && <Suspense fallback={null}><ConfettiBurst /></Suspense>}
       {/* Avatar drops in */}
       <motion.div
         initial={{ scale: 0, y: -12 }}
@@ -168,9 +169,9 @@ export default function PrizeDraw({ participants, onResult }) {
             <button
               onClick={() => setCount(Math.max(1, count - 1))}
               aria-label="추첨 인원 감소"
-              className="px-2.5 py-2 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150"
+              className="flex items-center justify-center w-12 h-12 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150"
             >
-              <Minus size={14} />
+              <Minus size={16} />
             </button>
             <input
               type="number"
@@ -179,14 +180,14 @@ export default function PrizeDraw({ participants, onResult }) {
               value={count}
               onChange={(e) => setCount(Math.max(1, Math.min(names.length, Number(e.target.value) || 1)))}
               aria-label="추첨 인원 수"
-              className="w-12 py-2 bg-transparent text-slate-900 dark:text-slate-100 text-center font-bold text-sm focus:outline-none"
+              className="w-12 h-12 bg-transparent text-slate-900 dark:text-slate-100 text-center font-bold text-sm focus:outline-none"
             />
             <button
               onClick={() => setCount(Math.min(names.length, count + 1))}
               aria-label="추첨 인원 증가"
-              className="px-2.5 py-2 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150"
+              className="flex items-center justify-center w-12 h-12 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150"
             >
-              <Plus size={14} />
+              <Plus size={16} />
             </button>
           </div>
           <span className="text-slate-400 text-sm">/ {names.length}명</span>
