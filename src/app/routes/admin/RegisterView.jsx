@@ -9,7 +9,7 @@ import Button from '@/components/ui/Button';
 import PickMascot from '@/components/ui/PickMascot';
 
 const inputClass = (hasError) =>
-  `w-full bg-white dark:bg-slate-700 border rounded-lg px-4 py-3 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 transition-all duration-200 ${
+  `w-full bg-white dark:bg-slate-700 border rounded-lg px-4 py-3 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 transition-colors duration-150 ${
     hasError
       ? 'border-red-400 focus:ring-red-500/20 focus:border-red-500'
       : 'border-slate-200 dark:border-slate-600 focus:ring-indigo-500/20 focus:border-indigo-500'

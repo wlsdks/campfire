@@ -67,7 +67,7 @@ export default function EngagementTab({ sessions }) {
           id="engagement-session"
           value={selectedSession}
           onChange={handleSessionChange}
-          className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-[15px] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all appearance-none"
+          className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-[15px] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors duration-150 appearance-none"
         >
           <option value="">세션을 선택하세요</option>
           {conductedSessions.map(s => (
