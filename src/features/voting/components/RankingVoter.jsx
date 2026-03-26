@@ -2,13 +2,14 @@ import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
 import { getParticipantId } from '@/lib/participant';
-import { motion } from 'framer-motion';
-import { useState, useCallback, useMemo, memo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useCallback, useEffect, useMemo, memo } from 'react';
 import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { GripVertical } from 'lucide-react';
 import VoteConfirm from './VoteConfirm';
+import VoteErrorToast from './VoteErrorToast';
 
 /**
  * Deterministic shuffle based on questionId + participantId.
@@ -76,6 +77,13 @@ export default memo(function RankingVoter({ sessionId, questionId, options = [],
   const [order, setOrder] = useState(initialOrder);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!error) return;
+    const t = setTimeout(() => setError(null), 4000);
+    return () => clearTimeout(t);
+  }, [error]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -104,6 +112,7 @@ export default memo(function RankingVoter({ sessionId, questionId, options = [],
     } catch (err) {
       logger.error('Ranking vote failed:', err);
       setSubmitting(false);
+      setError('순위 제출에 실패했습니다. 다시 시도해주세요.');
     }
   }, [sessionId, questionId, order, pid, disabled, submitting]);
 
@@ -122,6 +131,10 @@ export default memo(function RankingVoter({ sessionId, questionId, options = [],
   }
 
   return (
+    <div className="space-y-3">
+    <AnimatePresence>
+      {error && <VoteErrorToast message={error} />}
+    </AnimatePresence>
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
@@ -156,5 +169,6 @@ export default memo(function RankingVoter({ sessionId, questionId, options = [],
         {submitting ? '제출 중...' : '이 순서로 제출'}
       </motion.button>
     </motion.div>
+    </div>
   );
 })

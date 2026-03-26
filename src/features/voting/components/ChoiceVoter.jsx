@@ -3,10 +3,12 @@ import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
 import { getParticipantId } from '@/lib/participant';
 import { motion } from 'framer-motion';
-import { useState, memo } from 'react';
+import { useState, useEffect, memo } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { hapticTap } from '@/lib/haptics';
 import VoteConfirm from './VoteConfirm';
 import StudentLiveResults from './StudentLiveResults';
+import VoteErrorToast from './VoteErrorToast';
 
 const OPTION_STYLES = [
   { bg: 'bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700', text: 'text-slate-800 dark:text-slate-200', badge: 'bg-slate-800 dark:bg-slate-200 dark:text-slate-900', letter: 'A' },
@@ -19,10 +21,18 @@ const OPTION_STYLES = [
 export default memo(function ChoiceVoter({ sessionId, questionId, options, disabled = false }) {
   const [voted, setVoted] = useState(false);
   const [selected, setSelected] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!error) return;
+    const t = setTimeout(() => setError(null), 4000);
+    return () => clearTimeout(t);
+  }, [error]);
 
   async function handleVote(option) {
     if (disabled) return;
     setSelected(option);
+    setError(null);
     try {
       const pid = getParticipantId();
       await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${pid}`), {
@@ -33,6 +43,7 @@ export default memo(function ChoiceVoter({ sessionId, questionId, options, disab
     } catch (err) {
       logger.error('Vote failed:', err);
       setSelected(null);
+      setError('투표에 실패했습니다. 다시 선택해주세요.');
     }
   }
 
@@ -54,6 +65,9 @@ export default memo(function ChoiceVoter({ sessionId, questionId, options, disab
 
   return (
     <div className="space-y-3 w-full" role="group" aria-label="선택지">
+      <AnimatePresence>
+        {error && <VoteErrorToast message={error} />}
+      </AnimatePresence>
       {options.map((option, i) => {
         const style = OPTION_STYLES[i % OPTION_STYLES.length];
         const isSelected = selected === option;

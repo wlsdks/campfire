@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { Check, Ticket, X, Flame } from 'lucide-react';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import ConfettiBurst from '@/components/ui/ConfettiBurst';
@@ -78,7 +78,10 @@ function IncorrectIcon() {
 }
 
 export default function QuizResult({ isCorrect, points, tickets = 0, correctAnswer, event = null, bet = 1, streak = 0 }) {
+  const audioPlayed = useRef(false);
   useEffect(() => {
+    if (audioPlayed.current) return;
+    audioPlayed.current = true;
     if (isCorrect) playCorrect();
     else playIncorrect();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -193,7 +196,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
               <div className="text-center">
                 <p className="text-xs font-medium text-slate-400 dark:text-slate-500 mb-0.5">점수</p>
                 <p className={`text-3xl font-bold tracking-tight tabular-nums ${
-                  points < 0 ? 'text-red-500' : 'text-slate-900 dark:text-slate-100'
+                  points < 0 ? 'text-red-500 dark:text-red-400' : 'text-slate-900 dark:text-slate-100'
                 }`}>
                   <CountUp value={Math.abs(points)} prefix={points < 0 ? '-' : '+'} />
                 </p>

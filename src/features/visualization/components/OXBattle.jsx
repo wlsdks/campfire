@@ -55,7 +55,7 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
         </div>
 
         <div className="px-4">
-          <div className="text-slate-200 dark:text-slate-700 text-2xl font-bold">VS</div>
+          <div className="text-slate-400 dark:text-slate-500 text-2xl font-bold">VS</div>
         </div>
 
         <div className={`flex-1 space-y-2 py-4 rounded-xl transition-[opacity,background-color,box-shadow] duration-300 ${xCorrect ? 'bg-slate-100/80 dark:bg-slate-700/50 ring-2 ring-slate-400/30 dark:ring-slate-500/30' : revealed && !xCorrect ? 'opacity-50' : ''}`}>

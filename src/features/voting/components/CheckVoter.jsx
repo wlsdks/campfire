@@ -2,18 +2,27 @@ import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
 import { getParticipantId } from '@/lib/participant';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { hapticTap } from '@/lib/haptics';
-import { useState, memo } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { Check } from 'lucide-react';
 import VoteConfirm from './VoteConfirm';
+import VoteErrorToast from './VoteErrorToast';
 
 export default memo(function CheckVoter({ sessionId, questionId, disabled = false }) {
   const [voted, setVoted] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!error) return;
+    const t = setTimeout(() => setError(null), 4000);
+    return () => clearTimeout(t);
+  }, [error]);
 
   async function handleCheck() {
     if (disabled || voted) return;
     hapticTap();
+    setError(null);
     try {
       const pid = getParticipantId();
       await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${pid}`), {
@@ -23,6 +32,7 @@ export default memo(function CheckVoter({ sessionId, questionId, disabled = fals
       setVoted(true);
     } catch (err) {
       logger.error('Check-in failed:', err);
+      setError('체크에 실패했습니다. 다시 탭해주세요.');
     }
   }
 
@@ -39,6 +49,10 @@ export default memo(function CheckVoter({ sessionId, questionId, disabled = fals
   }
 
   return (
+    <div className="space-y-3">
+    <AnimatePresence>
+      {error && <VoteErrorToast message={error} />}
+    </AnimatePresence>
     <motion.button
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -59,5 +73,6 @@ export default memo(function CheckVoter({ sessionId, questionId, disabled = fals
       <span className="text-lg font-bold text-slate-900 dark:text-slate-100">완료했어요</span>
       <span className="text-sm text-slate-400 dark:text-slate-500">탭하여 완료를 알려주세요</span>
     </motion.button>
+    </div>
   );
 });

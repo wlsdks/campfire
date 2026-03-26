@@ -29,8 +29,8 @@ test.describe('학생 플로우', () => {
   test('세션 ID로 접속하면 JoinPage 표시 (닉네임 입력)', async ({ page }) => {
     await page.goto(`/?s=${sessionId}`);
     await expect(page.getByPlaceholder('닉네임 입력')).toBeVisible();
-    await expect(page.getByText('E2E 테스트 수업')).toBeVisible({ timeout: 10000 });
-    await expect(page.getByText('참여하기')).toBeVisible();
+    await expect(page.getByText('E2E 테스트 수업').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole('button', { name: /참여하기/ })).toBeVisible();
   });
 
   test('닉네임 2자 미만이면 참여 버튼 비활성화', async ({ page }) => {
@@ -39,7 +39,7 @@ test.describe('학생 플로우', () => {
     await input.fill('가');
     await input.blur();
     await expect(page.getByText('2자 이상 입력해주세요')).toBeVisible();
-    await expect(page.getByText('참여하기').locator('..')).toBeDisabled();
+    await expect(page.getByRole('button', { name: /참여하기/ })).toBeDisabled();
   });
 
   test('닉네임 입력 후 참여 → VotePage/WaitingPage 전환', async ({ page }) => {

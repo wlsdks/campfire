@@ -2,19 +2,28 @@ import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
 import { getParticipantId } from '@/lib/participant';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { hapticTap } from '@/lib/haptics';
-import { useState, memo } from 'react';
+import { useState, useEffect, memo } from 'react';
 import VoteConfirm from './VoteConfirm';
 import StudentLiveResults from './StudentLiveResults';
+import VoteErrorToast from './VoteErrorToast';
 
 export default memo(function OXVoter({ sessionId, questionId, disabled = false }) {
   const [voted, setVoted] = useState(false);
   const [selected, setSelected] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!error) return;
+    const t = setTimeout(() => setError(null), 4000);
+    return () => clearTimeout(t);
+  }, [error]);
 
   async function handleVote(value) {
     if (disabled) return;
     setSelected(value);
+    setError(null);
     try {
       const pid = getParticipantId();
       await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${pid}`), {
@@ -25,6 +34,7 @@ export default memo(function OXVoter({ sessionId, questionId, disabled = false }
     } catch (err) {
       logger.error('Vote failed:', err);
       setSelected(null);
+      setError('투표에 실패했습니다. 다시 선택해주세요.');
     }
   }
 
@@ -43,6 +53,10 @@ export default memo(function OXVoter({ sessionId, questionId, disabled = false }
   }
 
   return (
+    <div className="space-y-3 w-full">
+      <AnimatePresence>
+        {error && <VoteErrorToast message={error} />}
+      </AnimatePresence>
     <div className="flex gap-3.5 w-full" role="group" aria-label="O/X 선택">
       <motion.button
         initial={{ opacity: 0, x: -12 }}
@@ -68,6 +82,7 @@ export default memo(function OXVoter({ sessionId, questionId, disabled = false }
         <span className="text-6xl font-black text-slate-900 dark:text-slate-100 leading-none">X</span>
         <span className="text-xs font-medium text-slate-400 dark:text-slate-500">아니에요</span>
       </motion.button>
+    </div>
     </div>
   );
 })

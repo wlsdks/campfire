@@ -73,9 +73,11 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
   }, [readFile]);
 
   const isEditMode = !!existingSubmission;
+  const [pinConfirm, setPinConfirm] = useState('');
   const [pinError, setPinError] = useState('');
   const hasContent = projectUrl.trim() || fileContent;
-  const canSubmit = name.trim() && (isEditMode || pin.length === 4) && hasContent && !submitting;
+  const pinMatch = isEditMode || (pin.length === 4 && pin === pinConfirm);
+  const canSubmit = name.trim() && (isEditMode || pin.length === 4) && pinMatch && hasContent && !submitting;
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -124,6 +126,10 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
         </motion.div>
         <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">제출 완료!</h3>
         <p className="text-sm text-slate-400">심사 결과는 이 링크에서 확인할 수 있어요</p>
+        <div className="w-full rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-600 px-4 py-3 text-center">
+          <p className="text-xs text-slate-400 mb-1">결과 확인 방법</p>
+          <p className="text-sm text-slate-600 dark:text-slate-300">이 페이지에 다시 방문해서<br /><span className="font-semibold text-slate-900 dark:text-slate-100">이름 + 비밀번호</span>로 조회하세요</p>
+        </div>
         <Button onClick={() => setSubmitted(false)} variant="secondary" size="md">수정하기</Button>
       </motion.div>
     ) : (
@@ -179,6 +185,32 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
           />
           {pinError && <p className="text-xs text-red-500 mt-1.5">{pinError}</p>}
           <p className="text-xs text-slate-300 dark:text-slate-500 mt-1.5">나중에 제출물 조회·수정·취소 시 필요해요</p>
+        </div>
+      )}
+
+      {/* 비밀번호 확인 — 신규 제출 시만 */}
+      {!isEditMode && pin.length === 4 && (
+        <div>
+          <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">
+            비밀번호 확인
+          </p>
+          <input
+            type="password"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            value={pinConfirm}
+            onChange={(e) => setPinConfirm(e.target.value.replace(/\D/g, '').slice(0, 4))}
+            placeholder="••••"
+            maxLength={4}
+            className={`w-full bg-white dark:bg-slate-800 border rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 transition-all tracking-[0.3em] ${
+              pinConfirm.length === 4 && pin !== pinConfirm
+                ? 'border-red-400 focus:ring-red-500/20 focus:border-red-500'
+                : 'border-slate-200 dark:border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500'
+            }`}
+          />
+          {pinConfirm.length === 4 && pin !== pinConfirm && (
+            <p className="text-xs text-red-500 mt-1.5">비밀번호가 일치하지 않습니다</p>
+          )}
         </div>
       )}
 

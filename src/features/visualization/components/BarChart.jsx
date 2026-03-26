@@ -69,16 +69,16 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
         const isWrong = revealed && correctValue && correctValue !== option;
         const rank = rankMap[i] || 0;
 
-        // Color by rank: top = darkest
+        // Color by rank: top = darkest, stronger contrast for projectors
         const barColor = isCorrect
           ? 'bg-indigo-600'
           : isWrong
-            ? 'bg-slate-300'
+            ? 'bg-slate-300 dark:bg-slate-600'
             : rank === 0
-              ? 'bg-indigo-500'
+              ? 'bg-indigo-600'
               : rank === 1
                 ? 'bg-indigo-400'
-                : 'bg-indigo-300';
+                : 'bg-slate-300 dark:bg-slate-500';
 
         const countColor = count > 0 && rank === 0 ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500 dark:text-slate-400';
 
@@ -87,7 +87,7 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
             key={option}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08, type: 'spring', stiffness: 300, damping: 25 }}
+            transition={{ delay: i * 0.03, type: 'spring', stiffness: 300, damping: 25 }}
             className={`space-y-1.5 transition-opacity duration-300 ${isCorrect ? 'rounded-lg ring-2 ring-indigo-500/30 p-3 -mx-3 bg-slate-50/50 dark:bg-slate-800/50' : isWrong ? 'opacity-60' : ''}`}
           >
             <div className="flex justify-between items-baseline gap-2">
@@ -102,14 +102,14 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
                     <Check size={12} strokeWidth={3} />
                   </motion.span>
                 )}
-                <span className={`font-medium text-lg truncate ${isCorrect ? 'text-indigo-700 dark:text-indigo-400 font-semibold' : isWrong ? 'text-slate-400' : 'text-slate-700 dark:text-slate-200'}`}>
+                <span className={`font-medium text-lg lg:text-xl truncate ${isCorrect ? 'text-indigo-700 dark:text-indigo-400 font-semibold' : isWrong ? 'text-slate-400' : 'text-slate-700 dark:text-slate-200'}`}>
                   {option}
                 </span>
               </div>
               <div className="flex items-baseline gap-1.5">
                 <AnimatedCount
                   value={count}
-                  className={`font-bold text-2xl tabular-nums ${isCorrect ? 'text-indigo-700 dark:text-indigo-400' : countColor}`}
+                  className={`font-bold text-2xl lg:text-3xl tabular-nums ${isCorrect ? 'text-indigo-700 dark:text-indigo-400' : countColor}`}
                 />
                 <span className={`text-sm tabular-nums ${isCorrect ? 'text-indigo-500 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'}`}>
                   {formatPercent(count, totalVotes)}
@@ -120,7 +120,7 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.max(pct, count > 0 ? 2 : 0)}%` }}
-                transition={{ type: 'spring', stiffness: 120, damping: 18, delay: i * 0.06 }}
+                transition={{ type: 'spring', stiffness: 120, damping: 18, delay: i * 0.02 }}
                 className={`h-full rounded-lg ${barColor}`}
               />
             </div>

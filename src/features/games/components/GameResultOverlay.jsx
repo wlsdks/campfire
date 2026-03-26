@@ -26,10 +26,10 @@ export default function GameResultOverlay({ isWinner, winnerNames, gameResult, s
   const nickname = getNickname() || '참여자';
   const modeName = MODE_LABELS[gameResult?.mode] || '게임';
 
-  // Auto-dismiss non-winner banner after 5 seconds
+  // Auto-dismiss non-winner banner after 8 seconds
   useEffect(() => {
     if (showOverlay && !isWinner) {
-      const timer = setTimeout(dismiss, 5000);
+      const timer = setTimeout(dismiss, 8000);
       return () => clearTimeout(timer);
     }
   }, [showOverlay, isWinner, dismiss]);

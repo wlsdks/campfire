@@ -1,8 +1,9 @@
-import { useState, memo } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { hapticTap } from '@/lib/haptics';
 import { ref, set, serverTimestamp } from 'firebase/database';
 import { Lock } from 'lucide-react';
+import VoteErrorToast from './VoteErrorToast';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
 import { getNickname, getParticipantId } from '@/lib/participant';
@@ -40,12 +41,20 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
   const [pendingAnswer, setPendingAnswer] = useState(null);
   const [showConfidence, setShowConfidence] = useState(false);
 
+  const [error, setError] = useState(null);
   const bettingEnabled = question?.betting === true;
   const needsBet = bettingEnabled && betMultiplier === null;
+
+  useEffect(() => {
+    if (!error) return;
+    const t = setTimeout(() => setError(null), 4000);
+    return () => clearTimeout(t);
+  }, [error]);
 
   async function submitVote(option, confidence) {
     setSelected(option);
     setShowConfidence(false);
+    setError(null);
     try {
       const voteData = {
         value: option,
@@ -63,6 +72,7 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
       logger.error('Quiz vote failed:', err);
       setSelected(null);
       setPendingAnswer(null);
+      setError('답안 제출에 실패했습니다. 다시 선택해주세요.');
     }
   }
 
@@ -183,6 +193,9 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
 
   return (
     <div className="space-y-4 w-full">
+      <AnimatePresence>
+        {error && <VoteErrorToast message={error} />}
+      </AnimatePresence>
       <AnimatePresence mode="wait">
         {needsBet ? (
           <BetSelector key="bet" onSelect={setBetMultiplier} />

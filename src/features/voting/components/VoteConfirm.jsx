@@ -6,13 +6,13 @@ import { hapticSuccess } from '@/lib/haptics';
 const PARTICLE_COUNT = 8;
 const PARTICLE_ANGLES = Array.from({ length: PARTICLE_COUNT }, (_, i) => (i * 360) / PARTICLE_COUNT);
 const PARTICLE_COLORS = [
-  'bg-indigo-400',
+  'bg-slate-700',
   'bg-slate-400',
-  'bg-indigo-300',
+  'bg-slate-600',
   'bg-slate-300',
-  'bg-indigo-500',
   'bg-slate-500',
-  'bg-indigo-200',
+  'bg-slate-800',
+  'bg-slate-400',
   'bg-slate-200',
 ];
 
@@ -170,7 +170,7 @@ export default memo(function VoteConfirm({
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.35, type: 'spring', stiffness: 300, damping: 25 }}
-            className="rounded-xl ring-1 ring-indigo-200 dark:ring-indigo-500/30 bg-slate-50 dark:bg-slate-700/80 px-4 py-3 text-center w-full"
+            className="rounded-xl ring-1 ring-slate-200 dark:ring-slate-600 bg-slate-50 dark:bg-slate-700/80 px-4 py-3 text-center w-full"
           >
             <p className="text-xs font-medium text-slate-400 mb-1">{selectedAnswerLabel}</p>
             <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">{selectedAnswer}</p>

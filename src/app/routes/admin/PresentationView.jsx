@@ -257,7 +257,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
       <motion.div
         key={contentKey}
         {...variants}
-        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
         className={`flex-1 flex justify-center w-full ${contentKey === 'game-qaBoard' ? 'items-start overflow-y-auto' : 'items-center'}`}
       >
         {content}

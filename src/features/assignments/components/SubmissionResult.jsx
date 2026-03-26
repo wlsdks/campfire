@@ -1,13 +1,32 @@
 import { motion } from 'framer-motion';
-import { Trophy } from 'lucide-react';
+import { Trophy, Clock } from 'lucide-react';
 import { JUDGES, AWARDS, getAwardById } from '@/features/assignments/api/judges';
 import JudgeResultCard from './JudgeResultCard';
+import PickMascot from '@/components/ui/PickMascot';
 
 /**
  * SubmissionResult — 학생이 본인 심사 결과를 확인하는 화면.
  */
 export default function SubmissionResult({ submission, results, awards }) {
-  if (!results) return null;
+  if (!results) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        className="flex flex-col items-center justify-center py-16 space-y-4"
+      >
+        <PickMascot size="md" mood="waiting" />
+        <div className="text-center space-y-2">
+          <div className="flex items-center justify-center gap-2">
+            <Clock size={16} className="text-slate-400" />
+            <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">심사가 아직 진행 중입니다</h3>
+          </div>
+          <p className="text-sm text-slate-400">AI 심사위원들이 제출물을 평가하고 있어요.<br />잠시 후 다시 확인해주세요.</p>
+        </div>
+      </motion.div>
+    );
+  }
 
   const { judges, summary } = results;
   const myAward = awards

@@ -1,14 +1,34 @@
-import { memo } from 'react';
+import { memo, useState, useEffect, useCallback } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import Tooltip from '@/components/ui/Tooltip';
-import { GripVertical, BookmarkPlus, Check, Copy, MessageSquare, Pencil, Play, Square, Trash2, Trophy } from 'lucide-react';
+import { GripVertical, BookmarkPlus, Check, Copy, MessageSquare, Pencil, Play, Square, Trash2, Trophy, Loader2 } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import { isQuizQuestion } from '@/lib/quiz';
 import { QUESTION_TYPES } from '@/lib/question-types';
 
-const primaryBtnClass = 'p-2 sm:p-1.5 rounded-lg sm:rounded-md bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 text-white transition-colors duration-150 active:scale-90';
-const stopBtnClass = 'p-2 sm:p-1.5 rounded-lg sm:rounded-md bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-500 transition-colors duration-150 active:scale-90';
+const primaryBtnClass = 'p-2 sm:p-2.5 lg:p-1.5 rounded-lg sm:rounded-md bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 text-white transition-colors duration-150 active:scale-90';
+const stopBtnClass = 'p-2 sm:p-2.5 lg:p-1.5 rounded-lg sm:rounded-md bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-500 transition-colors duration-150 active:scale-90';
+
+/** Button with brief loading feedback to prevent double-clicks. */
+function ActionButton({ onClick, className, children, 'aria-label': ariaLabel, feedbackMs = 600 }) {
+  const [busy, setBusy] = useState(false);
+  const handle = useCallback(() => {
+    if (busy) return;
+    setBusy(true);
+    onClick?.();
+  }, [busy, onClick]);
+  useEffect(() => {
+    if (!busy) return;
+    const t = setTimeout(() => setBusy(false), feedbackMs);
+    return () => clearTimeout(t);
+  }, [busy, feedbackMs]);
+  return (
+    <button onClick={handle} className={className} aria-label={ariaLabel} disabled={busy}>
+      {busy ? <Loader2 size={typeof children?.props?.size === 'number' ? children.props.size : 14} className="animate-spin" /> : children}
+    </button>
+  );
+}
 
 /** Shared question item UI — used both sortable (desktop) and static (mobile/readOnly). */
 export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView, onActivate, onReveal, onShowLeaderboard, onClearActive, onEdit, onDuplicate, onDelete, onSaveToLibrary, isDragging = false, dragProps = {} }) {
@@ -58,24 +78,24 @@ export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView,
         {!readOnly && (
           <div className="hidden sm:flex gap-1 shrink-0" onPointerDown={stopDrag}>
             {!isActive ? (
-              <Tooltip label="질문 활성화"><button onClick={() => onActivate(qId)} className={primaryBtnClass} aria-label="질문 활성화">
+              <Tooltip label="질문 활성화"><ActionButton onClick={() => onActivate(qId)} className={primaryBtnClass} aria-label="질문 활성화">
                 <Play size={12} />
-              </button></Tooltip>
+              </ActionButton></Tooltip>
             ) : (
               <>
                 {isQuiz && !q.revealedAt && (
-                  <Tooltip label="정답 공개"><button onClick={() => onReveal(qId)} className={primaryBtnClass} aria-label="정답 공개">
+                  <Tooltip label="정답 공개"><ActionButton onClick={() => onReveal(qId)} className={primaryBtnClass} aria-label="정답 공개">
                     <Check size={12} />
-                  </button></Tooltip>
+                  </ActionButton></Tooltip>
                 )}
                 {isQuiz && q.revealedAt && (
-                  <Tooltip label="리더보드 보기"><button onClick={onShowLeaderboard} className={primaryBtnClass} aria-label="리더보드 보기">
+                  <Tooltip label="리더보드 보기"><ActionButton onClick={onShowLeaderboard} className={primaryBtnClass} aria-label="리더보드 보기">
                     <Trophy size={12} />
-                  </button></Tooltip>
+                  </ActionButton></Tooltip>
                 )}
-                <Tooltip label="질문 중지"><button onClick={onClearActive} className={stopBtnClass} aria-label="질문 중지">
+                <Tooltip label="질문 중지"><ActionButton onClick={onClearActive} className={stopBtnClass} aria-label="질문 중지">
                   <Square size={12} />
-                </button></Tooltip>
+                </ActionButton></Tooltip>
               </>
             )}
             {onSaveToLibrary && (
@@ -103,9 +123,9 @@ export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView,
         <div className="flex gap-2 mt-3 sm:hidden">
           {!isActive ? (
             <>
-              <button onClick={() => onActivate(qId)} className={`flex-1 flex items-center justify-center gap-1.5 min-h-[48px] rounded-xl text-sm font-semibold active:scale-[0.96] ${primaryBtnClass}`} aria-label="질문 활성화">
+              <ActionButton onClick={() => onActivate(qId)} className={`flex-1 flex items-center justify-center gap-1.5 min-h-[48px] rounded-xl text-sm font-semibold active:scale-[0.96] ${primaryBtnClass}`} aria-label="질문 활성화">
                 <Play size={16} /> 시작
-              </button>
+              </ActionButton>
               {onEdit && (
                 <button onClick={() => onEdit(qId)} className={`flex items-center justify-center gap-1.5 min-h-[48px] px-4 rounded-xl text-sm font-medium active:scale-[0.96] ${stopBtnClass}`} aria-label="질문 수정">
                   <Pencil size={16} />
@@ -115,18 +135,18 @@ export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView,
           ) : (
             <>
               {isQuiz && !q.revealedAt && (
-                <button onClick={() => onReveal(qId)} className={`flex-1 flex items-center justify-center gap-1.5 min-h-[48px] rounded-xl text-sm font-semibold active:scale-[0.96] ${primaryBtnClass}`} aria-label="정답 공개">
+                <ActionButton onClick={() => onReveal(qId)} className={`flex-1 flex items-center justify-center gap-1.5 min-h-[48px] rounded-xl text-sm font-semibold active:scale-[0.96] ${primaryBtnClass}`} aria-label="정답 공개">
                   <Check size={16} /> 정답 공개
-                </button>
+                </ActionButton>
               )}
               {isQuiz && q.revealedAt && (
-                <button onClick={onShowLeaderboard} className={`flex-1 flex items-center justify-center gap-1.5 min-h-[48px] rounded-xl text-sm font-semibold active:scale-[0.96] ${primaryBtnClass}`} aria-label="리더보드">
+                <ActionButton onClick={onShowLeaderboard} className={`flex-1 flex items-center justify-center gap-1.5 min-h-[48px] rounded-xl text-sm font-semibold active:scale-[0.96] ${primaryBtnClass}`} aria-label="리더보드">
                   <Trophy size={16} /> 리더보드
-                </button>
+                </ActionButton>
               )}
-              <button onClick={onClearActive} className={`flex-1 flex items-center justify-center gap-1.5 min-h-[48px] rounded-xl text-sm font-semibold active:scale-[0.96] ${stopBtnClass}`} aria-label="중지">
+              <ActionButton onClick={onClearActive} className={`flex-1 flex items-center justify-center gap-1.5 min-h-[48px] rounded-xl text-sm font-semibold active:scale-[0.96] ${stopBtnClass}`} aria-label="중지">
                 <Square size={16} /> 중지
-              </button>
+              </ActionButton>
             </>
           )}
         </div>

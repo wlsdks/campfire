@@ -2,9 +2,10 @@ import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
 import { getParticipantId } from '@/lib/participant';
-import { motion } from 'framer-motion';
-import { useState, useCallback, useRef, memo, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useCallback, useEffect, useRef, memo, useMemo } from 'react';
 import VoteConfirm from './VoteConfirm';
+import VoteErrorToast from './VoteErrorToast';
 import { useVotes } from '@/hooks/useVotes';
 import { Users } from 'lucide-react';
 
@@ -75,7 +76,14 @@ export default memo(function ScaleVoter({ sessionId, questionId, disabled = fals
   const [value, setValue] = useState(50);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
   const trackRef = useRef(null);
+
+  useEffect(() => {
+    if (!error) return;
+    const t = setTimeout(() => setError(null), 4000);
+    return () => clearTimeout(t);
+  }, [error]);
 
   const handleSubmit = useCallback(async () => {
     if (disabled || submitting) return;
@@ -90,6 +98,7 @@ export default memo(function ScaleVoter({ sessionId, questionId, disabled = fals
     } catch (err) {
       logger.error('Scale vote failed:', err);
       setSubmitting(false);
+      setError('응답 제출에 실패했습니다. 다시 시도해주세요.');
     }
   }, [sessionId, questionId, value, disabled, submitting]);
 
@@ -110,6 +119,10 @@ export default memo(function ScaleVoter({ sessionId, questionId, disabled = fals
   }
 
   return (
+    <div className="space-y-3">
+    <AnimatePresence>
+      {error && <VoteErrorToast message={error} />}
+    </AnimatePresence>
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
@@ -214,5 +227,6 @@ export default memo(function ScaleVoter({ sessionId, questionId, disabled = fals
         {submitting ? '제출 중...' : '제출하기'}
       </motion.button>
     </motion.div>
+    </div>
   );
 })

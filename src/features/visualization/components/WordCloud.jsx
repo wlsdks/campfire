@@ -27,7 +27,7 @@ export default memo(function WordCloud({ sessionId, questionId }) {
   const maxCount = Math.max(...words.map(w => w.count), 1);
 
   function getFontSize(count) {
-    const min = 18, max = 72;
+    const min = 24, max = 68;
     return min + ((count / maxCount) * (max - min));
   }
 
@@ -45,7 +45,7 @@ export default memo(function WordCloud({ sessionId, questionId }) {
               initial={{ opacity: 0, scale: 0.6 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.5 }}
-              transition={{ type: 'spring', stiffness: 260, damping: 22, delay: i * 0.025 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 22, delay: i * 0.008 }}
               style={{ fontSize: getFontSize(word.count) }}
               className={`font-bold whitespace-nowrap cursor-default ${WORD_CLASSES[i % WORD_CLASSES.length]}`}
               title={`${word.text}: ${word.count}회`}

@@ -2,11 +2,12 @@ import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
 import { getParticipantId } from '@/lib/participant';
-import { useState, useCallback, useMemo, memo } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useCallback, useEffect, useMemo, memo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Send } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import VoteConfirm from './VoteConfirm';
+import VoteErrorToast from './VoteErrorToast';
 import { useVotes } from '@/hooks/useVotes';
 import { Users } from 'lucide-react';
 
@@ -105,6 +106,13 @@ export default memo(function FillBlankVoter({ sessionId, questionId, title, corr
   const [answer, setAnswer] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!error) return;
+    const t = setTimeout(() => setError(null), 4000);
+    return () => clearTimeout(t);
+  }, [error]);
 
   const handleSubmit = useCallback(async () => {
     if (disabled || submitting || !answer.trim()) return;
@@ -119,6 +127,7 @@ export default memo(function FillBlankVoter({ sessionId, questionId, title, corr
     } catch (err) {
       logger.error('Fill-in-blank vote failed:', err);
       setSubmitting(false);
+      setError('답변 제출에 실패했습니다. 다시 시도해주세요.');
     }
   }, [sessionId, questionId, answer, disabled, submitting]);
 
@@ -145,6 +154,10 @@ export default memo(function FillBlankVoter({ sessionId, questionId, title, corr
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className="w-full space-y-4"
     >
+      <AnimatePresence>
+        {error && <VoteErrorToast message={error} />}
+      </AnimatePresence>
+
       {/* Sentence with blank */}
       <div className="rounded-xl bg-white dark:bg-slate-800 p-4 shadow-sm">
         <SentencePreview title={title} answer={answer} />

@@ -15,8 +15,8 @@ export default function LookupForm({ assignmentId, onFound }) {
     setError('');
     try {
       const result = await lookupSubmission(assignmentId, name.trim(), pin);
-      if (result.error === 'NOT_FOUND') setError('해당 이름의 제출물을 찾을 수 없습니다');
-      else if (result.error === 'PIN_MISMATCH') setError('비밀번호가 일치하지 않습니다');
+      if (result.error === 'NOT_FOUND') setError('해당 이름의 제출물을 찾을 수 없습니다. 제출 시 입력한 이름을 정확히 입력해주세요.');
+      else if (result.error === 'PIN_MISMATCH') setError('이름은 확인되었지만, 비밀번호가 일치하지 않습니다. 다시 확인해주세요.');
       else onFound(result.submission);
     } finally {
       setLoading(false);

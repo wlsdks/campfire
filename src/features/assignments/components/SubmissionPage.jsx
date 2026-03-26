@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Sun, Moon } from 'lucide-react';
+import { ArrowLeft, Sun, Moon, Search } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 import { useAssignment } from '@/features/assignments/api/useAssignments';
 import { ASSIGNMENT_STATUS } from '@/features/assignments/api/useAssignments';
@@ -44,9 +44,9 @@ export default function SubmissionPage({ assignmentId }) {
     try {
       const result = await lookupSubmission(assignmentId, lookupName.trim(), lookupPin);
       if (result.error === 'NOT_FOUND') {
-        setResultLookupError('해당 이름의 제출물을 찾을 수 없습니다');
+        setResultLookupError('해당 이름의 제출물을 찾을 수 없습니다. 제출 시 입력한 이름을 정확히 입력해주세요.');
       } else if (result.error === 'PIN_MISMATCH') {
-        setResultLookupError('비밀번호가 일치하지 않습니다');
+        setResultLookupError('이름은 확인되었지만, 비밀번호가 일치하지 않습니다.');
       } else {
         setFoundSubmission(result.submission);
         setView('result');

@@ -101,7 +101,7 @@ export default memo(function AdminSessionHeader({
         {isTablet && onLeftDrawer && (
           <button
             onClick={onLeftDrawer}
-            className="p-2 -ml-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
+            className="p-2.5 -ml-1 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
             aria-label="질문 목록 열기"
           >
             <List size={22} />
