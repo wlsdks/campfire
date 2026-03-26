@@ -33,7 +33,7 @@ const AwardsCeremony = lazy(() => import('@/features/assignments/components/Awar
 const RandomPicker = lazy(() => import('@/features/games/components/RandomPicker'));
 const ComprehensionPresenter = lazy(() => import('@/features/session/components/ComprehensionCheck').then(m => ({ default: m.ComprehensionPresenter })));
 const SurveyPresenter = lazy(() => import('@/features/session/components/QuickSurvey').then(m => ({ default: m.SurveyPresenter })));
-const DiscussionPresenter = lazy(() => import('@/features/session/components/GroupDiscussion').then(m => ({ default: m.DiscussionPresenter })));
+const DiscussionPresenter = lazy(() => import('@/features/session/components/DiscussionPresenter'));
 
 const GameFallback = () => (
   <div className="flex items-center justify-center min-h-[300px]">
