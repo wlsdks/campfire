@@ -214,7 +214,7 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
                     </div>
                     <textarea value={requestText} onChange={(e) => setRequestText(e.target.value)}
                       placeholder="어떤 도움이 필요하신가요?" aria-label="도움 요청 내용" maxLength={200} rows={3} autoFocus
-                      className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-4 py-3 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none transition-all" />
+                      className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-4 py-3 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none transition-colors duration-150" />
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-slate-400 tabular-nums">{requestText.length}/200</span>
                       <Button type="submit" variant="primary" size="md" disabled={!requestText.trim() || requestSending}>
