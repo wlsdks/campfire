@@ -53,7 +53,7 @@ export default function ProfileSection({ adminUser }) {
             {editing ? (
               <motion.div key="edit" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.15 }} className="space-y-2">
                 <input type="text" value={displayName} onChange={(e) => { setDisplayName(e.target.value); setError(''); }} maxLength={20}
-                  className={`w-full bg-slate-50 dark:bg-slate-700 border-2 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:bg-white dark:focus:bg-slate-600 transition-all duration-200 ${error ? 'border-red-300 focus:border-red-400' : 'border-slate-200 dark:border-slate-600 focus:border-slate-400 focus:shadow-[0_0_0_3px_rgba(15,23,42,0.06)]'}`}
+                  className={`w-full bg-slate-50 dark:bg-slate-700 border-2 rounded-xl px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:bg-white dark:focus:bg-slate-600 transition-colors duration-150 ${error ? 'border-red-300 focus:border-red-400' : 'border-slate-200 dark:border-slate-600 focus:border-slate-400 focus:shadow-[0_0_0_3px_rgba(15,23,42,0.06)]'}`}
                   aria-label="표시 이름" autoFocus onKeyDown={(e) => { if (e.key === 'Enter') handleSave(); if (e.key === 'Escape') cancelEdit(); }} />
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-slate-400">{displayName.length}/20</span>

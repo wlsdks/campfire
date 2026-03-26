@@ -34,7 +34,7 @@ export default function SessionSearchFilter({ searchQuery, onSearchChange, statu
           onBlur={() => setFocused(false)}
           placeholder="강의명으로 검색..."
           aria-label="세션 검색"
-          className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg pl-10 pr-9 py-2.5 text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+          className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg pl-10 pr-9 py-2.5 text-sm placeholder:text-slate-400 dark:placeholder:text-slate-500 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors duration-150"
         />
         <AnimatePresence>
           {searchQuery && (
