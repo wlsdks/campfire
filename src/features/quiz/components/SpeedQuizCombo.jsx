@@ -50,7 +50,7 @@ export default memo(function SpeedQuizCombo({ streak = 0 }) {
               } : {}}
             >
               {combo.level >= 2 ? (
-                <Flame size={16} className={combo.level >= 3 ? 'text-white' : 'text-white'} />
+                <Flame size={16} className="text-white" />
               ) : (
                 <Zap size={14} />
               )}
@@ -64,11 +64,7 @@ export default memo(function SpeedQuizCombo({ streak = 0 }) {
 
             {/* Multiplier badge */}
             {combo.multiplier > 1 && (
-              <span className={`text-xs font-bold px-1.5 py-0.5 rounded ${
-                combo.level >= 3
-                  ? 'bg-white/20 text-white'
-                  : 'bg-white/20 text-white'
-              }`}>
+              <span className="text-xs font-bold px-1.5 py-0.5 rounded bg-white/20 text-white">
                 x{combo.multiplier}
               </span>
             )}
