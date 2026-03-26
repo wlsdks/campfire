@@ -159,7 +159,7 @@ export default memo(function StudentBottomBar({ sessionId }) {
                 >
                   <Hand size={22} />
                 </motion.div>
-                <span className="text-[11px]">{isRaised ? '내리기' : '손들기'}</span>
+                <span className="text-xs">{isRaised ? '내리기' : '손들기'}</span>
               </motion.button>
 
               {/* 긴급 질문 */}
@@ -171,7 +171,7 @@ export default memo(function StudentBottomBar({ sessionId }) {
                 className={BTN_DEFAULT}
               >
                 <MessageCircle size={22} />
-                <span className="text-[11px]">긴급</span>
+                <span className="text-xs">긴급</span>
               </motion.button>
 
               {/* 수업 질문 */}
@@ -183,7 +183,7 @@ export default memo(function StudentBottomBar({ sessionId }) {
                 className={BTN_DEFAULT}
               >
                 <HelpCircle size={22} />
-                <span className="text-[11px]">질문</span>
+                <span className="text-xs">질문</span>
                 {hasNewQuestion && <span className={`${UNREAD_DOT} bg-red-500`} />}
               </motion.button>
 
@@ -196,7 +196,7 @@ export default memo(function StudentBottomBar({ sessionId }) {
                 className={BTN_DEFAULT}
               >
                 <MessageSquare size={22} />
-                <span className="text-[11px]">채팅</span>
+                <span className="text-xs">채팅</span>
                 {hasUnread && <span className={`${UNREAD_DOT} bg-red-500`} />}
               </motion.button>
 
@@ -213,7 +213,7 @@ export default memo(function StudentBottomBar({ sessionId }) {
                 className={`${BTN_DEFAULT} ${allActiveDMs.length > 0 && dmUnread === 0 ? 'text-emerald-600 dark:text-emerald-400' : ''}`}
               >
                 <Headset size={22} />
-                <span className="text-[11px]">도움</span>
+                <span className="text-xs">도움</span>
                 {dmUnread > 0 && (
                   <span className={`${UNREAD_DOT} bg-red-500 flex items-center justify-center`}>
                     <span className="text-white text-[8px] font-bold">{dmUnread}</span>

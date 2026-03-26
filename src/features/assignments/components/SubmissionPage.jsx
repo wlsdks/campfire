@@ -101,7 +101,7 @@ export default function SubmissionPage({ assignmentId }) {
             </button>
           )}
           <div className="flex-1 min-w-0">
-            <h1 className="text-base font-bold text-slate-900 dark:text-slate-100 tracking-tight truncate">
+            <h1 className="text-base font-bold text-slate-900 dark:text-slate-100 tracking-tight line-clamp-2">
               {assignment.title}
             </h1>
             <p className="text-xs text-slate-400 mt-0.5 truncate">

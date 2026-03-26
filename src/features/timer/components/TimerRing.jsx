@@ -12,7 +12,7 @@ function getColor(secondsLeft, totalSeconds) {
   return { ring: colors.error, text: 'text-red-500' };                        // red
 }
 
-export default function TimerRing({ endTime, duration, onExpire, size = 'md' }) {
+export default function TimerRing({ endTime, duration, onExpire, size = 'md', dark = false }) {
   const [secondsLeft, setSecondsLeft] = useState(duration);
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export default function TimerRing({ endTime, duration, onExpire, size = 'md' }) 
     >
       <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
         {/* Track */}
-        <circle cx="50" cy="50" r={RADIUS} fill="none" stroke="#F1F5F9" strokeWidth="6" />
+        <circle cx="50" cy="50" r={RADIUS} fill="none" stroke="currentColor" strokeWidth="6" className="text-slate-200 dark:text-slate-700" />
         {/* Progress ring */}
         <motion.circle
           cx="50" cy="50" r={RADIUS}
