@@ -167,11 +167,11 @@ export default memo(function StudentBottomBar({ sessionId }) {
                 whileTap={{ scale: 0.93 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 22 }}
                 onClick={() => setShowQuestionInput(true)}
-                aria-label="긴급 질문 보내기"
+                aria-label="강사에게 긴급 질문 보내기"
                 className={BTN_DEFAULT}
               >
                 <MessageCircle size={22} />
-                <span className="text-xs">긴급</span>
+                <span className="text-xs">긴급질문</span>
               </motion.button>
 
               {/* 수업 질문 */}

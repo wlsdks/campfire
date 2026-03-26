@@ -88,10 +88,11 @@ const Particle = memo(function Particle({ particle }) {
  */
 export default memo(function ConfettiBurst() {
   const [visible, setVisible] = useState(true);
+  const prefersReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const particles = useMemo(
-    () => Array.from({ length: PARTICLE_COUNT }, (_, i) => createParticle(i)),
-    [],
+    () => prefersReduced ? [] : Array.from({ length: PARTICLE_COUNT }, (_, i) => createParticle(i)),
+    [prefersReduced],
   );
 
   useEffect(() => {
@@ -99,7 +100,7 @@ export default memo(function ConfettiBurst() {
     return () => clearTimeout(timer);
   }, []);
 
-  if (!visible) return null;
+  if (!visible || prefersReduced) return null;
 
   return (
     <div

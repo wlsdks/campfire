@@ -125,8 +125,8 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
         transition={{ type: 'spring', stiffness: 200, damping: 20 }}
         className="text-center w-full max-w-xs space-y-6"
       >
-        {/* Mascot with idle animations */}
-        <div className="flex justify-center">
+        {/* Mascot with idle animations — smaller on compact screens */}
+        <div className="flex justify-center scale-[0.85] sm:scale-100 origin-center">
           <IdleMascot />
         </div>
 

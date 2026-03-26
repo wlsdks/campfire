@@ -241,7 +241,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     content = <Suspense fallback={<GameFallback />}>{gameContent}</Suspense>;
   } else if (isActive) {
     contentKey = `question-${currentQId}`;
-    content = <div className="w-full px-2 md:px-0 [&_.max-w-xl]:max-w-2xl"><VizRenderer sessionId={sessionId} session={session} /></div>;
+    content = <div className="w-full px-2 md:px-0 [&_.max-w-xl]:max-w-3xl [&_.max-w-md]:max-w-xl"><VizRenderer sessionId={sessionId} session={session} /></div>;
   } else if (presentMode) {
     contentKey = 'empty';
     content = <PresentEmptyState sessionId={sessionId} studentUrl={studentUrl} count={count} />;
@@ -268,15 +268,37 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
 
 export { MainContent };
 
-/** Collapsible panel for HandRaiseList + UrgentQuestionList on small screens. */
+/** Collapsible panel for HandRaiseList + UrgentQuestionList — always toggleable. */
 function SideNoticesPanel({ sessionId }) {
   const [open, setOpen] = useState(false);
   return (
     <>
-      {/* Desktop: fixed top-left panel */}
-      <div className="hidden md:block fixed top-5 left-5 w-72 space-y-3 z-10">
-        <HandRaiseList sessionId={sessionId} />
-        <UrgentQuestionList sessionId={sessionId} />
+      {/* Desktop: toggleable top-left panel */}
+      <div className="hidden md:block fixed top-5 left-5 z-10">
+        <motion.button
+          onClick={() => setOpen((v) => !v)}
+          whileTap={{ scale: 0.94 }}
+          className="flex items-center gap-1.5 bg-slate-900/80 dark:bg-slate-800/90 backdrop-blur-sm text-white px-3 py-2 rounded-xl text-xs font-medium shadow-lg mb-2"
+          aria-label="알림 패널 열기/닫기"
+        >
+          <Hand size={13} />
+          <MessageSquare size={13} />
+          <ChevronDown size={12} className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+        </motion.button>
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              initial={{ opacity: 0, y: -8, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -8, scale: 0.96 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+              className="w-72 space-y-3"
+            >
+              <HandRaiseList sessionId={sessionId} />
+              <UrgentQuestionList sessionId={sessionId} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Mobile: pill toggle at top-left + slide-down sheet */}
@@ -313,13 +335,17 @@ function SideNoticesPanel({ sessionId }) {
   );
 }
 
-/** Exit hint — ESC on desktop, tap hint on touch. */
-function ExitHint() {
-  const isTouchRef = useRef(typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches);
+/** Exit hint + button — ESC on desktop, explicit button on all. */
+function ExitHint({ onExit }) {
   return (
-    <div className="fixed top-3 right-3 md:top-5 md:right-5 bg-slate-900/80 dark:bg-slate-700/80 text-white px-2.5 py-1.5 md:px-3 rounded-lg text-xs md:text-sm pointer-events-none select-none">
-      {isTouchRef.current ? '탭하여 나가기' : 'ESC 또는 클릭으로 나가기'}
-    </div>
+    <button
+      onClick={onExit}
+      className="fixed top-3 right-3 md:top-5 md:right-5 bg-slate-900/80 dark:bg-slate-700/80 hover:bg-slate-900 dark:hover:bg-slate-600 text-white px-3 py-1.5 md:px-4 rounded-lg text-xs md:text-sm transition-colors duration-150 z-20 flex items-center gap-1.5"
+    >
+      <X size={14} />
+      <span className="hidden sm:inline">나가기</span>
+      <span className="hidden md:inline text-white/50 ml-1">ESC</span>
+    </button>
   );
 }
 
@@ -345,7 +371,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
   }, [exitPresent]);
 
   return (
-    <div className="min-h-dvh bg-white dark:bg-slate-900 relative cursor-pointer" onClick={exitPresent}>
+    <div className="min-h-dvh bg-white dark:bg-slate-900 relative">
       <JoinToast sessionId={sessionId} />
       <ReactionOverlay sessionId={sessionId} />
 
@@ -376,7 +402,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
         <Badge variant="neutral"><Users size={12} className="mr-1" />{count}명</Badge>
       </div>
 
-      <ExitHint />
+      <ExitHint onExit={exitPresent} />
     </div>
   );
 }

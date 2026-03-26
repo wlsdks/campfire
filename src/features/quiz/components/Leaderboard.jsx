@@ -75,6 +75,30 @@ export default memo(function Leaderboard({
           />
         ))}
       </AnimatePresence>
+
+      {/* 10위 밖일 때 내 순위 고정 표시 */}
+      {highlightId && !visible.some((e) => e.id === highlightId) && (() => {
+        const myIndex = entries.findIndex((e) => e.id === highlightId);
+        if (myIndex < 0) return null;
+        const myEntry = entries[myIndex];
+        return (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.2 }}
+            className="mt-4 pt-3 border-t border-dashed border-slate-200 dark:border-slate-700"
+          >
+            <LeaderboardRow
+              entry={myEntry}
+              rank={myIndex}
+              isHighlighted
+              isPodium={false}
+              podiumIndex={-1}
+              rankDelta={rankDeltas[myEntry.id] || 0}
+            />
+          </motion.div>
+        );
+      })()}
     </div>
   );
 });
