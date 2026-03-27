@@ -50,6 +50,7 @@ export default function QuestionManager({
 
   const completedCount = questionList.filter(([, q]) => q.activatedAt || q.revealedAt).length;
   const handleActivate = useCallback((qId) => activateQuestion(qId), [activateQuestion]);
+  const handleNextEvent = useCallback(() => {}, []);
 
   async function handleSaveToLibrary(qId) {
     const question = questions?.[qId];
@@ -112,7 +113,7 @@ export default function QuestionManager({
             onClearActive={clearActive}
             onReveal={revealQuiz}
             onShowLeaderboard={showLeaderboard}
-            onNextEvent={() => {}}
+            onNextEvent={handleNextEvent}
             speedQuizActive={speedQuizActive}
             onStartSpeedQuiz={onStartSpeedQuiz}
             onEndSpeedQuiz={onEndSpeedQuiz}

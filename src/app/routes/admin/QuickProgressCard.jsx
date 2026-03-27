@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { Play, Square, Zap, PartyPopper, Check, Trophy } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { QUIZ_EVENT_PRESETS, isQuizQuestion } from '@/lib/quiz';
@@ -14,7 +14,7 @@ function KeyHint({ keys, label }) {
   );
 }
 
-export default function QuickProgressCard({
+export default memo(function QuickProgressCard({
   questionList,
   activeIndex,
   currentEntry,
@@ -221,4 +221,4 @@ export default function QuickProgressCard({
       </div>
     </div>
   );
-}
+});
