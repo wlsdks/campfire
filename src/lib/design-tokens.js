@@ -180,9 +180,9 @@ export const motion = {
 // ─── Component Recipes (Tailwind) ────────────────────
 export const tw = {
   // Cards
-  card: 'bg-white rounded-xl shadow-sm p-5',
-  cardHover: 'bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow',
-  cardInteractive: 'bg-white rounded-xl shadow-sm hover:shadow-md transition-all active:scale-[0.98]',
+  card: 'bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5',
+  cardHover: 'bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow',
+  cardInteractive: 'bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-md transition-shadow active:scale-[0.98]',
 
   // Buttons
   btnBase: 'font-medium rounded-lg transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.97]',
@@ -195,28 +195,28 @@ export const tw = {
   btnLg: 'py-3 px-6 text-lg',
 
   // Inputs
-  input: 'w-full bg-white border border-slate-200 rounded-lg px-4 py-3 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all',
+  input: 'w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-4 py-3 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors duration-150',
   inputError: 'border-red-400 focus:ring-red-500/20 focus:border-red-500',
 
   // Badges
   badge: 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium',
-  badgePrimary: 'bg-slate-100 text-slate-700',
-  badgeNeutral: 'bg-slate-50 text-slate-500',
-  badgeError: 'bg-red-50 text-red-700',
+  badgePrimary: 'bg-slate-100 text-slate-700 dark:bg-slate-700 dark:text-slate-200',
+  badgeNeutral: 'bg-slate-50 text-slate-500 dark:bg-slate-800 dark:text-slate-400',
+  badgeError: 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400',
 
   // Avatar
   avatar: 'rounded-full bg-slate-100 text-slate-700 flex items-center justify-center font-semibold',
 
   // Modal
   modalBackdrop: 'fixed inset-0 bg-black/30 backdrop-blur-sm z-50',
-  modalContent: 'bg-white rounded-2xl shadow-xl p-6 max-w-md mx-auto',
+  modalContent: 'bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 max-w-md mx-auto',
 
   // Accordion
   accordionHeader: 'w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 active:bg-slate-100 transition-colors',
   accordionTitle: 'text-sm font-semibold text-slate-600',
 
   // Skeleton
-  skeleton: 'animate-shimmer rounded-lg',
+  skeleton: 'animate-shimmer rounded-lg dark:bg-slate-700',
 };
 
 // ─── Timing ──────────────────────────────────────────
