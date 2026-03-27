@@ -48,7 +48,7 @@ export default memo(function VizRenderer({ sessionId, session }) {
   const isEnded = session?.status === 'ended' || session?.status === 'reviewing';
   const hasCorrectAnswer = Boolean(question.correctAnswer);
   const answerRevealed = Boolean(question.revealedAt) || isEnded;
-  const options = useMemo(() => options, [question.options]);
+  const options = useMemo(() => question.options || [], [question.options]);
 
   return (
     <div className={`flex flex-col w-full h-full ${isQA ? 'pt-4' : 'justify-center gap-6'}`}>
