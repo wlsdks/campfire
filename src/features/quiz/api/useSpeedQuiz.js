@@ -259,10 +259,9 @@ export function useSpeedQuiz(sessionId, session, { scores, participants, startTi
     }
   }, [sessionId, stopTimer]);
 
-  // Derive stable counts from the session ref — these only update when session changes.
-  // Using useMemo avoids calling the functions on every render when other state changes.
-  const quizCount = useMemo(() => getQuizQuestions().length, [getQuizQuestions]);
-  const currentQuizIndex = useMemo(() => getCurrentQuizIndex(), [getCurrentQuizIndex]);
+  // Derive counts from session data — recompute when questions or current question changes.
+  const quizCount = useMemo(() => getQuizQuestions().length, [session?.questions]);
+  const currentQuizIndex = useMemo(() => getCurrentQuizIndex(), [session?.currentQuestion, session?.questions]);
 
   return {
     active,
