@@ -250,6 +250,37 @@ export const touch = {
   dragActivation: 5,         // px distance before drag starts
 };
 
+// ─── Device Viewports (CSS pixels) ───────────────────
+// Reference: 2026 기준 주요 기기 뷰포트 (테스트 대상)
+export const viewports = {
+  // iPhone 14~17 series
+  iphone14:       { w: 390, h: 844 },    // iPhone 14
+  iphone14Pro:    { w: 393, h: 852 },    // iPhone 14 Pro, 15, 15 Pro, 16
+  iphone14ProMax: { w: 430, h: 932 },    // iPhone 14 Pro Max, 15 Plus/Pro Max
+  iphone16Pro:    { w: 402, h: 874 },    // iPhone 16 Pro, 17
+  iphone16ProMax: { w: 440, h: 956 },    // iPhone 16 Pro Max, 17 Pro Max
+  // Galaxy S23~S26 series
+  galaxyS:        { w: 360, h: 780 },    // Galaxy S23/S24/S25 (compact)
+  galaxySPlus:    { w: 384, h: 824 },    // Galaxy S24+/S25+
+  galaxySUltra:   { w: 412, h: 892 },    // Galaxy S24 Ultra/S25 Ultra/S26
+  // Tablet
+  ipadMini:       { w: 744, h: 1133 },   // iPad mini 7
+  ipad:           { w: 810, h: 1080 },   // iPad 10th
+  ipadAir:        { w: 820, h: 1180 },   // iPad Air
+  ipadPro11:      { w: 834, h: 1194 },   // iPad Pro 11"
+  // Desktop
+  laptop:         { w: 1440, h: 900 },   // MacBook Pro 14"
+  desktop:        { w: 1920, h: 1080 },  // Full HD
+
+  // 테스트 대표 기기 (Playwright 순회용)
+  // 최소: Galaxy S (360px) — 가장 좁은 화면
+  // 표준: iPhone 14 (390px) — 가장 보편적
+  // 중간: iPhone 16 Pro (402px) — 최신 중간 크기
+  // 대형: iPhone 16 Pro Max (440px) — 가장 넓은 폰
+  // 태블릿: iPad (810px)
+  // 데스크탑: 1440px
+};
+
 // ─── Mobile Design Tokens (< 768px) ─────────────────
 // Reference: 토스, 당근, 카카오, Apple HIG
 // These values override web defaults on mobile breakpoints.
