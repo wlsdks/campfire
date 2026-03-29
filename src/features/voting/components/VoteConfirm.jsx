@@ -125,8 +125,13 @@ export default memo(function VoteConfirm({
       className="w-full rounded-xl bg-white dark:bg-slate-800 px-5 py-8 shadow-sm"
     >
       <div className="flex flex-col items-center gap-5">
-        {/* Check with particles */}
-        <AnimatedCheck />
+        {/* Check with particles — breathe when waiting */}
+        <motion.div
+          animate={waiting ? { scale: [1, 1.06, 1] } : {}}
+          transition={waiting ? { duration: 2.5, repeat: Infinity, ease: 'easeInOut' } : {}}
+        >
+          <AnimatedCheck />
+        </motion.div>
 
         {/* Label + description */}
         <div className="space-y-1 text-center">
@@ -156,7 +161,7 @@ export default memo(function VoteConfirm({
                 {[0, 1, 2].map((i) => (
                   <motion.span
                     key={i}
-                    className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600"
+                    className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500"
                     animate={{ opacity: [0.3, 1, 0.3] }}
                     transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
                   />

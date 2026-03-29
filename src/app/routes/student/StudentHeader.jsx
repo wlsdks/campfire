@@ -33,12 +33,17 @@ function HeaderScore({ value }) {
     const unsubscribe = rounded.on('change', (v) => {
       if (displayRef.current) displayRef.current.textContent = `${v}점`;
     });
-    const controls = animate(motionVal, value, {
-      duration: 0.6,
-      ease: [0.25, 0.1, 0.25, 1],
-    });
+    // Guard: if value decreased (network jitter), set instantly without animation
+    if (value < prevRef.current) {
+      motionVal.set(value);
+    } else {
+      var controls = animate(motionVal, value, {
+        duration: 0.6,
+        ease: [0.25, 0.1, 0.25, 1],
+      });
+    }
     prevRef.current = value;
-    return () => { controls.stop(); unsubscribe(); };
+    return () => { controls?.stop(); unsubscribe(); };
   }, [value, motionVal, rounded]);
 
   return <span ref={displayRef}>{value}점</span>;

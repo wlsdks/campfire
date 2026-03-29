@@ -225,7 +225,7 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
                     key={option}
                     initial={{ opacity: 0, y: 12 }}
                     animate={{
-                      opacity: isLocked && !isSelected ? 0.4 : 1,
+                      opacity: isLocked && !isSelected ? 0.3 : 1,
                       y: 0,
                       scale: isSelected ? 0.98 : 1,
                     }}
@@ -240,7 +240,7 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
                     disabled={isLocked || disabled}
                     className={`w-full min-h-[56px] py-3.5 px-4 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${
                       isSelected ? 'ring-2 ring-slate-400 dark:ring-slate-500 border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-700' : 'border-slate-200 dark:border-slate-700'
-                    } ${(isLocked && !isSelected) || disabled ? 'cursor-not-allowed' : ''} transition-colors duration-150 flex items-center gap-3`}
+                    } ${(isLocked && !isSelected) ? 'pointer-events-none' : ''} ${disabled ? 'pointer-events-none' : ''} transition-colors duration-150 flex items-center gap-3`}
                   >
                     <span className={`w-8 h-8 rounded-lg ${style.badge} flex items-center justify-center text-sm font-bold shrink-0 text-white`}>
                       {style.letter}

@@ -88,7 +88,7 @@ export default memo(function ChoiceVoter({ sessionId, questionId, options, disab
             layout
             initial={{ opacity: 0, y: 8 }}
             animate={{
-              opacity: hasSelection && !isSelected ? 0.4 : 1,
+              opacity: hasSelection && !isSelected ? 0.3 : 1,
               y: hasSelection && !isSelected ? 2 : 0,
               scale: isSelected ? [0.95, 1.04, 1] : 1,
             }}
@@ -99,7 +99,7 @@ export default memo(function ChoiceVoter({ sessionId, questionId, options, disab
             whileTap={!hasSelection ? { scale: 0.95 } : undefined}
             onClick={() => { hapticTap(); handleVote(option); }}
             disabled={hasSelection || disabled}
-            className={`w-full min-h-[56px] py-4 px-5 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${isSelected ? 'ring-2 ring-slate-400 dark:ring-slate-500 border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-700' : 'border-slate-200 dark:border-slate-700'} ${hasSelection && !isSelected ? 'cursor-not-allowed' : ''} transition-colors duration-150 flex items-center gap-3.5`}
+            className={`w-full min-h-[56px] py-4 px-5 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${isSelected ? 'ring-2 ring-slate-400 dark:ring-slate-500 border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-700' : 'border-slate-200 dark:border-slate-700'} ${hasSelection && !isSelected ? 'pointer-events-none' : ''} transition-colors duration-150 flex items-center gap-3.5`}
           >
             <span className={`w-9 h-9 rounded-lg ${style.badge} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
               {style.letter}

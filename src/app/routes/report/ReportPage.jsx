@@ -84,9 +84,9 @@ export default function ReportPage() {
   if (!sessionId || !participantId) {
     return (
       <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
-        <div className="text-center space-y-4">
+        <div className="flex flex-col items-center text-center space-y-4">
           <PickMascot size="lg" mood="thinking" />
-          <p className="text-slate-500 text-base">유효하지 않은 리포트 링크입니다</p>
+          <p className="text-slate-500 dark:text-slate-400 text-sm">유효하지 않은 리포트 링크입니다</p>
         </div>
       </div>
     );

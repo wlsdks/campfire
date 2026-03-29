@@ -75,7 +75,7 @@ export default function QuestionManager({
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">질문 목록</h2>
+        <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100 shrink-0">질문 목록</h2>
         <div className="flex items-center gap-1.5">
           {!readOnly && modeButton}
           {!readOnly && adminUid && (

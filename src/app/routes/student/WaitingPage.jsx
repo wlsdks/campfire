@@ -27,7 +27,15 @@ function RotatingTip() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % TIPS.length);
+      setIndex((prev) => {
+        const next = prev + 1;
+        // Stop after one full cycle — all tips shown once
+        if (next >= TIPS.length) {
+          clearInterval(interval);
+          return prev;
+        }
+        return next;
+      });
     }, 5000);
     return () => clearInterval(interval);
   }, []);
