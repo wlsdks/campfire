@@ -16,7 +16,7 @@ const SIZES = {
  * @param {'xs' | 'sm' | 'md' | 'lg'} size
  * @param {'happy' | 'waiting' | 'thinking' | 'focus'} mood
  */
-export default function PickMascot({ size = 'md', mood = 'happy' }) {
+export default function PickMascot({ size = 'md', mood = 'happy', className = '' }) {
   const px = SIZES[size] || SIZES.md;
   const uid = useId();
   const g = (name) => `pick-${uid}-${name}`;
@@ -63,6 +63,8 @@ export default function PickMascot({ size = 'md', mood = 'happy' }) {
       viewBox="0 0 120 120"
       fill="none"
       aria-hidden="true"
+      className={className}
+      style={{ display: 'block' }}
       animate={{ ...bob, ...breathe, ...tilt }}
       transition={{ y: bobTiming, scale: breatheTiming, rotate: tiltTiming }}
     >

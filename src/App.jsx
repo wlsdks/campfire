@@ -17,6 +17,33 @@ const LivePage = lazy(() => import('@/app/routes/live/LivePage'));
 const ReportPage = lazy(() => import('@/app/routes/report/ReportPage'));
 const SubmitPage = lazy(() => import('@/app/routes/submit/SubmitPage'));
 
+function NotFoundPage() {
+  return (
+    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+        className="text-center space-y-5 max-w-xs"
+      >
+        <PickMascot size="lg" mood="thinking" className="mx-auto" />
+        <div className="space-y-2">
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">페이지를 찾을 수 없습니다</h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+            주소를 다시 확인해주세요
+          </p>
+        </div>
+        <a
+          href="/"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
+        >
+          홈으로 돌아가기
+        </a>
+      </motion.div>
+    </div>
+  );
+}
+
 function StudentRouter() {
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get('s');
@@ -167,6 +194,7 @@ function App() {
             </Suspense>
           </ErrorBoundary>
         } />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
     </MotionConfig>

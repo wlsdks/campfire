@@ -246,28 +246,30 @@ export default function JoinPage({ sessionId, onJoin }) {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.15 }}
-        className="sticky bottom-0 bg-slate-50/95 dark:bg-slate-900/95 backdrop-blur-sm border-t border-slate-100 dark:border-slate-800 px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]"
+        className="sticky bottom-0 px-5 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))]"
       >
-        <Button
-          type="submit"
-          form={FORM_ID}
-          variant="primary"
-          size="lg"
-          disabled={!isValid || joining}
-          className="w-full"
-        >
-          {joining ? (
-            <>
-              <Loader2 size={18} className="animate-spin" />
-              입장 중...
-            </>
-          ) : (
-            <>
-              참여하기
-              <ArrowRight size={18} />
-            </>
-          )}
-        </Button>
+        <div className="max-w-sm mx-auto">
+          <Button
+            type="submit"
+            form={FORM_ID}
+            variant="primary"
+            size="lg"
+            disabled={!isValid || joining}
+            className="w-full rounded-2xl shadow-lg"
+          >
+            {joining ? (
+              <>
+                <Loader2 size={18} className="animate-spin" />
+                입장 중...
+              </>
+            ) : (
+              <>
+                참여하기
+                <ArrowRight size={18} />
+              </>
+            )}
+          </Button>
+        </div>
       </motion.div>
     </div>
   );
