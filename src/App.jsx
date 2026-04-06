@@ -1,4 +1,4 @@
-import { onDisconnect, ref, set, serverTimestamp } from 'firebase/database';
+import { onDisconnect, onValue, ref, set, serverTimestamp } from 'firebase/database';
 import { BrowserRouter, Routes, Route, useSearchParams } from 'react-router-dom';
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
@@ -63,17 +63,28 @@ function StudentRouter() {
     const participantRef = ref(db, `sessions/${sessionId}/participants/${participantId}`);
     const onlineRef = ref(db, `sessions/${sessionId}/participants/${participantId}/online`);
 
-    set(participantRef, {
-      nickname,
-      joinedAt: serverTimestamp(),
-      online: true,
-    }).catch(() => {
-      // Keep the current screen even if presence sync fails.
+    function syncPresence() {
+      set(participantRef, {
+        nickname,
+        joinedAt: serverTimestamp(),
+        online: true,
+      }).catch(() => {});
+      onDisconnect(onlineRef).set(false).catch(() => {});
+    }
+
+    // Initial presence sync
+    syncPresence();
+
+    // Re-sync on reconnect — when Wi-Fi drops and returns,
+    // Firebase auto-reconnects but online stays false without this.
+    const connRef = ref(db, '.info/connected');
+    const unsub = onValue(connRef, (snap) => {
+      if (snap.val() === true) {
+        syncPresence();
+      }
     });
 
-    onDisconnect(onlineRef).set(false).catch(() => {
-      // Ignore disconnect setup failures in the client.
-    });
+    return () => unsub();
   }, [joined, sessionId]);
 
   if (!sessionId) {

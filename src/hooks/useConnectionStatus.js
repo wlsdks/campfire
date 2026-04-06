@@ -10,11 +10,16 @@ import { db } from '@/lib/firebase';
  *   - showBanner: 'offline' while disconnected, 'reconnected' briefly after
  *     regaining connection, null when idle
  */
+/**
+ * Debounced connection status — only shows "offline" banner after 3s of
+ * continuous disconnection to avoid flickering on brief Wi-Fi jitter.
+ */
 export function useConnectionStatus() {
   const [connected, setConnected] = useState(true);
   const [showBanner, setShowBanner] = useState(null);
   const wasDisconnectedRef = useRef(false);
   const reconnectTimerRef = useRef(null);
+  const offlineTimerRef = useRef(null);
 
   useEffect(() => {
     const connRef = ref(db, '.info/connected');
@@ -29,23 +34,40 @@ export function useConnectionStatus() {
           reconnectTimerRef.current = null;
         }
         wasDisconnectedRef.current = true;
-        setShowBanner('offline');
-      } else if (wasDisconnectedRef.current) {
-        // Just reconnected — show brief success banner
-        wasDisconnectedRef.current = false;
-        setShowBanner('reconnected');
-        reconnectTimerRef.current = setTimeout(() => {
-          setShowBanner(null);
-          reconnectTimerRef.current = null;
-        }, 2000);
+        // Debounce: only show offline banner after 3s of sustained disconnection
+        if (!offlineTimerRef.current) {
+          offlineTimerRef.current = setTimeout(() => {
+            setShowBanner('offline');
+            offlineTimerRef.current = null;
+          }, 3000);
+        }
+      } else {
+        // Cancel pending offline banner if reconnected quickly
+        if (offlineTimerRef.current) {
+          clearTimeout(offlineTimerRef.current);
+          offlineTimerRef.current = null;
+        }
+        if (wasDisconnectedRef.current) {
+          // Only show "reconnected" if offline banner was actually visible
+          wasDisconnectedRef.current = false;
+          setShowBanner((prev) => {
+            if (prev === 'offline') {
+              reconnectTimerRef.current = setTimeout(() => {
+                setShowBanner(null);
+                reconnectTimerRef.current = null;
+              }, 2000);
+              return 'reconnected';
+            }
+            return null;
+          });
+        }
       }
     });
 
     return () => {
       unsub();
-      if (reconnectTimerRef.current) {
-        clearTimeout(reconnectTimerRef.current);
-      }
+      if (reconnectTimerRef.current) clearTimeout(reconnectTimerRef.current);
+      if (offlineTimerRef.current) clearTimeout(offlineTimerRef.current);
     };
   }, []);
 
