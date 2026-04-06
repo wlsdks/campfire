@@ -26,6 +26,8 @@ const RandomPicker = lazy(() => import('@/features/games/components/RandomPicker
 const ComprehensionPresenter = lazy(() => import('@/features/session/components/ComprehensionCheck').then(m => ({ default: m.ComprehensionPresenter })));
 const SurveyPresenter = lazy(() => import('@/features/session/components/QuickSurvey').then(m => ({ default: m.SurveyPresenter })));
 const DiscussionPresenter = lazy(() => import('@/features/session/components/DiscussionPresenter'));
+const MysteryBoxSetup = lazy(() => import('@/features/games/components/MysteryBoxSetup'));
+const HintRevealSetup = lazy(() => import('@/features/games/components/HintRevealSetup'));
 
 function PresentEmptyState({ sessionId, studentUrl, count }) {
   return (
@@ -226,6 +228,8 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     if (currentMode === 'comprehension') return <ComprehensionPresenter sessionId={sessionId} />;
     if (currentMode === 'quickSurvey') return <SurveyPresenter sessionId={sessionId} />;
     if (currentMode === 'discussion') return <DiscussionPresenter sessionId={sessionId} />;
+    if (currentMode === 'mysteryBox') return <MysteryBoxSetup />;
+    if (currentMode === 'hintReveal') return <HintRevealSetup />;
     if (currentMode === 'focus') return (
       <div className="flex flex-col items-center justify-center gap-4 md:gap-6 text-center">
         <PickMascot size="lg" mood="focus" />
