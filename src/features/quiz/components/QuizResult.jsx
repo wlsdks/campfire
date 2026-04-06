@@ -165,11 +165,7 @@ export default function QuizResult({ isCorrect, points, tickets = 0, correctAnsw
             initial={{ opacity: 0, y: 10, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ ...SPRING_DEFAULT, delay: 0.28 }}
-            className={`w-full rounded-xl border px-4 py-3.5 text-center ${
-              isCorrect
-                ? 'border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700'
-                : 'border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700'
-            }`}
+            className="w-full rounded-xl border border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-700 px-4 py-3.5 text-center"
           >
             <p className="text-xs font-medium text-slate-400 dark:text-slate-500 mb-1">정답</p>
             <p className="text-base font-semibold text-slate-900 dark:text-slate-100">{correctAnswer}</p>

@@ -53,7 +53,7 @@ export function QuizResultFromVote({ question, currentVote, streak = 0 }) {
 }
 
 /** Timer expired overlay shown when countdown reaches zero. */
-export function TimerExpiredOverlay({ hasVoted = false }) {
+export function TimerExpiredOverlay() {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -84,7 +84,7 @@ export function TimerExpiredOverlay({ hasVoted = false }) {
         transition={{ delay: 0.3 }}
         className="text-sm text-slate-400 dark:text-slate-500"
       >
-        {hasVoted ? '응답이 기록되었습니다 · 결과를 기다려주세요' : '응답하지 못했습니다 · 결과를 기다려주세요'}
+        응답하지 못했습니다 · 결과를 기다려주세요
       </motion.p>
     </motion.div>
   );

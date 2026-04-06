@@ -10,6 +10,7 @@ export default function ReviewingBanner({ sessionId }) {
   const [showAcknowledged, setShowAcknowledged] = useState(false);
   const prevReviewing = useRef(false);
   const prevAcknowledgedIds = useRef(new Set());
+  const ackTimerRef = useRef(null);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -27,13 +28,14 @@ export default function ReviewingBanner({ sessionId }) {
       for (const id of currentAcked) {
         if (!prevAcknowledgedIds.current.has(id)) {
           setShowAcknowledged(true);
-          setTimeout(() => setShowAcknowledged(false), 3000);
+          if (ackTimerRef.current) clearTimeout(ackTimerRef.current);
+          ackTimerRef.current = setTimeout(() => { setShowAcknowledged(false); ackTimerRef.current = null; }, 3000);
           break;
         }
       }
       prevAcknowledgedIds.current = currentAcked;
     }, () => {});
-    return () => unsub();
+    return () => { unsub(); if (ackTimerRef.current) clearTimeout(ackTimerRef.current); };
   }, [sessionId]);
 
   useEffect(() => {

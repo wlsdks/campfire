@@ -4,7 +4,7 @@ import { ChevronUp, ChevronDown, Crown, Flame, Medal, Ticket } from 'lucide-reac
 import Avatar from '@/components/ui/Avatar';
 import AnimatedScore from './AnimatedScore';
 
-/** Shows rank change indicator — auto-hides after 4s. */
+/** Shows rank change indicator — auto-hides after 8s. */
 function RankChange({ delta }) {
   const [visible, setVisible] = useState(true);
 
