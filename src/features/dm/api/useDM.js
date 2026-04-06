@@ -35,10 +35,9 @@ export function useStudentDM(sessionId, participantId) {
     return () => unsub();
   }, [sessionId, participantId]);
 
-  // All non-resolved DM threads with messages
+  // All DM threads (including resolved) with messages
   const allActiveDMs = useMemo(() => {
     return Object.entries(threads)
-      .filter(([, t]) => t.status !== 'resolved')
       .map(([id, thread]) => {
         const msgs = thread.messages
           ? Object.entries(thread.messages)
@@ -47,7 +46,12 @@ export function useStudentDM(sessionId, participantId) {
           : [];
         return { id, ...thread, messageList: msgs };
       })
-      .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+      .sort((a, b) => {
+        // resolved를 맨 아래로
+        if (a.status === 'resolved' && b.status !== 'resolved') return 1;
+        if (a.status !== 'resolved' && b.status === 'resolved') return -1;
+        return (b.createdAt || 0) - (a.createdAt || 0);
+      });
   }, [threads]);
 
   // First active DM (backward compat)

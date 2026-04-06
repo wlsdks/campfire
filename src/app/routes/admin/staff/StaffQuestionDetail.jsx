@@ -46,33 +46,53 @@ function ActiveQuestionBanner({ session }) {
   );
 }
 
-function ChatReplyInput({ sessionId, senderName }) {
+function ChatReplyInput({ sessionId, senderName, staffId, question, onOpenDM }) {
   const [replyText, setReplyText] = useState('');
   const [sending, setSending] = useState(false);
 
   const handleReply = useCallback(async () => {
     const trimmed = replyText.trim();
-    if (!trimmed || !sessionId) return;
+    if (!trimmed || !sessionId || !question) return;
 
     setSending(true);
     try {
-      const chatRef = ref(db, `sessions/${sessionId}/chat`);
-      await push(chatRef, {
+      // 1:1 DM 스레드 생성 후 답변 전송
+      const dmRef = push(ref(db, `sessions/${sessionId}/dm`));
+      await set(dmRef, {
+        studentId: question.participantId || question.id,
+        studentName: question.nickname || '학생',
+        staffId: staffId,
+        staffName: senderName,
+        status: 'active',
+        createdAt: serverTimestamp(),
+      });
+      // 원본 질문을 첫 메시지로
+      await push(ref(db, `sessions/${sessionId}/dm/${dmRef.key}/messages`), {
+        text: question.text,
+        sender: question.nickname || '학생',
+        senderType: 'student',
+        timestamp: serverTimestamp(),
+      });
+      // 스태프 답변 메시지
+      await push(ref(db, `sessions/${sessionId}/dm/${dmRef.key}/messages`), {
         text: trimmed,
         sender: senderName || '스태프',
         senderType: 'staff',
         timestamp: serverTimestamp(),
       });
       setReplyText('');
+      if (onOpenDM) {
+        onOpenDM({ id: dmRef.key, studentName: question.nickname || '학생', status: 'active', staffName: senderName });
+      }
     } catch (err) {
-      logger.error('채팅 답변 전송 실패:', err);
+      logger.error('1:1 답변 전송 실패:', err);
     }
     setSending(false);
-  }, [replyText, sessionId, senderName]);
+  }, [replyText, sessionId, senderName, staffId, question, onOpenDM]);
 
   return (
     <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-700">
-      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">채팅으로 답변</p>
+      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-2">1:1 빠른 답변</p>
       <div className="flex gap-2">
         <input
           type="text"
@@ -234,7 +254,9 @@ export default memo(function StaffQuestionDetail({ question, onAction, loading, 
         <ChatReplyInput
           sessionId={sessionId}
           senderName={senderName}
-          questionText={question.text}
+          staffId={staffId}
+          question={question}
+          onOpenDM={setOpenDM}
         />
       </div>
 

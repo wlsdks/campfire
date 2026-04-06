@@ -115,7 +115,7 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
   const { isWinner, winnerNames, gameResult, showOverlay, dismiss } = useGameResult(sessionId);
 
   return (
-    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center p-4 pb-32 pt-16">
+    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center p-4 pb-32 pt-20">
       <StudentHeader sessionId={sessionId} />
       <Suspense fallback={null}>
         <GameResultOverlay

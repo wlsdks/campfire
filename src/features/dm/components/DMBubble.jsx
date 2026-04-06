@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, memo } from 'react';
 import { motion } from 'framer-motion';
-import { MessageSquare, Send, X, Plus, ArrowLeft, Headset } from 'lucide-react';
+import { MessageSquare, Send, X, Plus, ArrowLeft, Headset, CheckCircle2 } from 'lucide-react';
 import { formatChatTime } from '@/lib/utils';
 import Button from '@/components/ui/Button';
 import PickMascot from '@/components/ui/PickMascot';
@@ -48,9 +48,10 @@ const DMListItem = memo(function DMListItem({ dm, onClick }) {
             <span className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded-full shrink-0">스태프</span>
           )}
           <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-semibold shrink-0 ${
-            isWaiting ? 'bg-slate-50 text-slate-400 dark:bg-slate-700 dark:text-slate-500'
+            dm.status === 'resolved' ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
+              : isWaiting ? 'bg-slate-50 text-slate-400 dark:bg-slate-700 dark:text-slate-500'
               : 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
-          }`}>{isWaiting ? '대기중' : '진행중'}</span>
+          }`}>{dm.status === 'resolved' ? '해결됨' : isWaiting ? '대기중' : '진행중'}</span>
         </div>
         {lastMsg && <p className="text-xs text-slate-400 dark:text-slate-500 truncate mt-1 leading-relaxed">{lastMsg.text}</p>}
       </div>
@@ -102,6 +103,7 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
   }
 
   const isWaiting = currentDM?.status === 'waiting';
+  const isResolved = currentDM?.status === 'resolved';
   const TAB_CLS = (active) => `flex-1 py-2.5 text-sm font-medium rounded-lg transition-colors duration-150 ${
     active ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
   }`;
@@ -132,6 +134,7 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
                 {!isWaiting && (
                   <span className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded-full shrink-0">스태프</span>
                 )}
+                {isResolved && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 shrink-0">해결됨</span>}
                 {isWaiting && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 shrink-0">대기중</span>}
               </div>
               <button onClick={onClose} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150" aria-label="닫기"><X size={16} /></button>
@@ -151,15 +154,22 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
               {currentDM.messageList?.map((msg) => <DMMessage key={msg.id} msg={msg} isOwn={msg.senderType === 'student'} />)}
               <div ref={messagesEndRef} />
             </div>
-            <div className="flex items-center gap-2 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:py-3 border-t border-slate-100 dark:border-slate-700 shrink-0">
-              <input type="text" value={inputText} onChange={(e) => setInputText(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-                placeholder="메시지를 입력하세요" aria-label="도움 요청 메시지" maxLength={200} autoFocus
-                className="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white dark:focus:bg-slate-600 transition-colors duration-150" />
-              <button onClick={handleSend} disabled={!inputText.trim() || sending}
-                className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 disabled:opacity-30 hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150 shrink-0"
-                aria-label="보내기"><Send size={16} /></button>
-            </div>
+            {isResolved ? (
+              <div className="flex items-center justify-center gap-2 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:py-3 border-t border-slate-100 dark:border-slate-700 shrink-0">
+                <CheckCircle2 size={14} className="text-emerald-500 dark:text-emerald-400" />
+                <span className="text-sm text-slate-400 dark:text-slate-500">스태프가 도움을 완료했습니다</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:py-3 border-t border-slate-100 dark:border-slate-700 shrink-0">
+                <input type="text" value={inputText} onChange={(e) => setInputText(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+                  placeholder="메시지를 입력하세요" aria-label="도움 요청 메시지" maxLength={200} autoFocus
+                  className="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white dark:focus:bg-slate-600 transition-colors duration-150" />
+                <button onClick={handleSend} disabled={!inputText.trim() || sending}
+                  className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 disabled:opacity-30 hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150 shrink-0"
+                  aria-label="보내기"><Send size={16} /></button>
+              </div>
+            )}
           </>
         ) : (
           <>
