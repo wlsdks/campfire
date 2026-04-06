@@ -36,7 +36,7 @@ export default memo(function StudentLiveResults({ sessionId, questionId, options
     >
       <div className="flex items-center justify-between">
         <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-tight">
-          실시간 결과
+          실시간 집계 <span className="font-normal text-slate-400 dark:text-slate-500">· 확정 전</span>
         </p>
         <div className="flex items-center gap-1 text-slate-400 dark:text-slate-500">
           <Users size={12} />

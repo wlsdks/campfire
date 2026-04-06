@@ -1,4 +1,4 @@
-import { useState, useCallback, memo } from 'react';
+import { useState, useCallback, useRef, useEffect, memo } from 'react';
 import { ref, set, push, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
@@ -40,8 +40,34 @@ export default memo(function StudentBottomBar({ sessionId }) {
 
   const pid = getParticipantId();
   const nickname = getNickname() || '익명';
-  const { activeDM, allActiveDMs, sendMessage: sendDMMessage, requestHelp } = useStudentDM(sessionId, pid);
+  const { activeDM, allActiveDMs, sendMessage: sendDMMessage, requestHelp, newlyResolved, clearNewlyResolved } = useStudentDM(sessionId, pid);
+  const [dmResolved, setDmResolved] = useState(null);
+
+  // Show toast when DM gets resolved
+  useEffect(() => {
+    if (newlyResolved) {
+      setDmResolved(newlyResolved.staffName);
+      clearNewlyResolved();
+      const t = setTimeout(() => setDmResolved(null), 3000);
+      return () => clearTimeout(t);
+    }
+  }, [newlyResolved, clearNewlyResolved]);
   const isRaised = handRaises[pid]?.raised === true;
+  const [handAcknowledged, setHandAcknowledged] = useState(false);
+  const wasRaisedRef = useRef(false);
+  const selfToggledRef = useRef(false);
+
+  // Detect instructor dismissal (not self-toggle)
+  useEffect(() => {
+    if (wasRaisedRef.current && !isRaised && !selfToggledRef.current) {
+      setHandAcknowledged(true);
+      const t = setTimeout(() => setHandAcknowledged(false), 3000);
+      wasRaisedRef.current = false;
+      return () => clearTimeout(t);
+    }
+    wasRaisedRef.current = isRaised;
+    selfToggledRef.current = false;
+  }, [isRaised]);
 
   const totalDMMessages = allActiveDMs.reduce((sum, dm) => sum + (dm.messageList?.length || 0), 0);
   const dmUnread = Math.max(0, totalDMMessages - dmLastSeen);
@@ -52,6 +78,7 @@ export default memo(function StudentBottomBar({ sessionId }) {
 
   async function toggleHand() {
     try {
+      selfToggledRef.current = true;
       const handRef = ref(db, `sessions/${sessionId}/handRaises/${pid}`);
       await set(handRef, isRaised
         ? { nickname: getNickname(), raised: false, raisedAt: null }
@@ -112,7 +139,7 @@ export default memo(function StudentBottomBar({ sessionId }) {
         </form>
       </Modal>
 
-      <StudentToasts submitted={submitted} submitError={submitError} />
+      <StudentToasts submitted={submitted} submitError={submitError} dmResolved={dmResolved} handAcknowledged={handAcknowledged} />
 
       <motion.div
         initial={{ y: 80, opacity: 0 }}

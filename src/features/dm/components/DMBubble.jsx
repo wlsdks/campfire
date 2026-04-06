@@ -155,10 +155,18 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
               <div ref={messagesEndRef} />
             </div>
             {isResolved ? (
-              <div className="flex items-center justify-center gap-2 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:py-3 border-t border-slate-100 dark:border-slate-700 shrink-0">
-                <CheckCircle2 size={14} className="text-emerald-500 dark:text-emerald-400" />
-                <span className="text-sm text-slate-400 dark:text-slate-500">스태프가 도움을 완료했습니다</span>
-              </div>
+              <motion.div
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                className="flex flex-col items-center gap-1.5 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:py-3 border-t border-slate-100 dark:border-slate-700 shrink-0"
+              >
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 size={14} className="text-emerald-500 dark:text-emerald-400" />
+                  <span className="text-sm font-medium text-emerald-600 dark:text-emerald-400">도움이 완료되었습니다</span>
+                </div>
+                <span className="text-xs text-slate-400 dark:text-slate-500">새로운 도움이 필요하면 다시 요청해주세요</span>
+              </motion.div>
             ) : (
               <div className="flex items-center gap-2 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:py-3 border-t border-slate-100 dark:border-slate-700 shrink-0">
                 <input type="text" value={inputText} onChange={(e) => setInputText(e.target.value)}

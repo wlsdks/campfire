@@ -1,4 +1,4 @@
-import { useState, useRef, memo, useCallback } from 'react';
+import { useState, useRef, useEffect, memo, useCallback } from 'react';
 import { ref, update, remove } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
@@ -48,6 +48,12 @@ export default function UrgentQuestionList({ sessionId }) {
   const [collapsed, setCollapsed] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const reviewingIdRef = useRef(null);
+  const deleteTimerRef = useRef(null);
+
+  // Cleanup delete timer on unmount
+  useEffect(() => {
+    return () => { if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current); };
+  }, []);
 
   async function markRead(questionId) {
     try {
@@ -79,11 +85,21 @@ export default function UrgentQuestionList({ sessionId }) {
     setReviewing(q.id, true);
   }, [setReviewing]);
 
-  function handleConfirm() {
+  async function handleConfirm() {
     if (selectedQuestion) {
-      // Question gets deleted entirely, no need to clear reviewing
       reviewingIdRef.current = null;
-      dismissOne(selectedQuestion.id);
+      // Mark acknowledged first (so student gets feedback), then delete after a delay
+      try {
+        await update(ref(db, `sessions/${sessionId}/urgentQuestions/${selectedQuestion.id}`), {
+          reviewing: false,
+          acknowledged: true,
+        });
+        // Delete after brief delay so student can see "확인 완료" feedback
+        const qId = selectedQuestion.id;
+        deleteTimerRef.current = setTimeout(() => { dismissOne(qId); deleteTimerRef.current = null; }, 3000);
+      } catch {
+        dismissOne(selectedQuestion.id);
+      }
       setSelectedQuestion(null);
     }
   }

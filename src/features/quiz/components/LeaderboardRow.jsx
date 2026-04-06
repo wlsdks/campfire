@@ -10,7 +10,7 @@ function RankChange({ delta }) {
 
   useEffect(() => {
     setVisible(true);
-    const timer = setTimeout(() => setVisible(false), 4000);
+    const timer = setTimeout(() => setVisible(false), 8000);
     return () => clearTimeout(timer);
   }, [delta]);
 

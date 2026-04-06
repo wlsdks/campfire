@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useMyVote } from '@/hooks/useMyVote';
 import ChoiceVoter from '@/features/voting/components/ChoiceVoter';
 import OXVoter from '@/features/voting/components/OXVoter';
 import QuizVoter from '@/features/voting/components/QuizVoter';
@@ -45,6 +46,9 @@ export default memo(function ActivePollView({
   teamActive,
   myTeam,
 }) {
+  const { myVote } = useMyVote(sessionId, questionId);
+  const hasVoted = !!myVote;
+
   return (
     <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center px-5 pb-40 pt-20 overflow-y-auto">
       <StudentHeader sessionId={sessionId} />
@@ -164,9 +168,9 @@ export default memo(function ActivePollView({
                 <CheckVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
               )}
 
-              {/* Time's up overlay */}
+              {/* Time's up overlay — only show if student hasn't voted yet */}
               <AnimatePresence>
-                {timerExpired && <TimerExpiredOverlay />}
+                {timerExpired && !hasVoted && <TimerExpiredOverlay />}
               </AnimatePresence>
             </motion.div>
           </AnimatePresence>

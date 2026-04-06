@@ -23,6 +23,7 @@ export default memo(function ChoiceVoter({ sessionId, questionId, options, disab
   const { myVote } = useMyVote(sessionId, questionId);
   const [voted, setVoted] = useState(false);
   const [selected, setSelected] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
   // Restore vote state from Firebase (handles refresh/re-activation)
@@ -42,6 +43,7 @@ export default memo(function ChoiceVoter({ sessionId, questionId, options, disab
   async function handleVote(option) {
     if (disabled) return;
     setSelected(option);
+    setSubmitting(true);
     setError(null);
     try {
       const pid = getParticipantId();
@@ -54,6 +56,8 @@ export default memo(function ChoiceVoter({ sessionId, questionId, options, disab
       logger.error('Vote failed:', err);
       setSelected(null);
       setError('투표에 실패했습니다. 다시 선택해주세요.');
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -104,7 +108,16 @@ export default memo(function ChoiceVoter({ sessionId, questionId, options, disab
             <span className={`w-9 h-9 rounded-lg ${style.badge} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
               {style.letter}
             </span>
-            <span className="text-left leading-snug">{option}</span>
+            <span className="text-left leading-snug flex-1">{option}</span>
+            {isSelected && submitting && (
+              <motion.span
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-xs text-slate-400 dark:text-slate-500 shrink-0"
+              >
+                전송 중...
+              </motion.span>
+            )}
           </motion.button>
         );
       })}

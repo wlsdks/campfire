@@ -53,7 +53,7 @@ export function QuizResultFromVote({ question, currentVote, streak = 0 }) {
 }
 
 /** Timer expired overlay shown when countdown reaches zero. */
-export function TimerExpiredOverlay() {
+export function TimerExpiredOverlay({ hasVoted = false }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -66,9 +66,9 @@ export function TimerExpiredOverlay() {
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
-        className="w-12 h-12 bg-slate-900 rounded-full flex items-center justify-center"
+        className="w-12 h-12 bg-slate-900 dark:bg-slate-100 rounded-full flex items-center justify-center"
       >
-        <Clock size={22} className="text-white" />
+        <Clock size={22} className="text-white dark:text-slate-900" />
       </motion.div>
       <motion.p
         initial={{ opacity: 0, y: 6 }}
@@ -82,9 +82,9 @@ export function TimerExpiredOverlay() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="text-sm text-slate-400"
+        className="text-sm text-slate-400 dark:text-slate-500"
       >
-        결과를 기다려주세요
+        {hasVoted ? '응답이 기록되었습니다 · 결과를 기다려주세요' : '응답하지 못했습니다 · 결과를 기다려주세요'}
       </motion.p>
     </motion.div>
   );

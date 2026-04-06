@@ -1,5 +1,5 @@
 import { ref, push, onValue, update, serverTimestamp } from 'firebase/database';
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
 
@@ -99,7 +99,29 @@ export function useStudentDM(sessionId, participantId) {
     }
   }, [sessionId, activeDM?.id]);
 
-  return { activeDM, allActiveDMs, sendMessage, requestHelp };
+  // Track newly resolved DMs — fires once per resolution
+  const [newlyResolved, setNewlyResolved] = useState(null);
+  const prevStatusRef = useRef({});
+
+  useEffect(() => {
+    const prevStatuses = prevStatusRef.current;
+    for (const [id, thread] of Object.entries(threads)) {
+      if (thread.status === 'resolved' && prevStatuses[id] && prevStatuses[id] !== 'resolved') {
+        setNewlyResolved({ id, staffName: thread.staffName || '스태프' });
+        break;
+      }
+    }
+    // Update prev statuses
+    const next = {};
+    for (const [id, thread] of Object.entries(threads)) {
+      next[id] = thread.status;
+    }
+    prevStatusRef.current = next;
+  }, [threads]);
+
+  const clearNewlyResolved = useCallback(() => setNewlyResolved(null), []);
+
+  return { activeDM, allActiveDMs, sendMessage, requestHelp, newlyResolved, clearNewlyResolved };
 }
 
 /**

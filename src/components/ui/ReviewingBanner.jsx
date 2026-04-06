@@ -7,7 +7,9 @@ import { Eye, CheckCircle } from 'lucide-react';
 export default function ReviewingBanner({ sessionId }) {
   const [reviewing, setReviewing] = useState(false);
   const [showComplete, setShowComplete] = useState(false);
+  const [showAcknowledged, setShowAcknowledged] = useState(false);
   const prevReviewing = useRef(false);
+  const prevAcknowledgedIds = useRef(new Set());
 
   useEffect(() => {
     if (!sessionId) return;
@@ -16,6 +18,20 @@ export default function ReviewingBanner({ sessionId }) {
       const data = snap.val() || {};
       const anyReviewing = Object.values(data).some(q => q.reviewing === true);
       setReviewing(anyReviewing);
+
+      // Detect newly acknowledged questions
+      const currentAcked = new Set();
+      for (const [id, q] of Object.entries(data)) {
+        if (q.acknowledged) currentAcked.add(id);
+      }
+      for (const id of currentAcked) {
+        if (!prevAcknowledgedIds.current.has(id)) {
+          setShowAcknowledged(true);
+          setTimeout(() => setShowAcknowledged(false), 3000);
+          break;
+        }
+      }
+      prevAcknowledgedIds.current = currentAcked;
     }, () => {});
     return () => unsub();
   }, [sessionId]);
@@ -45,7 +61,20 @@ export default function ReviewingBanner({ sessionId }) {
           <span className="w-1.5 h-1.5 rounded-full bg-white/60 dark:bg-slate-900/40 animate-pulse" />
         </motion.div>
       )}
-      {showComplete && !reviewing && (
+      {showAcknowledged && !reviewing && (
+        <motion.div
+          key="acknowledged"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+          className="fixed bottom-36 left-1/2 -translate-x-1/2 z-30 bg-emerald-600 dark:bg-emerald-500 text-white px-4 py-2.5 rounded-full shadow-lg flex items-center gap-2 text-sm font-medium"
+        >
+          <CheckCircle size={16} />
+          <span>강사가 질문을 확인했습니다</span>
+        </motion.div>
+      )}
+      {showComplete && !reviewing && !showAcknowledged && (
         <motion.div
           key="complete"
           initial={{ opacity: 0, y: 10 }}
