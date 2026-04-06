@@ -11,7 +11,7 @@ function readJoinedSessions() {
 }
 
 function writeJoinedSessions(nextSessions) {
-  localStorage.setItem(JOINED_SESSIONS_KEY, JSON.stringify(nextSessions));
+  try { localStorage.setItem(JOINED_SESSIONS_KEY, JSON.stringify(nextSessions)); } catch { /* quota/private */ }
 }
 
 /**
@@ -19,7 +19,8 @@ function writeJoinedSessions(nextSessions) {
  * @returns {string} UUID stored in localStorage
  */
 export function getParticipantId() {
-  let id = localStorage.getItem(PARTICIPANT_ID_KEY);
+  let id;
+  try { id = localStorage.getItem(PARTICIPANT_ID_KEY); } catch { /* private browsing */ }
   if (!id) {
     // Inline UUID v4 with fallback for older browsers (Safari <15.3)
     if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
@@ -32,7 +33,7 @@ export function getParticipantId() {
       const h = [...bytes].map((b) => b.toString(16).padStart(2, '0')).join('');
       id = `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
     }
-    localStorage.setItem(PARTICIPANT_ID_KEY, id);
+    try { localStorage.setItem(PARTICIPANT_ID_KEY, id); } catch { /* quota/private */ }
   }
   return id;
 }
@@ -42,7 +43,7 @@ export function getParticipantId() {
  * @returns {string} Nickname from localStorage
  */
 export function getNickname() {
-  return localStorage.getItem(NICKNAME_KEY) || '';
+  try { return localStorage.getItem(NICKNAME_KEY) || ''; } catch { return ''; }
 }
 
 /**
@@ -50,7 +51,7 @@ export function getNickname() {
  * @param {string} name - The nickname to save
  */
 export function setNickname(name) {
-  localStorage.setItem(NICKNAME_KEY, name);
+  try { localStorage.setItem(NICKNAME_KEY, name); } catch { /* quota/private */ }
 }
 
 /**

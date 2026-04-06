@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { AlertCircle } from 'lucide-react';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { useAdminSession } from '@/hooks/useAdminSession';
 import AdminLogin from './AdminLogin';
@@ -97,6 +98,14 @@ export default function AdminPage() {
     <div className="h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col overflow-hidden">
       <JoinToast sessionId={s.sessionId} />
       <ReactionOverlay sessionId={s.sessionId} />
+      <AnimatePresence>
+        {s.actionError && (
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
+            className="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-red-500 text-white px-4 py-2.5 rounded-lg shadow-lg text-sm font-medium flex items-center gap-2">
+            <AlertCircle size={16} />{s.actionError}
+          </motion.div>
+        )}
+      </AnimatePresence>
       <ChatPanel sessionId={s.sessionId} senderName={s.adminUser?.displayName || '강사'} senderType="instructor" open={s.chatOpen} onClose={s.handleChatClose} onNewMessage={s.handleNewChatMessage} />
 
       <AdminSessionHeader session={s.session} sessionId={s.sessionId} effectiveReadOnly={s.effectiveReadOnly} isSetting={s.isSetting}

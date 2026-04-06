@@ -14,7 +14,7 @@ import { Users } from 'lucide-react';
 
 /** Shows the sentence with the blank filled by the student's answer or a placeholder. */
 function SentencePreview({ title, answer }) {
-  const parts = title.split('___');
+  const parts = (title || '').split('___');
   return (
     <p className="text-sm text-slate-600 leading-relaxed">
       {parts.map((part, i) => (

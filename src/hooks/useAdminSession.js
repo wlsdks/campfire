@@ -1,6 +1,7 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef } from 'react';
 import { ref, update, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
+import { logger } from '@/lib/logger';
 import { useSession } from '@/features/session/api/useSession';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 import { useScores } from '@/features/quiz/api/useScores';
@@ -133,17 +134,33 @@ export function useAdminSession() {
   const handleRightDrawerClose = useCallback(() => setRightDrawerOpen(false), []);
 
   // Session actions
+  const [actionError, setActionError] = useState(null);
+  const actionErrorTimerRef = useRef(null);
+  const showActionError = useCallback((msg) => {
+    setActionError(msg);
+    if (actionErrorTimerRef.current) clearTimeout(actionErrorTimerRef.current);
+    actionErrorTimerRef.current = setTimeout(() => setActionError(null), 4000);
+  }, []);
+
   const switchMode = useCallback(async (mode) => {
     if (effectiveReadOnly) return;
     try {
       await update(ref(db, `sessions/${sessionId}`), mode === 'leaderboard'
         ? { currentMode: mode } : { currentMode: mode, currentQuestion: null });
-    } catch { /* silent */ }
-  }, [sessionId, effectiveReadOnly]);
+    } catch (err) {
+      logger.error('Mode switch failed:', err);
+      showActionError('모드 전환에 실패했습니다. 다시 시도해주세요.');
+    }
+  }, [sessionId, effectiveReadOnly, showActionError]);
 
   const handleStartSession = useCallback(async () => {
-    try { await update(ref(db, `sessions/${sessionId}`), { status: 'active', startedAt: serverTimestamp() }); } catch { /* silent */ }
-  }, [sessionId]);
+    try {
+      await update(ref(db, `sessions/${sessionId}`), { status: 'active', startedAt: serverTimestamp() });
+    } catch (err) {
+      logger.error('Session start failed:', err);
+      showActionError('세션 시작에 실패했습니다. 다시 시도해주세요.');
+    }
+  }, [sessionId, showActionError]);
 
   const handleEndSession = useCallback(async () => {
     try {
@@ -154,14 +171,20 @@ export function useAdminSession() {
         currentQuestion: null,
         reviewingUntil,
       });
-    } catch { /* silent */ }
-  }, [sessionId]);
+    } catch (err) {
+      logger.error('Session end failed:', err);
+      showActionError('세션 종료에 실패했습니다. 다시 시도해주세요.');
+    }
+  }, [sessionId, showActionError]);
 
   const handleFullEndSession = useCallback(async () => {
     try {
       await update(ref(db, `sessions/${sessionId}`), { status: 'ended' });
-    } catch { /* silent */ }
-  }, [sessionId]);
+    } catch (err) {
+      logger.error('Full session end failed:', err);
+      showActionError('세션 완전 종료에 실패했습니다. 다시 시도해주세요.');
+    }
+  }, [sessionId, showActionError]);
 
   const handleCenterFormSubmit = useCallback(async (formData) => {
     if (editingQuestion) {
@@ -214,5 +237,7 @@ export function useAdminSession() {
     handleRightDrawerOpen, handleRightDrawerClose,
     // Question form
     handleCenterFormSubmit, handleViewQuestion,
+    // Action error
+    actionError,
   };
 }
