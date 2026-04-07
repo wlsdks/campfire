@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getDatabase } from 'firebase/database';
+import { getStorage } from 'firebase/storage';
 
 // Firebase config is intentionally public (client-side SDK). These are not secret credentials.
 const firebaseConfig = {
@@ -14,3 +15,4 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 export const db = getDatabase(app);
+export const storage = getStorage(app);

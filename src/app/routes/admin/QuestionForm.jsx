@@ -4,6 +4,7 @@ import { AlertCircle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { QUIZ_DEFAULTS } from '@/lib/quiz';
 import { QUESTION_TYPES } from '@/lib/question-types';
+import ImageUpload from '@/components/ui/ImageUpload';
 import {
   ChoiceOptionsSection,
   CorrectAnswerSection,
@@ -33,6 +34,7 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
   const [answerReasons, setAnswerReasons] = useState(initialData?.answerReasons?.length ? [...initialData.answerReasons] : []);
   const [acceptableAnswers, setAcceptableAnswers] = useState(initialData?.acceptableAnswers?.length ? [...initialData.acceptableAnswers] : []);
   const [winners, setWinners] = useState(initialData?.winners?.length ? [...initialData.winners] : []);
+  const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || '');
   const [localError, setLocalError] = useState(null);
 
   const isChoiceLike = type === 'choice' || type === 'quiz';
@@ -55,6 +57,7 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
     if (isHintQuiz && hints.filter(h => h.trim()).length === 0) { setLocalError('최소 1개의 힌트가 필요합니다.'); return; }
     setLocalError(null);
     const submitData = { type, title, options: cleanOptions, correctAnswer, points, event, betting };
+    if (imageUrl) submitData.imageUrl = imageUrl;
     if (isMysteryBox) {
       submitData.mysteryItems = mysteryItems.split('\n').map(s => s.trim()).filter(Boolean);
       const validReasons = answerReasons.filter(r => r.trim());
@@ -114,6 +117,11 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
           placeholder={isFillInBlank ? 'HTTP 상태코드 ___는 페이지를 찾을 수 없음을 의미한다' : type === 'check' ? '실습을 완료하셨으면 체크해주세요' : '학생들에게 보여줄 질문을 입력하세요'}
           aria-label="질문 내용" rows={3}
           className={`${INPUT} resize-none text-base leading-relaxed`} autoFocus />
+      </div>
+
+      {/* 이미지 첨부 */}
+      <div className="pt-2">
+        <ImageUpload value={imageUrl} onChange={setImageUrl} />
       </div>
 
       {/* Type-specific sections */}

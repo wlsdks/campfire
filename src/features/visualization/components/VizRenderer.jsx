@@ -67,6 +67,9 @@ export default memo(function VizRenderer({ sessionId, session }) {
             {answerRevealed ? `정답: ${question.correctAnswer}` : '정답 공개 전입니다. 먼저 답안을 모아보세요.'}
           </p>
         )}
+        {question.imageUrl && (
+          <img src={question.imageUrl} alt="" className="mt-3 max-h-48 rounded-xl object-cover mx-auto" />
+        )}
       </div>
       )}
 

@@ -54,6 +54,15 @@ export default function QuestionCard({ question, questionId, questionProgress })
           <Badge variant="primary">{TYPE_LABELS[question.type] || question.type}</Badge>
         </div>
       </div>
+      {question.imageUrl && (
+        <motion.img
+          src={question.imageUrl}
+          alt="질문 이미지"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="mt-4 w-full max-h-52 object-cover rounded-lg"
+        />
+      )}
     </motion.div>
   );
 }

@@ -24,11 +24,12 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     [questions]
   );
 
-  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers, winners }) {
+  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers, winners, imageUrl }) {
     try {
       setError(null);
       const qId = generateQuestionId();
       const questionData = { type, title: title.trim(), order: Object.keys(questions || {}).length + 1 };
+      if (imageUrl) questionData.imageUrl = imageUrl;
       const isChoiceLike = type === 'choice' || type === 'quiz';
 
       if (isChoiceLike) {
