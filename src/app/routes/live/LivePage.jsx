@@ -34,6 +34,7 @@ const RandomPicker = lazy(() => import('@/features/games/components/RandomPicker
 const ComprehensionPresenter = lazy(() => import('@/features/session/components/ComprehensionCheck').then(m => ({ default: m.ComprehensionPresenter })));
 const SurveyPresenter = lazy(() => import('@/features/session/components/QuickSurvey').then(m => ({ default: m.SurveyPresenter })));
 const DiscussionPresenter = lazy(() => import('@/features/session/components/DiscussionPresenter'));
+const CombinedRanking = lazy(() => import('@/features/quiz/components/CombinedRanking'));
 
 const GameFallback = () => (
   <div className="flex items-center justify-center min-h-[300px]">
@@ -79,7 +80,7 @@ export default function LivePage() {
   const onPrizeDrawResult = useCallback((names) => handleGameResult(names, 'prizeDraw'), [handleGameResult]);
   const onPlinkoResult = useCallback((names) => handleGameResult(names, 'plinko'), [handleGameResult]);
 
-  const isGameMode = ['roulette', 'lottery', 'prizeDraw', 'plinko', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
+  const isGameMode = ['roulette', 'lottery', 'prizeDraw', 'plinko', 'combinedRanking', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
   const isEnded = session?.status === 'ended';
   const hasActiveQuestion = ['poll', 'quiz'].includes(currentMode) && currentQId && question;
 
@@ -181,6 +182,7 @@ export default function LivePage() {
                   {currentMode === 'comprehension' && <ComprehensionPresenter sessionId={sessionId} />}
                   {currentMode === 'quickSurvey' && <SurveyPresenter sessionId={sessionId} />}
                   {currentMode === 'discussion' && <DiscussionPresenter sessionId={sessionId} />}
+                  {currentMode === 'combinedRanking' && <CombinedRanking session={session} />}
                   {currentMode === 'focus' && (
                     <div className="flex flex-col items-center justify-center gap-6 text-center">
                       <PickMascot size="lg" mood="focus" />
