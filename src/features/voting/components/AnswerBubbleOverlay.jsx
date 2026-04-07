@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, memo } from 'react';
-import { onChildAdded, query, ref, limitToLast } from 'firebase/database';
+import { onChildAdded, ref } from 'firebase/database';
 import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '@/lib/firebase';
 
@@ -80,13 +80,11 @@ export default memo(function AnswerBubbleOverlay({ sessionId, questionId, questi
     let ready = false;
     warmupRef.current = setTimeout(() => { ready = true; }, WARMUP_MS);
 
-    const votesRef = query(
-      ref(db, `sessions/${sessionId}/questions/${questionId}/votes`),
-      limitToLast(20)
-    );
+    const votesRef = ref(db, `sessions/${sessionId}/questions/${questionId}/votes`);
 
     const unsubscribe = onChildAdded(votesRef, (snapshot) => {
-      if (!ready || !mountedRef.current) return;
+      if (!mountedRef.current) return;
+      if (!ready) return; // warmup 중 무시
       const vote = snapshot.val();
       if (!vote?.value) return;
 
@@ -120,7 +118,8 @@ export default memo(function AnswerBubbleOverlay({ sessionId, questionId, questi
     };
   }, [active, sessionId, questionId]);
 
-  if (!active || bubbles.length === 0) return null;
+  if (!active) return null;
+  if (bubbles.length === 0) return null;
 
   return (
     <div className="fixed inset-0 z-30 pointer-events-none overflow-hidden">

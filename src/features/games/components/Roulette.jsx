@@ -107,8 +107,8 @@ export default function Roulette({ participants, scores = {}, onResult, gameStat
     const { winnerIndex, angleToCenter } = getWeightedSpinResult(segmentsWithAngle);
     const winnerName = names[winnerIndex];
 
-    // Firebase에 게임 상태 저장 → 전자칠판 동기화
-    onGameStateChange?.({ spinning: true, winnerName, ts: Date.now() });
+    // 이전 결과 지우기 + 게임 상태 저장 → 전자칠판 동기화
+    onGameStateChange?.({ spinning: true, winnerName, ts: Date.now(), clearResult: true });
 
     setSpinning(true);
     setWinner(null);
