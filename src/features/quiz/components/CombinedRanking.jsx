@@ -1,4 +1,4 @@
-import { memo, useMemo, useState, useEffect, lazy, Suspense } from 'react';
+import { memo, useMemo, useState, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Medal, Search, Crown, Award } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
@@ -16,13 +16,14 @@ const PODIUM_STYLES = [
 
 export default memo(function CombinedRanking({ session }) {
   const [search, setSearch] = useState('');
-  const [confettiKey, setConfettiKey] = useState(0);
 
-  // 폭죽 3초마다 반복
-  useEffect(() => {
-    const timer = setInterval(() => setConfettiKey(k => k + 1), 3000);
-    return () => clearInterval(timer);
-  }, []);
+  if (!session?.questions) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <p className="text-slate-400 dark:text-slate-500 text-sm">데이터를 불러오는 중...</p>
+      </div>
+    );
+  }
 
   const ranking = useMemo(() => {
     const questions = session?.questions || {};
@@ -63,8 +64,8 @@ export default memo(function CombinedRanking({ session }) {
 
   return (
     <div className="w-full max-w-2xl mx-auto flex flex-col relative" style={{ maxHeight: '85vh' }}>
-      {/* 반복 폭죽 */}
-      <Suspense fallback={null}><ConfettiBurst key={confettiKey} /></Suspense>
+      {/* 폭죽 1회 */}
+      <Suspense fallback={null}><ConfettiBurst /></Suspense>
 
       {/* Header */}
       <motion.div
