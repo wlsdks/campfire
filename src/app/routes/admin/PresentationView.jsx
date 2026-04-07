@@ -458,7 +458,7 @@ function PresentModeMenu({ sessionId, currentMode }) {
   }
 
   return (
-    <div className="fixed bottom-16 right-3 md:bottom-20 md:right-5 z-20">
+    <div className="fixed bottom-24 right-3 md:bottom-28 md:right-5 z-20">
       <div className="relative">
         <button
           onClick={() => setOpen(!open)}
@@ -625,7 +625,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
 
       {/* Bottom bar — participant count + navigation */}
       <div className="fixed bottom-3 left-3 md:bottom-5 md:left-5 flex items-center gap-2.5">
-        <Badge variant="neutral"><Users size={14} className="mr-1" />{count}명</Badge>
+        <Badge variant="neutral" className="text-sm py-2 px-3.5"><Users size={16} className="mr-1.5" />{count}명</Badge>
         {questionList.length > 1 && (
           <>
             <button onClick={goPrev} disabled={currentQIdx <= 0}
