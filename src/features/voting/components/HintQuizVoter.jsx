@@ -18,9 +18,9 @@ export default memo(function HintQuizVoter({ sessionId, questionId, hints = [], 
         <span className="text-sm font-medium">힌트 {revealedHints}/{maxHints}</span>
       </div>
 
-      {/* Hint cards */}
+      {/* Hint cards — 스크롤 가능 (모바일에서 입력 영역 가리지 않게) */}
       {maxHints > 0 && (
-        <div className="space-y-2">
+        <div className="space-y-2 max-h-[35vh] overflow-y-auto">
           {hints.slice(0, maxHints).map((hint, i) => {
             const isRevealed = i < revealedHints;
             return (
