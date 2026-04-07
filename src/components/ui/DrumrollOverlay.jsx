@@ -119,7 +119,7 @@ export default memo(function DrumrollOverlay({ active, onComplete, duration = 40
             <motion.p
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: phase === 2 ? 0.2 : 0.6, repeat: Infinity }}
-              className="text-5xl md:text-7xl font-black text-white tracking-tight"
+              className="text-3xl sm:text-5xl md:text-7xl font-black text-white tracking-tight"
             >
               {phase === 2 ? '두구두구!!' : phase === 1 ? '두구두구' : '두구...'}
             </motion.p>
