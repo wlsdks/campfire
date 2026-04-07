@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useMemo, lazy, Suspense, useRef } fro
 import DrumrollOverlay from '@/components/ui/DrumrollOverlay';
 import { isQuizQuestion } from '@/lib/quiz';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, QrCode, X, Copy, Check, Swords, Hand, MessageSquare, ChevronDown, ChevronRight, Eye, Trophy } from 'lucide-react';
+import { Users, QrCode, X, Copy, Check, Swords, Hand, MessageSquare, ChevronDown, ChevronLeft, ChevronRight, Eye, Trophy } from 'lucide-react';
 import { ref, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import Button from '@/components/ui/Button';
@@ -527,6 +527,27 @@ export default function PresentationView({ sessionId, session, currentMode, onli
 
       {/* 힌트 퀴즈 / 미스터리 박스 컨트롤 — 하단 중앙 */}
       <PresentRevealControls sessionId={sessionId} session={session} />
+
+      {/* 이미지 슬라이드 컨트롤 */}
+      {(() => {
+        const q = session?.questions?.[session?.currentQuestion];
+        if (q?.type !== 'imageSlide' || !q.slideImages?.length) return null;
+        const cur = q.currentSlide || 0;
+        const total = q.slideImages.length;
+        return (
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
+            <Button onClick={() => update(ref(db, `sessions/${sessionId}/questions/${session.currentQuestion}`), { currentSlide: Math.max(0, cur - 1) })}
+              variant="secondary" size="lg" disabled={cur <= 0}>
+              <ChevronLeft size={20} /> 이전
+            </Button>
+            <span className="text-white/60 text-sm font-medium tabular-nums">{cur + 1} / {total}</span>
+            <Button onClick={() => update(ref(db, `sessions/${sessionId}/questions/${session.currentQuestion}`), { currentSlide: Math.min(total - 1, cur + 1) })}
+              variant="primary" size="lg" disabled={cur >= total - 1}>
+              다음 <ChevronRight size={20} />
+            </Button>
+          </div>
+        );
+      })()}
 
       {/* Bottom bar — participant count + navigation */}
       <div className="fixed bottom-3 left-3 md:bottom-5 md:left-5 flex items-center gap-2">
