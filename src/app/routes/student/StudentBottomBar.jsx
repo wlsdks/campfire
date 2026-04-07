@@ -17,7 +17,7 @@ import DMBubble from '@/features/dm/components/DMBubble';
 import StudentToasts from '@/app/routes/student/StudentToasts';
 import { timing } from '@/lib/design-tokens';
 
-const UNREAD_DOT = 'absolute -top-0.5 -right-0.5 min-w-5 h-5 rounded-full animate-pulse';
+const UNREAD_DOT = 'absolute top-1 right-1 w-2.5 h-2.5 rounded-full ring-2 ring-white dark:ring-slate-800';
 
 // Base button style — 48px+ touch target, consistent look
 const BTN_BASE = 'h-[56px] w-full rounded-xl font-medium text-sm flex flex-col items-center justify-center gap-0.5 transition-colors duration-150 relative active:scale-[0.96]';
@@ -242,9 +242,7 @@ export default memo(function StudentBottomBar({ sessionId }) {
                 <Headset size={22} />
                 <span className="text-xs">도움</span>
                 {dmUnread > 0 && (
-                  <span className={`${UNREAD_DOT} bg-red-500 flex items-center justify-center px-1`}>
-                    <span className="text-white text-[10px] font-bold leading-none">{dmUnread > 99 ? '99+' : dmUnread}</span>
-                  </span>
+                  <span className={`${UNREAD_DOT} bg-red-500`} />
                 )}
                 {allActiveDMs.length > 0 && dmUnread === 0 && (
                   <span className="absolute top-1 right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 dark:bg-emerald-400" />
