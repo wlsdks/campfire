@@ -22,7 +22,9 @@ import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import { isQuizQuestion } from '@/lib/quiz';
 import { ref, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
-import { useCallback } from 'react';
+import { useCallback, lazy, Suspense } from 'react';
+
+const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 import { TYPE_LABELS } from '@/lib/question-types';
 
 export default memo(function VizRenderer({ sessionId, session, isAdmin = false }) {
@@ -60,7 +62,12 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false }
   const answerRevealed = Boolean(question.revealedAt) || isEnded;
 
   return (
-    <div className={`flex flex-col w-full h-full overflow-y-auto ${isQA ? 'pt-4' : 'justify-center gap-6 py-4'}`}>
+    <div className={`flex flex-col w-full h-full overflow-y-auto ${isQA ? 'pt-4' : 'justify-center gap-6 py-4'} relative`}>
+      {/* 정답 공개 폭죽 */}
+      {answerRevealed && hasCorrectAnswer && (
+        <Suspense fallback={null}><ConfettiBurst key={question.revealedAt} /></Suspense>
+      )}
+
       {/* Header — hidden for Q&A, or when hideTitle is set */}
       {!isQA && !question.hideTitle && (
       <div className="text-center space-y-2 self-center">
