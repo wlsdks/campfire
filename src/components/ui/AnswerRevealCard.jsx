@@ -32,7 +32,7 @@ export default memo(function AnswerRevealCard({ correctAnswer, myAnswer }) {
                 <Check size={24} className="text-white" />
               </div>
             ) : (
-              <div className="w-12 h-12 bg-slate-300 dark:bg-slate-600 rounded-full flex items-center justify-center mx-auto">
+              <div className="w-12 h-12 bg-slate-300 dark:bg-slate-500 rounded-full flex items-center justify-center mx-auto">
                 <X size={24} className="text-white" />
               </div>
             )}

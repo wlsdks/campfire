@@ -31,6 +31,10 @@ export default memo(function ImageSlidePresenter({ images = [], currentSlide = 0
   return (
     <div className="w-full max-w-5xl mx-auto px-4">
       <div className="relative rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800" style={{ aspectRatio: '16/9', maxHeight: '75vh' }}>
+        {/* 로딩 스피너 */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="w-8 h-8 border-2 border-slate-300 dark:border-slate-600 border-t-slate-500 dark:border-t-slate-400 rounded-full animate-spin" />
+        </div>
         <AnimatePresence mode="wait">
           <motion.img
             key={current}

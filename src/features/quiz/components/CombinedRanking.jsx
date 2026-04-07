@@ -136,12 +136,12 @@ export default memo(function CombinedRanking({ session }) {
               transition={{ ...SPRING_BOUNCY, delay: 0.6 }}
               className="flex flex-col items-center"
             >
-              <div className={`w-14 h-14 md:w-18 md:h-18 rounded-full ${PODIUM_STYLES[2].bg} ring-4 ${PODIUM_STYLES[2].ring} flex items-center justify-center mb-2 shadow-lg`}>
+              <div className={`w-14 h-14 md:w-16 md:h-16 rounded-full ${PODIUM_STYLES[2].bg} ring-4 ${PODIUM_STYLES[2].ring} flex items-center justify-center mb-2 shadow-lg`}>
                 <Avatar name={podium[2].nickname} size="md" />
               </div>
               <span className="text-sm md:text-base font-bold text-slate-700 dark:text-slate-200 truncate max-w-[100px]">{podium[2].nickname}</span>
               <span className="text-xs text-slate-400 dark:text-slate-500 tabular-nums">{podium[2].correct}/{totalQuestions}</span>
-              <div className={`mt-2 w-18 md:w-22 h-12 md:h-16 rounded-t-xl ${PODIUM_STYLES[2].bg} flex items-center justify-center shadow-inner`}>
+              <div className={`mt-2 w-20 md:w-24 h-12 md:h-16 rounded-t-xl ${PODIUM_STYLES[2].bg} flex items-center justify-center shadow-inner`}>
                 <span className={`text-xl md:text-2xl font-black ${PODIUM_STYLES[2].text}`}>3</span>
               </div>
             </motion.div>
