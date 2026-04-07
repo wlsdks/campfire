@@ -9,6 +9,8 @@ import RankingChart from './RankingChart';
 import FillBlankChart from './FillBlankChart';
 import CheckProgress from './CheckProgress';
 import TextAnswerChart from './TextAnswerChart';
+import MysteryBoxPresenter from './MysteryBoxPresenter';
+import HintQuizPresenter from './HintQuizPresenter';
 import BetDistribution from './BetDistribution';
 import ConfidenceStats from './ConfidenceStats';
 import Badge from '@/components/ui/Badge';
@@ -58,7 +60,7 @@ export default memo(function VizRenderer({ sessionId, session }) {
       <div className="text-center space-y-2 self-center">
         <Badge variant="primary">{TYPE_LABELS[question.type] || question.type}</Badge>
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight leading-tight">{question.title}</h2>
-        {hasCorrectAnswer && (isQuizQuestion(question) || ['mysteryBox', 'hintQuiz'].includes(question.type)) && (
+        {hasCorrectAnswer && isQuizQuestion(question) && (
           <p className="text-slate-400 text-sm">
             {answerRevealed ? `정답: ${question.correctAnswer}` : '정답 공개 전입니다. 먼저 답안을 모아보세요.'}
           </p>
@@ -121,12 +123,19 @@ export default memo(function VizRenderer({ sessionId, session }) {
             />
           )}
           {question.type === 'check' && <CheckProgress sessionId={sessionId} questionId={currentQId} />}
-          {(question.type === 'mysteryBox' || question.type === 'hintQuiz') && (
-            <TextAnswerChart
+          {question.type === 'mysteryBox' && (
+            <MysteryBoxPresenter
               sessionId={sessionId}
               questionId={currentQId}
-              correctAnswer={question.correctAnswer}
-              answerReasons={question.answerReasons}
+              question={question}
+              revealed={answerRevealed}
+            />
+          )}
+          {question.type === 'hintQuiz' && (
+            <HintQuizPresenter
+              sessionId={sessionId}
+              questionId={currentQId}
+              question={question}
               revealed={answerRevealed}
             />
           )}

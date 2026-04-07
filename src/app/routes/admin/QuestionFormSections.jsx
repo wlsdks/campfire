@@ -245,13 +245,21 @@ export function MysteryBoxSection({ correctAnswer, setCorrectAnswer, mysteryItem
   );
 }
 
-export function HintQuizSection({ correctAnswer, setCorrectAnswer, hints, setHints, setLocalError }) {
+export function HintQuizSection({ correctAnswer, setCorrectAnswer, hints, setHints, acceptableAnswers, setAcceptableAnswers, setLocalError }) {
   function addHint() {
     if (hints.length < 5) setHints(prev => [...prev, '']);
   }
 
   function removeHint(index) {
     if (hints.length > 1) setHints(prev => prev.filter((_, i) => i !== index));
+  }
+
+  function addAcceptable() {
+    if (acceptableAnswers.length < 5) setAcceptableAnswers(prev => [...prev, '']);
+  }
+
+  function removeAcceptable(index) {
+    setAcceptableAnswers(prev => prev.filter((_, i) => i !== index));
   }
 
   return (
@@ -262,9 +270,37 @@ export function HintQuizSection({ correctAnswer, setCorrectAnswer, hints, setHin
           <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">정답</p>
           <input value={correctAnswer}
             onChange={(e) => { setCorrectAnswer(e.target.value); setLocalError(null); }}
-            placeholder="정답을 입력하세요" aria-label="힌트 퀴즈 정답"
+            placeholder="대표 정답 (화면에 표시)" aria-label="힌트 퀴즈 정답"
             maxLength={50}
             className={`${INPUT} py-2.5`} />
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">허용 답변 <span className="normal-case font-normal">(선택, 최대 5개)</span></p>
+            {acceptableAnswers.length < 5 && (
+              <button onClick={addAcceptable}
+                className="text-xs font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 flex items-center gap-0.5 transition-colors duration-150">
+                <Plus size={12} /> 추가
+              </button>
+            )}
+          </div>
+          <p className="text-[11px] text-slate-400 mb-2">정답과 다른 표현도 정답으로 인정합니다 (예: "대한민국", "한국")</p>
+          {acceptableAnswers.length > 0 && (
+            <div className="space-y-1.5">
+              {acceptableAnswers.map((ans, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <input value={ans}
+                    onChange={(e) => { const next = [...acceptableAnswers]; next[i] = e.target.value; setAcceptableAnswers(next); }}
+                    placeholder="허용할 다른 표현" aria-label={`허용 답변 ${i + 1}`}
+                    maxLength={50}
+                    className={`flex-1 ${INPUT} py-2`} />
+                  <button onClick={() => removeAcceptable(i)}
+                    className="p-1 rounded-lg text-slate-300 dark:text-slate-600 hover:text-red-500 transition-colors duration-150 active:scale-90"
+                    aria-label="허용 답변 삭제"><X size={14} /></button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <div>
           <div className="flex items-center justify-between mb-2">

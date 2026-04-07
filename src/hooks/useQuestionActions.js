@@ -24,7 +24,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     [questions]
   );
 
-  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons }) {
+  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers }) {
     try {
       setError(null);
       const qId = generateQuestionId();
@@ -54,6 +54,8 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
         questionData.correctAnswer = correctAnswer?.trim() || '';
         questionData.hints = hints || [];
         questionData.revealedHints = 0;
+        if (answerReasons?.length > 0) questionData.answerReasons = answerReasons;
+        if (acceptableAnswers?.length > 0) questionData.acceptableAnswers = acceptableAnswers;
       }
       if (type === 'quiz') {
         questionData.points = points || QUIZ_DEFAULTS.points;
@@ -107,7 +109,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     }
   }, [sessionId]);
 
-  async function updateQuestion(qId, { type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons }) {
+  async function updateQuestion(qId, { type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers }) {
     try {
       setError(null);
       const existing = questions?.[qId];
@@ -128,6 +130,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       delete questionData.revealedHints;
       delete questionData.mysteryItems;
       delete questionData.answerReasons;
+      delete questionData.acceptableAnswers;
 
       const isChoiceLike = type === 'choice' || type === 'quiz';
       if (isChoiceLike) {
@@ -153,6 +156,8 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
         questionData.correctAnswer = correctAnswer?.trim() || '';
         questionData.hints = hints || [];
         questionData.revealedHints = 0;
+        if (answerReasons?.length > 0) questionData.answerReasons = answerReasons;
+        if (acceptableAnswers?.length > 0) questionData.acceptableAnswers = acceptableAnswers;
       }
       if (type === 'quiz') {
         questionData.points = points || QUIZ_DEFAULTS.points;

@@ -31,6 +31,7 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
   const [hints, setHints] = useState(initialData?.hints?.length ? [...initialData.hints] : ['', '']);
   const [mysteryItems, setMysteryItems] = useState(initialData?.mysteryItems?.join('\n') || '');
   const [answerReasons, setAnswerReasons] = useState(initialData?.answerReasons?.length ? [...initialData.answerReasons] : []);
+  const [acceptableAnswers, setAcceptableAnswers] = useState(initialData?.acceptableAnswers?.length ? [...initialData.acceptableAnswers] : []);
   const [localError, setLocalError] = useState(null);
 
   const isChoiceLike = type === 'choice' || type === 'quiz';
@@ -60,6 +61,8 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
     }
     if (isHintQuiz) {
       submitData.hints = hints.filter(h => h.trim());
+      const validAcceptable = acceptableAnswers.filter(a => a.trim());
+      if (validAcceptable.length > 0) submitData.acceptableAnswers = validAcceptable;
     }
     const success = await onSubmit(submitData);
     if (success) {
@@ -141,7 +144,8 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
       <AnimatePresence>
         {isHintQuiz && <HintQuizSection correctAnswer={correctAnswer}
           setCorrectAnswer={setCorrectAnswer} hints={hints}
-          setHints={setHints} setLocalError={setLocalError} />}
+          setHints={setHints} acceptableAnswers={acceptableAnswers}
+          setAcceptableAnswers={setAcceptableAnswers} setLocalError={setLocalError} />}
       </AnimatePresence>
 
       {/* Error */}
