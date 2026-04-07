@@ -1,7 +1,7 @@
 import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
-import { getParticipantId } from '@/lib/participant';
+import { getParticipantId, getNickname } from '@/lib/participant';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useCallback, useEffect, useMemo, memo } from 'react';
 import { useVotes } from '@/hooks/useVotes';
@@ -101,6 +101,7 @@ export default memo(function DebateVoter({ sessionId, questionId, disabled = fal
       const value = `${side}:${opinion.trim()}`;
       await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${pid}`), {
         value,
+        nickname: getNickname() || '익명',
         timestamp: serverTimestamp(),
       });
       setSubmitted(true);

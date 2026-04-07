@@ -1,7 +1,7 @@
 import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
-import { getParticipantId } from '@/lib/participant';
+import { getParticipantId, getNickname } from '@/lib/participant';
 import { useState, useCallback, useEffect, useMemo, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send } from 'lucide-react';
@@ -127,6 +127,7 @@ export default memo(function FillBlankVoter({ sessionId, questionId, title, corr
       const pid = getParticipantId();
       await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${pid}`), {
         value: answer.trim(),
+        nickname: getNickname() || '익명',
         timestamp: serverTimestamp(),
       });
       setSubmitted(true);

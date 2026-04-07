@@ -1,7 +1,7 @@
 import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
-import { getParticipantId } from '@/lib/participant';
+import { getParticipantId, getNickname } from '@/lib/participant';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useCallback, useEffect, useMemo, memo } from 'react';
 import { DndContext, closestCenter, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
@@ -112,6 +112,7 @@ export default memo(function RankingVoter({ sessionId, questionId, options = [],
     try {
       await set(ref(db, `sessions/${sessionId}/questions/${questionId}/votes/${pid}`), {
         value: order.join(','),
+        nickname: getNickname() || '익명',
         timestamp: serverTimestamp(),
       });
       setSubmitted(true);
