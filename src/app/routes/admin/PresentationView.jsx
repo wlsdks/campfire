@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, lazy, Suspense, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, QrCode, X, Copy, Check, Swords, Hand, MessageSquare, ChevronDown, ChevronRight, Eye } from 'lucide-react';
+import { Users, QrCode, X, Copy, Check, Swords, Hand, MessageSquare, ChevronDown, ChevronRight, Eye, Trophy } from 'lucide-react';
 import { ref, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import Button from '@/components/ui/Button';
@@ -356,7 +356,28 @@ function PresentRevealControls({ sessionId, session }) {
   if (!question) return null;
 
   const isMH = ['mysteryBox', 'hintQuiz'].includes(question.type);
-  if (!isMH || question.revealedAt) return null;
+  if (!isMH) return null;
+
+  // 정답 공개 후: 당첨자 공개 버튼
+  const presetWinners = question.winners || [];
+  const revealedWinners = question.revealedWinners || 0;
+  const canRevealWinner = question.revealedAt && presetWinners.length > 0 && revealedWinners < presetWinners.length;
+
+  if (question.revealedAt && !canRevealWinner) return null;
+  if (question.revealedAt) {
+    return (
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20">
+        <Button onClick={async () => {
+          await update(ref(db, `sessions/${sessionId}`), {
+            [`questions/${currentQId}/revealedWinners`]: revealedWinners + 1,
+          });
+        }} variant="primary" size="lg">
+          <Trophy size={20} />
+          {revealedWinners + 1}등 당첨자 공개 ({revealedWinners}/{presetWinners.length})
+        </Button>
+      </div>
+    );
+  }
 
   const isHint = question.type === 'hintQuiz';
   const hints = question.hints || [];

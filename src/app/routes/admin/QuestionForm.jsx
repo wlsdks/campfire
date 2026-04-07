@@ -32,6 +32,7 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
   const [mysteryItems, setMysteryItems] = useState(initialData?.mysteryItems?.join('\n') || '');
   const [answerReasons, setAnswerReasons] = useState(initialData?.answerReasons?.length ? [...initialData.answerReasons] : []);
   const [acceptableAnswers, setAcceptableAnswers] = useState(initialData?.acceptableAnswers?.length ? [...initialData.acceptableAnswers] : []);
+  const [winners, setWinners] = useState(initialData?.winners?.length ? [...initialData.winners] : []);
   const [localError, setLocalError] = useState(null);
 
   const isChoiceLike = type === 'choice' || type === 'quiz';
@@ -63,6 +64,10 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
       submitData.hints = hints.filter(h => h.trim());
       const validAcceptable = acceptableAnswers.filter(a => a.trim());
       if (validAcceptable.length > 0) submitData.acceptableAnswers = validAcceptable;
+    }
+    if (isMysteryBox || isHintQuiz) {
+      const validWinners = winners.filter(w => w.trim());
+      if (validWinners.length > 0) submitData.winners = validWinners;
     }
     const success = await onSubmit(submitData);
     if (success) {
@@ -139,13 +144,15 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
         {isMysteryBox && <MysteryBoxSection correctAnswer={correctAnswer}
           setCorrectAnswer={setCorrectAnswer} mysteryItems={mysteryItems}
           setMysteryItems={setMysteryItems} answerReasons={answerReasons}
-          setAnswerReasons={setAnswerReasons} setLocalError={setLocalError} />}
+          setAnswerReasons={setAnswerReasons} winners={winners}
+          setWinners={setWinners} setLocalError={setLocalError} />}
       </AnimatePresence>
       <AnimatePresence>
         {isHintQuiz && <HintQuizSection correctAnswer={correctAnswer}
           setCorrectAnswer={setCorrectAnswer} hints={hints}
           setHints={setHints} acceptableAnswers={acceptableAnswers}
-          setAcceptableAnswers={setAcceptableAnswers} setLocalError={setLocalError} />}
+          setAcceptableAnswers={setAcceptableAnswers} winners={winners}
+          setWinners={setWinners} setLocalError={setLocalError} />}
       </AnimatePresence>
 
       {/* Error */}

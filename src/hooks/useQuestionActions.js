@@ -24,7 +24,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     [questions]
   );
 
-  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers }) {
+  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers, winners }) {
     try {
       setError(null);
       const qId = generateQuestionId();
@@ -49,6 +49,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
         questionData.correctAnswer = correctAnswer?.trim() || '';
         if (mysteryItems?.length > 0) questionData.mysteryItems = mysteryItems;
         if (answerReasons?.length > 0) questionData.answerReasons = answerReasons;
+        if (winners?.length > 0) questionData.winners = winners;
       }
       if (type === 'hintQuiz') {
         questionData.correctAnswer = correctAnswer?.trim() || '';
@@ -56,6 +57,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
         questionData.revealedHints = 0;
         if (answerReasons?.length > 0) questionData.answerReasons = answerReasons;
         if (acceptableAnswers?.length > 0) questionData.acceptableAnswers = acceptableAnswers;
+        if (winners?.length > 0) questionData.winners = winners;
       }
       if (type === 'quiz') {
         questionData.points = points || QUIZ_DEFAULTS.points;
@@ -100,6 +102,10 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       if (question.type === 'hintQuiz') {
         updates[`questions/${qId}/revealedHints`] = 0;
       }
+      // 미스터리 박스/힌트 퀴즈: 당첨자 공개 초기화
+      if (['mysteryBox', 'hintQuiz'].includes(question.type)) {
+        updates[`questions/${qId}/revealedWinners`] = 0;
+      }
 
       await update(ref(db, `sessions/${sessionId}`), updates);
       showToast('질문이 활성화되었습니다');
@@ -116,7 +122,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     }
   }, [sessionId]);
 
-  async function updateQuestion(qId, { type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers }) {
+  async function updateQuestion(qId, { type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers, winners }) {
     try {
       setError(null);
       const existing = questions?.[qId];
@@ -138,6 +144,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       delete questionData.mysteryItems;
       delete questionData.answerReasons;
       delete questionData.acceptableAnswers;
+      delete questionData.winners;
 
       const isChoiceLike = type === 'choice' || type === 'quiz';
       if (isChoiceLike) {
@@ -158,6 +165,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
         questionData.correctAnswer = correctAnswer?.trim() || '';
         if (mysteryItems?.length > 0) questionData.mysteryItems = mysteryItems;
         if (answerReasons?.length > 0) questionData.answerReasons = answerReasons;
+        if (winners?.length > 0) questionData.winners = winners;
       }
       if (type === 'hintQuiz') {
         questionData.correctAnswer = correctAnswer?.trim() || '';
@@ -165,6 +173,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
         questionData.revealedHints = 0;
         if (answerReasons?.length > 0) questionData.answerReasons = answerReasons;
         if (acceptableAnswers?.length > 0) questionData.acceptableAnswers = acceptableAnswers;
+        if (winners?.length > 0) questionData.winners = winners;
       }
       if (type === 'quiz') {
         questionData.points = points || QUIZ_DEFAULTS.points;

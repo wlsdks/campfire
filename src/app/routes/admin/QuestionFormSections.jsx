@@ -182,7 +182,49 @@ export function OXAnswerSection({ correctAnswer, setCorrectAnswer, setLocalError
   );
 }
 
-export function MysteryBoxSection({ correctAnswer, setCorrectAnswer, mysteryItems, setMysteryItems, answerReasons, setAnswerReasons, setLocalError }) {
+export function WinnersSection({ winners, setWinners }) {
+  function addWinner() {
+    if (winners.length < 3) setWinners(prev => [...prev, '']);
+  }
+  function removeWinner(index) {
+    setWinners(prev => prev.filter((_, i) => i !== index));
+  }
+
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-1.5">
+        <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">당첨자 <span className="normal-case font-normal">(선택, 최대 3명)</span></p>
+        {winners.length < 3 && (
+          <button onClick={addWinner}
+            className="text-xs font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 flex items-center gap-0.5 transition-colors duration-150">
+            <Plus size={12} /> 추가
+          </button>
+        )}
+      </div>
+      {winners.length > 0 && (
+        <div className="space-y-2">
+          {winners.map((name, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <span className="w-5 h-5 rounded-md bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 flex items-center justify-center text-[10px] font-bold shrink-0">
+                {i + 1}
+              </span>
+              <input value={name}
+                onChange={(e) => { const next = [...winners]; next[i] = e.target.value; setWinners(next); }}
+                placeholder={`${i + 1}등 당첨자 이름`} aria-label={`당첨자 ${i + 1}`}
+                maxLength={20}
+                className={`flex-1 ${INPUT} py-2`} />
+              <button onClick={() => removeWinner(i)}
+                className="p-1 rounded-lg text-slate-300 dark:text-slate-600 hover:text-red-500 transition-colors duration-150 active:scale-90"
+                aria-label="당첨자 삭제"><X size={14} /></button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function MysteryBoxSection({ correctAnswer, setCorrectAnswer, mysteryItems, setMysteryItems, answerReasons, setAnswerReasons, winners, setWinners, setLocalError }) {
   function addReason() {
     if (answerReasons.length < 4) setAnswerReasons(prev => [...prev, '']);
   }
@@ -232,6 +274,7 @@ export function MysteryBoxSection({ correctAnswer, setCorrectAnswer, mysteryItem
             </div>
           )}
         </div>
+        <WinnersSection winners={winners} setWinners={setWinners} />
         <div>
           <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">돌아갈 텍스트 <span className="normal-case font-normal">(줄바꿈 구분, 비우면 ? 표시)</span></p>
           <textarea value={mysteryItems}
@@ -245,7 +288,7 @@ export function MysteryBoxSection({ correctAnswer, setCorrectAnswer, mysteryItem
   );
 }
 
-export function HintQuizSection({ correctAnswer, setCorrectAnswer, hints, setHints, acceptableAnswers, setAcceptableAnswers, setLocalError }) {
+export function HintQuizSection({ correctAnswer, setCorrectAnswer, hints, setHints, acceptableAnswers, setAcceptableAnswers, winners, setWinners, setLocalError }) {
   function addHint() {
     if (hints.length < 5) setHints(prev => [...prev, '']);
   }
@@ -332,6 +375,7 @@ export function HintQuizSection({ correctAnswer, setCorrectAnswer, hints, setHin
             ))}
           </div>
         </div>
+        <WinnersSection winners={winners} setWinners={setWinners} />
       </div>
     </motion.div>
   );
