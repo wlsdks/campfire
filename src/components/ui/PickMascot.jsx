@@ -9,8 +9,7 @@ const SIZES = {
 };
 
 /**
- * Pick mascot — polished cute lion with fluffy mane.
- * Bezier-path mane, gradient shading, expressive eyes.
+ * Pick mascot — extra-cute lion with big sparkly eyes, rounder mane.
  * Breathing, bobbing, mood-based expressions.
  *
  * @param {'xs' | 'sm' | 'md' | 'lg'} size
@@ -25,11 +24,11 @@ export default function PickMascot({ size = 'md', mood = 'happy', className = ''
     mood === 'thinking' || mood === 'focus'
       ? 'M56 72 Q60 73 64 72'
       : mood === 'waiting'
-        ? 'M55 71 Q60 74 65 71'
-        : 'M53 70 Q60 77 67 70';
+        ? 'M54 71 Q60 75 66 71'
+        : 'M52 70 Q60 79 68 70';
 
   // Breathing: subtle scale pulse
-  const breathe = { scale: [1, 1.015, 1] };
+  const breathe = { scale: [1, 1.02, 1] };
   const breatheTiming = { duration: 3.5, repeat: Infinity, ease: 'easeInOut' };
 
   // Bob: gentle float
@@ -50,9 +49,9 @@ export default function PickMascot({ size = 'md', mood = 'happy', className = ''
 
   const isFocus = mood === 'focus';
 
-  // Blink animation (shared between eyes)
+  // Blink animation
   const blinkAnim = {
-    animate: { scaleY: [1, 1, 0.1, 1, 1] },
+    animate: { scaleY: [1, 1, 0.08, 1, 1] },
     transition: { duration: 4, repeat: Infinity, times: [0, 0.45, 0.5, 0.55, 1] },
   };
 
@@ -69,104 +68,109 @@ export default function PickMascot({ size = 'md', mood = 'happy', className = ''
       transition={{ y: bobTiming, scale: breatheTiming, rotate: tiltTiming }}
     >
       <defs>
-        {/* Mane gradient — warm center, deeper edges */}
+        {/* Mane gradient — warm, soft */}
         <radialGradient id={g('mane')} cx="50%" cy="38%" r="55%">
-          <stop offset="0%" stopColor="#FBBF24" />
-          <stop offset="100%" stopColor="#E08A08" />
+          <stop offset="0%" stopColor="#FCD34D" />
+          <stop offset="100%" stopColor="#F59E0B" />
         </radialGradient>
-        {/* Face gradient — subtle 3D: light top-left, warmer bottom */}
+        {/* Face gradient — creamy soft */}
         <radialGradient id={g('face')} cx="42%" cy="36%" r="65%">
-          <stop offset="0%" stopColor="#FEF3C7" />
-          <stop offset="60%" stopColor="#FDE68A" />
-          <stop offset="100%" stopColor="#FCD34D" />
+          <stop offset="0%" stopColor="#FFF8E7" />
+          <stop offset="50%" stopColor="#FEF3C7" />
+          <stop offset="100%" stopColor="#FDE68A" />
         </radialGradient>
-        {/* Nose gradient */}
+        {/* Nose gradient — soft pink-brown */}
         <radialGradient id={g('nose')} cx="50%" cy="25%" r="75%">
-          <stop offset="0%" stopColor="#F59E0B" />
+          <stop offset="0%" stopColor="#E8A87C" />
           <stop offset="100%" stopColor="#C47A08" />
         </radialGradient>
-        {/* Blush gradient — soft fade */}
+        {/* Blush gradient — rosy warm */}
         <radialGradient id={g('blush')}>
-          <stop offset="0%" stopColor="#F59E0B" stopOpacity="0.45" />
-          <stop offset="100%" stopColor="#F59E0B" stopOpacity="0" />
+          <stop offset="0%" stopColor="#F9A8D4" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="#F9A8D4" stopOpacity="0" />
         </radialGradient>
         {/* Ear inner gradient */}
         <radialGradient id={g('ear')} cx="50%" cy="40%" r="60%">
-          <stop offset="0%" stopColor="#FEF3C7" />
+          <stop offset="0%" stopColor="#FECDD3" stopOpacity="0.6" />
           <stop offset="100%" stopColor="#FDE68A" />
+        </radialGradient>
+        {/* Eye shine gradient */}
+        <radialGradient id={g('eyeShine')} cx="35%" cy="30%" r="60%">
+          <stop offset="0%" stopColor="#1E293B" />
+          <stop offset="100%" stopColor="#334155" />
         </radialGradient>
       </defs>
 
-      {/* ── Mane ── fluffy bumps with depth gradient */}
-      <circle cx="60" cy="28" r="17" fill={`url(#${g('mane')})`} />
-      <circle cx="36" cy="34" r="16" fill={`url(#${g('mane')})`} />
-      <circle cx="84" cy="34" r="16" fill={`url(#${g('mane')})`} />
-      <circle cx="26" cy="52" r="15" fill={`url(#${g('mane')})`} />
-      <circle cx="94" cy="52" r="15" fill={`url(#${g('mane')})`} />
-      <circle cx="28" cy="72" r="14" fill={`url(#${g('mane')})`} />
-      <circle cx="92" cy="72" r="14" fill={`url(#${g('mane')})`} />
-      <circle cx="40" cy="88" r="13" fill={`url(#${g('mane')})`} />
-      <circle cx="80" cy="88" r="13" fill={`url(#${g('mane')})`} />
-      <circle cx="60" cy="92" r="13" fill={`url(#${g('mane')})`} />
+      {/* ── Mane ── rounder, fluffier bumps */}
+      <circle cx="60" cy="26" r="18" fill={`url(#${g('mane')})`} />
+      <circle cx="34" cy="33" r="17" fill={`url(#${g('mane')})`} />
+      <circle cx="86" cy="33" r="17" fill={`url(#${g('mane')})`} />
+      <circle cx="24" cy="52" r="16" fill={`url(#${g('mane')})`} />
+      <circle cx="96" cy="52" r="16" fill={`url(#${g('mane')})`} />
+      <circle cx="26" cy="73" r="15" fill={`url(#${g('mane')})`} />
+      <circle cx="94" cy="73" r="15" fill={`url(#${g('mane')})`} />
+      <circle cx="38" cy="89" r="14" fill={`url(#${g('mane')})`} />
+      <circle cx="82" cy="89" r="14" fill={`url(#${g('mane')})`} />
+      <circle cx="60" cy="93" r="14" fill={`url(#${g('mane')})`} />
       {/* Mane fill */}
-      <circle cx="60" cy="58" r="39" fill={`url(#${g('mane')})`} />
+      <circle cx="60" cy="58" r="40" fill={`url(#${g('mane')})`} />
 
-      {/* ── Face ── gradient for depth */}
-      <circle cx="60" cy="62" r="30" fill={`url(#${g('face')})`} />
+      {/* ── Face ── bigger, rounder */}
+      <circle cx="60" cy="62" r="32" fill={`url(#${g('face')})`} />
 
-      {/* ── Ears ── with inner gradient */}
-      <circle cx="34" cy="34" r="9" fill={`url(#${g('mane')})`} />
-      <circle cx="34" cy="34" r="5.5" fill={`url(#${g('ear')})`} />
-      <circle cx="86" cy="34" r="9" fill={`url(#${g('mane')})`} />
-      <circle cx="86" cy="34" r="5.5" fill={`url(#${g('ear')})`} />
+      {/* ── Ears ── rounder with pink inner */}
+      <circle cx="33" cy="33" r="10" fill={`url(#${g('mane')})`} />
+      <circle cx="33" cy="33" r="6" fill={`url(#${g('ear')})`} />
+      <circle cx="87" cy="33" r="10" fill={`url(#${g('mane')})`} />
+      <circle cx="87" cy="33" r="6" fill={`url(#${g('ear')})`} />
 
-      {/* ── Eyes ── layered: sclera → iris → pupil → highlights */}
+      {/* ── Eyes ── bigger, sparklier */}
       {isFocus ? (
         <>
-          {/* Focus: narrow squint */}
-          <ellipse cx="48" cy="57" rx="6" ry="2" fill="white" />
-          <ellipse cx="48" cy="57" rx="5" ry="1.8" fill="#1E293B" />
-          <circle cx="47" cy="56.5" r="1" fill="white" opacity="0.8" />
-          <ellipse cx="72" cy="57" rx="6" ry="2" fill="white" />
-          <ellipse cx="72" cy="57" rx="5" ry="1.8" fill="#1E293B" />
-          <circle cx="71" cy="56.5" r="1" fill="white" opacity="0.8" />
+          <ellipse cx="47" cy="57" rx="7" ry="2.5" fill="white" />
+          <ellipse cx="47" cy="57" rx="6" ry="2" fill={`url(#${g('eyeShine')})`} />
+          <circle cx="46" cy="56.5" r="1.2" fill="white" opacity="0.9" />
+          <ellipse cx="73" cy="57" rx="7" ry="2.5" fill="white" />
+          <ellipse cx="73" cy="57" rx="6" ry="2" fill={`url(#${g('eyeShine')})`} />
+          <circle cx="72" cy="56.5" r="1.2" fill="white" opacity="0.9" />
         </>
       ) : (
         <>
-          {/* Left eye */}
-          <ellipse cx="48" cy="57" rx="7" ry="7.5" fill="white" />
+          {/* Left eye — bigger sclera + iris */}
+          <ellipse cx="47" cy="57" rx="9" ry="9.5" fill="white" />
           <motion.ellipse
-            cx="48" cy="57" rx="5" ry="5.5" fill="#1E293B"
+            cx="47" cy="58" rx="6.5" ry="7" fill={`url(#${g('eyeShine')})`}
             {...blinkAnim}
           />
-          <circle cx="46" cy="55" r="2.5" fill="white" />
-          <circle cx="50" cy="58" r="1" fill="white" opacity="0.4" />
+          {/* Big sparkle highlight */}
+          <circle cx="44" cy="54.5" r="3" fill="white" />
+          {/* Small sparkle */}
+          <circle cx="50" cy="59" r="1.5" fill="white" opacity="0.6" />
 
           {/* Right eye */}
-          <ellipse cx="72" cy="57" rx="7" ry="7.5" fill="white" />
+          <ellipse cx="73" cy="57" rx="9" ry="9.5" fill="white" />
           <motion.ellipse
-            cx="72" cy="57" rx="5" ry="5.5" fill="#1E293B"
+            cx="73" cy="58" rx="6.5" ry="7" fill={`url(#${g('eyeShine')})`}
             {...blinkAnim}
           />
-          <circle cx="70" cy="55" r="2.5" fill="white" />
-          <circle cx="74" cy="58" r="1" fill="white" opacity="0.4" />
+          <circle cx="70" cy="54.5" r="3" fill="white" />
+          <circle cx="76" cy="59" r="1.5" fill="white" opacity="0.6" />
         </>
       )}
 
-      {/* ── Eyebrows ── subtle mood hint */}
+      {/* ── Eyebrows ── thinking mood */}
       {mood === 'thinking' && (
         <>
-          <path d="M42 49 Q48 47 52 49" stroke="#C47A08" strokeWidth="1.5" strokeLinecap="round" fill="none" />
-          <path d="M68 49 Q72 47 78 49" stroke="#C47A08" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+          <path d="M40 47 Q47 44 53 47" stroke="#D4A05A" strokeWidth="1.5" strokeLinecap="round" fill="none" />
+          <path d="M67 47 Q73 44 80 47" stroke="#D4A05A" strokeWidth="1.5" strokeLinecap="round" fill="none" />
         </>
       )}
 
-      {/* ── Nose ── gradient for depth */}
-      <ellipse cx="60" cy="66" rx="3.5" ry="2.8" fill={`url(#${g('nose')})`} />
-      {/* Nose shine */}
-      <ellipse cx="59" cy="65" rx="1.5" ry="1" fill="white" opacity="0.3" />
+      {/* ── Nose ── small, cute */}
+      <ellipse cx="60" cy="66" rx="3" ry="2.3" fill={`url(#${g('nose')})`} />
+      <ellipse cx="59.2" cy="65.3" rx="1.3" ry="0.8" fill="white" opacity="0.35" />
 
-      {/* ── Mouth ── mood-dependent */}
+      {/* ── Mouth ── wider smile */}
       <path
         d={mouthPath}
         stroke="#C47A08"
@@ -174,18 +178,28 @@ export default function PickMascot({ size = 'md', mood = 'happy', className = ''
         strokeLinecap="round"
         fill="none"
       />
+      {/* Tongue peek for happy mood */}
+      {mood === 'happy' && (
+        <ellipse cx="60" cy="76" rx="3.5" ry="2.5" fill="#F9A8D4" opacity="0.7" />
+      )}
 
-      {/* ── Cheeks ── gradient blush */}
+      {/* ── Cheeks ── bigger, pinker blush */}
       <motion.circle
-        cx="38" cy="66" r="7" fill={`url(#${g('blush')})`}
-        animate={{ opacity: [0.7, 1, 0.7] }}
+        cx="35" cy="67" r="9" fill={`url(#${g('blush')})`}
+        animate={{ opacity: [0.6, 1, 0.6] }}
         transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.circle
-        cx="82" cy="66" r="7" fill={`url(#${g('blush')})`}
-        animate={{ opacity: [0.7, 1, 0.7] }}
+        cx="85" cy="67" r="9" fill={`url(#${g('blush')})`}
+        animate={{ opacity: [0.6, 1, 0.6] }}
         transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
       />
+
+      {/* ── Whisker dots ── */}
+      <circle cx="39" cy="69" r="0.8" fill="#D4A05A" opacity="0.4" />
+      <circle cx="36" cy="72" r="0.8" fill="#D4A05A" opacity="0.4" />
+      <circle cx="81" cy="69" r="0.8" fill="#D4A05A" opacity="0.4" />
+      <circle cx="84" cy="72" r="0.8" fill="#D4A05A" opacity="0.4" />
     </motion.svg>
   );
 }
