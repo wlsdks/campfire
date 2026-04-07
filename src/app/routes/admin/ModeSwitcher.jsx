@@ -32,7 +32,7 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTic
       ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
       { mode: 'teamBattle', label: teamBattleActive ? '팀 스코어보드' : '팀 대항전', icon: Swords },
       { mode: 'awards', label: '시상식', icon: Award },
-      { mode: 'combinedRanking', label: '합산 랭킹', icon: Medal },
+      { mode: 'combinedRanking', label: '합산 랭킹', icon: Medal, shortLabel: '합산' },
     ]},
     { label: '기타', items: [
       { mode: 'randomPicker', label: '발표자 뽑기', icon: UserCircle },
@@ -42,7 +42,8 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTic
   ];
   const modes = modeGroups.flatMap(g => g.items);
 
-  const activeLabel = modes.find(m => m.mode === currentMode)?.label;
+  const activeMode = modes.find(m => m.mode === currentMode);
+  const activeLabel = activeMode?.shortLabel || activeMode?.label;
 
   return (
     <div ref={containerRef} className="relative">
