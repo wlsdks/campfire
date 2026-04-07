@@ -13,7 +13,6 @@ export default function MobileModePicker({ open, onClose, currentMode, onSwitchM
       { mode: 'focus', label: '집중!', icon: Eye },
     ]},
     { title: '게임 & 이벤트', modes: [
-      { mode: 'roulette', label: '돌림판', icon: Target },
       { mode: 'lottery', label: '추첨', icon: Ticket },
       { mode: 'prizeDraw', label: '경품 추첨', icon: Gift },
       

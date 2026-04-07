@@ -24,7 +24,6 @@ import { useGameResult } from '@/features/games/api/useGameResult';
 const GameResultOverlay = lazy(() => import('@/features/games/components/GameResultOverlay'));
 import LiveParticipation from './LiveParticipation';
 
-const Roulette = lazy(() => import('@/features/games/components/Roulette'));
 const Lottery = lazy(() => import('@/features/games/components/Lottery'));
 const PrizeDraw = lazy(() => import('@/features/games/components/PrizeDraw'));
 const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
@@ -77,10 +76,9 @@ export default function LivePage() {
   }, [onlineList, publishResult]);
 
   // Stable per-game callbacks (avoid re-creating on every render)
-  const onRouletteResult = useCallback((names) => handleGameResult(names, 'roulette'), [handleGameResult]);
   const onLotteryResult = useCallback((names) => handleGameResult(names, 'lottery'), [handleGameResult]);
   const onPrizeDrawResult = useCallback((names) => handleGameResult(names, 'prizeDraw'), [handleGameResult]);
-  const isGameMode = ['roulette', 'lottery', 'prizeDraw', 'combinedRanking', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
+  const isGameMode = ['lottery', 'prizeDraw', 'combinedRanking', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
   const isEnded = session?.status === 'ended';
   const hasActiveQuestion = ['poll', 'quiz'].includes(currentMode) && currentQId && question;
 
@@ -184,7 +182,6 @@ export default function LivePage() {
                 className="w-full"
               >
                 <Suspense fallback={<GameFallback />}>
-                  {currentMode === 'roulette' && <Roulette participants={onlineList} scores={scores} onResult={onRouletteResult} gameState={session?.gameState} />}
                   {currentMode === 'lottery' && <Lottery participants={onlineList} onResult={onLotteryResult} />}
                   {currentMode === 'prizeDraw' && <PrizeDraw participants={onlineList} onResult={onPrizeDrawResult} />}
                   {currentMode === 'breakTime' && <BreakTimer />}

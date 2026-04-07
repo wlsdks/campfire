@@ -19,7 +19,6 @@ import { usePublishGameResult } from '@/features/games/api/useGameResult';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
 import TeamScoreboard from '@/features/teams/components/TeamScoreboard';
 
-const Roulette = lazy(() => import('@/features/games/components/Roulette'));
 const Lottery = lazy(() => import('@/features/games/components/Lottery'));
 const PrizeDraw = lazy(() => import('@/features/games/components/PrizeDraw'));
 const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
@@ -145,7 +144,7 @@ function getModeVariants(mode) {
   if (mode === 'leaderboard') {
     return { initial: { opacity: 0, y: -30 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 30 } };
   }
-  if (['roulette', 'lottery', 'prizeDraw', 'breakTime', 'teamBattle', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus', 'combinedRanking'].includes(mode)) {
+  if (['lottery', 'prizeDraw', 'breakTime', 'teamBattle', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus', 'combinedRanking'].includes(mode)) {
     return { initial: { opacity: 0, scale: 0.88 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 1.06 } };
   }
   if (['poll', 'quiz'].includes(mode)) {
@@ -204,11 +203,6 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
   // Determine content + animation key
   let contentKey, content;
   const gameContent = (() => {
-    if (currentMode === 'roulette') return <Roulette participants={onlineList} scores={scores} onResult={onGameResult ? (names) => onGameResult(names, 'roulette') : undefined} onGameStateChange={(gs) => {
-      const updates = { gameState: gs };
-      if (gs?.clearResult) updates.gameResult = null; // 이전 결과 지우기
-      update(ref(db, `sessions/${sessionId}`), updates);
-    }} />;
     if (currentMode === 'lottery') return <Lottery participants={drawParticipants} onResult={onGameResult ? (names) => onGameResult(names, 'lottery') : undefined} />;
     if (currentMode === 'prizeDraw') return <PrizeDraw participants={onlineList} onResult={onGameResult ? (names) => onGameResult(names, 'prizeDraw') : undefined} />;
     if (currentMode === 'breakTime') return <BreakTimer />;
@@ -432,12 +426,10 @@ function PresentRevealControls({ sessionId, session }) {
   );
 }
 
-import { Medal, Target, Ticket, Gift, Coffee, Award, Swords as SwordsIcon } from 'lucide-react';
 
 const PRESENT_MODES = [
   { mode: 'combinedRanking', label: '합산 랭킹', icon: Medal },
   { mode: 'leaderboard', label: '리더보드', icon: Trophy },
-  { mode: 'roulette', label: '돌림판', icon: Target },
   { mode: 'lottery', label: '추첨', icon: Ticket },
   { mode: 'prizeDraw', label: '경품 추첨', icon: Gift },
   { mode: 'breakTime', label: '쉬는 시간', icon: Coffee },

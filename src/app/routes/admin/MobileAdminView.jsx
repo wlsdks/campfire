@@ -133,7 +133,7 @@ export default function MobileAdminView({ s }) {
   const [modesOpen, setModesOpen] = useState(false);
 
   const currentMode = s.session?.currentMode;
-  const isSpecialMode = ['roulette', 'lottery', 'prizeDraw', 'combinedRanking', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
+  const isSpecialMode = ['lottery', 'prizeDraw', 'combinedRanking', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
 
   const onNewChatMsg = s.handleNewChatMessage;
   const handleNewChatMessage = useCallback(() => {
