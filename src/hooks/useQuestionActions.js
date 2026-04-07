@@ -109,6 +109,10 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       if (['mysteryBox', 'hintQuiz'].includes(question.type)) {
         updates[`questions/${qId}/revealedWinners`] = 0;
       }
+      // 이미지 슬라이드: 첫 번째로 초기화
+      if (question.type === 'imageSlide') {
+        updates[`questions/${qId}/currentSlide`] = 0;
+      }
 
       await update(ref(db, `sessions/${sessionId}`), updates);
       showToast('질문이 활성화되었습니다');

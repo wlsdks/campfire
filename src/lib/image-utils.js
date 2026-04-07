@@ -1,6 +1,6 @@
-const MAX_WIDTH = 800;
-const MAX_HEIGHT = 600;
-const QUALITY = 0.75;
+const MAX_WIDTH = 1200;
+const MAX_HEIGHT = 900;
+const QUALITY = 0.8;
 const TIMEOUT_MS = 5000;
 
 /**
