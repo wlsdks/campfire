@@ -60,6 +60,7 @@ export default function QuestionCard({ question, questionId, questionProgress })
           alt="질문 이미지"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
+          loading="eager"
           className="mt-4 w-full max-h-52 object-cover rounded-lg"
         />
       )}

@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -10,6 +10,15 @@ const SPRING = { type: 'spring', stiffness: 300, damping: 30 };
  * 없으면 로컬 state (호환).
  */
 export default memo(function ImageSlidePresenter({ images = [], currentSlide = 0, onSlideChange }) {
+  // 다음 슬라이드 미리 로드
+  useEffect(() => {
+    const next = currentSlide + 1;
+    if (next < images.length) {
+      const img = new Image();
+      img.src = images[next];
+    }
+  }, [currentSlide, images]);
+
   if (images.length === 0) return null;
 
   const current = Math.min(currentSlide, images.length - 1);
@@ -31,6 +40,7 @@ export default memo(function ImageSlidePresenter({ images = [], currentSlide = 0
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -40 }}
             transition={SPRING}
+            loading="eager"
             className="w-full h-full object-contain"
           />
         </AnimatePresence>
