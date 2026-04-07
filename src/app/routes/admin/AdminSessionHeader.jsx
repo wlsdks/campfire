@@ -272,7 +272,7 @@ export default memo(function AdminSessionHeader({
           <>
             <Button onClick={onPresentMode} variant="primary" size="sm">
               <Monitor size={isTablet ? 16 : 18} />
-              {isTablet ? '발표' : '발표 모드'}
+              {isTablet ? '발표(F5)' : '발표 모드(F5)'}
             </Button>
             <Button onClick={() => setConfirmEnd('end')} variant="secondary" size="sm">
               <Square size={isTablet ? 16 : 18} />
