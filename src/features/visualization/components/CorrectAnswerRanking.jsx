@@ -24,7 +24,7 @@ export default memo(function CorrectAnswerRanking({
   myParticipantId = null,
 }) {
   const { voteList, totalVotes } = useVotes(sessionId, questionId);
-  const [expanded, setExpanded] = useState(false);
+  const [showCount, setShowCount] = useState(INITIAL_SHOW);
 
   const { ranking, myRank } = useMemo(() => {
     if (!correctAnswer) return { ranking: [], myRank: -1 };
@@ -47,8 +47,8 @@ export default memo(function CorrectAnswerRanking({
   if (ranking.length === 0) return null;
 
   const INITIAL_SHOW = 10;
-  const visible = expanded ? ranking : ranking.slice(0, INITIAL_SHOW);
-  const remaining = ranking.length - INITIAL_SHOW;
+  const visible = ranking.slice(0, showCount);
+  const remaining = ranking.length - showCount;
 
   return (
     <motion.div
@@ -120,13 +120,13 @@ export default memo(function CorrectAnswerRanking({
           })}
         </AnimatePresence>
 
-        {!expanded && remaining > 0 && (
+        {remaining > 0 && (
           <button
-            onClick={() => setExpanded(true)}
+            onClick={() => setShowCount(c => c + 10)}
             className="w-full py-2.5 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 font-medium flex items-center justify-center gap-1 transition-colors border-t border-slate-100 dark:border-slate-700"
           >
             <ChevronDown size={14} />
-            {remaining}명 더 보기
+            10명 더 보기 (나머지 {remaining}명)
           </button>
         )}
       </div>

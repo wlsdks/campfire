@@ -12,7 +12,7 @@ const INITIAL_SHOW = 10;
  * 정답자 수를 합산하여 순위를 매긴다.
  */
 export default memo(function CombinedRanking({ session }) {
-  const [expanded, setExpanded] = useState(false);
+  const [showCount, setShowCount] = useState(INITIAL_SHOW);
 
   const ranking = useMemo(() => {
     const questions = session?.questions || {};
@@ -53,8 +53,8 @@ export default memo(function CombinedRanking({ session }) {
     return Object.values(session?.questions || {}).filter(q => q.correctAnswer).length;
   }, [session?.questions]);
 
-  const visible = expanded ? ranking : ranking.slice(0, INITIAL_SHOW);
-  const remaining = ranking.length - INITIAL_SHOW;
+  const visible = ranking.slice(0, showCount);
+  const remaining = ranking.length - showCount;
 
   return (
     <div className="w-full max-w-lg mx-auto space-y-4">
@@ -125,13 +125,13 @@ export default memo(function CombinedRanking({ session }) {
             })}
           </AnimatePresence>
 
-          {!expanded && remaining > 0 && (
+          {remaining > 0 && (
             <button
-              onClick={() => setExpanded(true)}
+              onClick={() => setShowCount(c => c + 10)}
               className="w-full py-3 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 font-medium flex items-center justify-center gap-1 transition-colors border-t border-slate-100 dark:border-slate-700"
             >
               <ChevronDown size={14} />
-              {remaining}명 더 보기
+              10명 더 보기 (나머지 {remaining}명)
             </button>
           )}
         </div>
