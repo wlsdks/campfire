@@ -347,7 +347,7 @@ function ExitHint({ onExit }) {
   return (
     <button
       onClick={onExit}
-      className="fixed top-3 right-3 md:top-5 md:right-5 bg-slate-900/80 dark:bg-slate-700/80 hover:bg-slate-900 dark:hover:bg-slate-600 text-white px-3 py-1.5 md:px-4 rounded-lg text-xs md:text-sm transition-colors duration-150 z-20 flex items-center gap-1.5"
+      className="fixed top-3 right-3 md:top-5 md:right-5 bg-slate-900/80 dark:bg-slate-700/80 hover:bg-slate-900 dark:hover:bg-slate-600 text-white px-4 py-2 rounded-xl text-sm transition-all duration-150 z-20 flex items-center gap-1.5 shadow-lg hover:shadow-xl active:scale-95"
     >
       <X size={14} />
       <span className="hidden sm:inline">나가기</span>
@@ -462,8 +462,8 @@ function PresentModeMenu({ sessionId, currentMode }) {
       <div className="relative">
         <button
           onClick={() => setOpen(!open)}
-          className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors backdrop-blur-sm shadow-lg ${
-            open ? 'bg-white text-slate-900' : 'bg-slate-900/70 hover:bg-slate-900/90 text-white'
+          className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all backdrop-blur-sm shadow-lg active:scale-95 ${
+            open ? 'bg-white text-slate-900 shadow-xl' : 'bg-slate-900/70 hover:bg-slate-900/95 hover:shadow-xl text-white ring-1 ring-white/20 hover:ring-white/40'
           }`}
         >
           ⚡ 모드
@@ -624,17 +624,17 @@ export default function PresentationView({ sessionId, session, currentMode, onli
       })()}
 
       {/* Bottom bar — participant count + navigation */}
-      <div className="fixed bottom-3 left-3 md:bottom-5 md:left-5 flex items-center gap-2">
-        <Badge variant="neutral"><Users size={12} className="mr-1" />{count}명</Badge>
+      <div className="fixed bottom-3 left-3 md:bottom-5 md:left-5 flex items-center gap-2.5">
+        <Badge variant="neutral"><Users size={14} className="mr-1" />{count}명</Badge>
         {questionList.length > 1 && (
           <>
             <button onClick={goPrev} disabled={currentQIdx <= 0}
-              className="px-2.5 py-1.5 rounded-lg bg-slate-900/60 hover:bg-slate-900/80 disabled:opacity-30 text-white text-xs font-medium transition-colors backdrop-blur-sm">
+              className="px-3.5 py-2 rounded-xl bg-slate-900/60 hover:bg-slate-900/90 disabled:opacity-30 text-white text-sm font-semibold transition-all backdrop-blur-sm shadow-lg hover:shadow-xl active:scale-95">
               ← 이전
             </button>
-            <span className="text-xs text-white/50 tabular-nums">{currentQIdx + 1}/{questionList.length}</span>
+            <span className="text-sm text-white/60 tabular-nums font-medium">{currentQIdx + 1}/{questionList.length}</span>
             <button onClick={goNext} disabled={currentQIdx >= questionList.length - 1}
-              className="px-2.5 py-1.5 rounded-lg bg-slate-900/60 hover:bg-slate-900/80 disabled:opacity-30 text-white text-xs font-medium transition-colors backdrop-blur-sm">
+              className="px-3.5 py-2 rounded-xl bg-slate-900/60 hover:bg-slate-900/90 disabled:opacity-30 text-white text-sm font-semibold transition-all backdrop-blur-sm shadow-lg hover:shadow-xl active:scale-95">
               다음 →
             </button>
           </>
