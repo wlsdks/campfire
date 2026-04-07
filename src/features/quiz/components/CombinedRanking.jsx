@@ -1,9 +1,17 @@
-import { memo, useMemo, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Medal, Search } from 'lucide-react';
+import { memo, useMemo, useState, lazy, Suspense } from 'react';
+import { motion } from 'framer-motion';
+import { Medal, Search, Crown, Award } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
 
-const SPRING = { type: 'spring', stiffness: 300, damping: 25 };
+const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
+
+const SPRING_BOUNCY = { type: 'spring', stiffness: 400, damping: 22 };
+
+const PODIUM_STYLES = [
+  { bg: 'bg-amber-400', ring: 'ring-amber-300', text: 'text-amber-900', label: '1st', icon: Crown },
+  { bg: 'bg-slate-300', ring: 'ring-slate-200', text: 'text-slate-700', label: '2nd', icon: Award },
+  { bg: 'bg-amber-600', ring: 'ring-amber-500', text: 'text-amber-100', label: '3rd', icon: Award },
+];
 
 export default memo(function CombinedRanking({ session }) {
   const [search, setSearch] = useState('');
@@ -40,69 +48,128 @@ export default memo(function CombinedRanking({ session }) {
     return Object.values(session?.questions || {}).filter(q => q.correctAnswer).length;
   }, [session?.questions]);
 
-  const filtered = search.trim()
-    ? ranking.filter(e => e.nickname.toLowerCase().includes(search.trim().toLowerCase()))
-    : ranking;
-
-  const podiumColors = ['bg-amber-400', 'bg-slate-400', 'bg-amber-600'];
+  const podium = ranking.slice(0, 3);
+  const rest = search.trim()
+    ? ranking.filter(e => e.rank > 3 && e.nickname.toLowerCase().includes(search.trim().toLowerCase()))
+    : ranking.slice(3);
 
   return (
-    <div className="w-full max-w-lg mx-auto flex flex-col" style={{ maxHeight: '80vh' }}>
+    <div className="w-full max-w-2xl mx-auto flex flex-col relative" style={{ maxHeight: '85vh' }}>
+      {/* 폭죽 */}
+      <Suspense fallback={null}><ConfettiBurst /></Suspense>
+
       {/* Header */}
-      <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={SPRING} className="text-center space-y-2 mb-4 shrink-0">
+      <motion.div
+        initial={{ opacity: 0, y: -12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={SPRING_BOUNCY}
+        className="text-center space-y-2 mb-6 shrink-0"
+      >
         <div className="flex items-center justify-center gap-2">
-          <Medal size={24} className="text-amber-500" />
-          <h3 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">합산 랭킹</h3>
+          <Medal size={28} className="text-amber-500" />
+          <h3 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">합산 랭킹</h3>
         </div>
         <p className="text-sm text-slate-400 dark:text-slate-500">총 {totalQuestions}개 문항 · 정답자 {ranking.length}명</p>
       </motion.div>
 
-      {/* Search */}
-      <div className="relative mb-3 shrink-0">
-        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-        <input
-          type="text"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          placeholder="학생 이름 검색..."
-          className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-        />
-      </div>
-
-      {/* Ranking list — scrollable */}
-      {filtered.length === 0 ? (
-        <div className="text-center py-10 text-slate-400 dark:text-slate-500 text-sm">
-          {search ? '검색 결과가 없습니다' : '아직 정답자가 없습니다'}
-        </div>
-      ) : (
-        <div className="flex-1 overflow-y-auto bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          {filtered.map((entry, i) => {
-            const isPodium = entry.rank <= 3;
-            return (
-              <div
-                key={entry.id}
-                className={`flex items-center gap-3 px-4 py-3 ${i > 0 ? 'border-t border-slate-100 dark:border-slate-700' : ''}`}
-              >
-                <span className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold shrink-0 ${
-                  isPodium ? `${podiumColors[entry.rank - 1]} text-white` : 'bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500'
-                }`}>
-                  {entry.rank}
-                </span>
-                <Avatar name={entry.nickname} size="sm" />
-                <span className="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{entry.nickname}</span>
-                <div className="text-right shrink-0">
-                  <span className="text-lg font-bold text-slate-900 dark:text-slate-100 tabular-nums">{entry.correct}</span>
-                  <span className="text-xs text-slate-400 dark:text-slate-500 ml-0.5">/{totalQuestions}</span>
-                </div>
+      {/* 🏆 포디움 — 1, 2, 3등 */}
+      {podium.length > 0 && (
+        <div className="flex items-end justify-center gap-3 md:gap-5 mb-6 shrink-0">
+          {/* 2등 (왼쪽) */}
+          {podium[1] && (
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...SPRING_BOUNCY, delay: 0.4 }}
+              className="flex flex-col items-center"
+            >
+              <div className={`w-16 h-16 md:w-20 md:h-20 rounded-full ${PODIUM_STYLES[1].bg} ring-4 ${PODIUM_STYLES[1].ring} flex items-center justify-center mb-2 shadow-lg`}>
+                <Avatar name={podium[1].nickname} size="lg" />
               </div>
-            );
-          })}
+              <span className="text-sm md:text-base font-bold text-slate-700 dark:text-slate-200 truncate max-w-[100px]">{podium[1].nickname}</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500 tabular-nums">{podium[1].correct}/{totalQuestions}</span>
+              <div className={`mt-2 w-20 md:w-24 h-16 md:h-20 rounded-t-xl ${PODIUM_STYLES[1].bg} flex items-center justify-center shadow-inner`}>
+                <span className={`text-2xl md:text-3xl font-black ${PODIUM_STYLES[1].text}`}>2</span>
+              </div>
+            </motion.div>
+          )}
+
+          {/* 1등 (가운데, 가장 높음) */}
+          {podium[0] && (
+            <motion.div
+              initial={{ opacity: 0, y: 40, scale: 0.8 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ ...SPRING_BOUNCY, delay: 0.2 }}
+              className="flex flex-col items-center -mt-4"
+            >
+              <motion.div
+                animate={{ rotate: [0, -5, 5, -3, 0] }}
+                transition={{ duration: 1.5, delay: 1, repeat: 1 }}
+              >
+                <Crown size={28} className="text-amber-400 mb-1" />
+              </motion.div>
+              <div className={`w-20 h-20 md:w-24 md:h-24 rounded-full ${PODIUM_STYLES[0].bg} ring-4 ${PODIUM_STYLES[0].ring} flex items-center justify-center mb-2 shadow-xl`}>
+                <Avatar name={podium[0].nickname} size="xl" />
+              </div>
+              <span className="text-base md:text-lg font-bold text-slate-900 dark:text-slate-100 truncate max-w-[120px]">{podium[0].nickname}</span>
+              <span className="text-sm text-slate-400 dark:text-slate-500 tabular-nums">{podium[0].correct}/{totalQuestions}</span>
+              <div className={`mt-2 w-24 md:w-28 h-20 md:h-24 rounded-t-xl ${PODIUM_STYLES[0].bg} flex items-center justify-center shadow-inner`}>
+                <span className={`text-3xl md:text-4xl font-black ${PODIUM_STYLES[0].text}`}>1</span>
+              </div>
+            </motion.div>
+          )}
+
+          {/* 3등 (오른쪽) */}
+          {podium[2] && (
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...SPRING_BOUNCY, delay: 0.6 }}
+              className="flex flex-col items-center"
+            >
+              <div className={`w-14 h-14 md:w-18 md:h-18 rounded-full ${PODIUM_STYLES[2].bg} ring-4 ${PODIUM_STYLES[2].ring} flex items-center justify-center mb-2 shadow-lg`}>
+                <Avatar name={podium[2].nickname} size="md" />
+              </div>
+              <span className="text-sm md:text-base font-bold text-slate-700 dark:text-slate-200 truncate max-w-[100px]">{podium[2].nickname}</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500 tabular-nums">{podium[2].correct}/{totalQuestions}</span>
+              <div className={`mt-2 w-18 md:w-22 h-12 md:h-16 rounded-t-xl ${PODIUM_STYLES[2].bg} flex items-center justify-center shadow-inner`}>
+                <span className={`text-xl md:text-2xl font-black ${PODIUM_STYLES[2].text}`}>3</span>
+              </div>
+            </motion.div>
+          )}
         </div>
       )}
 
-      <p className="text-center text-xs text-slate-400 dark:text-slate-500 mt-3 shrink-0">
-        정답 수 기준 · 동점 시 참여 문항 적은 순
-      </p>
+      {/* Search */}
+      {ranking.length > 3 && (
+        <div className="relative mb-3 shrink-0">
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="학생 이름 검색..."
+            className="w-full pl-9 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500" />
+        </div>
+      )}
+
+      {/* 4위 이하 — 스크롤 */}
+      {rest.length > 0 && (
+        <div className="flex-1 overflow-y-auto bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          {rest.map((entry, i) => (
+            <div key={entry.id} className={`flex items-center gap-3 px-4 py-2.5 ${i > 0 ? 'border-t border-slate-100 dark:border-slate-700' : ''}`}>
+              <span className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500 flex items-center justify-center text-xs font-bold shrink-0">
+                {entry.rank}
+              </span>
+              <Avatar name={entry.nickname} size="xs" />
+              <span className="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{entry.nickname}</span>
+              <div className="text-right shrink-0">
+                <span className="text-base font-bold text-slate-900 dark:text-slate-100 tabular-nums">{entry.correct}</span>
+                <span className="text-xs text-slate-400 dark:text-slate-500 ml-0.5">/{totalQuestions}</span>
+              </div>
+            </div>
+          ))}
+          {rest.length === 0 && search && (
+            <div className="py-6 text-center text-xs text-slate-400">검색 결과 없음</div>
+          )}
+        </div>
+      )}
     </div>
   );
 });
