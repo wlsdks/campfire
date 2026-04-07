@@ -27,25 +27,29 @@ export default memo(function MultiImageUpload({ images = [], onChange }) {
       return;
     }
 
-    const oversized = toUpload.find(f => f.size > MAX_SIZE_MB * 1024 * 1024);
-    if (oversized) {
-      setError(`${MAX_SIZE_MB}MB 이하 이미지만 가능합니다`);
+    // 5MB 초과 파일 제외 (나머지는 진행)
+    const valid = toUpload.filter(f => f.size <= MAX_SIZE_MB * 1024 * 1024);
+    if (valid.length < toUpload.length) {
+      setError(`${toUpload.length - valid.length}개 파일이 ${MAX_SIZE_MB}MB 초과하여 제외됨`);
       setTimeout(() => setError(null), 3000);
-      return;
     }
+    if (valid.length === 0) return;
 
     setUploading(true);
-    setError(null);
     try {
-      const urls = await Promise.all(toUpload.map(async (file) => {
+      // 순차 업로드 (path 충돌 방지)
+      const urls = [];
+      for (let i = 0; i < valid.length; i++) {
+        const file = valid[i];
         let blob;
         try { blob = await compressImage(file); } catch { blob = file; }
         const ext = blob.type === 'image/jpeg' ? 'jpg' : file.name.split('.').pop() || 'jpg';
-        const path = `questions/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
+        const path = `questions/${Date.now()}_${i}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
         const storageRef = ref(storage, path);
         await uploadBytes(storageRef, blob, { contentType: blob.type || 'image/jpeg' });
-        return getDownloadURL(storageRef);
-      }));
+        const url = await getDownloadURL(storageRef);
+        urls.push(url);
+      }
       onChange([...images, ...urls]);
     } catch {
       setError('업로드 실패. 다시 시도해주세요.');
