@@ -59,7 +59,7 @@ export default memo(function RankingChart({ sessionId, questionId, items = [] })
   if (analysis.totalVoters === 0) {
     return (
       <div className="flex items-center justify-center py-12">
-        <p className="text-slate-400 text-sm">아직 응답이 없습니다</p>
+        <p className="text-slate-400 dark:text-slate-500 text-sm">아직 응답이 없습니다</p>
       </div>
     );
   }
