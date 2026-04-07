@@ -1,4 +1,4 @@
-import { memo, useEffect } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -19,6 +19,11 @@ export default memo(function ImageSlidePresenter({ images = [], currentSlide = 0
     }
   }, [currentSlide, images]);
 
+  const [loaded, setLoaded] = useState(false);
+
+  // 슬라이드 변경 시 로딩 상태 리셋
+  useEffect(() => { setLoaded(false); }, [currentSlide]);
+
   if (images.length === 0) return null;
 
   const current = Math.min(currentSlide, images.length - 1);
@@ -31,10 +36,12 @@ export default memo(function ImageSlidePresenter({ images = [], currentSlide = 0
   return (
     <div className="w-full max-w-5xl mx-auto px-4">
       <div className="relative rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800" style={{ aspectRatio: '16/9', maxHeight: '75vh' }}>
-        {/* 로딩 스피너 */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="w-8 h-8 border-2 border-slate-300 dark:border-slate-600 border-t-slate-500 dark:border-t-slate-400 rounded-full animate-spin" />
-        </div>
+        {/* 로딩 스피너 — 이미지 로드 전에만 */}
+        {!loaded && (
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
+            <div className="w-8 h-8 border-2 border-slate-300 dark:border-slate-600 border-t-slate-500 dark:border-t-slate-400 rounded-full animate-spin" />
+          </div>
+        )}
         <AnimatePresence mode="wait">
           <motion.img
             key={current}
@@ -45,7 +52,8 @@ export default memo(function ImageSlidePresenter({ images = [], currentSlide = 0
             exit={{ opacity: 0, x: -40 }}
             transition={SPRING}
             loading="eager"
-            className="w-full h-full object-contain"
+            onLoad={() => setLoaded(true)}
+            className="w-full h-full object-contain relative z-10"
           />
         </AnimatePresence>
 
