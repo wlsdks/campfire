@@ -103,7 +103,6 @@ export default function AdminPage() {
       <AnswerBubbleOverlay
         sessionId={s.sessionId}
         questionId={s.session?.currentQuestion}
-        questionType={s.session?.questions?.[s.session?.currentQuestion]?.type}
       />
       <AnimatePresence>
         {s.actionError && (

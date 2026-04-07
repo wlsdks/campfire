@@ -147,7 +147,6 @@ export default function MobileAdminView({ s }) {
       <AnswerBubbleOverlay
         sessionId={s.sessionId}
         questionId={s.session?.currentQuestion}
-        questionType={s.session?.questions?.[s.session?.currentQuestion]?.type}
       />
 
       <MobileHeader

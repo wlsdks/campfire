@@ -572,7 +572,6 @@ export default function PresentationView({ sessionId, session, currentMode, onli
       <AnswerBubbleOverlay
         sessionId={sessionId}
         questionId={session?.currentQuestion}
-        questionType={session?.questions?.[session?.currentQuestion]?.type}
       />
 
       <SideNoticesPanel sessionId={sessionId} />

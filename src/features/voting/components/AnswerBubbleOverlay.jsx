@@ -1,54 +1,41 @@
 import { useEffect, useRef, useState, memo } from 'react';
-import { onChildAdded, ref } from 'firebase/database';
+import { onValue, ref } from 'firebase/database';
 import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '@/lib/firebase';
 
 const MAX_BUBBLES = 18;
 const MAX_TEXT_LEN = 15;
 const BUBBLE_LIFETIME_MS = 3400;
-const WARMUP_MS = 300;
 const STAGGER_MS = 80;
 
-/** Deterministic seed from string key. */
 function hashSeed(value) {
   return String(value).split('').reduce((s, c, i) => (s * 33 + c.charCodeAt(0) + i) % 2147483647, 7);
 }
 
-/** 버블이 떠오르는 질문 유형 (투표가 있는 모든 유형). */
-const BUBBLE_TYPES = ['mysteryBox', 'hintQuiz', 'wordcloud', 'fillinblank', 'choice', 'quiz', 'ox', 'scale', 'debate', 'ranking', 'check'];
-
 /**
  * AnswerBubbleOverlay — 학생 답변이 화면에 떠오르는 버블.
- * 미스터리 박스, 힌트 퀴즈, 워드클라우드, 빈칸 채우기에서 활성화.
- *
- * @param {string} sessionId
- * @param {string|null} questionId — current active question
- * @param {string|null} questionType — type of current question
+ * onValue로 전체 votes 감시, 이전 스냅샷과 비교해서 새로 추가된 것만 표시.
  */
-export default memo(function AnswerBubbleOverlay({ sessionId, questionId, questionType }) {
+export default memo(function AnswerBubbleOverlay({ sessionId, questionId }) {
   const [bubbles, setBubbles] = useState([]);
   const mountedRef = useRef(true);
-  const warmupRef = useRef(null);
   const timersRef = useRef([]);
   const queueRef = useRef([]);
   const flushRef = useRef(null);
+  const prevKeysRef = useRef(new Set());
 
-  // questionType 체크 제거 — 모든 활성 질문에서 버블 표시
   const active = !!(sessionId && questionId);
 
-  // Mount/unmount lifecycle
   useEffect(() => {
     mountedRef.current = true;
     return () => {
       mountedRef.current = false;
-      if (warmupRef.current) clearTimeout(warmupRef.current);
-      if (flushRef.current) clearInterval(flushRef.current);
       timersRef.current.forEach(clearTimeout);
       timersRef.current = [];
     };
   }, []);
 
-  // Stagger flush — drains queued bubbles at STAGGER_MS intervals
+  // Stagger flush
   useEffect(() => {
     if (!active) {
       if (flushRef.current) clearInterval(flushRef.current);
@@ -70,56 +57,78 @@ export default memo(function AnswerBubbleOverlay({ sessionId, questionId, questi
     };
   }, [active]);
 
-  // Firebase listener for new votes
+  // Firebase listener — onValue로 전체 감시, diff로 새 항목만 버블
   useEffect(() => {
     if (!active) {
+      prevKeysRef.current = new Set();
       queueRef.current = [];
+      setBubbles([]);
       return;
     }
 
-    let ready = false;
-    warmupRef.current = setTimeout(() => { ready = true; }, WARMUP_MS);
-
     const votesRef = ref(db, `sessions/${sessionId}/questions/${questionId}/votes`);
+    const isFirstRef = { current: true };
 
-    const unsubscribe = onChildAdded(votesRef, (snapshot) => {
+    const unsubscribe = onValue(votesRef, (snapshot) => {
       if (!mountedRef.current) return;
-      if (!ready) return; // warmup 중 무시
-      const vote = snapshot.val();
-      if (!vote?.value) return;
+      const data = snapshot.val() || {};
+      const currentKeys = new Set(Object.keys(data));
 
-      const text = String(vote.value).trim();
-      if (!text) return;
+      if (isFirstRef.current) {
+        prevKeysRef.current = currentKeys;
+        isFirstRef.current = false;
+        return;
+      }
 
-      const seed = hashSeed(snapshot.key);
-      const displayText = text.length > MAX_TEXT_LEN ? text.slice(0, MAX_TEXT_LEN) + '…' : text;
+      // 새로 추가된 키만 찾기
+      const newKeys = [];
+      for (const key of currentKeys) {
+        if (!prevKeysRef.current.has(key)) newKeys.push(key);
+      }
+      prevKeysRef.current = currentKeys;
 
-      // 큐 오버플로우 방지 (300명 동시 투표 대응)
-      if (queueRef.current.length > 100) queueRef.current.shift();
-      queueRef.current.push({
-        id: `${snapshot.key}-${Date.now()}`,
-        text: displayText,
-        left: 8 + (seed % 75),
-        drift: ((Math.floor(seed / 7) % 30) - 15) * 2,
-        duration: (BUBBLE_LIFETIME_MS + (seed % 600)) / 1000,
-        rotate: (Math.floor(seed / 13) % 8) - 4,
-        nickname: vote.nickname || '',
-      });
+      // 새 투표를 버블로 직접 추가
+      for (const key of newKeys) {
+        const vote = data[key];
+        if (!vote?.value) continue;
+
+        const text = String(vote.value).trim();
+        if (!text) continue;
+
+        const seed = hashSeed(key);
+        const displayText = text.length > MAX_TEXT_LEN ? text.slice(0, MAX_TEXT_LEN) + '…' : text;
+
+        const bubble = {
+          id: `${key}-${Date.now()}`,
+          text: displayText,
+          left: 8 + (seed % 75),
+          drift: ((Math.floor(seed / 7) % 30) - 15) * 2,
+          duration: (BUBBLE_LIFETIME_MS + (seed % 600)) / 1000,
+          rotate: (Math.floor(seed / 13) % 8) - 4,
+        };
+
+        setBubbles(prev => [...prev.slice(-(MAX_BUBBLES - 1)), bubble]);
+
+        // 자동 제거
+        const removeTimer = setTimeout(() => {
+          if (!mountedRef.current) return;
+          setBubbles(prev => prev.filter(b => b.id !== bubble.id));
+        }, bubble.duration * 1000);
+        timersRef.current.push(removeTimer);
+      }
     });
 
     return () => {
-      ready = false;
       unsubscribe();
-      if (warmupRef.current) clearTimeout(warmupRef.current);
       timersRef.current.forEach(clearTimeout);
       timersRef.current = [];
       queueRef.current = [];
+      prevKeysRef.current = new Set();
       setBubbles([]);
     };
   }, [active, sessionId, questionId]);
 
-  if (!active) return null;
-  if (bubbles.length === 0) return null;
+  if (!active || bubbles.length === 0) return null;
 
   return (
     <div className="fixed inset-0 z-30 pointer-events-none overflow-hidden">

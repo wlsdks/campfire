@@ -169,7 +169,6 @@ export default function LivePage() {
       <AnswerBubbleOverlay
         sessionId={sessionId}
         questionId={session?.currentQuestion}
-        questionType={session?.questions?.[session?.currentQuestion]?.type}
       />
 
       <div className="flex-1 flex items-center justify-center overflow-auto px-8 py-4">
