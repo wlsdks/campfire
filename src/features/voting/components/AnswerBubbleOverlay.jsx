@@ -1,28 +1,24 @@
-import { useEffect, useRef, useState, memo } from 'react';
+import { useEffect, useRef, useState, memo, useCallback } from 'react';
 import { onValue, ref } from 'firebase/database';
 import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '@/lib/firebase';
 
-const MAX_BUBBLES = 18;
+const MAX_BUBBLES = 12;
 const MAX_TEXT_LEN = 15;
 const BUBBLE_LIFETIME_MS = 3400;
-const STAGGER_MS = 80;
+const THROTTLE_MS = 200; // 버블 간 최소 간격
 
 function hashSeed(value) {
   return String(value).split('').reduce((s, c, i) => (s * 33 + c.charCodeAt(0) + i) % 2147483647, 7);
 }
 
-/**
- * AnswerBubbleOverlay — 학생 답변이 화면에 떠오르는 버블.
- * onValue로 전체 votes 감시, 이전 스냅샷과 비교해서 새로 추가된 것만 표시.
- */
 export default memo(function AnswerBubbleOverlay({ sessionId, questionId }) {
   const [bubbles, setBubbles] = useState([]);
   const mountedRef = useRef(true);
   const timersRef = useRef([]);
-  const queueRef = useRef([]);
-  const flushRef = useRef(null);
   const prevKeysRef = useRef(new Set());
+  const queueRef = useRef([]);
+  const drainTimerRef = useRef(null);
 
   const active = !!(sessionId && questionId);
 
@@ -31,38 +27,36 @@ export default memo(function AnswerBubbleOverlay({ sessionId, questionId }) {
     return () => {
       mountedRef.current = false;
       timersRef.current.forEach(clearTimeout);
-      timersRef.current = [];
+      if (drainTimerRef.current) clearInterval(drainTimerRef.current);
     };
   }, []);
 
-  // Stagger flush
-  useEffect(() => {
-    if (!active) {
-      if (flushRef.current) clearInterval(flushRef.current);
-      return;
-    }
-    flushRef.current = setInterval(() => {
-      if (!mountedRef.current || queueRef.current.length === 0) return;
+  // 큐에서 하나씩 꺼내서 버블 추가 (THROTTLE_MS 간격)
+  const startDrain = useCallback(() => {
+    if (drainTimerRef.current) return; // 이미 실행 중
+    drainTimerRef.current = setInterval(() => {
+      if (!mountedRef.current || queueRef.current.length === 0) {
+        clearInterval(drainTimerRef.current);
+        drainTimerRef.current = null;
+        return;
+      }
       const bubble = queueRef.current.shift();
       setBubbles(prev => [...prev.slice(-(MAX_BUBBLES - 1)), bubble]);
-      const removeTimer = setTimeout(() => {
+      const t = setTimeout(() => {
         if (!mountedRef.current) return;
         setBubbles(prev => prev.filter(b => b.id !== bubble.id));
       }, bubble.duration * 1000);
-      timersRef.current.push(removeTimer);
-    }, STAGGER_MS);
+      timersRef.current.push(t);
+    }, THROTTLE_MS);
+  }, []);
 
-    return () => {
-      if (flushRef.current) clearInterval(flushRef.current);
-    };
-  }, [active]);
-
-  // Firebase listener — onValue로 전체 감시, diff로 새 항목만 버블
+  // Firebase listener
   useEffect(() => {
     if (!active) {
       prevKeysRef.current = new Set();
       queueRef.current = [];
       setBubbles([]);
+      if (drainTimerRef.current) { clearInterval(drainTimerRef.current); drainTimerRef.current = null; }
       return;
     }
 
@@ -80,42 +74,30 @@ export default memo(function AnswerBubbleOverlay({ sessionId, questionId }) {
         return;
       }
 
-      // 새로 추가된 키만 찾기
-      const newKeys = [];
+      // 새 키만 큐에 추가
       for (const key of currentKeys) {
-        if (!prevKeysRef.current.has(key)) newKeys.push(key);
-      }
-      prevKeysRef.current = currentKeys;
-
-      // 새 투표를 버블로 직접 추가
-      for (const key of newKeys) {
+        if (prevKeysRef.current.has(key)) continue;
         const vote = data[key];
         if (!vote?.value) continue;
-
         const text = String(vote.value).trim();
         if (!text) continue;
 
         const seed = hashSeed(key);
-        const displayText = text.length > MAX_TEXT_LEN ? text.slice(0, MAX_TEXT_LEN) + '…' : text;
+        if (queueRef.current.length > 50) queueRef.current.shift(); // 큐 제한
 
-        const bubble = {
-          id: `${key}-${Date.now()}`,
-          text: displayText,
+        queueRef.current.push({
+          id: `${key}-${Date.now()}-${Math.random()}`,
+          text: text.length > MAX_TEXT_LEN ? text.slice(0, MAX_TEXT_LEN) + '…' : text,
           left: 8 + (seed % 75),
           drift: ((Math.floor(seed / 7) % 30) - 15) * 2,
           duration: (BUBBLE_LIFETIME_MS + (seed % 600)) / 1000,
           rotate: (Math.floor(seed / 13) % 8) - 4,
-        };
-
-        setBubbles(prev => [...prev.slice(-(MAX_BUBBLES - 1)), bubble]);
-
-        // 자동 제거
-        const removeTimer = setTimeout(() => {
-          if (!mountedRef.current) return;
-          setBubbles(prev => prev.filter(b => b.id !== bubble.id));
-        }, bubble.duration * 1000);
-        timersRef.current.push(removeTimer);
+        });
       }
+      prevKeysRef.current = currentKeys;
+
+      // 큐 드레인 시작
+      if (queueRef.current.length > 0) startDrain();
     });
 
     return () => {
@@ -124,9 +106,10 @@ export default memo(function AnswerBubbleOverlay({ sessionId, questionId }) {
       timersRef.current = [];
       queueRef.current = [];
       prevKeysRef.current = new Set();
+      if (drainTimerRef.current) { clearInterval(drainTimerRef.current); drainTimerRef.current = null; }
       setBubbles([]);
     };
-  }, [active, sessionId, questionId]);
+  }, [active, sessionId, questionId, startDrain]);
 
   if (!active || bubbles.length === 0) return null;
 
