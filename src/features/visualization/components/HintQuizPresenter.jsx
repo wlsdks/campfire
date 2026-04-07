@@ -22,7 +22,7 @@ export default memo(function HintQuizPresenter({ sessionId, questionId, question
   const visibleWinners = presetWinners.slice(0, revealedWinners);
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-xl mx-auto px-4">
+    <div className="flex flex-col items-center gap-6 w-full max-w-2xl mx-auto px-4">
       {!revealed && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -84,7 +84,7 @@ export default memo(function HintQuizPresenter({ sessionId, questionId, question
             initial={{ scale: 0.5, opacity: 0, y: 20 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
             transition={SPRING_BOUNCY}
-            className="relative w-full rounded-2xl bg-slate-900 dark:bg-slate-100 p-8 md:p-10 text-center shadow-2xl shadow-slate-900/20 overflow-hidden"
+            className="relative w-full rounded-2xl bg-slate-900 dark:bg-slate-100 p-10 md:p-14 text-center shadow-2xl shadow-slate-900/20 overflow-hidden"
           >
             <Suspense fallback={null}><ConfettiBurst /></Suspense>
             <motion.p
@@ -99,7 +99,7 @@ export default memo(function HintQuizPresenter({ sessionId, questionId, question
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: [0.8, 1.1, 0.95, 1.02, 1] }}
               transition={{ ...SPRING_BOUNCY, delay: 0.3 }}
-              className="text-3xl md:text-4xl font-bold text-white dark:text-slate-900 tracking-tight"
+              className="text-4xl md:text-6xl font-bold text-white dark:text-slate-900 tracking-tight"
             >
               {answer}
             </motion.p>
