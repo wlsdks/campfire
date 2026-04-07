@@ -33,15 +33,14 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false }
   const currentQuestion = session?.questions?.[currentQId];
   const options = useMemo(() => currentQuestion?.options || [], [currentQuestion?.options]);
 
-  // 폭죽 3연발 (0.5초 간격)
-  const [confettiKey, setConfettiKey] = useState(0);
+  // 폭죽 — 여러 위치에서 동시에 + 시차
+  const [confettiWave, setConfettiWave] = useState(0);
   const revealedAt = currentQuestion?.revealedAt;
   useEffect(() => {
-    if (!revealedAt) { setConfettiKey(0); return; }
-    setConfettiKey(1);
-    const t2 = setTimeout(() => setConfettiKey(2), 500);
-    const t3 = setTimeout(() => setConfettiKey(3), 1000);
-    return () => { clearTimeout(t2); clearTimeout(t3); };
+    if (!revealedAt) { setConfettiWave(0); return; }
+    setConfettiWave(1);
+    const t2 = setTimeout(() => setConfettiWave(2), 600);
+    return () => { clearTimeout(t2); };
   }, [revealedAt]);
 
   if (!['poll', 'quiz'].includes(currentMode) || !currentQId) {
@@ -74,9 +73,23 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false }
 
   return (
     <div className={`flex flex-col w-full h-full overflow-y-auto ${isQA ? 'pt-4' : 'justify-center gap-6 py-4'} relative`}>
-      {/* 정답 공개 폭죽 3연발 (0.5초 간격) */}
-      {confettiKey > 0 && hasCorrectAnswer && (
-        <Suspense fallback={null}><ConfettiBurst key={`confetti-${confettiKey}`} /></Suspense>
+      {/* 정답 공개 폭죽 — 다양한 위치에서 터짐 */}
+      {confettiWave > 0 && hasCorrectAnswer && (
+        <Suspense fallback={null}>
+          {/* 1차: 좌상, 중앙, 우상 */}
+          <div className="absolute inset-0 pointer-events-none z-10">
+            <div style={{ position: 'absolute', left: '20%', top: '15%' }}><ConfettiBurst key={`a1-${revealedAt}`} /></div>
+            <div style={{ position: 'absolute', left: '50%', top: '10%' }}><ConfettiBurst key={`a2-${revealedAt}`} /></div>
+            <div style={{ position: 'absolute', left: '80%', top: '15%' }}><ConfettiBurst key={`a3-${revealedAt}`} /></div>
+          </div>
+          {/* 2차: 좌하, 우하 */}
+          {confettiWave >= 2 && (
+            <div className="absolute inset-0 pointer-events-none z-10">
+              <div style={{ position: 'absolute', left: '30%', top: '50%' }}><ConfettiBurst key={`b1-${revealedAt}`} /></div>
+              <div style={{ position: 'absolute', left: '70%', top: '45%' }}><ConfettiBurst key={`b2-${revealedAt}`} /></div>
+            </div>
+          )}
+        </Suspense>
       )}
 
       {/* Header — hidden for Q&A, or when hideTitle is set */}
