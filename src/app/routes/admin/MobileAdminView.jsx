@@ -3,6 +3,7 @@ import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import { ArrowLeft, BarChart3, Users, MessageSquare, Play, MoreHorizontal, Target, Ticket, Gift, Dices, CircleDot, Coffee, Trophy, Swords, Gamepad2 } from 'lucide-react';
 import JoinToast from '@/features/participants/components/JoinToast';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
+import AnswerBubbleOverlay from '@/features/voting/components/AnswerBubbleOverlay';
 import QuestionManager from './QuestionManager';
 
 import CenterContent from './CenterContent';
@@ -144,6 +145,11 @@ export default function MobileAdminView({ s }) {
     <div className="h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col overflow-hidden">
       <JoinToast sessionId={s.sessionId} />
       <ReactionOverlay sessionId={s.sessionId} />
+      <AnswerBubbleOverlay
+        sessionId={s.sessionId}
+        questionId={s.session?.currentQuestion}
+        questionType={s.session?.questions?.[s.session?.currentQuestion]?.type}
+      />
 
       <MobileHeader
         session={s.session}

@@ -10,6 +10,7 @@ import JoinToast from '@/features/participants/components/JoinToast';
 import { PanelLeftOpen } from 'lucide-react';
 import PickMascot from '@/components/ui/PickMascot';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
+import AnswerBubbleOverlay from '@/features/voting/components/AnswerBubbleOverlay';
 import ChatPanel from '@/features/chat/components/ChatPanel';
 import AdminSessionHeader from './AdminSessionHeader';
 import RightSidebar from './RightSidebar';
@@ -98,6 +99,11 @@ export default function AdminPage() {
     <div className="h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col overflow-hidden">
       <JoinToast sessionId={s.sessionId} />
       <ReactionOverlay sessionId={s.sessionId} />
+      <AnswerBubbleOverlay
+        sessionId={s.sessionId}
+        questionId={s.session?.currentQuestion}
+        questionType={s.session?.questions?.[s.session?.currentQuestion]?.type}
+      />
       <AnimatePresence>
         {s.actionError && (
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}

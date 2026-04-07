@@ -11,6 +11,7 @@ import { useTeamScores } from '@/features/teams/api/useTeamBattle';
 import { usePublishGameResult } from '@/features/games/api/useGameResult';
 import VizRenderer from '@/features/visualization/components/VizRenderer';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
+import AnswerBubbleOverlay from '@/features/voting/components/AnswerBubbleOverlay';
 import JoinToast from '@/features/participants/components/JoinToast';
 import TimerCountdown from '@/features/timer/components/TimerCountdown';
 import Badge from '@/components/ui/Badge';
@@ -150,6 +151,11 @@ export default function LivePage() {
       <LiveHeader courseName={session?.courseName} roundNumber={session?.roundNumber} count={count} />
       <JoinToast sessionId={sessionId} />
       <ReactionOverlay sessionId={sessionId} />
+      <AnswerBubbleOverlay
+        sessionId={sessionId}
+        questionId={session?.currentQuestion}
+        questionType={session?.questions?.[session?.currentQuestion]?.type}
+      />
 
       <div className="flex-1 flex items-center justify-center overflow-auto px-8 py-4">
         <div className="w-full max-w-5xl mx-auto">
