@@ -56,20 +56,32 @@ export default function Roulette({ participants, scores = {}, onResult, gameStat
     autoSpin(gameState.winnerName);
   }, [gameState]);
 
+  const MAX_SEGMENTS = 20;
+
+  // 전체 참여자에서 가중치 기반 이름 목록
+  const allNames = useMemo(() => participants.map(p => p.nickname), [participants]);
+
+  // 표시용: 최대 20명만 (랜덤 샘플)
+  const [displayNames, setDisplayNames] = useState([]);
+  useEffect(() => {
+    if (allNames.length <= MAX_SEGMENTS) {
+      setDisplayNames(allNames);
+    } else {
+      const shuffled = [...allNames].sort(() => Math.random() - 0.5);
+      setDisplayNames(shuffled.slice(0, MAX_SEGMENTS));
+    }
+  }, [allNames]);
+
   const segmentsWithAngle = useMemo(() => {
-    const segs = participants.map(p => {
-      const s = scores[p.id];
-      const weight = 1 + (s?.tickets || 0) + Math.floor((s?.total || 0) / 100);
-      return { name: p.nickname, weight };
-    });
-    const total = segs.reduce((sum, s) => sum + s.weight, 0) || 1;
+    const segs = displayNames.map(name => ({ name, weight: 1 }));
+    const total = segs.length || 1;
     return segs.reduce((acc, s) => {
-      const angle = (s.weight / total) * 360;
+      const angle = 360 / total;
       const startAngle = acc.length > 0 ? acc[acc.length - 1].startAngle + acc[acc.length - 1].angle : 0;
       acc.push({ ...s, angle, startAngle });
       return acc;
     }, []);
-  }, [participants, scores]);
+  }, [displayNames]);
 
   const names = useMemo(() => segmentsWithAngle.map(s => s.name), [segmentsWithAngle]);
 
@@ -99,35 +111,36 @@ export default function Roulette({ participants, scores = {}, onResult, gameStat
 
   function autoSpin(winnerName) {
     if (spinning) return;
-    spinToWinner(winnerName);
+    // 당첨자를 포함한 표시 슬롯 생성
+    const others = allNames.filter(n => n !== winnerName).sort(() => Math.random() - 0.5);
+    const newDisplay = [winnerName, ...others].slice(0, MAX_SEGMENTS).sort(() => Math.random() - 0.5);
+    setDisplayNames(newDisplay);
+    requestAnimationFrame(() => spinToWinner(winnerName));
   }
 
   function spin() {
-    if (spinning || names.length === 0) return;
-    const { winnerIndex, angleToCenter } = getWeightedSpinResult(segmentsWithAngle);
-    const winnerName = names[winnerIndex];
+    if (spinning || allNames.length === 0) return;
+
+    // 전체 참여자에서 랜덤 당첨자 선택
+    const winnerName = allNames[Math.floor(Math.random() * allNames.length)];
+
+    // 당첨자를 포함한 새 표시 슬롯 생성
+    const others = allNames.filter(n => n !== winnerName).sort(() => Math.random() - 0.5);
+    const newDisplay = [winnerName, ...others].slice(0, MAX_SEGMENTS).sort(() => Math.random() - 0.5);
+    setDisplayNames(newDisplay);
 
     // 이전 결과 지우기 + 게임 상태 저장 → 전자칠판 동기화
     onGameStateChange?.({ spinning: true, winnerName, ts: Date.now(), clearResult: true });
 
-    setSpinning(true);
-    setWinner(null);
-    setRotation(prev => {
-      const desired = ((360 - angleToCenter) % 360 + 360) % 360;
-      const current = ((prev % 360) + 360) % 360;
-      let delta = desired - current;
-      if (delta <= 0) delta += 360;
-      const extraSpins = (6 + Math.floor(Math.random() * 3)) * 360;
-      return prev + extraSpins + delta;
+    // 한 프레임 뒤에 스핀 (displayNames 업데이트 반영 대기)
+    requestAnimationFrame(() => {
+      spinToWinner(winnerName);
+      timerRef.current = setTimeout(() => {
+        if (!mountedRef.current) return;
+        onResult?.(winnerName);
+        onGameStateChange?.(null);
+      }, 4500);
     });
-    timerRef.current = setTimeout(() => {
-      if (!mountedRef.current) return;
-      setSpinning(false);
-      setWinner(winnerName);
-      hapticSuccess();
-      onResult?.(winnerName);
-      onGameStateChange?.(null);
-    }, 4500);
   }
 
   if (names.length === 0) {
