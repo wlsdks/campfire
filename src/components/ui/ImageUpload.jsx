@@ -31,12 +31,8 @@ export default memo(function ImageUpload({ value, onChange, folder = 'questions'
     setUploading(true);
     setError(null);
     try {
-      let blob;
-      try {
-        blob = await compressImage(file);
-      } catch {
-        blob = file; // 압축 실패 시 원본
-      }
+      // 2MB 이하면 압축 생략 (Edge 호환성)
+      const blob = file.size < 2 * 1024 * 1024 ? file : await compressImage(file);
       const ext = blob.type === 'image/jpeg' ? 'jpg' : file.name.split('.').pop() || 'jpg';
       const path = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
       const storageRef = ref(storage, path);

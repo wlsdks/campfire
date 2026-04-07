@@ -1,7 +1,7 @@
 const MAX_WIDTH = 1200;
 const MAX_HEIGHT = 900;
 const QUALITY = 0.8;
-const TIMEOUT_MS = 8000;
+const TIMEOUT_MS = 5000;
 
 /**
  * 브라우저에서 이미지를 리사이즈 + JPEG 압축.

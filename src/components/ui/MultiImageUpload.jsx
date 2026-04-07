@@ -42,7 +42,8 @@ export default memo(function MultiImageUpload({ images = [], onChange }) {
     for (let i = 0; i < valid.length; i++) {
       try {
         const file = valid[i];
-        const blob = await compressImage(file);
+        // 2MB 이하면 압축 생략 (Edge 호환성)
+        const blob = file.size < 2 * 1024 * 1024 ? file : await compressImage(file);
         const ext = (blob.type || '').includes('jpeg') ? 'jpg' : file.name.split('.').pop() || 'jpg';
         const path = `questions/${Date.now()}_${i}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
         const storageRef = ref(storage, path);
