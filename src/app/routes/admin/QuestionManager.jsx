@@ -150,7 +150,7 @@ export default function QuestionManager({
 
       <QuestionList
         questionList={questionList} currentQuestion={currentQuestion}
-        onActivate={handleActivate} onReveal={revealQuiz} onShowLeaderboard={showLeaderboard}
+        onActivate={handleActivate} onReveal={revealQuiz} onRevealAnswer={revealAnswer} onShowLeaderboard={showLeaderboard}
         onClearActive={clearActive} onEdit={!readOnly ? (onEditClick || undefined) : undefined}
         onDuplicate={duplicateQuestion} onDelete={deleteQuestion}
         onReorder={reorderQuestion}

@@ -21,7 +21,7 @@ function useIsMobile() {
 }
 
 export default memo(function QuestionList({
-  questionList, currentQuestion, onActivate, onReveal, onShowLeaderboard, onClearActive,
+  questionList, currentQuestion, onActivate, onReveal, onRevealAnswer, onShowLeaderboard, onClearActive,
   onEdit, onDuplicate, onDelete, readOnly = false, onView, onReorder, onSaveToLibrary,
 }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -72,7 +72,7 @@ export default memo(function QuestionList({
                     {questionList.map(([qId, q]) => (
                       <SortableItem
                         key={qId} qId={qId} q={q} currentQuestion={currentQuestion} readOnly={readOnly}
-                        onActivate={onActivate} onReveal={onReveal} onShowLeaderboard={onShowLeaderboard}
+                        onActivate={onActivate} onReveal={onReveal} onRevealAnswer={onRevealAnswer} onShowLeaderboard={onShowLeaderboard}
                         onClearActive={onClearActive} onEdit={onEdit}
                         onDuplicate={handleDuplicateWithToast}
                         onDelete={handleDeleteWithToast}
@@ -85,7 +85,7 @@ export default memo(function QuestionList({
                 questionList.map(([qId, q]) => (
                   <QuestionItemContent
                     key={qId} qId={qId} q={q} currentQuestion={currentQuestion} readOnly={readOnly}
-                    onView={onView} onActivate={onActivate} onReveal={onReveal} onShowLeaderboard={onShowLeaderboard}
+                    onView={onView} onActivate={onActivate} onReveal={onReveal} onRevealAnswer={onRevealAnswer} onShowLeaderboard={onShowLeaderboard}
                     onClearActive={onClearActive} onEdit={onEdit}
                     onDuplicate={handleDuplicateWithToast}
                     onDelete={handleDeleteWithToast}

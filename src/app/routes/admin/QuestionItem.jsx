@@ -31,11 +31,14 @@ function ActionButton({ onClick, className, children, 'aria-label': ariaLabel, f
 }
 
 /** Shared question item UI — used both sortable (desktop) and static (mobile/readOnly). */
-export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView, onActivate, onReveal, onShowLeaderboard, onClearActive, onEdit, onDuplicate, onDelete, onSaveToLibrary, isDragging = false, dragProps = {} }) {
+export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView, onActivate, onReveal, onRevealAnswer, onShowLeaderboard, onClearActive, onEdit, onDuplicate, onDelete, onSaveToLibrary, isDragging = false, dragProps = {} }) {
   const qType = QUESTION_TYPES.find((t) => t.value === q.type);
   const Icon = qType?.icon || MessageSquare;
   const isActive = currentQuestion === qId;
   const isQuiz = isQuizQuestion(q);
+  const isMH = ['mysteryBox', 'hintQuiz'].includes(q.type);
+  const hasReveal = isQuiz || isMH;
+  const handleReveal = () => isMH ? onRevealAnswer?.(qId) : onReveal?.(qId);
   const stopDrag = (e) => e.stopPropagation();
 
   return (
@@ -66,7 +69,7 @@ export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView,
             {!readOnly && isActive && <Badge variant="primary">LIVE</Badge>}
             {isQuiz && q.betting && <Badge variant="neutral">베팅</Badge>}
             {isQuiz && q.event && <Badge variant="neutral">{q.event.label || '이벤트'}</Badge>}
-            {isQuiz && q.revealedAt && <Badge variant="neutral">정답 공개</Badge>}
+            {hasReveal && q.revealedAt && <Badge variant="neutral">정답 공개</Badge>}
           </div>
           <span className="text-slate-700 dark:text-slate-200 text-[15px] sm:text-sm leading-snug">{q.title}</span>
           {readOnly && q.votes && (
@@ -83,8 +86,8 @@ export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView,
               </ActionButton></Tooltip>
             ) : (
               <>
-                {isQuiz && !q.revealedAt && (
-                  <Tooltip label="정답 공개"><ActionButton onClick={() => onReveal(qId)} className={primaryBtnClass} aria-label="정답 공개">
+                {hasReveal && !q.revealedAt && (
+                  <Tooltip label="정답 공개"><ActionButton onClick={handleReveal} className={primaryBtnClass} aria-label="정답 공개">
                     <Check size={12} />
                   </ActionButton></Tooltip>
                 )}
@@ -134,8 +137,8 @@ export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView,
             </>
           ) : (
             <>
-              {isQuiz && !q.revealedAt && (
-                <ActionButton onClick={() => onReveal(qId)} className={`flex-1 flex items-center justify-center gap-1.5 min-h-[48px] rounded-xl text-sm font-semibold active:scale-[0.96] ${primaryBtnClass}`} aria-label="정답 공개">
+              {hasReveal && !q.revealedAt && (
+                <ActionButton onClick={handleReveal} className={`flex-1 flex items-center justify-center gap-1.5 min-h-[48px] rounded-xl text-sm font-semibold active:scale-[0.96] ${primaryBtnClass}`} aria-label="정답 공개">
                   <Check size={16} /> 정답 공개
                 </ActionButton>
               )}
