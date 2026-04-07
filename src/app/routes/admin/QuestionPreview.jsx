@@ -11,6 +11,7 @@ import ImageSlidePresenter from '@/features/visualization/components/ImageSlideP
  */
 export default function QuestionPreview({ questionList, open, onClose }) {
   const [current, setCurrent] = useState(0);
+  const [previewSlide, setPreviewSlide] = useState(0);
 
   if (!open || questionList.length === 0) return null;
 
@@ -59,8 +60,8 @@ export default function QuestionPreview({ questionList, open, onClose }) {
             {question.type === 'imageSlide' && question.slideImages?.length > 0 && (
               <ImageSlidePresenter
                 images={question.slideImages}
-                currentSlide={0}
-                onSlideChange={() => {}}
+                currentSlide={previewSlide}
+                onSlideChange={setPreviewSlide}
               />
             )}
 
@@ -124,17 +125,17 @@ export default function QuestionPreview({ questionList, open, onClose }) {
 
         {/* Bottom nav */}
         <div className="flex items-center justify-center gap-4 px-6 py-4 shrink-0">
-          <button onClick={() => setCurrent(c => c - 1)} disabled={!hasPrev}
+          <button onClick={() => { setCurrent(c => c - 1); setPreviewSlide(0); }} disabled={!hasPrev}
             className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-30 text-white flex items-center justify-center transition-colors">
             <ChevronLeft size={24} />
           </button>
           <div className="flex gap-1.5">
             {questionList.map((_, i) => (
-              <button key={i} onClick={() => setCurrent(i)}
+              <button key={i} onClick={() => { setCurrent(i); setPreviewSlide(0); }}
                 className={`w-2.5 h-2.5 rounded-full transition-colors ${i === current ? 'bg-white' : 'bg-white/30 hover:bg-white/50'}`} />
             ))}
           </div>
-          <button onClick={() => setCurrent(c => c + 1)} disabled={!hasNext}
+          <button onClick={() => { setCurrent(c => c + 1); setPreviewSlide(0); }} disabled={!hasNext}
             className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-30 text-white flex items-center justify-center transition-colors">
             <ChevronRight size={24} />
           </button>
