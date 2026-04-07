@@ -24,12 +24,13 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     [questions]
   );
 
-  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers, winners, imageUrl, slideImages }) {
+  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers, winners, imageUrl, slideImages, hideTitle }) {
     try {
       setError(null);
       const qId = generateQuestionId();
       const questionData = { type, title: title.trim(), order: Object.keys(questions || {}).length + 1 };
       if (imageUrl) questionData.imageUrl = imageUrl;
+      if (hideTitle) questionData.hideTitle = true;
       if (type === 'imageSlide' && slideImages?.length > 0) questionData.slideImages = slideImages;
       const isChoiceLike = type === 'choice' || type === 'quiz';
 
@@ -124,7 +125,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     }
   }, [sessionId]);
 
-  async function updateQuestion(qId, { type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers, winners, imageUrl, slideImages }) {
+  async function updateQuestion(qId, { type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers, winners, imageUrl, slideImages, hideTitle }) {
     try {
       setError(null);
       const existing = questions?.[qId];
@@ -149,6 +150,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       delete questionData.winners;
       delete questionData.slideImages;
       delete questionData.imageUrl;
+      delete questionData.hideTitle;
 
       const isChoiceLike = type === 'choice' || type === 'quiz';
       if (isChoiceLike) {
@@ -189,6 +191,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
         if (betting) questionData.betting = true;
       }
       if (imageUrl) questionData.imageUrl = imageUrl;
+      if (hideTitle) questionData.hideTitle = true;
       if (type === 'imageSlide' && slideImages?.length > 0) questionData.slideImages = slideImages;
 
       await set(ref(db, `sessions/${sessionId}/questions/${qId}`), questionData);

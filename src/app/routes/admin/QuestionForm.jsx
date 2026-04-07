@@ -60,9 +60,8 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
     if (isHintQuiz && hints.filter(h => h.trim()).length === 0) { setLocalError('최소 1개의 힌트가 필요합니다.'); return; }
     if (type === 'imageSlide' && slideImages.length === 0) { setLocalError('최소 1장의 이미지가 필요합니다.'); return; }
     setLocalError(null);
-    const submitData = { type, title, options: cleanOptions, correctAnswer, points, event, betting };
+    const submitData = { type, title, options: cleanOptions, correctAnswer, points, event, betting, hideTitle };
     if (imageUrl) submitData.imageUrl = imageUrl;
-    if (hideTitle) submitData.hideTitle = true;
     if (isMysteryBox) {
       submitData.mysteryItems = mysteryItems.split('\n').map(s => s.trim()).filter(Boolean);
       const validReasons = answerReasons.filter(r => r.trim());
