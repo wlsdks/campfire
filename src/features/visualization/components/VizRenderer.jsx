@@ -22,7 +22,7 @@ import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import { isQuizQuestion } from '@/lib/quiz';
 import { ref, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
-import { useCallback, lazy, Suspense } from 'react';
+import { useCallback, lazy, Suspense, useState, useEffect } from 'react';
 
 const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 import { TYPE_LABELS } from '@/lib/question-types';
@@ -32,6 +32,17 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false }
   const currentMode = session?.currentMode;
   const currentQuestion = session?.questions?.[currentQId];
   const options = useMemo(() => currentQuestion?.options || [], [currentQuestion?.options]);
+
+  // 폭죽 3연발 (0.5초 간격)
+  const [confettiKey, setConfettiKey] = useState(0);
+  const revealedAt = currentQuestion?.revealedAt;
+  useEffect(() => {
+    if (!revealedAt) { setConfettiKey(0); return; }
+    setConfettiKey(1);
+    const t2 = setTimeout(() => setConfettiKey(2), 500);
+    const t3 = setTimeout(() => setConfettiKey(3), 1000);
+    return () => { clearTimeout(t2); clearTimeout(t3); };
+  }, [revealedAt]);
 
   if (!['poll', 'quiz'].includes(currentMode) || !currentQId) {
     const hasQuestions = session?.questions && Object.keys(session.questions).length > 0;
@@ -63,9 +74,9 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false }
 
   return (
     <div className={`flex flex-col w-full h-full overflow-y-auto ${isQA ? 'pt-4' : 'justify-center gap-6 py-4'} relative`}>
-      {/* 정답 공개 폭죽 */}
-      {answerRevealed && hasCorrectAnswer && (
-        <Suspense fallback={null}><ConfettiBurst key={question.revealedAt} /></Suspense>
+      {/* 정답 공개 폭죽 3연발 (0.5초 간격) */}
+      {confettiKey > 0 && hasCorrectAnswer && (
+        <Suspense fallback={null}><ConfettiBurst key={`confetti-${confettiKey}`} /></Suspense>
       )}
 
       {/* Header — hidden for Q&A, or when hideTitle is set */}
