@@ -7,13 +7,20 @@ const DEBOUNCE_MS = 150;
 export function useVotes(sessionId, questionId) {
   const [votes, setVotes] = useState({});
   const timerRef = useRef(null);
+  const initialRef = useRef(true);
 
   useEffect(() => {
     if (!sessionId || !questionId) return;
+    initialRef.current = true;
     const votesRef = ref(db, `sessions/${sessionId}/questions/${questionId}/votes`);
     const unsub = onValue(votesRef, (snapshot) => {
       const val = snapshot.val() || {};
-      // Debounce rapid vote updates (300 users voting simultaneously)
+      // 첫 로드는 즉시, 이후 업데이트만 디바운스 (300명 동시 투표 대응)
+      if (initialRef.current) {
+        initialRef.current = false;
+        setVotes(val);
+        return;
+      }
       if (timerRef.current) clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => setVotes(val), DEBOUNCE_MS);
     });

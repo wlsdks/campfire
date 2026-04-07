@@ -85,13 +85,20 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
         currentMode: getQuestionMode(question),
       };
 
+      // 모든 질문 유형: 활성화 시 revealedAt 초기화
+      updates[`questions/${qId}/activatedAt`] = getNow();
+      updates[`questions/${qId}/revealedAt`] = null;
+
       if (isQuizQuestion(question)) {
-        updates[`questions/${qId}/activatedAt`] = getNow();
-        updates[`questions/${qId}/revealedAt`] = null;
         updates[`questions/${qId}/awardedAt`] = null;
         if (nextEvent) {
           updates[`questions/${qId}/event`] = normalizeQuizEvent(nextEvent);
         }
+      }
+
+      // 힌트 퀴즈: 힌트도 초기화
+      if (question.type === 'hintQuiz') {
+        updates[`questions/${qId}/revealedHints`] = 0;
       }
 
       await update(ref(db, `sessions/${sessionId}`), updates);
