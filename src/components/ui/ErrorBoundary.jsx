@@ -22,8 +22,11 @@ export default class ErrorBoundary extends Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    // Log to console for debugging; can be replaced with a reporting service later
     console.error(`[ErrorBoundary:${this.props.scope || 'app'}]`, error, errorInfo);
+    // Dynamic import 실패 시 자동 새로고침 (배포 후 캐시 불일치)
+    if (error?.message?.includes('dynamically imported module') || error?.message?.includes('Failed to fetch')) {
+      window.location.reload();
+    }
   }
 
   handleRetry = () => {
