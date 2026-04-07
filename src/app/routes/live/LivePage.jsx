@@ -187,7 +187,7 @@ export default function LivePage() {
                         {currentMode === 'lottery' ? '추첨 진행 중' : '경품 추첨 진행 중'}
                       </p>
                       <p className="text-slate-400 dark:text-white/40 text-lg">강사가 당첨자를 뽑고 있어요!</p>
-                      <Badge variant="neutral"><Users size={14} className="mr-1" />{count}명 참여 중</Badge>
+                      <span className="text-sm text-slate-500 dark:text-slate-400">{count}명 참여 중</span>
                     </div>
                   )}
                   {currentMode === 'breakTime' && <BreakTimer />}
