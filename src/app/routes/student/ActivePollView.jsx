@@ -130,10 +130,9 @@ export default memo(function ActivePollView({
               className="relative"
             >
               {question.type === 'choice' && (
-                <>
-                  <ChoiceVoter sessionId={sessionId} questionId={questionId} options={question.options || []} disabled={timerExpired} />
-                  {question.revealedAt && <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote?.value} />}
-                </>
+                question.revealedAt && question.correctAnswer
+                  ? <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote} />
+                  : <ChoiceVoter sessionId={sessionId} questionId={questionId} options={question.options || []} disabled={timerExpired} />
               )}
               {question.type === 'quiz' && (
                 <QuizVoter
@@ -147,10 +146,9 @@ export default memo(function ActivePollView({
                 />
               )}
               {question.type === 'ox' && (
-                <>
-                  <OXVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
-                  {question.revealedAt && <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote?.value} />}
-                </>
+                question.revealedAt && question.correctAnswer
+                  ? <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote} />
+                  : <OXVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
               )}
               {question.type === 'wordcloud' && (
                 <TextInput sessionId={sessionId} questionId={questionId} type="wordcloud" placeholder="단어를 입력하세요" maxLength={20} disabled={timerExpired} />
@@ -168,16 +166,9 @@ export default memo(function ActivePollView({
                 <RankingVoter sessionId={sessionId} questionId={questionId} options={question.options || []} disabled={timerExpired} />
               )}
               {question.type === 'fillinblank' && (
-                <>
-                  <FillBlankVoter
-                    sessionId={sessionId}
-                    questionId={questionId}
-                    title={question.title}
-                    correctAnswer={question.correctAnswer}
-                    disabled={timerExpired}
-                  />
-                  {question.revealedAt && <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote?.value} />}
-                </>
+                question.revealedAt && question.correctAnswer
+                  ? <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote} />
+                  : <FillBlankVoter sessionId={sessionId} questionId={questionId} title={question.title} correctAnswer={question.correctAnswer} disabled={timerExpired} />
               )}
               {question.type === 'check' && (
                 <CheckVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
@@ -187,8 +178,10 @@ export default memo(function ActivePollView({
               )}
               {question.type === 'mysteryBox' && (
                 <>
-                  <MysteryBoxVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
-                  {question.revealedAt && <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote?.value} />}
+                  {question.revealedAt && question.correctAnswer
+                    ? <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote} />
+                    : <MysteryBoxVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
+                  }
                   {question.revealedAt && (
                     <CorrectAnswerRanking
                       sessionId={sessionId}
@@ -201,14 +194,16 @@ export default memo(function ActivePollView({
               )}
               {question.type === 'hintQuiz' && (
                 <>
-                  <HintQuizVoter
-                    sessionId={sessionId}
-                    questionId={questionId}
-                    hints={question.hints || []}
-                    revealedHints={question.revealedHints || 0}
-                    disabled={timerExpired}
-                  />
-                  {question.revealedAt && <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote?.value} />}
+                  {question.revealedAt && question.correctAnswer
+                    ? <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote} />
+                    : <HintQuizVoter
+                        sessionId={sessionId}
+                        questionId={questionId}
+                        hints={question.hints || []}
+                        revealedHints={question.revealedHints || 0}
+                        disabled={timerExpired}
+                      />
+                  }
                   {question.revealedAt && (
                     <CorrectAnswerRanking
                       sessionId={sessionId}
