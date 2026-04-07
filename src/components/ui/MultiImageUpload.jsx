@@ -38,10 +38,12 @@ export default memo(function MultiImageUpload({ images = [], onChange }) {
     setError(null);
     try {
       const urls = await Promise.all(toUpload.map(async (file) => {
-        const compressed = await compressImage(file);
-        const path = `questions/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.jpg`;
+        let blob;
+        try { blob = await compressImage(file); } catch { blob = file; }
+        const ext = blob.type === 'image/jpeg' ? 'jpg' : file.name.split('.').pop() || 'jpg';
+        const path = `questions/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
         const storageRef = ref(storage, path);
-        await uploadBytes(storageRef, compressed, { contentType: 'image/jpeg' });
+        await uploadBytes(storageRef, blob, { contentType: blob.type || 'image/jpeg' });
         return getDownloadURL(storageRef);
       }));
       onChange([...images, ...urls]);

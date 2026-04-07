@@ -31,13 +31,20 @@ export default memo(function ImageUpload({ value, onChange, folder = 'questions'
     setUploading(true);
     setError(null);
     try {
-      const compressed = await compressImage(file);
-      const path = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.jpg`;
+      let blob;
+      try {
+        blob = await compressImage(file);
+      } catch {
+        blob = file; // 압축 실패 시 원본
+      }
+      const ext = blob.type === 'image/jpeg' ? 'jpg' : file.name.split('.').pop() || 'jpg';
+      const path = `${folder}/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
       const storageRef = ref(storage, path);
-      await uploadBytes(storageRef, compressed, { contentType: 'image/jpeg' });
+      await uploadBytes(storageRef, blob, { contentType: blob.type || 'image/jpeg' });
       const url = await getDownloadURL(storageRef);
       onChange(url);
-    } catch {
+    } catch (err) {
+      console.error('Image upload failed:', err);
       setError('업로드 실패. 다시 시도해주세요.');
       setTimeout(() => setError(null), 3000);
     }
