@@ -173,7 +173,7 @@ export default memo(function ActivePollView({
                 <CheckVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
               )}
               {question.type === 'imageSlide' && (
-                <ImageSlidePresenter images={question.slideImages || []} />
+                <ImageSlidePresenter images={question.slideImages || []} currentSlide={question.currentSlide || 0} />
               )}
               {question.type === 'mysteryBox' && (
                 <>

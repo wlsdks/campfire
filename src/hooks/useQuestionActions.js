@@ -124,7 +124,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     }
   }, [sessionId]);
 
-  async function updateQuestion(qId, { type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers, winners }) {
+  async function updateQuestion(qId, { type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers, winners, imageUrl, slideImages }) {
     try {
       setError(null);
       const existing = questions?.[qId];
@@ -147,6 +147,8 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       delete questionData.answerReasons;
       delete questionData.acceptableAnswers;
       delete questionData.winners;
+      delete questionData.slideImages;
+      delete questionData.imageUrl;
 
       const isChoiceLike = type === 'choice' || type === 'quiz';
       if (isChoiceLike) {
@@ -186,6 +188,8 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
         if (event) questionData.event = event;
         if (betting) questionData.betting = true;
       }
+      if (imageUrl) questionData.imageUrl = imageUrl;
+      if (type === 'imageSlide' && slideImages?.length > 0) questionData.slideImages = slideImages;
 
       await set(ref(db, `sessions/${sessionId}/questions/${qId}`), questionData);
       showToast('질문이 수정되었습니다');

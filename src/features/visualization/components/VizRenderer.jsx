@@ -20,9 +20,12 @@ import EmptyState from '@/components/ui/EmptyState';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import { isQuizQuestion } from '@/lib/quiz';
+import { ref, update } from 'firebase/database';
+import { db } from '@/lib/firebase';
+import { useCallback } from 'react';
 import { TYPE_LABELS } from '@/lib/question-types';
 
-export default memo(function VizRenderer({ sessionId, session }) {
+export default memo(function VizRenderer({ sessionId, session, isAdmin = false }) {
   const currentQId = session?.currentQuestion;
   const currentMode = session?.currentMode;
   const currentQuestion = session?.questions?.[currentQId];
@@ -129,7 +132,13 @@ export default memo(function VizRenderer({ sessionId, session }) {
             />
           )}
           {question.type === 'check' && <CheckProgress sessionId={sessionId} questionId={currentQId} />}
-          {question.type === 'imageSlide' && <ImageSlidePresenter images={question.slideImages || []} />}
+          {question.type === 'imageSlide' && (
+            <ImageSlidePresenter
+              images={question.slideImages || []}
+              currentSlide={question.currentSlide || 0}
+              onSlideChange={isAdmin ? (idx) => update(ref(db, `sessions/${sessionId}/questions/${currentQId}`), { currentSlide: idx }) : undefined}
+            />
+          )}
           {question.type === 'mysteryBox' && (
             <>
               <MysteryBoxPresenter

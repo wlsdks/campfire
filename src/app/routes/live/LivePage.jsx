@@ -211,7 +211,7 @@ export default function LivePage() {
                   <VizRenderer sessionId={sessionId} session={session} />
                 </div>
 
-                <LiveParticipation voted={totalVotes} total={count} />
+                {question?.type !== 'imageSlide' && <LiveParticipation voted={totalVotes} total={count} />}
               </motion.div>
             ) : (
               <motion.div key="empty" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="flex flex-col items-center text-center space-y-5">
