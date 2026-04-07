@@ -5,7 +5,7 @@ import { compressImage } from '@/lib/image-utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ImagePlus, X, Loader2, GripVertical } from 'lucide-react';
 
-const MAX_SIZE_MB = 5;
+const MAX_SIZE_MB = 20; // 압축 전 원본 허용 (압축 후 1-2MB)
 const MAX_IMAGES = 10;
 const ACCEPTED = 'image/jpeg,image/png,image/gif,image/webp';
 

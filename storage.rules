@@ -3,7 +3,7 @@ service firebase.storage {
   match /b/{bucket}/o {
     match /questions/{allPaths=**} {
       allow read: if true;
-      allow write: if request.resource.size < 5 * 1024 * 1024
+      allow write: if request.resource.size < 10 * 1024 * 1024
                    && request.resource.contentType.matches('image/.*');
     }
   }
