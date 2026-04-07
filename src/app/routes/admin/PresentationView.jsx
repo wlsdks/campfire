@@ -428,6 +428,74 @@ function PresentRevealControls({ sessionId, session }) {
   );
 }
 
+import { Medal, Target, Ticket, Gift, Coffee, Award, Swords as SwordsIcon } from 'lucide-react';
+
+const PRESENT_MODES = [
+  { mode: 'combinedRanking', label: '합산 랭킹', icon: Medal },
+  { mode: 'leaderboard', label: '리더보드', icon: Trophy },
+  { mode: 'roulette', label: '돌림판', icon: Target },
+  { mode: 'lottery', label: '추첨', icon: Ticket },
+  { mode: 'prizeDraw', label: '경품 추첨', icon: Gift },
+  { mode: 'breakTime', label: '쉬는 시간', icon: Coffee },
+  { mode: 'awards', label: '시상식', icon: Award },
+];
+
+function PresentModeMenu({ sessionId, currentMode }) {
+  const [open, setOpen] = useState(false);
+
+  async function switchMode(mode) {
+    await update(ref(db, `sessions/${sessionId}`), { currentMode: mode, currentQuestion: null });
+    setOpen(false);
+  }
+
+  async function backToQuestion() {
+    await update(ref(db, `sessions/${sessionId}`), { currentMode: 'waiting' });
+    setOpen(false);
+  }
+
+  return (
+    <div className="fixed bottom-3 right-3 md:bottom-5 md:right-5 z-20">
+      <div className="relative">
+        <button
+          onClick={() => setOpen(!open)}
+          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors backdrop-blur-sm ${
+            open ? 'bg-white text-slate-900' : 'bg-slate-900/60 hover:bg-slate-900/80 text-white'
+          }`}
+        >
+          ⚡ 모드
+        </button>
+
+        {open && (
+          <div className="absolute bottom-full right-0 mb-2 w-40 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 py-1.5 overflow-hidden">
+            {PRESENT_MODES.map(({ mode, label, icon: Icon }) => (
+              <button
+                key={mode}
+                onClick={() => switchMode(mode)}
+                className={`w-full flex items-center gap-2 px-3 py-2 text-sm transition-colors ${
+                  currentMode === mode
+                    ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 font-semibold'
+                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+                }`}
+              >
+                <Icon size={14} />
+                {label}
+              </button>
+            ))}
+            <div className="border-t border-slate-100 dark:border-slate-700 my-1" />
+            <button
+              onClick={backToQuestion}
+              className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700"
+            >
+              <X size={14} />
+              질문으로 돌아가기
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function PresentationView({ sessionId, session, currentMode, onlineList, leaderboard, drawParticipants, studentUrl, count, onExit, teamScores, scores }) {
   const exitPresent = useCallback(() => onExit(), [onExit]);
   const { publishResult } = usePublishGameResult(sessionId);
@@ -569,6 +637,9 @@ export default function PresentationView({ sessionId, session, currentMode, onli
           </>
         )}
       </div>
+
+      {/* 우측 하단 — 모드 전환 */}
+      <PresentModeMenu sessionId={sessionId} currentMode={currentMode} />
 
       <ExitHint onExit={exitPresent} />
     </div>
