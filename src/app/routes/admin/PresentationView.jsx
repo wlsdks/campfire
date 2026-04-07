@@ -427,6 +427,8 @@ function PresentRevealControls({ sessionId, session }) {
 }
 
 
+import { Medal, Ticket, Gift, Coffee, Award } from 'lucide-react';
+
 const PRESENT_MODES = [
   { mode: 'combinedRanking', label: '합산 랭킹', icon: Medal },
   { mode: 'leaderboard', label: '리더보드', icon: Trophy },
