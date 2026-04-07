@@ -188,10 +188,10 @@ export default memo(function AdminSessionHeader({
         {/* Theme toggle */}
         <button
           onClick={() => setTheme(isDark ? 'light' : 'dark')}
-          className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-[0.96]"
+          className="relative flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-[0.96]"
           title={isDark ? '라이트 모드' : '다크 모드'}
         >
-          {isDark ? <Sun size={18} /> : <Moon size={18} />}
+          {isDark ? <Sun size={20} /> : <Moon size={20} />}
         </button>
 
         {/* Chat button */}
