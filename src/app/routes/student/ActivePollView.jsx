@@ -14,6 +14,7 @@ import MysteryBoxVoter from '@/features/voting/components/MysteryBoxVoter';
 import HintQuizVoter from '@/features/voting/components/HintQuizVoter';
 import CorrectAnswerRanking from '@/features/visualization/components/CorrectAnswerRanking';
 import ImageSlidePresenter from '@/features/visualization/components/ImageSlidePresenter';
+import AnswerRevealCard from '@/components/ui/AnswerRevealCard';
 import { getParticipantId } from '@/lib/participant';
 import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
@@ -129,7 +130,10 @@ export default memo(function ActivePollView({
               className="relative"
             >
               {question.type === 'choice' && (
-                <ChoiceVoter sessionId={sessionId} questionId={questionId} options={question.options || []} disabled={timerExpired} />
+                <>
+                  <ChoiceVoter sessionId={sessionId} questionId={questionId} options={question.options || []} disabled={timerExpired} />
+                  {question.revealedAt && <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote?.value} />}
+                </>
               )}
               {question.type === 'quiz' && (
                 <QuizVoter
@@ -143,7 +147,10 @@ export default memo(function ActivePollView({
                 />
               )}
               {question.type === 'ox' && (
-                <OXVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
+                <>
+                  <OXVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
+                  {question.revealedAt && <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote?.value} />}
+                </>
               )}
               {question.type === 'wordcloud' && (
                 <TextInput sessionId={sessionId} questionId={questionId} type="wordcloud" placeholder="단어를 입력하세요" maxLength={20} disabled={timerExpired} />
@@ -161,13 +168,16 @@ export default memo(function ActivePollView({
                 <RankingVoter sessionId={sessionId} questionId={questionId} options={question.options || []} disabled={timerExpired} />
               )}
               {question.type === 'fillinblank' && (
-                <FillBlankVoter
-                  sessionId={sessionId}
-                  questionId={questionId}
-                  title={question.title}
-                  correctAnswer={question.correctAnswer}
-                  disabled={timerExpired}
-                />
+                <>
+                  <FillBlankVoter
+                    sessionId={sessionId}
+                    questionId={questionId}
+                    title={question.title}
+                    correctAnswer={question.correctAnswer}
+                    disabled={timerExpired}
+                  />
+                  {question.revealedAt && <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote?.value} />}
+                </>
               )}
               {question.type === 'check' && (
                 <CheckVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
@@ -178,6 +188,7 @@ export default memo(function ActivePollView({
               {question.type === 'mysteryBox' && (
                 <>
                   <MysteryBoxVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
+                  {question.revealedAt && <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote?.value} />}
                   {question.revealedAt && (
                     <CorrectAnswerRanking
                       sessionId={sessionId}
@@ -197,6 +208,7 @@ export default memo(function ActivePollView({
                     revealedHints={question.revealedHints || 0}
                     disabled={timerExpired}
                   />
+                  {question.revealedAt && <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote?.value} />}
                   {question.revealedAt && (
                     <CorrectAnswerRanking
                       sessionId={sessionId}
