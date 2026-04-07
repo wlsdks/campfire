@@ -145,9 +145,15 @@ export default function LivePage() {
     );
   }
 
-  // 게임 결과 오버레이 (추첨/돌림판 등 강사 결과 동기화)
+  // 게임 결과 오버레이 — 10초 후 자동 dismiss
   function LiveGameResult({ sessionId: sid }) {
-    const { isWinner, winnerNames, gameResult, showOverlay, dismiss } = useGameResult(sid);
+    const { winnerNames, gameResult, showOverlay, dismiss } = useGameResult(sid);
+    useEffect(() => {
+      if (showOverlay) {
+        const t = setTimeout(dismiss, 10000);
+        return () => clearTimeout(t);
+      }
+    }, [showOverlay, dismiss]);
     return <GameResultOverlay isWinner={false} winnerNames={winnerNames} gameResult={gameResult} showOverlay={showOverlay} dismiss={dismiss} />;
   }
 
