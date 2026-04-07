@@ -410,17 +410,31 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
 
   async function resetAllQuestions() {
     try {
-      const updates = { gameResult: null, gameState: null, drumroll: null };
+      const updates = {
+        gameResult: null,
+        gameState: null,
+        drumroll: null,
+        currentQuestion: null,
+        currentMode: 'waiting',
+        scores: null,
+        reactions: null,
+        chat: null,
+        handRaises: null,
+        urgentQuestions: null,
+        classQuestions: null,
+        staffChat: null,
+      };
       questionList.forEach(([qId]) => {
         updates[`questions/${qId}/votes`] = null;
         updates[`questions/${qId}/revealedAt`] = null;
         updates[`questions/${qId}/activatedAt`] = null;
+        updates[`questions/${qId}/awardedAt`] = null;
         updates[`questions/${qId}/revealedHints`] = 0;
         updates[`questions/${qId}/revealedWinners`] = 0;
         updates[`questions/${qId}/currentSlide`] = 0;
       });
       await update(ref(db, `sessions/${sessionId}`), updates);
-      showToast('전체 답변이 초기화되었습니다');
+      showToast('전체 세션이 초기화되었습니다');
     } catch {
       setError('전체 초기화에 실패했습니다.');
     }
