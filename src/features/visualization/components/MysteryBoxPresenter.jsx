@@ -1,7 +1,9 @@
 import { memo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HelpCircle } from 'lucide-react';
+import { Trophy } from 'lucide-react';
 import { useVotes } from '@/hooks/useVotes';
+import Avatar from '@/components/ui/Avatar';
 import { useEffect, useRef, useMemo } from 'react';
 
 const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
@@ -9,10 +11,19 @@ const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 const SPRING_BOUNCY = { type: 'spring', stiffness: 400, damping: 22 };
 
 export default memo(function MysteryBoxPresenter({ sessionId, questionId, question, revealed }) {
-  const { totalVotes } = useVotes(sessionId, questionId);
+  const { voteList, totalVotes } = useVotes(sessionId, questionId);
   const items = useMemo(() => question?.mysteryItems?.length > 0 ? question.mysteryItems : ['?', '??', '???'], [question?.mysteryItems]);
   const answer = question?.correctAnswer || '';
   const reasons = question?.answerReasons || [];
+
+  const winners = useMemo(() => {
+    if (!revealed || !answer) return [];
+    const normalized = answer.trim().toLowerCase();
+    return voteList
+      .filter(v => (v.value || '').trim().toLowerCase() === normalized)
+      .map(v => v.nickname || '참여자')
+      .filter((name, i, arr) => arr.indexOf(name) === i);
+  }, [revealed, answer, voteList]);
 
   const textRef = useRef(null);
   const intervalRef = useRef(null);
@@ -115,14 +126,48 @@ export default memo(function MysteryBoxPresenter({ sessionId, questionId, questi
                 ))}
               </div>
             )}
-            {totalVotes > 0 && (
+            {/* 당첨자 */}
+            {winners.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+                className="mt-6 pt-5 border-t border-white/10 dark:border-slate-200"
+              >
+                <div className="flex items-center justify-center gap-1.5 mb-3">
+                  <Trophy size={16} className="text-amber-400 dark:text-amber-500" />
+                  <span className="text-xs font-semibold text-white/70 dark:text-slate-500 uppercase tracking-wider">
+                    당첨자 {winners.length}명
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  {winners.slice(0, 10).map((name, i) => (
+                    <motion.div
+                      key={name}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 22, delay: 0.9 + i * 0.1 }}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 dark:bg-slate-900/10"
+                    >
+                      <Avatar name={name} size="xs" />
+                      <span className="text-sm font-semibold text-white dark:text-slate-900">{name}</span>
+                    </motion.div>
+                  ))}
+                  {winners.length > 10 && (
+                    <span className="text-xs text-white/50 dark:text-slate-500">+{winners.length - 10}명</span>
+                  )}
+                </div>
+              </motion.div>
+            )}
+
+            {winners.length === 0 && totalVotes > 0 && (
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8 }}
                 className="mt-4 text-sm text-white/50 dark:text-slate-500"
               >
-                {totalVotes}명 참여
+                {totalVotes}명 참여 · 정답자 없음
               </motion.p>
             )}
           </motion.div>

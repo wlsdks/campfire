@@ -1,7 +1,8 @@
-import { memo, lazy, Suspense } from 'react';
+import { memo, useMemo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lightbulb } from 'lucide-react';
+import { Lightbulb, Trophy } from 'lucide-react';
 import { useVotes } from '@/hooks/useVotes';
+import Avatar from '@/components/ui/Avatar';
 
 const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 
@@ -9,12 +10,22 @@ const SPRING = { type: 'spring', stiffness: 300, damping: 25 };
 const SPRING_BOUNCY = { type: 'spring', stiffness: 400, damping: 22 };
 
 export default memo(function HintQuizPresenter({ sessionId, questionId, question, revealed }) {
-  const { totalVotes } = useVotes(sessionId, questionId);
+  const { voteList, totalVotes } = useVotes(sessionId, questionId);
   const hints = question?.hints || [];
   const revealedHints = question?.revealedHints || 0;
   const answer = question?.correctAnswer || '';
-  const acceptableAnswers = question?.acceptableAnswers || [];
+  const acceptableAnswers = useMemo(() => question?.acceptableAnswers || [], [question?.acceptableAnswers]);
   const maxHints = Math.min(hints.length, 5);
+
+  // 정답자 추출
+  const winners = useMemo(() => {
+    if (!revealed || !answer) return [];
+    const allCorrect = [answer, ...acceptableAnswers].map(a => a.trim().toLowerCase());
+    return voteList
+      .filter(v => allCorrect.includes((v.value || '').trim().toLowerCase()))
+      .map(v => v.nickname || `참여자`)
+      .filter((name, i, arr) => arr.indexOf(name) === i); // 중복 제거
+  }, [revealed, answer, acceptableAnswers, voteList]);
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-xl mx-auto px-4">
@@ -98,14 +109,51 @@ export default memo(function HintQuizPresenter({ sessionId, questionId, question
             >
               {answer}
             </motion.p>
-            {totalVotes > 0 && (
+
+            {/* 당첨자 */}
+            {winners.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+                className="mt-6 pt-5 border-t border-white/10 dark:border-slate-200"
+              >
+                <div className="flex items-center justify-center gap-1.5 mb-3">
+                  <Trophy size={16} className="text-amber-400 dark:text-amber-500" />
+                  <span className="text-xs font-semibold text-white/70 dark:text-slate-500 uppercase tracking-wider">
+                    당첨자 {winners.length}명
+                  </span>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  {winners.slice(0, 10).map((name, i) => (
+                    <motion.div
+                      key={name}
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ ...SPRING_BOUNCY, delay: 0.9 + i * 0.1 }}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 dark:bg-slate-900/10"
+                    >
+                      <Avatar name={name} size="xs" />
+                      <span className="text-sm font-semibold text-white dark:text-slate-900">{name}</span>
+                    </motion.div>
+                  ))}
+                  {winners.length > 10 && (
+                    <span className="text-xs text-white/50 dark:text-slate-500">
+                      +{winners.length - 10}명
+                    </span>
+                  )}
+                </div>
+              </motion.div>
+            )}
+
+            {winners.length === 0 && totalVotes > 0 && (
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6 }}
-                className="mt-2 text-sm text-white/50 dark:text-slate-500"
+                className="mt-4 text-sm text-white/50 dark:text-slate-500"
               >
-                {totalVotes}명 참여
+                {totalVotes}명 참여 · 정답자 없음
               </motion.p>
             )}
           </motion.div>
