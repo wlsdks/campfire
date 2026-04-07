@@ -171,7 +171,7 @@ export default function LivePage() {
         questionId={session?.currentQuestion}
       />
 
-      <div className={`flex-1 flex justify-center overflow-auto px-8 pt-6 pb-16 ${isGameMode || (hasActiveQuestion && question?.type !== 'imageSlide') ? 'items-start' : 'items-center'}`}>
+      <div className="flex-1 flex items-center justify-center overflow-auto px-8 pt-6 pb-16">
         <div className="w-full max-w-5xl mx-auto">
           <AnimatePresence mode="wait">
             {isGameMode ? (
