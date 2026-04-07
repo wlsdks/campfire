@@ -49,6 +49,10 @@ export default memo(function QuickProgressCard({
   const isMysteryOrHint = currentQ && ['mysteryBox', 'hintQuiz'].includes(currentQ?.type);
   const mhRevealed = isMysteryOrHint && currentQ?.revealedAt;
   const mhUnrevealed = isMysteryOrHint && !currentQ?.revealedAt;
+  // 객관식(choice)도 정답이 있으면 정답 공개 지원
+  const isChoiceWithAnswer = currentQ?.type === 'choice' && currentQ?.correctAnswer && !isActiveQuiz;
+  const choiceRevealed = isChoiceWithAnswer && currentQ?.revealedAt;
+  const choiceUnrevealed = isChoiceWithAnswer && !currentQ?.revealedAt;
   const canRevealHint = currentQ?.type === 'hintQuiz' && (currentQ?.revealedHints || 0) < (currentQ?.hints || []).length;
 
   /* Determine primary + secondary CTA based on session state */
@@ -131,6 +135,39 @@ export default memo(function QuickProgressCard({
     );
   } else if (mhRevealed) {
     /* Mystery Box / Hint Quiz revealed — next question */
+    primaryBtn = (
+      <Button onClick={handleActivateNext} variant="primary" size="md"
+        disabled={!nextEntry}
+        className="min-h-[52px] sm:min-h-0 sm:py-1.5 sm:text-sm sm:gap-1.5">
+        <Play size={16} className="sm:w-3.5 sm:h-3.5" />
+        다음 질문
+      </Button>
+    );
+    secondaryBtn = (
+      <Button onClick={onClearActive} variant="secondary" size="md"
+        className="min-h-[52px] sm:min-h-0 sm:py-1.5 sm:text-sm sm:gap-1.5">
+        <Square size={16} className="sm:w-3.5 sm:h-3.5" />
+        대기 화면
+      </Button>
+    );
+  } else if (choiceUnrevealed) {
+    /* Choice with answer — reveal */
+    primaryBtn = (
+      <Button onClick={() => onRevealAnswer?.(currentEntry[0])} variant="primary" size="md"
+        className="min-h-[52px] sm:min-h-0 sm:py-1.5 sm:text-sm sm:gap-1.5">
+        <Eye size={16} className="sm:w-3.5 sm:h-3.5" />
+        정답 공개
+      </Button>
+    );
+    secondaryBtn = (
+      <Button onClick={onClearActive} variant="secondary" size="md"
+        className="min-h-[52px] sm:min-h-0 sm:py-1.5 sm:text-sm sm:gap-1.5">
+        <Square size={16} className="sm:w-3.5 sm:h-3.5" />
+        대기 화면
+      </Button>
+    );
+  } else if (choiceRevealed) {
+    /* Choice revealed — next */
     primaryBtn = (
       <Button onClick={handleActivateNext} variant="primary" size="md"
         disabled={!nextEntry}
