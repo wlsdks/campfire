@@ -57,7 +57,7 @@ export default memo(function VizRenderer({ sessionId, session }) {
   const answerRevealed = Boolean(question.revealedAt) || isEnded;
 
   return (
-    <div className={`flex flex-col w-full h-full ${isQA ? 'pt-4' : 'justify-center gap-6'}`}>
+    <div className={`flex flex-col w-full h-full overflow-y-auto ${isQA ? 'pt-4' : 'justify-center gap-6 py-4'}`}>
       {/* Header — hidden for Q&A (QACards has its own), centered for others */}
       {!isQA && (
       <div className="text-center space-y-2 self-center">
