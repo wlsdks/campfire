@@ -36,23 +36,27 @@ export default memo(function MultiImageUpload({ images = [], onChange }) {
     if (valid.length === 0) return;
 
     setUploading(true);
-    try {
-      // 순차 업로드 (path 충돌 방지)
-      const urls = [];
-      for (let i = 0; i < valid.length; i++) {
+    // 순차 업로드 — 개별 실패해도 나머지 계속 진행
+    const urls = [];
+    let failCount = 0;
+    for (let i = 0; i < valid.length; i++) {
+      try {
         const file = valid[i];
-        let blob;
-        try { blob = await compressImage(file); } catch { blob = file; }
-        const ext = blob.type === 'image/jpeg' ? 'jpg' : file.name.split('.').pop() || 'jpg';
+        const blob = await compressImage(file);
+        const ext = (blob.type || '').includes('jpeg') ? 'jpg' : file.name.split('.').pop() || 'jpg';
         const path = `questions/${Date.now()}_${i}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
         const storageRef = ref(storage, path);
-        await uploadBytes(storageRef, blob, { contentType: blob.type || 'image/jpeg' });
+        await uploadBytes(storageRef, blob, { contentType: blob.type || file.type || 'image/jpeg' });
         const url = await getDownloadURL(storageRef);
         urls.push(url);
+      } catch (err) {
+        console.error('Image upload failed:', valid[i].name, err);
+        failCount++;
       }
-      onChange([...images, ...urls]);
-    } catch {
-      setError('업로드 실패. 다시 시도해주세요.');
+    }
+    if (urls.length > 0) onChange([...images, ...urls]);
+    if (failCount > 0) {
+      setError(`${failCount}개 이미지 업로드 실패`);
       setTimeout(() => setError(null), 3000);
     }
     setUploading(false);
