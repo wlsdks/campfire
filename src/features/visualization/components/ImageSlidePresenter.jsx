@@ -20,8 +20,8 @@ export default memo(function ImageSlidePresenter({ images = [], currentSlide = 0
   function goNext() { if (hasNext && onSlideChange) onSlideChange(current + 1); }
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-4">
-      <div className="relative rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800 aspect-video">
+    <div className="w-full max-w-5xl mx-auto px-4">
+      <div className="relative rounded-2xl overflow-hidden bg-slate-100 dark:bg-slate-800" style={{ aspectRatio: '16/9', maxHeight: '75vh' }}>
         <AnimatePresence mode="wait">
           <motion.img
             key={current}
