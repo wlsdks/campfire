@@ -160,7 +160,12 @@ export default function Roulette({ participants, scores = {}, onResult, gameStat
   const fontSize = names.length > 20 ? 5 : names.length > 12 ? 6 : names.length > 6 ? 8 : 10;
 
   return (
-    <div className="flex flex-col items-center gap-8 w-full max-w-2xl mx-auto" onClick={e => e.stopPropagation()}>
+    <div className="flex flex-col items-center gap-6 w-full max-w-2xl mx-auto" onClick={e => e.stopPropagation()}>
+      {allNames.length > MAX_SEGMENTS && !winner && (
+        <p className="text-xs text-slate-400 dark:text-slate-500 text-center">
+          전체 {allNames.length}명 중 {MAX_SEGMENTS}명이 표시됩니다 · 당첨 확률은 동일합니다
+        </p>
+      )}
       {/* Wheel */}
       <div className={`relative w-full aspect-square mx-auto transition-all duration-500 ${winner ? 'max-w-xs' : 'max-w-lg'}`}>
         {/* Pointer */}
