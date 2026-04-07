@@ -453,11 +453,15 @@ export default function PresentationView({ sessionId, session, currentMode, onli
     const q = session?.questions?.[qId];
     if (!q) return;
     const mode = isQuizQuestion(q) ? 'quiz' : 'poll';
-    await update(ref(db, `sessions/${sessionId}`), {
+    const updates = {
       currentQuestion: qId, currentMode: mode,
       [`questions/${qId}/activatedAt`]: Date.now(),
       [`questions/${qId}/revealedAt`]: null,
-    });
+    };
+    if (q.type === 'imageSlide') updates[`questions/${qId}/currentSlide`] = 0;
+    if (q.type === 'hintQuiz') updates[`questions/${qId}/revealedHints`] = 0;
+    if (['mysteryBox', 'hintQuiz'].includes(q.type)) updates[`questions/${qId}/revealedWinners`] = 0;
+    await update(ref(db, `sessions/${sessionId}`), updates);
   }, [sessionId, session?.questions]);
 
   const goPrev = useCallback(() => {
@@ -473,6 +477,17 @@ export default function PresentationView({ sessionId, session, currentMode, onli
       if (e.key === 'Escape') exitPresent();
       if (e.key === 'ArrowLeft') goPrev();
       if (e.key === 'ArrowRight') goNext();
+      // 스페이스바: 이미지 슬라이드 다음 장
+      if (e.key === ' ' || e.code === 'Space') {
+        e.preventDefault();
+        const q = session?.questions?.[session?.currentQuestion];
+        if (q?.type === 'imageSlide' && q.slideImages?.length > 1) {
+          const cur = q.currentSlide || 0;
+          if (cur < q.slideImages.length - 1) {
+            update(ref(db, `sessions/${sessionId}/questions/${session.currentQuestion}`), { currentSlide: cur + 1 });
+          }
+        }
+      }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
