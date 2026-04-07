@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '@/lib/firebase';
 
 const MAX_BUBBLES = 18;
-const MAX_TEXT_LEN = 12;
+const MAX_TEXT_LEN = 15;
 const BUBBLE_LIFETIME_MS = 3400;
 const WARMUP_MS = 500;
 const STAGGER_MS = 80;
@@ -14,8 +14,8 @@ function hashSeed(value) {
   return String(value).split('').reduce((s, c, i) => (s * 33 + c.charCodeAt(0) + i) % 2147483647, 7);
 }
 
-/** Text answer types that trigger bubbles. */
-const BUBBLE_TYPES = ['mysteryBox', 'hintQuiz', 'wordcloud', 'fillinblank'];
+/** 버블이 떠오르는 질문 유형 (투표가 있는 모든 유형). */
+const BUBBLE_TYPES = ['mysteryBox', 'hintQuiz', 'wordcloud', 'fillinblank', 'choice', 'quiz', 'ox', 'scale', 'debate', 'ranking', 'check'];
 
 /**
  * AnswerBubbleOverlay — 학생 답변이 화면에 떠오르는 버블.
@@ -144,8 +144,8 @@ export default memo(function AnswerBubbleOverlay({ sessionId, questionId, questi
             className="absolute bottom-24"
             style={{ left: `${bubble.left}%` }}
           >
-            <div className="px-3 py-1.5 rounded-full bg-white/90 dark:bg-slate-800/90 border border-slate-200/60 dark:border-slate-600/60 shadow-md backdrop-blur-sm max-w-[180px]">
-              <p className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate leading-tight">
+            <div className="px-4 py-2 rounded-full bg-white/90 dark:bg-slate-800/90 border border-slate-200/60 dark:border-slate-600/60 shadow-lg backdrop-blur-sm max-w-[220px]">
+              <p className="text-base font-semibold text-slate-700 dark:text-slate-200 truncate leading-tight">
                 {bubble.text}
               </p>
             </div>
