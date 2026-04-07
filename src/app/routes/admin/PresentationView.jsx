@@ -1,6 +1,8 @@
 import { useState, useCallback, useEffect, lazy, Suspense, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, QrCode, X, Copy, Check, Swords, Hand, MessageSquare, ChevronDown } from 'lucide-react';
+import { Users, QrCode, X, Copy, Check, Swords, Hand, MessageSquare, ChevronDown, ChevronRight, Eye } from 'lucide-react';
+import { ref, update } from 'firebase/database';
+import { db } from '@/lib/firebase';
 import Button from '@/components/ui/Button';
 import PickMascot from '@/components/ui/PickMascot';
 import QRCode from '@/components/ui/QRCode';
@@ -348,6 +350,48 @@ function ExitHint({ onExit }) {
   );
 }
 
+function PresentRevealControls({ sessionId, session }) {
+  const currentQId = session?.currentQuestion;
+  const question = currentQId ? session?.questions?.[currentQId] : null;
+  if (!question) return null;
+
+  const isMH = ['mysteryBox', 'hintQuiz'].includes(question.type);
+  if (!isMH || question.revealedAt) return null;
+
+  const isHint = question.type === 'hintQuiz';
+  const hints = question.hints || [];
+  const revealedHints = question.revealedHints || 0;
+  const canRevealHint = isHint && revealedHints < hints.length;
+
+  async function handleRevealHint() {
+    if (!canRevealHint) return;
+    await update(ref(db, `sessions/${sessionId}`), {
+      [`questions/${currentQId}/revealedHints`]: revealedHints + 1,
+    });
+  }
+
+  async function handleRevealAnswer() {
+    await update(ref(db, `sessions/${sessionId}`), {
+      [`questions/${currentQId}/revealedAt`]: Date.now(),
+    });
+  }
+
+  return (
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
+      {canRevealHint && (
+        <Button onClick={handleRevealHint} variant="secondary" size="lg">
+          <ChevronRight size={20} />
+          힌트 공개 ({revealedHints}/{hints.length})
+        </Button>
+      )}
+      <Button onClick={handleRevealAnswer} variant="primary" size="lg">
+        <Eye size={20} />
+        정답 공개
+      </Button>
+    </div>
+  );
+}
+
 export default function PresentationView({ sessionId, session, currentMode, onlineList, leaderboard, drawParticipants, studentUrl, count, onExit, teamScores, scores }) {
   const exitPresent = useCallback(() => onExit(), [onExit]);
   const { publishResult } = usePublishGameResult(sessionId);
@@ -400,6 +444,9 @@ export default function PresentationView({ sessionId, session, currentMode, onli
       </div>
 
       <PresentQROverlay sessionId={sessionId} studentUrl={studentUrl} count={count} />
+
+      {/* 힌트 퀴즈 / 미스터리 박스 컨트롤 — 하단 중앙 */}
+      <PresentRevealControls sessionId={sessionId} session={session} />
 
       {/* Participant count badge — bottom-left */}
       <div className="fixed bottom-3 left-3 md:bottom-5 md:left-5 flex items-center gap-2 pointer-events-none">

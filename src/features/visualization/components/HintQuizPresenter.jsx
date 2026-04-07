@@ -98,16 +98,6 @@ export default memo(function HintQuizPresenter({ sessionId, questionId, question
             >
               {answer}
             </motion.p>
-            {acceptableAnswers.length > 0 && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="mt-3 text-sm text-white/60 dark:text-slate-600"
-              >
-                허용 답변: {acceptableAnswers.join(', ')}
-              </motion.p>
-            )}
             {totalVotes > 0 && (
               <motion.p
                 initial={{ opacity: 0 }}
