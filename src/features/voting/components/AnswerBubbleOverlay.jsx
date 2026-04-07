@@ -6,7 +6,7 @@ import { db } from '@/lib/firebase';
 const MAX_BUBBLES = 18;
 const MAX_TEXT_LEN = 15;
 const BUBBLE_LIFETIME_MS = 3400;
-const WARMUP_MS = 500;
+const WARMUP_MS = 300;
 const STAGGER_MS = 80;
 
 /** Deterministic seed from string key. */

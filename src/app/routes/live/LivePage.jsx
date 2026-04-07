@@ -20,6 +20,8 @@ import PickMascot from '@/components/ui/PickMascot';
 import { useTheme } from '@/hooks/useTheme';
 import LiveHeader from './LiveHeader';
 import DrumrollOverlay from '@/components/ui/DrumrollOverlay';
+import { useGameResult } from '@/features/games/api/useGameResult';
+const GameResultOverlay = lazy(() => import('@/features/games/components/GameResultOverlay'));
 import LiveParticipation from './LiveParticipation';
 
 const Roulette = lazy(() => import('@/features/games/components/Roulette'));
@@ -143,9 +145,18 @@ export default function LivePage() {
     );
   }
 
+  // 게임 결과 오버레이 (추첨/돌림판 등 강사 결과 동기화)
+  function LiveGameResult({ sessionId: sid }) {
+    const { isWinner, winnerNames, gameResult, showOverlay, dismiss } = useGameResult(sid);
+    return <GameResultOverlay isWinner={false} winnerNames={winnerNames} gameResult={gameResult} showOverlay={showOverlay} dismiss={dismiss} />;
+  }
+
   return (
     <div className="h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col overflow-hidden">
       <LiveHeader courseName={session?.courseName} roundNumber={session?.roundNumber} count={count} sessionId={sessionId} />
+      <Suspense fallback={null}>
+        <LiveGameResult sessionId={sessionId} />
+      </Suspense>
       <JoinToast sessionId={sessionId} />
       <ReactionOverlay sessionId={sessionId} />
       <DrumrollOverlay active={!!session?.drumroll} />
