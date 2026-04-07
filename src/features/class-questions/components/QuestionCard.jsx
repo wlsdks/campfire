@@ -40,7 +40,7 @@ export default function QuestionCard({ question: q, index, pid, nickname, onUpvo
             {isOwn && <Badge variant="neutral">나</Badge>}
             {q.answered && <Badge variant="neutral">답변 완료</Badge>}
           </div>
-          <span className="text-[11px] text-slate-400 shrink-0">{timeAgo(q.timestamp)}</span>
+          <span className="text-[11px] text-slate-400 dark:text-slate-500 shrink-0">{timeAgo(q.timestamp)}</span>
         </div>
 
         <p className="text-sm md:text-base text-slate-900 dark:text-slate-100 leading-snug line-clamp-2">{q.text}</p>

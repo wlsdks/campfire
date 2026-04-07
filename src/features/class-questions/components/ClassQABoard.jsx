@@ -59,7 +59,7 @@ export default function ClassQABoard({ sessionId, showInput = true }) {
         <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
           Q&A 보드
           {questions.length > 0 && (
-            <span className="ml-2 text-lg font-normal text-slate-400">{questions.length}개</span>
+            <span className="ml-2 text-lg font-normal text-slate-400 dark:text-slate-500">{questions.length}개</span>
           )}
         </h2>
         <div className="flex bg-slate-100 dark:bg-slate-800 rounded-lg p-0.5">
@@ -124,7 +124,7 @@ export default function ClassQABoard({ sessionId, showInput = true }) {
               익명으로 질문
             </button>
             {!canPost && (
-              <span className="text-sm text-slate-400">잠시 후 다시 질문할 수 있어요</span>
+              <span className="text-sm text-slate-400 dark:text-slate-500">잠시 후 다시 질문할 수 있어요</span>
             )}
           </div>
         </motion.div>

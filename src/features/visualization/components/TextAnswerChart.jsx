@@ -136,7 +136,7 @@ export default memo(function TextAnswerChart({ sessionId, questionId, correctAns
                       </div>
                     </div>
                   </div>
-                  <span className="text-sm font-semibold text-slate-500 tabular-nums w-8 text-right shrink-0">
+                  <span className="text-sm font-semibold text-slate-500 dark:text-slate-400 tabular-nums w-8 text-right shrink-0">
                     {a.count}
                   </span>
                 </motion.div>
