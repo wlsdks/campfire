@@ -13,6 +13,7 @@ import CheckVoter from '@/features/voting/components/CheckVoter';
 import MysteryBoxVoter from '@/features/voting/components/MysteryBoxVoter';
 import HintQuizVoter from '@/features/voting/components/HintQuizVoter';
 import CorrectAnswerRanking from '@/features/visualization/components/CorrectAnswerRanking';
+import ImageSlidePresenter from '@/features/visualization/components/ImageSlidePresenter';
 import { getParticipantId } from '@/lib/participant';
 import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
@@ -170,6 +171,9 @@ export default memo(function ActivePollView({
               )}
               {question.type === 'check' && (
                 <CheckVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
+              )}
+              {question.type === 'imageSlide' && (
+                <ImageSlidePresenter images={question.slideImages || []} />
               )}
               {question.type === 'mysteryBox' && (
                 <>

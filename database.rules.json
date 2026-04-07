@@ -25,7 +25,7 @@
           "$qId": {
             ".validate": "newData.hasChild('title') && newData.hasChild('type')",
             "title": { ".validate": "newData.isString() && newData.val().length <= 500" },
-            "type": { ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz)$/)" },
+            "type": { ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz|imageSlide)$/)" },
             "$other": { ".validate": true }
           }
         }
@@ -38,7 +38,7 @@
         "$qId": {
           ".validate": "newData.hasChild('title') && newData.hasChild('type')",
           "title": { ".validate": "newData.isString() && newData.val().length <= 500" },
-          "type": { ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz)$/)" },
+          "type": { ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz|imageSlide)$/)" },
           "savedAt": { ".validate": "newData.isNumber()" },
           "updatedAt": { ".validate": "newData.isNumber()" },
           "$other": { ".validate": true }
@@ -85,7 +85,7 @@
               ".validate": "newData.isString() && newData.val().length <= 500"
             },
             "type": {
-              ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz)$/)"
+              ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz|imageSlide)$/)"
             },
             "votes": {
               "$participantId": {

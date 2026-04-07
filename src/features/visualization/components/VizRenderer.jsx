@@ -12,6 +12,7 @@ import TextAnswerChart from './TextAnswerChart';
 import MysteryBoxPresenter from './MysteryBoxPresenter';
 import HintQuizPresenter from './HintQuizPresenter';
 import CorrectAnswerRanking from './CorrectAnswerRanking';
+import ImageSlidePresenter from './ImageSlidePresenter';
 import BetDistribution from './BetDistribution';
 import ConfidenceStats from './ConfidenceStats';
 import Badge from '@/components/ui/Badge';
@@ -128,6 +129,7 @@ export default memo(function VizRenderer({ sessionId, session }) {
             />
           )}
           {question.type === 'check' && <CheckProgress sessionId={sessionId} questionId={currentQId} />}
+          {question.type === 'imageSlide' && <ImageSlidePresenter images={question.slideImages || []} />}
           {question.type === 'mysteryBox' && (
             <>
               <MysteryBoxPresenter

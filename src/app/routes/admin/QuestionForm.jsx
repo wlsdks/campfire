@@ -5,6 +5,7 @@ import Button from '@/components/ui/Button';
 import { QUIZ_DEFAULTS } from '@/lib/quiz';
 import { QUESTION_TYPES } from '@/lib/question-types';
 import ImageUpload from '@/components/ui/ImageUpload';
+import MultiImageUpload from '@/components/ui/MultiImageUpload';
 import {
   ChoiceOptionsSection,
   CorrectAnswerSection,
@@ -35,6 +36,7 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
   const [acceptableAnswers, setAcceptableAnswers] = useState(initialData?.acceptableAnswers?.length ? [...initialData.acceptableAnswers] : []);
   const [winners, setWinners] = useState(initialData?.winners?.length ? [...initialData.winners] : []);
   const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || '');
+  const [slideImages, setSlideImages] = useState(initialData?.slideImages || []);
   const [localError, setLocalError] = useState(null);
 
   const isChoiceLike = type === 'choice' || type === 'quiz';
@@ -55,6 +57,7 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
     if (isMysteryBox && !correctAnswer.trim()) { setLocalError('정답을 입력해주세요.'); return; }
     if (isHintQuiz && !correctAnswer.trim()) { setLocalError('정답을 입력해주세요.'); return; }
     if (isHintQuiz && hints.filter(h => h.trim()).length === 0) { setLocalError('최소 1개의 힌트가 필요합니다.'); return; }
+    if (type === 'imageSlide' && slideImages.length === 0) { setLocalError('최소 1장의 이미지가 필요합니다.'); return; }
     setLocalError(null);
     const submitData = { type, title, options: cleanOptions, correctAnswer, points, event, betting };
     if (imageUrl) submitData.imageUrl = imageUrl;
@@ -71,6 +74,9 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
     if (isMysteryBox || isHintQuiz) {
       const validWinners = winners.filter(w => w.trim());
       if (validWinners.length > 0) submitData.winners = validWinners;
+    }
+    if (type === 'imageSlide') {
+      submitData.slideImages = slideImages;
     }
     const success = await onSubmit(submitData);
     if (success) {
@@ -121,7 +127,11 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
 
       {/* 이미지 첨부 */}
       <div className="pt-2">
-        <ImageUpload value={imageUrl} onChange={setImageUrl} />
+        {type === 'imageSlide' ? (
+          <MultiImageUpload images={slideImages} onChange={setSlideImages} />
+        ) : (
+          <ImageUpload value={imageUrl} onChange={setImageUrl} />
+        )}
       </div>
 
       {/* Type-specific sections */}
