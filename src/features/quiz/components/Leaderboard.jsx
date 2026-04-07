@@ -18,21 +18,26 @@ export default memo(function Leaderboard({
   const [rankDeltas, setRankDeltas] = useState({});
 
   const computeDeltas = useCallback(() => {
+    // Only compute ranks for visible entries + highlighted entry (not all 300)
+    const relevantEntries = entries.slice(0, maxShow + 5);
     const newRanks = {};
-    entries.forEach((entry, i) => { newRanks[entry.id] = i; });
+    relevantEntries.forEach((entry, i) => { newRanks[entry.id] = i; });
+    if (highlightId) {
+      const hIdx = entries.findIndex(e => e.id === highlightId);
+      if (hIdx >= 0) newRanks[highlightId] = hIdx;
+    }
 
     const prev = prevRanksRef.current;
     const deltas = {};
-    entries.forEach((entry, i) => {
-      if (prev[entry.id] !== undefined) {
-        // positive delta = moved up (lower index = better rank)
-        deltas[entry.id] = prev[entry.id] - i;
+    Object.keys(newRanks).forEach((id) => {
+      if (prev[id] !== undefined) {
+        deltas[id] = prev[id] - newRanks[id];
       }
     });
 
     prevRanksRef.current = newRanks;
     setRankDeltas(deltas);
-  }, [entries]);
+  }, [entries, maxShow, highlightId]);
 
   useEffect(() => {
     computeDeltas();

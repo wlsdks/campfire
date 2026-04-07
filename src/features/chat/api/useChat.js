@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
 
-const MAX_MESSAGES = 100;
+const MAX_MESSAGES = 200;
 const COOLDOWN_MS = 2000;
 
 /**

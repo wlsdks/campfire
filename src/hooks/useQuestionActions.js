@@ -256,36 +256,45 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     try {
       const now = getNow();
       const voteEntries = Object.entries(question.votes || {});
-      const updates = {
+
+      // Phase 1: Reveal answer + mark awarded
+      const revealUpdates = {
         currentMode: 'quiz',
         [`questions/${qId}/revealedAt`]: now,
       };
-
       if (!question.awardedAt) {
-        updates[`questions/${qId}/awardedAt`] = now;
-
-        voteEntries.forEach(([participantId, vote]) => {
-          const reward = getQuizReward(question, vote);
-          const existingScore = scores[participantId] || {};
-          const nextStreak = reward.isCorrect ? (existingScore.streak || 0) + 1 : 0;
-          const nickname = participants[participantId]?.nickname || vote.nickname || existingScore.nickname || `참여자 ${participantId.slice(0, 4)}`;
-          const newTotal = Math.max(0, (existingScore.total || 0) + reward.points);
-
-          updates[`scores/${participantId}`] = {
-            nickname,
-            total: newTotal,
-            tickets: (existingScore.tickets || 0) + reward.tickets,
-            lastPoints: reward.points,
-            lastTickets: reward.tickets,
-            streak: nextStreak,
-            bestStreak: Math.max(existingScore.bestStreak || 0, nextStreak),
-            lastQuestionId: qId,
-            updatedAt: now,
-          };
-        });
+        revealUpdates[`questions/${qId}/awardedAt`] = now;
       }
+      await update(ref(db, `sessions/${sessionId}`), revealUpdates);
 
-      await update(ref(db, `sessions/${sessionId}`), updates);
+      // Phase 2: Score updates in batches of 50
+      if (!question.awardedAt) {
+        const BATCH_SIZE = 50;
+        for (let i = 0; i < voteEntries.length; i += BATCH_SIZE) {
+          const batch = voteEntries.slice(i, i + BATCH_SIZE);
+          const scoreUpdates = {};
+          batch.forEach(([participantId, vote]) => {
+            const reward = getQuizReward(question, vote);
+            const existingScore = scores[participantId] || {};
+            const nextStreak = reward.isCorrect ? (existingScore.streak || 0) + 1 : 0;
+            const nickname = participants[participantId]?.nickname || vote.nickname || existingScore.nickname || `참여자 ${participantId.slice(0, 4)}`;
+            const newTotal = Math.max(0, (existingScore.total || 0) + reward.points);
+
+            scoreUpdates[`scores/${participantId}`] = {
+              nickname,
+              total: newTotal,
+              tickets: (existingScore.tickets || 0) + reward.tickets,
+              lastPoints: reward.points,
+              lastTickets: reward.tickets,
+              streak: nextStreak,
+              bestStreak: Math.max(existingScore.bestStreak || 0, nextStreak),
+              lastQuestionId: qId,
+              updatedAt: now,
+            };
+          });
+          await update(ref(db, `sessions/${sessionId}`), scoreUpdates);
+        }
+      }
     } catch {
       setError('정답 공개와 점수 반영에 실패했습니다. 다시 시도해주세요.');
     }

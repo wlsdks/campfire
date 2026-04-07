@@ -1,13 +1,20 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
 import PickMascot from '@/components/ui/PickMascot';
 
+const INITIAL_SHOW = 20;
+
 export default memo(function ParticipantList({ participants, voteCounts }) {
+  const [expanded, setExpanded] = useState(false);
+  const visible = expanded ? participants : participants.slice(0, INITIAL_SHOW);
+  const remaining = participants.length - INITIAL_SHOW;
+
   return (
     <div className="space-y-0.5 max-h-64 overflow-y-auto scrollbar-hide">
-      <AnimatePresence>
-        {participants.map((p) => {
+      <AnimatePresence initial={false}>
+        {visible.map((p) => {
           const voteCount = voteCounts?.[p.id];
           return (
             <motion.div
@@ -26,6 +33,15 @@ export default memo(function ParticipantList({ participants, voteCounts }) {
           );
         })}
       </AnimatePresence>
+      {!expanded && remaining > 0 && (
+        <button
+          onClick={() => setExpanded(true)}
+          className="w-full py-2 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 font-medium flex items-center justify-center gap-1 transition-colors duration-150"
+        >
+          <ChevronDown size={14} />
+          {remaining}명 더 보기
+        </button>
+      )}
       {participants.length === 0 && (
         <div className="flex flex-col items-center text-center py-5 space-y-2">
           <PickMascot size="xs" mood="waiting" />

@@ -21,7 +21,8 @@ export default memo(function WordCloud({ sessionId, questionId }) {
   const words = useMemo(() => {
     return Object.entries(tallied)
       .map(([text, count]) => ({ text, count }))
-      .sort((a, b) => b.count - a.count);
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 40);
   }, [tallied]);
 
   const maxCount = Math.max(...words.map(w => w.count), 1);
@@ -37,7 +38,7 @@ export default memo(function WordCloud({ sessionId, questionId }) {
         layout
         className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2.5 p-6 min-h-[300px]"
       >
-        <AnimatePresence>
+        <AnimatePresence initial={false}>
           {words.map((word, i) => (
             <motion.span
               layout
