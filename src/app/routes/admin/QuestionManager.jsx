@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { BookmarkPlus, PanelLeftClose, Plus, Eye } from 'lucide-react';
+import { BookmarkPlus, PanelLeftClose, Plus, Eye, RotateCcw } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Toast from '@/components/ui/Toast';
 import { isQuizQuestion } from '@/lib/quiz';
@@ -43,7 +43,7 @@ export default function QuestionManager({
     error, toast, questionList,
     handleSubmit, activateQuestion, clearActive,
     deleteQuestion, duplicateQuestion, moveQuestion, reorderQuestion,
-    importFromLibrary, revealQuiz, revealHint, revealAnswer, showLeaderboard,
+    importFromLibrary, revealQuiz, revealHint, revealAnswer, resetQuestion, resetAllQuestions, showLeaderboard,
   } = useQuestionActions(sessionId, questions, currentQuestion, scores, participants);
 
   const activeIndex = questionList.findIndex(([qId]) => qId === currentQuestion);
@@ -95,11 +95,20 @@ export default function QuestionManager({
             </Button>
           )}
           {questionList.length > 0 && (
-            <button onClick={() => setPreviewOpen(true)}
-              className="p-1.5 rounded-lg text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
-              title="미리보기" aria-label="문항 미리보기">
-              <Eye size={16} />
-            </button>
+            <>
+              <button onClick={() => setPreviewOpen(true)}
+                className="p-1.5 rounded-lg text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
+                title="미리보기" aria-label="문항 미리보기">
+                <Eye size={16} />
+              </button>
+              {!readOnly && (
+                <button onClick={() => { if (confirm('모든 문항의 답변을 초기화할까요?')) resetAllQuestions(); }}
+                  className="p-1.5 rounded-lg text-slate-400 dark:text-slate-500 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
+                  title="전체 답변 초기화" aria-label="전체 답변 초기화">
+                  <RotateCcw size={16} />
+                </button>
+              )}
+            </>
           )}
           {!readOnly && onCollapse && (
             <button onClick={onCollapse}

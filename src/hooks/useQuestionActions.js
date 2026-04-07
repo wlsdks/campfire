@@ -392,6 +392,40 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     }
   }, [sessionId]);
 
+  async function resetQuestion(qId) {
+    try {
+      await update(ref(db, `sessions/${sessionId}`), {
+        [`questions/${qId}/votes`]: null,
+        [`questions/${qId}/revealedAt`]: null,
+        [`questions/${qId}/activatedAt`]: null,
+        [`questions/${qId}/revealedHints`]: 0,
+        [`questions/${qId}/revealedWinners`]: 0,
+        [`questions/${qId}/currentSlide`]: 0,
+      });
+      showToast('답변이 초기화되었습니다');
+    } catch {
+      setError('초기화에 실패했습니다.');
+    }
+  }
+
+  async function resetAllQuestions() {
+    try {
+      const updates = { gameResult: null, gameState: null, drumroll: null };
+      questionList.forEach(([qId]) => {
+        updates[`questions/${qId}/votes`] = null;
+        updates[`questions/${qId}/revealedAt`] = null;
+        updates[`questions/${qId}/activatedAt`] = null;
+        updates[`questions/${qId}/revealedHints`] = 0;
+        updates[`questions/${qId}/revealedWinners`] = 0;
+        updates[`questions/${qId}/currentSlide`] = 0;
+      });
+      await update(ref(db, `sessions/${sessionId}`), updates);
+      showToast('전체 답변이 초기화되었습니다');
+    } catch {
+      setError('전체 초기화에 실패했습니다.');
+    }
+  }
+
   return {
     error,
     setError,
@@ -410,6 +444,8 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     revealQuiz,
     revealHint,
     revealAnswer,
+    resetQuestion,
+    resetAllQuestions,
     showLeaderboard,
     armEvent,
     clearPendingEvent,
