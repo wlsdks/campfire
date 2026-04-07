@@ -15,6 +15,7 @@ const SECONDARY_FIELDS = [
   'createdAt',
   'startedAt',
   'reviewingUntil',
+  'drumroll',
 ];
 
 /**
