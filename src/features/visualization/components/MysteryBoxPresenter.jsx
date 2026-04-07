@@ -29,7 +29,7 @@ export default memo(function MysteryBoxPresenter({ sessionId, questionId, questi
           textRef.current.textContent = items[idx % items.length];
           idx++;
         }
-      }, 90);
+      }, 120);
     }
     return () => {
       if (intervalRef.current) { clearInterval(intervalRef.current); intervalRef.current = null; }
@@ -49,13 +49,13 @@ export default memo(function MysteryBoxPresenter({ sessionId, questionId, questi
             className="relative"
           >
             <motion.div
-              animate={{ rotate: [0, -1, 1, -1, 0], scale: [1, 1.02, 0.98, 1.02, 1] }}
-              transition={{ duration: 0.5, repeat: Infinity, ease: 'easeInOut' }}
+              animate={{ y: [0, -6, 0], scale: [1, 1.01, 1] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
               className="w-48 h-48 md:w-64 md:h-64 rounded-3xl bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 shadow-lg flex flex-col items-center justify-center overflow-hidden"
             >
               <motion.div
-                animate={{ opacity: [0.4, 1, 0.4] }}
-                transition={{ duration: 0.6, repeat: Infinity }}
+                animate={{ opacity: [0.5, 1, 0.5], scale: [0.95, 1.05, 0.95] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
               >
                 <HelpCircle size={40} className="text-slate-300 dark:text-slate-500" />
               </motion.div>
@@ -66,9 +66,9 @@ export default memo(function MysteryBoxPresenter({ sessionId, questionId, questi
             </motion.div>
 
             <motion.div
-              className="absolute inset-0 rounded-3xl border-2 border-slate-200 dark:border-slate-600"
-              animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0, 0.5] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
+              className="absolute inset-0 rounded-3xl border border-slate-200/50 dark:border-slate-600/50"
+              animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0, 0.3] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeOut' }}
             />
 
             {totalVotes > 0 && (

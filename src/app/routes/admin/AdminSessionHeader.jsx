@@ -5,7 +5,8 @@ import Button from '@/components/ui/Button';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 import TimerControls from '@/features/timer/components/TimerControls';
 import TimerRing from '@/features/timer/components/TimerRing';
-import { ArrowLeft, Clock, MessageCircle, Users, Monitor, Play, Square, Layers, List, Zap, Swords, MessageSquareDot, XCircle } from 'lucide-react';
+import { ArrowLeft, Clock, MessageCircle, Users, Monitor, Play, Square, Layers, List, Zap, Swords, MessageSquareDot, XCircle, Sun, Moon } from 'lucide-react';
+import { useTheme } from '@/hooks/useTheme';
 
 function formatElapsed(ms) {
   const totalSec = Math.floor(ms / 1000);
@@ -83,6 +84,7 @@ export default memo(function AdminSessionHeader({
   const [timerOpen, setTimerOpen] = useState(false);
   const [confirmEnd, setConfirmEnd] = useState(null);
   const timerRef = useRef(null);
+  const { isDark, setTheme } = useTheme();
 
   // Close timer popup on outside click
   useEffect(() => {
@@ -183,6 +185,15 @@ export default memo(function AdminSessionHeader({
         </div>
       </div>
       <div className={`flex items-center shrink-0 ${isTablet ? 'gap-1' : 'gap-3'}`}>
+        {/* Theme toggle */}
+        <button
+          onClick={() => setTheme(isDark ? 'light' : 'dark')}
+          className="flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-[0.96]"
+          title={isDark ? '라이트 모드' : '다크 모드'}
+        >
+          {isDark ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
+
         {/* Chat button */}
         {!effectiveReadOnly && (
           <button
