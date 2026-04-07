@@ -66,15 +66,6 @@ export default function AdminPage() {
     return <MobileAdminView s={s} />;
   }
 
-  // F5 → 발표 모드 진입
-  useEffect(() => {
-    if (s.effectiveReadOnly) return;
-    const handler = (e) => {
-      if (e.key === 'F5') { e.preventDefault(); s.handlePresentMode(); }
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [s.effectiveReadOnly, s.handlePresentMode]);
 
   const currentMode = s.session?.currentMode;
   const isSpecialMode = ['roulette', 'lottery', 'prizeDraw', 'combinedRanking', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
