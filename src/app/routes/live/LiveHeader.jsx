@@ -74,10 +74,10 @@ export default memo(function LiveHeader({ courseName, roundNumber, count, sessio
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: -8 }}
             transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-            className="absolute top-full right-4 mt-2 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-4 z-50 flex flex-col items-center gap-2"
+            className="absolute top-full right-0 mt-2 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-6 z-50 flex flex-col items-center gap-3"
           >
-            <QRCodeComponent url={studentUrl} size={140} />
-            <p className="text-xs text-slate-400 font-medium text-center max-w-[160px] break-all leading-tight">{studentUrl}</p>
+            <QRCodeComponent url={studentUrl} size={220} />
+            <p className="text-sm text-slate-500 dark:text-slate-400 font-medium text-center max-w-[240px] break-all leading-tight">{studentUrl}</p>
           </motion.div>
         )}
       </AnimatePresence>
