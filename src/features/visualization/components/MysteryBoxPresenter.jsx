@@ -2,7 +2,7 @@ import { memo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HelpCircle } from 'lucide-react';
 import { useVotes } from '@/hooks/useVotes';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 
 const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 
@@ -15,7 +15,7 @@ const SPRING_BOUNCY = { type: 'spring', stiffness: 400, damping: 22 };
  */
 export default memo(function MysteryBoxPresenter({ sessionId, questionId, question, revealed }) {
   const { totalVotes } = useVotes(sessionId, questionId);
-  const items = question?.mysteryItems?.length > 0 ? question.mysteryItems : ['?', '??', '???'];
+  const items = useMemo(() => question?.mysteryItems?.length > 0 ? question.mysteryItems : ['?', '??', '???'], [question?.mysteryItems]);
   const answer = question?.correctAnswer || '';
   const reasons = question?.answerReasons || [];
 

@@ -23,6 +23,8 @@ import { TYPE_LABELS } from '@/lib/question-types';
 export default memo(function VizRenderer({ sessionId, session }) {
   const currentQId = session?.currentQuestion;
   const currentMode = session?.currentMode;
+  const currentQuestion = session?.questions?.[currentQId];
+  const options = useMemo(() => currentQuestion?.options || [], [currentQuestion?.options]);
 
   if (!['poll', 'quiz'].includes(currentMode) || !currentQId) {
     const hasQuestions = session?.questions && Object.keys(session.questions).length > 0;
@@ -44,14 +46,13 @@ export default memo(function VizRenderer({ sessionId, session }) {
     );
   }
 
-  const question = session?.questions?.[currentQId];
+  const question = currentQuestion;
   if (!question) return null;
 
   const isQA = question.type === 'qna';
   const isEnded = session?.status === 'ended' || session?.status === 'reviewing';
   const hasCorrectAnswer = Boolean(question.correctAnswer);
   const answerRevealed = Boolean(question.revealedAt) || isEnded;
-  const options = useMemo(() => question.options || [], [question.options]);
 
   return (
     <div className={`flex flex-col w-full h-full ${isQA ? 'pt-4' : 'justify-center gap-6'}`}>
