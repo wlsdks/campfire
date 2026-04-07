@@ -454,12 +454,12 @@ function PresentModeMenu({ sessionId, currentMode }) {
   }
 
   return (
-    <div className="fixed bottom-3 right-3 md:bottom-5 md:right-5 z-20">
+    <div className="fixed bottom-16 right-3 md:bottom-20 md:right-5 z-20">
       <div className="relative">
         <button
           onClick={() => setOpen(!open)}
-          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors backdrop-blur-sm ${
-            open ? 'bg-white text-slate-900' : 'bg-slate-900/60 hover:bg-slate-900/80 text-white'
+          className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-colors backdrop-blur-sm shadow-lg ${
+            open ? 'bg-white text-slate-900' : 'bg-slate-900/70 hover:bg-slate-900/90 text-white'
           }`}
         >
           ⚡ 모드
