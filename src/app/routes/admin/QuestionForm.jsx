@@ -36,6 +36,7 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
   const [acceptableAnswers, setAcceptableAnswers] = useState(initialData?.acceptableAnswers?.length ? [...initialData.acceptableAnswers] : []);
   const [winners, setWinners] = useState(initialData?.winners?.length ? [...initialData.winners] : []);
   const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || '');
+  const [hideTitle, setHideTitle] = useState(initialData?.hideTitle || false);
   const [slideImages, setSlideImages] = useState(initialData?.slideImages || []);
   const [localError, setLocalError] = useState(null);
 
@@ -61,6 +62,7 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
     setLocalError(null);
     const submitData = { type, title, options: cleanOptions, correctAnswer, points, event, betting };
     if (imageUrl) submitData.imageUrl = imageUrl;
+    if (hideTitle) submitData.hideTitle = true;
     if (isMysteryBox) {
       submitData.mysteryItems = mysteryItems.split('\n').map(s => s.trim()).filter(Boolean);
       const validReasons = answerReasons.filter(r => r.trim());
@@ -123,6 +125,17 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
           placeholder={isFillInBlank ? 'HTTP 상태코드 ___는 페이지를 찾을 수 없음을 의미한다' : type === 'check' ? '실습을 완료하셨으면 체크해주세요' : '학생들에게 보여줄 질문을 입력하세요'}
           aria-label="질문 내용" rows={3}
           className={`${INPUT} resize-none text-base leading-relaxed`} autoFocus />
+      </div>
+
+      {/* 제목 표시 설정 */}
+      <div className="pt-2">
+        <button type="button" onClick={() => setHideTitle(!hideTitle)}
+          className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
+          <span className={`w-4 h-4 rounded border flex items-center justify-center text-xs ${hideTitle ? 'bg-slate-900 dark:bg-slate-100 border-slate-900 dark:border-slate-100 text-white dark:text-slate-900' : 'border-slate-300 dark:border-slate-600'}`}>
+            {hideTitle && '✓'}
+          </span>
+          프레젠터/전자칠판에서 제목 숨기기
+        </button>
       </div>
 
       {/* 이미지 첨부 */}

@@ -61,8 +61,8 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false }
 
   return (
     <div className={`flex flex-col w-full h-full overflow-y-auto ${isQA ? 'pt-4' : 'justify-center gap-6 py-4'}`}>
-      {/* Header — hidden for Q&A (QACards has its own), centered for others */}
-      {!isQA && (
+      {/* Header — hidden for Q&A, or when hideTitle is set */}
+      {!isQA && !question.hideTitle && (
       <div className="text-center space-y-2 self-center">
         <Badge variant="primary">{TYPE_LABELS[question.type] || question.type}</Badge>
         <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight leading-tight">{question.title}</h2>

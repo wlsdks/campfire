@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { BookmarkPlus, PanelLeftClose, Plus } from 'lucide-react';
+import { BookmarkPlus, PanelLeftClose, Plus, Eye } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Toast from '@/components/ui/Toast';
 import { isQuizQuestion } from '@/lib/quiz';
@@ -11,6 +11,7 @@ import QuestionForm from './QuestionForm';
 import QuestionList from './QuestionList';
 import QuickProgressCard from './QuickProgressCard';
 import ImportFromLibraryModal from './ImportFromLibraryModal';
+import QuestionPreview from './QuestionPreview';
 
 export default function QuestionManager({
   sessionId,
@@ -35,6 +36,7 @@ export default function QuestionManager({
 }) {
   const [showForm, setShowForm] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
+  const [previewOpen, setPreviewOpen] = useState(false);
   const { saveQuestion: saveToLibrary } = useQuestionLibrary(adminUid);
 
   const {
@@ -91,6 +93,13 @@ export default function QuestionManager({
             >
               {showForm && !onAddClick ? '취소' : <><Plus size={14} /> 추가</>}
             </Button>
+          )}
+          {questionList.length > 0 && (
+            <button onClick={() => setPreviewOpen(true)}
+              className="p-2 rounded-lg text-slate-300 dark:text-slate-600 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
+              title="미리보기" aria-label="문항 미리보기">
+              <Eye size={18} />
+            </button>
           )}
           {!readOnly && onCollapse && (
             <button onClick={onCollapse}
@@ -165,6 +174,8 @@ export default function QuestionManager({
       )}
 
       <Toast message={toast} />
+
+      <QuestionPreview questionList={questionList} open={previewOpen} onClose={() => setPreviewOpen(false)} />
     </div>
   );
 }
