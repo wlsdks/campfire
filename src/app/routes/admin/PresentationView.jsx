@@ -540,7 +540,10 @@ export default function PresentationView({ sessionId, session, currentMode, onli
               variant="secondary" size="lg" disabled={cur <= 0}>
               <ChevronLeft size={20} /> 이전
             </Button>
-            <span className="text-white/60 text-sm font-medium tabular-nums">{cur + 1} / {total}</span>
+            <div className="text-center">
+              <span className="text-white/60 text-sm font-medium tabular-nums">{cur + 1} / {total}</span>
+              <p className="text-white/30 text-[10px] mt-0.5">Space로 이동</p>
+            </div>
             <Button onClick={() => update(ref(db, `sessions/${sessionId}/questions/${session.currentQuestion}`), { currentSlide: Math.min(total - 1, cur + 1) })}
               variant="primary" size="lg" disabled={cur >= total - 1}>
               다음 <ChevronRight size={20} />
