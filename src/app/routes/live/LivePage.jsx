@@ -171,7 +171,7 @@ export default function LivePage() {
         questionId={session?.currentQuestion}
       />
 
-      <div className="flex-1 flex items-center justify-center overflow-auto px-8 py-4">
+      <div className="flex-1 flex items-start justify-center overflow-auto px-8 pt-6 pb-4">
         <div className="w-full max-w-5xl mx-auto">
           <AnimatePresence mode="wait">
             {isGameMode ? (
