@@ -33,7 +33,8 @@ export default memo(function AnswerBubbleOverlay({ sessionId, questionId, questi
   const queueRef = useRef([]);
   const flushRef = useRef(null);
 
-  const active = sessionId && questionId && BUBBLE_TYPES.includes(questionType);
+  // questionType 체크 제거 — 모든 활성 질문에서 버블 표시
+  const active = !!(sessionId && questionId);
 
   // Mount/unmount lifecycle
   useEffect(() => {
