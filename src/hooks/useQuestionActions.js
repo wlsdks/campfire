@@ -290,9 +290,9 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
           const scoreUpdates = {};
           batch.forEach(([participantId, vote]) => {
             const reward = getQuizReward(question, vote);
-            const existingScore = scores[participantId] || {};
+            const existingScore = (scores || {})[participantId] || {};
             const nextStreak = reward.isCorrect ? (existingScore.streak || 0) + 1 : 0;
-            const nickname = participants[participantId]?.nickname || vote.nickname || existingScore.nickname || `참여자 ${participantId.slice(0, 4)}`;
+            const nickname = (participants || {})[participantId]?.nickname || vote.nickname || existingScore.nickname || `참여자 ${participantId.slice(0, 4)}`;
             const newTotal = Math.max(0, (existingScore.total || 0) + reward.points);
 
             scoreUpdates[`scores/${participantId}`] = {

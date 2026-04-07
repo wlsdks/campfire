@@ -15,7 +15,9 @@ export function useClassQuestions(sessionId) {
   const [raw, setRaw] = useState({});
   const [loading, setLoading] = useState(true);
   const [canPost, setCanPost] = useState(true);
+  const [canAnswer, setCanAnswer] = useState(true);
   const cooldownRef = useRef(null);
+  const answerCooldownRef = useRef(null);
 
   useEffect(() => {
     if (!sessionId) return;
@@ -131,9 +133,6 @@ export function useClassQuestions(sessionId) {
     },
     [sessionId],
   );
-
-  const [canAnswer, setCanAnswer] = useState(true);
-  const answerCooldownRef = useRef(null);
 
   const postAnswer = useCallback(
     async (questionId, text, nickname, participantId) => {

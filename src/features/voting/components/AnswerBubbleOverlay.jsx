@@ -72,7 +72,6 @@ export default memo(function AnswerBubbleOverlay({ sessionId, questionId, questi
   // Firebase listener for new votes
   useEffect(() => {
     if (!active) {
-      setBubbles([]);
       queueRef.current = [];
       return;
     }
@@ -96,6 +95,8 @@ export default memo(function AnswerBubbleOverlay({ sessionId, questionId, questi
       const seed = hashSeed(snapshot.key);
       const displayText = text.length > MAX_TEXT_LEN ? text.slice(0, MAX_TEXT_LEN) + '…' : text;
 
+      // 큐 오버플로우 방지 (300명 동시 투표 대응)
+      if (queueRef.current.length > 100) queueRef.current.shift();
       queueRef.current.push({
         id: `${snapshot.key}-${Date.now()}`,
         text: displayText,
@@ -114,6 +115,7 @@ export default memo(function AnswerBubbleOverlay({ sessionId, questionId, questi
       timersRef.current.forEach(clearTimeout);
       timersRef.current = [];
       queueRef.current = [];
+      setBubbles([]);
     };
   }, [active, sessionId, questionId]);
 
