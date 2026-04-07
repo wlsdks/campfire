@@ -20,7 +20,6 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTic
       { mode: 'roulette', label: '돌림판', icon: Target },
       { mode: 'lottery', label: totalTickets > 0 ? '보상 추첨' : '제비뽑기', icon: Ticket },
       { mode: 'prizeDraw', label: '경품 추첨', icon: Gift },
-      { mode: 'slotMachine', label: '777 슬롯', icon: Dices },
       { mode: 'plinko', label: '핀볼', icon: CircleDot },
     ]},
     { label: '참여', items: [
