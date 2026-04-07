@@ -24,8 +24,6 @@ import { useGameResult } from '@/features/games/api/useGameResult';
 const GameResultOverlay = lazy(() => import('@/features/games/components/GameResultOverlay'));
 import LiveParticipation from './LiveParticipation';
 
-const Lottery = lazy(() => import('@/features/games/components/Lottery'));
-const PrizeDraw = lazy(() => import('@/features/games/components/PrizeDraw'));
 const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
 const Leaderboard = lazy(() => import('@/features/quiz/components/Leaderboard'));
 const TeamScoreboard = lazy(() => import('@/features/teams/components/TeamScoreboard'));
@@ -76,8 +74,6 @@ export default function LivePage() {
   }, [onlineList, publishResult]);
 
   // Stable per-game callbacks (avoid re-creating on every render)
-  const onLotteryResult = useCallback((names) => handleGameResult(names, 'lottery'), [handleGameResult]);
-  const onPrizeDrawResult = useCallback((names) => handleGameResult(names, 'prizeDraw'), [handleGameResult]);
   const isGameMode = ['lottery', 'prizeDraw', 'combinedRanking', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
   const isEnded = session?.status === 'ended';
   const hasActiveQuestion = ['poll', 'quiz'].includes(currentMode) && currentQId && question;
@@ -182,8 +178,18 @@ export default function LivePage() {
                 className="w-full"
               >
                 <Suspense fallback={<GameFallback />}>
-                  {currentMode === 'lottery' && <Lottery participants={onlineList} onResult={onLotteryResult} />}
-                  {currentMode === 'prizeDraw' && <PrizeDraw participants={onlineList} onResult={onPrizeDrawResult} />}
+                  {(currentMode === 'lottery' || currentMode === 'prizeDraw') && (
+                    <div className="flex flex-col items-center justify-center gap-6 text-center py-12">
+                      <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
+                        <PickMascot size="lg" mood="happy" />
+                      </motion.div>
+                      <p className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
+                        {currentMode === 'lottery' ? '추첨 진행 중' : '경품 추첨 진행 중'}
+                      </p>
+                      <p className="text-slate-400 dark:text-white/40 text-lg">강사가 당첨자를 뽑고 있어요!</p>
+                      <Badge variant="neutral"><Users size={14} className="mr-1" />{count}명 참여 중</Badge>
+                    </div>
+                  )}
                   {currentMode === 'breakTime' && <BreakTimer />}
                   {currentMode === 'leaderboard' && <div className="w-full max-w-2xl mx-auto [&_.max-w-xl]:max-w-2xl"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" /></div>}
                   {currentMode === 'teamBattle' && <div className="w-full max-w-2xl mx-auto [&_.max-w-lg]:max-w-2xl"><TeamScoreboard teamScores={teamScores || []} /></div>}
