@@ -139,6 +139,44 @@ export default function LivePage() {
     );
   }
 
+  // 추첨 대기 — 이름이 빠르게 돌아가는 효과
+  function LiveLotteryWaiting({ names, count: cnt, mode }) {
+    const [currentName, setCurrentName] = useState('');
+    useEffect(() => {
+      if (names.length === 0) return;
+      const timer = setInterval(() => {
+        setCurrentName(names[Math.floor(Math.random() * names.length)]);
+      }, 100);
+      return () => clearInterval(timer);
+    }, [names]);
+
+    return (
+      <div className="flex flex-col items-center justify-center gap-8 text-center py-8">
+        <motion.div
+          animate={{ scale: [1, 1.08, 1] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          <PickMascot size="lg" mood="happy" />
+        </motion.div>
+        <div className="space-y-4">
+          <p className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
+            {mode === 'lottery' ? '추첨 진행 중' : '경품 추첨 진행 중'}
+          </p>
+          <motion.div
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 0.8, repeat: Infinity }}
+            className="h-16 flex items-center justify-center"
+          >
+            <p className="text-4xl md:text-5xl font-black text-slate-700 dark:text-slate-200 tabular-nums tracking-tight">
+              {currentName || '...'}
+            </p>
+          </motion.div>
+          <p className="text-slate-400 dark:text-white/40 text-base">{cnt}명 참여 중 · 두근두근!</p>
+        </div>
+      </div>
+    );
+  }
+
   // 게임 결과 오버레이 — 10초 후 자동 dismiss
   function LiveGameResult({ sessionId: sid }) {
     const { winnerNames, gameResult, showOverlay, dismiss } = useGameResult(sid);
@@ -179,16 +217,7 @@ export default function LivePage() {
               >
                 <Suspense fallback={<GameFallback />}>
                   {(currentMode === 'lottery' || currentMode === 'prizeDraw') && (
-                    <div className="flex flex-col items-center justify-center gap-6 text-center py-12">
-                      <motion.div animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
-                        <PickMascot size="lg" mood="happy" />
-                      </motion.div>
-                      <p className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white tracking-tight">
-                        {currentMode === 'lottery' ? '추첨 진행 중' : '경품 추첨 진행 중'}
-                      </p>
-                      <p className="text-slate-400 dark:text-white/40 text-lg">강사가 당첨자를 뽑고 있어요!</p>
-                      <span className="text-sm text-slate-500 dark:text-slate-400">{count}명 참여 중</span>
-                    </div>
+                    <LiveLotteryWaiting names={onlineList.map(p => p.nickname)} count={count} mode={currentMode} />
                   )}
                   {currentMode === 'breakTime' && <BreakTimer />}
                   {currentMode === 'leaderboard' && <div className="w-full max-w-2xl mx-auto [&_.max-w-xl]:max-w-2xl"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" /></div>}
