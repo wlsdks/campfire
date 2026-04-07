@@ -146,6 +146,11 @@ export function useClassQuestions(sessionId) {
           participantId: participantId || '',
           timestamp: serverTimestamp(),
         });
+        // 첫 답변이 달리면 자동으로 answered 마킹
+        await update(ref(db, `sessions/${sessionId}/classQuestions/${questionId}`), {
+          answered: true,
+          answeredBy: nickname || '익명',
+        });
         setCanAnswer(false);
         answerCooldownRef.current = setTimeout(() => setCanAnswer(true), COOLDOWN_MS);
         return true;
