@@ -49,10 +49,10 @@ export default memo(function QuickProgressCard({
   const isMysteryOrHint = currentQ && ['mysteryBox', 'hintQuiz'].includes(currentQ?.type);
   const mhRevealed = isMysteryOrHint && currentQ?.revealedAt;
   const mhUnrevealed = isMysteryOrHint && !currentQ?.revealedAt;
-  // 객관식(choice)도 정답이 있으면 정답 공개 지원
-  const isChoiceWithAnswer = currentQ?.type === 'choice' && currentQ?.correctAnswer && !isActiveQuiz;
-  const choiceRevealed = isChoiceWithAnswer && currentQ?.revealedAt;
-  const choiceUnrevealed = isChoiceWithAnswer && !currentQ?.revealedAt;
+  // quiz 외 정답형 질문(choice, ox, fillinblank, ranking 등) 정답 공개 지원
+  const hasAnswerType = !isActiveQuiz && !isMysteryOrHint && currentQ?.correctAnswer;
+  const answerRevealed = hasAnswerType && currentQ?.revealedAt;
+  const answerUnrevealed = hasAnswerType && !currentQ?.revealedAt;
   const canRevealHint = currentQ?.type === 'hintQuiz' && (currentQ?.revealedHints || 0) < (currentQ?.hints || []).length;
 
   /* Determine primary + secondary CTA based on session state */
@@ -150,8 +150,8 @@ export default memo(function QuickProgressCard({
         대기 화면
       </Button>
     );
-  } else if (choiceUnrevealed) {
-    /* Choice with answer — reveal */
+  } else if (answerUnrevealed) {
+    /* 정답형 질문 (choice, ox, fillinblank, ranking) — reveal */
     primaryBtn = (
       <Button onClick={() => onRevealAnswer?.(currentEntry[0])} variant="primary" size="md"
         className="min-h-[52px] sm:min-h-0 sm:py-1.5 sm:text-sm sm:gap-1.5">
@@ -166,8 +166,8 @@ export default memo(function QuickProgressCard({
         대기 화면
       </Button>
     );
-  } else if (choiceRevealed) {
-    /* Choice revealed — next */
+  } else if (answerRevealed) {
+    /* 정답 공개됨 — next */
     primaryBtn = (
       <Button onClick={handleActivateNext} variant="primary" size="md"
         disabled={!nextEntry}

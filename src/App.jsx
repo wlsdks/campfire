@@ -174,7 +174,6 @@ function App() {
         <Route path="/" element={
           <ErrorBoundary scope="student">
             <StudentRouter />
-            <InstallPrompt />
           </ErrorBoundary>
         } />
         <Route path="/admin" element={

@@ -37,8 +37,8 @@ export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView,
   const isActive = currentQuestion === qId;
   const isQuiz = isQuizQuestion(q);
   const isMH = ['mysteryBox', 'hintQuiz'].includes(q.type);
-  const isChoiceWithAnswer = q.type === 'choice' && q.correctAnswer;
-  const hasReveal = isQuiz || isMH || isChoiceWithAnswer;
+  const hasAnswer = !isQuiz && q.correctAnswer;
+  const hasReveal = isQuiz || hasAnswer;
   const handleReveal = () => isQuiz ? onReveal?.(qId) : onRevealAnswer?.(qId);
   const stopDrag = (e) => e.stopPropagation();
 

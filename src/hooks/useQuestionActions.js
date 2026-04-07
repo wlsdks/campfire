@@ -350,7 +350,9 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
 
   async function revealAnswer(qId) {
     const question = questions?.[qId];
-    if (!question || !['mysteryBox', 'hintQuiz'].includes(question.type)) return;
+    if (!question) return;
+    // quiz 타입은 revealQuiz를 사용, 나머지 정답형은 여기서 처리
+    if (isQuizQuestion(question)) return;
     try {
       await update(ref(db, `sessions/${sessionId}`), {
         [`questions/${qId}/revealedAt`]: getNow(),
