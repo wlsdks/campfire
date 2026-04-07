@@ -15,6 +15,7 @@ import WaitingPage from './WaitingPage';
 import ActivePollView from './ActivePollView';
 import { getModeVariants, ENTER_TRANSITION } from './VoteHelpers';
 import { VoteModeContent } from './VoteModeContent';
+import DrumrollOverlay from '@/components/ui/DrumrollOverlay';
 
 export default memo(function VotePage({ sessionId }) {
   const { session, loading } = useSession(sessionId);
@@ -127,7 +128,7 @@ export default memo(function VotePage({ sessionId }) {
         </motion.div>
       </AnimatePresence>
 
-      {/* AchievementToast is persistent — outside AnimatePresence to avoid re-mounting on mode change */}
+      <DrumrollOverlay active={!!session?.drumroll} />
       <AchievementToast achievements={achievements} />
     </>
   );

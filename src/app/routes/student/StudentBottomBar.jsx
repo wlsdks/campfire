@@ -149,9 +149,11 @@ export default memo(function StudentBottomBar({ sessionId }) {
         aria-label="참여 도구"
         className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 z-30 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
       >
-        <div className="max-w-[620px] mx-auto px-5 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
-          <ReactionBar sessionId={sessionId} />
-          <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
+        <div className="max-w-[620px] mx-auto px-5 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
+          <div className="mb-2">
+            <ReactionBar sessionId={sessionId} />
+          </div>
+          <div>
             <div className="grid grid-cols-5 gap-2">
 
               {/* 손들기 — raised state has pulsing ring + waving icon */}

@@ -1,5 +1,6 @@
-import { useState, useCallback, useEffect, lazy, Suspense, useRef } from 'react';
+import { useState, useCallback, useEffect, useMemo, lazy, Suspense, useRef } from 'react';
 import DrumrollOverlay from '@/components/ui/DrumrollOverlay';
+import { isQuizQuestion } from '@/lib/quiz';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, QrCode, X, Copy, Check, Swords, Hand, MessageSquare, ChevronDown, ChevronRight, Eye, Trophy } from 'lucide-react';
 import { ref, update } from 'firebase/database';
@@ -357,16 +358,17 @@ function PresentRevealControls({ sessionId, session }) {
   const question = currentQId ? session?.questions?.[currentQId] : null;
   if (!question) return null;
 
+  const hasAnswer = question.correctAnswer && !isQuizQuestion(question);
   const isMH = ['mysteryBox', 'hintQuiz'].includes(question.type);
-  if (!isMH) return null;
+  if (!hasAnswer && !isMH) return null;
 
-  // 정답 공개 후: 당첨자 공개 버튼
+  // 정답 공개 후: 당첨자 공개 버튼 (mysteryBox/hintQuiz만)
   const presetWinners = question.winners || [];
   const revealedWinners = question.revealedWinners || 0;
-  const canRevealWinner = question.revealedAt && presetWinners.length > 0 && revealedWinners < presetWinners.length;
+  const canRevealWinner = question.revealedAt && isMH && presetWinners.length > 0 && revealedWinners < presetWinners.length;
 
   if (question.revealedAt && !canRevealWinner) return null;
-  if (question.revealedAt) {
+  if (question.revealedAt && canRevealWinner) {
     return (
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20">
         <Button onClick={async () => {
@@ -396,12 +398,14 @@ function PresentRevealControls({ sessionId, session }) {
   async function handleRevealAnswer() {
     await update(ref(db, `sessions/${sessionId}`), {
       [`questions/${currentQId}/revealedAt`]: Date.now(),
+      drumroll: null,
     });
   }
 
   return (
     <>
       <DrumrollOverlay active={drumroll} onComplete={() => { setDrumroll(false); handleRevealAnswer(); }} />
+
       <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
         {canRevealHint && (
           <Button onClick={handleRevealHint} variant="secondary" size="lg">
@@ -409,7 +413,10 @@ function PresentRevealControls({ sessionId, session }) {
             힌트 공개 ({revealedHints}/{hints.length})
           </Button>
         )}
-        <Button onClick={() => setDrumroll(true)} variant="ghost" size="lg">
+        <Button onClick={async () => {
+          await update(ref(db, `sessions/${sessionId}`), { drumroll: true });
+          setDrumroll(true);
+        }} variant="ghost" size="lg">
           두구두구
         </Button>
         <Button onClick={handleRevealAnswer} variant="primary" size="lg">
@@ -436,11 +443,40 @@ export default function PresentationView({ sessionId, session, currentMode, onli
     publishResult(mode, winners, allIds);
   }, [onlineList, drawParticipants, publishResult]);
 
+  // 질문 네비게이션
+  const questionList = useMemo(() => {
+    return Object.entries(session?.questions || {}).sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
+  }, [session?.questions]);
+  const currentQIdx = questionList.findIndex(([id]) => id === session?.currentQuestion);
+
+  const goToQuestion = useCallback(async (qId) => {
+    const q = session?.questions?.[qId];
+    if (!q) return;
+    const mode = isQuizQuestion(q) ? 'quiz' : 'poll';
+    await update(ref(db, `sessions/${sessionId}`), {
+      currentQuestion: qId, currentMode: mode,
+      [`questions/${qId}/activatedAt`]: Date.now(),
+      [`questions/${qId}/revealedAt`]: null,
+    });
+  }, [sessionId, session?.questions]);
+
+  const goPrev = useCallback(() => {
+    if (currentQIdx > 0) goToQuestion(questionList[currentQIdx - 1][0]);
+  }, [currentQIdx, questionList, goToQuestion]);
+
+  const goNext = useCallback(() => {
+    if (currentQIdx < questionList.length - 1) goToQuestion(questionList[currentQIdx + 1][0]);
+  }, [currentQIdx, questionList, goToQuestion]);
+
   useEffect(() => {
-    const handler = (e) => { if (e.key === 'Escape') exitPresent(); };
+    const handler = (e) => {
+      if (e.key === 'Escape') exitPresent();
+      if (e.key === 'ArrowLeft') goPrev();
+      if (e.key === 'ArrowRight') goNext();
+    };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [exitPresent]);
+  }, [exitPresent, goPrev, goNext]);
 
   return (
     <div className="min-h-dvh bg-white dark:bg-slate-900 relative">
@@ -477,9 +513,22 @@ export default function PresentationView({ sessionId, session, currentMode, onli
       {/* 힌트 퀴즈 / 미스터리 박스 컨트롤 — 하단 중앙 */}
       <PresentRevealControls sessionId={sessionId} session={session} />
 
-      {/* Participant count badge — bottom-left */}
-      <div className="fixed bottom-3 left-3 md:bottom-5 md:left-5 flex items-center gap-2 pointer-events-none">
+      {/* Bottom bar — participant count + navigation */}
+      <div className="fixed bottom-3 left-3 md:bottom-5 md:left-5 flex items-center gap-2">
         <Badge variant="neutral"><Users size={12} className="mr-1" />{count}명</Badge>
+        {questionList.length > 1 && (
+          <>
+            <button onClick={goPrev} disabled={currentQIdx <= 0}
+              className="px-2.5 py-1.5 rounded-lg bg-slate-900/60 hover:bg-slate-900/80 disabled:opacity-30 text-white text-xs font-medium transition-colors backdrop-blur-sm">
+              ← 이전
+            </button>
+            <span className="text-xs text-white/50 tabular-nums">{currentQIdx + 1}/{questionList.length}</span>
+            <button onClick={goNext} disabled={currentQIdx >= questionList.length - 1}
+              className="px-2.5 py-1.5 rounded-lg bg-slate-900/60 hover:bg-slate-900/80 disabled:opacity-30 text-white text-xs font-medium transition-colors backdrop-blur-sm">
+              다음 →
+            </button>
+          </>
+        )}
       </div>
 
       <ExitHint onExit={exitPresent} />

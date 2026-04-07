@@ -19,6 +19,7 @@ import PickMascot from '@/components/ui/PickMascot';
 
 import { useTheme } from '@/hooks/useTheme';
 import LiveHeader from './LiveHeader';
+import DrumrollOverlay from '@/components/ui/DrumrollOverlay';
 import LiveParticipation from './LiveParticipation';
 
 const Roulette = lazy(() => import('@/features/games/components/Roulette'));
@@ -147,6 +148,7 @@ export default function LivePage() {
       <LiveHeader courseName={session?.courseName} roundNumber={session?.roundNumber} count={count} sessionId={sessionId} />
       <JoinToast sessionId={sessionId} />
       <ReactionOverlay sessionId={sessionId} />
+      <DrumrollOverlay active={!!session?.drumroll} />
       <AnswerBubbleOverlay
         sessionId={sessionId}
         questionId={session?.currentQuestion}
