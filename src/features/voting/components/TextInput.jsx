@@ -50,8 +50,8 @@ function SubmitConfirm({ type, value }) {
             transition={{ delay: 0.3 }}
             className="rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-700 dark:border-slate-600 px-4 py-3 text-center w-full"
           >
-            <p className="text-xs font-medium text-slate-400 mb-1">내가 {isGuess ? '입력한 답' : isQnA ? '보낸 질문' : '입력한 단어'}</p>
-            <p className="text-sm font-medium text-slate-700">{value}</p>
+            <p className="text-xs font-medium text-slate-400 dark:text-slate-500 mb-1">내가 {isGuess ? '입력한 답' : isQnA ? '보낸 질문' : '입력한 단어'}</p>
+            <p className="text-sm font-medium text-slate-700 dark:text-slate-200">{value}</p>
           </motion.div>
         )}
       </div>
@@ -106,7 +106,7 @@ export default memo(function TextInput({ sessionId, questionId, type = 'wordclou
           className="w-full bg-slate-50 border border-slate-200 dark:bg-slate-700 dark:border-slate-600 text-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 rounded-xl px-4 py-3.5 pr-16 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-600 transition-colors duration-150"
           autoFocus
         />
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-300 font-medium">
+        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-300 dark:text-slate-500 font-medium">
           {text.length}/{maxLength}
         </span>
       </div>

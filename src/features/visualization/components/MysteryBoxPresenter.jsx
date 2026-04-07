@@ -8,11 +8,6 @@ const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 
 const SPRING_BOUNCY = { type: 'spring', stiffness: 400, damping: 22 };
 
-/**
- * MysteryBoxPresenter — 프레젠터/라이브 뷰 전용.
- * 정답 공개 전: 빙글빙글 돌아가는 미스터리 박스
- * 정답 공개 후: 폭죽 + 정답 + 응답 분포
- */
 export default memo(function MysteryBoxPresenter({ sessionId, questionId, question, revealed }) {
   const { totalVotes } = useVotes(sessionId, questionId);
   const items = useMemo(() => question?.mysteryItems?.length > 0 ? question.mysteryItems : ['?', '??', '???'], [question?.mysteryItems]);
@@ -22,7 +17,6 @@ export default memo(function MysteryBoxPresenter({ sessionId, questionId, questi
   const textRef = useRef(null);
   const intervalRef = useRef(null);
 
-  // Spin animation — DOM direct for smooth cycling
   useEffect(() => {
     if (!revealed && items.length > 0) {
       let idx = 0;
@@ -50,7 +44,6 @@ export default memo(function MysteryBoxPresenter({ sessionId, questionId, questi
             transition={SPRING_BOUNCY}
             className="relative"
           >
-            {/* Spinning box */}
             <motion.div
               animate={{ rotate: [0, -1, 1, -1, 0], scale: [1, 1.02, 0.98, 1.02, 1] }}
               transition={{ duration: 0.5, repeat: Infinity, ease: 'easeInOut' }}
@@ -60,27 +53,25 @@ export default memo(function MysteryBoxPresenter({ sessionId, questionId, questi
                 animate={{ opacity: [0.4, 1, 0.4] }}
                 transition={{ duration: 0.6, repeat: Infinity }}
               >
-                <HelpCircle size={40} className="text-slate-300 dark:text-slate-600" />
+                <HelpCircle size={40} className="text-slate-300 dark:text-slate-500" />
               </motion.div>
               <span
                 ref={textRef}
-                className="text-2xl md:text-3xl font-bold text-slate-400 dark:text-slate-500 tabular-nums min-h-[2.5rem] text-center px-4 mt-2"
+                className="text-2xl md:text-3xl font-bold text-slate-400 dark:text-slate-300 tabular-nums min-h-[2.5rem] text-center px-4 mt-2"
               >?</span>
             </motion.div>
 
-            {/* Pulse ring */}
             <motion.div
               className="absolute inset-0 rounded-3xl border-2 border-slate-200 dark:border-slate-600"
               animate={{ scale: [1, 1.15, 1], opacity: [0.5, 0, 0.5] }}
               transition={{ duration: 2, repeat: Infinity, ease: 'easeOut' }}
             />
 
-            {/* Vote count */}
             {totalVotes > 0 && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-sm text-slate-400 whitespace-nowrap"
+                className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-sm text-slate-400 dark:text-slate-500 whitespace-nowrap"
               >
                 {totalVotes}명 답변 중
               </motion.div>
@@ -99,7 +90,7 @@ export default memo(function MysteryBoxPresenter({ sessionId, questionId, questi
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-xs font-semibold text-white/60 dark:text-slate-900/50 uppercase tracking-wider mb-3"
+              className="text-xs font-semibold text-white/70 dark:text-slate-500 uppercase tracking-wider mb-3"
             >
               정답
             </motion.p>
@@ -119,7 +110,7 @@ export default memo(function MysteryBoxPresenter({ sessionId, questionId, questi
                     initial={{ opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 + i * 0.15 }}
-                    className="text-sm text-white/50 dark:text-slate-900/50"
+                    className="text-sm text-white/60 dark:text-slate-600"
                   >{r}</motion.p>
                 ))}
               </div>
@@ -129,7 +120,7 @@ export default memo(function MysteryBoxPresenter({ sessionId, questionId, questi
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8 }}
-                className="mt-4 text-sm text-white/40 dark:text-slate-900/40"
+                className="mt-4 text-sm text-white/50 dark:text-slate-500"
               >
                 {totalVotes}명 참여
               </motion.p>

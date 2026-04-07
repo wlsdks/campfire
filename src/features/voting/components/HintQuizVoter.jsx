@@ -13,7 +13,7 @@ export default memo(function HintQuizVoter({ sessionId, questionId, hints = [], 
   return (
     <div className="space-y-4">
       {/* Hint counter */}
-      <div className="flex items-center justify-center gap-2 text-slate-400">
+      <div className="flex items-center justify-center gap-2 text-slate-400 dark:text-slate-500">
         <Lightbulb size={16} />
         <span className="text-sm font-medium">힌트 {revealedHints}/{maxHints}</span>
       </div>
@@ -44,7 +44,7 @@ export default memo(function HintQuizVoter({ sessionId, questionId, hints = [], 
                     <span className="w-6 h-6 rounded-md bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500 flex items-center justify-center text-xs font-bold shrink-0">
                       {i + 1}
                     </span>
-                    <p className="text-sm text-slate-300 dark:text-slate-600">???</p>
+                    <p className="text-sm text-slate-300 dark:text-slate-500">???</p>
                   </div>
                 )}
               </AnimatePresence>

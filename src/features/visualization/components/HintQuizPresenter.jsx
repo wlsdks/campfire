@@ -8,10 +8,6 @@ const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 const SPRING = { type: 'spring', stiffness: 300, damping: 25 };
 const SPRING_BOUNCY = { type: 'spring', stiffness: 400, damping: 22 };
 
-/**
- * HintQuizPresenter — 프레젠터/라이브 뷰 전용.
- * 힌트를 순차 공개하고, 정답 공개 시 폭죽 + 정답 표시.
- */
 export default memo(function HintQuizPresenter({ sessionId, questionId, question, revealed }) {
   const { totalVotes } = useVotes(sessionId, questionId);
   const hints = question?.hints || [];
@@ -22,24 +18,22 @@ export default memo(function HintQuizPresenter({ sessionId, questionId, question
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-xl mx-auto px-4">
-      {/* Hint counter */}
       {!revealed && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="flex items-center gap-2"
         >
-          <Lightbulb size={18} className="text-slate-400" />
+          <Lightbulb size={18} className="text-slate-400 dark:text-slate-500" />
           <span className="text-sm font-medium text-slate-500 dark:text-slate-400">
             힌트 {revealedHints}/{maxHints}
           </span>
           {totalVotes > 0 && (
-            <span className="text-sm text-slate-400 ml-2">· {totalVotes}명 답변 중</span>
+            <span className="text-sm text-slate-400 dark:text-slate-500 ml-2">· {totalVotes}명 답변 중</span>
           )}
         </motion.div>
       )}
 
-      {/* Hint cards */}
       {!revealed && (
         <div className="w-full space-y-3">
           {hints.slice(0, maxHints).map((hint, i) => {
@@ -69,7 +63,7 @@ export default memo(function HintQuizPresenter({ sessionId, questionId, question
                     <span className="w-7 h-7 rounded-lg bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500 flex items-center justify-center text-sm font-bold shrink-0">
                       {i + 1}
                     </span>
-                    <p className="text-base text-slate-300 dark:text-slate-600">???</p>
+                    <p className="text-base text-slate-300 dark:text-slate-500">???</p>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -78,7 +72,6 @@ export default memo(function HintQuizPresenter({ sessionId, questionId, question
         </div>
       )}
 
-      {/* Answer reveal */}
       <AnimatePresence>
         {revealed && (
           <motion.div
@@ -93,7 +86,7 @@ export default memo(function HintQuizPresenter({ sessionId, questionId, question
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="text-xs font-semibold text-white/60 dark:text-slate-900/50 uppercase tracking-wider mb-3"
+              className="text-xs font-semibold text-white/70 dark:text-slate-500 uppercase tracking-wider mb-3"
             >
               정답
             </motion.p>
@@ -110,7 +103,7 @@ export default memo(function HintQuizPresenter({ sessionId, questionId, question
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
-                className="mt-3 text-sm text-white/40 dark:text-slate-900/40"
+                className="mt-3 text-sm text-white/60 dark:text-slate-600"
               >
                 허용 답변: {acceptableAnswers.join(', ')}
               </motion.p>
@@ -120,7 +113,7 @@ export default memo(function HintQuizPresenter({ sessionId, questionId, question
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.6 }}
-                className="mt-2 text-sm text-white/40 dark:text-slate-900/40"
+                className="mt-2 text-sm text-white/50 dark:text-slate-500"
               >
                 {totalVotes}명 참여
               </motion.p>
