@@ -3,7 +3,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/lib/firebase';
 import { compressImage } from '@/lib/image-utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ImagePlus, X, Loader2, GripVertical } from 'lucide-react';
+import { ImagePlus, X, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const MAX_SIZE_MB = 20; // 압축 전 원본 허용 (압축 후 1-2MB)
 const MAX_IMAGES = 10;
@@ -67,6 +67,14 @@ export default memo(function MultiImageUpload({ images = [], onChange }) {
     onChange(images.filter((_, i) => i !== index));
   }
 
+  function moveImage(index, direction) {
+    const next = [...images];
+    const swapIdx = index + direction;
+    if (swapIdx < 0 || swapIdx >= next.length) return;
+    [next[index], next[swapIdx]] = [next[swapIdx], next[index]];
+    onChange(next);
+  }
+
   return (
     <div className="space-y-3">
       {images.length > 0 && (
@@ -81,17 +89,23 @@ export default memo(function MultiImageUpload({ images = [], onChange }) {
                 className="relative aspect-video rounded-lg overflow-hidden border border-slate-200 dark:border-slate-700 group"
               >
                 <img src={url} alt={`이미지 ${i + 1}`} className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center gap-1">
                   <span className="absolute top-1 left-1 w-5 h-5 rounded bg-black/50 text-white text-[10px] font-bold flex items-center justify-center">
                     {i + 1}
                   </span>
-                  <button
-                    onClick={() => removeImage(i)}
-                    className="opacity-0 group-hover:opacity-100 w-7 h-7 rounded-full bg-red-500 text-white flex items-center justify-center transition-opacity"
-                    aria-label="이미지 삭제"
-                  >
-                    <X size={14} />
-                  </button>
+                  {i > 0 && (
+                    <button onClick={() => moveImage(i, -1)}
+                      className="opacity-0 group-hover:opacity-100 w-6 h-6 rounded-full bg-white/80 text-slate-700 flex items-center justify-center transition-opacity"
+                      aria-label="앞으로"><ChevronLeft size={14} /></button>
+                  )}
+                  <button onClick={() => removeImage(i)}
+                    className="opacity-0 group-hover:opacity-100 w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center transition-opacity"
+                    aria-label="삭제"><X size={12} /></button>
+                  {i < images.length - 1 && (
+                    <button onClick={() => moveImage(i, 1)}
+                      className="opacity-0 group-hover:opacity-100 w-6 h-6 rounded-full bg-white/80 text-slate-700 flex items-center justify-center transition-opacity"
+                      aria-label="뒤로"><ChevronRight size={14} /></button>
+                  )}
                 </div>
               </motion.div>
             ))}
