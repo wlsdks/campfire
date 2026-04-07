@@ -1,10 +1,8 @@
-import { memo, useMemo, lazy, Suspense } from 'react';
+import { memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Lightbulb, Trophy } from 'lucide-react';
 import { useVotes } from '@/hooks/useVotes';
 import Avatar from '@/components/ui/Avatar';
-
-const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 
 const SPRING = { type: 'spring', stiffness: 300, damping: 25 };
 const SPRING_BOUNCY = { type: 'spring', stiffness: 400, damping: 22 };
@@ -86,7 +84,6 @@ export default memo(function HintQuizPresenter({ sessionId, questionId, question
             transition={SPRING_BOUNCY}
             className="relative w-full rounded-2xl bg-slate-900 dark:bg-slate-100 p-10 md:p-14 text-center shadow-2xl shadow-slate-900/20 overflow-hidden"
           >
-            <Suspense fallback={null}><ConfettiBurst /></Suspense>
             <motion.p
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
