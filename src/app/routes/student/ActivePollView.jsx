@@ -12,6 +12,8 @@ import FillBlankVoter from '@/features/voting/components/FillBlankVoter';
 import CheckVoter from '@/features/voting/components/CheckVoter';
 import MysteryBoxVoter from '@/features/voting/components/MysteryBoxVoter';
 import HintQuizVoter from '@/features/voting/components/HintQuizVoter';
+import CorrectAnswerRanking from '@/features/visualization/components/CorrectAnswerRanking';
+import { getParticipantId } from '@/lib/participant';
 import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
 import QuestionCard from './QuestionCard';
@@ -170,16 +172,37 @@ export default memo(function ActivePollView({
                 <CheckVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
               )}
               {question.type === 'mysteryBox' && (
-                <MysteryBoxVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
+                <>
+                  <MysteryBoxVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
+                  {question.revealedAt && (
+                    <CorrectAnswerRanking
+                      sessionId={sessionId}
+                      questionId={questionId}
+                      correctAnswer={question.correctAnswer}
+                      myParticipantId={getParticipantId()}
+                    />
+                  )}
+                </>
               )}
               {question.type === 'hintQuiz' && (
-                <HintQuizVoter
-                  sessionId={sessionId}
-                  questionId={questionId}
-                  hints={question.hints || []}
-                  revealedHints={question.revealedHints || 0}
-                  disabled={timerExpired}
-                />
+                <>
+                  <HintQuizVoter
+                    sessionId={sessionId}
+                    questionId={questionId}
+                    hints={question.hints || []}
+                    revealedHints={question.revealedHints || 0}
+                    disabled={timerExpired}
+                  />
+                  {question.revealedAt && (
+                    <CorrectAnswerRanking
+                      sessionId={sessionId}
+                      questionId={questionId}
+                      correctAnswer={question.correctAnswer}
+                      acceptableAnswers={question.acceptableAnswers}
+                      myParticipantId={getParticipantId()}
+                    />
+                  )}
+                </>
               )}
 
               {/* Time's up overlay — only show if student hasn't voted yet */}

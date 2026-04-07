@@ -11,6 +11,7 @@ import CheckProgress from './CheckProgress';
 import TextAnswerChart from './TextAnswerChart';
 import MysteryBoxPresenter from './MysteryBoxPresenter';
 import HintQuizPresenter from './HintQuizPresenter';
+import CorrectAnswerRanking from './CorrectAnswerRanking';
 import BetDistribution from './BetDistribution';
 import ConfidenceStats from './ConfidenceStats';
 import Badge from '@/components/ui/Badge';
@@ -125,20 +126,39 @@ export default memo(function VizRenderer({ sessionId, session }) {
           )}
           {question.type === 'check' && <CheckProgress sessionId={sessionId} questionId={currentQId} />}
           {question.type === 'mysteryBox' && (
-            <MysteryBoxPresenter
-              sessionId={sessionId}
-              questionId={currentQId}
-              question={question}
-              revealed={answerRevealed}
-            />
+            <>
+              <MysteryBoxPresenter
+                sessionId={sessionId}
+                questionId={currentQId}
+                question={question}
+                revealed={answerRevealed}
+              />
+              {answerRevealed && (
+                <CorrectAnswerRanking
+                  sessionId={sessionId}
+                  questionId={currentQId}
+                  correctAnswer={question.correctAnswer}
+                />
+              )}
+            </>
           )}
           {question.type === 'hintQuiz' && (
-            <HintQuizPresenter
-              sessionId={sessionId}
-              questionId={currentQId}
-              question={question}
-              revealed={answerRevealed}
-            />
+            <>
+              <HintQuizPresenter
+                sessionId={sessionId}
+                questionId={currentQId}
+                question={question}
+                revealed={answerRevealed}
+              />
+              {answerRevealed && (
+                <CorrectAnswerRanking
+                  sessionId={sessionId}
+                  questionId={currentQId}
+                  correctAnswer={question.correctAnswer}
+                  acceptableAnswers={question.acceptableAnswers}
+                />
+              )}
+            </>
           )}
           {isQA && <QACards sessionId={sessionId} questionId={currentQId} title={question.title} />}
         </div>
