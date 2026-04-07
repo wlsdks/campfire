@@ -76,13 +76,13 @@ function AnswerDistribution({ sessionId, questionId, correctAnswer }) {
         <div className="space-y-1.5">
           <div className="flex items-center justify-between text-xs">
             <span className="text-slate-400">정답률</span>
-            <span className="font-semibold text-slate-700">{correctPct}%</span>
+            <span className="font-semibold text-slate-700 dark:text-slate-200">{correctPct}%</span>
           </div>
-          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+          <div className="h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
             <motion.div
               animate={{ width: `${correctPct}%` }}
               transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-              className="h-full bg-slate-700 rounded-full"
+              className="h-full bg-slate-700 dark:bg-slate-300 rounded-full"
             />
           </div>
         </div>
@@ -92,8 +92,8 @@ function AnswerDistribution({ sessionId, questionId, correctAnswer }) {
         <div className="space-y-1">
           {topAnswers.map((a, i) => (
             <div key={a.answer} className="flex items-center gap-2">
-              <span className="text-[10px] font-bold text-slate-300 w-3 text-right">{i + 1}</span>
-              <span className="flex-1 text-xs text-slate-600 truncate">{a.answer}</span>
+              <span className="text-[10px] font-bold text-slate-300 dark:text-slate-600 w-3 text-right">{i + 1}</span>
+              <span className="flex-1 text-xs text-slate-600 dark:text-slate-300 truncate">{a.answer}</span>
               <span className="text-xs text-slate-400 tabular-nums">{a.count}</span>
             </div>
           ))}

@@ -196,7 +196,7 @@ export default memo(function ScaleVoter({ sessionId, questionId, disabled = fals
               type="button"
               onClick={() => setValue(l.value)}
               className={`text-xs font-medium transition-colors duration-150 ${
-                value === l.value ? 'text-slate-700' : 'text-slate-300 dark:text-slate-600 hover:text-slate-500'
+                value === l.value ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400 dark:text-slate-500 hover:text-slate-500 dark:hover:text-slate-400'
               }`}
             >
               {l.label}

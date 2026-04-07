@@ -47,16 +47,16 @@ function DebateLiveRatio({ sessionId, questionId, mySide }) {
 
       {/* Ratio bar */}
       <div className="space-y-2">
-        <div className="h-3 bg-slate-100 rounded-full overflow-hidden flex">
+        <div className="h-3 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden flex">
           <motion.div
             animate={{ width: `${forPct}%` }}
             transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-            className="bg-slate-800 h-full rounded-l-full"
+            className="bg-slate-800 dark:bg-slate-200 h-full rounded-l-full"
           />
           <motion.div
             animate={{ width: `${againstPct}%` }}
             transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-            className="bg-slate-300 h-full rounded-r-full"
+            className="bg-slate-300 dark:bg-slate-600 h-full rounded-r-full"
           />
         </div>
         <div className="flex justify-between text-xs">

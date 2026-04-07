@@ -113,7 +113,7 @@ export default function StudentHeader({ sessionId }) {
               onClick={toggleMute}
               aria-label={muted ? '알림음 켜기' : '알림음 끄기'}
               aria-pressed={!muted}
-              className="w-8 h-8 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150"
+              className="w-10 h-10 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150"
             >
               {muted
                 ? <VolumeOff size={16} />
