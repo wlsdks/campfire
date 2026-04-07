@@ -17,14 +17,6 @@ const PODIUM_STYLES = [
 export default memo(function CombinedRanking({ session }) {
   const [search, setSearch] = useState('');
 
-  if (!session?.questions) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <p className="text-slate-400 dark:text-slate-500 text-sm">데이터를 불러오는 중...</p>
-      </div>
-    );
-  }
-
   const ranking = useMemo(() => {
     const questions = session?.questions || {};
     const scoreMap = {};
@@ -56,6 +48,14 @@ export default memo(function CombinedRanking({ session }) {
   const totalQuestions = useMemo(() => {
     return Object.values(session?.questions || {}).filter(q => q.correctAnswer).length;
   }, [session?.questions]);
+
+  if (!session?.questions) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <p className="text-slate-400 dark:text-slate-500 text-sm">데이터를 불러오는 중...</p>
+      </div>
+    );
+  }
 
   const podium = ranking.slice(0, 3);
   const rest = search.trim()
