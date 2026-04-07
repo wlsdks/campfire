@@ -179,7 +179,7 @@ export default function LivePage() {
                 className="w-full"
               >
                 <Suspense fallback={<GameFallback />}>
-                  {currentMode === 'roulette' && <Roulette participants={onlineList} scores={scores} onResult={onRouletteResult} />}
+                  {currentMode === 'roulette' && <Roulette participants={onlineList} scores={scores} onResult={onRouletteResult} gameState={session?.gameState} />}
                   {currentMode === 'lottery' && <Lottery participants={onlineList} onResult={onLotteryResult} />}
                   {currentMode === 'prizeDraw' && <PrizeDraw participants={onlineList} onResult={onPrizeDrawResult} />}
                   {currentMode === 'breakTime' && <BreakTimer />}

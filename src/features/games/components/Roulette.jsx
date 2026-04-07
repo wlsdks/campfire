@@ -33,12 +33,13 @@ function getWeightedSpinResult(segments) {
   return { winnerIndex, angleToCenter };
 }
 
-export default function Roulette({ participants, scores = {}, onResult }) {
+export default function Roulette({ participants, scores = {}, onResult, gameState, onGameStateChange }) {
   const [spinning, setSpinning] = useState(false);
   const [winner, setWinner] = useState(null);
   const [rotation, setRotation] = useState(0);
   const mountedRef = useRef(true);
   const timerRef = useRef(null);
+  const lastGameStateRef = useRef(null);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -47,6 +48,13 @@ export default function Roulette({ participants, scores = {}, onResult }) {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, []);
+
+  // 전자칠판: gameState 변경 감지 → 자동 스핀
+  useEffect(() => {
+    if (!gameState?.spinning || !gameState?.winnerName || gameState?.ts === lastGameStateRef.current) return;
+    lastGameStateRef.current = gameState.ts;
+    autoSpin(gameState.winnerName);
+  }, [gameState]);
 
   const segmentsWithAngle = useMemo(() => {
     const segs = participants.map(p => {
@@ -65,13 +73,15 @@ export default function Roulette({ participants, scores = {}, onResult }) {
 
   const names = useMemo(() => segmentsWithAngle.map(s => s.name), [segmentsWithAngle]);
 
-  function spin() {
-    if (spinning || names.length === 0) return;
+  function spinToWinner(winnerName) {
+    const winnerIndex = segmentsWithAngle.findIndex(s => s.name === winnerName);
+    if (winnerIndex < 0) return;
+    const seg = segmentsWithAngle[winnerIndex];
+    const angleToCenter = seg.startAngle + seg.angle / 2;
+
     setSpinning(true);
     setWinner(null);
-    const { winnerIndex, angleToCenter } = getWeightedSpinResult(segmentsWithAngle);
     setRotation(prev => {
-      // Desired final position: (360 - angleToCenter) so winner is under pointer
       const desired = ((360 - angleToCenter) % 360 + 360) % 360;
       const current = ((prev % 360) + 360) % 360;
       let delta = desired - current;
@@ -82,10 +92,41 @@ export default function Roulette({ participants, scores = {}, onResult }) {
     timerRef.current = setTimeout(() => {
       if (!mountedRef.current) return;
       setSpinning(false);
-      const w = names[winnerIndex];
-      setWinner(w);
+      setWinner(winnerName);
       hapticSuccess();
-      onResult?.(w);
+    }, 4500);
+  }
+
+  function autoSpin(winnerName) {
+    if (spinning) return;
+    spinToWinner(winnerName);
+  }
+
+  function spin() {
+    if (spinning || names.length === 0) return;
+    const { winnerIndex, angleToCenter } = getWeightedSpinResult(segmentsWithAngle);
+    const winnerName = names[winnerIndex];
+
+    // Firebase에 게임 상태 저장 → 전자칠판 동기화
+    onGameStateChange?.({ spinning: true, winnerName, ts: Date.now() });
+
+    setSpinning(true);
+    setWinner(null);
+    setRotation(prev => {
+      const desired = ((360 - angleToCenter) % 360 + 360) % 360;
+      const current = ((prev % 360) + 360) % 360;
+      let delta = desired - current;
+      if (delta <= 0) delta += 360;
+      const extraSpins = (6 + Math.floor(Math.random() * 3)) * 360;
+      return prev + extraSpins + delta;
+    });
+    timerRef.current = setTimeout(() => {
+      if (!mountedRef.current) return;
+      setSpinning(false);
+      setWinner(winnerName);
+      hapticSuccess();
+      onResult?.(winnerName);
+      onGameStateChange?.(null);
     }, 4500);
   }
 

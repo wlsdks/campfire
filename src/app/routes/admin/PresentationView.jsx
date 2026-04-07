@@ -204,7 +204,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
   // Determine content + animation key
   let contentKey, content;
   const gameContent = (() => {
-    if (currentMode === 'roulette') return <Roulette participants={onlineList} scores={scores} onResult={onGameResult ? (names) => onGameResult(names, 'roulette') : undefined} />;
+    if (currentMode === 'roulette') return <Roulette participants={onlineList} scores={scores} onResult={onGameResult ? (names) => onGameResult(names, 'roulette') : undefined} onGameStateChange={(gs) => update(ref(db, `sessions/${sessionId}`), { gameState: gs })} />;
     if (currentMode === 'lottery') return <Lottery participants={drawParticipants} onResult={onGameResult ? (names) => onGameResult(names, 'lottery') : undefined} />;
     if (currentMode === 'prizeDraw') return <PrizeDraw participants={onlineList} onResult={onGameResult ? (names) => onGameResult(names, 'prizeDraw') : undefined} />;
     if (currentMode === 'breakTime') return <BreakTimer />;

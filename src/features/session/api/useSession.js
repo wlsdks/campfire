@@ -16,6 +16,7 @@ const SECONDARY_FIELDS = [
   'startedAt',
   'reviewingUntil',
   'drumroll',
+  'gameState',
 ];
 
 /**
