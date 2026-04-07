@@ -10,6 +10,8 @@ import DebateVoter from '@/features/voting/components/DebateVoter';
 import RankingVoter from '@/features/voting/components/RankingVoter';
 import FillBlankVoter from '@/features/voting/components/FillBlankVoter';
 import CheckVoter from '@/features/voting/components/CheckVoter';
+import MysteryBoxVoter from '@/features/voting/components/MysteryBoxVoter';
+import HintQuizVoter from '@/features/voting/components/HintQuizVoter';
 import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
 import QuestionCard from './QuestionCard';
@@ -166,6 +168,18 @@ export default memo(function ActivePollView({
               )}
               {question.type === 'check' && (
                 <CheckVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
+              )}
+              {question.type === 'mysteryBox' && (
+                <MysteryBoxVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
+              )}
+              {question.type === 'hintQuiz' && (
+                <HintQuizVoter
+                  sessionId={sessionId}
+                  questionId={questionId}
+                  hints={question.hints || []}
+                  revealedHints={question.revealedHints || 0}
+                  disabled={timerExpired}
+                />
               )}
 
               {/* Time's up overlay — only show if student hasn't voted yet */}

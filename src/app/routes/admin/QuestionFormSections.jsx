@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Plus, Trash2, Check, ArrowUp, ArrowDown } from 'lucide-react';
+import { Plus, Trash2, Check, ArrowUp, ArrowDown, X } from 'lucide-react';
 import { QUIZ_DEFAULTS, QUIZ_EVENT_PRESETS } from '@/lib/quiz';
 
 const OPTION_LABELS = ['A', 'B', 'C', 'D', 'E'];
@@ -177,6 +177,88 @@ export function OXAnswerSection({ correctAnswer, setCorrectAnswer, setLocalError
             </button>
           );
         })}
+      </div>
+    </motion.div>
+  );
+}
+
+export function MysteryBoxSection({ correctAnswer, setCorrectAnswer, mysteryItems, setMysteryItems, setLocalError }) {
+  return (
+    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+      exit={{ opacity: 0, height: 0 }} className={GAP}>
+      <div className="rounded-xl border border-slate-200 dark:border-slate-600 p-3 space-y-3">
+        <div>
+          <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">정답</p>
+          <input value={correctAnswer}
+            onChange={(e) => { setCorrectAnswer(e.target.value); setLocalError(null); }}
+            placeholder="박스에서 나올 정답" aria-label="미스터리 박스 정답"
+            maxLength={50}
+            className={`${INPUT} py-2.5`} />
+        </div>
+        <div>
+          <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">돌아갈 텍스트 <span className="normal-case font-normal">(줄바꿈 구분, 비우면 ? 표시)</span></p>
+          <textarea value={mysteryItems}
+            onChange={(e) => setMysteryItems(e.target.value)}
+            placeholder={"사과\n바나나\n딸기\n포도"}
+            rows={3}
+            className={`${INPUT} py-2.5 resize-none`} />
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+export function HintQuizSection({ correctAnswer, setCorrectAnswer, hints, setHints, setLocalError }) {
+  function addHint() {
+    if (hints.length < 5) setHints(prev => [...prev, '']);
+  }
+
+  function removeHint(index) {
+    if (hints.length > 1) setHints(prev => prev.filter((_, i) => i !== index));
+  }
+
+  return (
+    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+      exit={{ opacity: 0, height: 0 }} className={GAP}>
+      <div className="rounded-xl border border-slate-200 dark:border-slate-600 p-3 space-y-3">
+        <div>
+          <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">정답</p>
+          <input value={correctAnswer}
+            onChange={(e) => { setCorrectAnswer(e.target.value); setLocalError(null); }}
+            placeholder="정답을 입력하세요" aria-label="힌트 퀴즈 정답"
+            maxLength={50}
+            className={`${INPUT} py-2.5`} />
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">힌트 <span className="normal-case font-normal">(최소 1개, 최대 5개)</span></p>
+            {hints.length < 5 && (
+              <button onClick={addHint}
+                className="text-xs font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 flex items-center gap-0.5 transition-colors duration-150">
+                <Plus size={12} /> 추가
+              </button>
+            )}
+          </div>
+          <div className="space-y-2">
+            {hints.map((hint, i) => (
+              <div key={i} className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-md bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-400 flex items-center justify-center text-xs font-bold shrink-0">
+                  {i + 1}
+                </span>
+                <input value={hint}
+                  onChange={(e) => { const next = [...hints]; next[i] = e.target.value; setHints(next); setLocalError(null); }}
+                  placeholder={`힌트 ${i + 1}`} aria-label={`힌트 ${i + 1}`}
+                  maxLength={100}
+                  className={`flex-1 ${INPUT} py-2.5`} />
+                {hints.length > 1 && (
+                  <button onClick={() => removeHint(i)}
+                    className="p-1.5 rounded-lg text-slate-300 dark:text-slate-600 hover:text-red-500 transition-colors duration-150 active:scale-90"
+                    aria-label="힌트 삭제"><X size={14} /></button>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </motion.div>
   );

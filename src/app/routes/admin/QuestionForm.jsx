@@ -11,6 +11,8 @@ import {
   FillBlankSection,
   OXAnswerSection,
   QuizSettingsSection,
+  MysteryBoxSection,
+  HintQuizSection,
 } from './QuestionFormSections';
 
 const INPUT = 'w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors duration-150';
@@ -26,11 +28,15 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
   const [points, setPoints] = useState(initialData?.points || QUIZ_DEFAULTS.points);
   const [event, setEvent] = useState(initialData?.event || null);
   const [betting, setBetting] = useState(initialData?.betting || false);
+  const [hints, setHints] = useState(initialData?.hints?.length ? [...initialData.hints] : ['', '']);
+  const [mysteryItems, setMysteryItems] = useState(initialData?.mysteryItems?.join('\n') || '');
   const [localError, setLocalError] = useState(null);
 
   const isChoiceLike = type === 'choice' || type === 'quiz';
   const isRanking = type === 'ranking';
   const isFillInBlank = type === 'fillinblank';
+  const isMysteryBox = type === 'mysteryBox';
+  const isHintQuiz = type === 'hintQuiz';
 
   async function handleAdd() {
     if (!title.trim()) { setLocalError('질문 내용을 입력해주세요.'); return; }
@@ -41,8 +47,18 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
     if (isFillInBlank && !correctAnswer.trim()) { setLocalError('정답을 입력해주세요.'); return; }
     if ((type === 'quiz' || type === 'choice') && !correctAnswer) { setLocalError('정답을 선택해주세요.'); return; }
     if (type === 'ox' && !correctAnswer) { setLocalError('정답을 선택해주세요.'); return; }
+    if (isMysteryBox && !correctAnswer.trim()) { setLocalError('정답을 입력해주세요.'); return; }
+    if (isHintQuiz && !correctAnswer.trim()) { setLocalError('정답을 입력해주세요.'); return; }
+    if (isHintQuiz && hints.filter(h => h.trim()).length === 0) { setLocalError('최소 1개의 힌트가 필요합니다.'); return; }
     setLocalError(null);
-    const success = await onSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting });
+    const submitData = { type, title, options: cleanOptions, correctAnswer, points, event, betting };
+    if (isMysteryBox) {
+      submitData.mysteryItems = mysteryItems.split('\n').map(s => s.trim()).filter(Boolean);
+    }
+    if (isHintQuiz) {
+      submitData.hints = hints.filter(h => h.trim());
+    }
+    const success = await onSubmit(submitData);
     if (success) {
       setTitle(''); setOptions(['', '']); setCorrectAnswer('');
       setPoints(QUIZ_DEFAULTS.points); setEvent(null); setBetting(false);
@@ -112,6 +128,16 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
       <AnimatePresence>
         {type === 'ox' && <OXAnswerSection correctAnswer={correctAnswer}
           setCorrectAnswer={setCorrectAnswer} setLocalError={setLocalError} />}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isMysteryBox && <MysteryBoxSection correctAnswer={correctAnswer}
+          setCorrectAnswer={setCorrectAnswer} mysteryItems={mysteryItems}
+          setMysteryItems={setMysteryItems} setLocalError={setLocalError} />}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isHintQuiz && <HintQuizSection correctAnswer={correctAnswer}
+          setCorrectAnswer={setCorrectAnswer} hints={hints}
+          setHints={setHints} setLocalError={setLocalError} />}
       </AnimatePresence>
 
       {/* Error */}

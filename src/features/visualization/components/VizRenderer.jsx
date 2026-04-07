@@ -120,6 +120,24 @@ export default memo(function VizRenderer({ sessionId, session }) {
             />
           )}
           {question.type === 'check' && <CheckProgress sessionId={sessionId} questionId={currentQId} />}
+          {question.type === 'mysteryBox' && (
+            <FillBlankChart
+              sessionId={sessionId}
+              questionId={currentQId}
+              title={question.title}
+              correctAnswer={question.correctAnswer}
+              revealed={answerRevealed}
+            />
+          )}
+          {question.type === 'hintQuiz' && (
+            <FillBlankChart
+              sessionId={sessionId}
+              questionId={currentQId}
+              title={question.title}
+              correctAnswer={question.correctAnswer}
+              revealed={answerRevealed}
+            />
+          )}
           {isQA && <QACards sessionId={sessionId} questionId={currentQId} title={question.title} />}
         </div>
       </ErrorBoundary>

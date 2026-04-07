@@ -24,7 +24,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     [questions]
   );
 
-  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting }) {
+  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems }) {
     try {
       setError(null);
       const qId = generateQuestionId();
@@ -44,6 +44,15 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       }
       if (type === 'ox') {
         questionData.correctAnswer = correctAnswer || 'O';
+      }
+      if (type === 'mysteryBox') {
+        questionData.correctAnswer = correctAnswer?.trim() || '';
+        if (mysteryItems?.length > 0) questionData.mysteryItems = mysteryItems;
+      }
+      if (type === 'hintQuiz') {
+        questionData.correctAnswer = correctAnswer?.trim() || '';
+        questionData.hints = hints || [];
+        questionData.revealedHints = 0;
       }
       if (type === 'quiz') {
         questionData.points = points || QUIZ_DEFAULTS.points;
@@ -97,7 +106,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     }
   }, [sessionId]);
 
-  async function updateQuestion(qId, { type, title, options: cleanOptions, correctAnswer, points, event, betting }) {
+  async function updateQuestion(qId, { type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems }) {
     try {
       setError(null);
       const existing = questions?.[qId];
@@ -114,6 +123,9 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       delete questionData.maxSpeedBonus;
       delete questionData.event;
       delete questionData.betting;
+      delete questionData.hints;
+      delete questionData.revealedHints;
+      delete questionData.mysteryItems;
 
       const isChoiceLike = type === 'choice' || type === 'quiz';
       if (isChoiceLike) {
@@ -129,6 +141,15 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       }
       if (type === 'ox') {
         questionData.correctAnswer = correctAnswer || 'O';
+      }
+      if (type === 'mysteryBox') {
+        questionData.correctAnswer = correctAnswer?.trim() || '';
+        if (mysteryItems?.length > 0) questionData.mysteryItems = mysteryItems;
+      }
+      if (type === 'hintQuiz') {
+        questionData.correctAnswer = correctAnswer?.trim() || '';
+        questionData.hints = hints || [];
+        questionData.revealedHints = 0;
       }
       if (type === 'quiz') {
         questionData.points = points || QUIZ_DEFAULTS.points;
@@ -270,6 +291,33 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     }
   }
 
+  async function revealHint(qId) {
+    const question = questions?.[qId];
+    if (question?.type !== 'hintQuiz') return;
+    const maxHints = (question.hints || []).length;
+    const current = question.revealedHints || 0;
+    if (current >= maxHints) return;
+    try {
+      await update(ref(db, `sessions/${sessionId}`), {
+        [`questions/${qId}/revealedHints`]: current + 1,
+      });
+    } catch {
+      // Silently fail
+    }
+  }
+
+  async function revealAnswer(qId) {
+    const question = questions?.[qId];
+    if (!question || !['mysteryBox', 'hintQuiz'].includes(question.type)) return;
+    try {
+      await update(ref(db, `sessions/${sessionId}`), {
+        [`questions/${qId}/revealedAt`]: getNow(),
+      });
+    } catch {
+      setError('정답 공개에 실패했습니다.');
+    }
+  }
+
   const showLeaderboard = useCallback(async () => {
     try {
       await update(ref(db, `sessions/${sessionId}`), { currentMode: 'leaderboard' });
@@ -312,6 +360,8 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     reorderQuestion,
     importFromLibrary,
     revealQuiz,
+    revealHint,
+    revealAnswer,
     showLeaderboard,
     armEvent,
     clearPendingEvent,

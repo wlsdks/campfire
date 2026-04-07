@@ -9,6 +9,7 @@ import Button from '@/components/ui/Button';
 
 function SubmitConfirm({ type, value }) {
   const isQnA = type === 'qna';
+  const isGuess = type === 'mysteryBox' || type === 'hintQuiz';
   const Icon = isQnA ? MessageCircle : Cloud;
 
   return (
@@ -31,12 +32,14 @@ function SubmitConfirm({ type, value }) {
 
         <div className="space-y-1 text-center">
           <p className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            {isQnA ? '질문이 전달되었습니다' : '단어가 등록되었습니다'}
+            {isGuess ? '답변이 제출되었습니다' : isQnA ? '질문이 전달되었습니다' : '단어가 등록되었습니다'}
           </p>
           <p className="text-sm text-slate-400">
-            {isQnA
-              ? '강사가 확인할 예정입니다'
-              : '워드클라우드에 반영되었습니다'}
+            {isGuess
+              ? '정답 공개를 기다려주세요'
+              : isQnA
+                ? '강사가 확인할 예정입니다'
+                : '워드클라우드에 반영되었습니다'}
           </p>
         </div>
 
@@ -47,7 +50,7 @@ function SubmitConfirm({ type, value }) {
             transition={{ delay: 0.3 }}
             className="rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-700 dark:border-slate-600 px-4 py-3 text-center w-full"
           >
-            <p className="text-xs font-medium text-slate-400 mb-1">내가 {isQnA ? '보낸 질문' : '입력한 단어'}</p>
+            <p className="text-xs font-medium text-slate-400 mb-1">내가 {isGuess ? '입력한 답' : isQnA ? '보낸 질문' : '입력한 단어'}</p>
             <p className="text-sm font-medium text-slate-700">{value}</p>
           </motion.div>
         )}

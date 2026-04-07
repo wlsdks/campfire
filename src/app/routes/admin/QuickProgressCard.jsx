@@ -1,5 +1,5 @@
 import { useState, memo } from 'react';
-import { Play, Square, Zap, PartyPopper, Check, Trophy } from 'lucide-react';
+import { Play, Square, Zap, PartyPopper, Check, Trophy, ChevronRight, Eye } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { QUIZ_EVENT_PRESETS, isQuizQuestion } from '@/lib/quiz';
 
@@ -22,6 +22,8 @@ export default memo(function QuickProgressCard({
   onActivate,
   onClearActive,
   onReveal,
+  onRevealHint,
+  onRevealAnswer,
   onShowLeaderboard,
   onNextEvent,
   speedQuizActive,
@@ -44,6 +46,10 @@ export default memo(function QuickProgressCard({
   const isActiveQuiz = currentQ ? isQuizQuestion(currentQ) : false;
   const quizRevealed = isActiveQuiz && currentQ?.revealedAt;
   const quizUnrevealed = isActiveQuiz && !currentQ?.revealedAt;
+  const isMysteryOrHint = currentQ && ['mysteryBox', 'hintQuiz'].includes(currentQ?.type);
+  const mhRevealed = isMysteryOrHint && currentQ?.revealedAt;
+  const mhUnrevealed = isMysteryOrHint && !currentQ?.revealedAt;
+  const canRevealHint = currentQ?.type === 'hintQuiz' && (currentQ?.revealedHints || 0) < (currentQ?.hints || []).length;
 
   /* Determine primary + secondary CTA based on session state */
   let primaryBtn, secondaryBtn;
@@ -101,6 +107,45 @@ export default memo(function QuickProgressCard({
         다음 질문
       </Button>
     );
+  } else if (mhUnrevealed) {
+    /* Mystery Box / Hint Quiz — waiting for reveal */
+    primaryBtn = (
+      <Button onClick={() => onRevealAnswer?.(currentEntry[0])} variant="primary" size="md"
+        className="min-h-[52px] sm:min-h-0 sm:py-1.5 sm:text-sm sm:gap-1.5">
+        <Eye size={16} className="sm:w-3.5 sm:h-3.5" />
+        정답 공개
+      </Button>
+    );
+    secondaryBtn = canRevealHint ? (
+      <Button onClick={() => onRevealHint?.(currentEntry[0])} variant="secondary" size="md"
+        className="min-h-[52px] sm:min-h-0 sm:py-1.5 sm:text-sm sm:gap-1.5">
+        <ChevronRight size={16} className="sm:w-3.5 sm:h-3.5" />
+        힌트 공개 ({currentQ.revealedHints || 0}/{(currentQ.hints || []).length})
+      </Button>
+    ) : (
+      <Button onClick={onClearActive} variant="secondary" size="md"
+        className="min-h-[52px] sm:min-h-0 sm:py-1.5 sm:text-sm sm:gap-1.5">
+        <Square size={16} className="sm:w-3.5 sm:h-3.5" />
+        대기 화면
+      </Button>
+    );
+  } else if (mhRevealed) {
+    /* Mystery Box / Hint Quiz revealed — next question */
+    primaryBtn = (
+      <Button onClick={handleActivateNext} variant="primary" size="md"
+        disabled={!nextEntry}
+        className="min-h-[52px] sm:min-h-0 sm:py-1.5 sm:text-sm sm:gap-1.5">
+        <Play size={16} className="sm:w-3.5 sm:h-3.5" />
+        다음 질문
+      </Button>
+    );
+    secondaryBtn = (
+      <Button onClick={onClearActive} variant="secondary" size="md"
+        className="min-h-[52px] sm:min-h-0 sm:py-1.5 sm:text-sm sm:gap-1.5">
+        <Square size={16} className="sm:w-3.5 sm:h-3.5" />
+        대기 화면
+      </Button>
+    );
   } else {
     /* Active non-quiz (poll, word cloud, etc.) */
     primaryBtn = (
@@ -140,6 +185,15 @@ export default memo(function QuickProgressCard({
             {quizRevealed
               ? '정답 공개가 완료되었습니다. 리더보드로 이어서 보여줄 수 있습니다.'
               : '정답 공개 전까지 답안을 모으는 중입니다.'}
+          </p>
+        )}
+        {isMysteryOrHint && (
+          <p className="text-slate-500 dark:text-slate-400 text-xs font-medium">
+            {mhRevealed
+              ? '정답이 공개되었습니다.'
+              : currentQ?.type === 'hintQuiz'
+                ? `힌트 ${currentQ.revealedHints || 0}/${(currentQ.hints || []).length}개 공개됨. 학생 답변을 모으는 중입니다.`
+                : '학생 답변을 모으는 중입니다. 정답을 공개하세요.'}
           </p>
         )}
       </div>

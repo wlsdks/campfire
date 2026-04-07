@@ -41,7 +41,7 @@ export default function QuestionManager({
     error, toast, questionList,
     handleSubmit, activateQuestion, clearActive,
     deleteQuestion, duplicateQuestion, moveQuestion, reorderQuestion,
-    importFromLibrary, revealQuiz, showLeaderboard,
+    importFromLibrary, revealQuiz, revealHint, revealAnswer, showLeaderboard,
   } = useQuestionActions(sessionId, questions, currentQuestion, scores, participants);
 
   const activeIndex = questionList.findIndex(([qId]) => qId === currentQuestion);
@@ -112,6 +112,8 @@ export default function QuestionManager({
             onActivate={handleActivate}
             onClearActive={clearActive}
             onReveal={revealQuiz}
+            onRevealHint={revealHint}
+            onRevealAnswer={revealAnswer}
             onShowLeaderboard={showLeaderboard}
             onNextEvent={handleNextEvent}
             speedQuizActive={speedQuizActive}
