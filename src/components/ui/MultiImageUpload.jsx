@@ -1,6 +1,7 @@
 import { useState, useRef, memo } from 'react';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/lib/firebase';
+import { compressImage } from '@/lib/image-utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ImagePlus, X, Loader2, GripVertical } from 'lucide-react';
 
@@ -37,10 +38,10 @@ export default memo(function MultiImageUpload({ images = [], onChange }) {
     setError(null);
     try {
       const urls = await Promise.all(toUpload.map(async (file) => {
-        const ext = file.name.split('.').pop() || 'jpg';
-        const path = `questions/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.${ext}`;
+        const compressed = await compressImage(file);
+        const path = `questions/${Date.now()}_${Math.random().toString(36).slice(2, 8)}.jpg`;
         const storageRef = ref(storage, path);
-        await uploadBytes(storageRef, file);
+        await uploadBytes(storageRef, compressed, { contentType: 'image/jpeg' });
         return getDownloadURL(storageRef);
       }));
       onChange([...images, ...urls]);
