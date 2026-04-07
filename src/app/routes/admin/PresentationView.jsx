@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, lazy, Suspense, useRef } from 'react';
+import DrumrollOverlay from '@/components/ui/DrumrollOverlay';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, QrCode, X, Copy, Check, Swords, Hand, MessageSquare, ChevronDown, ChevronRight, Eye, Trophy } from 'lucide-react';
 import { ref, update } from 'firebase/database';
@@ -353,6 +354,7 @@ function ExitHint({ onExit }) {
 }
 
 function PresentRevealControls({ sessionId, session }) {
+  const [drumroll, setDrumroll] = useState(false);
   const currentQId = session?.currentQuestion;
   const question = currentQId ? session?.questions?.[currentQId] : null;
   if (!question) return null;
@@ -400,18 +402,24 @@ function PresentRevealControls({ sessionId, session }) {
   }
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
-      {canRevealHint && (
-        <Button onClick={handleRevealHint} variant="secondary" size="lg">
-          <ChevronRight size={20} />
-          힌트 공개 ({revealedHints}/{hints.length})
+    <>
+      <DrumrollOverlay active={drumroll} onComplete={() => { setDrumroll(false); handleRevealAnswer(); }} />
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
+        {canRevealHint && (
+          <Button onClick={handleRevealHint} variant="secondary" size="lg">
+            <ChevronRight size={20} />
+            힌트 공개 ({revealedHints}/{hints.length})
+          </Button>
+        )}
+        <Button onClick={() => setDrumroll(true)} variant="ghost" size="lg">
+          두구두구
         </Button>
-      )}
-      <Button onClick={handleRevealAnswer} variant="primary" size="lg">
-        <Eye size={20} />
-        정답 공개
-      </Button>
-    </div>
+        <Button onClick={handleRevealAnswer} variant="primary" size="lg">
+          <Eye size={20} />
+          정답 공개
+        </Button>
+      </div>
+    </>
   );
 }
 
