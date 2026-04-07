@@ -21,7 +21,6 @@ import TeamScoreboard from '@/features/teams/components/TeamScoreboard';
 const Roulette = lazy(() => import('@/features/games/components/Roulette'));
 const Lottery = lazy(() => import('@/features/games/components/Lottery'));
 const PrizeDraw = lazy(() => import('@/features/games/components/PrizeDraw'));
-const Plinko = lazy(() => import('@/features/games/components/Plinko'));
 const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
 const ClassQABoard = lazy(() => import('@/features/class-questions/components/ClassQABoard'));
 const AwardsCeremony = lazy(() => import('@/features/assignments/components/AwardsCeremony'));
@@ -145,7 +144,7 @@ function getModeVariants(mode) {
   if (mode === 'leaderboard') {
     return { initial: { opacity: 0, y: -30 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 30 } };
   }
-  if (['roulette', 'lottery', 'prizeDraw', 'plinko', 'breakTime', 'teamBattle', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus', 'combinedRanking'].includes(mode)) {
+  if (['roulette', 'lottery', 'prizeDraw', 'breakTime', 'teamBattle', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus', 'combinedRanking'].includes(mode)) {
     return { initial: { opacity: 0, scale: 0.88 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 1.06 } };
   }
   if (['poll', 'quiz'].includes(mode)) {
@@ -207,7 +206,6 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     if (currentMode === 'roulette') return <Roulette participants={onlineList} scores={scores} onResult={onGameResult ? (names) => onGameResult(names, 'roulette') : undefined} />;
     if (currentMode === 'lottery') return <Lottery participants={drawParticipants} onResult={onGameResult ? (names) => onGameResult(names, 'lottery') : undefined} />;
     if (currentMode === 'prizeDraw') return <PrizeDraw participants={onlineList} onResult={onGameResult ? (names) => onGameResult(names, 'prizeDraw') : undefined} />;
-    if (currentMode === 'plinko') return <Plinko participants={onlineList} onResult={onGameResult ? (names) => onGameResult(names, 'plinko') : undefined} />;
     if (currentMode === 'breakTime') return <BreakTimer />;
     if (currentMode === 'leaderboard') return <div className="w-full max-w-xl md:max-w-2xl [&_.max-w-xl]:max-w-2xl px-2 md:px-0"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" /></div>;
     if (currentMode === 'teamBattle') {

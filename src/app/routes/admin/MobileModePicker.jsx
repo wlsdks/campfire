@@ -16,7 +16,7 @@ export default function MobileModePicker({ open, onClose, currentMode, onSwitchM
       { mode: 'roulette', label: '돌림판', icon: Target },
       { mode: 'lottery', label: '추첨', icon: Ticket },
       { mode: 'prizeDraw', label: '경품 추첨', icon: Gift },
-      { mode: 'plinko', label: '핀볼', icon: CircleDot },
+      
     ]},
     { title: '기타', modes: [
       { mode: 'breakTime', label: '쉬는 시간', icon: Coffee },

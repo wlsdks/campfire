@@ -26,7 +26,7 @@ const MODE_MAP = {
   roulette: { label: '돌림판', icon: Target },
   lottery: { label: '추첨', icon: Ticket },
   prizeDraw: { label: '경품', icon: Gift },
-  plinko: { label: '핀볼', icon: CircleDot },
+  
   breakTime: { label: '쉬는시간', icon: Coffee },
   leaderboard: { label: '리더보드', icon: Trophy },
   teamBattle: { label: '팀 대항전', icon: Swords },
@@ -133,7 +133,7 @@ export default function MobileAdminView({ s }) {
   const [modesOpen, setModesOpen] = useState(false);
 
   const currentMode = s.session?.currentMode;
-  const isSpecialMode = ['roulette', 'lottery', 'prizeDraw', 'plinko', 'combinedRanking', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
+  const isSpecialMode = ['roulette', 'lottery', 'prizeDraw', 'combinedRanking', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
 
   const onNewChatMsg = s.handleNewChatMessage;
   const handleNewChatMessage = useCallback(() => {

@@ -24,7 +24,6 @@ import LiveParticipation from './LiveParticipation';
 const Roulette = lazy(() => import('@/features/games/components/Roulette'));
 const Lottery = lazy(() => import('@/features/games/components/Lottery'));
 const PrizeDraw = lazy(() => import('@/features/games/components/PrizeDraw'));
-const Plinko = lazy(() => import('@/features/games/components/Plinko'));
 const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
 const Leaderboard = lazy(() => import('@/features/quiz/components/Leaderboard'));
 const TeamScoreboard = lazy(() => import('@/features/teams/components/TeamScoreboard'));
@@ -78,9 +77,7 @@ export default function LivePage() {
   const onRouletteResult = useCallback((names) => handleGameResult(names, 'roulette'), [handleGameResult]);
   const onLotteryResult = useCallback((names) => handleGameResult(names, 'lottery'), [handleGameResult]);
   const onPrizeDrawResult = useCallback((names) => handleGameResult(names, 'prizeDraw'), [handleGameResult]);
-  const onPlinkoResult = useCallback((names) => handleGameResult(names, 'plinko'), [handleGameResult]);
-
-  const isGameMode = ['roulette', 'lottery', 'prizeDraw', 'plinko', 'combinedRanking', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
+  const isGameMode = ['roulette', 'lottery', 'prizeDraw', 'combinedRanking', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
   const isEnded = session?.status === 'ended';
   const hasActiveQuestion = ['poll', 'quiz'].includes(currentMode) && currentQId && question;
 
@@ -172,7 +169,6 @@ export default function LivePage() {
                   {currentMode === 'roulette' && <Roulette participants={onlineList} scores={scores} onResult={onRouletteResult} />}
                   {currentMode === 'lottery' && <Lottery participants={onlineList} onResult={onLotteryResult} />}
                   {currentMode === 'prizeDraw' && <PrizeDraw participants={onlineList} onResult={onPrizeDrawResult} />}
-                  {currentMode === 'plinko' && <Plinko participants={onlineList} onResult={onPlinkoResult} />}
                   {currentMode === 'breakTime' && <BreakTimer />}
                   {currentMode === 'leaderboard' && <div className="w-full max-w-2xl mx-auto [&_.max-w-xl]:max-w-2xl"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" /></div>}
                   {currentMode === 'teamBattle' && <div className="w-full max-w-2xl mx-auto [&_.max-w-lg]:max-w-2xl"><TeamScoreboard teamScores={teamScores || []} /></div>}

@@ -100,7 +100,7 @@ const GAME_MODES = {
   roulette: { label: '돌림판 진행 중', icon: Target },
   lottery: { label: '추첨 진행 중', icon: Ticket },
   prizeDraw: { label: '경품 추첨 진행 중', icon: Gift },
-  plinko: { label: '핀볼 진행 중', icon: CircleDot },
+  
   breakTime: { label: '쉬는 시간', icon: Coffee },
   teamBattle: { label: '팀 대항전 진행 중', icon: Trophy },
   qaBoard: { label: 'Q&A 보드 진행 중', icon: Users },
