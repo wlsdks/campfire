@@ -11,6 +11,7 @@ const LazyFocusOverlay = lazy(() => import('@/features/session/components/FocusO
 const LazyComprehensionCheck = lazy(() => import('@/features/session/components/ComprehensionCheck'));
 const LazyQuickSurvey = lazy(() => import('@/features/session/components/QuickSurvey'));
 const LazyGroupDiscussion = lazy(() => import('@/features/session/components/GroupDiscussion'));
+const LazyCombinedRanking = lazy(() => import('@/features/quiz/components/CombinedRanking'));
 
 /**
  * Dispatches to the correct view for the current session mode.
@@ -42,6 +43,16 @@ export function VoteModeContent({
       <Suspense fallback={<SuspenseFallback />}>
         <LazyLeaderboardPage sessionId={sessionId} />
       </Suspense>
+    );
+  }
+  if (currentMode === 'combinedRanking') {
+    return (
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center px-4 py-8">
+        <StudentHeader sessionId={sessionId} />
+        <Suspense fallback={<SuspenseFallback />}>
+          <LazyCombinedRanking session={session} />
+        </Suspense>
+      </div>
     );
   }
   if (currentMode === 'focus') {
