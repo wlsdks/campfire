@@ -78,11 +78,11 @@ export default function QuestionManager({
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100 shrink-0">질문 목록</h2>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1 flex-wrap">
           {!readOnly && modeButton}
           {!readOnly && adminUid && (
             <Button onClick={() => setLibraryOpen(true)} variant="secondary" size="sm">
-              <BookmarkPlus size={14} /> 보관함
+              <BookmarkPlus size={14} /> <span className="hidden sm:inline">보관함</span>
             </Button>
           )}
           {!readOnly && (
@@ -96,16 +96,16 @@ export default function QuestionManager({
           )}
           {questionList.length > 0 && (
             <button onClick={() => setPreviewOpen(true)}
-              className="p-2 rounded-lg text-slate-300 dark:text-slate-600 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
+              className="p-1.5 rounded-lg text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
               title="미리보기" aria-label="문항 미리보기">
-              <Eye size={18} />
+              <Eye size={16} />
             </button>
           )}
           {!readOnly && onCollapse && (
             <button onClick={onCollapse}
-              className="p-2 rounded-lg text-slate-300 dark:text-slate-600 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
+              className="p-1.5 rounded-lg text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
               title="패널 접기" aria-label="사이드바 접기">
-              <PanelLeftClose size={18} />
+              <PanelLeftClose size={16} />
             </button>
           )}
         </div>
