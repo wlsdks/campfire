@@ -182,7 +182,14 @@ export function OXAnswerSection({ correctAnswer, setCorrectAnswer, setLocalError
   );
 }
 
-export function MysteryBoxSection({ correctAnswer, setCorrectAnswer, mysteryItems, setMysteryItems, setLocalError }) {
+export function MysteryBoxSection({ correctAnswer, setCorrectAnswer, mysteryItems, setMysteryItems, answerReasons, setAnswerReasons, setLocalError }) {
+  function addReason() {
+    if (answerReasons.length < 4) setAnswerReasons(prev => [...prev, '']);
+  }
+  function removeReason(index) {
+    setAnswerReasons(prev => prev.filter((_, i) => i !== index));
+  }
+
   return (
     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
       exit={{ opacity: 0, height: 0 }} className={GAP}>
@@ -194,6 +201,36 @@ export function MysteryBoxSection({ correctAnswer, setCorrectAnswer, mysteryItem
             placeholder="박스에서 나올 정답" aria-label="미스터리 박스 정답"
             maxLength={50}
             className={`${INPUT} py-2.5`} />
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">정답 사유 <span className="normal-case font-normal">(선택, 최대 4개)</span></p>
+            {answerReasons.length < 4 && (
+              <button onClick={addReason}
+                className="text-xs font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 flex items-center gap-0.5 transition-colors duration-150">
+                <Plus size={12} /> 추가
+              </button>
+            )}
+          </div>
+          {answerReasons.length > 0 && (
+            <div className="space-y-2 mb-3">
+              {answerReasons.map((reason, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <span className="w-5 h-5 rounded-md bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-400 flex items-center justify-center text-[10px] font-bold shrink-0">
+                    {i + 1}
+                  </span>
+                  <input value={reason}
+                    onChange={(e) => { const next = [...answerReasons]; next[i] = e.target.value; setAnswerReasons(next); }}
+                    placeholder={`왜 이것이 정답인가요?`} aria-label={`정답 사유 ${i + 1}`}
+                    maxLength={100}
+                    className={`flex-1 ${INPUT} py-2`} />
+                  <button onClick={() => removeReason(i)}
+                    className="p-1 rounded-lg text-slate-300 dark:text-slate-600 hover:text-red-500 transition-colors duration-150 active:scale-90"
+                    aria-label="사유 삭제"><X size={14} /></button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <div>
           <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1">돌아갈 텍스트 <span className="normal-case font-normal">(줄바꿈 구분, 비우면 ? 표시)</span></p>

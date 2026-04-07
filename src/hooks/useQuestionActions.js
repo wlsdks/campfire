@@ -24,7 +24,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     [questions]
   );
 
-  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems }) {
+  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons }) {
     try {
       setError(null);
       const qId = generateQuestionId();
@@ -48,6 +48,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       if (type === 'mysteryBox') {
         questionData.correctAnswer = correctAnswer?.trim() || '';
         if (mysteryItems?.length > 0) questionData.mysteryItems = mysteryItems;
+        if (answerReasons?.length > 0) questionData.answerReasons = answerReasons;
       }
       if (type === 'hintQuiz') {
         questionData.correctAnswer = correctAnswer?.trim() || '';
@@ -106,7 +107,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     }
   }, [sessionId]);
 
-  async function updateQuestion(qId, { type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems }) {
+  async function updateQuestion(qId, { type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons }) {
     try {
       setError(null);
       const existing = questions?.[qId];
@@ -126,6 +127,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       delete questionData.hints;
       delete questionData.revealedHints;
       delete questionData.mysteryItems;
+      delete questionData.answerReasons;
 
       const isChoiceLike = type === 'choice' || type === 'quiz';
       if (isChoiceLike) {
@@ -145,6 +147,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       if (type === 'mysteryBox') {
         questionData.correctAnswer = correctAnswer?.trim() || '';
         if (mysteryItems?.length > 0) questionData.mysteryItems = mysteryItems;
+        if (answerReasons?.length > 0) questionData.answerReasons = answerReasons;
       }
       if (type === 'hintQuiz') {
         questionData.correctAnswer = correctAnswer?.trim() || '';

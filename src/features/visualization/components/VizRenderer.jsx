@@ -126,6 +126,7 @@ export default memo(function VizRenderer({ sessionId, session }) {
               sessionId={sessionId}
               questionId={currentQId}
               correctAnswer={question.correctAnswer}
+              answerReasons={question.answerReasons}
               revealed={answerRevealed}
             />
           )}

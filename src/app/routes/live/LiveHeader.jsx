@@ -1,14 +1,18 @@
-import { memo } from 'react';
-import { motion } from 'framer-motion';
-import { Users, Sun, Moon } from 'lucide-react';
+import { memo, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Users, Sun, Moon, QrCode } from 'lucide-react';
 import PickMascot from '@/components/ui/PickMascot';
 import Badge from '@/components/ui/Badge';
+import QRCodeComponent from '@/components/ui/QRCode';
 import { useTheme } from '@/hooks/useTheme';
 
-export default memo(function LiveHeader({ courseName, roundNumber, count }) {
+export default memo(function LiveHeader({ courseName, roundNumber, count, sessionId }) {
   const { isDark, setTheme } = useTheme();
+  const [qrOpen, setQrOpen] = useState(false);
+  const studentUrl = sessionId ? `${window.location.origin}/?s=${sessionId}` : '';
+
   return (
-    <header className="flex items-center justify-between px-6 py-3 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border-b border-slate-200/50 dark:border-slate-700/50">
+    <header className="flex items-center justify-between px-6 py-3 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border-b border-slate-200/50 dark:border-slate-700/50 relative">
       <div className="flex items-center gap-2.5">
         <PickMascot size="xs" />
         <span className="text-slate-900 dark:text-slate-100 font-bold text-lg tracking-tight">Pick</span>
@@ -47,7 +51,36 @@ export default memo(function LiveHeader({ courseName, roundNumber, count }) {
           {count}
         </motion.span>
         <span className="text-slate-400 dark:text-slate-500 text-sm">명</span>
+        {studentUrl && (
+          <button
+            onClick={() => setQrOpen(v => !v)}
+            className={`p-1.5 rounded-lg transition-colors ${
+              qrOpen
+                ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
+                : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700'
+            }`}
+            title="QR 코드"
+          >
+            <QrCode size={16} />
+          </button>
+        )}
       </div>
+
+      {/* QR 팝오버 */}
+      <AnimatePresence>
+        {qrOpen && studentUrl && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: -8 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: -8 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+            className="absolute top-full right-4 mt-2 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 p-4 z-50 flex flex-col items-center gap-2"
+          >
+            <QRCodeComponent url={studentUrl} size={140} />
+            <p className="text-xs text-slate-400 font-medium text-center max-w-[160px] break-all leading-tight">{studentUrl}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 });

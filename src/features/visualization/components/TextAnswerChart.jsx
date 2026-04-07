@@ -8,7 +8,7 @@ import { Check, X } from 'lucide-react';
  * FillBlankChart에서 SentenceDisplay를 제거하고, 상위 8개만 표시.
  * 화면 높이 내에 맞도록 컴팩트하게 디자인.
  */
-export default memo(function TextAnswerChart({ sessionId, questionId, correctAnswer, revealed = false }) {
+export default memo(function TextAnswerChart({ sessionId, questionId, correctAnswer, answerReasons, revealed = false }) {
   const { voteList, totalVotes } = useVotes(sessionId, questionId);
 
   const { correctCount, topAnswers } = useMemo(() => {
@@ -47,13 +47,30 @@ export default memo(function TextAnswerChart({ sessionId, questionId, correctAns
     <div className="space-y-4 w-full max-w-xl mx-auto px-8">
       {/* Status line */}
       {revealed && correctAnswer && (
-        <motion.p
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="text-center text-sm text-slate-400 dark:text-slate-500"
+          className="text-center space-y-2"
         >
-          정답: <span className="font-semibold text-slate-700 dark:text-slate-200">{correctAnswer}</span>
-        </motion.p>
+          <p className="text-sm text-slate-400 dark:text-slate-500">
+            정답: <span className="font-semibold text-slate-700 dark:text-slate-200">{correctAnswer}</span>
+          </p>
+          {answerReasons?.length > 0 && (
+            <div className="space-y-1">
+              {answerReasons.map((reason, i) => (
+                <motion.p
+                  key={i}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 + i * 0.1 }}
+                  className="text-xs text-slate-400 dark:text-slate-500"
+                >
+                  {reason}
+                </motion.p>
+              ))}
+            </div>
+          )}
+        </motion.div>
       )}
 
       {/* Accuracy stat */}

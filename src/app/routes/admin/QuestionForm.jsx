@@ -30,6 +30,7 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
   const [betting, setBetting] = useState(initialData?.betting || false);
   const [hints, setHints] = useState(initialData?.hints?.length ? [...initialData.hints] : ['', '']);
   const [mysteryItems, setMysteryItems] = useState(initialData?.mysteryItems?.join('\n') || '');
+  const [answerReasons, setAnswerReasons] = useState(initialData?.answerReasons?.length ? [...initialData.answerReasons] : []);
   const [localError, setLocalError] = useState(null);
 
   const isChoiceLike = type === 'choice' || type === 'quiz';
@@ -54,6 +55,8 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
     const submitData = { type, title, options: cleanOptions, correctAnswer, points, event, betting };
     if (isMysteryBox) {
       submitData.mysteryItems = mysteryItems.split('\n').map(s => s.trim()).filter(Boolean);
+      const validReasons = answerReasons.filter(r => r.trim());
+      if (validReasons.length > 0) submitData.answerReasons = validReasons;
     }
     if (isHintQuiz) {
       submitData.hints = hints.filter(h => h.trim());
@@ -132,7 +135,8 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
       <AnimatePresence>
         {isMysteryBox && <MysteryBoxSection correctAnswer={correctAnswer}
           setCorrectAnswer={setCorrectAnswer} mysteryItems={mysteryItems}
-          setMysteryItems={setMysteryItems} setLocalError={setLocalError} />}
+          setMysteryItems={setMysteryItems} answerReasons={answerReasons}
+          setAnswerReasons={setAnswerReasons} setLocalError={setLocalError} />}
       </AnimatePresence>
       <AnimatePresence>
         {isHintQuiz && <HintQuizSection correctAnswer={correctAnswer}
