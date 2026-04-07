@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ImagePlus, X, Loader2 } from 'lucide-react';
 
 const MAX_SIZE_MB = 20; // 압축 전 원본 허용 (압축 후 1-2MB)
-const ACCEPTED = 'image/jpeg,image/png,image/gif,image/webp';
+const ACCEPTED = 'image/jpeg,image/png,image/gif,image/webp,.jpg,.jpeg,.png,.gif,.webp,.bmp,.svg';
 
 /**
  * ImageUpload — 이미지 업로드 + 미리보기.
