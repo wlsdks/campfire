@@ -17,9 +17,8 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTic
 
   const modeGroups = [
     { label: '게임', items: [
-      { mode: 'lottery', label: totalTickets > 0 ? '보상 추첨' : '제비뽑기', icon: Ticket },
-      { mode: 'prizeDraw', label: '경품 추첨', icon: Gift },
-      
+      { mode: 'lottery', label: '추첨', icon: Ticket },
+
     ]},
     { label: '참여', items: [
       { mode: 'comprehension', label: '이해도 체크', icon: Activity },

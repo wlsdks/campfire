@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useCallback } from 'react';
+import { lazy, Suspense, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSession } from '@/features/session/api/useSession';
@@ -20,10 +20,9 @@ import PickMascot from '@/components/ui/PickMascot';
 import { useTheme } from '@/hooks/useTheme';
 import LiveHeader from './LiveHeader';
 import DrumrollOverlay from '@/components/ui/DrumrollOverlay';
-import { useGameResult } from '@/features/games/api/useGameResult';
-const GameResultOverlay = lazy(() => import('@/features/games/components/GameResultOverlay'));
 import LiveParticipation from './LiveParticipation';
 
+const Lottery = lazy(() => import('@/features/games/components/Lottery'));
 const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
 const Leaderboard = lazy(() => import('@/features/quiz/components/Leaderboard'));
 const TeamScoreboard = lazy(() => import('@/features/teams/components/TeamScoreboard'));
@@ -61,20 +60,26 @@ export default function LivePage() {
 
   const { publishResult } = usePublishGameResult(sessionId);
 
+  // drawParticipants: onlineList enriched with ticket data for weighted lottery
+  const drawParticipants = useMemo(
+    () => onlineList.map((p) => ({ ...p, ...scores[p.id], tickets: scores[p.id]?.tickets || 0 })),
+    [onlineList, scores]
+  );
+
   // Publish game results to Firebase so students can see them.
-  // Games call onResult with nickname(s). We resolve IDs from onlineList.
   const handleGameResult = useCallback((resultNames, mode) => {
     const nameArr = Array.isArray(resultNames) ? resultNames : [resultNames];
+    const allList = mode === 'lottery' ? drawParticipants : onlineList;
     const winners = nameArr.map((name) => {
-      const p = onlineList.find((x) => x.nickname === name);
+      const p = allList.find((x) => x.nickname === name);
       return { id: p?.id || name, nickname: name };
     });
-    const allIds = onlineList.map((p) => p.id);
+    const allIds = allList.map((p) => p.id);
     publishResult(mode, winners, allIds);
-  }, [onlineList, publishResult]);
+  }, [onlineList, drawParticipants, publishResult]);
 
   // Stable per-game callbacks (avoid re-creating on every render)
-  const isGameMode = ['lottery', 'prizeDraw', 'combinedRanking', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
+  const isGameMode = ['lottery', 'combinedRanking', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
   const isEnded = session?.status === 'ended';
   const hasActiveQuestion = ['poll', 'quiz'].includes(currentMode) && currentQId && question;
 
@@ -139,62 +144,9 @@ export default function LivePage() {
     );
   }
 
-  // 추첨 대기 — 이름이 빠르게 돌아가는 효과
-  function LiveLotteryWaiting({ names, count: cnt, mode }) {
-    const [currentName, setCurrentName] = useState('');
-    useEffect(() => {
-      if (names.length === 0) return;
-      const timer = setInterval(() => {
-        setCurrentName(names[Math.floor(Math.random() * names.length)]);
-      }, 100);
-      return () => clearInterval(timer);
-    }, [names]);
-
-    return (
-      <div className="flex flex-col items-center justify-center gap-8 text-center py-8">
-        <motion.div
-          animate={{ scale: [1, 1.08, 1] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          <PickMascot size="lg" mood="happy" />
-        </motion.div>
-        <div className="space-y-4">
-          <p className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
-            {mode === 'lottery' ? '추첨 진행 중' : '경품 추첨 진행 중'}
-          </p>
-          <motion.div
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 0.8, repeat: Infinity }}
-            className="h-16 flex items-center justify-center"
-          >
-            <p className="text-4xl md:text-5xl font-black text-slate-700 dark:text-slate-200 tabular-nums tracking-tight">
-              {currentName || '...'}
-            </p>
-          </motion.div>
-          <p className="text-slate-400 dark:text-white/40 text-base">{cnt}명 참여 중 · 두근두근!</p>
-        </div>
-      </div>
-    );
-  }
-
-  // 게임 결과 오버레이 — 10초 후 자동 dismiss
-  function LiveGameResult({ sessionId: sid }) {
-    const { winnerNames, gameResult, showOverlay, dismiss } = useGameResult(sid);
-    useEffect(() => {
-      if (showOverlay) {
-        const t = setTimeout(dismiss, 10000);
-        return () => clearTimeout(t);
-      }
-    }, [showOverlay, dismiss]);
-    return <GameResultOverlay isWinner={false} winnerNames={winnerNames} gameResult={gameResult} showOverlay={showOverlay} dismiss={dismiss} />;
-  }
-
   return (
     <div className="h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col overflow-hidden">
       <LiveHeader courseName={session?.courseName} roundNumber={session?.roundNumber} count={count} sessionId={sessionId} />
-      <Suspense fallback={null}>
-        <LiveGameResult sessionId={sessionId} />
-      </Suspense>
       <JoinToast sessionId={sessionId} />
       <ReactionOverlay sessionId={sessionId} />
       <DrumrollOverlay active={!!session?.drumroll} />
@@ -216,8 +168,8 @@ export default function LivePage() {
                 className="w-full"
               >
                 <Suspense fallback={<GameFallback />}>
-                  {(currentMode === 'lottery' || currentMode === 'prizeDraw') && (
-                    <LiveLotteryWaiting names={onlineList.map(p => p.nickname)} count={count} mode={currentMode} />
+                  {currentMode === 'lottery' && (
+                    <Lottery participants={drawParticipants} onResult={(names) => handleGameResult(names, 'lottery')} />
                   )}
                   {currentMode === 'breakTime' && <BreakTimer />}
                   {currentMode === 'leaderboard' && <div className="w-full max-w-2xl mx-auto [&_.max-w-xl]:max-w-2xl"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" /></div>}

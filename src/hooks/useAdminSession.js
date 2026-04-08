@@ -145,8 +145,12 @@ export function useAdminSession() {
   const switchMode = useCallback(async (mode) => {
     if (effectiveReadOnly) return;
     try {
-      await update(ref(db, `sessions/${sessionId}`), mode === 'leaderboard'
-        ? { currentMode: mode } : { currentMode: mode, currentQuestion: null });
+      const updates = mode === 'leaderboard'
+        ? { currentMode: mode }
+        : { currentMode: mode, currentQuestion: null };
+      // 추첨 모드 진입 시 이전 결과 클리어
+      if (mode === 'lottery') updates.gameResult = null;
+      await update(ref(db, `sessions/${sessionId}`), updates);
     } catch (err) {
       logger.error('Mode switch failed:', err);
       showActionError('모드 전환에 실패했습니다. 다시 시도해주세요.');

@@ -19,8 +19,6 @@ import { usePublishGameResult } from '@/features/games/api/useGameResult';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
 import TeamScoreboard from '@/features/teams/components/TeamScoreboard';
 
-const Lottery = lazy(() => import('@/features/games/components/Lottery'));
-const PrizeDraw = lazy(() => import('@/features/games/components/PrizeDraw'));
 const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
 const ClassQABoard = lazy(() => import('@/features/class-questions/components/ClassQABoard'));
 const AwardsCeremony = lazy(() => import('@/features/assignments/components/AwardsCeremony'));
@@ -144,7 +142,7 @@ function getModeVariants(mode) {
   if (mode === 'leaderboard') {
     return { initial: { opacity: 0, y: -30 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 30 } };
   }
-  if (['lottery', 'prizeDraw', 'breakTime', 'teamBattle', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus', 'combinedRanking'].includes(mode)) {
+  if (['lottery', 'breakTime', 'teamBattle', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus', 'combinedRanking'].includes(mode)) {
     return { initial: { opacity: 0, scale: 0.88 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 1.06 } };
   }
   if (['poll', 'quiz'].includes(mode)) {
@@ -203,8 +201,18 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
   // Determine content + animation key
   let contentKey, content;
   const gameContent = (() => {
-    if (currentMode === 'lottery') return <Lottery participants={drawParticipants} onResult={onGameResult ? (names) => onGameResult(names, 'lottery') : undefined} />;
-    if (currentMode === 'prizeDraw') return <PrizeDraw participants={onlineList} onResult={onGameResult ? (names) => onGameResult(names, 'prizeDraw') : undefined} />;
+    if (currentMode === 'lottery') return (
+      <div className="flex flex-col items-center justify-center gap-5 py-12 text-center">
+        <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+          <Ticket size={28} className="text-slate-400" />
+        </div>
+        <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">추첨 모드</h3>
+        <p className="text-slate-500 dark:text-slate-400 text-sm max-w-xs">
+          전자칠판 화면에서 추첨을 진행해주세요.<br />
+          당첨 결과는 학생 화면에 자동으로 표시됩니다.
+        </p>
+      </div>
+    );
     if (currentMode === 'breakTime') return <BreakTimer />;
     if (currentMode === 'leaderboard') return <div className="w-full max-w-xl md:max-w-2xl [&_.max-w-xl]:max-w-2xl px-2 md:px-0"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" /></div>;
     if (currentMode === 'teamBattle') {
@@ -433,7 +441,6 @@ const PRESENT_MODES = [
   { mode: 'combinedRanking', label: '합산 랭킹', icon: Medal },
   { mode: 'leaderboard', label: '리더보드', icon: Trophy },
   { mode: 'lottery', label: '추첨', icon: Ticket },
-  { mode: 'prizeDraw', label: '경품 추첨', icon: Gift },
   { mode: 'breakTime', label: '쉬는 시간', icon: Coffee },
   { mode: 'awards', label: '시상식', icon: Award },
 ];

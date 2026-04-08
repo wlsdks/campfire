@@ -63,7 +63,7 @@ export default memo(function CombinedRanking({ session }) {
     : ranking.slice(3);
 
   return (
-    <div className="w-full max-w-2xl mx-auto flex flex-col relative" style={{ maxHeight: '85vh' }}>
+    <div className="w-full max-w-2xl mx-auto flex flex-col relative pt-14" style={{ maxHeight: '85vh' }}>
       {/* 폭죽 1회 */}
       <Suspense fallback={null}><ConfettiBurst /></Suspense>
 
@@ -74,7 +74,7 @@ export default memo(function CombinedRanking({ session }) {
         transition={SPRING_BOUNCY}
         className="text-center space-y-2 mb-6 shrink-0"
       >
-        <PickMascot size="lg" mood="happy" className="mx-auto mb-2" />
+        <PickMascot size="md" mood="happy" className="mx-auto mb-2" />
         <div className="flex items-center justify-center gap-2">
           <Medal size={28} className="text-amber-500" />
           <h3 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">합산 랭킹</h3>

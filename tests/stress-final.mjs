@@ -16,18 +16,40 @@ async function w(fn) { try { await fn(); writes++; } catch { errors++; } }
 
 const snap = await get(ref(db, `sessions/${SID}/questions`));
 const questions = snap.val();
+if (!questions) { log('❌ 세션에 질문이 없습니다. 먼저 세션을 생성해주세요.'); process.exit(1); }
 const qIds = Object.keys(questions);
 
-// ═══ Phase 1: 150명 천천히 입장 ═══
-log('🚪 Phase 1: 150명 입장...');
-for (let b = 0; b < USERS; b += 10) {
+// ═══ Phase 0: 기존 데이터 클리어 (0명부터 시작) ═══
+log('🧹 Phase 0: 기존 데이터 클리어...');
+await set(ref(db, `sessions/${SID}/participants`), null);
+await set(ref(db, `sessions/${SID}/reactions`), null);
+await set(ref(db, `sessions/${SID}/chat`), null);
+await set(ref(db, `sessions/${SID}/gameResult`), null);
+await set(ref(db, `sessions/${SID}/drumroll`), null);
+// 각 질문의 votes, revealedAt 초기화
+for (const qId of qIds) {
+  await update(ref(db, `sessions/${SID}/questions/${qId}`), { votes: null, revealedAt: null, revealedHints: null, activatedAt: null, currentSlide: null });
+}
+await update(ref(db, `sessions/${SID}`), { currentMode: 'waiting', currentQuestion: null, status: 'active' });
+log('✅ 클리어 완료 — 0명에서 시작\n');
+await sleep(2000);
+
+// ═══ Phase 1: 150명 현실적 입장 (1초에 1~3명) ═══
+log('🚪 Phase 1: 150명 입장 (1초 1명, 가끔 2~3명 동시)...');
+let joined = 0;
+while (joined < USERS) {
+  // 1~3명 동시 입장 (70% 확률 1명, 20% 2명, 10% 3명)
+  const r = Math.random();
+  const batch = Math.min(r < 0.7 ? 1 : r < 0.9 ? 2 : 3, USERS - joined);
   const p = [];
-  for (let i = b; i < Math.min(b + 10, USERS); i++) {
-    p.push(w(() => set(ref(db, `sessions/${SID}/participants/u${String(i).padStart(4,'0')}`), { nickname: `학생${i+1}`, joinedAt: Date.now(), online: true })));
+  for (let i = 0; i < batch; i++) {
+    const idx = joined + i;
+    p.push(w(() => set(ref(db, `sessions/${SID}/participants/u${String(idx).padStart(4,'0')}`), { nickname: `학생${idx+1}`, joinedAt: Date.now(), online: true })));
   }
   await Promise.all(p);
-  if ((b+10) % 50 === 0) log(`  ${Math.min(b+10, USERS)}/${USERS}`);
-  await sleep(800);
+  joined += batch;
+  if (joined % 30 === 0 || joined >= USERS) log(`  ${joined}/${USERS}`);
+  await sleep(batch === 1 ? 1000 : 700);
 }
 log('✅ 150명 입장 완료\n');
 await sleep(3000);
