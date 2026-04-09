@@ -3,41 +3,56 @@ import { motion } from 'framer-motion';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 
 function Confetti({ trigger }) {
-  const [on, setOn] = useState(false);
-  const prev = useRef(0);
+  const [particles, setParticles] = useState([]);
+
   useEffect(() => {
-    if (trigger > prev.current) { setOn(true); setTimeout(() => setOn(false), 2200); prev.current = trigger; }
+    if (!trigger) return;
+    const colors = ['#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
+    const origins = [
+      { x: 15 + Math.random()*10, y: 55 + Math.random()*10 },
+      { x: 45 + Math.random()*10, y: 40 + Math.random()*10 },
+      { x: 75 + Math.random()*10, y: 50 + Math.random()*10 },
+    ];
+    const p = [];
+    origins.forEach((o, oi) => {
+      for (let i = 0; i < 30; i++) {
+        const a = (i / 30) * Math.PI * 2 + (Math.random() - 0.5);
+        const speed = 4 + Math.random() * 8;
+        p.push({
+          id: `${trigger}-${oi}-${i}`,
+          ox: o.x, oy: o.y,
+          dx: Math.cos(a) * speed * 60,
+          dy: Math.sin(a) * speed * 60 - 180,
+          size: 5 + Math.random() * 8,
+          color: colors[(oi * 3 + i) % 8],
+          delay: oi * 0.15 + Math.random() * 0.12,
+          dur: 1.5 + Math.random() * 0.8,
+          rot: Math.random() * 600,
+          ratio: 0.4 + Math.random() * 0.8,
+        });
+      }
+    });
+    setParticles(p);
+    const t = setTimeout(() => setParticles([]), 3000);
+    return () => clearTimeout(t);
   }, [trigger]);
-  if (!on) return null;
-  const colors = ['#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
-  // 3개 발사 지점에서 터짐 (좌측, 중앙, 우측)
-  const origins = [
-    { x: 20, y: 60 },
-    { x: 50, y: 45 },
-    { x: 80, y: 55 },
-  ];
+
+  if (particles.length === 0) return null;
   return (
     <div className="fixed inset-0 pointer-events-none z-20 overflow-hidden">
-      {origins.map((origin, oi) =>
-        Array.from({ length: 25 }, (_, i) => {
-          const a = (i / 25) * Math.PI * 2 + (Math.random() - 0.5) * 0.6;
-          const s = 3 + Math.random() * 6;
-          const size = 4 + Math.random() * 7;
-          return (
-            <motion.div key={`${trigger}-${oi}-${i}`}
-              initial={{ left: `${origin.x}%`, top: `${origin.y}%`, opacity: 1, scale: 1 }}
-              animate={{
-                left: `calc(${origin.x}% + ${Math.cos(a)*s*70}px)`,
-                top: `calc(${origin.y}% + ${Math.sin(a)*s*70 - 150}px)`,
-                opacity: 0, scale: 0, rotate: Math.random()*500,
-              }}
-              transition={{ duration: 1+Math.random()*0.5, delay: oi*0.12 + Math.random()*0.1, ease: 'easeOut' }}
-              className="absolute rounded-sm"
-              style={{ width: size, height: size * (0.5 + Math.random()*0.8), backgroundColor: colors[(oi*8+i)%8] }}
-            />
-          );
-        })
-      )}
+      {particles.map(p => (
+        <motion.div key={p.id}
+          initial={{ left: `${p.ox}%`, top: `${p.oy}%`, opacity: 1, scale: 1 }}
+          animate={{
+            left: `calc(${p.ox}% + ${p.dx}px)`,
+            top: `calc(${p.oy}% + ${p.dy}px)`,
+            opacity: 0, scale: 0.2, rotate: p.rot,
+          }}
+          transition={{ duration: p.dur, delay: p.delay, ease: 'easeOut' }}
+          className="absolute rounded-sm"
+          style={{ width: p.size, height: p.size * p.ratio, backgroundColor: p.color }}
+        />
+      ))}
     </div>
   );
 }
@@ -65,22 +80,17 @@ function Counter({ value }) {
 export default memo(function JoinShow({ sessionId }) {
   const { count } = useParticipants(sessionId);
   const [confettiTrigger, setConfettiTrigger] = useState(0);
-  const peak = useRef(0);
+  const lastMsRef = useRef(0);
 
-  // 현재 카운트의 10 단위 마일스톤
   const currentMilestone = count >= 10 ? Math.floor(count / 10) * 10 : 0;
 
-  // 폭죽: 새로운 10 단위 돌파 시에만
+  // 폭죽: 10 단위 마일스톤이 바뀔 때마다
   useEffect(() => {
-    if (count > peak.current) {
-      const newMs = Math.floor(count / 10) * 10;
-      const oldMs = Math.floor(peak.current / 10) * 10;
-      if (newMs > oldMs && newMs > 0) {
-        setConfettiTrigger(newMs);
-      }
-      peak.current = count;
+    if (currentMilestone > lastMsRef.current) {
+      setConfettiTrigger(currentMilestone);
+      lastMsRef.current = currentMilestone;
     }
-  }, [count]);
+  }, [currentMilestone]);
 
   return (
     <div className="w-full h-full flex items-center justify-center select-none overflow-hidden"
