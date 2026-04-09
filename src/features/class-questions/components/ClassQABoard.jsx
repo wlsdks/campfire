@@ -27,9 +27,14 @@ export default function ClassQABoard({ sessionId, showInput = true, role }) {
   const displayName = anonymous ? '익명' : nickname;
 
   const filtered = useMemo(() => {
-    if (tab === 'all') return questions;
-    if (tab === 'unanswered') return questions.filter((q) => !q.answered);
-    return questions;
+    const base = tab === 'unanswered' ? questions.filter((q) => !q.answered) : questions;
+    // Q&A 보드: 강사/스태프 답변 완료 → 상단, 나머지 → upvote 순
+    return [...base].sort((a, b) => {
+      const aOfficial = a.answeredByRole ? 1 : 0;
+      const bOfficial = b.answeredByRole ? 1 : 0;
+      if (aOfficial !== bOfficial) return bOfficial - aOfficial;
+      return b.upvoteCount - a.upvoteCount || (b.timestamp || 0) - (a.timestamp || 0);
+    });
   }, [questions, tab]);
 
   const handlePostQuestion = useCallback(async () => {

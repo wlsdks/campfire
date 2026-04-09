@@ -21,7 +21,7 @@ const UNREAD_DOT = 'absolute top-1 right-1 w-2.5 h-2.5 rounded-full ring-2 ring-
 
 // Base button style — 48px+ touch target, consistent look
 const BTN_BASE = 'h-[56px] w-full rounded-xl font-medium text-sm flex flex-col items-center justify-center gap-0.5 transition-colors duration-150 relative active:scale-[0.96]';
-const BTN_DEFAULT = `${BTN_BASE} bg-slate-50 text-slate-600 active:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:active:bg-slate-700`;
+const BTN_DEFAULT = `${BTN_BASE} bg-slate-50 text-slate-600 hover:bg-slate-100 active:bg-slate-100 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:active:bg-slate-600`;
 const BTN_ACTIVE = `${BTN_BASE} bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900`;
 
 export default memo(function StudentBottomBar({ sessionId }) {
