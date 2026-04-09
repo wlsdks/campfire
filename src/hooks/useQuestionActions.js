@@ -434,7 +434,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
         updates[`questions/${qId}/currentSlide`] = 0;
       });
       await update(ref(db, `sessions/${sessionId}`), updates);
-      showToast('전체 세션이 초기화되었습니다');
+      showToast('모든 답변과 점수가 초기화되었습니다');
     } catch {
       setError('전체 초기화에 실패했습니다.');
     }
