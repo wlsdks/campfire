@@ -28,6 +28,7 @@ const SurveyPresenter = lazy(() => import('@/features/session/components/QuickSu
 const DiscussionPresenter = lazy(() => import('@/features/session/components/DiscussionPresenter'));
 const CombinedRanking = lazy(() => import('@/features/quiz/components/CombinedRanking'));
 const QARanking = lazy(() => import('@/features/class-questions/components/QARanking'));
+const JoinShow = lazy(() => import('@/features/games/components/JoinShow'));
 
 function PresentEmptyState({ sessionId, studentUrl, count }) {
   return (
@@ -143,7 +144,7 @@ function getModeVariants(mode) {
   if (mode === 'leaderboard') {
     return { initial: { opacity: 0, y: -30 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 30 } };
   }
-  if (['lottery', 'breakTime', 'teamBattle', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus', 'combinedRanking', 'qaRanking'].includes(mode)) {
+  if (['lottery', 'breakTime', 'teamBattle', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus', 'combinedRanking', 'qaRanking', 'joinShow'].includes(mode)) {
     return { initial: { opacity: 0, scale: 0.88 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 1.06 } };
   }
   if (['poll', 'quiz'].includes(mode)) {
@@ -231,6 +232,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     }
     if (currentMode === 'qaBoard') return <div className="w-full max-w-4xl"><ClassQABoard sessionId={sessionId} showInput={false} isAdmin /></div>;
     if (currentMode === 'qaRanking') return <QARanking sessionId={sessionId} />;
+    if (currentMode === 'joinShow') return <JoinShow sessionId={sessionId} />;
     if (currentMode === 'awards') return <AwardsCeremony assignmentId={session?.activeAssignmentId} />;
     if (currentMode === 'randomPicker') return <RandomPicker participants={onlineList} />;
     if (currentMode === 'comprehension') return <ComprehensionPresenter sessionId={sessionId} />;
@@ -437,9 +439,10 @@ function PresentRevealControls({ sessionId, session }) {
 }
 
 
-import { Medal, Ticket, Gift, Coffee, Award, HelpCircle } from 'lucide-react';
+import { Medal, Ticket, Gift, Coffee, Award, HelpCircle, UserPlus } from 'lucide-react';
 
 const PRESENT_MODES = [
+  { mode: 'joinShow', label: '접속 현황', icon: UserPlus },
   { mode: 'combinedRanking', label: '합산 랭킹', icon: Medal },
   { mode: 'leaderboard', label: '리더보드', icon: Trophy },
   { mode: 'qaBoard', label: 'Q&A 보드', icon: MessageSquare },
