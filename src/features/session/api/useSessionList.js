@@ -5,12 +5,14 @@ import { generateSessionId, generateQuestionId } from '@/lib/utils';
 import { logger } from '@/lib/logger';
 
 /**
- * Fetches all sessions from Firebase with metadata including course info.
- * Uses get() for one-time fetch.
+ * Fetches sessions from Firebase with metadata including course info.
+ * Filters by ownership: master sees all, admin sees own, staff uses separate dashboard.
  *
+ * @param {string} [adminUid] - Current admin's uid for ownership filtering
+ * @param {string} [role] - 'master' | 'admin' | 'staff'
  * @returns {{ sessions: Array, loading: boolean, refresh: Function }}
  */
-export function useSessionList() {
+export function useSessionList(adminUid, role) {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -61,11 +63,19 @@ export function useSessionList() {
           courseName: session.courseName || null,
           roundNumber: session.roundNumber || null,
           courseTemplateId: session.courseTemplateId || null,
+          creatorId: session.creatorId || null,
+          courseId: session.courseId || null,
         };
       });
 
-      list.sort((a, b) => b.createdAt - a.createdAt);
-      setSessions(list);
+      // Filter by ownership
+      let filtered = list;
+      if (role === 'admin' && adminUid) {
+        filtered = list.filter((s) => s.creatorId === adminUid || !s.creatorId);
+      }
+
+      filtered.sort((a, b) => b.createdAt - a.createdAt);
+      setSessions(filtered);
     } catch (err) {
       logger.error('Failed to fetch sessions:', err);
       setSessions([]);
@@ -118,6 +128,8 @@ export function useSessionList() {
         currentMode: 'waiting',
         createdAt: serverTimestamp(),
         courseName: source.courseName || null,
+        courseId: source.courseId || null,
+        creatorId: source.creatorId || adminUid || null,
         roundNumber: nextRound,
       };
 

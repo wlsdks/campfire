@@ -7,10 +7,12 @@ import Modal from '@/components/ui/Modal';
 import CreateSessionStepCourse from './CreateSessionStepCourse';
 import CreateSessionStepNewCourse from './CreateSessionStepNewCourse';
 import CreateSessionStepConfirm from './CreateSessionStepConfirm';
+import { useCourses } from '@/features/course/api/useCourses';
 
-export default function CreateSessionModal({ open, onClose, onCreated, sessions }) {
+export default function CreateSessionModal({ open, onClose, onCreated, sessions, adminUser }) {
   const [step, setStep] = useState('course'); // 'course' | 'new-course' | 'confirm'
   const [selectedCourse, setSelectedCourse] = useState('');
+  const [selectedCourseId, setSelectedCourseId] = useState('');
   const [newCourseName, setNewCourseName] = useState('');
   const [roundNumber, setRoundNumber] = useState(1);
   const [creating, setCreating] = useState(false);
@@ -20,20 +22,28 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
   const [duplicateEnabled, setDuplicateEnabled] = useState(false);
   const [duplicateSourceId, setDuplicateSourceId] = useState('');
 
+  const { courses: dbCourses, createCourse, refresh: refreshCourses } = useCourses(
+    adminUser?.uid, adminUser?.role
+  );
+
+  // Enrich courses with session stats (count, maxRound) for display
   const courses = useMemo(() => {
-    const courseMap = {};
+    const sessionStats = {};
     sessions.forEach((s) => {
       if (!s.courseName) return;
-      if (!courseMap[s.courseName]) {
-        courseMap[s.courseName] = { name: s.courseName, count: 0, maxRound: 0 };
-      }
-      courseMap[s.courseName].count++;
-      if (s.roundNumber > courseMap[s.courseName].maxRound) {
-        courseMap[s.courseName].maxRound = s.roundNumber;
+      if (!sessionStats[s.courseName]) sessionStats[s.courseName] = { count: 0, maxRound: 0 };
+      sessionStats[s.courseName].count++;
+      if (s.roundNumber > sessionStats[s.courseName].maxRound) {
+        sessionStats[s.courseName].maxRound = s.roundNumber;
       }
     });
-    return Object.values(courseMap).sort((a, b) => b.count - a.count);
-  }, [sessions]);
+    return dbCourses.map((c) => ({
+      id: c.id,
+      name: c.name,
+      count: sessionStats[c.name]?.count || 0,
+      maxRound: sessionStats[c.name]?.maxRound || 0,
+    }));
+  }, [dbCourses, sessions]);
 
   const previousRounds = useMemo(() => {
     if (!selectedCourse) return [];
@@ -44,6 +54,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
 
   function handleSelectCourse(course) {
     setSelectedCourse(course.name);
+    setSelectedCourseId(course.id);
     setRoundNumber(course.maxRound + 1);
     setDuplicateEnabled(false);
     setDuplicateSourceId('');
@@ -55,18 +66,27 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
     setNewCourseName('');
   }
 
-  function handleNewCourseSubmit() {
+  async function handleNewCourseSubmit() {
     if (!newCourseName.trim()) return;
-    setSelectedCourse(newCourseName.trim());
-    setRoundNumber(1);
-    setDuplicateEnabled(false);
-    setDuplicateSourceId('');
-    setStep('confirm');
+    const name = newCourseName.trim();
+    setError(null);
+    try {
+      const courseId = await createCourse(name, adminUser?.displayName);
+      setSelectedCourse(name);
+      setSelectedCourseId(courseId);
+      setRoundNumber(1);
+      setDuplicateEnabled(false);
+      setDuplicateSourceId('');
+      setStep('confirm');
+    } catch {
+      setError('강의 생성에 실패했습니다.');
+    }
   }
 
   function handleReset() {
     setStep('course');
     setSelectedCourse('');
+    setSelectedCourseId('');
     setNewCourseName('');
     setRoundNumber(1);
     setError(null);
@@ -96,6 +116,8 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions 
         currentMode: 'waiting',
         createdAt: serverTimestamp(),
         courseName: selectedCourse,
+        courseId: selectedCourseId || null,
+        creatorId: adminUser?.uid || null,
         roundNumber,
       };
 

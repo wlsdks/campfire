@@ -25,7 +25,7 @@ const TABS = [
 ];
 
 export default function SessionDashboard({ onSelectSession, onLogout, adminUser, isMaster, pendingAdmins, pendingCount, approveAdmin, rejectAdmin }) {
-  const { sessions, loading, refresh, deleteSession, duplicateSession } = useSessionList();
+  const { sessions, loading, refresh, deleteSession, duplicateSession } = useSessionList(adminUser?.uid, adminUser?.role);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const isStaff = adminUser?.role === 'staff';
@@ -185,6 +185,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
                 onDeleteRequest={handleDeleteRequest}
                 onDuplicate={handleDuplicate}
                 onClearFilter={() => { setSearchQuery(''); setStatusFilter('all'); }}
+                adminUser={adminUser}
               />
             </motion.div>
           )}
@@ -223,7 +224,7 @@ export default function SessionDashboard({ onSelectSession, onLogout, adminUser,
         </AnimatePresence>
       </div>
 
-      <CreateSessionModal open={modalOpen} onClose={() => setModalOpen(false)} onCreated={handleCreated} sessions={sessions} />
+      <CreateSessionModal open={modalOpen} onClose={() => setModalOpen(false)} onCreated={handleCreated} sessions={sessions} adminUser={adminUser} />
       <DeleteSessionModal open={!!deleteTarget} onClose={() => setDeleteTarget(null)} session={deleteTarget} onConfirm={deleteSession} />
       <Toast message={toast} />
       <AnimatePresence>

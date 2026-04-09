@@ -23,6 +23,7 @@ import CenterContent from './CenterContent';
 import MobileAdminView from './MobileAdminView';
 
 const StaffPage = lazy(() => import('./StaffPage'));
+const StaffCourseDashboard = lazy(() => import('./StaffCourseDashboard'));
 
 export default function AdminPage() {
   const s = useAdminSession();
@@ -30,10 +31,24 @@ export default function AdminPage() {
   const isTablet = useMediaQuery('(max-width: 1023px)');
 
   if (!s.adminUser) return <AdminLogin onLogin={s.handleLogin} />;
-  if (!s.sessionId) return (
-    <SessionDashboard onSelectSession={s.handleSelectSession} onLogout={s.handleLogout} adminUser={s.adminUser} isMaster={s.isMaster}
-      pendingAdmins={s.pendingAdmins} pendingCount={s.pendingCount} approveAdmin={s.approveAdmin} rejectAdmin={s.rejectAdmin} />
-  );
+  if (!s.sessionId) {
+    if (s.adminUser?.role === 'staff') {
+      return (
+        <Suspense fallback={
+          <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center gap-4">
+            <PickMascot size="md" mood="thinking" />
+            <p className="text-sm text-slate-400">불러오는 중...</p>
+          </div>
+        }>
+          <StaffCourseDashboard adminUser={s.adminUser} onSelectSession={s.handleSelectSession} onLogout={s.handleLogout} />
+        </Suspense>
+      );
+    }
+    return (
+      <SessionDashboard onSelectSession={s.handleSelectSession} onLogout={s.handleLogout} adminUser={s.adminUser} isMaster={s.isMaster}
+        pendingAdmins={s.pendingAdmins} pendingCount={s.pendingCount} approveAdmin={s.approveAdmin} rejectAdmin={s.rejectAdmin} />
+    );
+  }
   if (s.loading) return (
     <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center gap-4">
       <PickMascot size="md" mood="thinking" />

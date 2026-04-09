@@ -15,10 +15,16 @@ const inputClass = (hasError) =>
       : 'border-slate-200 dark:border-slate-600 focus:ring-indigo-500/20 focus:border-indigo-500'
   }`;
 
+const ROLES = [
+  { value: 'admin', label: '강사', desc: '강의를 만들고 운영합니다' },
+  { value: 'staff', label: '스태프', desc: '배정된 강의를 보조합니다' },
+];
+
 export default function RegisterView({ onLogin, onSwitchToLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
+  const [selectedRole, setSelectedRole] = useState('admin');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -64,12 +70,15 @@ export default function RegisterView({ onLogin, onSwitchToLogin }) {
       const uid = generateId();
       const pwHash = await hashPassword(password);
 
+      const role = isFirstUser ? 'master' : selectedRole;
+      const isStaff = role === 'staff';
+
       const adminData = {
         username: trimmedUsername,
         passwordHash: pwHash,
         displayName: trimmedName,
-        role: isFirstUser ? 'master' : 'admin',
-        approved: isFirstUser,
+        role,
+        approved: isFirstUser || isStaff,
         createdAt: Date.now(),
       };
 
@@ -78,6 +87,10 @@ export default function RegisterView({ onLogin, onSwitchToLogin }) {
       if (isFirstUser) {
         sessionStorage.setItem('pinggo_admin',
           JSON.stringify({ uid, username: trimmedUsername, displayName: trimmedName, role: 'master' }));
+        onLogin();
+      } else if (isStaff) {
+        sessionStorage.setItem('pinggo_admin',
+          JSON.stringify({ uid, username: trimmedUsername, displayName: trimmedName, role: 'staff' }));
         onLogin();
       } else {
         setSuccess(true);
@@ -152,6 +165,27 @@ export default function RegisterView({ onLogin, onSwitchToLogin }) {
             placeholder="이름" aria-label="이름"
             className={inputClass(!!error)}
             autoComplete="name" />
+
+          {/* Role selector */}
+          <div className="flex gap-2">
+            {ROLES.map((r) => (
+              <button
+                key={r.value}
+                type="button"
+                onClick={() => setSelectedRole(r.value)}
+                className={`flex-1 py-2.5 px-3 rounded-lg border text-sm font-medium transition-colors duration-150 ${
+                  selectedRole === r.value
+                    ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 border-slate-900 dark:border-slate-100'
+                    : 'bg-white dark:bg-slate-700 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-600 hover:border-slate-300 dark:hover:border-slate-500'
+                }`}
+              >
+                <span className="block">{r.label}</span>
+                <span className={`block text-xs mt-0.5 font-normal ${
+                  selectedRole === r.value ? 'text-white/70 dark:text-slate-900/60' : 'text-slate-400 dark:text-slate-500'
+                }`}>{r.desc}</span>
+              </button>
+            ))}
+          </div>
 
           <AnimatePresence>
             {error && (

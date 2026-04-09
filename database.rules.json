@@ -45,10 +45,46 @@
         }
       }
     },
+    "courses": {
+      ".read": true,
+      ".write": true,
+      "$courseId": {
+        ".validate": "newData.hasChild('name') && newData.hasChild('ownerId')",
+        "name": { ".validate": "newData.isString() && newData.val().length <= 100" },
+        "ownerId": { ".validate": "newData.isString()" },
+        "ownerName": { ".validate": "newData.isString() && newData.val().length <= 20" },
+        "createdAt": { ".validate": "newData.isNumber()" },
+        "staff": {
+          "$staffUid": {
+            ".validate": "newData.hasChild('displayName')",
+            "displayName": { ".validate": "newData.isString() && newData.val().length <= 20" },
+            "assignedAt": { ".validate": "newData.isNumber()" }
+          }
+        }
+      }
+    },
+
+    "staffCourses": {
+      ".read": true,
+      ".write": true,
+      "$staffUid": {
+        "$courseId": {
+          ".validate": "newData.isBoolean()"
+        }
+      }
+    },
+
     "sessions": {
       ".read": true,
       "$sessionId": {
         ".write": true,
+
+        "creatorId": {
+          ".validate": "newData.isString() && newData.val().length <= 50"
+        },
+        "courseId": {
+          ".validate": "newData.isString() && newData.val().length <= 50"
+        },
 
         "status": {
           ".write": true,

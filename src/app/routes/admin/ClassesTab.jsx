@@ -24,6 +24,7 @@ export default memo(function ClassesTab({
   onDeleteRequest,
   onDuplicate,
   onClearFilter,
+  adminUser,
 }) {
   if (loading) {
     return (
@@ -123,19 +124,26 @@ export default memo(function ClassesTab({
         />
       ) : (
         <div className="space-y-4">
-          {courseGroups.map(([name, list], gi) => (
-            <CourseGroup
-              key={name}
-              name={name}
-              sessions={list}
-              onSelect={onSelect}
-              onDelete={onDeleteRequest}
-              onDuplicate={onDuplicate}
-              startIndex={gi * 10}
-              groupIndex={gi}
-              hideActions={isStaff}
-            />
-          ))}
+          {courseGroups.map(([name, list], gi) => {
+            // Get courseId from the first session that has one
+            const courseId = list.find((s) => s.courseId)?.courseId || null;
+            const canManageStaff = !isStaff && (adminUser?.role === 'master' || adminUser?.role === 'admin');
+            return (
+              <CourseGroup
+                key={name}
+                name={name}
+                sessions={list}
+                onSelect={onSelect}
+                onDelete={onDeleteRequest}
+                onDuplicate={onDuplicate}
+                startIndex={gi * 10}
+                groupIndex={gi}
+                hideActions={isStaff}
+                courseId={courseId}
+                canManageStaff={canManageStaff}
+              />
+            );
+          })}
           <UngroupedSessions
             sessions={ungrouped}
             onSelect={onSelect}

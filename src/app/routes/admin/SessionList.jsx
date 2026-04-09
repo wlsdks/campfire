@@ -1,6 +1,8 @@
-import { useState, useMemo, memo } from 'react';
+import { useState, useMemo, memo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, Copy, Trash2 } from 'lucide-react';
+import { ChevronDown, Copy, Trash2, Users } from 'lucide-react';
+
+const CourseStaffModal = lazy(() => import('./CourseStaffModal'));
 
 function formatDate(timestamp) {
   if (!timestamp) return '';
@@ -90,8 +92,9 @@ const SessionRow = memo(function SessionRow({ session, onClick, onDelete, onDupl
   );
 });
 
-export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, startIndex, groupIndex = 0, hideActions = false }) {
+export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, startIndex, groupIndex = 0, hideActions = false, courseId = null, canManageStaff = false }) {
   const [collapsed, setCollapsed] = useState(false);
+  const [staffModalOpen, setStaffModalOpen] = useState(false);
 
   const stats = useMemo(() => {
     const totalParticipants = sessions.reduce((s, x) => s + (x.totalParticipants || x.participantCount), 0);
@@ -108,15 +111,29 @@ export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, s
       transition={{ delay: groupIndex * 0.05, type: 'spring', stiffness: 300, damping: 25 }}
       className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-200"
     >
-      <button
-        onClick={() => setCollapsed(!collapsed)}
-        className="w-full text-left px-5 py-6 transition-colors duration-150 hover:bg-slate-50/50 dark:hover:bg-slate-700/30 active:bg-slate-100/50 dark:active:bg-slate-700/50"
-      >
+      <div className="px-5 py-6">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 leading-tight tracking-tight">{name}</h3>
-          <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ duration: 0.2 }}>
-            <ChevronDown size={16} className="text-slate-400" />
-          </motion.div>
+          <div className="flex items-center gap-2">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 leading-tight tracking-tight">{name}</h3>
+            {canManageStaff && courseId && (
+              <button
+                onClick={() => setStaffModalOpen(true)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150"
+                aria-label="스태프 관리"
+              >
+                <Users size={16} />
+              </button>
+            )}
+          </div>
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="p-1 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150"
+            aria-label={collapsed ? '펼치기' : '접기'}
+          >
+            <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ duration: 0.2 }}>
+              <ChevronDown size={16} />
+            </motion.div>
+          </button>
         </div>
         <div className="flex items-center gap-8">
           <div>
@@ -138,7 +155,7 @@ export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, s
             </div>
           </div>
         </div>
-      </button>
+      </div>
 
       <AnimatePresence>
         {!collapsed && sessions.length > 0 && (
@@ -157,6 +174,12 @@ export function CourseGroup({ name, sessions, onSelect, onDelete, onDuplicate, s
           </motion.div>
         )}
       </AnimatePresence>
+
+      {canManageStaff && courseId && staffModalOpen && (
+        <Suspense fallback={null}>
+          <CourseStaffModal open={staffModalOpen} onClose={() => setStaffModalOpen(false)} courseId={courseId} courseName={name} />
+        </Suspense>
+      )}
     </motion.div>
   );
 }
