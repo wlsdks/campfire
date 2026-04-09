@@ -1,7 +1,8 @@
 import { useState, useCallback } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { BookmarkPlus, PanelLeftClose, Plus, Eye, RotateCcw } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 import Toast from '@/components/ui/Toast';
 import { isQuizQuestion } from '@/lib/quiz';
 import { useAdminKeyboardShortcuts } from '@/hooks/useAdminKeyboardShortcuts';
@@ -12,6 +13,30 @@ import QuestionList from './QuestionList';
 import QuickProgressCard from './QuickProgressCard';
 import ImportFromLibraryModal from './ImportFromLibraryModal';
 import QuestionPreview from './QuestionPreview';
+
+function IconButton({ onClick, label, children, hoverColor = 'hover:text-slate-600 dark:hover:text-slate-300', ...props }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative" onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
+      <button onClick={onClick} className={`p-2 rounded-lg text-slate-400 dark:text-slate-500 ${hoverColor} hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90`} {...props}>
+        {children}
+      </button>
+      <AnimatePresence>
+        {show && (
+          <motion.span
+            initial={{ opacity: 0, y: 4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 4 }}
+            transition={{ duration: 0.1 }}
+            className="absolute top-full left-1/2 -translate-x-1/2 mt-1.5 px-2 py-1 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-[11px] font-medium rounded-md whitespace-nowrap z-50 pointer-events-none"
+          >
+            {label}
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
 
 export default function QuestionManager({
   sessionId,
@@ -37,6 +62,7 @@ export default function QuestionManager({
   const [showForm, setShowForm] = useState(false);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
   const { saveQuestion: saveToLibrary } = useQuestionLibrary(adminUid);
 
   const {
@@ -81,25 +107,19 @@ export default function QuestionManager({
           <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">질문 목록</h2>
           <div className="flex items-center gap-1">
             {questionList.length > 0 && (
-              <button onClick={() => setPreviewOpen(true)}
-                className="p-2 rounded-lg text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
-                title="미리보기" aria-label="문항 미리보기">
+              <IconButton onClick={() => setPreviewOpen(true)} label="미리보기" aria-label="문항 미리보기">
                 <Eye size={18} />
-              </button>
+              </IconButton>
             )}
             {questionList.length > 0 && !readOnly && (
-              <button onClick={() => { if (confirm('모든 답변, 점수, 참여 기록을 초기화할까요?\n(참여자는 재접속하면 다시 표시됩니다)')) resetAllQuestions(); }}
-                className="p-2 rounded-lg text-slate-400 dark:text-slate-500 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
-                title="전체 답변 초기화" aria-label="전체 답변 초기화">
+              <IconButton onClick={() => setResetConfirmOpen(true)} label="초기화" aria-label="전체 답변 초기화" hoverColor="hover:text-red-500">
                 <RotateCcw size={18} />
-              </button>
+              </IconButton>
             )}
             {!readOnly && onCollapse && (
-              <button onClick={onCollapse}
-                className="p-2 rounded-lg text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
-                title="패널 접기" aria-label="사이드바 접기">
+              <IconButton onClick={onCollapse} label="접기" aria-label="사이드바 접기">
                 <PanelLeftClose size={18} />
-              </button>
+              </IconButton>
             )}
           </div>
         </div>
@@ -187,6 +207,16 @@ export default function QuestionManager({
       <Toast message={toast} />
 
       <QuestionPreview questionList={questionList} open={previewOpen} onClose={() => setPreviewOpen(false)} />
+
+      <ConfirmModal
+        open={resetConfirmOpen}
+        onConfirm={() => { setResetConfirmOpen(false); resetAllQuestions(); }}
+        onCancel={() => setResetConfirmOpen(false)}
+        title="전체 답변 초기화"
+        description="모든 답변, 점수, 참여 기록을 초기화할까요? 참여자는 재접속하면 다시 표시됩니다."
+        confirmLabel="초기화"
+        variant="danger"
+      />
     </div>
   );
 }
