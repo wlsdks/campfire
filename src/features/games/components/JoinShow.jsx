@@ -115,8 +115,8 @@ export default memo(function JoinShow({ sessionId }) {
       {/* 3-column: left names | counter | right names */}
       <div className="flex items-center gap-6 md:gap-10 w-full max-w-4xl px-4">
 
-        {/* Left */}
-        <div className="w-28 md:w-36 shrink-0">
+        {/* Left — fixed height, names stack from bottom up */}
+        <div className="w-28 md:w-36 shrink-0 h-48 overflow-hidden flex flex-col justify-end">
           <AnimatePresence>
             {left.map(e => <NameTag key={e.id} name={e.name} side="left" />)}
           </AnimatePresence>
@@ -145,8 +145,8 @@ export default memo(function JoinShow({ sessionId }) {
           </AnimatePresence>
         </div>
 
-        {/* Right */}
-        <div className="w-28 md:w-36 shrink-0">
+        {/* Right — fixed height, names stack from bottom up */}
+        <div className="w-28 md:w-36 shrink-0 h-48 overflow-hidden flex flex-col justify-end">
           <AnimatePresence>
             {right.map(e => <NameTag key={e.id} name={e.name} side="right" />)}
           </AnimatePresence>
