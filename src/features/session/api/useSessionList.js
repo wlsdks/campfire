@@ -71,7 +71,7 @@ export function useSessionList(adminUid, role) {
       // Filter by ownership
       let filtered = list;
       if (role === 'admin' && adminUid) {
-        filtered = list.filter((s) => s.creatorId === adminUid || !s.creatorId);
+        filtered = list.filter((s) => s.creatorId === adminUid);
       }
 
       filtered.sort((a, b) => b.createdAt - a.createdAt);
