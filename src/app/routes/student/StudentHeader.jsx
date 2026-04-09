@@ -6,7 +6,7 @@ import PickMascot from '@/components/ui/PickMascot';
 import Avatar from '@/components/ui/Avatar';
 import ConnectionBanner from '@/components/ui/ConnectionBanner';
 import { useScores } from '@/features/quiz/api/useScores';
-import { getParticipantId, getNickname } from '@/lib/participant';
+import { getParticipantId, getNickname, clearSessionJoined } from '@/lib/participant';
 
 function ThemeToggle() {
   const { isDark, setTheme } = useTheme();
@@ -68,6 +68,11 @@ export default function StudentHeader({ sessionId }) {
     });
   }, []);
 
+  const handleChangeNickname = useCallback(() => {
+    clearSessionJoined(sessionId);
+    window.dispatchEvent(new CustomEvent('pick:change-nickname'));
+  }, [sessionId]);
+
   return (
     <>
       <motion.header
@@ -121,7 +126,19 @@ export default function StudentHeader({ sessionId }) {
               }
             </motion.button>
             <ThemeToggle />
-            <Avatar name={nickname} size="sm" />
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={handleChangeNickname}
+              aria-label="닉네임 변경"
+              className="relative group"
+            >
+              <Avatar name={nickname} size="sm" />
+              <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-slate-200 dark:bg-slate-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-slate-500 dark:text-slate-300">
+                  <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                </svg>
+              </span>
+            </motion.button>
           </div>
         </div>
       </motion.header>

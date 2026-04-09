@@ -8,7 +8,7 @@ import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import InstallPrompt from '@/components/ui/InstallPrompt';
 import { SuspenseFallback } from '@/components/ui/Skeleton';
 import { db } from '@/lib/firebase';
-import { getNickname, getParticipantId, hasJoinedSession, markSessionJoined } from '@/lib/participant';
+import { getNickname, getParticipantId, hasJoinedSession, markSessionJoined, getSessionNickname } from '@/lib/participant';
 import { useTheme } from '@/hooks/useTheme';
 
 const VotePage = lazy(() => import('@/app/routes/student/VotePage'));
@@ -53,10 +53,17 @@ function StudentRouter() {
     setJoined(hasJoinedSession(sessionId));
   }, [sessionId]);
 
+  // Listen for nickname change requests from StudentHeader
+  useEffect(() => {
+    const handler = () => setJoined(false);
+    window.addEventListener('pick:change-nickname', handler);
+    return () => window.removeEventListener('pick:change-nickname', handler);
+  }, []);
+
   useEffect(() => {
     if (!joined || !sessionId) return;
 
-    const nickname = getNickname().trim();
+    const nickname = (getSessionNickname(sessionId) || getNickname()).trim();
     if (!nickname) return;
 
     const participantId = getParticipantId();
@@ -140,8 +147,8 @@ function StudentRouter() {
         >
           <JoinPage
             sessionId={sessionId}
-            onJoin={(participantId) => {
-              markSessionJoined(sessionId, participantId);
+            onJoin={(participantId, nickname) => {
+              markSessionJoined(sessionId, participantId, nickname);
               setJoined(true);
             }}
           />

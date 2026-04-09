@@ -69,8 +69,9 @@ export function hasJoinedSession(sessionId) {
  * Marks a session as joined for the current participant.
  * @param {string} sessionId
  * @param {string} participantId
+ * @param {string} [nickname] - Session-specific nickname
  */
-export function markSessionJoined(sessionId, participantId) {
+export function markSessionJoined(sessionId, participantId, nickname) {
   if (!sessionId || !participantId) return;
   const joinedSessions = readJoinedSessions();
   writeJoinedSessions({
@@ -78,8 +79,31 @@ export function markSessionJoined(sessionId, participantId) {
     [sessionId]: {
       participantId,
       joinedAt: Date.now(),
+      ...(nickname ? { nickname } : {}),
     },
   });
+}
+
+/**
+ * Returns the nickname used for a specific session, or empty string.
+ * @param {string} sessionId
+ * @returns {string}
+ */
+export function getSessionNickname(sessionId) {
+  if (!sessionId) return '';
+  const joinedSessions = readJoinedSessions();
+  return joinedSessions[sessionId]?.nickname || '';
+}
+
+/**
+ * Clears join state for a session so the user can re-join with a different nickname.
+ * @param {string} sessionId
+ */
+export function clearSessionJoined(sessionId) {
+  if (!sessionId) return;
+  const joinedSessions = readJoinedSessions();
+  delete joinedSessions[sessionId];
+  writeJoinedSessions(joinedSessions);
 }
 
 /**

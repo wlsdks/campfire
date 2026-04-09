@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { ref, set, get, serverTimestamp, onDisconnect } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
-import { getParticipantId, getNickname, setNickname as saveNickname } from '@/lib/participant';
+import { getParticipantId, getNickname, setNickname as saveNickname, getSessionNickname } from '@/lib/participant';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, ArrowRight } from 'lucide-react';
 import PickMascot from '@/components/ui/PickMascot';
@@ -48,7 +48,7 @@ function useKeyboardDetect() {
 }
 
 export default function JoinPage({ sessionId, onJoin }) {
-  const [nickname, setNickname] = useState(getNickname());
+  const [nickname, setNickname] = useState(() => getSessionNickname(sessionId) || getNickname());
   const [joining, setJoining] = useState(false);
   const [error, setError] = useState(null);
   const [touched, setTouched] = useState(false);
