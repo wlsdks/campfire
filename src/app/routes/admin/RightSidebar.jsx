@@ -1,6 +1,6 @@
-import { useState, memo, lazy, Suspense } from 'react';
+import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, ChevronDown, Copy, Check, Monitor, UserPlus } from 'lucide-react';
+import { Users, ChevronDown, Copy, Check, Monitor } from 'lucide-react';
 import ParticipantList from '@/features/participants/components/ParticipantList';
 import QRCode from '@/components/ui/QRCode';
 import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
@@ -12,8 +12,6 @@ import InstructorNotes from './InstructorNotes';
 import Button from '@/components/ui/Button';
 import Avatar from '@/components/ui/Avatar';
 import { useStaffAssignment } from '@/features/course/api/useStaffAssignment';
-
-const CourseStaffModal = lazy(() => import('./CourseStaffModal'));
 
 function RightPanelAccordion({ title, count, defaultOpen = false, children }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -52,45 +50,30 @@ function RightPanelAccordion({ title, count, defaultOpen = false, children }) {
   );
 }
 
-function StaffSection({ courseId, courseName }) {
+function StaffSection({ courseId }) {
   const { staffList } = useStaffAssignment(courseId);
-  const [modalOpen, setModalOpen] = useState(false);
 
   if (!courseId) return null;
 
   return (
-    <>
-      <RightPanelAccordion title="스태프" count={staffList.length} defaultOpen={staffList.length > 0}>
-        {staffList.length === 0 ? (
-          <p className="text-xs text-slate-400 py-1">배정된 스태프가 없습니다</p>
-        ) : (
-          <div className="space-y-1.5">
-            {staffList.map((s) => (
-              <div key={s.uid} className="flex items-center gap-2 py-1">
-                <Avatar name={s.displayName} size="xs" />
-                <span className="text-sm text-slate-700 dark:text-slate-300">{s.displayName}</span>
-              </div>
-            ))}
-          </div>
-        )}
-        <button
-          onClick={() => setModalOpen(true)}
-          className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 mt-2 transition-colors duration-150"
-        >
-          <UserPlus size={12} />
-          스태프 관리
-        </button>
-      </RightPanelAccordion>
-      {modalOpen && (
-        <Suspense fallback={null}>
-          <CourseStaffModal open={modalOpen} onClose={() => setModalOpen(false)} courseId={courseId} courseName={courseName} />
-        </Suspense>
+    <RightPanelAccordion title="스태프" count={staffList.length} defaultOpen={staffList.length > 0}>
+      {staffList.length === 0 ? (
+        <p className="text-xs text-slate-400 py-1">배정된 스태프가 없습니다</p>
+      ) : (
+        <div className="space-y-1.5">
+          {staffList.map((s) => (
+            <div key={s.uid} className="flex items-center gap-2 py-1">
+              <Avatar name={s.displayName} size="xs" />
+              <span className="text-sm text-slate-700 dark:text-slate-300">{s.displayName}</span>
+            </div>
+          ))}
+        </div>
       )}
-    </>
+    </RightPanelAccordion>
   );
 }
 
-function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard, voteCounts, studentUrl, teamScores, courseId, courseName }) {
+function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard, voteCounts, studentUrl, teamScores, courseId }) {
   const [copied, setCopied] = useState(false);
   const [liveCopied, setLiveCopied] = useState(false);
 
@@ -169,7 +152,7 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
       )}
 
       {/* Staff list */}
-      <StaffSection courseId={courseId} courseName={courseName} />
+      <StaffSection courseId={courseId} />
 
       {/* Participant list accordion */}
       <RightPanelAccordion title="참여자 목록" count={onlineList.length} defaultOpen>
@@ -254,7 +237,6 @@ export default memo(function RightSidebar({
   isDrawer = false,
   teamScores,
   courseId,
-  courseName,
 }) {
   const content = effectiveReadOnly ? (
     <ReadOnlyRightSidebar
@@ -274,7 +256,6 @@ export default memo(function RightSidebar({
       studentUrl={studentUrl}
       teamScores={teamScores}
       courseId={courseId}
-      courseName={courseName}
     />
   );
 

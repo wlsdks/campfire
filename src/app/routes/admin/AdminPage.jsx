@@ -135,7 +135,8 @@ export default function AdminPage() {
         onBack={s.handleBack} onStartSession={s.handleStartSession} onEndSession={s.handleEndSession} onPresentMode={s.handlePresentMode}
         isTablet={isTablet} onLeftDrawer={s.handleLeftDrawerOpen} onRightDrawer={s.handleRightDrawerOpen}
         speedQuizActive={s.speedQuizActive} teamBattleActive={s.teamBattleActive}
-        isReviewing={s.isReviewing} onFullEndSession={s.handleFullEndSession} />
+        isReviewing={s.isReviewing} onFullEndSession={s.handleFullEndSession}
+        courseId={s.session?.courseId} courseName={s.session?.courseName} />
 
       {isTablet && (
         <TabletDrawers leftOpen={s.leftDrawerOpen} rightOpen={s.rightDrawerOpen}
@@ -145,7 +146,7 @@ export default function AdminPage() {
             <RightSidebar session={s.session} sessionId={s.sessionId} effectiveReadOnly={s.effectiveReadOnly}
               participants={s.participants} onlineList={s.onlineList} count={s.count} leaderboard={s.leaderboard}
               voteCounts={s.voteCounts} studentUrl={s.studentUrl} sidebarCollapsed={false} isDrawer
-              teamScores={s.teamScores} courseId={s.session?.courseId} courseName={s.session?.courseName} />
+              teamScores={s.teamScores} courseId={s.session?.courseId} />
           } />
       )}
 
@@ -186,7 +187,7 @@ export default function AdminPage() {
           <RightSidebar session={s.session} sessionId={s.sessionId} effectiveReadOnly={s.effectiveReadOnly}
             participants={s.participants} onlineList={s.onlineList} count={s.count} leaderboard={s.leaderboard}
             voteCounts={s.voteCounts} studentUrl={s.studentUrl} sidebarCollapsed={s.sidebarCollapsed}
-            teamScores={s.teamScores} courseId={s.session?.courseId} courseName={s.session?.courseName} />
+            teamScores={s.teamScores} courseId={s.session?.courseId} />
         )}
       </div>
     </div>

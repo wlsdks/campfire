@@ -5,8 +5,11 @@ import Button from '@/components/ui/Button';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 import TimerControls from '@/features/timer/components/TimerControls';
 import TimerRing from '@/features/timer/components/TimerRing';
-import { ArrowLeft, Clock, MessageCircle, Users, Monitor, Play, Square, Layers, List, Zap, Swords, MessageSquareDot, XCircle, Sun, Moon } from 'lucide-react';
+import { ArrowLeft, Clock, MessageCircle, Users, UserCog, Monitor, Play, Square, Layers, List, Zap, Swords, MessageSquareDot, XCircle, Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
+import { lazy, Suspense } from 'react';
+
+const CourseStaffModal = lazy(() => import('./CourseStaffModal'));
 
 function formatElapsed(ms) {
   const totalSec = Math.floor(ms / 1000);
@@ -80,9 +83,12 @@ export default memo(function AdminSessionHeader({
   teamBattleActive = false,
   isReviewing = false,
   onFullEndSession,
+  courseId,
+  courseName,
 }) {
   const [timerOpen, setTimerOpen] = useState(false);
   const [confirmEnd, setConfirmEnd] = useState(null);
+  const [staffModalOpen, setStaffModalOpen] = useState(false);
   const timerRef = useRef(null);
   const { isDark, setTheme } = useTheme();
 
@@ -194,6 +200,18 @@ export default memo(function AdminSessionHeader({
           {isDark ? <Sun size={20} /> : <Moon size={20} />}
           {!isTablet && <span className="text-[10px] font-medium">{isDark ? '라이트' : '다크'}</span>}
         </button>
+
+        {/* Staff manage button */}
+        {courseId && !effectiveReadOnly && (
+          <button
+            onClick={() => setStaffModalOpen(true)}
+            className="relative flex flex-col items-center gap-0.5 px-2.5 py-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-[0.96]"
+            aria-label="스태프 관리"
+          >
+            <UserCog size={20} />
+            {!isTablet && <span className="text-[10px] font-medium">스태프</span>}
+          </button>
+        )}
 
         {/* Chat button */}
         {!effectiveReadOnly && (
@@ -311,6 +329,12 @@ export default memo(function AdminSessionHeader({
         onConfirm={() => { onFullEndSession(); setConfirmEnd(null); }}
         onCancel={() => setConfirmEnd(null)}
       />
+
+      {courseId && staffModalOpen && (
+        <Suspense fallback={null}>
+          <CourseStaffModal open={staffModalOpen} onClose={() => setStaffModalOpen(false)} courseId={courseId} courseName={courseName} />
+        </Suspense>
+      )}
     </div>
   );
 });
