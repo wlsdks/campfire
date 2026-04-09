@@ -1,5 +1,9 @@
 import { useRef, useState, useCallback, useEffect, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { MessageCircle, Send, X } from 'lucide-react';
+import { ref, push, serverTimestamp } from 'firebase/database';
+import { db } from '@/lib/firebase';
+import { getParticipantId, getNickname } from '@/lib/participant';
 import { useReactions } from '@/features/reactions/api/useReactions';
 import { REACTIONS } from '@/features/reactions/reactionConfig';
 
@@ -82,14 +86,25 @@ const ReactionButton = memo(function ReactionButton({ reaction, isFlash, isShaki
   );
 });
 
-export default function ReactionBar({ sessionId }) {
+const BUBBLE_MAX = 20;
+const BUBBLE_COOLDOWN = 3000;
+
+export default function ReactionBar({ sessionId, bubbleSessionId }) {
   const { sendReaction } = useReactions(sessionId);
   const [flashType, setFlashType] = useState(null);
   const cooldownRef = useRef(0);
   const flashTimerRef = useRef(null);
 
+  // Bubble input state
+  const [bubbleOpen, setBubbleOpen] = useState(false);
+  const [bubbleText, setBubbleText] = useState('');
+  const [canBubble, setCanBubble] = useState(true);
+  const bubbleInputRef = useRef(null);
+  const bubbleCooldownRef = useRef(null);
+
   useEffect(() => () => {
     if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
+    if (bubbleCooldownRef.current) clearTimeout(bubbleCooldownRef.current);
   }, []);
 
   const [cooldownShake, setCooldownShake] = useState(null);
@@ -102,27 +117,92 @@ export default function ReactionBar({ sessionId }) {
       return;
     }
     cooldownRef.current = now;
-
-    // Haptic feedback (Android only, iOS gets visual spring)
     if ('vibrate' in navigator) navigator.vibrate(8);
-
     setFlashType(type);
     sendReaction(type);
     if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
     flashTimerRef.current = setTimeout(() => setFlashType(null), FLASH_MS);
   }, [sendReaction]);
 
+  const handleBubbleSend = useCallback(async () => {
+    const sid = bubbleSessionId || sessionId;
+    const trimmed = bubbleText.trim();
+    if (!trimmed || !canBubble || !sid) return;
+    try {
+      await push(ref(db, `sessions/${sid}/chatBubbles`), {
+        text: trimmed,
+        nickname: getNickname() || '익명',
+        participantId: getParticipantId(),
+        timestamp: serverTimestamp(),
+      });
+      setBubbleText('');
+      setBubbleOpen(false);
+      setCanBubble(false);
+      bubbleCooldownRef.current = setTimeout(() => setCanBubble(true), BUBBLE_COOLDOWN);
+    } catch { /* ignore */ }
+  }, [bubbleText, canBubble, bubbleSessionId, sessionId]);
+
   return (
-    <div className="flex items-center justify-center gap-1.5">
-      {REACTIONS.map((reaction) => (
-        <ReactionButton
-          key={reaction.type}
-          reaction={reaction}
-          isFlash={flashType === reaction.type}
-          isShaking={cooldownShake === reaction.type}
-          onTap={handleReaction}
-        />
-      ))}
+    <div className="relative">
+      {/* Bubble input popup */}
+      <AnimatePresence>
+        {bubbleOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 6, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 6, scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+            className="absolute -top-14 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-white dark:bg-slate-700 rounded-full shadow-lg border border-slate-200 dark:border-slate-600 pl-4 pr-1.5 py-1.5 z-10"
+          >
+            <input
+              ref={bubbleInputRef}
+              type="text"
+              value={bubbleText}
+              onChange={e => setBubbleText(e.target.value.slice(0, BUBBLE_MAX))}
+              onKeyDown={e => { if (e.key === 'Enter') handleBubbleSend(); if (e.key === 'Escape') setBubbleOpen(false); }}
+              placeholder="한마디..."
+              maxLength={BUBBLE_MAX}
+              className="w-28 bg-transparent text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none"
+              autoFocus
+            />
+            <button
+              onClick={handleBubbleSend}
+              disabled={!bubbleText.trim() || !canBubble}
+              className="w-8 h-8 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 flex items-center justify-center disabled:opacity-30 transition-colors shrink-0"
+            >
+              <Send size={12} />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="flex items-center justify-center gap-1.5">
+        {REACTIONS.map((reaction) => (
+          <ReactionButton
+            key={reaction.type}
+            reaction={reaction}
+            isFlash={flashType === reaction.type}
+            isShaking={cooldownShake === reaction.type}
+            onTap={handleReaction}
+          />
+        ))}
+        {/* Bubble button — inline with reactions */}
+        {bubbleSessionId && (
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => { setBubbleOpen(v => !v); setTimeout(() => bubbleInputRef.current?.focus(), 100); }}
+            disabled={!canBubble && !bubbleOpen}
+            className={`relative flex h-12 w-12 items-center justify-center rounded-xl border transition-colors duration-200 ${
+              bubbleOpen
+                ? 'bg-slate-900 text-white border-slate-900 dark:bg-slate-100 dark:text-slate-900 dark:border-slate-100'
+                : `border-slate-200 dark:border-slate-700 text-slate-400 dark:text-slate-500 ${canBubble ? 'active:bg-slate-100 dark:active:bg-slate-700' : 'opacity-40'}`
+            }`}
+            aria-label="한마디 보내기"
+          >
+            <MessageCircle size={20} />
+          </motion.button>
+        )}
+      </div>
     </div>
   );
 }

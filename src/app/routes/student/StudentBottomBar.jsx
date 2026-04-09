@@ -11,7 +11,6 @@ import { Hand, MessageCircle, MessageSquare, HelpCircle, Headset, Send } from 'l
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 import ReactionBar from '@/features/reactions/components/ReactionBar';
-import BubbleInput from '@/features/reactions/components/BubbleInput';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import ChatBubbleOverlay from '@/features/reactions/components/ChatBubbleOverlay';
 import ChatPanel from '@/features/chat/components/ChatPanel';
@@ -154,9 +153,8 @@ export default memo(function StudentBottomBar({ sessionId }) {
         className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 z-30 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
       >
         <div className="max-w-[620px] mx-auto px-5 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
-          <div className="mb-2 flex items-center gap-2">
-            <div className="flex-1"><ReactionBar sessionId={sessionId} /></div>
-            <BubbleInput sessionId={sessionId} />
+          <div className="mb-2">
+            <ReactionBar sessionId={sessionId} bubbleSessionId={sessionId} />
           </div>
           <div>
             <div className="grid grid-cols-5 gap-2">
