@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
  * 화면 전체를 덮으며 흔들림 + 펄스 + 드럼 사운드.
  * duration(ms) 후 자동으로 onComplete 호출.
  */
-export default memo(function DrumrollOverlay({ active, onComplete, duration = 3000 }) {
+export default memo(function DrumrollOverlay({ active, onComplete, duration = 2500 }) {
   const [phase, setPhase] = useState(0); // 0=시작, 1=가속, 2=절정
   const audioRef = useRef(null);
   const timerRef = useRef(null);
