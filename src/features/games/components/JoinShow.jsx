@@ -6,30 +6,38 @@ function Confetti({ trigger }) {
   const [on, setOn] = useState(false);
   const prev = useRef(0);
   useEffect(() => {
-    if (trigger > prev.current) { setOn(true); setTimeout(() => setOn(false), 2000); prev.current = trigger; }
+    if (trigger > prev.current) { setOn(true); setTimeout(() => setOn(false), 2200); prev.current = trigger; }
   }, [trigger]);
   if (!on) return null;
   const colors = ['#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
+  // 3개 발사 지점에서 터짐 (좌측, 중앙, 우측)
+  const origins = [
+    { x: 20, y: 60 },
+    { x: 50, y: 45 },
+    { x: 80, y: 55 },
+  ];
   return (
     <div className="fixed inset-0 pointer-events-none z-20 overflow-hidden">
-      {Array.from({ length: 60 }, (_, i) => {
-        const a = (i / 60) * Math.PI * 2 + (Math.random() - 0.5) * 0.8;
-        const s = 4 + Math.random() * 7;
-        const size = 4 + Math.random() * 6;
-        return (
-          <motion.div key={`${trigger}-${i}`}
-            initial={{ left: '50%', top: '50%', opacity: 1, scale: 1 }}
-            animate={{
-              left: `calc(50% + ${Math.cos(a)*s*80}px)`,
-              top: `calc(50% + ${Math.sin(a)*s*80 - 200}px)`,
-              opacity: 0, scale: 0, rotate: Math.random()*600,
-            }}
-            transition={{ duration: 1.2+Math.random()*0.6, delay: Math.random()*0.15, ease: 'easeOut' }}
-            className="absolute rounded-sm"
-            style={{ width: size, height: size * (0.5 + Math.random()*0.8), backgroundColor: colors[i%8] }}
-          />
-        );
-      })}
+      {origins.map((origin, oi) =>
+        Array.from({ length: 25 }, (_, i) => {
+          const a = (i / 25) * Math.PI * 2 + (Math.random() - 0.5) * 0.6;
+          const s = 3 + Math.random() * 6;
+          const size = 4 + Math.random() * 7;
+          return (
+            <motion.div key={`${trigger}-${oi}-${i}`}
+              initial={{ left: `${origin.x}%`, top: `${origin.y}%`, opacity: 1, scale: 1 }}
+              animate={{
+                left: `calc(${origin.x}% + ${Math.cos(a)*s*70}px)`,
+                top: `calc(${origin.y}% + ${Math.sin(a)*s*70 - 150}px)`,
+                opacity: 0, scale: 0, rotate: Math.random()*500,
+              }}
+              transition={{ duration: 1+Math.random()*0.5, delay: oi*0.12 + Math.random()*0.1, ease: 'easeOut' }}
+              className="absolute rounded-sm"
+              style={{ width: size, height: size * (0.5 + Math.random()*0.8), backgroundColor: colors[(oi*8+i)%8] }}
+            />
+          );
+        })
+      )}
     </div>
   );
 }
