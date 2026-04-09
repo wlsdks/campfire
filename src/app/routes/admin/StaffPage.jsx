@@ -25,7 +25,7 @@ export default function StaffPage({ sessionId, session, adminUser, onBack, onLog
   const { count } = useParticipants(sessionId);
   const { questionList: urgentList } = useUrgentQuestions(sessionId);
   const { questions: classList, markAnswered } = useClassQuestions(sessionId);
-  const senderName = adminUser?.displayName || '스태프';
+  const senderName = adminUser?.staffNickname || adminUser?.displayName || '스태프';
 
   const courseName = session?.courseName || 'Pick';
   const round = session?.roundNumber ? `${session.roundNumber}차` : '';

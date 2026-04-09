@@ -1,12 +1,14 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { ref, get } from 'firebase/database';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogOut, BookOpen, ChevronRight, Users, ArrowLeft } from 'lucide-react';
+import { LogOut, BookOpen, ChevronRight, Users, ArrowLeft, ArrowRight } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { useCourses } from '@/features/course/api/useCourses';
 import PickMascot from '@/components/ui/PickMascot';
 import EmptyState from '@/components/ui/EmptyState';
 import Button from '@/components/ui/Button';
+import Avatar from '@/components/ui/Avatar';
+import Modal from '@/components/ui/Modal';
 
 /**
  * Staff-only dashboard: shows assigned courses, then sessions within a selected course.
@@ -16,6 +18,28 @@ export default function StaffCourseDashboard({ adminUser, onSelectSession, onLog
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [courseSessions, setCourseSessions] = useState([]);
   const [sessionsLoading, setSessionsLoading] = useState(false);
+
+  // Nickname modal state
+  const [pendingSession, setPendingSession] = useState(null);
+  const [staffNickname, setStaffNickname] = useState(() => {
+    try { return sessionStorage.getItem('pinggo_staff_nickname') || ''; } catch { return ''; }
+  });
+
+  function handleSessionClick(session) {
+    if (!staffNickname) setStaffNickname(adminUser?.displayName || '');
+    setPendingSession(session);
+  }
+
+  function handleNicknameConfirm() {
+    const name = staffNickname.trim();
+    if (!name || !pendingSession) return;
+    try { sessionStorage.setItem('pinggo_staff_nickname', name); } catch { /* silent */ }
+    // Store nickname on adminUser so StaffPage can use it
+    const updated = { ...adminUser, staffNickname: name };
+    try { sessionStorage.setItem('pinggo_admin', JSON.stringify(updated)); } catch { /* silent */ }
+    setPendingSession(null);
+    onSelectSession(pendingSession.id, pendingSession.status === 'reviewing');
+  }
 
   // Fetch sessions for selected course
   useEffect(() => {
@@ -180,7 +204,7 @@ export default function StaffCourseDashboard({ adminUser, onSelectSession, onLog
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: i * 0.04, type: 'spring', stiffness: 300, damping: 25 }}
-                    onClick={() => onSelectSession(session.id, session.status === 'reviewing')}
+                    onClick={() => handleSessionClick(session)}
                     className="w-full flex items-center justify-between p-4 bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 text-left"
                   >
                     <div className="flex items-center gap-3">
@@ -215,6 +239,39 @@ export default function StaffCourseDashboard({ adminUser, onSelectSession, onLog
           )}
         </AnimatePresence>
       </div>
+
+      {/* Nickname modal */}
+      <Modal open={!!pendingSession} onClose={() => setPendingSession(null)}>
+        <div className="space-y-5">
+          <div className="text-center space-y-2">
+            <div className="flex justify-center">
+              <Avatar name={staffNickname || adminUser?.displayName || ''} size="lg" />
+            </div>
+            <h2 className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">닉네임 설정</h2>
+            <p className="text-slate-400 text-sm">세션에서 사용할 이름을 입력하세요</p>
+          </div>
+          <input
+            type="text"
+            value={staffNickname}
+            onChange={(e) => setStaffNickname(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleNicknameConfirm()}
+            placeholder={adminUser?.displayName || '닉네임'}
+            maxLength={10}
+            autoFocus
+            className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-center text-lg text-slate-900 dark:text-slate-100 font-medium placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+          />
+          <Button
+            onClick={handleNicknameConfirm}
+            variant="primary"
+            size="lg"
+            className="w-full"
+            disabled={!staffNickname.trim()}
+          >
+            입장하기
+            <ArrowRight size={18} />
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }
