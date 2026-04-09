@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { SuspenseFallback } from '@/components/ui/Skeleton';
 import StudentHeader from './StudentHeader';
+import StudentBottomBar from './StudentBottomBar';
 import WaitingPage from './WaitingPage';
 import ActivePollView from './ActivePollView';
 
@@ -85,11 +86,12 @@ export function VoteModeContent({
   }
   if (currentMode === 'qaBoard') {
     return (
-      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pb-8 pt-20">
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pb-40 pt-20">
         <StudentHeader sessionId={sessionId} />
         <Suspense fallback={<SuspenseFallback />}>
           <LazyClassQABoard sessionId={sessionId} showInput />
         </Suspense>
+        <StudentBottomBar sessionId={sessionId} />
       </div>
     );
   }
