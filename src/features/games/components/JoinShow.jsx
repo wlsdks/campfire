@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, memo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 
 function Confetti({ trigger }) {
@@ -88,19 +88,16 @@ export default memo(function JoinShow({ sessionId }) {
         </motion.div>
         <p className="text-slate-500 text-sm md:text-base mt-2">명 접속 중</p>
 
-        <div className="h-10 mt-3">
-          <AnimatePresence mode="wait">
-            {currentMilestone > 0 && (
-              <motion.p key={currentMilestone}
-                initial={{ opacity: 0, y: 8, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                className="text-emerald-400 text-xl md:text-2xl font-black tracking-tight">
-                {currentMilestone}명 돌파!
-              </motion.p>
-            )}
-          </AnimatePresence>
+        <div className="h-10 mt-3 flex items-center justify-center">
+          {currentMilestone > 0 && (
+            <motion.p key={currentMilestone}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+              className="text-emerald-400 text-xl md:text-2xl font-black tracking-tight">
+              {currentMilestone}명 돌파!
+            </motion.p>
+          )}
         </div>
       </div>
     </div>
