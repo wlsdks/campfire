@@ -421,8 +421,8 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
         chat: null,
         handRaises: null,
         urgentQuestions: null,
-        classQuestions: null,
         staffChat: null,
+        // classQuestions, qaStats는 세션 누적 데이터로 초기화하지 않음
       };
       questionList.forEach(([qId]) => {
         updates[`questions/${qId}/votes`] = null;

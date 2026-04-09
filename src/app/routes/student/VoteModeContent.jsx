@@ -13,6 +13,7 @@ const LazyComprehensionCheck = lazy(() => import('@/features/session/components/
 const LazyQuickSurvey = lazy(() => import('@/features/session/components/QuickSurvey'));
 const LazyGroupDiscussion = lazy(() => import('@/features/session/components/GroupDiscussion'));
 const LazyCombinedRanking = lazy(() => import('@/features/quiz/components/CombinedRanking'));
+const LazyQARanking = lazy(() => import('@/features/class-questions/components/QARanking'));
 
 /**
  * Dispatches to the correct view for the current session mode.
@@ -90,6 +91,17 @@ export function VoteModeContent({
         <StudentHeader sessionId={sessionId} />
         <Suspense fallback={<SuspenseFallback />}>
           <LazyClassQABoard sessionId={sessionId} showInput />
+        </Suspense>
+        <StudentBottomBar sessionId={sessionId} />
+      </div>
+    );
+  }
+  if (currentMode === 'qaRanking') {
+    return (
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center px-4 py-8">
+        <StudentHeader sessionId={sessionId} />
+        <Suspense fallback={<SuspenseFallback />}>
+          <LazyQARanking sessionId={sessionId} />
         </Suspense>
         <StudentBottomBar sessionId={sessionId} />
       </div>
