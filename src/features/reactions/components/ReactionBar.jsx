@@ -99,6 +99,7 @@ export default function ReactionBar({ sessionId, bubbleSessionId }) {
   const [bubbleOpen, setBubbleOpen] = useState(false);
   const [bubbleText, setBubbleText] = useState('');
   const [canBubble, setCanBubble] = useState(true);
+  const bubbleSendingRef = useRef(false); // 동기적 중복 방지
   const bubbleInputRef = useRef(null);
   const bubbleCooldownRef = useRef(null);
 
@@ -127,7 +128,8 @@ export default function ReactionBar({ sessionId, bubbleSessionId }) {
   const handleBubbleSend = useCallback(async () => {
     const sid = bubbleSessionId || sessionId;
     const trimmed = bubbleText.trim();
-    if (!trimmed || !canBubble || !sid) return;
+    if (!trimmed || !canBubble || !sid || bubbleSendingRef.current) return;
+    bubbleSendingRef.current = true; // 즉시 차단 (동기)
     try {
       await push(ref(db, `sessions/${sid}/chatBubbles`), {
         text: trimmed,
@@ -138,8 +140,13 @@ export default function ReactionBar({ sessionId, bubbleSessionId }) {
       setBubbleText('');
       setBubbleOpen(false);
       setCanBubble(false);
-      bubbleCooldownRef.current = setTimeout(() => setCanBubble(true), BUBBLE_COOLDOWN);
-    } catch { /* ignore */ }
+      bubbleCooldownRef.current = setTimeout(() => {
+        setCanBubble(true);
+        bubbleSendingRef.current = false;
+      }, BUBBLE_COOLDOWN);
+    } catch {
+      bubbleSendingRef.current = false;
+    }
   }, [bubbleText, canBubble, bubbleSessionId, sessionId]);
 
   return (
