@@ -1,15 +1,35 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ThumbsUp, MessageSquare, Send, ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { ThumbsUp, MessageSquare, Send, ChevronDown, ChevronUp, Check, EyeOff, Eye, ShieldAlert } from 'lucide-react';
 import { timeAgo } from '@/lib/utils';
 import AnswerItem from './AnswerItem';
 
-export default function QuestionCard({ question: q, index, pid, nickname, role, onUpvote, onPostAnswer, onAnswerUpvote }) {
+export default function QuestionCard({ question: q, index, pid, nickname, role, isAdmin, onUpvote, onPostAnswer, onAnswerUpvote, onToggleHidden }) {
   const [expanded, setExpanded] = useState(false);
   const [answerText, setAnswerText] = useState('');
   const [posting, setPosting] = useState(false);
   const isOwn = q.participantId === pid;
   const hasUpvoted = q.upvotes?.[pid];
+  const isHidden = q.hidden === true;
+
+  // 학생에게 숨겨진 질문: 플레이스홀더 표시
+  if (isHidden && !isAdmin) {
+    return (
+      <motion.div
+        layout
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 25, delay: index * 0.03 }}
+        className="rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-dashed border-slate-200 dark:border-slate-700 p-4"
+      >
+        <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500">
+          <ShieldAlert size={16} />
+          <p className="text-sm">정책상 가려진 질문입니다</p>
+        </div>
+      </motion.div>
+    );
+  }
 
   async function handlePostAnswer() {
     if (!answerText.trim() || posting) return;
@@ -27,7 +47,11 @@ export default function QuestionCard({ question: q, index, pid, nickname, role, 
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25, delay: index * 0.03 }}
       className={`rounded-xl shadow-sm overflow-hidden transition-all duration-300 ${
-        q.answeredByRole ? 'bg-white dark:bg-slate-800 ring-1 ring-emerald-200 dark:ring-emerald-800/50' : 'bg-white dark:bg-slate-800'
+        isHidden
+          ? 'bg-red-50/50 dark:bg-red-950/20 ring-1 ring-red-200 dark:ring-red-800/30'
+          : q.answeredByRole
+            ? 'bg-white dark:bg-slate-800 ring-1 ring-emerald-200 dark:ring-emerald-800/50'
+            : 'bg-white dark:bg-slate-800'
       }`}
     >
       <div className="p-4 space-y-2.5">
@@ -37,6 +61,11 @@ export default function QuestionCard({ question: q, index, pid, nickname, role, 
               {q.nickname}
             </span>
             {isOwn && <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400">나</span>}
+            {isHidden && (
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400">
+                <EyeOff size={9} /> 숨김
+              </span>
+            )}
             {q.answeredByRole && (
               <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
                 <Check size={10} />
@@ -44,10 +73,25 @@ export default function QuestionCard({ question: q, index, pid, nickname, role, 
               </span>
             )}
           </div>
-          <span className="text-[11px] text-slate-400 dark:text-slate-500 shrink-0">{timeAgo(q.timestamp)}</span>
+          <div className="flex items-center gap-1.5 shrink-0">
+            {isAdmin && onToggleHidden && (
+              <button
+                onClick={() => onToggleHidden(q.id)}
+                className={`p-1.5 rounded-lg text-xs transition-colors duration-150 ${
+                  isHidden
+                    ? 'text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
+                    : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:text-slate-300 dark:hover:bg-slate-700'
+                }`}
+                title={isHidden ? '질문 공개' : '질문 숨기기'}
+              >
+                {isHidden ? <Eye size={14} /> : <EyeOff size={14} />}
+              </button>
+            )}
+            <span className="text-[11px] text-slate-400 dark:text-slate-500">{timeAgo(q.timestamp)}</span>
+          </div>
         </div>
 
-        <p className="text-sm md:text-base text-slate-900 dark:text-slate-100 leading-snug line-clamp-2">{q.text}</p>
+        <p className={`text-sm md:text-base leading-snug line-clamp-2 ${isHidden ? 'text-slate-500 dark:text-slate-400' : 'text-slate-900 dark:text-slate-100'}`}>{q.text}</p>
 
         {/* Actions row */}
         <div className="flex items-center gap-4 pt-0.5">
@@ -85,26 +129,16 @@ export default function QuestionCard({ question: q, index, pid, nickname, role, 
             className="overflow-hidden"
           >
             <div className="border-t border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 px-4 py-3 space-y-3">
-              {/* Full question text (visible when expanded) */}
               {q.text.length > 60 && (
                 <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed pb-2 border-b border-slate-100 dark:border-slate-700">{q.text}</p>
               )}
-              {/* Existing answers */}
               {q.answerList.length > 0 ? (
                 q.answerList.map((a) => (
-                  <AnswerItem
-                    key={a.id}
-                    answer={a}
-                    questionId={q.id}
-                    pid={pid}
-                    onUpvote={onAnswerUpvote}
-                  />
+                  <AnswerItem key={a.id} answer={a} questionId={q.id} pid={pid} onUpvote={onAnswerUpvote} />
                 ))
               ) : (
                 <p className="text-xs text-slate-400 text-center py-2">아직 답변이 없습니다</p>
               )}
-
-              {/* Answer input */}
               <div className="flex gap-2 pt-1">
                 <input
                   type="text"

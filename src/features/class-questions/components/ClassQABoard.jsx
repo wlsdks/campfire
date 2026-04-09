@@ -14,9 +14,9 @@ import QuestionCard from './QuestionCard';
  *
  * Used in: PresentationView, LivePage, and student WaitingPage (via mode).
  */
-export default function ClassQABoard({ sessionId, showInput = true, role }) {
+export default function ClassQABoard({ sessionId, showInput = true, role, isAdmin = false }) {
   const {
-    questions, unansweredCount, postQuestion, toggleUpvote, postAnswer, toggleAnswerUpvote, canPost,
+    questions, unansweredCount, postQuestion, toggleUpvote, postAnswer, toggleAnswerUpvote, toggleHidden, canPost,
   } = useClassQuestions(sessionId);
 
   const [tab, setTab] = useState('all');
@@ -153,10 +153,12 @@ export default function ClassQABoard({ sessionId, showInput = true, role }) {
                 pid={pid}
                 nickname={nickname}
                 role={role}
+                isAdmin={isAdmin}
                 sessionId={sessionId}
                 onUpvote={toggleUpvote}
                 onPostAnswer={postAnswer}
                 onAnswerUpvote={toggleAnswerUpvote}
+                onToggleHidden={isAdmin ? toggleHidden : undefined}
               />
             ))}
           </AnimatePresence>

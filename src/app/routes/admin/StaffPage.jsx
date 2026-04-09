@@ -1,8 +1,8 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, lazy, Suspense } from 'react';
 import { ref, remove } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
-import { ArrowLeft, Users, MessageSquare, LogOut } from 'lucide-react';
+import { ArrowLeft, Users, MessageSquare, LogOut, HelpCircle } from 'lucide-react';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
@@ -15,12 +15,15 @@ import StaffQuestionDetail from './staff/StaffQuestionDetail';
 import StaffRightPanel from './staff/StaffRightPanel';
 import StaffMobileView from './staff/StaffMobileView';
 
+const LazyClassQABoard = lazy(() => import('@/features/class-questions/components/ClassQABoard'));
+
 export default function StaffPage({ sessionId, session, adminUser, onBack, onLogout }) {
   const isTablet = useMediaQuery('(max-width: 1023px)');
   const [selected, setSelected] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [hasUnreadChat, setHasUnreadChat] = useState(false);
+  const [showQABoard, setShowQABoard] = useState(false);
 
   const { count } = useParticipants(sessionId);
   const { questionList: urgentList } = useUrgentQuestions(sessionId);
@@ -131,6 +134,23 @@ export default function StaffPage({ sessionId, session, adminUser, onBack, onLog
             {count}
           </span>
 
+          {/* Q&A Board toggle */}
+          <button
+            onClick={() => setShowQABoard(v => !v)}
+            className={`relative p-2 rounded-lg transition-colors duration-150 ${
+              showQABoard
+                ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
+                : 'text-slate-400 hover:text-slate-700 hover:bg-slate-100 dark:hover:text-slate-200 dark:hover:bg-slate-700'
+            }`}
+            aria-label="Q&A 보드"
+            title="Q&A 보드"
+          >
+            <HelpCircle size={18} />
+            {classList.filter(q => !q.answered && !q.hidden).length > 0 && !showQABoard && (
+              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
+            )}
+          </button>
+
           {/* Chat button */}
           <button
             onClick={handleChatToggle}
@@ -169,17 +189,23 @@ export default function StaffPage({ sessionId, session, adminUser, onBack, onLog
           />
         </div>
 
-        {/* Center: Question detail */}
+        {/* Center: Question detail or Q&A Board */}
         <div className="flex-1 overflow-y-auto p-6">
-          <StaffQuestionDetail
-            question={selected}
-            onAction={handleAction}
-            loading={actionLoading}
-            session={session}
-            sessionId={sessionId}
-            senderName={senderName}
-            staffId={adminUser?.uid}
-          />
+          {showQABoard ? (
+            <Suspense fallback={<div className="flex items-center justify-center h-full text-slate-400 text-sm">불러오는 중...</div>}>
+              <LazyClassQABoard sessionId={sessionId} showInput={false} role="staff" isAdmin />
+            </Suspense>
+          ) : (
+            <StaffQuestionDetail
+              question={selected}
+              onAction={handleAction}
+              loading={actionLoading}
+              session={session}
+              sessionId={sessionId}
+              senderName={senderName}
+              staffId={adminUser?.uid}
+            />
+          )}
         </div>
 
         {/* Right: Hand raises + Participants */}

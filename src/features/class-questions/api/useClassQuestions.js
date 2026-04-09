@@ -141,6 +141,21 @@ export function useClassQuestions(sessionId) {
     [sessionId],
   );
 
+  const toggleHidden = useCallback(
+    async (questionId) => {
+      if (!sessionId || !questionId) return;
+      try {
+        const current = raw[questionId]?.hidden || false;
+        await update(ref(db, `sessions/${sessionId}/classQuestions/${questionId}`), {
+          hidden: !current,
+        });
+      } catch (err) {
+        logger.error('Toggle hidden failed:', err);
+      }
+    },
+    [sessionId, raw],
+  );
+
   const postAnswer = useCallback(
     async (questionId, text, nickname, participantId, role) => {
       const trimmed = text?.trim();
@@ -211,6 +226,7 @@ export function useClassQuestions(sessionId) {
     toggleUpvote,
     markAnswered,
     dismissQuestion,
+    toggleHidden,
     postAnswer,
     toggleAnswerUpvote,
     loading,

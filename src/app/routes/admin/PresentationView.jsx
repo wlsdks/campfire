@@ -229,7 +229,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
         </div>
       );
     }
-    if (currentMode === 'qaBoard') return <div className="w-full max-w-4xl"><ClassQABoard sessionId={sessionId} showInput={false} /></div>;
+    if (currentMode === 'qaBoard') return <div className="w-full max-w-4xl"><ClassQABoard sessionId={sessionId} showInput={false} isAdmin /></div>;
     if (currentMode === 'qaRanking') return <QARanking sessionId={sessionId} />;
     if (currentMode === 'awards') return <AwardsCeremony assignmentId={session?.activeAssignmentId} />;
     if (currentMode === 'randomPicker') return <RandomPicker participants={onlineList} />;

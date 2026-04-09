@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, memo } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, X, ThumbsUp, Check, HelpCircle, MessageSquare, ChevronDown, ChevronUp } from 'lucide-react';
+import { Send, X, ThumbsUp, Check, HelpCircle, MessageSquare, ChevronDown, ChevronUp, ShieldAlert } from 'lucide-react';
 import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
 import { getParticipantId, getNickname, getLastSeen, saveLastSeen } from '@/lib/participant';
 import { timeAgo } from '@/lib/utils';
@@ -37,6 +37,18 @@ const QuestionCard = memo(function QuestionCard({ q, participantId, nickname, on
   const [posting, setPosting] = useState(false);
   const hasUpvoted = q.upvotes?.[participantId];
   const isMine = q.participantId === participantId;
+
+  if (q.hidden) {
+    return (
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2, delay: index * 0.03 }}
+        className="rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-dashed border-slate-200 dark:border-slate-700 p-4">
+        <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500">
+          <ShieldAlert size={14} />
+          <p className="text-[13px]">정책상 가려진 질문입니다</p>
+        </div>
+      </motion.div>
+    );
+  }
 
   async function handlePostAnswer() {
     if (!answerText.trim() || posting) return;

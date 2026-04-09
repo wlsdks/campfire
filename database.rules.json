@@ -213,6 +213,7 @@
             },
             "answeredBy": { ".validate": "newData.isString()" },
             "answeredByRole": { ".validate": "newData.isString()" },
+            "hidden": { ".validate": "newData.isBoolean()" },
             "answers": {
               ".write": true,
               "$answerId": {
