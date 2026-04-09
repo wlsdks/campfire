@@ -14,6 +14,7 @@ const LazyQuickSurvey = lazy(() => import('@/features/session/components/QuickSu
 const LazyGroupDiscussion = lazy(() => import('@/features/session/components/GroupDiscussion'));
 const LazyCombinedRanking = lazy(() => import('@/features/quiz/components/CombinedRanking'));
 const LazyQARanking = lazy(() => import('@/features/class-questions/components/QARanking'));
+const LazyJoinShow = lazy(() => import('@/features/games/components/JoinShow'));
 
 /**
  * Dispatches to the correct view for the current session mode.
@@ -102,6 +103,17 @@ export function VoteModeContent({
         <StudentHeader sessionId={sessionId} />
         <Suspense fallback={<SuspenseFallback />}>
           <LazyQARanking sessionId={sessionId} />
+        </Suspense>
+        <StudentBottomBar sessionId={sessionId} />
+      </div>
+    );
+  }
+  if (currentMode === 'joinShow') {
+    return (
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center px-4 py-8">
+        <StudentHeader sessionId={sessionId} />
+        <Suspense fallback={<SuspenseFallback />}>
+          <LazyJoinShow sessionId={sessionId} />
         </Suspense>
         <StudentBottomBar sessionId={sessionId} />
       </div>

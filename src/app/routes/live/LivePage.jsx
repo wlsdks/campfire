@@ -11,6 +11,7 @@ import { useTeamScores } from '@/features/teams/api/useTeamBattle';
 import { usePublishGameResult } from '@/features/games/api/useGameResult';
 import VizRenderer from '@/features/visualization/components/VizRenderer';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
+import ChatBubbleOverlay from '@/features/reactions/components/ChatBubbleOverlay';
 import AnswerBubbleOverlay from '@/features/voting/components/AnswerBubbleOverlay';
 import JoinToast from '@/features/participants/components/JoinToast';
 import TimerCountdown from '@/features/timer/components/TimerCountdown';
@@ -151,6 +152,7 @@ export default function LivePage() {
       <LiveHeader courseName={session?.courseName} roundNumber={session?.roundNumber} count={count} sessionId={sessionId} startedAt={session?.startedAt} status={session?.status} />
       <JoinToast sessionId={sessionId} />
       <ReactionOverlay sessionId={sessionId} />
+      <ChatBubbleOverlay sessionId={sessionId} />
       <DrumrollOverlay active={!!session?.drumroll} />
       <AnswerBubbleOverlay
         sessionId={sessionId}

@@ -14,6 +14,7 @@ import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
 import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
 import Badge from '@/components/ui/Badge';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
+import ChatBubbleOverlay from '@/features/reactions/components/ChatBubbleOverlay';
 import AnswerBubbleOverlay from '@/features/voting/components/AnswerBubbleOverlay';
 import { usePublishGameResult } from '@/features/games/api/useGameResult';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
@@ -577,6 +578,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
     <div className="min-h-dvh bg-white dark:bg-slate-900 relative">
       <JoinToast sessionId={sessionId} />
       <ReactionOverlay sessionId={sessionId} />
+      <ChatBubbleOverlay sessionId={sessionId} />
       <AnswerBubbleOverlay
         sessionId={sessionId}
         questionId={session?.currentQuestion}

@@ -82,6 +82,7 @@ export default memo(function VotePage({ sessionId }) {
   else if (currentMode === 'discussion')    modeKey = 'discussion';
   else if (currentMode === 'qaBoard')       modeKey = 'qaBoard';
   else if (currentMode === 'qaRanking')    modeKey = 'qaRanking';
+  else if (currentMode === 'joinShow')     modeKey = 'joinShow';
   else if (['poll', 'quiz'].includes(currentMode) && currentQId && session?.questions?.[currentQId])
     modeKey = `poll-${currentQId}`;
   else

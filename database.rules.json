@@ -239,6 +239,17 @@
           }
         },
 
+        "chatBubbles": {
+          ".write": true,
+          "$bubbleId": {
+            ".validate": "newData.hasChild('text') && newData.hasChild('nickname')",
+            "text": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 20" },
+            "nickname": { ".validate": "newData.isString() && newData.val().length <= 20" },
+            "participantId": { ".validate": "newData.isString()" },
+            "timestamp": { ".validate": true }
+          }
+        },
+
         "chat": {
           ".write": true,
           "$messageId": {
