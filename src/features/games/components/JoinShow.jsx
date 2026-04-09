@@ -1,81 +1,65 @@
-import { useState, useEffect, useRef, memo, useCallback } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 
-const NAME_VISIBLE_MS = 3500;
-const MAX_VISIBLE_PER_SIDE = 8;
+const NAME_TTL = 2800;
+const MAX_PER_SIDE = 6;
+const CLEANUP_INTERVAL = 400;
 
-/** Single name row — slides in from the side */
-const NameRow = memo(function NameRow({ name, side, delay = 0 }) {
-  const isLeft = side === 'left';
+/** Single name — subtle slide in */
+const NameTag = memo(function NameTag({ name, side }) {
   return (
     <motion.div
-      initial={{ opacity: 0, x: isLeft ? -30 : 30, scale: 0.85 }}
-      animate={{ opacity: 1, x: 0, scale: 1 }}
-      exit={{ opacity: 0, y: -10, scale: 0.9 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 25, delay }}
-      className={`flex items-center gap-2 py-1 ${isLeft ? 'justify-end' : 'justify-start'}`}
+      layout="position"
+      initial={{ opacity: 0, x: side === 'left' ? -20 : 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: side === 'left' ? -10 : 10 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 28 }}
+      className={`py-0.5 ${side === 'left' ? 'text-right' : 'text-left'}`}
     >
-      <span className="text-emerald-400/80 text-xs font-mono font-bold">+1</span>
-      <span className="text-white/90 text-base md:text-lg font-bold tracking-tight truncate max-w-[120px]">
-        {name}
-      </span>
+      <span className="text-white/70 text-sm md:text-base font-semibold">{name}</span>
     </motion.div>
   );
 });
 
-/** Milestone celebration — confetti particles */
-function ConfettiParticles({ trigger }) {
-  const [particles, setParticles] = useState([]);
+/** Confetti burst for milestones */
+function Confetti({ trigger }) {
+  const [active, setActive] = useState(false);
+  const prevRef = useRef(0);
 
   useEffect(() => {
-    if (!trigger) return;
-    const colors = ['#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316'];
-    const newParticles = Array.from({ length: 50 }, (_, i) => ({
-      id: `${trigger}-${i}`,
-      x: 50 + (Math.random() - 0.5) * 60,
-      y: 40 + (Math.random() - 0.5) * 30,
-      color: colors[Math.floor(Math.random() * colors.length)],
-      size: 4 + Math.random() * 6,
-      angle: Math.random() * 360,
-      speed: 2 + Math.random() * 4,
-      delay: Math.random() * 0.3,
-    }));
-    setParticles(newParticles);
-    const t = setTimeout(() => setParticles([]), 2000);
-    return () => clearTimeout(t);
+    if (trigger > prevRef.current && trigger > 0) {
+      setActive(true);
+      const t = setTimeout(() => setActive(false), 1800);
+      prevRef.current = trigger;
+      return () => clearTimeout(t);
+    }
   }, [trigger]);
+
+  if (!active) return null;
 
   return (
     <div className="fixed inset-0 pointer-events-none z-10 overflow-hidden">
-      {particles.map((p) => {
-        const rad = (p.angle * Math.PI) / 180;
-        const dx = Math.cos(rad) * p.speed * 100;
-        const dy = Math.sin(rad) * p.speed * 100 - 200;
+      {Array.from({ length: 40 }, (_, i) => {
+        const colors = ['#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6', '#ec4899'];
+        const angle = (i / 40) * Math.PI * 2 + Math.random() * 0.5;
+        const speed = 3 + Math.random() * 5;
+        const dx = Math.cos(angle) * speed * 60;
+        const dy = Math.sin(angle) * speed * 60 - 150;
         return (
           <motion.div
-            key={p.id}
-            initial={{
-              left: `${p.x}%`,
-              top: `${p.y}%`,
-              opacity: 1,
-              scale: 1,
-              rotate: 0,
-            }}
+            key={`${trigger}-${i}`}
+            initial={{ left: '50%', top: '45%', opacity: 1, scale: 1 }}
             animate={{
-              left: `${p.x + dx / 5}%`,
-              top: `${p.y - dy / 10}%`,
+              left: `calc(50% + ${dx}px)`,
+              top: `calc(45% + ${dy}px)`,
               opacity: 0,
-              scale: 0.3,
-              rotate: Math.random() * 720 - 360,
+              scale: 0.2,
+              rotate: Math.random() * 540,
             }}
-            transition={{ duration: 1.5 + Math.random(), delay: p.delay, ease: 'easeOut' }}
-            className="absolute rounded-sm"
-            style={{
-              width: p.size,
-              height: p.size * (0.6 + Math.random() * 0.8),
-              backgroundColor: p.color,
-            }}
+            transition={{ duration: 1.2 + Math.random() * 0.5, delay: Math.random() * 0.15, ease: 'easeOut' }}
+            className="absolute w-2 h-2 rounded-sm"
+            style={{ backgroundColor: colors[i % colors.length] }}
           />
         );
       })}
@@ -83,64 +67,26 @@ function ConfettiParticles({ trigger }) {
   );
 }
 
-/** Milestone flash text */
-function MilestoneFlash({ count }) {
-  const [milestone, setMilestone] = useState(null);
-
-  useEffect(() => {
-    if (count > 0 && count % 10 === 0) {
-      setMilestone(count);
-      const t = setTimeout(() => setMilestone(null), 2000);
-      return () => clearTimeout(t);
-    }
-  }, [count]);
-
-  return (
-    <AnimatePresence>
-      {milestone && (
-        <motion.div
-          key={milestone}
-          initial={{ opacity: 0, scale: 0.5, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 1.2, y: -20 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-          className="text-center"
-        >
-          <span className="text-2xl md:text-3xl font-black text-emerald-400 tracking-tight">
-            {milestone}명 돌파!
-          </span>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
-
-/** Big animated counter with spring */
-function AnimatedCounter({ value }) {
+/** Smooth counter */
+function Counter({ value }) {
   const [display, setDisplay] = useState(value);
   const rafRef = useRef(null);
-  const startRef = useRef(display);
+  const fromRef = useRef(value);
 
   useEffect(() => {
-    if (value === startRef.current) return;
-    const from = startRef.current;
+    const from = fromRef.current;
     const to = value;
-    const duration = Math.min(800, Math.abs(to - from) * 60);
+    if (from === to) return;
+    const dur = Math.min(600, Math.abs(to - from) * 40);
     const start = performance.now();
-
     function tick(now) {
-      const elapsed = now - start;
-      const progress = Math.min(1, elapsed / duration);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setDisplay(Math.round(from + (to - from) * eased));
-      if (progress < 1) {
-        rafRef.current = requestAnimationFrame(tick);
-      } else {
-        startRef.current = to;
-      }
+      const p = Math.min(1, (now - start) / dur);
+      setDisplay(Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3))));
+      if (p < 1) rafRef.current = requestAnimationFrame(tick);
+      else fromRef.current = to;
     }
     rafRef.current = requestAnimationFrame(tick);
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+    return () => cancelAnimationFrame(rafRef.current);
   }, [value]);
 
   return <span className="tabular-nums">{display}</span>;
@@ -148,135 +94,113 @@ function AnimatedCounter({ value }) {
 
 export default memo(function JoinShow({ sessionId }) {
   const { onlineList, count } = useParticipants(sessionId);
-  const [leftQueue, setLeftQueue] = useState([]);
-  const [rightQueue, setRightQueue] = useState([]);
-  const [confettiTrigger, setConfettiTrigger] = useState(0);
-  const prevNamesRef = useRef(new Set());
-  const queueIdRef = useRef(0);
-  const prevCountRef = useRef(0);
-  const sideToggle = useRef(0);
+  const [left, setLeft] = useState([]);
+  const [right, setRight] = useState([]);
+  const [milestone, setMilestone] = useState(0);
+  const prevNamesRef = useRef(null); // null = not initialized
+  const idRef = useRef(0);
+  const sideRef = useRef(0);
+  const peakRef = useRef(0);
 
-  // Detect milestone (every 10)
+  // Skip initial load — only track NEW joins after first render
   useEffect(() => {
-    if (count > 0 && count % 10 === 0 && count > prevCountRef.current) {
-      setConfettiTrigger(count);
+    const names = new Set(onlineList.map(p => p.nickname));
+
+    // First load: just record, don't show
+    if (prevNamesRef.current === null) {
+      prevNamesRef.current = names;
+      peakRef.current = count;
+      return;
     }
-    prevCountRef.current = count;
-  }, [count]);
 
-  // Detect new joins → alternate left/right queue
-  useEffect(() => {
-    const currentNames = new Set(onlineList.map(p => p.nickname));
+    // Find truly new names
     const newNames = [];
+    names.forEach(n => {
+      if (!prevNamesRef.current.has(n)) newNames.push(n);
+    });
+    prevNamesRef.current = names;
 
-    onlineList.forEach(p => {
-      if (!prevNamesRef.current.has(p.nickname)) {
-        newNames.push(p.nickname);
+    if (newNames.length === 0) return;
+
+    const now = Date.now();
+    newNames.forEach(name => {
+      const entry = { id: ++idRef.current, name, t: now };
+      if (sideRef.current++ % 2 === 0) {
+        setLeft(prev => [...prev.slice(-(MAX_PER_SIDE - 1)), entry]);
+      } else {
+        setRight(prev => [...prev.slice(-(MAX_PER_SIDE - 1)), entry]);
       }
     });
+  }, [onlineList, count]);
 
-    if (newNames.length > 0) {
-      const now = Date.now();
-      newNames.forEach((name, i) => {
-        const entry = { id: ++queueIdRef.current, name, addedAt: now + i * 80 };
-        if (sideToggle.current % 2 === 0) {
-          setLeftQueue(prev => [...prev, entry].slice(-MAX_VISIBLE_PER_SIDE * 2));
-        } else {
-          setRightQueue(prev => [...prev, entry].slice(-MAX_VISIBLE_PER_SIDE * 2));
-        }
-        sideToggle.current++;
-      });
-    }
-
-    prevNamesRef.current = currentNames;
-  }, [onlineList]);
-
-  // Cleanup expired entries
+  // Milestone — only on real increase past round number
   useEffect(() => {
-    const interval = setInterval(() => {
-      const now = Date.now();
-      setLeftQueue(prev => prev.filter(e => now - e.addedAt < NAME_VISIBLE_MS));
-      setRightQueue(prev => prev.filter(e => now - e.addedAt < NAME_VISIBLE_MS));
-    }, 500);
-    return () => clearInterval(interval);
+    if (count > peakRef.current) {
+      peakRef.current = count;
+      const ms = Math.floor(count / 10) * 10;
+      if (ms > 0 && ms > milestone && count >= ms) {
+        setMilestone(ms);
+      }
+    }
+  }, [count, milestone]);
+
+  // Cleanup expired
+  useEffect(() => {
+    const id = setInterval(() => {
+      const cutoff = Date.now() - NAME_TTL;
+      setLeft(prev => { const next = prev.filter(e => e.t > cutoff); return next.length === prev.length ? prev : next; });
+      setRight(prev => { const next = prev.filter(e => e.t > cutoff); return next.length === prev.length ? prev : next; });
+    }, CLEANUP_INTERVAL);
+    return () => clearInterval(id);
   }, []);
 
-  // Initial burst on mount
-  const initialRef = useRef(false);
-  useEffect(() => {
-    if (initialRef.current || onlineList.length === 0) return;
-    initialRef.current = true;
-    const now = Date.now();
-    onlineList.forEach((p, i) => {
-      const entry = { id: ++queueIdRef.current, name: p.nickname, addedAt: now + i * 60 };
-      if (i % 2 === 0) {
-        setLeftQueue(prev => [...prev, entry].slice(-MAX_VISIBLE_PER_SIDE));
-      } else {
-        setRightQueue(prev => [...prev, entry].slice(-MAX_VISIBLE_PER_SIDE));
-      }
-    });
-    prevNamesRef.current = new Set(onlineList.map(p => p.nickname));
-  }, [onlineList]);
-
-  const visibleLeft = leftQueue.slice(-MAX_VISIBLE_PER_SIDE);
-  const visibleRight = rightQueue.slice(-MAX_VISIBLE_PER_SIDE);
-
   return (
-    <div className="w-full h-full flex items-center justify-center select-none relative"
-      onClick={e => e.stopPropagation()}>
+    <div className="w-full h-full flex items-center justify-center select-none" onClick={e => e.stopPropagation()}>
+      <Confetti trigger={milestone} />
 
-      <ConfettiParticles trigger={confettiTrigger} />
-
-      <div className="flex items-center gap-6 md:gap-10 lg:gap-16 w-full max-w-5xl px-4">
+      <div className="flex items-center w-full max-w-4xl px-8">
         {/* Left names */}
-        <div className="flex-1 flex flex-col justify-center items-end min-h-[300px] overflow-hidden">
-          <div className="space-y-0.5">
-            <AnimatePresence mode="popLayout">
-              {visibleLeft.map((entry) => (
-                <NameRow key={entry.id} name={entry.name} side="left" />
-              ))}
-            </AnimatePresence>
-          </div>
+        <div className="flex-1 flex flex-col justify-center items-end pr-8 min-h-[200px]">
+          <AnimatePresence mode="popLayout">
+            {left.map(e => <NameTag key={e.id} name={e.name} side="left" />)}
+          </AnimatePresence>
         </div>
 
-        {/* Center counter */}
-        <div className="shrink-0 flex flex-col items-center gap-3">
-          <p className="text-emerald-400 text-xs md:text-sm font-bold tracking-[0.2em] uppercase">
-            참여자
-          </p>
-          <div className="relative">
-            <motion.div
-              key={count}
-              animate={{ scale: [1, 1.03, 1] }}
-              transition={{ duration: 0.25 }}
-              className="text-[7rem] md:text-[9rem] lg:text-[11rem] font-black text-white leading-none tracking-tighter"
-              style={{
-                textShadow: '0 0 60px rgba(16, 185, 129, 0.25), 0 0 120px rgba(16, 185, 129, 0.1)',
-              }}
-            >
-              <AnimatedCounter value={count} />
-            </motion.div>
-            {/* Glow ring */}
-            <div
-              className="absolute inset-0 -m-8 rounded-full pointer-events-none"
-              style={{
-                background: 'radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%)',
-              }}
-            />
-          </div>
-          <p className="text-slate-500 text-sm">명 접속 중</p>
-          <MilestoneFlash count={count} />
+        {/* Center */}
+        <div className="shrink-0 text-center">
+          <p className="text-emerald-400 text-xs font-bold tracking-[0.15em] uppercase mb-1">참여자</p>
+          <motion.div
+            key={count}
+            animate={{ scale: [1, 1.02, 1] }}
+            transition={{ duration: 0.2 }}
+            className="text-[8rem] md:text-[10rem] lg:text-[12rem] font-black text-white leading-none tracking-tighter"
+            style={{ textShadow: '0 0 80px rgba(16,185,129,0.15)' }}
+          >
+            <Counter value={count} />
+          </motion.div>
+          <p className="text-slate-500 text-sm mt-1">명 접속 중</p>
+
+          <AnimatePresence>
+            {milestone > 0 && milestone === Math.floor(count / 10) * 10 && (
+              <motion.p
+                key={milestone}
+                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                className="text-emerald-400 text-xl md:text-2xl font-black mt-3 tracking-tight"
+              >
+                {milestone}명 돌파!
+              </motion.p>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Right names */}
-        <div className="flex-1 flex flex-col justify-center items-start min-h-[300px] overflow-hidden">
-          <div className="space-y-0.5">
-            <AnimatePresence mode="popLayout">
-              {visibleRight.map((entry) => (
-                <NameRow key={entry.id} name={entry.name} side="right" />
-              ))}
-            </AnimatePresence>
-          </div>
+        <div className="flex-1 flex flex-col justify-center items-start pl-8 min-h-[200px]">
+          <AnimatePresence mode="popLayout">
+            {right.map(e => <NameTag key={e.id} name={e.name} side="right" />)}
+          </AnimatePresence>
         </div>
       </div>
     </div>
