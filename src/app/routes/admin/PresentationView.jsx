@@ -440,6 +440,7 @@ import { Medal, Ticket, Gift, Coffee, Award } from 'lucide-react';
 const PRESENT_MODES = [
   { mode: 'combinedRanking', label: '합산 랭킹', icon: Medal },
   { mode: 'leaderboard', label: '리더보드', icon: Trophy },
+  { mode: 'qaBoard', label: 'Q&A 보드', icon: MessageSquare },
   { mode: 'lottery', label: '추첨', icon: Ticket },
   { mode: 'breakTime', label: '쉬는 시간', icon: Coffee },
   { mode: 'awards', label: '시상식', icon: Award },

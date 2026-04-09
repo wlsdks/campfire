@@ -135,21 +135,26 @@ export function useClassQuestions(sessionId) {
   );
 
   const postAnswer = useCallback(
-    async (questionId, text, nickname, participantId) => {
+    async (questionId, text, nickname, participantId, role) => {
       const trimmed = text?.trim();
       if (!sessionId || !questionId || !trimmed || !canAnswer) return false;
       try {
-        await push(ref(db, `sessions/${sessionId}/classQuestions/${questionId}/answers`), {
+        const answerData = {
           text: trimmed,
           nickname: nickname || '익명',
           participantId: participantId || '',
           timestamp: serverTimestamp(),
-        });
-        // 첫 답변이 달리면 자동으로 answered 마킹
-        await update(ref(db, `sessions/${sessionId}/classQuestions/${questionId}`), {
-          answered: true,
-          answeredBy: nickname || '익명',
-        });
+        };
+        if (role === 'admin' || role === 'staff') answerData.role = role;
+        await push(ref(db, `sessions/${sessionId}/classQuestions/${questionId}/answers`), answerData);
+        // 강사/스태프 답변만 answered 마킹 (학생 답변은 마킹하지 않음)
+        if (role === 'admin' || role === 'staff') {
+          await update(ref(db, `sessions/${sessionId}/classQuestions/${questionId}`), {
+            answered: true,
+            answeredBy: nickname || '익명',
+            answeredByRole: role,
+          });
+        }
         setCanAnswer(false);
         answerCooldownRef.current = setTimeout(() => setCanAnswer(true), COOLDOWN_MS);
         return true;

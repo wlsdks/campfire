@@ -14,7 +14,7 @@ import QuestionCard from './QuestionCard';
  *
  * Used in: PresentationView, LivePage, and student WaitingPage (via mode).
  */
-export default function ClassQABoard({ sessionId, showInput = true }) {
+export default function ClassQABoard({ sessionId, showInput = true, role }) {
   const {
     questions, unansweredCount, postQuestion, toggleUpvote, postAnswer, toggleAnswerUpvote, canPost,
   } = useClassQuestions(sessionId);
@@ -147,6 +147,7 @@ export default function ClassQABoard({ sessionId, showInput = true }) {
                 index={i}
                 pid={pid}
                 nickname={nickname}
+                role={role}
                 sessionId={sessionId}
                 onUpvote={toggleUpvote}
                 onPostAnswer={postAnswer}

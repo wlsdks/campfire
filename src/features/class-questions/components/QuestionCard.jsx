@@ -5,7 +5,7 @@ import Badge from '@/components/ui/Badge';
 import { timeAgo } from '@/lib/utils';
 import AnswerItem from './AnswerItem';
 
-export default function QuestionCard({ question: q, index, pid, nickname, onUpvote, onPostAnswer, onAnswerUpvote }) {
+export default function QuestionCard({ question: q, index, pid, nickname, role, onUpvote, onPostAnswer, onAnswerUpvote }) {
   const [expanded, setExpanded] = useState(false);
   const [answerText, setAnswerText] = useState('');
   const [posting, setPosting] = useState(false);
@@ -15,7 +15,7 @@ export default function QuestionCard({ question: q, index, pid, nickname, onUpvo
   async function handlePostAnswer() {
     if (!answerText.trim() || posting) return;
     setPosting(true);
-    const success = await onPostAnswer(q.id, answerText.trim(), nickname, pid);
+    const success = await onPostAnswer(q.id, answerText.trim(), nickname, pid, role);
     if (success) setAnswerText('');
     setPosting(false);
   }
@@ -38,7 +38,8 @@ export default function QuestionCard({ question: q, index, pid, nickname, onUpvo
               {q.nickname}
             </span>
             {isOwn && <Badge variant="neutral">나</Badge>}
-            {q.answered && <Badge variant="neutral">답변 완료</Badge>}
+            {q.answeredByRole === 'admin' && <Badge variant="neutral">강사 답변 완료</Badge>}
+            {q.answeredByRole === 'staff' && <Badge variant="neutral">스태프 답변 완료</Badge>}
           </div>
           <span className="text-[11px] text-slate-400 dark:text-slate-500 shrink-0">{timeAgo(q.timestamp)}</span>
         </div>
