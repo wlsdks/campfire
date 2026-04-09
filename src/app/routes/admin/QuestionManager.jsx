@@ -77,7 +77,32 @@ export default function QuestionManager({
   return (
     <div className="space-y-5">
       <div className="space-y-2">
-        <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">질문 목록</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">질문 목록</h2>
+          <div className="flex items-center gap-1">
+            {questionList.length > 0 && (
+              <button onClick={() => setPreviewOpen(true)}
+                className="p-2 rounded-lg text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
+                title="미리보기" aria-label="문항 미리보기">
+                <Eye size={18} />
+              </button>
+            )}
+            {questionList.length > 0 && !readOnly && (
+              <button onClick={() => { if (confirm('모든 답변, 점수, 참여 기록을 초기화할까요?\n(참여자는 재접속하면 다시 표시됩니다)')) resetAllQuestions(); }}
+                className="p-2 rounded-lg text-slate-400 dark:text-slate-500 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
+                title="전체 답변 초기화" aria-label="전체 답변 초기화">
+                <RotateCcw size={18} />
+              </button>
+            )}
+            {!readOnly && onCollapse && (
+              <button onClick={onCollapse}
+                className="p-2 rounded-lg text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
+                title="패널 접기" aria-label="사이드바 접기">
+                <PanelLeftClose size={18} />
+              </button>
+            )}
+          </div>
+        </div>
         <div className="flex items-center gap-1.5 flex-wrap">
           {!readOnly && modeButton}
           {!readOnly && adminUid && (
@@ -93,29 +118,6 @@ export default function QuestionManager({
             >
               {showForm && !onAddClick ? '취소' : <><Plus size={14} /> 추가</>}
             </Button>
-          )}
-          {questionList.length > 0 && (
-            <>
-              <button onClick={() => setPreviewOpen(true)}
-                className="p-1.5 rounded-lg text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
-                title="미리보기" aria-label="문항 미리보기">
-                <Eye size={16} />
-              </button>
-              {!readOnly && (
-                <button onClick={() => { if (confirm('모든 답변, 점수, 참여 기록을 초기화할까요?\n(참여자는 재접속하면 다시 표시됩니다)')) resetAllQuestions(); }}
-                  className="p-1.5 rounded-lg text-slate-400 dark:text-slate-500 hover:text-red-500 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
-                  title="전체 답변 초기화" aria-label="전체 답변 초기화">
-                  <RotateCcw size={16} />
-                </button>
-              )}
-            </>
-          )}
-          {!readOnly && onCollapse && (
-            <button onClick={onCollapse}
-              className="p-1.5 rounded-lg text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-90"
-              title="패널 접기" aria-label="사이드바 접기">
-              <PanelLeftClose size={16} />
-            </button>
           )}
         </div>
       </div>

@@ -11,6 +11,8 @@ const SECONDARY_FIELDS = [
   'status',
   'pendingEvent',
   'courseName',
+  'courseId',
+  'creatorId',
   'roundNumber',
   'createdAt',
   'startedAt',

@@ -145,7 +145,7 @@ export default function AdminPage() {
             <RightSidebar session={s.session} sessionId={s.sessionId} effectiveReadOnly={s.effectiveReadOnly}
               participants={s.participants} onlineList={s.onlineList} count={s.count} leaderboard={s.leaderboard}
               voteCounts={s.voteCounts} studentUrl={s.studentUrl} sidebarCollapsed={false} isDrawer
-              teamScores={s.teamScores} />
+              teamScores={s.teamScores} courseId={s.session?.courseId} courseName={s.session?.courseName} />
           } />
       )}
 
@@ -186,7 +186,7 @@ export default function AdminPage() {
           <RightSidebar session={s.session} sessionId={s.sessionId} effectiveReadOnly={s.effectiveReadOnly}
             participants={s.participants} onlineList={s.onlineList} count={s.count} leaderboard={s.leaderboard}
             voteCounts={s.voteCounts} studentUrl={s.studentUrl} sidebarCollapsed={s.sidebarCollapsed}
-            teamScores={s.teamScores} />
+            teamScores={s.teamScores} courseId={s.session?.courseId} courseName={s.session?.courseName} />
         )}
       </div>
     </div>
