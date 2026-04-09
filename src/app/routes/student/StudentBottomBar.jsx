@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect, memo } from 'react';
+import { createPortal } from 'react-dom';
 import { ref, set, push, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
@@ -104,7 +105,7 @@ export default memo(function StudentBottomBar({ sessionId }) {
     }
   }
 
-  return (
+  return createPortal(
     <>
       <ReactionOverlay sessionId={sessionId} />
       <ChatPanel sessionId={sessionId} senderName={nickname} senderType="student" open={showChat} onClose={() => setShowChat(false)} onNewMessage={handleNewMessage} />
@@ -255,6 +256,7 @@ export default memo(function StudentBottomBar({ sessionId }) {
           </div>
         </div>
       </motion.div>
-    </>
+    </>,
+    document.body,
   );
 });

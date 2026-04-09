@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, memo } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, X, ThumbsUp, Check, HelpCircle } from 'lucide-react';
 import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
@@ -110,7 +111,7 @@ export default memo(function ClassQAPanel({ sessionId, open, onClose, onNewQuest
     toggleUpvote(questionId, participantId);
   }
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {open && (
         <>
@@ -234,6 +235,7 @@ export default memo(function ClassQAPanel({ sessionId, open, onClose, onNewQuest
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 });

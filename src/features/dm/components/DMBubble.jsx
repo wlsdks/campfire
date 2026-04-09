@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, memo } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'framer-motion';
 import { MessageSquare, Send, X, Plus, ArrowLeft, Headset, CheckCircle2 } from 'lucide-react';
 import { formatChatTime } from '@/lib/utils';
@@ -115,7 +116,7 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
     active ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
   }`;
 
-  return (
+  const content = (
     <>
       <motion.div key="dm-backdrop" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
         className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50" onClick={onClose} />
@@ -255,4 +256,6 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
       </motion.div>
     </>
   );
+
+  return createPortal(content, document.body);
 }

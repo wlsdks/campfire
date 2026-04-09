@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, memo } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, X, MessageCircle, Shield } from 'lucide-react';
 import { hapticTap } from '@/lib/haptics';
@@ -128,7 +129,7 @@ export default memo(function ChatPanel({ sessionId, senderName, senderType, open
     );
   }
 
-  return (
+  const panel = (
     <AnimatePresence>
       {open && (
         <>
@@ -186,4 +187,6 @@ export default memo(function ChatPanel({ sessionId, senderName, senderType, open
       )}
     </AnimatePresence>
   );
+
+  return inline ? panel : createPortal(panel, document.body);
 });
