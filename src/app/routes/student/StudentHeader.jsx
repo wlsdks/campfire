@@ -6,6 +6,8 @@ import PickMascot from '@/components/ui/PickMascot';
 import Avatar from '@/components/ui/Avatar';
 import ConnectionBanner from '@/components/ui/ConnectionBanner';
 import { useScores } from '@/features/quiz/api/useScores';
+import { useSession } from '@/features/session/api/useSession';
+import ElapsedTime from '@/components/ui/ElapsedTime';
 import { getParticipantId, getNickname, clearSessionJoined } from '@/lib/participant';
 
 function ThemeToggle() {
@@ -50,6 +52,7 @@ function HeaderScore({ value }) {
 }
 
 export default function StudentHeader({ sessionId }) {
+  const { session } = useSession(sessionId);
   const { scores } = useScores(sessionId);
   const nickname = getNickname();
   const myScore = scores[getParticipantId()];
@@ -86,6 +89,7 @@ export default function StudentHeader({ sessionId }) {
           <div className="flex items-center gap-2.5">
             <PickMascot size="xs" />
             <span className="font-bold text-lg text-slate-900 dark:text-slate-100 tracking-tight">Pick</span>
+            <ElapsedTime startedAt={session?.startedAt} status={session?.status} />
           </div>
 
           <div className="flex items-center gap-4">

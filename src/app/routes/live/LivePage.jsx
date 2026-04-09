@@ -147,7 +147,7 @@ export default function LivePage() {
 
   return (
     <div className="h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col overflow-hidden">
-      <LiveHeader courseName={session?.courseName} roundNumber={session?.roundNumber} count={count} sessionId={sessionId} />
+      <LiveHeader courseName={session?.courseName} roundNumber={session?.roundNumber} count={count} sessionId={sessionId} startedAt={session?.startedAt} status={session?.status} />
       <JoinToast sessionId={sessionId} />
       <ReactionOverlay sessionId={sessionId} />
       <DrumrollOverlay active={!!session?.drumroll} />

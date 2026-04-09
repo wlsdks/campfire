@@ -4,9 +4,10 @@ import { Users, Sun, Moon, QrCode } from 'lucide-react';
 import PickMascot from '@/components/ui/PickMascot';
 import Badge from '@/components/ui/Badge';
 import QRCodeComponent from '@/components/ui/QRCode';
+import ElapsedTime from '@/components/ui/ElapsedTime';
 import { useTheme } from '@/hooks/useTheme';
 
-export default memo(function LiveHeader({ courseName, roundNumber, count, sessionId }) {
+export default memo(function LiveHeader({ courseName, roundNumber, count, sessionId, startedAt, status }) {
   const { isDark, setTheme } = useTheme();
   const [qrOpen, setQrOpen] = useState(false);
   const studentUrl = sessionId ? `${window.location.origin}/?s=${sessionId}` : '';
@@ -29,6 +30,7 @@ export default memo(function LiveHeader({ courseName, roundNumber, count, sessio
             {roundNumber}차
           </Badge>
         )}
+        <ElapsedTime startedAt={startedAt} status={status} />
       </div>
 
       <div className="flex items-center gap-3">
