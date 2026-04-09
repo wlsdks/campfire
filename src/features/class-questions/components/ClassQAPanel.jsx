@@ -69,6 +69,14 @@ export default memo(function ClassQAPanel({ sessionId, open, onClose, onNewQuest
   const inputRef = useRef(null);
   const prevCountRef = useRef(getLastSeen(sessionId, 'qa'));
 
+  // 패널 열릴 때 배경 스크롤 잠금
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prev; };
+  }, [open]);
+
   const participantId = getParticipantId();
   const nickname = getNickname();
 

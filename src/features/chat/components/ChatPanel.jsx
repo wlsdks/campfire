@@ -14,6 +14,14 @@ export default memo(function ChatPanel({ sessionId, senderName, senderType, open
   const isStaffOrInstructor = senderType === 'staff' || senderType === 'instructor';
   const [channel, setChannel] = useState('public');
 
+  // 패널 열릴 때 배경 스크롤 잠금
+  useEffect(() => {
+    if (!open || inline) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prev; };
+  }, [open, inline]);
+
   const publicChat = useChat(sessionId);
   // Only subscribe to staffChat for staff/instructor — students skip the Firebase listener entirely
   const staffChat = useStaffChat(sessionId, { enabled: isStaffOrInstructor });

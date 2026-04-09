@@ -73,6 +73,13 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
   const [requestSent, setRequestSent] = useState(false);
   const messagesEndRef = useRef(null);
 
+  // 패널 열릴 때 배경 스크롤 잠금
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prev; };
+  }, []);
+
   const allDMs = activeDMs || (activeDM ? [activeDM] : []);
   const currentDM = selectedDM ? allDMs.find((d) => d.id === selectedDM.id) || selectedDM : null;
 
