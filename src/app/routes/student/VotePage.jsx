@@ -16,6 +16,7 @@ import ActivePollView from './ActivePollView';
 import { getModeVariants, ENTER_TRANSITION } from './VoteHelpers';
 import { VoteModeContent } from './VoteModeContent';
 import DrumrollOverlay from '@/components/ui/DrumrollOverlay';
+import ChatBubbleOverlay from '@/features/reactions/components/ChatBubbleOverlay';
 
 export default memo(function VotePage({ sessionId }) {
   const { session, loading } = useSession(sessionId);
@@ -131,6 +132,7 @@ export default memo(function VotePage({ sessionId }) {
       </AnimatePresence>
 
       <DrumrollOverlay active={!!session?.drumroll} />
+      <ChatBubbleOverlay sessionId={sessionId} />
       <AchievementToast achievements={achievements} />
     </>
   );

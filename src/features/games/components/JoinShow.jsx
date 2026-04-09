@@ -2,8 +2,8 @@ import { useState, useEffect, useRef, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 
-const NAME_TTL = 2500;
-const MAX_PER_SIDE = 5;
+const NAME_TTL = 4000;
+const MAX_PER_SIDE = 6;
 
 const NameTag = memo(function NameTag({ name, side }) {
   return (
@@ -116,12 +116,10 @@ export default memo(function JoinShow({ sessionId }) {
       <div className="flex items-center gap-6 md:gap-10 w-full max-w-4xl px-4">
 
         {/* Left */}
-        <div className="w-28 md:w-36 shrink-0 overflow-hidden h-40">
-          <div className="flex flex-col justify-center h-full">
-            <AnimatePresence mode="popLayout">
-              {left.map(e => <NameTag key={e.id} name={e.name} side="left" />)}
-            </AnimatePresence>
-          </div>
+        <div className="w-28 md:w-36 shrink-0">
+          <AnimatePresence>
+            {left.map(e => <NameTag key={e.id} name={e.name} side="left" />)}
+          </AnimatePresence>
         </div>
 
         {/* Center — flex-1 so it stays centered */}
@@ -148,12 +146,10 @@ export default memo(function JoinShow({ sessionId }) {
         </div>
 
         {/* Right */}
-        <div className="w-28 md:w-36 shrink-0 overflow-hidden h-40">
-          <div className="flex flex-col justify-center h-full">
-            <AnimatePresence mode="popLayout">
-              {right.map(e => <NameTag key={e.id} name={e.name} side="right" />)}
-            </AnimatePresence>
-          </div>
+        <div className="w-28 md:w-36 shrink-0">
+          <AnimatePresence>
+            {right.map(e => <NameTag key={e.id} name={e.name} side="right" />)}
+          </AnimatePresence>
         </div>
       </div>
     </div>

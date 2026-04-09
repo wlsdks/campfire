@@ -12,7 +12,6 @@ import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 import ReactionBar from '@/features/reactions/components/ReactionBar';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
-import ChatBubbleOverlay from '@/features/reactions/components/ChatBubbleOverlay';
 import ChatPanel from '@/features/chat/components/ChatPanel';
 import ClassQAPanel from '@/features/class-questions/components/ClassQAPanel';
 import DMBubble from '@/features/dm/components/DMBubble';
@@ -109,7 +108,6 @@ export default memo(function StudentBottomBar({ sessionId }) {
   return createPortal(
     <>
       <ReactionOverlay sessionId={sessionId} />
-      <ChatBubbleOverlay sessionId={sessionId} />
       <ChatPanel sessionId={sessionId} senderName={nickname} senderType="student" open={showChat} onClose={() => setShowChat(false)} onNewMessage={handleNewMessage} />
       <ClassQAPanel sessionId={sessionId} open={showQA} onClose={() => setShowQA(false)} onNewQuestion={handleNewQuestion} />
       {showDMChat && (
