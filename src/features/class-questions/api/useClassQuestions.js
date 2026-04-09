@@ -1,4 +1,4 @@
-import { ref, onValue, push, update, remove, serverTimestamp } from 'firebase/database';
+import { ref, onValue, push, update, remove, serverTimestamp, increment } from 'firebase/database';
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
@@ -72,6 +72,13 @@ export function useClassQuestions(sessionId) {
           timestamp: serverTimestamp(),
           answered: false,
         });
+        // Q&A 참여 통계 업데이트
+        if (participantId) {
+          update(ref(db, `sessions/${sessionId}/qaStats/${participantId}`), {
+            nickname: nickname || '익명',
+            questions: increment(1),
+          }).catch(() => {});
+        }
         setCanPost(false);
         cooldownRef.current = setTimeout(() => setCanPost(true), COOLDOWN_MS);
         return true;
@@ -147,6 +154,13 @@ export function useClassQuestions(sessionId) {
         };
         if (role === 'admin' || role === 'staff') answerData.role = role;
         await push(ref(db, `sessions/${sessionId}/classQuestions/${questionId}/answers`), answerData);
+        // Q&A 참여 통계 업데이트
+        if (participantId) {
+          update(ref(db, `sessions/${sessionId}/qaStats/${participantId}`), {
+            nickname: nickname || '익명',
+            answers: increment(1),
+          }).catch(() => {});
+        }
         // 강사/스태프 답변만 answered 마킹 (학생 답변은 마킹하지 않음)
         if (role === 'admin' || role === 'staff') {
           await update(ref(db, `sessions/${sessionId}/classQuestions/${questionId}`), {

@@ -221,9 +221,20 @@
                 "nickname": { ".validate": "newData.isString() && newData.val().length <= 20" },
                 "participantId": { ".validate": "newData.isString()" },
                 "timestamp": { ".validate": true },
+                "role": { ".validate": "newData.isString()" },
                 "upvotes": { ".write": true }
               }
             }
+          }
+        },
+
+        "qaStats": {
+          ".read": true,
+          ".write": true,
+          "$participantId": {
+            "nickname": { ".validate": "newData.isString()" },
+            "questions": { ".validate": "newData.isNumber()" },
+            "answers": { ".validate": "newData.isNumber()" }
           }
         },
 

@@ -1,16 +1,50 @@
 import { useState, useEffect, useRef, memo } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, X, ThumbsUp, Check, HelpCircle } from 'lucide-react';
+import { Send, X, ThumbsUp, Check, HelpCircle, MessageSquare, ChevronDown, ChevronUp } from 'lucide-react';
 import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
 import { getParticipantId, getNickname, getLastSeen, saveLastSeen } from '@/lib/participant';
 import { timeAgo } from '@/lib/utils';
 
 const MAX_LENGTH = 200;
 
-const QuestionCard = memo(function QuestionCard({ q, participantId, onUpvote, index = 0 }) {
+const AnswerItem = memo(function AnswerItem({ a, participantId }) {
+  const isOwn = a.participantId === participantId;
+  const roleLabel = a.role === 'admin' ? '강사' : a.role === 'staff' ? '스태프' : null;
+
+  return (
+    <div className="flex gap-2">
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">{a.nickname}</span>
+          {roleLabel && (
+            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900">
+              {roleLabel}
+            </span>
+          )}
+          {isOwn && <span className="text-[9px] text-slate-400">나</span>}
+          <span className="text-[9px] text-slate-400">{timeAgo(a.timestamp)}</span>
+        </div>
+        <p className="text-[13px] text-slate-700 dark:text-slate-200 mt-0.5 leading-relaxed">{a.text}</p>
+      </div>
+    </div>
+  );
+});
+
+const QuestionCard = memo(function QuestionCard({ q, participantId, nickname, onUpvote, onPostAnswer, canAnswer, index = 0 }) {
+  const [expanded, setExpanded] = useState(false);
+  const [answerText, setAnswerText] = useState('');
+  const [posting, setPosting] = useState(false);
   const hasUpvoted = q.upvotes?.[participantId];
   const isMine = q.participantId === participantId;
+
+  async function handlePostAnswer() {
+    if (!answerText.trim() || posting) return;
+    setPosting(true);
+    const ok = await onPostAnswer(q.id, answerText.trim(), nickname, participantId);
+    if (ok) setAnswerText('');
+    setPosting(false);
+  }
 
   return (
     <motion.div
@@ -18,7 +52,11 @@ const QuestionCard = memo(function QuestionCard({ q, participantId, onUpvote, in
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2, delay: index * 0.03 }}
-      className={`rounded-xl shadow-sm overflow-hidden ${q.answered ? 'opacity-50' : ''}`}
+      className={`rounded-xl shadow-sm overflow-hidden ${
+        q.answeredByRole
+          ? 'ring-1 ring-emerald-200 dark:ring-emerald-800/50'
+          : ''
+      }`}
     >
       <div className={`p-4 bg-white dark:bg-slate-800 ${isMine && !q.answered ? 'ring-1 ring-slate-300 dark:ring-slate-600' : ''}`}>
         <p className="text-[15px] text-slate-800 dark:text-slate-200 leading-relaxed">
@@ -33,13 +71,14 @@ const QuestionCard = memo(function QuestionCard({ q, participantId, onUpvote, in
               <span className="text-[10px] font-semibold text-white dark:text-slate-900 bg-slate-900 dark:bg-slate-100 px-1.5 py-0.5 rounded-md">나</span>
             )}
             <span className="text-[10px] text-slate-300 dark:text-slate-600">{timeAgo(q.timestamp)}</span>
-            {q.answered && (
-              <span className="flex items-center gap-0.5 text-slate-400 text-[10px] font-medium">
-                <Check size={10} /> 답변 완료
+            {q.answeredByRole && (
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
+                <Check size={10} />
+                {q.answeredByRole === 'staff' ? '스태프 답변' : '강사 답변'}
               </span>
             )}
           </div>
-          {!q.answered && (
+          <div className="flex items-center gap-2">
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => onUpvote(q.id)}
@@ -54,15 +93,67 @@ const QuestionCard = memo(function QuestionCard({ q, participantId, onUpvote, in
               <ThumbsUp size={12} />
               {q.upvoteCount || 0}
             </motion.button>
-          )}
+          </div>
         </div>
+
+        {/* Answer toggle */}
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="flex items-center gap-1 mt-2 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150"
+        >
+          <MessageSquare size={12} />
+          <span>{q.answerCount > 0 ? `답변 ${q.answerCount}개` : '답변하기'}</span>
+          {expanded ? <ChevronUp size={10} /> : <ChevronDown size={10} />}
+        </button>
       </div>
+
+      {/* Answers section */}
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="border-t border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 px-4 py-3 space-y-2.5">
+              {q.answerList?.length > 0 ? (
+                q.answerList.map((a) => (
+                  <AnswerItem key={a.id} a={a} participantId={participantId} />
+                ))
+              ) : (
+                <p className="text-[11px] text-slate-400 text-center py-1">아직 답변이 없습니다</p>
+              )}
+              <div className="flex gap-2 pt-1">
+                <input
+                  type="text"
+                  value={answerText}
+                  onChange={(e) => setAnswerText(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handlePostAnswer()}
+                  placeholder="답변 작성..."
+                  maxLength={500}
+                  className="flex-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
+                />
+                <button
+                  onClick={handlePostAnswer}
+                  disabled={!answerText.trim() || posting || !canAnswer}
+                  className="px-3 py-2 bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 rounded-lg text-sm font-medium disabled:opacity-40 transition-colors duration-150"
+                  aria-label="답변 보내기"
+                >
+                  <Send size={14} />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 });
 
 export default memo(function ClassQAPanel({ sessionId, open, onClose, onNewQuestion }) {
-  const { questions, unansweredCount, postQuestion, toggleUpvote, canPost, loading } =
+  const { questions, unansweredCount, postQuestion, toggleUpvote, postAnswer, canPost, canAnswer, loading } =
     useClassQuestions(sessionId);
   const [inputText, setInputText] = useState('');
   const [posting, setPosting] = useState(false);
@@ -142,8 +233,8 @@ export default memo(function ClassQAPanel({ sessionId, open, onClose, onNewQuest
                 <span className="font-bold text-slate-900 dark:text-slate-100">
                   수업 질문
                 </span>
-                {unansweredCount > 0 && (
-                  <span className="text-xs text-slate-400">{unansweredCount}개</span>
+                {questions.length > 0 && (
+                  <span className="text-xs text-slate-400">{questions.length}개</span>
                 )}
               </div>
               <button
@@ -197,7 +288,16 @@ export default memo(function ClassQAPanel({ sessionId, open, onClose, onNewQuest
                       </div>
                     ) : (
                       filtered.map((q, i) => (
-                        <QuestionCard key={q.id} q={q} index={i} participantId={participantId} onUpvote={handleUpvote} />
+                        <QuestionCard
+                          key={q.id}
+                          q={q}
+                          index={i}
+                          participantId={participantId}
+                          nickname={nickname}
+                          onUpvote={handleUpvote}
+                          onPostAnswer={postAnswer}
+                          canAnswer={canAnswer}
+                        />
                       ))
                     );
                   })()}
