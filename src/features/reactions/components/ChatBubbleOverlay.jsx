@@ -1,55 +1,61 @@
 import { useEffect, useRef, useState, memo } from 'react';
-import { onChildAdded, ref, query, orderByChild, startAt } from 'firebase/database';
+import { onChildAdded, ref } from 'firebase/database';
 import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '@/lib/firebase';
 
-const MAX_BUBBLES = 8;
-const BUBBLE_LIFETIME_MS = 3200;
+const MAX_BUBBLES = 6;
+const LIFETIME_MS = 3000;
 
 /**
- * Floating chat bubbles — uses onChildAdded to avoid duplicate triggers.
- * Only shows bubbles created AFTER mount (ignores historical data).
+ * Floating chat bubbles. Only shows NEW bubbles (ignores existing on mount).
+ * Uses onChildAdded + skip-initial pattern for dedup.
  */
 export default memo(function ChatBubbleOverlay({ sessionId }) {
   const [bubbles, setBubbles] = useState([]);
+  const seenRef = useRef(new Set());
+  const readyRef = useRef(false);
   const mountedRef = useRef(true);
-  const mountTimeRef = useRef(Date.now());
 
   useEffect(() => {
     mountedRef.current = true;
-    mountTimeRef.current = Date.now();
+    readyRef.current = false;
+    seenRef.current = new Set();
     return () => { mountedRef.current = false; };
-  }, []);
+  }, [sessionId]);
 
   useEffect(() => {
     if (!sessionId) return;
-    // Only listen for bubbles created after mount
-    const bubbleQuery = query(
-      ref(db, `sessions/${sessionId}/chatBubbles`),
-      orderByChild('timestamp'),
-      startAt(mountTimeRef.current),
-    );
+    const bubbleRef = ref(db, `sessions/${sessionId}/chatBubbles`);
+    let initialLoad = true;
 
-    const unsub = onChildAdded(bubbleQuery, (snap) => {
+    const unsub = onChildAdded(bubbleRef, (snap) => {
+      // Skip all entries from initial load
+      if (initialLoad) return;
       if (!mountedRef.current) return;
+
+      const key = snap.key;
+      if (seenRef.current.has(key)) return;
+      seenRef.current.add(key);
+
       const data = snap.val();
       if (!data?.text) return;
 
-      const seed = snap.key.split('').reduce((s, c) => (s * 33 + c.charCodeAt(0)) % 2147483647, 7);
+      const seed = key.split('').reduce((s, c) => (s * 33 + c.charCodeAt(0)) % 2147483647, 7);
       const bubble = {
-        id: snap.key,
+        id: key,
         text: (data.text || '').slice(0, 20),
         nickname: data.nickname || '',
-        x: 15 + (seed % 60),
+        x: 20 + (seed % 55),
       };
 
       setBubbles(prev => [...prev.slice(-(MAX_BUBBLES - 1)), bubble]);
-
       setTimeout(() => {
-        if (!mountedRef.current) return;
-        setBubbles(prev => prev.filter(b => b.id !== bubble.id));
-      }, BUBBLE_LIFETIME_MS);
+        if (mountedRef.current) setBubbles(prev => prev.filter(b => b.id !== key));
+      }, LIFETIME_MS);
     });
+
+    // After initial snapshot fires, mark ready
+    setTimeout(() => { initialLoad = false; }, 500);
 
     return () => unsub();
   }, [sessionId]);
@@ -60,15 +66,15 @@ export default memo(function ChatBubbleOverlay({ sessionId }) {
         {bubbles.map(b => (
           <motion.div
             key={b.id}
-            initial={{ opacity: 0, y: 0, scale: 0.8 }}
-            animate={{ opacity: 1, y: -180, scale: 1 }}
-            exit={{ opacity: 0, y: -240, scale: 0.7 }}
-            transition={{ duration: 2.8, ease: 'easeOut' }}
-            className="absolute bottom-36"
+            initial={{ opacity: 0, y: 0, scale: 0.85 }}
+            animate={{ opacity: 1, y: -160, scale: 1 }}
+            exit={{ opacity: 0, y: -200, scale: 0.8 }}
+            transition={{ duration: 2.5, ease: 'easeOut' }}
+            className="absolute bottom-40"
             style={{ left: `${b.x}%` }}
           >
-            <div className="bg-white/90 dark:bg-slate-700/90 backdrop-blur-sm rounded-2xl px-3 py-1.5 shadow-md max-w-[160px]">
-              <p className="text-sm font-medium text-slate-900 dark:text-slate-100 leading-tight">{b.text}</p>
+            <div className="bg-white/85 dark:bg-slate-700/85 backdrop-blur rounded-2xl px-3 py-1.5 shadow-md">
+              <p className="text-[13px] font-medium text-slate-900 dark:text-slate-100 leading-tight whitespace-nowrap">{b.text}</p>
               <p className="text-[9px] text-slate-400 mt-0.5">{b.nickname}</p>
             </div>
           </motion.div>

@@ -2,45 +2,43 @@ import { useState, useEffect, useRef, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 
-const NAME_TTL = 2800;
-const MAX_PER_SIDE = 6;
+const NAME_TTL = 2500;
+const MAX_PER_SIDE = 5;
 
-/** Single name tag */
 const NameTag = memo(function NameTag({ name, side }) {
   return (
     <motion.div
       layout="position"
-      initial={{ opacity: 0, x: side === 'left' ? -16 : 16 }}
+      initial={{ opacity: 0, x: side === 'left' ? -12 : 12 }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: side === 'left' ? -8 : 8 }}
-      transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-      className={`py-0.5 ${side === 'left' ? 'text-right' : 'text-left'}`}
+      exit={{ opacity: 0 }}
+      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+      className={`leading-relaxed ${side === 'left' ? 'text-right' : 'text-left'}`}
     >
-      <span className="text-white/60 text-sm font-medium">{name}</span>
+      <span className="text-white/50 text-sm font-medium">{name}</span>
     </motion.div>
   );
 });
 
-/** Confetti */
 function Confetti({ trigger }) {
   const [on, setOn] = useState(false);
-  const prevRef = useRef(0);
+  const prev = useRef(0);
   useEffect(() => {
-    if (trigger > prevRef.current) { setOn(true); setTimeout(() => setOn(false), 1600); prevRef.current = trigger; }
+    if (trigger > prev.current) { setOn(true); setTimeout(() => setOn(false), 1500); prev.current = trigger; }
   }, [trigger]);
   if (!on) return null;
+  const colors = ['#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6', '#ec4899'];
   return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
-      {Array.from({ length: 35 }, (_, i) => {
-        const colors = ['#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6', '#ec4899'];
-        const a = (i / 35) * Math.PI * 2 + Math.random() * 0.5;
-        const s = 3 + Math.random() * 4;
+    <div className="fixed inset-0 pointer-events-none z-20 overflow-hidden">
+      {Array.from({ length: 30 }, (_, i) => {
+        const a = (i / 30) * Math.PI * 2 + Math.random() * 0.5;
+        const s = 2.5 + Math.random() * 4;
         return (
           <motion.div key={`${trigger}-${i}`}
-            initial={{ left: '50%', top: '50%', opacity: 1, scale: 1 }}
-            animate={{ left: `calc(50% + ${Math.cos(a) * s * 50}px)`, top: `calc(50% + ${Math.sin(a) * s * 50 - 120}px)`, opacity: 0, scale: 0, rotate: Math.random() * 400 }}
-            transition={{ duration: 1 + Math.random() * 0.4, delay: Math.random() * 0.1, ease: 'easeOut' }}
-            className="absolute w-1.5 h-1.5 rounded-sm" style={{ backgroundColor: colors[i % 6] }}
+            initial={{ left: '50%', top: '45%', opacity: 1, scale: 1 }}
+            animate={{ left: `calc(50% + ${Math.cos(a)*s*55}px)`, top: `calc(45% + ${Math.sin(a)*s*55 - 130}px)`, opacity: 0, scale: 0, rotate: Math.random()*400 }}
+            transition={{ duration: 1+Math.random()*0.3, delay: Math.random()*0.1, ease: 'easeOut' }}
+            className="absolute w-1.5 h-1.5 rounded-sm" style={{ backgroundColor: colors[i%6] }}
           />
         );
       })}
@@ -48,7 +46,6 @@ function Confetti({ trigger }) {
   );
 }
 
-/** Smooth counter */
 function Counter({ value }) {
   const [d, setD] = useState(value);
   const raf = useRef(null);
@@ -56,7 +53,7 @@ function Counter({ value }) {
   useEffect(() => {
     const f = from.current, t = value;
     if (f === t) return;
-    const dur = Math.min(500, Math.abs(t - f) * 30);
+    const dur = Math.min(400, Math.abs(t - f) * 25);
     const st = performance.now();
     function tick(now) {
       const p = Math.min(1, (now - st) / dur);
@@ -79,7 +76,6 @@ export default memo(function JoinShow({ sessionId }) {
   const side = useRef(0);
   const peak = useRef(0);
 
-  // Only track NEW joins (skip initial load)
   useEffect(() => {
     const names = new Set(onlineList.map(p => p.nickname));
     if (prev.current === null) { prev.current = names; peak.current = count; return; }
@@ -94,7 +90,6 @@ export default memo(function JoinShow({ sessionId }) {
     prev.current = names;
   }, [onlineList, count]);
 
-  // Milestone
   useEffect(() => {
     if (count > peak.current) {
       peak.current = count;
@@ -103,57 +98,63 @@ export default memo(function JoinShow({ sessionId }) {
     }
   }, [count, ms]);
 
-  // Cleanup
   useEffect(() => {
     const t = setInterval(() => {
       const c = Date.now() - NAME_TTL;
       setLeft(p => { const n = p.filter(e => e.t > c); return n.length === p.length ? p : n; });
       setRight(p => { const n = p.filter(e => e.t > c); return n.length === p.length ? p : n; });
-    }, 400);
+    }, 350);
     return () => clearInterval(t);
   }, []);
 
   return (
-    <div className="w-full h-full relative select-none" onClick={e => e.stopPropagation()}>
+    <div className="w-full h-full flex items-center justify-center select-none overflow-hidden"
+      onClick={e => e.stopPropagation()}>
       <Confetti trigger={ms} />
 
-      {/* Center counter — absolute, always centered */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-0">
-        <div className="text-center">
-          <p className="text-emerald-400 text-xs font-bold tracking-[0.15em] uppercase mb-1">참여자</p>
-          <motion.div key={count} animate={{ scale: [1, 1.02, 1] }} transition={{ duration: 0.2 }}
-            className="text-[8rem] md:text-[10rem] lg:text-[12rem] font-black text-white leading-none tracking-tighter"
-            style={{ textShadow: '0 0 80px rgba(16,185,129,0.12)' }}>
+      {/* 3-column: left names | counter | right names */}
+      <div className="flex items-center gap-6 md:gap-10 w-full max-w-4xl px-4">
+
+        {/* Left */}
+        <div className="w-28 md:w-36 shrink-0 overflow-hidden h-40">
+          <div className="flex flex-col justify-center h-full">
+            <AnimatePresence mode="popLayout">
+              {left.map(e => <NameTag key={e.id} name={e.name} side="left" />)}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        {/* Center — flex-1 so it stays centered */}
+        <div className="flex-1 text-center min-w-0">
+          <p className="text-emerald-400 text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase">참여자</p>
+          <motion.div key={count} animate={{ scale: [1, 1.015, 1] }} transition={{ duration: 0.15 }}
+            className="text-[7rem] md:text-[9rem] lg:text-[11rem] font-black text-white leading-[0.85] tracking-tighter"
+            style={{ textShadow: '0 0 60px rgba(16,185,129,0.1)' }}>
             <Counter value={count} />
           </motion.div>
-          <p className="text-slate-500 text-sm mt-1">명 접속 중</p>
+          <p className="text-slate-500 text-xs md:text-sm mt-1">명 접속 중</p>
           <AnimatePresence>
             {ms > 0 && ms === Math.floor(count / 10) * 10 && (
               <motion.p key={ms}
-                initial={{ opacity: 0, y: 8, scale: 0.9 }}
+                initial={{ opacity: 0, y: 6, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.8 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                className="text-emerald-400 text-xl md:text-2xl font-black mt-2 tracking-tight">
+                className="text-emerald-400 text-lg md:text-xl font-black mt-1">
                 {ms}명 돌파!
               </motion.p>
             )}
           </AnimatePresence>
         </div>
-      </div>
 
-      {/* Left names — absolute left */}
-      <div className="absolute left-8 md:left-16 top-1/2 -translate-y-1/2 w-32 md:w-40 z-10">
-        <AnimatePresence mode="popLayout">
-          {left.map(e => <NameTag key={e.id} name={e.name} side="left" />)}
-        </AnimatePresence>
-      </div>
-
-      {/* Right names — absolute right */}
-      <div className="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 w-32 md:w-40 z-10">
-        <AnimatePresence mode="popLayout">
-          {right.map(e => <NameTag key={e.id} name={e.name} side="right" />)}
-        </AnimatePresence>
+        {/* Right */}
+        <div className="w-28 md:w-36 shrink-0 overflow-hidden h-40">
+          <div className="flex flex-col justify-center h-full">
+            <AnimatePresence mode="popLayout">
+              {right.map(e => <NameTag key={e.id} name={e.name} side="right" />)}
+            </AnimatePresence>
+          </div>
+        </div>
       </div>
     </div>
   );
