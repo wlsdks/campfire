@@ -36,4 +36,3 @@ Thumbs.db
 *.local
 screenshots/
 .playwright-mcp/
-*.png
