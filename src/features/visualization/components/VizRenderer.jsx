@@ -5,6 +5,7 @@ import WordCloud from './WordCloud';
 import QACards from './QACards';
 import AISummaryBanner from './AISummaryBanner';
 import WrongAnswerAnalysis from './WrongAnswerAnalysis';
+import AnalogyHelper from './AnalogyHelper';
 import ScaleChart from './ScaleChart';
 import DebateChart from './DebateChart';
 import RankingChart from './RankingChart';
@@ -114,6 +115,14 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false }
         <div className="w-full max-w-xl self-center px-8">
           <QuizEventBanner event={question.event} state={answerRevealed ? 'result' : 'active'} />
         </div>
+      )}
+
+      {isAdmin && !isQA && (
+        <AnalogyHelper
+          questionTitle={question.title}
+          options={options}
+          correctAnswer={question.correctAnswer}
+        />
       )}
 
       {/* Visualization */}
