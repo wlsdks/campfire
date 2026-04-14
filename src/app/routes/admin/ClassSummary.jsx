@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowUpDown, BarChart3, Trophy, Circle, Cloud, MessageSquare, Swords, TextCursorInput, Thermometer, AlertTriangle } from 'lucide-react';
 import AchievementSummary from '@/features/quiz/components/AchievementSummary';
 import ExportMenu from './ExportMenu';
+import ClassInsightCard from '@/features/report/components/ClassInsightCard';
 
 const QTYPE_META = {
   choice: { label: '객관식', icon: BarChart3 },
@@ -128,6 +129,16 @@ export default memo(function ClassSummary({ session, participants, scores, leade
           )}
         </div>
       </div>
+
+      {/* AI Class Insight */}
+      <ClassInsightCard
+        session={session}
+        participantCount={participantCount}
+        insights={insights}
+        topStudent={topStudent}
+        avgCorrectRate={avgCorrectRate}
+        activityRate={activityRate}
+      />
 
       {/* Hardest question callout */}
       {hardestQuestion && hardestQuestion.correctRate < 70 && (
