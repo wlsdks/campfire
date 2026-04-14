@@ -185,7 +185,7 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
         exit={{ opacity: 0, y: -12 }}
         transition={{ duration: 0.15 }}
       >
-      <form onSubmit={handleSubmit} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-5 pb-4">
       {/* 이름 */}
       <div>
         <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">이름</p>

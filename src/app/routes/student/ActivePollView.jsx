@@ -28,7 +28,7 @@ import SpeedQuizBanner from '@/features/quiz/components/SpeedQuizBanner';
 import SpeedQuizCombo from '@/features/quiz/components/SpeedQuizCombo';
 import StreakBadge from '@/features/quiz/components/StreakBadge';
 import TeamBadge from '@/features/teams/components/TeamBadge';
-import { QuizResultFromVote, TimerExpiredOverlay } from './VoteHelpers';
+import { QuizResultFromVote, TimerExpiredBanner } from './VoteHelpers';
 
 /**
  * 활성 투표/퀴즈 뷰 — 질문 카드 + 타이머 + 투표 영역
@@ -97,13 +97,18 @@ export default memo(function ActivePollView({
 
         {/* Timer countdown bar */}
         <AnimatePresence>
-          {timerRunning && (
+          {timerRunning && !timerExpired && (
             <TimerCountdown
               endTime={endTime}
               duration={duration}
               onExpire={onTimerExpire}
             />
           )}
+        </AnimatePresence>
+
+        {/* Timer expired banner — 투표 안 한 학생에게만 */}
+        <AnimatePresence>
+          {timerExpired && !hasVoted && <TimerExpiredBanner />}
         </AnimatePresence>
 
         {question.type === 'quiz' && question.event && (
@@ -217,10 +222,6 @@ export default memo(function ActivePollView({
                 </>
               )}
 
-              {/* Time's up overlay — only show if student hasn't voted yet */}
-              <AnimatePresence>
-                {timerExpired && !hasVoted && <TimerExpiredOverlay />}
-              </AnimatePresence>
             </motion.div>
           </AnimatePresence>
         </ErrorBoundary>

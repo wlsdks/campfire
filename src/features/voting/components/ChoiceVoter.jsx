@@ -64,7 +64,7 @@ export default memo(function ChoiceVoter({ sessionId, questionId, options, disab
 
   if (voted) {
     const idx = options.indexOf(selected);
-    const letter = idx >= 0 ? OPTION_STYLES[idx % OPTION_STYLES.length].letter : '';
+    const letter = idx >= 0 ? String.fromCharCode(65 + idx) : '';
     return (
       <div className="space-y-3">
         <VoteConfirm selectedAnswer={letter ? `${letter}. ${selected}` : selected} />
@@ -85,6 +85,7 @@ export default memo(function ChoiceVoter({ sessionId, questionId, options, disab
       </AnimatePresence>
       {options.map((option, i) => {
         const style = OPTION_STYLES[i % OPTION_STYLES.length];
+        const letter = String.fromCharCode(65 + i); // A, B, ..., Z+
         const isSelected = selected === option;
         const hasSelection = selected !== null;
         return (
@@ -107,7 +108,7 @@ export default memo(function ChoiceVoter({ sessionId, questionId, options, disab
             className={`w-full min-h-[56px] py-4 px-5 rounded-xl border font-medium text-base ${style.bg} ${style.text} ${isSelected ? 'ring-2 ring-slate-400 dark:ring-slate-500 border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-700' : 'border-slate-200 dark:border-slate-700'} ${hasSelection && !isSelected ? 'pointer-events-none' : ''} transition-colors duration-150 flex items-center gap-3.5`}
           >
             <span className={`w-9 h-9 rounded-lg ${style.badge} text-white flex items-center justify-center text-sm font-bold shrink-0`}>
-              {style.letter}
+              {letter}
             </span>
             <span className="text-left leading-snug flex-1">{option}</span>
             {isSelected && submitting && (

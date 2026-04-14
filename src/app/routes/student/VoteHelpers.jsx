@@ -52,40 +52,21 @@ export function QuizResultFromVote({ question, currentVote, streak = 0 }) {
   );
 }
 
-/** Timer expired overlay shown when countdown reaches zero. */
-export function TimerExpiredOverlay() {
+/** Timer expired banner — 상단 인라인 배너, voter 위에 띄우지 않음 */
+export function TimerExpiredBanner() {
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-      className="absolute inset-0 bg-white/80 dark:bg-slate-800/80 backdrop-blur-[2px] rounded-xl flex flex-col items-center justify-center gap-2"
+      initial={{ opacity: 0, y: -8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+      className="flex items-center gap-3 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-4 py-3"
     >
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
-        className="w-12 h-12 bg-slate-900 dark:bg-slate-100 rounded-full flex items-center justify-center"
-      >
-        <Clock size={22} className="text-white dark:text-slate-900" />
-      </motion.div>
-      <motion.p
-        initial={{ opacity: 0, y: 6 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100"
-      >
-        시간이 종료되었습니다
-      </motion.p>
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="text-sm text-slate-400 dark:text-slate-500"
-      >
-        응답하지 못했습니다 · 결과를 기다려주세요
-      </motion.p>
+      <Clock size={18} className="shrink-0" />
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-semibold leading-tight">시간이 종료되었습니다</p>
+        <p className="text-xs opacity-70 mt-0.5">응답하지 못했어요 · 결과를 기다려주세요</p>
+      </div>
     </motion.div>
   );
 }

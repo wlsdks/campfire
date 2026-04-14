@@ -100,7 +100,7 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
   if (currentVote) {
     const votedValue = currentVote.value;
     const optIdx = (question?.options || []).indexOf(votedValue);
-    const ansLetter = optIdx >= 0 ? OPTION_STYLES[optIdx % OPTION_STYLES.length].letter : '';
+    const ansLetter = optIdx >= 0 ? String.fromCharCode(65 + optIdx) : '';
     const betLabel = currentVote.bet ? BET_LABELS[parseInt(currentVote.bet, 10)] : null;
     return (
       <VoteConfirm
@@ -144,6 +144,7 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
           <div className="space-y-2">
             {options.map((option, index) => {
               const style = OPTION_STYLES[index % OPTION_STYLES.length];
+              const letter = String.fromCharCode(65 + index);
               const isCorrect = option === correctAnswer;
               return (
                 <motion.div
@@ -162,7 +163,7 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
                       ? 'bg-white/20 dark:bg-slate-900/20 text-white dark:text-slate-900'
                       : `${style.badge} text-white`
                   }`}>
-                    {style.letter}
+                    {letter}
                   </span>
                   <span className={`text-sm font-medium leading-snug ${
                     isCorrect ? 'text-white dark:text-slate-900' : 'text-slate-600 dark:text-slate-400'
@@ -218,6 +219,7 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
             <div className="space-y-2.5">
               {(question?.options || []).map((option, index) => {
                 const style = OPTION_STYLES[index % OPTION_STYLES.length];
+                const letter = String.fromCharCode(65 + index);
                 const isSelected = selected === option || pendingAnswer === option;
                 const isLocked = selected !== null || showConfidence;
                 return (
@@ -243,7 +245,7 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
                     } ${(isLocked && !isSelected) ? 'pointer-events-none' : ''} ${disabled ? 'pointer-events-none' : ''} transition-colors duration-150 flex items-center gap-3`}
                   >
                     <span className={`w-8 h-8 rounded-lg ${style.badge} flex items-center justify-center text-sm font-bold shrink-0 text-white`}>
-                      {style.letter}
+                      {letter}
                     </span>
                     <span className="text-left leading-snug">{option}</span>
                   </motion.button>
