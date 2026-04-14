@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ThumbsUp, MessageSquare, Send, ChevronDown, ChevronUp, Check, EyeOff, Eye, ShieldAlert } from 'lucide-react';
+import { ThumbsUp, MessageSquare, Send, ChevronDown, ChevronUp, Check, EyeOff, Eye, ShieldAlert, Sparkles } from 'lucide-react';
 import { timeAgo } from '@/lib/utils';
 import AnswerItem from './AnswerItem';
 
@@ -74,6 +74,17 @@ export default function QuestionCard({ question: q, index, pid, nickname, role, 
               }`}>
                 <Check size={10} />
                 {q.answeredByRole === 'staff' ? '스태프 답변' : q.answeredByRole === 'ai' ? 'AI 답변' : '강사 답변'}
+              </span>
+            )}
+            {q.aiAllowed && q.aiSkipped && !q.answeredByRole && (
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400" title="AI가 확실하지 않아 답변 보류">
+                AI 판단 보류
+              </span>
+            )}
+            {q.aiAllowed && !q.aiSkipped && !q.answeredByRole && (q.answerCount || 0) === 0 && (
+              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-300">
+                <Sparkles size={9} className="animate-pulse" />
+                AI 확인 중
               </span>
             )}
           </div>

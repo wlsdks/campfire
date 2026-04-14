@@ -99,6 +99,17 @@ const QuestionCard = memo(function QuestionCard({ q, participantId, nickname, on
                 {q.answeredByRole === 'staff' ? '스태프 답변' : q.answeredByRole === 'ai' ? 'AI 답변' : '강사 답변'}
               </span>
             )}
+            {q.aiAllowed && q.aiSkipped && !q.answeredByRole && (
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400" title="AI가 확실하지 않아 답변을 보류했습니다 · 강사·스태프 답변을 기다려주세요">
+                AI 판단 보류
+              </span>
+            )}
+            {q.aiAllowed && !q.aiSkipped && !q.answeredByRole && (q.answerCount || 0) === 0 && (
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-300">
+                <Sparkles size={9} className="animate-pulse" />
+                AI 확인 중
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-2">
             <motion.button

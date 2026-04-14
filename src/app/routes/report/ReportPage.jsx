@@ -84,9 +84,15 @@ export default function ReportPage() {
   if (!sessionId || !participantId) {
     return (
       <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
-        <div className="flex flex-col items-center text-center space-y-4">
+        <div className="flex flex-col items-center text-center space-y-4 max-w-sm">
           <PickMascot size="lg" mood="thinking" />
-          <p className="text-slate-500 dark:text-slate-400 text-sm">유효하지 않은 리포트 링크입니다</p>
+          <div className="space-y-1.5">
+            <p className="text-slate-700 dark:text-slate-200 text-base font-semibold">유효하지 않은 리포트 링크입니다</p>
+            <p className="text-slate-400 dark:text-slate-500 text-sm leading-relaxed">세션 종료 화면의 "내 학습 리포트" 버튼을 눌러주세요</p>
+          </div>
+          <a href="/" className="mt-2 px-5 py-2.5 rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-sm font-medium hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors">
+            홈으로 돌아가기
+          </a>
         </div>
       </div>
     );
