@@ -1,6 +1,5 @@
 /**
  * Gemini AI evaluation engine for assignment judging.
- * Ported from ai-judge project, adapted for Pick.
  */
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { JUDGES } from './judges';
@@ -20,47 +19,38 @@ export function isGeminiReady() {
   return genAI !== null;
 }
 
-// Restore from localStorage on load
 const stored = getStoredApiKey();
-if (stored) {
-  initGemini(stored);
-}
-
-// Fallback to env variable if still not initialized
+if (stored) initGemini(stored);
 if (!genAI && import.meta.env.VITE_GEMINI_API_KEY) {
   initGemini(import.meta.env.VITE_GEMINI_API_KEY);
 }
 
-/**
- * Retry wrapper with timeout for Gemini API calls.
- * Retries up to 2 times on transient errors (429, 503, network, timeout).
- */
+const MODEL_NAME = 'gemini-2.5-flash';
+const MAX_INPUT_CHARS = 120000; // ~30K tokens, leaves room for system+prompt+output
+
 async function withRetry(fn, retries = 2, delayMs = 2000) {
   for (let i = 0; i <= retries; i++) {
     try {
       return await Promise.race([
         fn(),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('API 타임아웃 (30초)')), 30000)
+          setTimeout(() => reject(new Error('API 타임아웃 (45초)')), 45000)
         ),
       ]);
     } catch (err) {
       if (i === retries) throw err;
       const msg = err.message || '';
       const isTransient =
-        msg.includes('429') ||
-        msg.includes('503') ||
-        msg.includes('NETWORK') ||
-        msg.includes('network') ||
-        msg.includes('Failed to fetch') ||
-        msg.includes('타임아웃');
+        msg.includes('429') || msg.includes('503') ||
+        msg.includes('NETWORK') || msg.includes('network') ||
+        msg.includes('Failed to fetch') || msg.includes('타임아웃');
       if (!isTransient) throw err;
       await new Promise(r => setTimeout(r, delayMs));
     }
   }
 }
 
-const EVALUATION_PROMPT = `당신은 바이브코딩 강의의 사후 과제를 심사하는 심사위원입니다.
+const EVALUATION_GUIDE = `당신은 바이브코딩 강의의 사후 과제를 심사하는 심사위원입니다.
 
 [강의 배경]
 - "바이브코딩으로 '나'만의 서비스 만들기" 강의의 사후 과제
@@ -69,124 +59,130 @@ const EVALUATION_PROMPT = `당신은 바이브코딩 강의의 사후 과제를 
 - 핵심 교훈: "문제정의가 75%", "심플하게 시작, 조금씩 발전"
 
 [과제 내용]
-- 수강생이 자신의 업무/일상 불편함을 찾아 문제를 정의하고
-- PRD(기획서)를 작성하여 AI에게 전달하고
-- 바이브코딩으로 실제 결과물을 만들어 제출
+- 수강생이 자신의 업무/일상 불편함을 찾아 문제를 정의
+- PRD(기획서)를 작성하여 AI에게 전달
+- 바이브코딩으로 실제 결과물(주로 HTML)을 만들어 제출
 
-[제출물]
-수강생이 아래 중 하나 이상을 제출했습니다:
-1. 프로젝트 URL (배포된 사이트 또는 GitHub 링크)
-2. HTML 코드 (직접 업로드한 파일)
-3. 프로젝트 설명 (텍스트)
+[점수 기준 — 반드시 이 척도로 평가]
+- 1~3점: 심각한 결함 (동작 안 함, 과제 핵심 미이해)
+- 4~5점: 평균 이하 (일부 기능 부족, 문제 정의 흐릿)
+- 6~7점: 평균 (과제 요구사항은 충족, 무난한 수준)
+- 8점: 인상적 (비개발자로서 뛰어난 결과물, 자기만의 관점)
+- 9점: 수업 베스트 후보 (독창적이고 완성도 높음)
+- 10점: 예외적인 수작 (극히 드물게 부여)
 
-반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트는 포함하지 마세요:
+"selected" 필드는 이 작품을 시상 후보로 추천하는지 여부입니다 (본인 관점 기준 상위권이라 판단할 때만 true).
+
+반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트나 코드 블록 없이 순수 JSON만:
 {
   "score": (1~10 정수),
-  "selected": (true/false - 이 작품을 선택하는지),
-  "comment": "(3~5문장의 심사평, 당신의 캐릭터에 맞는 말투로)",
+  "selected": (true/false),
+  "comment": "(3~5문장의 심사평, 당신의 캐릭터 말투)",
   "strengths": ["강점1", "강점2"],
   "improvements": ["개선점1", "개선점2"]
 }`;
 
-/**
- * Single judge evaluates a single submission.
- */
+function buildContent(submission) {
+  const parts = [];
+  if (submission.fileContent) {
+    let code = submission.fileContent;
+    if (code.length > MAX_INPUT_CHARS) {
+      code = code.slice(0, MAX_INPUT_CHARS) + `\n\n[... 이하 ${submission.fileContent.length - MAX_INPUT_CHARS}자 생략됨 ...]`;
+    }
+    parts.push(`[업로드된 코드/파일]\n${code}`);
+  }
+  if (submission.prdContent) {
+    let prd = submission.prdContent;
+    if (prd.length > 20000) prd = prd.slice(0, 20000) + '\n[...생략...]';
+    parts.push(`[PRD/기획서]\n${prd}`);
+  }
+  if (submission.description) {
+    parts.push(`[프로젝트 설명]\n${submission.description}`);
+  }
+  return parts.join('\n\n') || '(제출물 없음)';
+}
+
+function parseJudgeResponse(text) {
+  let cleaned = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    const match = cleaned.match(/\{[\s\S]*\}/);
+    if (match) {
+      try { return JSON.parse(match[0]); }
+      catch { throw new Error(`심사 응답 파싱 실패: ${cleaned.slice(0, 200)}`); }
+    }
+    throw new Error(`심사 응답 파싱 실패: ${cleaned.slice(0, 200)}`);
+  }
+}
+
 export async function evaluateSubmission(judge, submission) {
   if (!genAI) throw new Error('Gemini API가 초기화되지 않았습니다.');
 
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+  const model = genAI.getGenerativeModel({
+    model: MODEL_NAME,
+    systemInstruction: `${judge.systemPrompt}\n\n${EVALUATION_GUIDE}`,
+  });
 
-  // Build content section from available submission data
-  const contentParts = [];
-  if (submission.projectUrl) {
-    contentParts.push(`[프로젝트 URL]\n${submission.projectUrl}`);
-  }
-  if (submission.fileContent) {
-    contentParts.push(`[업로드된 코드]\n${submission.fileContent}`);
-  }
-  if (submission.prdContent) {
-    contentParts.push(`[PRD/기획서]\n${submission.prdContent}`);
-  }
-  if (submission.description) {
-    contentParts.push(`[프로젝트 설명]\n${submission.description}`);
-  }
-
-  const prompt = `${EVALUATION_PROMPT}
-
-[심사 대상]
+  const prompt = `[심사 대상]
 - 제출자: ${submission.name}
 
-${contentParts.join('\n\n') || '(제출물 없음)'}
+${buildContent(submission)}
 
 위 제출물을 평가해주세요.`;
 
   const result = await withRetry(() =>
     model.generateContent({
-      contents: [
-        { role: 'user', parts: [{ text: judge.systemPrompt }] },
-        { role: 'model', parts: [{ text: '네, 해당 심사위원으로서 평가하겠습니다.' }] },
-        { role: 'user', parts: [{ text: prompt }] },
-      ],
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
       generationConfig: {
-        temperature: 0.7,
+        temperature: 0.35,
         maxOutputTokens: 1024,
         responseMimeType: 'application/json',
       },
     })
   );
 
-  let text = result.response.text();
-  text = text.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-  try {
-    return JSON.parse(text);
-  } catch {
-    const match = text.match(/\{[\s\S]*\}/);
-    if (match) {
-      try {
-        return JSON.parse(match[0]);
-      } catch {
-        throw new Error(`심사 응답 파싱 실패: ${text.slice(0, 200)}`);
-      }
-    }
-    throw new Error(`심사 응답 파싱 실패: ${text.slice(0, 200)}`);
-  }
+  return parseJudgeResponse(result.response.text());
 }
 
 /**
- * Full panel of judges evaluates a single submission.
+ * Full panel of 7 judges evaluates a single submission — in parallel.
  */
 export async function judgeSubmission(submission, onJudgeComplete) {
   const results = {};
 
-  for (const judge of JUDGES) {
-    try {
-      results[judge.id] = await evaluateSubmission(judge, submission);
-      results[judge.id].judgeId = judge.id;
-      results[judge.id].judgeName = judge.name;
-    } catch (error) {
-      results[judge.id] = {
-        judgeId: judge.id,
-        judgeName: judge.name,
-        score: 0,
-        selected: false,
-        comment: `심사 중 오류 발생: ${error.message}`,
-        strengths: [],
-        improvements: [],
-        error: true,
-      };
-    }
-    onJudgeComplete?.(judge.id, results[judge.id]);
-  }
+  await Promise.all(
+    JUDGES.map(async (judge) => {
+      try {
+        const r = await evaluateSubmission(judge, submission);
+        results[judge.id] = { ...r, judgeId: judge.id, judgeName: judge.name };
+      } catch (error) {
+        results[judge.id] = {
+          judgeId: judge.id,
+          judgeName: judge.name,
+          score: 0,
+          selected: false,
+          comment: `심사 중 오류 발생: ${error.message}`,
+          strengths: [],
+          improvements: [],
+          error: true,
+        };
+      }
+      onJudgeComplete?.(judge.id, results[judge.id]);
+    })
+  );
 
-  const selectedCount = Object.values(results).filter(r => r.selected).length;
-  const totalScore = Object.values(results).reduce((sum, r) => sum + (r.score || 0), 0);
-  const avgScore = totalScore / Object.keys(results).length;
+  const valid = Object.values(results).filter(r => !r.error);
+  const selectedCount = valid.filter(r => r.selected).length;
+  const totalScore = valid.reduce((sum, r) => sum + (r.score || 0), 0);
+  const avgScore = valid.length ? totalScore / valid.length : 0;
 
   return {
     results,
     summary: {
       selectedCount,
-      totalJudges: Object.keys(results).length,
+      totalJudges: valid.length,
+      erroredJudges: JUDGES.length - valid.length,
       passed: selectedCount >= 3,
       avgScore: Math.round(avgScore * 10) / 10,
       totalScore,
@@ -196,7 +192,6 @@ export async function judgeSubmission(submission, onJudgeComplete) {
 
 /**
  * Calculate awards from all judged results.
- * @param {Array} allResults — [{ submissionId, name, results, summary }]
  */
 export function calculateAwards(allResults) {
   if (!allResults.length) return {};
@@ -204,7 +199,6 @@ export function calculateAwards(allResults) {
   const awards = {};
   const sorted = [...allResults].sort((a, b) => b.summary.avgScore - a.summary.avgScore);
 
-  // Top 3 ranked awards
   const rankAwards = ['grand', 'excellence', 'outstanding'];
   sorted.slice(0, 3).forEach((entry, i) => {
     if (rankAwards[i]) {
@@ -216,7 +210,6 @@ export function calculateAwards(allResults) {
     }
   });
 
-  // Special awards — best score from specific judge (excluding top 3)
   const topRankIds = new Set(Object.values(awards).map(a => a.submissionId));
 
   const specialAwards = [
@@ -229,7 +222,7 @@ export function calculateAwards(allResults) {
   for (const award of specialAwards) {
     const candidates = allResults
       .filter(e => !topRankIds.has(e.submissionId))
-      .filter(e => e.results[award.judgeId])
+      .filter(e => e.results[award.judgeId] && !e.results[award.judgeId].error)
       .sort((a, b) => (b.results[award.judgeId]?.score || 0) - (a.results[award.judgeId]?.score || 0));
 
     if (candidates[0]) {
