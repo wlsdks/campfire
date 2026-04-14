@@ -67,7 +67,7 @@ export default function AchievementToast({ achievements }) {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -20, scale: 0.95 }}
           transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-          className="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
+          className="fixed bottom-[calc(9rem+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 z-50 pointer-events-none"
         >
           <div className="relative overflow-hidden bg-slate-900 text-white rounded-xl shadow-lg">
             <div className="flex items-center gap-3 pl-3 pr-5 py-2.5">
