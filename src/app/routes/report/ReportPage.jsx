@@ -6,6 +6,7 @@ import { useReportData } from '@/features/report/api/useReportData';
 import PickMascot from '@/components/ui/PickMascot';
 import Badge from '@/components/ui/Badge';
 import Avatar from '@/components/ui/Avatar';
+import LearningReportCard from '@/features/report/components/LearningReportCard';
 
 const ACHIEVEMENT_ICONS = { Award, Flame, CheckCheck, Zap, Crown };
 
@@ -242,6 +243,9 @@ export default function ReportPage() {
             </div>
           </motion.div>
         )}
+
+        {/* AI Personal Learning Report */}
+        <LearningReportCard stats={stats} />
 
         {/* Question-by-question breakdown */}
         {stats.questionDetails.length > 0 && (
