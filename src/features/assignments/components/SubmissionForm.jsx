@@ -1,7 +1,35 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileCode2, FileText, Send, Check, X, Upload } from 'lucide-react';
+import JSZip from 'jszip';
 import Button from '@/components/ui/Button';
+
+const TEXT_EXTS = /\.(html?|css|js|jsx|ts|tsx|json|md|txt|svg|xml|vue)$/i;
+
+async function extractZipAsText(file) {
+  const zip = await JSZip.loadAsync(file);
+  const entries = [];
+  const promises = [];
+  zip.forEach((path, entry) => {
+    if (entry.dir) return;
+    if (path.startsWith('__MACOSX/') || path.includes('/.DS_Store')) return;
+    if (!TEXT_EXTS.test(path)) return;
+    promises.push(
+      entry.async('string').then((content) => {
+        entries.push({ path, content });
+      })
+    );
+  });
+  await Promise.all(promises);
+  entries.sort((a, b) => {
+    const aIsHtml = /\.html?$/i.test(a.path) ? 0 : 1;
+    const bIsHtml = /\.html?$/i.test(b.path) ? 0 : 1;
+    if (aIsHtml !== bIsHtml) return aIsHtml - bIsHtml;
+    return a.path.localeCompare(b.path);
+  });
+  if (!entries.length) throw new Error('ZIP 안에 텍스트 파일이 없습니다 (HTML/CSS/JS 등).');
+  return entries.map(e => `// === ${e.path} ===\n${e.content}`).join('\n\n');
+}
 
 function FileField({ label, icon: Icon, fileName, onFileChange, onClear, accept, hint }) {
   return (
@@ -32,7 +60,6 @@ function FileField({ label, icon: Icon, fileName, onFileChange, onClear, accept,
 export default function SubmissionForm({ onSubmit, existingSubmission }) {
   const [name, setName] = useState(existingSubmission?.name || '');
   const [pin, setPin] = useState('');
-  const [projectUrl, setProjectUrl] = useState(existingSubmission?.projectUrl || '');
   const [fileContent, setFileContent] = useState(existingSubmission?.fileContent || '');
   const [fileName, setFileName] = useState(existingSubmission?.fileName || '');
   const [prdContent, setPrdContent] = useState(existingSubmission?.prdContent || '');
@@ -49,13 +76,27 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
   }, []);
 
   const MAX_FILE_SIZE = 1024 * 1024; // 1MB
+  const MAX_ZIP_SIZE = 5 * 1024 * 1024; // 5MB
 
-  const handleCodeFile = useCallback((e) => {
+  const handleCodeFile = useCallback(async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > MAX_FILE_SIZE) {
-      alert('파일 크기가 1MB를 초과합니다. 더 작은 파일을 선택해주세요.');
+    const isZip = /\.zip$/i.test(file.name);
+    const limit = isZip ? MAX_ZIP_SIZE : MAX_FILE_SIZE;
+    if (file.size > limit) {
+      alert(`파일 크기가 ${isZip ? '5MB' : '1MB'}를 초과합니다.`);
       e.target.value = '';
+      return;
+    }
+    if (isZip) {
+      try {
+        const combined = await extractZipAsText(file);
+        setFileName(file.name);
+        setFileContent(combined);
+      } catch (err) {
+        alert(`ZIP 파일 처리 실패: ${err.message}`);
+        e.target.value = '';
+      }
       return;
     }
     readFile(file, setFileContent, setFileName);
@@ -75,7 +116,8 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
   const isEditMode = !!existingSubmission;
   const [pinConfirm, setPinConfirm] = useState('');
   const [pinError, setPinError] = useState('');
-  const hasContent = projectUrl.trim() || fileContent;
+  const [nameError, setNameError] = useState('');
+  const hasContent = !!fileContent;
   const pinMatch = isEditMode || (pin.length === 4 && pin === pinConfirm);
   const canSubmit = name.trim() && (isEditMode || pin.length === 4) && pinMatch && hasContent && !submitting;
 
@@ -84,21 +126,23 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
     if (!canSubmit) return;
     setSubmitting(true);
     setPinError('');
+    setNameError('');
     try {
       await onSubmit({
         name: name.trim(),
         pin,
-        projectUrl: projectUrl.trim() || null,
         fileContent: fileContent || null,
         fileName: fileName || null,
         prdContent: prdContent || null,
         prdFileName: prdFileName || null,
         description: description.trim() || null,
-      });
+      }, { isEdit: isEditMode });
       setSubmitted(true);
     } catch (err) {
       if (err.message === 'PIN_MISMATCH') {
         setPinError('비밀번호가 일치하지 않습니다');
+      } else if (err.message === 'NAME_TAKEN') {
+        setNameError('이미 사용 중인 이름입니다. 다른 이름을 쓰거나, 본인 제출물 수정이라면 "내 제출물 조회"를 이용하세요.');
       }
     } finally {
       setSubmitting(false);
@@ -147,15 +191,18 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
         <input
           type="text"
           value={name}
-          onChange={(e) => !isEditMode && setName(e.target.value)}
+          onChange={(e) => { if (!isEditMode) { setName(e.target.value); setNameError(''); } }}
           placeholder="이름을 입력하세요"
           maxLength={20}
           readOnly={isEditMode}
-          className={`w-full border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all ${
-            isEditMode ? 'bg-slate-100 dark:bg-slate-700 cursor-not-allowed' : 'bg-white dark:bg-slate-800'
-          }`}
+          className={`w-full border rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 transition-all ${
+            nameError
+              ? 'border-red-400 focus:ring-red-500/20 focus:border-red-500 bg-white dark:bg-slate-800'
+              : 'border-slate-200 dark:border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500'
+          } ${isEditMode ? 'bg-slate-100 dark:bg-slate-700 cursor-not-allowed' : 'bg-white dark:bg-slate-800'}`}
           autoFocus={!isEditMode}
         />
+        {nameError && <p className="text-xs text-red-500 mt-1.5 leading-relaxed">{nameError}</p>}
       </div>
 
       {/* 비밀번호 4자리 — 수정 모드에서는 숨김 */}
@@ -224,18 +271,6 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
       )}
       </AnimatePresence>
 
-      {/* 프로젝트 URL */}
-      <div>
-        <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">프로젝트 URL</p>
-        <input
-          type="url"
-          value={projectUrl}
-          onChange={(e) => setProjectUrl(e.target.value)}
-          placeholder="https://github.com/... 또는 배포 URL"
-          className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"
-        />
-      </div>
-
       {/* 파일 업로드 — 2칸 그리드 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <FileField
@@ -244,8 +279,8 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
           fileName={fileName}
           onFileChange={handleCodeFile}
           onClear={() => { setFileName(''); setFileContent(''); }}
-          accept=".html,.htm,.css,.js,.jsx,.ts,.tsx,.txt"
-          hint="HTML, JS, TXT 등"
+          accept=".html,.htm,.css,.js,.jsx,.ts,.tsx,.txt,.zip"
+          hint="HTML, JS, ZIP 등"
         />
         <FileField
           label="PRD / 기획서 / 문서"
@@ -276,7 +311,7 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
 
       {/* Validation hint */}
       {!hasContent && name.trim() && (
-        <p className="text-xs text-slate-400 px-1">URL 또는 코드 파일 중 하나 이상 입력해주세요</p>
+        <p className="text-xs text-slate-400 px-1">코드 파일을 업로드해주세요</p>
       )}
 
       {/* Submit — sticky bottom */}

@@ -37,14 +37,14 @@ export function useSubmissionList(assignmentId) {
  * submitWork — 학생이 과제를 제출.
  * 같은 이름이면 기존 제출물을 업데이트.
  */
-export async function submitWork(assignmentId, { name, pin, projectUrl, fileContent, fileName, prdContent, prdFileName, description }) {
+export async function submitWork(assignmentId, { name, pin, fileContent, fileName, prdContent, prdFileName, description }, options = {}) {
+  const { allowUpdate = false } = options;
   const subsRef = ref(db, `assignments/${assignmentId}/submissions`);
   const snap = await get(subsRef);
   const existing = snap.val() || {};
   const existingEntry = Object.entries(existing).find(([, v]) => v.name === name);
 
   const data = {
-    projectUrl: projectUrl || null,
     fileContent: fileContent || null,
     fileName: fileName || null,
     prdContent: prdContent || null,
@@ -54,13 +54,13 @@ export async function submitWork(assignmentId, { name, pin, projectUrl, fileCont
 
   if (existingEntry) {
     const [existingId, existingData] = existingEntry;
-    // 비밀번호 검증 (기존 제출물에 pin이 있으면)
-    if (existingData.pin && existingData.pin !== pin) {
-      throw new Error('PIN_MISMATCH');
+    if (!allowUpdate) {
+      throw new Error('NAME_TAKEN');
     }
+    // allowUpdate=true → 호출자(LookupForm)가 PIN 검증을 이미 함. 기존 PIN 보존.
     await update(ref(db, `assignments/${assignmentId}/submissions/${existingId}`), {
       ...data,
-      pin: pin || existingData.pin || null,
+      pin: existingData.pin || null,
       updatedAt: serverTimestamp(),
     });
     return existingId;

@@ -31,8 +31,8 @@ export default function SubmissionPage({ assignmentId }) {
     foundSubmission?.id
   );
 
-  const handleSubmit = useCallback(async (data) => {
-    await submitWork(assignmentId, data);
+  const handleSubmit = useCallback(async (data, { isEdit } = {}) => {
+    await submitWork(assignmentId, data, { allowUpdate: !!isEdit });
   }, [assignmentId]);
 
   const { isDark, setTheme } = useTheme();
