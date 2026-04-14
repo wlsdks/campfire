@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FileCode2, FileText, Send, Check, X, Upload } from 'lucide-react';
 import JSZip from 'jszip';
 import Button from '@/components/ui/Button';
+import SubmissionPreview from './SubmissionPreview';
 
 const TEXT_EXTS = /\.(html?|css|js|jsx|ts|tsx|json|md|txt|svg|xml|vue)$/i;
 
@@ -312,6 +313,19 @@ export default function SubmissionForm({ onSubmit, existingSubmission }) {
       {/* Validation hint */}
       {!hasContent && name.trim() && (
         <p className="text-xs text-slate-400 px-1">코드 파일을 업로드해주세요</p>
+      )}
+
+      {/* AI 예심 */}
+      {hasContent && (
+        <SubmissionPreview
+          submission={{
+            name: name.trim() || '익명',
+            fileContent,
+            prdContent,
+            description,
+          }}
+          disabled={!hasContent}
+        />
       )}
 
       {/* Submit — sticky bottom */}

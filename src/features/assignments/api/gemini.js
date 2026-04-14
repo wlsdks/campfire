@@ -25,7 +25,7 @@ if (!genAI && import.meta.env.VITE_GEMINI_API_KEY) {
   initGemini(import.meta.env.VITE_GEMINI_API_KEY);
 }
 
-const MODEL_NAME = 'gemini-2.5-flash';
+const MODEL_NAME = 'gemini-2.5-flash-lite';
 const MAX_INPUT_CHARS = 120000; // ~30K tokens, leaves room for system+prompt+output
 
 async function withRetry(fn, retries = 2, delayMs = 2000) {
@@ -136,8 +136,9 @@ ${buildContent(submission)}
       contents: [{ role: 'user', parts: [{ text: prompt }] }],
       generationConfig: {
         temperature: 0.35,
-        maxOutputTokens: 1024,
+        maxOutputTokens: 4096,
         responseMimeType: 'application/json',
+        thinkingConfig: { thinkingBudget: 0 },
       },
     })
   );
@@ -188,6 +189,57 @@ export async function judgeSubmission(submission, onJudgeComplete) {
       totalScore,
     },
   };
+}
+
+const PREVIEW_PROMPT = `당신은 바이브코딩 강의의 따뜻한 교육자입니다. 수강생(비개발자)이 최종 제출 전에 피드백을 요청했습니다.
+
+[당신의 역할]
+- 점수를 매기는 게 아니라, 제출 전 개선할 수 있는 힌트를 주는 코치입니다.
+- 격려하면서도 구체적인 개선 방향을 짚어줍니다.
+- 완벽한 결과물은 아직 아닐 수 있음을 이해합니다.
+
+[강의 배경]
+- "바이브코딩으로 '나'만의 서비스 만들기" 강의의 사후 과제
+- 핵심 교훈: "문제정의가 75%", "심플하게 시작, 조금씩 발전"
+- 수강생이 AI와 대화하며 만든 결과물을 제출합니다.
+
+반드시 아래 JSON 형식으로만 응답하세요:
+{
+  "overallImpression": "(전반적 인상 1~2문장, 따뜻하게)",
+  "strengths": ["강점1", "강점2", "강점3"],
+  "improvements": ["구체적 개선점1", "구체적 개선점2", "구체적 개선점3"],
+  "quickWin": "(지금 당장 바꾸면 좋아질 한 가지, 구체적으로)"
+}`;
+
+/**
+ * Pre-submission preview — 제출 전 형성 피드백. 점수 없이 개선 힌트만.
+ */
+export async function previewSubmission(submission) {
+  if (!genAI) throw new Error('Gemini API가 초기화되지 않았습니다.');
+
+  const model = genAI.getGenerativeModel({
+    model: MODEL_NAME,
+    systemInstruction: PREVIEW_PROMPT,
+  });
+
+  const prompt = `[제출 예정 작품]
+${buildContent(submission)}
+
+위 작품을 보고 개선 힌트를 주세요.`;
+
+  const result = await withRetry(() =>
+    model.generateContent({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: {
+        temperature: 0.5,
+        maxOutputTokens: 4096,
+        responseMimeType: 'application/json',
+        thinkingConfig: { thinkingBudget: 0 },
+      },
+    })
+  );
+
+  return parseJudgeResponse(result.response.text());
 }
 
 /**

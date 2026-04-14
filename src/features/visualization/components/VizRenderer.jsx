@@ -3,6 +3,7 @@ import BarChart from './BarChart';
 import OXBattle from './OXBattle';
 import WordCloud from './WordCloud';
 import QACards from './QACards';
+import AISummaryBanner from './AISummaryBanner';
 import ScaleChart from './ScaleChart';
 import DebateChart from './DebateChart';
 import RankingChart from './RankingChart';
@@ -149,7 +150,12 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false }
               revealed={hasCorrectAnswer && answerRevealed}
             />
           )}
-          {question.type === 'wordcloud' && <WordCloud sessionId={sessionId} questionId={currentQId} />}
+          {question.type === 'wordcloud' && (
+            <>
+              {isAdmin && <AISummaryBanner sessionId={sessionId} questionId={currentQId} questionTitle={question.title} questionType="wordcloud" />}
+              <WordCloud sessionId={sessionId} questionId={currentQId} />
+            </>
+          )}
           {question.type === 'scale' && <ScaleChart sessionId={sessionId} questionId={currentQId} />}
           {question.type === 'debate' && <DebateChart sessionId={sessionId} questionId={currentQId} />}
           {question.type === 'ranking' && <RankingChart sessionId={sessionId} questionId={currentQId} items={options} />}
@@ -205,7 +211,12 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false }
               )}
             </>
           )}
-          {isQA && <QACards sessionId={sessionId} questionId={currentQId} title={question.title} />}
+          {isQA && (
+            <>
+              {isAdmin && <AISummaryBanner sessionId={sessionId} questionId={currentQId} questionTitle={question.title} questionType="qna" />}
+              <QACards sessionId={sessionId} questionId={currentQId} title={question.title} />
+            </>
+          )}
         </div>
       </ErrorBoundary>
     </div>

@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookmarkPlus, PanelLeftClose, Plus, Eye, RotateCcw } from 'lucide-react';
+import { BookmarkPlus, PanelLeftClose, Plus, Eye, RotateCcw, Sparkles } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 import Toast from '@/components/ui/Toast';
@@ -13,6 +13,8 @@ import QuestionList from './QuestionList';
 import QuickProgressCard from './QuickProgressCard';
 import ImportFromLibraryModal from './ImportFromLibraryModal';
 import QuestionPreview from './QuestionPreview';
+import AIQuestionGenerator from '@/features/questions/components/AIQuestionGenerator';
+import { isGeneratorReady } from '@/features/questions/api/generateQuestions';
 
 function IconButton({ onClick, label, children, hoverColor = 'hover:text-slate-600 dark:hover:text-slate-300', ...props }) {
   const [show, setShow] = useState(false);
@@ -63,6 +65,7 @@ export default function QuestionManager({
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
+  const [aiGenOpen, setAiGenOpen] = useState(false);
   const { saveQuestion: saveToLibrary } = useQuestionLibrary(adminUid);
 
   const {
@@ -128,6 +131,11 @@ export default function QuestionManager({
           {!readOnly && adminUid && (
             <Button onClick={() => setLibraryOpen(true)} variant="secondary" size="sm">
               <BookmarkPlus size={14} /> <span className="hidden sm:inline">보관함</span>
+            </Button>
+          )}
+          {!readOnly && isGeneratorReady() && (
+            <Button onClick={() => setAiGenOpen(true)} variant="secondary" size="sm">
+              <Sparkles size={14} /> <span className="hidden sm:inline">AI 생성</span>
             </Button>
           )}
           {!readOnly && (
@@ -207,6 +215,17 @@ export default function QuestionManager({
       <Toast message={toast} />
 
       <QuestionPreview questionList={questionList} open={previewOpen} onClose={() => setPreviewOpen(false)} />
+
+      <AnimatePresence>
+        {aiGenOpen && (
+          <AIQuestionGenerator
+            open={aiGenOpen}
+            onClose={() => setAiGenOpen(false)}
+            onUse={(draft) => importFromLibrary([draft])}
+            onUseMany={(drafts) => importFromLibrary(drafts)}
+          />
+        )}
+      </AnimatePresence>
 
       <ConfirmModal
         open={resetConfirmOpen}
