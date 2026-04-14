@@ -74,7 +74,7 @@ export default memo(function ClassSummary({ session, participants, scores, leade
     return [...ids];
   }, [questions]);
   const activeCount = voterIds.length;
-  const activityRate = participantCount > 0 ? Math.round((activeCount / participantCount) * 100) : 0;
+  const activityRate = participantCount > 0 ? Math.min(100, Math.round((activeCount / participantCount) * 100)) : 0;
   const topStudent = leaderboard.length > 0 ? leaderboard[0] : null;
 
   const insights = getQuestionInsights(questions, participantCount);

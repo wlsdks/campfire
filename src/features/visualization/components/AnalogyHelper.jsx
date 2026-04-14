@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lightbulb, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
+import { Lightbulb, Loader2, AlertCircle, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react';
 import { generateAnalogies, isAnalogyReady } from '@/features/questions/api/generateAnalogies';
 
 export default function AnalogyHelper({ questionTitle, options, correctAnswer }) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
+  const [expanded, setExpanded] = useState({ 0: true, 1: false, 2: false });
 
   if (!isAnalogyReady()) return null;
   if (!questionTitle) return null;
@@ -18,11 +19,16 @@ export default function AnalogyHelper({ questionTitle, options, correctAnswer })
     try {
       const r = await generateAnalogies({ questionTitle, options, correctAnswer });
       setResult(r);
+      setExpanded({ 0: true, 1: false, 2: false });
     } catch (err) {
       setError(err.message || '비유 생성 실패');
     } finally {
       setLoading(false);
     }
+  }
+
+  function toggle(i) {
+    setExpanded(prev => ({ ...prev, [i]: !prev[i] }));
   }
 
   return (
@@ -77,15 +83,39 @@ export default function AnalogyHelper({ questionTitle, options, correctAnswer })
                     {result.topic && (
                       <p className="text-[11px] text-slate-400 italic">이해한 주제: {result.topic}</p>
                     )}
-                    {result.analogies.map((a, i) => (
-                      <div key={i} className="rounded-lg bg-slate-50 dark:bg-slate-700/50 p-3">
-                        <p className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 mb-1">💡 {a.title}</p>
-                        <p className="text-[13px] text-slate-700 dark:text-slate-200 leading-relaxed">{a.body}</p>
-                        {a.limitation && (
-                          <p className="text-[11px] text-slate-400 italic mt-1.5">⚠ {a.limitation}</p>
-                        )}
-                      </div>
-                    ))}
+                    {result.analogies.map((a, i) => {
+                      const open = !!expanded[i];
+                      return (
+                        <div key={i} className="rounded-lg bg-slate-50 dark:bg-slate-700/50 overflow-hidden">
+                          <button
+                            type="button"
+                            onClick={() => toggle(i)}
+                            className="w-full flex items-center justify-between px-3 py-2.5 text-left hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                          >
+                            <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100">💡 {a.title}</span>
+                            {open ? <ChevronUp size={14} className="text-slate-400 shrink-0" /> : <ChevronDown size={14} className="text-slate-400 shrink-0" />}
+                          </button>
+                          <AnimatePresence>
+                            {open && (
+                              <motion.div
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: 'auto' }}
+                                exit={{ opacity: 0, height: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="overflow-hidden"
+                              >
+                                <div className="px-3 pb-3 pt-0 space-y-1.5">
+                                  <p className="text-[13px] text-slate-700 dark:text-slate-200 leading-relaxed">{a.body}</p>
+                                  {a.limitation && (
+                                    <p className="text-[11px] text-slate-400 italic">⚠ {a.limitation}</p>
+                                  )}
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      );
+                    })}
                     <p className="text-[10px] text-slate-400 italic">{result.disclaimer || 'AI 생성이므로 강사님이 정확성 확인 후 사용하세요'}</p>
                   </div>
                 )}
