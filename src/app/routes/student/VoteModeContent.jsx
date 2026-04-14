@@ -50,7 +50,7 @@ export function VoteModeContent({
   }
   if (currentMode === 'combinedRanking') {
     return (
-      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center px-4 py-8">
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pt-20 pb-32">
         <StudentHeader sessionId={sessionId} />
         <Suspense fallback={<SuspenseFallback />}>
           <LazyCombinedRanking session={session} />
@@ -99,7 +99,7 @@ export function VoteModeContent({
   }
   if (currentMode === 'qaRanking') {
     return (
-      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center px-4 py-8">
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pt-20 pb-32">
         <StudentHeader sessionId={sessionId} />
         <Suspense fallback={<SuspenseFallback />}>
           <LazyQARanking sessionId={sessionId} />
@@ -110,7 +110,7 @@ export function VoteModeContent({
   }
   if (currentMode === 'joinShow') {
     return (
-      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center px-4 py-8">
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pt-20 pb-32">
         <StudentHeader sessionId={sessionId} />
         <Suspense fallback={<SuspenseFallback />}>
           <LazyJoinShow sessionId={sessionId} />
