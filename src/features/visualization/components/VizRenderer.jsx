@@ -4,6 +4,7 @@ import OXBattle from './OXBattle';
 import WordCloud from './WordCloud';
 import QACards from './QACards';
 import AISummaryBanner from './AISummaryBanner';
+import WrongAnswerAnalysis from './WrongAnswerAnalysis';
 import ScaleChart from './ScaleChart';
 import DebateChart from './DebateChart';
 import RankingChart from './RankingChart';
@@ -119,13 +120,24 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false }
       <ErrorBoundary scope="visualization" fullPage={false}>
         <div className={isQA ? 'flex-1 overflow-y-auto px-4 py-3' : 'w-full'}>
           {question.type === 'choice' && (
-            <BarChart
-              sessionId={sessionId}
-              questionId={currentQId}
-              options={options}
-              correctValue={question.correctAnswer}
-              revealed={hasCorrectAnswer && answerRevealed}
-            />
+            <>
+              <BarChart
+                sessionId={sessionId}
+                questionId={currentQId}
+                options={options}
+                correctValue={question.correctAnswer}
+                revealed={hasCorrectAnswer && answerRevealed}
+              />
+              {isAdmin && hasCorrectAnswer && answerRevealed && (
+                <WrongAnswerAnalysis
+                  sessionId={sessionId}
+                  questionId={currentQId}
+                  questionTitle={question.title}
+                  options={options}
+                  correctAnswer={question.correctAnswer}
+                />
+              )}
+            </>
           )}
           {question.type === 'quiz' && (
             <>
@@ -139,6 +151,15 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false }
               <ConfidenceStats sessionId={sessionId} questionId={currentQId} />
               {question.betting && (
                 <BetDistribution sessionId={sessionId} questionId={currentQId} />
+              )}
+              {isAdmin && answerRevealed && (
+                <WrongAnswerAnalysis
+                  sessionId={sessionId}
+                  questionId={currentQId}
+                  questionTitle={question.title}
+                  options={options}
+                  correctAnswer={question.correctAnswer}
+                />
               )}
             </>
           )}
