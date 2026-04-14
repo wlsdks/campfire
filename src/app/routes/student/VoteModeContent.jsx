@@ -50,7 +50,7 @@ export function VoteModeContent({
   }
   if (currentMode === 'combinedRanking') {
     return (
-      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pt-20 pb-32">
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pt-20 pb-[calc(10rem+env(safe-area-inset-bottom))]">
         <StudentHeader sessionId={sessionId} />
         <Suspense fallback={<SuspenseFallback />}>
           <LazyCombinedRanking session={session} />
@@ -88,7 +88,7 @@ export function VoteModeContent({
   }
   if (currentMode === 'qaBoard') {
     return (
-      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pb-40 pt-20">
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pb-[calc(10rem+env(safe-area-inset-bottom))] pt-20">
         <StudentHeader sessionId={sessionId} />
         <Suspense fallback={<SuspenseFallback />}>
           <LazyClassQABoard sessionId={sessionId} showInput />
@@ -99,7 +99,7 @@ export function VoteModeContent({
   }
   if (currentMode === 'qaRanking') {
     return (
-      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pt-20 pb-32">
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pt-20 pb-[calc(10rem+env(safe-area-inset-bottom))]">
         <StudentHeader sessionId={sessionId} />
         <Suspense fallback={<SuspenseFallback />}>
           <LazyQARanking sessionId={sessionId} />
@@ -110,7 +110,7 @@ export function VoteModeContent({
   }
   if (currentMode === 'joinShow') {
     return (
-      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pt-20 pb-32">
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pt-20 pb-[calc(10rem+env(safe-area-inset-bottom))]">
         <StudentHeader sessionId={sessionId} />
         <Suspense fallback={<SuspenseFallback />}>
           <LazyJoinShow sessionId={sessionId} />
