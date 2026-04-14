@@ -57,10 +57,10 @@ export default memo(function ActivePollView({
   const hasVoted = !!myVote;
 
   return (
-    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center px-4 sm:px-5 pb-44 sm:pb-40 pt-20 overflow-y-auto">
+    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center px-4 sm:px-5 pb-44 sm:pb-40 pt-20">
       <StudentHeader sessionId={sessionId} />
 
-      <div className="w-full max-w-xl space-y-5">
+      <div className="w-full max-w-xl space-y-5 my-auto">
         {/* Speed quiz banner */}
         {isSpeedQuiz && question?.type === 'quiz' && (
           <SpeedQuizBanner

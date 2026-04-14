@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef, memo } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, X, ThumbsUp, Check, HelpCircle, MessageSquare, ChevronDown, ChevronUp, ShieldAlert } from 'lucide-react';
+import { Send, X, ThumbsUp, Check, HelpCircle, MessageSquare, ChevronDown, ChevronUp, ShieldAlert, Sparkles } from 'lucide-react';
 import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
+import { isAiAnswerReady } from '@/features/class-questions/api/aiAnswer';
 import { getParticipantId, getNickname, getLastSeen, saveLastSeen } from '@/lib/participant';
 import { timeAgo } from '@/lib/utils';
 
@@ -10,7 +11,8 @@ const MAX_LENGTH = 200;
 
 const AnswerItem = memo(function AnswerItem({ a, participantId }) {
   const isOwn = a.participantId === participantId;
-  const roleLabel = a.role === 'admin' ? '강사' : a.role === 'staff' ? '스태프' : null;
+  const isAi = a.role === 'ai';
+  const roleLabel = a.role === 'admin' ? '강사' : a.role === 'staff' ? '스태프' : isAi ? 'AI 조교' : null;
 
   return (
     <div className="flex gap-2">
@@ -18,8 +20,12 @@ const AnswerItem = memo(function AnswerItem({ a, participantId }) {
         <div className="flex items-center gap-1.5 flex-wrap">
           <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">{a.nickname}</span>
           {roleLabel && (
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-semibold bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900">
-              {roleLabel}
+            <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[9px] font-semibold ${
+              isAi
+                ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300'
+                : 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
+            }`}>
+              {isAi && <Sparkles size={8} />}{roleLabel}
             </span>
           )}
           {isOwn && <span className="text-[9px] text-slate-400">나</span>}
@@ -84,9 +90,13 @@ const QuestionCard = memo(function QuestionCard({ q, participantId, nickname, on
             )}
             <span className="text-[10px] text-slate-300 dark:text-slate-600">{timeAgo(q.timestamp)}</span>
             {q.answeredByRole && (
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
+              <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[10px] font-semibold ${
+                q.answeredByRole === 'ai'
+                  ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300'
+                  : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400'
+              }`}>
                 <Check size={10} />
-                {q.answeredByRole === 'staff' ? '스태프 답변' : '강사 답변'}
+                {q.answeredByRole === 'staff' ? '스태프 답변' : q.answeredByRole === 'ai' ? 'AI 답변' : '강사 답변'}
               </span>
             )}
           </div>
@@ -170,6 +180,7 @@ export default memo(function ClassQAPanel({ sessionId, open, onClose, onNewQuest
   const [inputText, setInputText] = useState('');
   const [posting, setPosting] = useState(false);
   const [tab, setTab] = useState('all'); // 'all' | 'mine'
+  const [aiAllowed, setAiAllowed] = useState(false);
   const inputRef = useRef(null);
   const prevCountRef = useRef(getLastSeen(sessionId, 'qa'));
 
@@ -205,7 +216,7 @@ export default memo(function ClassQAPanel({ sessionId, open, onClose, onNewQuest
     const text = inputText.trim();
     if (!text || !canPost || posting) return;
     setPosting(true);
-    const ok = await postQuestion(text, nickname, participantId);
+    const ok = await postQuestion(text, nickname, participantId, { aiAllowed });
     if (ok) setInputText('');
     setPosting(false);
   }
@@ -316,6 +327,34 @@ export default memo(function ClassQAPanel({ sessionId, open, onClose, onNewQuest
                 </motion.div>
               </AnimatePresence>
             </div>
+
+            {/* AI toggle */}
+            {isAiAnswerReady() && (
+              <div className="px-4 pt-2 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setAiAllowed((v) => !v)}
+                  className={`w-full flex items-center justify-between gap-2 px-3 py-2 rounded-lg text-[12px] font-medium transition-colors ${
+                    aiAllowed
+                      ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
+                      : 'bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                  }`}
+                >
+                  <span className="flex items-center gap-1.5">
+                    <Sparkles size={13} />
+                    AI 조교 답변 받기
+                  </span>
+                  <span className={`w-8 h-4 rounded-full relative transition-colors ${aiAllowed ? 'bg-white/30 dark:bg-slate-900/30' : 'bg-slate-300 dark:bg-slate-600'}`}>
+                    <span className={`absolute top-0.5 w-3 h-3 rounded-full bg-white dark:bg-slate-100 transition-transform ${aiAllowed ? 'translate-x-4' : 'translate-x-0.5'}`} />
+                  </span>
+                </button>
+                {aiAllowed && (
+                  <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-1 px-1">
+                    확실한 경우에만 AI가 답합니다 · 강사·스태프 답변과 함께 표시됩니다
+                  </p>
+                )}
+              </div>
+            )}
 
             {/* Input */}
             <div className="flex items-center gap-2 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:py-3 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700 shrink-0">

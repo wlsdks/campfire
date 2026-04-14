@@ -67,9 +67,13 @@ export default function QuestionCard({ question: q, index, pid, nickname, role, 
               </span>
             )}
             {q.answeredByRole && (
-              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400">
+              <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                q.answeredByRole === 'ai'
+                  ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300'
+                  : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400'
+              }`}>
                 <Check size={10} />
-                {q.answeredByRole === 'staff' ? '스태프 답변' : '강사 답변'}
+                {q.answeredByRole === 'staff' ? '스태프 답변' : q.answeredByRole === 'ai' ? 'AI 답변' : '강사 답변'}
               </span>
             )}
           </div>

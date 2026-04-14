@@ -32,8 +32,12 @@ const ClassQuestionItem = memo(function ClassQuestionItem({ q, onClick }) {
           )}
         </div>
         {q.answered && (
-          <span className="text-slate-400 dark:text-slate-500 text-[10px] font-medium">
-            {q.answeredByRole === 'staff' ? '스태프 답변 완료' : '강사 답변 완료'}
+          <span className={`text-[10px] font-medium ${
+            q.answeredByRole === 'ai'
+              ? 'text-indigo-500 dark:text-indigo-400'
+              : 'text-slate-400 dark:text-slate-500'
+          }`}>
+            {q.answeredByRole === 'staff' ? '스태프 답변 완료' : q.answeredByRole === 'ai' ? '✨ AI 답변 완료' : '강사 답변 완료'}
           </span>
         )}
       </div>

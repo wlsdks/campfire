@@ -1,10 +1,11 @@
-import { ThumbsUp } from 'lucide-react';
+import { ThumbsUp, Sparkles } from 'lucide-react';
 import { timeAgo } from '@/lib/utils';
 
 export default function AnswerItem({ answer: a, questionId, pid, onUpvote }) {
   const isOwn = a.participantId === pid;
   const hasUpvoted = a.upvotes?.[pid];
-  const roleLabel = a.role === 'admin' ? '강사' : a.role === 'staff' ? '스태프' : null;
+  const isAi = a.role === 'ai';
+  const roleLabel = a.role === 'admin' ? '강사' : a.role === 'staff' ? '스태프' : isAi ? 'AI 조교' : null;
 
   return (
     <div className="flex gap-2.5">
@@ -12,8 +13,12 @@ export default function AnswerItem({ answer: a, questionId, pid, onUpvote }) {
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">{a.nickname}</span>
           {roleLabel && (
-            <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-semibold bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900">
-              {roleLabel}
+            <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+              isAi
+                ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300'
+                : 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
+            }`}>
+              {isAi && <Sparkles size={8} />}{roleLabel}
             </span>
           )}
           {isOwn && <span className="text-[10px] text-slate-400">나</span>}

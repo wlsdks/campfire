@@ -2,6 +2,7 @@ import { ref, onValue, push, update, remove, serverTimestamp, increment } from '
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
+import { generateStaffAnswer, isAiAnswerReady } from './aiAnswer';
 
 const COOLDOWN_MS = 3000;
 
@@ -61,23 +62,57 @@ export function useClassQuestions(sessionId) {
   );
 
   const postQuestion = useCallback(
-    async (text, nickname, participantId) => {
+    async (text, nickname, participantId, options = {}) => {
+      const { aiAllowed = false, sessionContext = '' } = options;
       const trimmed = text?.trim();
       if (!sessionId || !trimmed || !canPost) return false;
       try {
-        await push(ref(db, `sessions/${sessionId}/classQuestions`), {
+        const newRef = await push(ref(db, `sessions/${sessionId}/classQuestions`), {
           text: trimmed,
           nickname: nickname || '익명',
           participantId: participantId || '',
           timestamp: serverTimestamp(),
           answered: false,
+          aiAllowed: !!aiAllowed,
         });
+        const qId = newRef.key;
         // Q&A 참여 통계 업데이트
         if (participantId) {
           update(ref(db, `sessions/${sessionId}/qaStats/${participantId}`), {
             nickname: nickname || '익명',
             questions: increment(1),
           }).catch(() => {});
+        }
+        // AI 답변 요청 시 비동기 처리
+        if (aiAllowed && isAiAnswerReady()) {
+          (async () => {
+            try {
+              const r = await generateStaffAnswer({ question: trimmed, sessionContext });
+              if (r?.canAnswer && r.answer?.trim()) {
+                const answerData = {
+                  text: r.answer.trim(),
+                  nickname: 'AI 조교',
+                  participantId: 'ai-bot',
+                  timestamp: serverTimestamp(),
+                  role: 'ai',
+                };
+                await push(ref(db, `sessions/${sessionId}/classQuestions/${qId}/answers`), answerData);
+                await update(ref(db, `sessions/${sessionId}/classQuestions/${qId}`), {
+                  answered: true,
+                  answeredBy: 'AI 조교',
+                  answeredByRole: 'ai',
+                });
+              } else {
+                // AI가 답변 불가 → 마커 남김 (UI에서 "AI는 답변 생략" 같이 표시 가능)
+                await update(ref(db, `sessions/${sessionId}/classQuestions/${qId}`), {
+                  aiSkipped: true,
+                });
+              }
+            } catch (err) {
+              logger.error('AI answer failed:', err);
+              update(ref(db, `sessions/${sessionId}/classQuestions/${qId}`), { aiSkipped: true }).catch(() => {});
+            }
+          })();
         }
         setCanPost(false);
         cooldownRef.current = setTimeout(() => setCanPost(true), COOLDOWN_MS);
