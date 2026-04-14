@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Loader2, AlertCircle, TrendingUp, Target, Info, RefreshCw } from 'lucide-react';
+import { Sparkles, Loader2, AlertCircle, TrendingUp, Target, Info, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react';
 import { generateClassInsight, isInsightReady } from '@/features/report/api/generateClassInsight';
 
 const SEVERITY_STYLES = {
@@ -13,6 +13,8 @@ export default function ClassInsightCard({ session, participantCount, insights, 
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
+  const [findingsOpen, setFindingsOpen] = useState(false);
+  const [patternOpen, setPatternOpen] = useState(false);
 
   if (!isInsightReady()) return null;
   if (!insights || insights.length < 2 || participantCount < 3) return null;
@@ -24,6 +26,8 @@ export default function ClassInsightCard({ session, participantCount, insights, 
     try {
       const r = await generateClassInsight({ session, participantCount, insights, topStudent, avgCorrectRate, activityRate });
       setResult(r);
+      setFindingsOpen(false);
+      setPatternOpen(false);
     } catch (err) {
       setError(err.message || '인사이트 생성 실패');
     } finally {
@@ -76,54 +80,95 @@ export default function ClassInsightCard({ session, participantCount, insights, 
                 </div>
               </div>
             ) : (
-              <div className="px-5 pb-5 pt-1 border-t border-slate-100 dark:border-slate-700 space-y-4">
-                {result.overallSummary && (
-                  <div className="pt-3">
-                    <p className="text-[14px] text-slate-900 dark:text-slate-100 leading-relaxed font-medium">
-                      {result.overallSummary}
-                    </p>
-                  </div>
-                )}
-
-                {result.keyFindings?.length > 0 && (
-                  <div>
-                    <div className="flex items-center gap-1.5 mb-2">
-                      <TrendingUp size={13} className="text-slate-500 dark:text-slate-400" />
-                      <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">핵심 발견</p>
-                    </div>
-                    <ul className="space-y-1.5">
-                      {result.keyFindings.map((f, i) => (
-                        <li key={i} className={`rounded-lg border px-3 py-2 text-[13px] leading-relaxed ${SEVERITY_STYLES[f.severity] || SEVERITY_STYLES.medium}`}>
-                          {f.finding}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
+              <div className="px-5 pb-5 pt-4 border-t border-slate-100 dark:border-slate-700 space-y-4">
+                {/* 1. 최상단 — 다음 수업 액션 (가장 actionable) */}
                 {result.nextClassActions?.length > 0 && (
-                  <div className="rounded-lg bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-900/40 px-3 py-2.5">
-                    <div className="flex items-center gap-1.5 mb-2">
-                      <Target size={13} className="text-indigo-600 dark:text-indigo-400" />
-                      <p className="text-[11px] font-semibold text-indigo-700 dark:text-indigo-300 uppercase tracking-wider">다음 수업 액션 추천</p>
+                  <div className="rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-900/40 p-4">
+                    <div className="flex items-center gap-1.5 mb-3">
+                      <Target size={14} className="text-indigo-600 dark:text-indigo-400" />
+                      <p className="text-[13px] font-bold text-indigo-700 dark:text-indigo-300">다음 수업, 이렇게 해보세요</p>
                     </div>
-                    <ol className="space-y-1.5">
+                    <ol className="space-y-2.5">
                       {result.nextClassActions.map((a, i) => (
-                        <li key={i} className="text-[13px] text-indigo-900 dark:text-indigo-100 leading-relaxed pl-5 relative">
-                          <span className="absolute left-0 top-0 font-semibold">{i + 1}.</span>{a}
+                        <li key={i} className="flex gap-2.5 text-[13px] text-indigo-900 dark:text-indigo-100 leading-relaxed">
+                          <span className="shrink-0 w-5 h-5 rounded-full bg-indigo-600 dark:bg-indigo-500 text-white text-[11px] font-bold flex items-center justify-center mt-0.5">{i + 1}</span>
+                          <span>{a}</span>
                         </li>
                       ))}
                     </ol>
                   </div>
                 )}
 
-                {result.participationPattern && (
-                  <div>
-                    <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">참여 패턴</p>
-                    <p className="text-[13px] text-slate-700 dark:text-slate-200 leading-relaxed">{result.participationPattern}</p>
+                {/* 2. 종합 요약 — 한눈에 */}
+                {result.overallSummary && (
+                  <div className="rounded-lg bg-slate-50 dark:bg-slate-700/30 p-3">
+                    <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">오늘 수업 한 줄</p>
+                    <p className="text-[13px] text-slate-800 dark:text-slate-100 leading-relaxed">{result.overallSummary}</p>
                   </div>
                 )}
 
+                {/* 3. 핵심 발견 (접기) */}
+                {result.keyFindings?.length > 0 && (
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => setFindingsOpen(!findingsOpen)}
+                      className="w-full flex items-center justify-between px-1 py-1 text-left hover:bg-slate-50 dark:hover:bg-slate-700/30 rounded transition-colors"
+                    >
+                      <div className="flex items-center gap-1.5">
+                        <TrendingUp size={13} className="text-slate-500 dark:text-slate-400" />
+                        <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">핵심 발견 {result.keyFindings.length}개</p>
+                      </div>
+                      {findingsOpen ? <ChevronUp size={13} className="text-slate-400" /> : <ChevronDown size={13} className="text-slate-400" />}
+                    </button>
+                    <AnimatePresence>
+                      {findingsOpen && (
+                        <motion.ul
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden space-y-1.5 mt-2"
+                        >
+                          {result.keyFindings.map((f, i) => (
+                            <li key={i} className={`rounded-lg border px-3 py-2 text-[13px] leading-relaxed ${SEVERITY_STYLES[f.severity] || SEVERITY_STYLES.medium}`}>
+                              {f.finding}
+                            </li>
+                          ))}
+                        </motion.ul>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                )}
+
+                {/* 4. 참여 패턴 (접기) */}
+                {result.participationPattern && (
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => setPatternOpen(!patternOpen)}
+                      className="w-full flex items-center justify-between px-1 py-1 text-left hover:bg-slate-50 dark:hover:bg-slate-700/30 rounded transition-colors"
+                    >
+                      <p className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">참여 패턴</p>
+                      {patternOpen ? <ChevronUp size={13} className="text-slate-400" /> : <ChevronDown size={13} className="text-slate-400" />}
+                    </button>
+                    <AnimatePresence>
+                      {patternOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.2 }}
+                          className="overflow-hidden"
+                        >
+                          <p className="text-[13px] text-slate-700 dark:text-slate-200 leading-relaxed mt-1.5">{result.participationPattern}</p>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                )}
+
+                {/* 5. 한계 (상시 작게) */}
                 {result.caveats && (
                   <div className="flex items-start gap-1.5 rounded-lg bg-slate-50 dark:bg-slate-700/30 px-3 py-2">
                     <Info size={12} className="text-slate-400 mt-0.5 shrink-0" />
@@ -131,7 +176,7 @@ export default function ClassInsightCard({ session, participantCount, insights, 
                   </div>
                 )}
 
-                <p className="text-[10px] text-slate-400 italic">AI가 통계 데이터만 근거로 작성한 참고용 해석입니다</p>
+                <p className="text-[10px] text-slate-400 italic text-center">AI가 통계 데이터만 근거로 작성한 참고용 해석입니다</p>
               </div>
             )}
           </motion.div>
