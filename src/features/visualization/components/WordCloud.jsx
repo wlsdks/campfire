@@ -26,9 +26,11 @@ export default memo(function WordCloud({ sessionId, questionId }) {
   }, [tallied]);
 
   const maxCount = Math.max(...words.map(w => w.count), 1);
+  const isNarrow = typeof window !== 'undefined' && window.innerWidth < 640;
 
   function getFontSize(count) {
-    const min = 24, max = 68;
+    const min = isNarrow ? 18 : 24;
+    const max = isNarrow ? 40 : 68;
     return min + ((count / maxCount) * (max - min));
   }
 
@@ -48,7 +50,7 @@ export default memo(function WordCloud({ sessionId, questionId }) {
               exit={{ opacity: 0, scale: 0.5 }}
               transition={{ type: 'spring', stiffness: 260, damping: 22, delay: i * 0.008 }}
               style={{ fontSize: getFontSize(word.count) }}
-              className={`font-bold cursor-default max-w-full truncate ${WORD_CLASSES[i % WORD_CLASSES.length]}`}
+              className={`font-bold cursor-default max-w-full break-keep ${WORD_CLASSES[i % WORD_CLASSES.length]}`}
               title={`${word.text}: ${word.count}회`}
             >
               {word.text}

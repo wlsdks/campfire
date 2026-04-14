@@ -96,7 +96,7 @@ function StudentRouter() {
 
   if (!sessionId) {
     return (
-      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
+      <div className="relative min-h-dvh bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -130,6 +130,15 @@ function StudentRouter() {
           >
             <span className="text-xs text-slate-400 dark:text-slate-500">실시간 강의 참여 플랫폼</span>
           </motion.div>
+          <motion.a
+            href="/admin"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 text-xs text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors underline underline-offset-2"
+          >
+            강사이신가요? 로그인
+          </motion.a>
         </motion.div>
       </div>
     );
