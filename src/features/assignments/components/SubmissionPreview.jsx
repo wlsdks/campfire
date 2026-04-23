@@ -59,7 +59,9 @@ export default function SubmissionPreview({ submission, disabled }) {
     : remaining > 0 ? `잠시 후 다시 시도 (${remaining}초)`
     : !isGeminiReady() ? 'AI 예심 준비 안 됨'
     : disabled ? '코드 파일을 먼저 업로드하세요'
-    : '✨ AI 예심 받기 (무료)';
+    : 'AI 예심 받기 (무료)';
+  // 기본 상태(사용 가능, 로딩 아님)일 때만 Sparkles 아이콘 노출 — 이모지(✨) 대신 lucide
+  const showSparklesIcon = canUse && !loading && remaining === 0 && isGeminiReady() && !disabled;
 
   return (
     <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4">
@@ -86,6 +88,7 @@ export default function SubmissionPreview({ submission, disabled }) {
         }`}
       >
         {loading && <Loader2 size={14} className="animate-spin" />}
+        {showSparklesIcon && <Sparkles size={14} />}
         {label}
       </button>
 
