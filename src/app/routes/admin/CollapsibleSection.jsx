@@ -33,6 +33,13 @@ export default memo(function CollapsibleSection({
           <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 shrink-0">
             {title}
           </span>
+          {/* attention(예: 긴급 질문 도착)일 때 펄싱 dot으로 접힌 상태에서도 시선 유도 */}
+          {attention && (
+            <span
+              aria-hidden="true"
+              className="w-1.5 h-1.5 rounded-full bg-red-500 dark:bg-red-400 animate-pulse shrink-0"
+            />
+          )}
           {summary && (
             <span className={`text-[11px] truncate min-w-0 flex-1 ${attention ? 'text-red-500 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-500'}`}>
               {summary}
