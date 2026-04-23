@@ -301,15 +301,16 @@ export function useLiveJudging(sessionId, questionId) {
 
       if (!abortRef.current) {
         const top3 = calculateLiveTop3(allResults);
-        await set(ref(db, `${base}/aiTop3`), top3);
-        await update(ref(db, `${base}/aiJudgeState`), {
-          status: 'done',
-          completedAt: serverTimestamp(),
-          // 학생 폰에는 자기 점수만 보이고, TOP 공개는 강사가 버튼으로 단계적으로 올림 (0→1→2→3)
-          revealedUpTo: 0,
+        // 원자적 multi-path update — 학생 클라이언트가 "done인데 top3 없음" 또는 "판사 로그 잔존"
+        // 같은 찰나의 불일치 상태를 보지 않도록 한 번의 이벤트로 전달.
+        // 학생 폰은 자기 점수만 보이고 TOP 공개는 강사가 버튼으로 단계적으로 올림 (revealedUpTo 0→1→2→3).
+        await update(ref(db, base), {
+          aiTop3: top3,
+          'aiJudgeState/status': 'done',
+          'aiJudgeState/completedAt': serverTimestamp(),
+          'aiJudgeState/revealedUpTo': 0,
+          aiJudgeLog: null,
         });
-        // 심사 완료 후 라이브 로그 정리
-        await remove(ref(db, `${base}/aiJudgeLog`));
       } else {
         await update(ref(db, `${base}/aiJudgeState`), { status: 'aborted' });
       }
