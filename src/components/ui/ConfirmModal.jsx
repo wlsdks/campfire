@@ -1,10 +1,12 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { createPortal } from 'react-dom';
 import { AlertTriangle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
 /**
  * Custom confirm dialog — replaces window.confirm.
  * Design system: centered, backdrop blur, spring animation, dark mode.
+ * Portal로 body에 렌더 — 조상의 display:none/hidden에 가려지지 않도록 (Modal.jsx와 일관).
  */
 export default function ConfirmModal({
   open, onConfirm, onCancel,
@@ -14,7 +16,9 @@ export default function ConfirmModal({
 }) {
   const isDanger = variant === 'danger';
 
-  return (
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <>
@@ -75,6 +79,7 @@ export default function ConfirmModal({
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
