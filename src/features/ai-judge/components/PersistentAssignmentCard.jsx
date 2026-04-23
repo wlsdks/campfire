@@ -1,7 +1,7 @@
 import { memo, useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Pin, ChevronRight, Check, Sparkles, X } from 'lucide-react';
+import { Pin, ChevronRight, Check, Sparkles, X, Loader2 } from 'lucide-react';
 import AiJudgeSubmitter from './AiJudgeSubmitter';
 import { useMySubmission, useLiveJudgeResults } from '../api/useLiveJudging';
 import { getParticipantId } from '@/lib/participant';
@@ -67,7 +67,11 @@ export default memo(function PersistentAssignmentCard({ sessionId, questionId, q
           hasSubmitted ? 'bg-slate-900 dark:bg-slate-100' : 'bg-amber-50 dark:bg-amber-500/10'
         }`}>
           {hasSubmitted
-            ? (isDone ? <Sparkles size={16} className="text-white dark:text-slate-900" /> : <Check size={16} className="text-white dark:text-slate-900" />)
+            ? (isDone
+                ? <Sparkles size={16} className="text-white dark:text-slate-900" />
+                : isJudging
+                  ? <Loader2 size={16} className="text-white dark:text-slate-900 animate-spin" />
+                  : <Check size={16} className="text-white dark:text-slate-900" />)
             : <Pin size={14} className="text-amber-500" />
           }
         </div>
