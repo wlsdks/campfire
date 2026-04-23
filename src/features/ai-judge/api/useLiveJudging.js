@@ -211,7 +211,11 @@ export function useLiveJudging(sessionId, questionId) {
       const allResults = [];
       // 배치 동시 심사 — 100명 규모에서 총 소요시간을 1/CONCURRENCY로 단축.
       // 값이 너무 크면 Gemini RPM 한계에 걸림 (유료 1000 RPM 기준 5~6 배치가 안전).
-      const CONCURRENCY = 5;
+      //
+      // pacing: 5 → 2로 낮춤. 이유: 전자칠판에 "현재 심사 중" 제출자가 너무 빨리 교체돼서
+      // 학생들이 심사 과정(판사들이 고민하는 모습)을 체감할 시간이 부족했음. 2명 동시면
+      // 30명 기준 약 2분(한 건당 ~10초)으로 라이브 수업 긴장감과 속도 균형.
+      const CONCURRENCY = 2;
       let completed = 0;
       let running = 0;
       let index = 0;
