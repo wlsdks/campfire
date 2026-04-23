@@ -173,9 +173,9 @@ const JudgeLiveCard = memo(function JudgeLiveCard({ judge, log }) {
       className={`relative rounded-xl border p-3 transition-colors ${stateColor}`}
     >
       <div className="flex items-start gap-2.5">
-        {/* 판사 아바타 */}
+        {/* 판사 아바타 — thinking은 slate + pulse, done은 emerald(완료 시각언어 유지) */}
         <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${
-          state === 'thinking' ? 'bg-indigo-100 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-200'
+          state === 'thinking' ? 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 ring-2 ring-indigo-400/60 dark:ring-indigo-400/50 animate-pulse'
           : state === 'done' ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-200'
           : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
         }`}>
