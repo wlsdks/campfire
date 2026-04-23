@@ -456,7 +456,22 @@ export function calculateLiveTop3(allResults) {
   if (!allResults.length) return {};
   // 모든 판사가 실패한 제출(totalJudges === 0)은 순위에서 제외 — 아니면 0점 제출이 3등으로 들어올 수 있음.
   const valid = allResults.filter(r => (r.summary?.totalJudges ?? 0) > 0);
-  const sorted = [...valid].sort((a, b) => b.summary.avgScore - a.summary.avgScore);
+
+  // 결정적 정렬 — 동점 시 계산마다 순위가 달라지는 것을 방지. 타이브레이커:
+  //   1) avgScore 내림차순
+  //   2) 최고 점수(best judge score) 내림차순 — 더 인상적 심사 받은 쪽 우선
+  //   3) 이름 가나다/알파벳 오름차순 — 완전 동점이어도 결정적
+  const topJudgeScore = (entry) => {
+    const scores = Object.values(entry.results).filter(r => !r.error).map(r => r.score || 0);
+    return scores.length ? Math.max(...scores) : 0;
+  };
+  const sorted = [...valid].sort((a, b) => {
+    const avgDiff = b.summary.avgScore - a.summary.avgScore;
+    if (avgDiff !== 0) return avgDiff;
+    const topDiff = topJudgeScore(b) - topJudgeScore(a);
+    if (topDiff !== 0) return topDiff;
+    return (a.name || '').localeCompare(b.name || '');
+  });
   const rankKeys = ['first', 'second', 'third'];
   const top = {};
 
