@@ -590,7 +590,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
       {/* 상시 과제 바 — 발표 모드에서도 강사가 제출 상태/심사 상태 확인 가능.
           단, 상시 과제 자체가 현재 활성 질문일 때는 메인 뷰에 이미 노출되므로 중복 방지 (학생 VoteModeContent와 동일 규칙). */}
       {session?.persistentAssignmentId && session?.currentQuestion !== session?.persistentAssignmentId && (
-        <div className="fixed top-3 left-1/2 -translate-x-1/2 z-20 w-[min(42rem,calc(100vw-1.5rem))] pointer-events-auto">
+        <div className="fixed top-3 left-1/2 -translate-x-1/2 z-20 w-[min(42rem,calc(100vw-6rem))] pointer-events-auto">
           <PersistentAssignmentBar
             sessionId={sessionId}
             session={session}
