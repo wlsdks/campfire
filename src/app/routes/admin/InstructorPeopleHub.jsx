@@ -95,11 +95,21 @@ export default memo(function InstructorPeopleHub({ onlineList, voteCounts, cours
         </div>
       )}
 
+      {/* Body — 탭 있으면 hidden 토글로 상태 보존 (InstructorCommHub와 동일 패턴).
+          참여자 탭의 ParticipantList 내부 expanded("더보기") 상태가 탭 전환 시 사라지지 않도록. */}
       <div className="p-3.5">
-        {(!hasStaff || activeTab === 'participants') && (
+        {hasStaff ? (
+          <>
+            <div className={activeTab === 'participants' ? '' : 'hidden'}>
+              <ParticipantList participants={onlineList || []} voteCounts={voteCounts} />
+            </div>
+            <div className={activeTab === 'staff' ? '' : 'hidden'}>
+              <StaffPanel staffList={staffList} />
+            </div>
+          </>
+        ) : (
           <ParticipantList participants={onlineList || []} voteCounts={voteCounts} />
         )}
-        {hasStaff && activeTab === 'staff' && <StaffPanel staffList={staffList} />}
       </div>
     </CollapsibleSection>
   );
