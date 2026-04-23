@@ -301,7 +301,8 @@ async function urlToInlinePart(url) {
  */
 async function buildLiveParts(submission) {
   const parts = [];
-  const textBits = [`[제출자] ${submission.name}`];
+  // 심사 편향 방지를 위해 제출자 이름은 AI에 전달하지 않음 — 작품(제목/설명/이미지/코드) 자체만 평가.
+  const textBits = [];
   if (submission.title) textBits.push(`[제목] ${submission.title}`);
   if (submission.description) textBits.push(`[설명]\n${submission.description.slice(0, 600)}`);
   // HTML/JS/CSS 코드 제출 — 최대 40KB로 잘라서 평가. 작품 동작 품질도 함께 판단.
@@ -311,7 +312,8 @@ async function buildLiveParts(submission) {
       : submission.code;
     textBits.push(`[제출 코드 (HTML/JS/CSS)]\n${code}`);
   }
-  parts.push({ text: textBits.join('\n') });
+  // 텍스트가 전혀 없고 이미지만 있는 경우에도 Gemini 멀티모달은 동작 — 빈 text 파트는 생략.
+  if (textBits.length > 0) parts.push({ text: textBits.join('\n') });
 
   if (submission.imageUrl) {
     // 3회까지 재시도 — 일시적 네트워크 지터 대응
