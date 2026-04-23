@@ -379,14 +379,17 @@ async function evaluateLiveSubmission(judge, submission, questionTitle) {
   for (const modelName of LIVE_MODEL_FALLBACKS) {
     try {
       const model = genAI.getGenerativeModel({ model: modelName, systemInstruction });
+      // 2.5-pro는 thinking mode 필수 — thinkingBudget:0 거부. 다른 flash/lite 모델은 0으로
+      // thinking 끄는 게 속도 우선이라 유리. pro는 충분한 output 확보를 위해 토큰 한도도 증가.
+      const isPro = /pro/i.test(modelName);
       const result = await withRetry(() =>
         model.generateContent({
           contents: [{ role: 'user', parts }],
           generationConfig: {
             temperature: 0.4,
-            maxOutputTokens: 1024,
+            maxOutputTokens: isPro ? 2048 : 1024,
             responseMimeType: 'application/json',
-            thinkingConfig: { thinkingBudget: 0 },
+            ...(isPro ? {} : { thinkingConfig: { thinkingBudget: 0 } }),
           },
         })
       );
