@@ -392,10 +392,20 @@ async function evaluateLiveSubmission(judge, submission, questionTitle) {
 export async function judgeLiveSubmission(submission, questionTitle, onJudgeComplete, onJudgeStart) {
   const results = {};
 
+  // pacing 파라미터 — 학생들이 전자칠판에서 7명 판사의 "조사 중 → 평가 완료" 흐름을 체감하도록.
+  // Promise.all로 7명 동시 시작하면 thinking 배지가 찰나에 done으로 전환되어 '심사 과정'이 안 보임.
+  const START_STAGGER_MS = 350;          // 판사별 시작 간격 — 0s, 0.35s, 0.7s, … 2.1s까지 순차 노출
+  const MIN_THINK_MS = 1800;             // API 응답이 빨라도 최소 이 시간은 thinking 유지
+  const THINK_JITTER_MS = 1200;          // 판사별 랜덤 가변 — 일제히 done으로 바뀌지 않도록
+
   await Promise.all(
-    JUDGES.map(async (judge) => {
-      // thinking 방송 — 실제 호출 전/중에 전자칠판에 띄움
+    JUDGES.map(async (judge, idx) => {
+      // 시작 stagger — 모든 판사가 동시에 시작하면 긴장감이 없음
+      if (idx > 0) await new Promise((r) => setTimeout(r, idx * START_STAGGER_MS));
+
       onJudgeStart?.(judge);
+      const minDoneAt = Date.now() + MIN_THINK_MS + Math.random() * THINK_JITTER_MS;
+
       try {
         const r = await evaluateLiveSubmission(judge, submission, questionTitle);
         results[judge.id] = {
@@ -413,6 +423,11 @@ export async function judgeLiveSubmission(submission, questionTitle, onJudgeComp
           error: true,
         };
       }
+
+      // API가 빨리 응답했으면 thinking 최소 시간 보장 — "진지하게 보고 있다"는 느낌 유지
+      const waitMs = minDoneAt - Date.now();
+      if (waitMs > 0) await new Promise((r) => setTimeout(r, waitMs));
+
       onJudgeComplete?.(judge.id, results[judge.id]);
     })
   );
