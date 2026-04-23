@@ -182,6 +182,13 @@ export function useLiveJudging(sessionId, questionId) {
   const abortRef = useRef(false);
   const judgingRef = useRef(false);
 
+  // Unmount 시 진행 중 심사 자동 중단 — 강사가 세션을 나가거나 로그아웃할 때
+  // aiJudgeState가 'judging'으로 남아 좀비가 되는 것을 방지.
+  // 이후 scheduleNext 순환에서 abortRef를 감지해 'aborted'로 최종 기록.
+  useEffect(() => {
+    return () => { abortRef.current = true; };
+  }, []);
+
   const startJudging = useCallback(async () => {
     if (!sessionId || !questionId || judgingRef.current) return;
     judgingRef.current = true;
