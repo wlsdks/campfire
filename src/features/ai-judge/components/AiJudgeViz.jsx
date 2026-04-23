@@ -41,15 +41,18 @@ export default memo(function AiJudgeViz({ sessionId, questionId, isAdmin, isPres
     return <PresenterJudgingOverlay judgeState={judgeState} judgeLog={judgeLog} submissions={submissions} />;
   }
 
+  // 헤더도 SubmissionGrid와 같은 폭으로 맞춰 좌우 간격 과다 방지
+  const headerCfg = isPresenter && submissions.length > 0 ? getPresenterGridConfig(submissions.length) : null;
+  const headerInnerMax = headerCfg?.maxW || '';
   return (
-    // isPresenter: 상단 제목/AnalogyHelper 등 외부 요소가 공간 차지 → 간격/헤더 축소로 그리드 확보
+    // isPresenter: 외부 공간이 넓어도 헤더는 그리드 폭과 맞춰 좌우 간격 과다 방지.
     <div className={`w-full ${isPresenter ? 'max-w-[92rem] space-y-3' : 'max-w-3xl space-y-5'} mx-auto px-2`}>
-      <div className="flex items-center justify-between px-1">
+      <div className={`${headerInnerMax} mx-auto flex items-center justify-between px-1`}>
         <h3 className={`font-bold text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-2 ${isPresenter ? 'text-base' : 'text-lg'}`}>
           <Sparkles size={isPresenter ? 15 : 18} className="text-slate-400" />
           실시간 제출
         </h3>
-        <span className={`inline-flex items-center gap-1 text-slate-500 dark:text-slate-400 ${isPresenter ? 'text-sm' : 'text-sm'}`}>
+        <span className="inline-flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400">
           <Users size={13} /> {submissions.length}건
         </span>
       </div>
@@ -147,11 +150,18 @@ function PresenterJudgingOverlay({ judgeState, judgeLog, submissions }) {
         </AnimatePresence>
 
         {/* 7명 심사위원 라이브 패널 */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {JUDGES.map((judge) => {
-            const log = judgeLogs[judge.id];
-            return <JudgeLiveCard key={judge.id} judge={judge} log={log} />;
-          })}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2 px-1">
+            <Sparkles size={14} className="text-slate-400" />
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">AI 심사위원 7명</p>
+            <span className="text-[11px] text-slate-400">동시에 평가 중</span>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {JUDGES.map((judge) => {
+              const log = judgeLogs[judge.id];
+              return <JudgeLiveCard key={judge.id} judge={judge} log={log} />;
+            })}
+          </div>
         </div>
       </div>
     </div>
@@ -223,7 +233,13 @@ const JudgeLiveCard = memo(function JudgeLiveCard({ judge, log }) {
               </motion.div>
             )}
             {state === 'error' && (
-              <motion.p key="err" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-[11px] text-red-500 mt-1">평가 실패</motion.p>
+              <motion.div key="err" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-1">
+                <p className="text-[11px] text-red-500 font-medium">평가 실패</p>
+                {hint && <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5 truncate" title={hint}>{hint}</p>}
+                <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
+                  (API 한도 또는 네트워크 문제일 수 있어요. 다시 심사를 시도해보세요)
+                </p>
+              </motion.div>
             )}
           </AnimatePresence>
         </div>

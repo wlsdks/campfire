@@ -175,6 +175,7 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
   // 제출 완료 상태 (편집 아님)
   if (hasSubmitted && !editing) {
     return (
+      <>
       <motion.div
         role="status"
         aria-live="polite"
@@ -228,6 +229,18 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
           <p className="text-xs text-slate-400 text-center pt-1">심사 시작 전까지 수정 가능</p>
         </div>
       </motion.div>
+
+      {/* 취소 확인 다이얼로그 — 제출 완료 상태에서 취소 버튼 눌렀을 때 보여야 함 */}
+      <ConfirmModal
+        open={withdrawConfirmOpen}
+        onCancel={() => setWithdrawConfirmOpen(false)}
+        onConfirm={handleWithdrawConfirmed}
+        title="제출을 취소할까요?"
+        description="업로드한 이미지와 내용이 모두 삭제됩니다."
+        confirmLabel="제출 취소"
+        variant="danger"
+      />
+      </>
     );
   }
 
