@@ -19,6 +19,7 @@ import AnswerBubbleOverlay from '@/features/voting/components/AnswerBubbleOverla
 import { usePublishGameResult } from '@/features/games/api/useGameResult';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
 import TeamScoreboard from '@/features/teams/components/TeamScoreboard';
+import PersistentAssignmentBar from '@/features/ai-judge/components/PersistentAssignmentBar';
 
 const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
 const ClassQABoard = lazy(() => import('@/features/class-questions/components/ClassQABoard'));
@@ -585,6 +586,25 @@ export default function PresentationView({ sessionId, session, currentMode, onli
       />
 
       <SideNoticesPanel sessionId={sessionId} />
+
+      {/* 상시 과제 바 — 발표 모드에서도 강사가 제출 상태/심사 상태 확인 가능 */}
+      {session?.persistentAssignmentId && (
+        <div className="fixed top-3 left-1/2 -translate-x-1/2 z-20 w-[min(42rem,calc(100vw-1.5rem))] pointer-events-auto">
+          <PersistentAssignmentBar
+            sessionId={sessionId}
+            session={session}
+            onActivateQuestion={(qId) => {
+              const q = session?.questions?.[qId];
+              if (!q) return;
+              const mode = isQuizQuestion(q) ? 'quiz' : 'poll';
+              update(ref(db, `sessions/${sessionId}`), {
+                currentQuestion: qId, currentMode: mode,
+                [`questions/${qId}/activatedAt`]: Date.now(),
+              });
+            }}
+          />
+        </div>
+      )}
 
       {/* Main content — responsive padding */}
       <div className="flex items-center justify-center min-h-dvh p-4 sm:p-8 lg:p-12 text-lg">
