@@ -26,6 +26,8 @@ if (!genAI && import.meta.env.VITE_GEMINI_API_KEY) {
 }
 
 const MODEL_NAME = 'gemini-2.5-flash-lite';
+// 라이브 AI 심사 전용 — 최신 preview 모델 사용 (멀티모달 품질 우선)
+const LIVE_MODEL_NAME = 'gemini-3-flash-preview';
 const MAX_INPUT_CHARS = 120000; // ~30K tokens, leaves room for system+prompt+output
 
 async function withRetry(fn, retries = 2, delayMs = 2000) {
@@ -240,6 +242,218 @@ ${buildContent(submission)}
   );
 
   return parseJudgeResponse(result.response.text());
+}
+
+const LIVE_EVALUATION_GUIDE = `당신은 라이브 수업 중 학생이 방금 만든 실습 결과물을 평가합니다.
+
+[맥락]
+- 수강생은 비개발자이며, 수업에서 배운 내용을 바로 실습해서 제출합니다.
+- 제출물은 이미지 1장(스크린샷/사진)이 기본이고, 제목과 짧은 설명이 같이 옵니다.
+- 라이브이므로 완성도보다 시도/아이디어/실습 결과를 격려하며 평가합니다.
+
+[점수 기준 — 반드시 이 척도로 평가]
+- 1~3점: 과제 의도를 크게 벗어남 (이미지가 주제와 무관/비어있음)
+- 4~5점: 시도했지만 핵심이 흐릿함
+- 6~7점: 기본 요구는 충족 (무난한 수준)
+- 8점: 라이브 실습치고 인상적 (자기 관점 보임)
+- 9점: 베스트 후보 (독창성 또는 완성도 돋보임)
+- 10점: 드문 수작
+
+반드시 아래 JSON 형식으로만 응답하세요:
+{
+  "score": (1~10 정수),
+  "comment": "(2~3문장의 심사평, 당신의 캐릭터 말투)",
+  "highlight": "(이 작품의 한 줄 하이라이트, 15~30자)"
+}`;
+
+/**
+ * Fetch URL → base64 data part for Gemini inlineData.
+ * Firebase Storage URL도 fetch 가능 (CORS 설정됨).
+ */
+async function urlToInlinePart(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`이미지 다운로드 실패 (${res.status})`);
+  const blob = await res.blob();
+  const mimeType = blob.type || 'image/jpeg';
+  const buffer = await blob.arrayBuffer();
+  let binary = '';
+  const bytes = new Uint8Array(buffer);
+  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  const base64 = btoa(binary);
+  return { inlineData: { mimeType, data: base64 } };
+}
+
+/**
+ * Build multimodal parts for a live submission.
+ * - imageUrl → inlineData (이미지)
+ * - title/description → 텍스트
+ *
+ * 이미지 로드 실패는 throw로 승격 — 네트워크 문제로 다른 학생 대비 점수가 왜곡되는
+ * 것보다 "이 판사 실패"로 마킹 후 avgScore에서 제외하는 게 공정함.
+ */
+async function buildLiveParts(submission) {
+  const parts = [];
+  const textBits = [`[제출자] ${submission.name}`];
+  if (submission.title) textBits.push(`[제목] ${submission.title}`);
+  if (submission.description) textBits.push(`[설명]\n${submission.description.slice(0, 600)}`);
+  // HTML/JS/CSS 코드 제출 — 최대 40KB로 잘라서 평가. 작품 동작 품질도 함께 판단.
+  if (submission.code) {
+    const code = submission.code.length > 40000
+      ? submission.code.slice(0, 40000) + '\n[... 이하 생략 ...]'
+      : submission.code;
+    textBits.push(`[제출 코드 (HTML/JS/CSS)]\n${code}`);
+  }
+  parts.push({ text: textBits.join('\n') });
+
+  if (submission.imageUrl) {
+    // 3회까지 재시도 — 일시적 네트워크 지터 대응
+    let imagePart = null;
+    let lastErr = null;
+    for (let i = 0; i < 3; i++) {
+      try {
+        imagePart = await urlToInlinePart(submission.imageUrl);
+        break;
+      } catch (err) {
+        lastErr = err;
+        if (i < 2) await new Promise(r => setTimeout(r, 400 * (i + 1)));
+      }
+    }
+    if (!imagePart) throw lastErr || new Error('이미지 로드 실패');
+    parts.push({ text: '\n[제출 이미지]' });
+    parts.push(imagePart);
+  }
+  return parts;
+}
+
+/**
+ * Evaluate one live submission with one judge (multimodal).
+ * 모델 fallback: LIVE_MODEL_NAME(preview) 실패 시 stable 모델로 자동 재시도 — preview 모델이
+ * 지역/쿼터에 따라 제공 안 되는 경우도 있어 라이브 수업에서 중단되지 않도록 방어.
+ */
+// 최신 preview → latest alias → stable 순. preview가 미릴리즈/권한 없으면 자동 fallback.
+const LIVE_MODEL_FALLBACKS = [
+  LIVE_MODEL_NAME,           // gemini-3-flash-preview (사용자 요청 모델)
+  'gemini-flash-latest',     // 최신 Flash alias
+  'gemini-2.5-flash',        // Flash stable
+  MODEL_NAME,                // gemini-2.5-flash-lite (최후 보루)
+];
+
+async function evaluateLiveSubmission(judge, submission, questionTitle) {
+  if (!genAI) throw new Error('Gemini API가 초기화되지 않았습니다.');
+
+  const contextLine = questionTitle
+    ? `[수업 실습 주제]\n${questionTitle}\n\n`
+    : '';
+  const systemInstruction = `${judge.systemPrompt}\n\n${LIVE_EVALUATION_GUIDE}\n\n${contextLine}위 주제에 대한 제출물을 평가하세요.`;
+  const parts = await buildLiveParts(submission);
+
+  let lastErr = null;
+  for (const modelName of LIVE_MODEL_FALLBACKS) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName, systemInstruction });
+      const result = await withRetry(() =>
+        model.generateContent({
+          contents: [{ role: 'user', parts }],
+          generationConfig: {
+            temperature: 0.4,
+            maxOutputTokens: 1024,
+            responseMimeType: 'application/json',
+            thinkingConfig: { thinkingBudget: 0 },
+          },
+        })
+      );
+      return parseJudgeResponse(result.response.text());
+    } catch (err) {
+      lastErr = err;
+      const msg = (err?.message || '').toLowerCase();
+      // 모델 미지원/잘못된 ID는 다음 fallback으로. 429(rate)나 파싱 에러는 즉시 throw.
+      const isModelIssue = msg.includes('not found') || msg.includes('404') || msg.includes('400')
+        || msg.includes('unsupported') || msg.includes('does not exist')
+        || msg.includes('invalid') || msg.includes('is not supported');
+      if (!isModelIssue) throw err;
+    }
+  }
+  throw lastErr || new Error('모든 모델이 응답하지 못했습니다.');
+}
+
+/**
+ * Live judging — 7 judges in parallel for one submission.
+ * onJudgeStart(judge): 판사가 "지금 이 작품 보는 중" 시작 시점 훅 (라이브 중계용)
+ * onJudgeComplete(judgeId, result): 판사 완료
+ */
+export async function judgeLiveSubmission(submission, questionTitle, onJudgeComplete, onJudgeStart) {
+  const results = {};
+
+  await Promise.all(
+    JUDGES.map(async (judge) => {
+      // thinking 방송 — 실제 호출 전/중에 전자칠판에 띄움
+      onJudgeStart?.(judge);
+      try {
+        const r = await evaluateLiveSubmission(judge, submission, questionTitle);
+        results[judge.id] = {
+          ...r,
+          judgeId: judge.id,
+          judgeName: judge.name,
+        };
+      } catch (error) {
+        results[judge.id] = {
+          judgeId: judge.id,
+          judgeName: judge.name,
+          score: 0,
+          comment: `심사 중 오류: ${error.message}`,
+          highlight: '',
+          error: true,
+        };
+      }
+      onJudgeComplete?.(judge.id, results[judge.id]);
+    })
+  );
+
+  const valid = Object.values(results).filter(r => !r.error);
+  const totalScore = valid.reduce((sum, r) => sum + (r.score || 0), 0);
+  const avgScore = valid.length ? totalScore / valid.length : 0;
+
+  return {
+    results,
+    summary: {
+      totalJudges: valid.length,
+      erroredJudges: JUDGES.length - valid.length,
+      avgScore: Math.round(avgScore * 10) / 10,
+      totalScore,
+    },
+  };
+}
+
+/**
+ * Live top-3 calculation. allResults shape:
+ * [{ submissionId, name, results, summary }]
+ * Returns { first, second, third } each { submissionId, name, score, comment }.
+ */
+export function calculateLiveTop3(allResults) {
+  if (!allResults.length) return {};
+  // 모든 판사가 실패한 제출(totalJudges === 0)은 순위에서 제외 — 아니면 0점 제출이 3등으로 들어올 수 있음.
+  const valid = allResults.filter(r => (r.summary?.totalJudges ?? 0) > 0);
+  const sorted = [...valid].sort((a, b) => b.summary.avgScore - a.summary.avgScore);
+  const rankKeys = ['first', 'second', 'third'];
+  const top = {};
+
+  sorted.slice(0, 3).forEach((entry, i) => {
+    if (!rankKeys[i]) return;
+    const valid = Object.values(entry.results).filter(r => !r.error);
+    // Representative comment: highest-scoring judge's comment
+    const best = valid.sort((a, b) => (b.score || 0) - (a.score || 0))[0];
+    top[rankKeys[i]] = {
+      submissionId: entry.submissionId,
+      name: entry.name,
+      score: entry.summary.avgScore,
+      topScore: best?.score || 0,
+      comment: best?.comment || '',
+      highlight: best?.highlight || '',
+      bestJudgeId: best?.judgeId || null,
+      bestJudgeName: best?.judgeName || null,
+    };
+  });
+  return top;
 }
 
 /**

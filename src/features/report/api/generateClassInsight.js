@@ -75,12 +75,17 @@ export async function generateClassInsight({ session, participantCount, insights
   });
 
   // Pack question-by-question data
+  const TYPE_LABEL = { choice: '객관식', quiz: '퀴즈', ox: 'OX', wordcloud: '워드클라우드', qna: 'Q&A', scale: '감정온도계', debate: '찬반토론', ranking: '순위', fillinblank: '빈칸', check: '실습체크', imageSlide: '이미지', mysteryBox: '미스터리박스', hintQuiz: '힌트퀴즈', aiJudge: 'AI심사' };
   const questionLines = insights.map((q, i) => {
-    const parts = [`${i + 1}. [${q.type}] "${q.title}" — 응답 ${q.voteCount}/${participantCount}명 (${q.responseRate}%)`];
-    if (q.hasCorrectAnswer && q.correctRate !== null) {
+    const typeLabel = TYPE_LABEL[q.type] || q.type;
+    const isAiJudge = q.type === 'aiJudge';
+    // aiJudge는 정답 개념이 없으므로 제출 수만 로그
+    const unit = isAiJudge ? '제출' : '응답';
+    const parts = [`${i + 1}. [${typeLabel}] "${q.title}" — ${unit} ${q.voteCount}/${participantCount}명 (${q.responseRate}%)`];
+    if (!isAiJudge && q.hasCorrectAnswer && q.correctRate !== null) {
       parts.push(`정답률 ${q.correctRate}%`);
     }
-    if (q.highConfidenceRate !== null) {
+    if (!isAiJudge && q.highConfidenceRate !== null) {
       parts.push(`확신 높음 ${q.highConfidenceRate}%`);
     }
     return parts.join(', ');

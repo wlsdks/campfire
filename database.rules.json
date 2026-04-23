@@ -25,7 +25,7 @@
           "$qId": {
             ".validate": "newData.hasChild('title') && newData.hasChild('type')",
             "title": { ".validate": "newData.isString() && newData.val().length <= 500" },
-            "type": { ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz|imageSlide)$/)" },
+            "type": { ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz|imageSlide|aiJudge)$/)" },
             "$other": { ".validate": true }
           }
         }
@@ -38,7 +38,7 @@
         "$qId": {
           ".validate": "newData.hasChild('title') && newData.hasChild('type')",
           "title": { ".validate": "newData.isString() && newData.val().length <= 500" },
-          "type": { ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz|imageSlide)$/)" },
+          "type": { ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz|imageSlide|aiJudge)$/)" },
           "savedAt": { ".validate": "newData.isNumber()" },
           "updatedAt": { ".validate": "newData.isNumber()" },
           "$other": { ".validate": true }
@@ -94,6 +94,10 @@
           ".write": true,
           ".validate": "newData.isString() || !newData.exists()"
         },
+        "persistentAssignmentId": {
+          ".write": true,
+          ".validate": "newData.isString() || !newData.exists()"
+        },
         "currentMode": {
           ".write": true,
           ".validate": "newData.isString() && newData.val().length <= 20"
@@ -121,7 +125,7 @@
               ".validate": "newData.isString() && newData.val().length <= 500"
             },
             "type": {
-              ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz|imageSlide)$/)"
+              ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz|imageSlide|aiJudge)$/)"
             },
             "votes": {
               "$participantId": {
@@ -131,6 +135,67 @@
                 },
                 "nickname": {
                   ".validate": "newData.isString() && newData.val().length <= 10"
+                }
+              }
+            },
+
+            "submissions": {
+              "$participantId": {
+                ".validate": "newData.hasChild('name')",
+                "name": { ".validate": "newData.isString() && newData.val().length <= 20" },
+                "title": { ".validate": "newData.isString() && newData.val().length <= 200" },
+                "description": { ".validate": "newData.isString() && newData.val().length <= 500" },
+                "imageUrl": { ".validate": "newData.isString() && newData.val().length <= 2000" },
+                "code": { ".validate": "newData.isString() && newData.val().length <= 50000" },
+                "submittedAt": { ".validate": true }
+              }
+            },
+
+            "aiResults": {
+              "$participantId": {
+                ".validate": "newData.hasChild('summary')",
+                "summary": {
+                  "avgScore": { ".validate": "newData.isNumber()" },
+                  "totalScore": { ".validate": "newData.isNumber()" },
+                  "totalJudges": { ".validate": "newData.isNumber()" },
+                  "erroredJudges": { ".validate": "newData.isNumber()" }
+                },
+                "judges": { ".validate": true },
+                "judgedAt": { ".validate": true }
+              }
+            },
+
+            "aiTop3": {
+              ".validate": true,
+              "first":  { ".validate": "newData.hasChild('submissionId')" },
+              "second": { ".validate": "newData.hasChild('submissionId')" },
+              "third":  { ".validate": "newData.hasChild('submissionId')" }
+            },
+
+            "aiJudgeState": {
+              ".validate": true,
+              "status": { ".validate": "newData.isString() && newData.val().matches(/^(idle|judging|done|aborted|error)$/)" },
+              "revealedUpTo": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 3" },
+              "current": { ".validate": "newData.isNumber()" },
+              "total": { ".validate": "newData.isNumber()" },
+              "currentName": { ".validate": "newData.isString() && newData.val().length <= 30" },
+              "message": { ".validate": "newData.isString() && newData.val().length <= 500" },
+              "startedAt": { ".validate": true },
+              "completedAt": { ".validate": true }
+            },
+
+            "aiJudgeLog": {
+              ".validate": true,
+              "currentSubmissionId": { ".validate": "newData.isString() && newData.val().length <= 100" },
+              "currentName": { ".validate": "newData.isString() && newData.val().length <= 30" },
+              "startedAt": { ".validate": true },
+              "judges": {
+                "$judgeId": {
+                  "name": { ".validate": "newData.isString() && newData.val().length <= 20" },
+                  "state": { ".validate": "newData.isString() && newData.val().matches(/^(thinking|done|error)$/)" },
+                  "hint": { ".validate": "newData.isString() && newData.val().length <= 200" },
+                  "score": { ".validate": "newData.isNumber() || !newData.exists()" },
+                  "at": { ".validate": "newData.isNumber()" }
                 }
               }
             }
@@ -272,23 +337,43 @@
           }
         },
 
+        "dmByStudent": {
+          ".write": true,
+          "$studentId": {
+            ".validate": "newData.isString() && newData.val().length <= 100"
+          }
+        },
+
         "dm": {
           ".write": true,
           "$dmId": {
             ".validate": "newData.hasChild('studentId') && newData.hasChild('status')",
-            "studentId": { ".validate": "newData.isString()" },
+            "studentId": {
+              ".validate": "newData.isString() && (!data.exists() || data.val() === newData.val())"
+            },
             "studentName": { ".validate": "newData.isString() && newData.val().length <= 20" },
             "staffId": { ".validate": "newData.isString() || !newData.exists()" },
             "staffName": { ".validate": "newData.isString() || !newData.exists()" },
             "status": { ".validate": "newData.isString() && newData.val().matches(/^(waiting|active|resolved)$/)" },
-            "createdAt": { ".validate": true },
+            "createdAt": {
+              ".validate": "!data.exists() || data.val() === newData.val()"
+            },
             "messages": {
               "$messageId": {
-                ".validate": "newData.hasChild('text') && newData.hasChild('sender')",
+                ".validate": "newData.hasChild('text') && newData.hasChild('sender') && (!data.exists() || data.child('sender').val() === newData.child('sender').val())",
                 "text": { ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 500" },
                 "sender": { ".validate": "newData.isString() && newData.val().length <= 20" },
-                "senderType": { ".validate": "newData.isString()" },
-                "timestamp": { ".validate": true }
+                "senderType": {
+                  ".validate": "newData.isString() && newData.val().matches(/^(student|staff|instructor|system)$/)"
+                },
+                "timestamp": { ".validate": true },
+                "contextQuestionId": { ".validate": "newData.isString() && newData.val().length <= 100" }
+              }
+            },
+            "typing": {
+              "$userId": {
+                "name": { ".validate": "newData.isString() && newData.val().length <= 20" },
+                "at": { ".validate": "newData.isNumber()" }
               }
             }
           }

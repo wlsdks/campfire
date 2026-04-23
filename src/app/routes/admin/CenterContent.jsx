@@ -1,9 +1,13 @@
 import { lazy, Suspense } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
+import { ref, update } from 'firebase/database';
+import { db } from '@/lib/firebase';
 import QuestionForm from './QuestionForm';
 import { MainContent } from './PresentationView';
 import { SuspenseFallback } from '@/components/ui/Skeleton';
+import PersistentAssignmentBar from '@/features/ai-judge/components/PersistentAssignmentBar';
+import { isQuizQuestion } from '@/lib/quiz';
 
 const ClassSummary = lazy(() => import('./ClassSummary'));
 
@@ -76,6 +80,24 @@ export default function CenterContent({
           transition={{ duration: 0.15 }}
           className="w-full flex-1 flex flex-col"
         >
+          {/* 상시 과제 요약 바 — 강사 편집 모드에서만 */}
+          {!effectiveReadOnly && session?.persistentAssignmentId && (
+            <div className="mb-4">
+              <PersistentAssignmentBar
+                sessionId={sessionId}
+                session={session}
+                onActivateQuestion={(qId) => {
+                  const q = session?.questions?.[qId];
+                  if (!q) return;
+                  const mode = isQuizQuestion(q) ? 'quiz' : 'poll';
+                  update(ref(db, `sessions/${sessionId}`), {
+                    currentQuestion: qId, currentMode: mode,
+                    [`questions/${qId}/activatedAt`]: Date.now(),
+                  });
+                }}
+              />
+            </div>
+          )}
           {effectiveReadOnly && !session?.currentQuestion ? (
             <Suspense fallback={<SuspenseFallback fullPage={false} />}>
               <ClassSummary

@@ -23,6 +23,7 @@ function useIsMobile() {
 export default memo(function QuestionList({
   questionList, currentQuestion, onActivate, onReveal, onRevealAnswer, onShowLeaderboard, onClearActive,
   onEdit, onDuplicate, onDelete, readOnly = false, onView, onReorder, onSaveToLibrary,
+  persistentAssignmentId, onTogglePersistent,
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const { toast, showToast } = useToast();
@@ -77,6 +78,8 @@ export default memo(function QuestionList({
                         onDuplicate={handleDuplicateWithToast}
                         onDelete={handleDeleteWithToast}
                         onSaveToLibrary={onSaveToLibrary ? handleSaveWithToast : null}
+                        isPersistent={persistentAssignmentId === qId}
+                        onTogglePersistent={onTogglePersistent}
                       />
                     ))}
                   </SortableContext>
@@ -90,6 +93,8 @@ export default memo(function QuestionList({
                     onDuplicate={handleDuplicateWithToast}
                     onDelete={handleDeleteWithToast}
                     onSaveToLibrary={onSaveToLibrary ? handleSaveWithToast : null}
+                    isPersistent={persistentAssignmentId === qId}
+                    onTogglePersistent={onTogglePersistent}
                   />
                 ))
               )}

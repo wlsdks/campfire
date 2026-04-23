@@ -121,6 +121,11 @@ export function VoteModeContent({
   }
 
   const question = session?.questions?.[currentQId];
+  const persistentAssignmentId = session?.persistentAssignmentId || null;
+  const persistentQ = persistentAssignmentId ? session?.questions?.[persistentAssignmentId] : null;
+  // 상시 과제는 aiJudge 타입이고, 현재 활성 질문과 다를 때만 별도 노출
+  const showPersistent = !!persistentQ && persistentQ.type === 'aiJudge' && persistentAssignmentId !== currentQId;
+
   if (!['poll', 'quiz'].includes(currentMode) || !currentQId || !question) {
     return (
       <WaitingPage
@@ -128,6 +133,8 @@ export function VoteModeContent({
         pendingEvent={session?.pendingEvent || null}
         courseName={session?.courseName}
         currentMode={currentMode}
+        persistentAssignmentId={showPersistent ? persistentAssignmentId : null}
+        persistentAssignmentTitle={persistentQ?.title}
       />
     );
   }
@@ -149,6 +156,8 @@ export function VoteModeContent({
       myStreak={myStreak}
       teamActive={teamActive}
       myTeam={myTeam}
+      persistentAssignmentId={showPersistent ? persistentAssignmentId : null}
+      persistentAssignmentTitle={persistentQ?.title}
     />
   );
 }

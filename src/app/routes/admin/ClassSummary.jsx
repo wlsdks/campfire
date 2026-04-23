@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowUpDown, BarChart3, Trophy, Circle, Cloud, MessageSquare, Swords, TextCursorInput, Thermometer, AlertTriangle } from 'lucide-react';
+import { ArrowUpDown, BarChart3, Trophy, Circle, Cloud, MessageSquare, Swords, TextCursorInput, Thermometer, AlertTriangle, CheckCircle, Image, HelpCircle, Lightbulb, Sparkles } from 'lucide-react';
 import AchievementSummary from '@/features/quiz/components/AchievementSummary';
 import ExportMenu from './ExportMenu';
 import ClassInsightCard from '@/features/report/components/ClassInsightCard';
@@ -15,6 +15,11 @@ const QTYPE_META = {
   debate: { label: '찬반 토론', icon: Swords },
   ranking: { label: '순위 맞추기', icon: ArrowUpDown },
   fillinblank: { label: '빈칸 채우기', icon: TextCursorInput },
+  check: { label: '실습 체크', icon: CheckCircle },
+  imageSlide: { label: '이미지', icon: Image },
+  mysteryBox: { label: '미스터리 박스', icon: HelpCircle },
+  hintQuiz: { label: '힌트 퀴즈', icon: Lightbulb },
+  aiJudge: { label: 'AI 심사', icon: Sparkles },
 };
 
 function getQuestionInsights(questions, participantCount) {
@@ -22,7 +27,11 @@ function getQuestionInsights(questions, participantCount) {
 
   return entries.map(([qId, q]) => {
     const votes = q.votes || {};
-    const voteCount = Object.keys(votes).length;
+    // aiJudge는 submissions를 씀 — 응답 수 집계 대상 변경
+    const isAiJudge = q.type === 'aiJudge';
+    const voteCount = isAiJudge
+      ? Object.keys(q.submissions || {}).length
+      : Object.keys(votes).length;
     const responseRate = participantCount > 0 ? Math.round((voteCount / participantCount) * 100) : 0;
     const hasCorrectAnswer = Boolean(q.correctAnswer);
     let correctRate = null;

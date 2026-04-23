@@ -2,7 +2,7 @@ import { memo, useState, useEffect, useCallback } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import Tooltip from '@/components/ui/Tooltip';
-import { GripVertical, BookmarkPlus, Check, Copy, MessageSquare, Pencil, Play, Square, Trash2, Trophy, Loader2 } from 'lucide-react';
+import { GripVertical, BookmarkPlus, Check, Copy, MessageSquare, Pencil, Play, Square, Trash2, Trophy, Loader2, Pin, PinOff } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import { isQuizQuestion } from '@/lib/quiz';
 import { QUESTION_TYPES } from '@/lib/question-types';
@@ -31,7 +31,7 @@ function ActionButton({ onClick, className, children, 'aria-label': ariaLabel, f
 }
 
 /** Shared question item UI — used both sortable (desktop) and static (mobile/readOnly). */
-export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView, onActivate, onReveal, onRevealAnswer, onShowLeaderboard, onClearActive, onEdit, onDuplicate, onDelete, onSaveToLibrary, isDragging = false, dragProps = {} }) {
+export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView, onActivate, onReveal, onRevealAnswer, onShowLeaderboard, onClearActive, onEdit, onDuplicate, onDelete, onSaveToLibrary, isPersistent = false, onTogglePersistent, isDragging = false, dragProps = {} }) {
   const qType = QUESTION_TYPES.find((t) => t.value === q.type);
   const Icon = qType?.icon || MessageSquare;
   const isActive = currentQuestion === qId;
@@ -39,6 +39,7 @@ export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView,
   const isMH = ['mysteryBox', 'hintQuiz'].includes(q.type);
   const hasAnswer = !isQuiz && q.correctAnswer;
   const hasReveal = isQuiz || hasAnswer;
+  const isAiJudge = q.type === 'aiJudge';
   const handleReveal = () => isQuiz ? onReveal?.(qId) : onRevealAnswer?.(qId);
   const stopDrag = (e) => e.stopPropagation();
 
@@ -68,6 +69,11 @@ export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView,
               {qType?.label}
             </span>
             {!readOnly && isActive && <Badge variant="primary">LIVE</Badge>}
+            {!readOnly && isPersistent && (
+              <Badge variant="neutral">
+                <Pin size={10} className="mr-0.5" /> 상시 과제
+              </Badge>
+            )}
             {isQuiz && q.betting && <Badge variant="neutral">베팅</Badge>}
             {isQuiz && q.event && <Badge variant="neutral">{q.event.label || '이벤트'}</Badge>}
             {hasReveal && q.revealedAt && <Badge variant="neutral">정답 공개</Badge>}
@@ -101,6 +107,21 @@ export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView,
                   <Square size={12} />
                 </ActionButton></Tooltip>
               </>
+            )}
+            {isAiJudge && onTogglePersistent && (
+              <Tooltip label={isPersistent ? '상시 과제 해제' : '상시 과제로 설정 (학생 화면에 항상 노출)'}>
+                <button
+                  onClick={() => onTogglePersistent(qId)}
+                  className={`p-1.5 rounded-md transition-colors duration-150 active:scale-90 ${
+                    isPersistent
+                      ? 'bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 hover:bg-amber-200 dark:hover:bg-amber-500/30'
+                      : 'text-slate-400 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200'
+                  }`}
+                  aria-label={isPersistent ? '상시 과제 해제' : '상시 과제로 설정'}
+                >
+                  {isPersistent ? <PinOff size={12} /> : <Pin size={12} />}
+                </button>
+              </Tooltip>
             )}
             {onSaveToLibrary && (
               <Tooltip label="보관함에 저장"><button onClick={() => onSaveToLibrary(qId)} className="p-1.5 rounded-md text-slate-400 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="보관함에 저장">

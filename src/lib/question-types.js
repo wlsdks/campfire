@@ -1,4 +1,4 @@
-import { ArrowUpDown, BarChart3, CheckCircle, Circle, Cloud, HelpCircle, Image, Lightbulb, MessageSquare, Swords, TextCursorInput, Thermometer, Trophy } from 'lucide-react';
+import { ArrowUpDown, BarChart3, CheckCircle, Circle, Cloud, HelpCircle, Image, Lightbulb, MessageSquare, Sparkles, Swords, TextCursorInput, Thermometer, Trophy } from 'lucide-react';
 
 /**
  * Canonical question type definitions.
@@ -19,6 +19,7 @@ export const QUESTION_TYPES = [
   { value: 'imageSlide', label: '이미지', icon: Image },
   { value: 'mysteryBox', label: '미스터리 박스', icon: HelpCircle },
   { value: 'hintQuiz', label: '힌트 퀴즈', icon: Lightbulb },
+  { value: 'aiJudge', label: 'AI 심사', icon: Sparkles },
 ];
 
 /**

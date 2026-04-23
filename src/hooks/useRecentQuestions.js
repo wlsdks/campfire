@@ -35,7 +35,11 @@ export function useRecentQuestions(sessions) {
 
           Object.entries(data).forEach(([qId, q]) => {
             const votes = q.votes || {};
-            const responseCount = Object.keys(votes).length;
+            // aiJudge는 votes가 아닌 submissions를 쓰므로 응답수 집계를 submissions 기준으로
+            const isAiJudge = q.type === 'aiJudge';
+            const responseCount = isAiJudge
+              ? Object.keys(q.submissions || {}).length
+              : Object.keys(votes).length;
             const hasCorrectAnswer = Boolean(q.correctAnswer);
             let correctRate = null;
             let correctCount = 0;

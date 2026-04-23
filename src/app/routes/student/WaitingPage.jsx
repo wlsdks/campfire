@@ -11,6 +11,7 @@ import IdleMascot from './IdleMascot';
 import { getNickname, getParticipantId } from '@/lib/participant';
 import ReviewingBanner from '@/components/ui/ReviewingBanner';
 import { useGameResult } from '@/features/games/api/useGameResult';
+import PersistentAssignmentCard from '@/features/ai-judge/components/PersistentAssignmentCard';
 
 const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 
@@ -106,7 +107,7 @@ const GAME_MODES = {
   awards: { label: '시상식 진행 중', icon: Award },
 };
 
-export default memo(function WaitingPage({ sessionId, pendingEvent = null, courseName = null, currentMode = null }) {
+export default memo(function WaitingPage({ sessionId, pendingEvent = null, courseName = null, currentMode = null, persistentAssignmentId = null, persistentAssignmentTitle = null }) {
   const { count } = useParticipants(sessionId);
   const nickname = getNickname();
   const { isWinner, winnerNames, gameResult } = useGameResult(sessionId);
@@ -117,6 +118,17 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
   return (
     <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center p-4 pb-[calc(10rem+env(safe-area-inset-bottom))] pt-20">
       <StudentHeader sessionId={sessionId} />
+
+      {/* 상시 과제 — 대기 화면에도 노출되어 학생이 언제든 제출 가능 */}
+      {persistentAssignmentId && (
+        <div className="w-full max-w-xl mb-6">
+          <PersistentAssignmentCard
+            sessionId={sessionId}
+            questionId={persistentAssignmentId}
+            questionTitle={persistentAssignmentTitle}
+          />
+        </div>
+      )}
 
       <AnimatePresence mode="wait">
         {showGameResult ? (

@@ -5,5 +5,10 @@ service firebase.storage {
       allow read: if true;
       allow write: if request.resource.size < 10 * 1024 * 1024;
     }
+    // 라이브 AI 심사 제출물 이미지 — 수업 중 학생 폰에서 업로드
+    match /ai-judge/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.resource.size < 10 * 1024 * 1024;
+    }
   }
 }

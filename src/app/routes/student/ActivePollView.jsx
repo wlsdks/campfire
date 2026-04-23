@@ -14,6 +14,8 @@ import MysteryBoxVoter from '@/features/voting/components/MysteryBoxVoter';
 import HintQuizVoter from '@/features/voting/components/HintQuizVoter';
 import CorrectAnswerRanking from '@/features/visualization/components/CorrectAnswerRanking';
 import ImageSlidePresenter from '@/features/visualization/components/ImageSlidePresenter';
+import AiJudgeSubmitter from '@/features/ai-judge/components/AiJudgeSubmitter';
+import PersistentAssignmentCard from '@/features/ai-judge/components/PersistentAssignmentCard';
 import AnswerRevealCard from '@/components/ui/AnswerRevealCard';
 import { getParticipantId } from '@/lib/participant';
 import DrumrollOverlay from '@/components/ui/DrumrollOverlay';
@@ -52,6 +54,9 @@ export default memo(function ActivePollView({
   // Team
   teamActive,
   myTeam,
+  // Persistent (상시) 과제
+  persistentAssignmentId,
+  persistentAssignmentTitle,
 }) {
   const { myVote } = useMyVote(sessionId, questionId);
   const hasVoted = !!myVote;
@@ -61,6 +66,14 @@ export default memo(function ActivePollView({
       <StudentHeader sessionId={sessionId} />
 
       <div className="w-full max-w-xl space-y-5 my-auto">
+        {/* 상시 과제 — 수업 내내 노출, 다른 질문과 독립적 */}
+        {persistentAssignmentId && (
+          <PersistentAssignmentCard
+            sessionId={sessionId}
+            questionId={persistentAssignmentId}
+            questionTitle={persistentAssignmentTitle}
+          />
+        )}
         {/* Speed quiz banner */}
         {isSpeedQuiz && question?.type === 'quiz' && (
           <SpeedQuizBanner
@@ -181,6 +194,13 @@ export default memo(function ActivePollView({
               )}
               {question.type === 'imageSlide' && (
                 <ImageSlidePresenter images={question.slideImages || []} currentSlide={question.currentSlide || 0} />
+              )}
+              {question.type === 'aiJudge' && (
+                <AiJudgeSubmitter
+                  sessionId={sessionId}
+                  questionId={questionId}
+                  disabled={timerExpired}
+                />
               )}
               {question.type === 'mysteryBox' && (
                 <>

@@ -255,7 +255,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     content = <Suspense fallback={<GameFallback />}>{gameContent}</Suspense>;
   } else if (isActive) {
     contentKey = `question-${currentQId}`;
-    content = <div className="w-full px-2 md:px-0 [&_.max-w-xl]:max-w-3xl [&_.max-w-md]:max-w-xl"><VizRenderer sessionId={sessionId} session={session} isAdmin /></div>;
+    content = <div className="w-full px-2 md:px-0 [&_.max-w-xl]:max-w-3xl [&_.max-w-md]:max-w-xl"><VizRenderer sessionId={sessionId} session={session} isAdmin isPresenter={presentMode} /></div>;
   } else if (presentMode) {
     contentKey = 'empty';
     content = <PresentEmptyState sessionId={sessionId} studentUrl={studentUrl} count={count} />;

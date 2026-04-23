@@ -212,7 +212,7 @@ export default function LivePage() {
                 )}
 
                 <div className="w-full [&_.max-w-xl]:max-w-2xl">
-                  <VizRenderer sessionId={sessionId} session={session} />
+                  <VizRenderer sessionId={sessionId} session={session} isPresenter />
                 </div>
 
                 {question?.type !== 'imageSlide' && <LiveParticipation voted={totalVotes} total={count} />}

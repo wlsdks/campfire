@@ -18,6 +18,7 @@ import CorrectAnswerRanking from './CorrectAnswerRanking';
 import ImageSlidePresenter from './ImageSlidePresenter';
 import BetDistribution from './BetDistribution';
 import ConfidenceStats from './ConfidenceStats';
+import AiJudgeViz from '@/features/ai-judge/components/AiJudgeViz';
 import Badge from '@/components/ui/Badge';
 import EmptyState from '@/components/ui/EmptyState';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
@@ -30,7 +31,7 @@ import { useCallback, lazy, Suspense, useState, useEffect } from 'react';
 const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 import { TYPE_LABELS } from '@/lib/question-types';
 
-export default memo(function VizRenderer({ sessionId, session, isAdmin = false }) {
+export default memo(function VizRenderer({ sessionId, session, isAdmin = false, isPresenter = false }) {
   const currentQId = session?.currentQuestion;
   const currentMode = session?.currentMode;
   const currentQuestion = session?.questions?.[currentQId];
@@ -246,6 +247,14 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false }
               {isAdmin && <AISummaryBanner sessionId={sessionId} questionId={currentQId} questionTitle={question.title} questionType="qna" />}
               <QACards sessionId={sessionId} questionId={currentQId} title={question.title} />
             </>
+          )}
+          {question.type === 'aiJudge' && (
+            <AiJudgeViz
+              sessionId={sessionId}
+              questionId={currentQId}
+              isAdmin={isAdmin}
+              isPresenter={isPresenter}
+            />
           )}
         </div>
       </ErrorBoundary>

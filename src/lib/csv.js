@@ -79,6 +79,38 @@ export function exportQuestionSummary(session, participants, filename) {
 
   sorted.forEach((q, i) => {
     const { data } = q;
+
+    // aiJudge: votes가 아닌 submissions/aiTop3 경로를 쓴다 → 별도 집계
+    if (data.type === 'aiJudge') {
+      const submissions = data.submissions || {};
+      const subCount = Object.keys(submissions).length;
+      const responseRate = participantCount > 0 ? Math.round((subCount / participantCount) * 100) : 0;
+      const top3 = data.aiTop3 || {};
+      const topStr = ['first', 'second', 'third']
+        .map((k, idx) => {
+          const w = top3[k];
+          if (!w) return null;
+          const rank = ['1등', '2등', '3등'][idx];
+          const score = typeof w.score === 'number' ? w.score.toFixed(1) : '-';
+          return `${rank}: ${w.name} (${score})`;
+        })
+        .filter(Boolean)
+        .join(' / ');
+      rows.push([
+        i + 1,
+        data.title || '',
+        QTYPE_LABELS[data.type] || data.type,
+        '',
+        '',
+        subCount,
+        responseRate,
+        '',
+        '',
+        topStr || '심사 미완료',
+      ]);
+      return;
+    }
+
     const votes = data.votes || {};
     const voteCount = Object.keys(votes).length;
     const responseRate = participantCount > 0 ? Math.round((voteCount / participantCount) * 100) : 0;
@@ -162,6 +194,20 @@ export function exportParticipantResponses(session, participants, scores, filena
     const row = [nickname];
 
     sorted.forEach((q) => {
+      // aiJudge는 votes 대신 submissions 경로를 본다
+      if (q.data.type === 'aiJudge') {
+        const sub = q.data.submissions?.[pid];
+        const result = q.data.aiResults?.[pid];
+        const avg = result?.summary?.avgScore;
+        if (sub) {
+          const parts = [sub.title || '(제목없음)'];
+          if (typeof avg === 'number') parts.push(`${avg.toFixed(1)}점`);
+          row.push(parts.join(' · '));
+        } else {
+          row.push('');
+        }
+        return;
+      }
       const vote = q.data.votes?.[pid];
       const betSuffix = q.data.betting && vote?.bet && parseInt(vote.bet, 10) > 1
         ? ` (${vote.bet}x)` : '';

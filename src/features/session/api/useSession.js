@@ -19,6 +19,7 @@ const SECONDARY_FIELDS = [
   'reviewingUntil',
   'drumroll',
   'gameState',
+  'persistentAssignmentId',
 ];
 
 /**

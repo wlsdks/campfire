@@ -8,6 +8,7 @@ import { isQuizQuestion } from '@/lib/quiz';
 import { useAdminKeyboardShortcuts } from '@/hooks/useAdminKeyboardShortcuts';
 import { useQuestionLibrary } from '@/features/questions/api/useQuestionLibrary';
 import { useQuestionActions } from '@/hooks/useQuestionActions';
+import { usePersistentAssignment } from '@/features/ai-judge/api/useLiveJudging';
 import QuestionForm from './QuestionForm';
 import QuestionList from './QuestionList';
 import QuickProgressCard from './QuickProgressCard';
@@ -67,6 +68,7 @@ export default function QuestionManager({
   const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
   const [aiGenOpen, setAiGenOpen] = useState(false);
   const { saveQuestion: saveToLibrary } = useQuestionLibrary(adminUid);
+  const { assignmentId: persistentAssignmentId, setAssignment: setPersistent, clearAssignment: clearPersistent } = usePersistentAssignment(sessionId);
 
   const {
     error, toast, questionList,
@@ -74,6 +76,11 @@ export default function QuestionManager({
     deleteQuestion, duplicateQuestion, moveQuestion, reorderQuestion,
     importFromLibrary, revealQuiz, revealHint, revealAnswer, resetQuestion, resetAllQuestions, showLeaderboard,
   } = useQuestionActions(sessionId, questions, currentQuestion, scores, participants);
+
+  const handleTogglePersistent = useCallback((qId) => {
+    if (persistentAssignmentId === qId) clearPersistent();
+    else setPersistent(qId);
+  }, [persistentAssignmentId, setPersistent, clearPersistent]);
 
   const activeIndex = questionList.findIndex(([qId]) => qId === currentQuestion);
   const currentEntry = activeIndex >= 0 ? questionList[activeIndex] : null;
@@ -205,6 +212,8 @@ export default function QuestionManager({
         onMoveUp={(qId) => moveQuestion(qId, 'up')} onMoveDown={(qId) => moveQuestion(qId, 'down')}
         readOnly={readOnly} onView={readOnly ? onViewQuestion : undefined}
         onSaveToLibrary={!readOnly && adminUid ? handleSaveToLibrary : undefined}
+        persistentAssignmentId={persistentAssignmentId}
+        onTogglePersistent={!readOnly ? handleTogglePersistent : undefined}
       />
 
       {!readOnly && adminUid && (
