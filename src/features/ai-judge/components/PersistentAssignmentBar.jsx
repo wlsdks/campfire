@@ -39,6 +39,13 @@ export default memo(function PersistentAssignmentBar({ sessionId, session, onAct
     clearTimeout(hoverTimerRef.current);
     hoverTimerRef.current = setTimeout(() => setHoverOpen(false), 120);
   }
+  // 모바일 터치 — hover 개념 없어 탭으로 토글. 바깥 클릭은 onBlur로 처리(focus 시 open).
+  function handleToggleClick(e) {
+    e.stopPropagation();
+    if (count === 0) return;
+    clearTimeout(hoverTimerRef.current);
+    setHoverOpen((prev) => !prev);
+  }
 
   return (
     <>
@@ -66,6 +73,7 @@ export default memo(function PersistentAssignmentBar({ sessionId, session, onAct
               tabIndex={count > 0 ? 0 : -1}
               aria-haspopup="dialog"
               aria-expanded={hoverOpen}
+              onClick={handleToggleClick}
               className={`inline-flex items-center gap-0.5 rounded ${count > 0 ? 'cursor-pointer hover:text-slate-700 dark:hover:text-slate-200' : ''} focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40`}
             >
               <Users size={10} /> {count}{count > 0 ? '명 제출' : '명'}
