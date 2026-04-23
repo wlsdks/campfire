@@ -1,6 +1,7 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Sparkles, Medal, Award, Lock } from 'lucide-react';
+import { Trophy, Sparkles, Medal, Award, Lock, X } from 'lucide-react';
+import { createPortal } from 'react-dom';
 import { getJudgeById } from '@/features/assignments/api/judges';
 
 const RANK_META = [
@@ -25,6 +26,11 @@ export default memo(function LiveResultHero({ top3, myParticipantId, myResult, m
   const myRankVisible = myRank
     ? revealOrder.slice(0, revealedUpTo).includes(myRank)
     : false;
+
+  // 클릭한 랭크의 상세 사유 모달
+  const [detailRank, setDetailRank] = useState(null);
+  const detailWinner = detailRank ? top3?.[detailRank] : null;
+  const detailMeta = detailRank ? RANK_META.find(r => r.key === detailRank) : null;
 
   return (
     <div className="space-y-4">
@@ -91,22 +97,28 @@ export default memo(function LiveResultHero({ top3, myParticipantId, myResult, m
         ) : (
           <div className="space-y-2.5">
             <AnimatePresence initial={false}>
-              {revealOrder.slice(0, revealedUpTo).map((key, i) => {
+              {/* 공개된 순위 — 1등이 가장 위에 오도록 역순 렌더. revealOrder는 드라마틱 공개용(3→2→1)이라 유지하고 표시만 뒤집음. */}
+              {[...revealOrder.slice(0, revealedUpTo)].reverse().map((key) => {
                 const meta = RANK_META.find(r => r.key === key);
                 const w = top3?.[key];
                 if (!w) return null;
                 const isMe = w.submissionId === myParticipantId;
                 return (
-                  <motion.div
+                  <motion.button
                     key={key}
                     layout
+                    type="button"
+                    onClick={() => setDetailRank(key)}
                     initial={{ opacity: 0, scale: 0.9, y: -8 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ type: 'spring', stiffness: 300, damping: 22, delay: i === revealedUpTo - 1 ? 0.05 : 0 }}
-                    className={`flex items-start gap-3 p-3 rounded-xl ${
-                      isMe ? 'bg-slate-900 dark:bg-slate-100' : 'bg-slate-50 dark:bg-slate-700/50'
+                    transition={{ type: 'spring', stiffness: 300, damping: 22 }}
+                    className={`w-full text-left flex items-start gap-3 p-3 rounded-xl transition-all active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40 ${
+                      isMe
+                        ? 'bg-slate-900 dark:bg-slate-100 hover:bg-slate-800 dark:hover:bg-slate-200'
+                        : 'bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700'
                     }`}
+                    aria-label={`${meta.title} ${w.name} 상세 사유 보기`}
                   >
                     <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${meta.color} flex items-center justify-center shrink-0`}>
                       <meta.Icon size={16} className="text-white" />
@@ -129,12 +141,15 @@ export default memo(function LiveResultHero({ top3, myParticipantId, myResult, m
                         </span>
                       </div>
                       {w.highlight && (
-                        <p className={`text-xs mt-1 leading-relaxed ${isMe ? 'text-white/80 dark:text-slate-900/80' : 'text-slate-500 dark:text-slate-400'}`}>
+                        <p className={`text-xs mt-1 leading-relaxed line-clamp-2 ${isMe ? 'text-white/80 dark:text-slate-900/80' : 'text-slate-500 dark:text-slate-400'}`}>
                           "{w.highlight}"
                         </p>
                       )}
+                      <p className={`text-[10px] mt-1 ${isMe ? 'text-white/60 dark:text-slate-900/60' : 'text-slate-400 dark:text-slate-500'}`}>
+                        탭해서 상세 사유 보기
+                      </p>
                     </div>
-                  </motion.div>
+                  </motion.button>
                 );
               })}
             </AnimatePresence>
@@ -154,6 +169,84 @@ export default memo(function LiveResultHero({ top3, myParticipantId, myResult, m
           </div>
         )}
       </div>
+
+      {/* 상세 사유 모달 — 카드 클릭 시 전체 심사평 + 하이라이트 */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {detailWinner && detailMeta && (
+            <motion.div
+              key="detail-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.18 }}
+              className="fixed inset-0 z-[70] bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center sm:p-4"
+              onClick={(e) => { if (e.target === e.currentTarget) setDetailRank(null); }}
+            >
+              <motion.div
+                initial={{ y: 40, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 20, opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 320, damping: 26 }}
+                role="dialog"
+                aria-modal="true"
+                aria-label={`${detailMeta.title} 상세 사유`}
+                className="w-full sm:w-[min(92vw,480px)] max-h-[85dvh] overflow-y-auto bg-white dark:bg-slate-800 rounded-t-2xl sm:rounded-2xl shadow-2xl"
+              >
+                {/* Header */}
+                <div className={`bg-gradient-to-br ${detailMeta.color} px-5 pt-[max(1.25rem,env(safe-area-inset-top))] pb-5 text-white relative`}>
+                  <button
+                    onClick={() => setDetailRank(null)}
+                    aria-label="닫기"
+                    className="absolute top-3 right-3 p-2 min-h-[40px] min-w-[40px] rounded-lg text-white/80 hover:bg-white/20 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                  >
+                    <X size={20} />
+                  </button>
+                  <div className="flex items-center gap-2">
+                    <detailMeta.Icon size={20} />
+                    <p className="text-sm font-bold">{detailMeta.title}</p>
+                  </div>
+                  <h3 className="text-2xl font-bold mt-2 break-words">{detailWinner.name}</h3>
+                  <div className="flex items-baseline gap-1.5 mt-1">
+                    <span className="text-3xl font-bold tabular-nums">
+                      {typeof detailWinner.score === 'number' ? detailWinner.score.toFixed(1) : '-'}
+                    </span>
+                    <span className="text-sm opacity-80">/ 10점</span>
+                  </div>
+                </div>
+
+                {/* Body */}
+                <div className="p-5 space-y-4 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+                  {detailWinner.highlight && (
+                    <div>
+                      <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">한 줄 하이라이트</p>
+                      <p className="text-base font-semibold text-slate-900 dark:text-slate-100 leading-relaxed">
+                        "{detailWinner.highlight}"
+                      </p>
+                    </div>
+                  )}
+                  {detailWinner.comment && (
+                    <div>
+                      <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+                        {detailWinner.bestJudgeName || '대표 심사위원'} 심사평
+                      </p>
+                      <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed whitespace-pre-wrap">
+                        {detailWinner.comment}
+                      </p>
+                    </div>
+                  )}
+                  {!detailWinner.comment && !detailWinner.highlight && (
+                    <p className="text-sm text-slate-400 text-center py-4">
+                      심사평 정보가 없어요
+                    </p>
+                  )}
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </div>
   );
 });

@@ -304,7 +304,7 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => fileInputRef.current?.click()}
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); fileInputRef.current?.click(); }}
               className="inline-flex items-center gap-1.5 px-3 py-2 min-h-[36px] text-[12px] font-medium bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40"
             >
               <Upload size={13} /> HTML 파일 선택
@@ -315,12 +315,13 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
                 <span className="truncate">{codeFileName}</span>
               </span>
             )}
+            {/* sr-only — display:none이면 일부 Safari에서 click() 차단 사례가 있어 visually hidden 패턴 사용 */}
             <input
               ref={fileInputRef}
               type="file"
               accept=".html,.htm,text/html"
               onChange={handleFileUpload}
-              className="hidden"
+              className="sr-only"
               aria-label="HTML 파일 업로드"
             />
           </div>

@@ -82,7 +82,7 @@ export default memo(function ImageUpload({ value, onChange, folder = 'questions'
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             type="button"
-            onClick={() => inputRef.current?.click()}
+            onClick={(e) => { e.preventDefault(); inputRef.current?.click(); }}
             disabled={uploading}
             className="w-full py-4 rounded-xl border border-dashed border-slate-200 dark:border-slate-600 text-slate-400 dark:text-slate-500 hover:border-slate-300 dark:hover:border-slate-500 hover:text-slate-500 dark:hover:text-slate-400 transition-colors flex items-center justify-center gap-2 text-sm active:scale-[0.98]"
           >
@@ -105,12 +105,13 @@ export default memo(function ImageUpload({ value, onChange, folder = 'questions'
         <p className="text-xs text-red-500 text-center">{error}</p>
       )}
 
+      {/* sr-only — display:none이면 일부 브라우저(Safari)에서 click() 트리거가 차단되어 파일 선택기가 안 열리는 사례 존재 */}
       <input
         ref={inputRef}
         type="file"
         accept={ACCEPTED}
         onChange={handleFile}
-        className="hidden"
+        className="sr-only"
       />
     </div>
   );
