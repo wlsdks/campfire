@@ -1,6 +1,6 @@
 import { memo, useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, HelpCircle, ThumbsUp } from 'lucide-react';
+import { ChevronDown, HelpCircle, ThumbsUp, Sparkles } from 'lucide-react';
 import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
@@ -32,12 +32,13 @@ const ClassQuestionItem = memo(function ClassQuestionItem({ q, onClick }) {
           )}
         </div>
         {q.answered && (
-          <span className={`text-[10px] font-medium ${
+          <span className={`text-[10px] font-medium inline-flex items-center gap-0.5 ${
             q.answeredByRole === 'ai'
               ? 'text-indigo-500 dark:text-indigo-400'
               : 'text-slate-400 dark:text-slate-500'
           }`}>
-            {q.answeredByRole === 'staff' ? '스태프 답변 완료' : q.answeredByRole === 'ai' ? '✨ AI 답변 완료' : '강사 답변 완료'}
+            {q.answeredByRole === 'ai' && <Sparkles size={10} className="shrink-0" />}
+            {q.answeredByRole === 'staff' ? '스태프 답변 완료' : q.answeredByRole === 'ai' ? 'AI 답변 완료' : '강사 답변 완료'}
           </span>
         )}
       </div>
