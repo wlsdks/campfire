@@ -126,7 +126,7 @@ export default memo(function PersistentAssignmentBar({ sessionId, session, onAct
               size="sm"
               aria-label="상시 과제 활성화 — 심사 패널을 엽니다"
             >
-              <Sparkles size={13} /> 심사하기
+              <Sparkles size={13} /> 심사 화면으로
             </Button>
           )}
           <button
