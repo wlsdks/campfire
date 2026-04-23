@@ -1,4 +1,4 @@
-import { useState, useCallback, memo } from 'react';
+import { useState, useEffect, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { StickyNote, Plus, Check, X } from 'lucide-react';
 
@@ -8,6 +8,7 @@ import { StickyNote, Plus, Check, X } from 'lucide-react';
  * 읽은 메모는 자동으로 아래로 이동 + 흐리게.
  */
 
+const NOTES_CHANGED_EVENT = 'pick-notes-changed';
 function getNotesKey(sessionId) { return `pick_notes_${sessionId}`; }
 
 function loadNotes(sessionId) {
@@ -18,6 +19,8 @@ function loadNotes(sessionId) {
 
 function saveNotes(sessionId, notes) {
   localStorage.setItem(getNotesKey(sessionId), JSON.stringify(notes));
+  // 다른 useNotesState 구독자(예: InstructorCommHub 배지)에 즉시 반영
+  window.dispatchEvent(new CustomEvent(NOTES_CHANGED_EVENT, { detail: { sessionId } }));
 }
 
 const NoteItem = memo(function NoteItem({ note, onToggle, onDelete }) {
@@ -51,9 +54,26 @@ const NoteItem = memo(function NoteItem({ note, onToggle, onDelete }) {
   );
 });
 
-// unread/read 개수 외부에서 미리 미리보기 배지에 쓸 수 있도록 훅 분리
+// unread/read 개수 외부에서 미리 미리보기 배지에 쓸 수 있도록 훅 분리.
+// localStorage는 React state와 독립이라 NOTES_CHANGED_EVENT와 storage 이벤트를 구독해
+// InstructorNotes 저장 시 동일 sessionId 구독자가 자동 갱신.
 export function useNotesState(sessionId) {
   const [notes, setNotes] = useState(() => loadNotes(sessionId));
+  useEffect(() => {
+    if (!sessionId) return;
+    const handler = (e) => {
+      if (e.detail?.sessionId === sessionId) setNotes(loadNotes(sessionId));
+    };
+    const storageHandler = (e) => {
+      if (e.key === getNotesKey(sessionId)) setNotes(loadNotes(sessionId));
+    };
+    window.addEventListener(NOTES_CHANGED_EVENT, handler);
+    window.addEventListener('storage', storageHandler);
+    return () => {
+      window.removeEventListener(NOTES_CHANGED_EVENT, handler);
+      window.removeEventListener('storage', storageHandler);
+    };
+  }, [sessionId]);
   const unreadCount = notes.filter((n) => !n.done).length;
   return { notes, setNotes, unreadCount };
 }
