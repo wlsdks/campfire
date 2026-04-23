@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { ref, set, remove, update, get } from 'firebase/database';
+import { getServerNow } from '@/features/timer/api/useTimer';
 import { db } from '@/lib/firebase';
 import { generateQuestionId } from '@/lib/utils';
 import {
@@ -11,8 +12,10 @@ import {
 } from '@/lib/quiz';
 import { useToast } from '@/hooks/useToast';
 
+// 서버 시간 기준 — 강사 기기 시계 오차 없이 activatedAt/revealedAt/awardedAt 등
+// 모든 시간 필드가 일관된 기준으로 저장됨 (timer의 endTime과 동일 기준).
 function getNow() {
-  return Date.now();
+  return getServerNow();
 }
 
 export function useQuestionActions(sessionId, questions, currentQuestion, scores, participants) {
