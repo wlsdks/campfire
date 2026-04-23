@@ -111,11 +111,11 @@ export function useMySubmission(sessionId, questionId, participantId) {
 export function useSubmitLive(sessionId, questionId) {
   const submit = useCallback(async (participantId, { name, title, description, imageUrl, code }) => {
     if (!sessionId || !questionId || !participantId) throw new Error('세션 정보 누락');
-    // 기존 이미지 URL이 다르면 이전 이미지는 Storage에서 삭제 (재제출 누수 방지)
     const prevSnap = await get(ref(db, `sessions/${sessionId}/questions/${questionId}/submissions/${participantId}`));
-    const prevImageUrl = prevSnap.val()?.imageUrl;
-    if (prevImageUrl && prevImageUrl !== imageUrl) {
-      await deleteStorageImage(prevImageUrl);
+    const prevData = prevSnap.val();
+    // 기존 이미지 URL이 다르면 이전 이미지는 Storage에서 삭제 (재제출 누수 방지)
+    if (prevData?.imageUrl && prevData.imageUrl !== imageUrl) {
+      await deleteStorageImage(prevData.imageUrl);
     }
     const submission = {
       name: name || '익명',
@@ -123,7 +123,9 @@ export function useSubmitLive(sessionId, questionId) {
       description: description || '',
       imageUrl: imageUrl || null,
       code: code || '',
-      submittedAt: serverTimestamp(),
+      // 최초 제출 시각 보존 — 재제출이 정렬 순서를 뒤섞지 않도록 (전자칠판 SubmissionGrid,
+      // 심사 순서가 submittedAt 오름차순이므로 첫 제출 기준 유지가 공정)
+      submittedAt: prevData?.submittedAt || serverTimestamp(),
     };
     await set(ref(db, `sessions/${sessionId}/questions/${questionId}/submissions/${participantId}`), submission);
   }, [sessionId, questionId]);
