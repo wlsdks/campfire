@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { colors } from '@/lib/design-tokens';
+import { getServerNow } from '@/features/timer/api/useTimer';
 
 const RADIUS = 44;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
@@ -19,8 +20,8 @@ export default function TimerRing({ endTime, duration, onExpire, size = 'md', da
     if (!endTime) return;
 
     function tick() {
-      const now = Date.now();
-      const remaining = Math.max(0, Math.ceil((endTime - now) / 1000));
+      // 서버 시간 기준 remaining — 학생 기기 시계 편차 보정 (endTime은 서버 시간 기준 저장됨)
+      const remaining = Math.max(0, Math.ceil((endTime - getServerNow()) / 1000));
       setSecondsLeft(remaining);
       if (remaining <= 0) {
         onExpire?.();

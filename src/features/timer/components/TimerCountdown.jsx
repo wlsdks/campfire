@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Clock } from 'lucide-react';
+import { getServerNow } from '@/features/timer/api/useTimer';
 
 function getColor(secondsLeft, totalSeconds) {
   const ratio = totalSeconds > 0 ? secondsLeft / totalSeconds : 0;
@@ -31,7 +32,8 @@ export default function TimerCountdown({ endTime, duration, onExpire }) {
     if (!endTime) return;
 
     function tick() {
-      const remaining = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+      // 서버 시간 기준 remaining — 학생 기기 시계 편차 보정 (endTime은 서버 기준으로 저장됨)
+      const remaining = Math.max(0, Math.ceil((endTime - getServerNow()) / 1000));
       setSecondsLeft(remaining);
       if (remaining <= 0) {
         onExpire?.();
