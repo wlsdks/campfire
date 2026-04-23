@@ -8,6 +8,7 @@ import ClassQuestionList from '@/features/class-questions/components/ClassQuesti
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
 import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
+import CollapsibleSection from './CollapsibleSection';
 
 /**
  * 강사 우측 소통 허브 — 메모/손들기/긴급질문/수업질문을 하나의 카드 안 탭으로 통합.
@@ -74,10 +75,19 @@ export default memo(function InstructorCommHub({ sessionId }) {
   // 긴급 질문은 pulsing 빨간 배지로 시선 유도 — 강제 탭 전환은 강사가 현재 작업 중인 탭을 방해할 수 있어 배제
   const counts = { notes: notesUnread, hands: handCount, urgent: urgentCount, class: classCount };
 
+  // 접혔을 때 헤더에 노출할 요약 — 0 초과 카운트만 간결하게 나열
+  const summaryParts = [];
+  if (urgentCount > 0) summaryParts.push(`긴급 ${urgentCount}`);
+  if (handCount > 0) summaryParts.push(`손들기 ${handCount}`);
+  if (classCount > 0) summaryParts.push(`질문 ${classCount}`);
+  if (notesUnread > 0) summaryParts.push(`메모 ${notesUnread}`);
+  const summary = summaryParts.length > 0 ? summaryParts.join(' · ') : '새 항목 없음';
+  const hasUrgent = urgentCount > 0;
+
   return (
-    <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden">
+    <CollapsibleSection title="소통" summary={summary} attention={hasUrgent} defaultOpen>
       {/* Tabs */}
-      <div role="tablist" aria-label="강사 소통" className="flex items-stretch border-b border-slate-200 dark:border-slate-700">
+      <div role="tablist" aria-label="강사 소통" className="flex items-stretch border-b border-slate-100 dark:border-slate-700">
         {TABS.map((t) => (
           <TabButton
             key={t.id}
@@ -98,6 +108,6 @@ export default memo(function InstructorCommHub({ sessionId }) {
         {activeTab === 'urgent' && <UrgentQuestionList sessionId={sessionId} embedded />}
         {activeTab === 'class' && <ClassQuestionList sessionId={sessionId} embedded />}
       </div>
-    </div>
+    </CollapsibleSection>
   );
 });

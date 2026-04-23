@@ -6,9 +6,8 @@ import QRCode from '@/components/ui/QRCode';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
 import TeamScoreboard from '@/features/teams/components/TeamScoreboard';
 import InstructorCommHub from './InstructorCommHub';
+import InstructorPeopleHub from './InstructorPeopleHub';
 import Button from '@/components/ui/Button';
-import Avatar from '@/components/ui/Avatar';
-import { useStaffAssignment } from '@/features/course/api/useStaffAssignment';
 
 function RightPanelAccordion({ title, count, defaultOpen = false, children }) {
   const [open, setOpen] = useState(defaultOpen);
@@ -44,29 +43,6 @@ function RightPanelAccordion({ title, count, defaultOpen = false, children }) {
         )}
       </AnimatePresence>
     </div>
-  );
-}
-
-function StaffSection({ courseId }) {
-  const { staffList } = useStaffAssignment(courseId);
-
-  if (!courseId) return null;
-
-  return (
-    <RightPanelAccordion title="스태프" count={staffList.length} defaultOpen={staffList.length > 0}>
-      {staffList.length === 0 ? (
-        <p className="text-xs text-slate-400 py-1">배정된 스태프가 없습니다</p>
-      ) : (
-        <div className="space-y-1.5">
-          {staffList.map((s) => (
-            <div key={s.uid} className="flex items-center gap-2 py-1">
-              <Avatar name={s.displayName} size="xs" />
-              <span className="text-sm text-slate-700 dark:text-slate-300">{s.displayName}</span>
-            </div>
-          ))}
-        </div>
-      )}
-    </RightPanelAccordion>
   );
 }
 
@@ -143,13 +119,12 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
         </RightPanelAccordion>
       )}
 
-      {/* Staff list */}
-      <StaffSection courseId={courseId} />
-
-      {/* Participant list accordion */}
-      <RightPanelAccordion title="참여자 목록" count={onlineList.length} defaultOpen>
-        <ParticipantList participants={onlineList} voteCounts={voteCounts} />
-      </RightPanelAccordion>
+      {/* 참여자 + 스태프 — 탭 통합 */}
+      <InstructorPeopleHub
+        onlineList={onlineList}
+        voteCounts={voteCounts}
+        courseId={courseId}
+      />
 
       {/* QR */}
       <div className="pt-2">
