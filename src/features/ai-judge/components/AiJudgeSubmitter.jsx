@@ -187,7 +187,7 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
             <button
               onClick={() => setWithdrawConfirmOpen(true)}
               aria-label="제출 취소"
-              className="inline-flex items-center gap-1 px-3 py-2 min-h-[44px] text-sm text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40"
+              className="inline-flex items-center gap-1 px-3 py-2 min-h-[44px] text-sm text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40"
             >
               <Trash2 size={14} /> 취소
             </button>
