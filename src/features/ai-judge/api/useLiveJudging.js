@@ -117,12 +117,14 @@ export function useSubmitLive(sessionId, questionId) {
     if (prevData?.imageUrl && prevData.imageUrl !== imageUrl) {
       await deleteStorageImage(prevData.imageUrl);
     }
+    // database.rules.json validator 한계값으로 슬라이스 — 초과 시 rules가 제출 자체를 거부해
+    // 학생에게 "실패" 에러만 뜨고 원인 불명확. 클라이언트에서 방어해 UX 보전.
     const submission = {
-      name: name || '익명',
-      title: title || '',
-      description: description || '',
-      imageUrl: imageUrl || null,
-      code: code || '',
+      name: (name || '익명').slice(0, 20),
+      title: (title || '').slice(0, 200),
+      description: (description || '').slice(0, 500),
+      imageUrl: imageUrl ? String(imageUrl).slice(0, 2000) : null,
+      code: (code || '').slice(0, 50000),
       // 최초 제출 시각 보존 — 재제출이 정렬 순서를 뒤섞지 않도록 (전자칠판 SubmissionGrid,
       // 심사 순서가 submittedAt 오름차순이므로 첫 제출 기준 유지가 공정)
       submittedAt: prevData?.submittedAt || serverTimestamp(),
