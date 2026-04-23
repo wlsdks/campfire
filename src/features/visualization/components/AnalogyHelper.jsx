@@ -92,7 +92,10 @@ export default function AnalogyHelper({ questionTitle, options, correctAnswer })
                             onClick={() => toggle(i)}
                             className="w-full flex items-center justify-between px-3 py-2.5 text-left hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
                           >
-                            <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100">💡 {a.title}</span>
+                            <span className="text-[13px] font-semibold text-slate-900 dark:text-slate-100 flex items-center gap-1.5 min-w-0">
+                              <Lightbulb size={13} className="text-amber-500 shrink-0" />
+                              <span className="truncate">{a.title}</span>
+                            </span>
                             {open ? <ChevronUp size={14} className="text-slate-400 shrink-0" /> : <ChevronDown size={14} className="text-slate-400 shrink-0" />}
                           </button>
                           <AnimatePresence>
