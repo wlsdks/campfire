@@ -42,14 +42,15 @@ export default memo(function AiJudgeViz({ sessionId, questionId, isAdmin, isPres
   }
 
   return (
-    <div className={`w-full ${isPresenter ? 'max-w-[92rem]' : 'max-w-3xl'} mx-auto space-y-5 px-2`}>
+    // isPresenter: 상단 제목/AnalogyHelper 등 외부 요소가 공간 차지 → 간격/헤더 축소로 그리드 확보
+    <div className={`w-full ${isPresenter ? 'max-w-[92rem] space-y-3' : 'max-w-3xl space-y-5'} mx-auto px-2`}>
       <div className="flex items-center justify-between px-1">
-        <h3 className={`font-bold text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-2 ${isPresenter ? 'text-2xl' : 'text-lg'}`}>
-          <Sparkles size={isPresenter ? 22 : 18} className="text-slate-400" />
+        <h3 className={`font-bold text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-2 ${isPresenter ? 'text-base' : 'text-lg'}`}>
+          <Sparkles size={isPresenter ? 15 : 18} className="text-slate-400" />
           실시간 제출
         </h3>
-        <span className={`inline-flex items-center gap-1 text-slate-500 dark:text-slate-400 ${isPresenter ? 'text-lg' : 'text-sm'}`}>
-          <Users size={isPresenter ? 18 : 13} /> {submissions.length}건
+        <span className={`inline-flex items-center gap-1 text-slate-500 dark:text-slate-400 ${isPresenter ? 'text-sm' : 'text-sm'}`}>
+          <Users size={13} /> {submissions.length}건
         </span>
       </div>
 
@@ -236,14 +237,15 @@ const JudgeLiveCard = memo(function JudgeLiveCard({ judge, log }) {
  * 소규모(1~3): 큰 카드로 주목. 중규모(4~12): 3~4열. 대규모(13+): 5~6열로 전체 조망.
  */
 // 구간별 카드 종횡비 — 카드 수가 많아질수록 세로를 압축해 그리드가 뷰포트 높이를 넘지 않게.
-// 제출자 5~30명 범위에서 2~3줄 쌓임 + aspect-square면 1080p 뷰포트에서도 하단 잘림 발생.
+// 1080p 뷰포트 기준 상단 제목/VizRenderer 헤더 제외하면 실제 가용 높이 ~820px.
+// 카드 2줄 + gap 을 고려해 aspect + pad를 타이트하게 설정.
 function getPresenterGridConfig(count) {
-  if (count <= 1) return { cols: 'grid-cols-1 sm:grid-cols-1', gap: 'gap-6', maxW: 'max-w-md', pad: 'p-5', name: 'text-2xl', title: 'text-base', aspect: 'aspect-square' };
-  if (count <= 2) return { cols: 'grid-cols-1 sm:grid-cols-2', gap: 'gap-5', maxW: 'max-w-3xl', pad: 'p-4', name: 'text-xl', title: 'text-sm', aspect: 'aspect-square' };
-  if (count <= 6) return { cols: 'grid-cols-2 sm:grid-cols-3', gap: 'gap-5', maxW: 'max-w-5xl', pad: 'p-4', name: 'text-lg', title: 'text-sm', aspect: 'aspect-[4/3]' };
-  if (count <= 12) return { cols: 'grid-cols-3 sm:grid-cols-4', gap: 'gap-4', maxW: 'max-w-6xl', pad: 'p-3', name: 'text-base', title: 'text-xs', aspect: 'aspect-[4/3]' };
-  if (count <= 30) return { cols: 'grid-cols-4 sm:grid-cols-5', gap: 'gap-3', maxW: 'max-w-7xl', pad: 'p-2.5', name: 'text-sm', title: 'text-[11px]', aspect: 'aspect-[3/2]' };
-  return { cols: 'grid-cols-5 sm:grid-cols-6', gap: 'gap-2.5', maxW: 'max-w-[90rem]', pad: 'p-2', name: 'text-xs', title: 'text-[10px]', aspect: 'aspect-[3/2]' };
+  if (count <= 1) return { cols: 'grid-cols-1 sm:grid-cols-1', gap: 'gap-6', maxW: 'max-w-md', pad: 'p-5', name: 'text-2xl', title: 'text-base', aspect: 'aspect-[4/3]' };
+  if (count <= 2) return { cols: 'grid-cols-1 sm:grid-cols-2', gap: 'gap-5', maxW: 'max-w-3xl', pad: 'p-4', name: 'text-xl', title: 'text-sm', aspect: 'aspect-[4/3]' };
+  if (count <= 6) return { cols: 'grid-cols-2 sm:grid-cols-3', gap: 'gap-4', maxW: 'max-w-5xl', pad: 'p-3', name: 'text-base', title: 'text-xs', aspect: 'aspect-[3/2]' };
+  if (count <= 12) return { cols: 'grid-cols-3 sm:grid-cols-4', gap: 'gap-3', maxW: 'max-w-6xl', pad: 'p-2.5', name: 'text-sm', title: 'text-xs', aspect: 'aspect-[3/2]' };
+  if (count <= 30) return { cols: 'grid-cols-4 sm:grid-cols-5', gap: 'gap-2.5', maxW: 'max-w-7xl', pad: 'p-2', name: 'text-sm', title: 'text-[11px]', aspect: 'aspect-[16/9]' };
+  return { cols: 'grid-cols-5 sm:grid-cols-6', gap: 'gap-2', maxW: 'max-w-[90rem]', pad: 'p-1.5', name: 'text-xs', title: 'text-[10px]', aspect: 'aspect-[16/9]' };
 }
 
 const SubmissionGrid = memo(function SubmissionGrid({ submissions, isPresenter }) {

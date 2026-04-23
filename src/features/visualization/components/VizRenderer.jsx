@@ -96,21 +96,25 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false, 
         </Suspense>
       )}
 
-      {/* Header — hidden for Q&A, or when hideTitle is set */}
-      {!isQA && !question.hideTitle && (
-      <div className="text-center space-y-2 self-center">
-        <Badge variant="primary">{TYPE_LABELS[question.type] || question.type}</Badge>
-        <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight leading-tight">{question.title}</h2>
-        {hasCorrectAnswer && isQuizQuestion(question) && (
-          <p className="text-slate-400 text-sm">
-            {answerRevealed ? `정답: ${question.correctAnswer}` : '정답 공개 전입니다. 먼저 답안을 모아보세요.'}
-          </p>
-        )}
-        {question.imageUrl && (
-          <img src={question.imageUrl} alt="" className="mt-3 max-h-48 rounded-xl object-cover mx-auto" />
-        )}
-      </div>
-      )}
+      {/* Header — hidden for Q&A, or when hideTitle is set.
+          aiJudge + isPresenter 조합은 상단 공간이 커서 그리드 잘림 → 제목/간격 축소. */}
+      {!isQA && !question.hideTitle && (() => {
+        const compact = isPresenter && question.type === 'aiJudge';
+        return (
+          <div className={`text-center self-center ${compact ? 'space-y-1' : 'space-y-2'}`}>
+            <Badge variant="primary">{TYPE_LABELS[question.type] || question.type}</Badge>
+            <h2 className={`${compact ? 'text-xl' : 'text-3xl'} font-bold text-slate-900 dark:text-slate-100 tracking-tight leading-tight`}>{question.title}</h2>
+            {hasCorrectAnswer && isQuizQuestion(question) && (
+              <p className="text-slate-400 text-sm">
+                {answerRevealed ? `정답: ${question.correctAnswer}` : '정답 공개 전입니다. 먼저 답안을 모아보세요.'}
+              </p>
+            )}
+            {question.imageUrl && (
+              <img src={question.imageUrl} alt="" className="mt-3 max-h-48 rounded-xl object-cover mx-auto" />
+            )}
+          </div>
+        );
+      })()}
 
       {isQuizQuestion(question) && question.event && (
         <div className="w-full max-w-xl self-center px-8">
@@ -118,7 +122,8 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false, 
         </div>
       )}
 
-      {isAdmin && !isQA && (
+      {/* AnalogyHelper — 발표 모드(전자칠판)에선 강사 보조 UI라 숨김. 그리드 공간 확보. */}
+      {isAdmin && !isQA && !isPresenter && (
         <AnalogyHelper
           questionTitle={question.title}
           options={options}
