@@ -29,12 +29,12 @@ export default memo(function CollapsibleSection({
         aria-expanded={open}
         className="w-full flex items-center justify-between px-4 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150"
       >
-        <div className="flex items-center gap-2 min-w-0">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
           <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 shrink-0">
             {title}
           </span>
           {summary && (
-            <span className={`text-[11px] truncate ${attention ? 'text-red-500 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-500'}`}>
+            <span className={`text-[11px] truncate min-w-0 flex-1 ${attention ? 'text-red-500 dark:text-red-400 font-semibold' : 'text-slate-400 dark:text-slate-500'}`}>
               {summary}
             </span>
           )}
