@@ -241,12 +241,13 @@ export default function JoinPage({ sessionId, onJoin }) {
         </div>
       </div>
 
-      {/* Sticky bottom CTA — always in thumb zone, respects safe-area */}
+      {/* Sticky bottom CTA — always in thumb zone, respects safe-area.
+          gradient 배경으로 스크롤 텍스트가 버튼 뒤로 비쳐 읽힘 저하되는 것 방지 */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.15 }}
-        className="sticky bottom-0 px-5 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))]"
+        className="sticky bottom-0 px-5 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-gradient-to-t from-slate-50 dark:from-slate-900 via-slate-50/95 dark:via-slate-900/95 to-transparent"
       >
         <div className="max-w-sm mx-auto">
           <Button
