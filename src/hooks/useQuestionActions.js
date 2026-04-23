@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import { ref, set, remove, update } from 'firebase/database';
+import { ref, set, remove, update, get } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { generateQuestionId } from '@/lib/utils';
 import {
@@ -209,7 +209,12 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
 
   async function deleteQuestion(qId) {
     try {
-      await remove(ref(db, `sessions/${sessionId}/questions/${qId}`));
+      // 상시 과제(aiJudge)로 등록된 질문이면 세션의 persistentAssignmentId도 함께 정리 — 고아 참조 방지.
+      const persistentSnap = await get(ref(db, `sessions/${sessionId}/persistentAssignmentId`));
+      const isPersistent = persistentSnap.val() === qId;
+      const updates = { [`questions/${qId}`]: null };
+      if (isPersistent) updates.persistentAssignmentId = null;
+      await update(ref(db, `sessions/${sessionId}`), updates);
       if (currentQuestion === qId) await clearActive();
       showToast('질문이 삭제되었습니다');
     } catch {
