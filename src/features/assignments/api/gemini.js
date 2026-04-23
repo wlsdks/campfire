@@ -27,7 +27,7 @@ if (!genAI && import.meta.env.VITE_GEMINI_API_KEY) {
 
 const MODEL_NAME = 'gemini-2.5-flash-lite';
 // 라이브 AI 심사 전용 — 최신 preview 모델 사용 (멀티모달 품질 우선)
-const LIVE_MODEL_NAME = 'gemini-3-flash-preview';
+const LIVE_MODEL_NAME = 'gemini-2.5-pro';
 const MAX_INPUT_CHARS = 120000; // ~30K tokens, leaves room for system+prompt+output
 
 async function withRetry(fn, retries = 2, delayMs = 2000) {
@@ -358,10 +358,10 @@ async function buildLiveParts(submission) {
  * 모델 fallback: LIVE_MODEL_NAME(preview) 실패 시 stable 모델로 자동 재시도 — preview 모델이
  * 지역/쿼터에 따라 제공 안 되는 경우도 있어 라이브 수업에서 중단되지 않도록 방어.
  */
-// 최신 preview → latest alias → stable 순. preview가 미릴리즈/권한 없으면 자동 fallback.
+// pro → flash-latest → flash → flash-lite 순. pro는 품질 우선, rate limit 시 flash 계열로 자동 fallback.
 const LIVE_MODEL_FALLBACKS = [
-  LIVE_MODEL_NAME,           // gemini-3-flash-preview (사용자 요청 모델)
-  'gemini-flash-latest',     // 최신 Flash alias
+  LIVE_MODEL_NAME,           // gemini-2.5-pro (심사 품질 최우선)
+  'gemini-flash-latest',     // Flash alias
   'gemini-2.5-flash',        // Flash stable
   MODEL_NAME,                // gemini-2.5-flash-lite (최후 보루)
 ];
