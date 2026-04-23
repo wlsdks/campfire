@@ -282,12 +282,30 @@ async function urlToInlinePart(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`이미지 다운로드 실패 (${res.status})`);
   const blob = await res.blob();
+
+  // Gemini inlineData는 base64 인코딩 후 전체 request에 포함되므로 너무 크면 API 호출 실패.
+  // 7MB 원본 → base64 후 ~9.3MB. 여유분 고려해 7MB 상한.
+  const MAX_BYTES = 7 * 1024 * 1024;
+  if (blob.size > MAX_BYTES) {
+    throw new Error(`이미지가 너무 큽니다 (${(blob.size / 1024 / 1024).toFixed(1)}MB) — 7MB 이하 권장`);
+  }
+
   const mimeType = blob.type || 'image/jpeg';
-  const buffer = await blob.arrayBuffer();
-  let binary = '';
-  const bytes = new Uint8Array(buffer);
-  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-  const base64 = btoa(binary);
+
+  // FileReader API로 base64 변환 — 기존 `binary += String.fromCharCode(bytes[i])` 루프는
+  // O(N²) 문자열 concat + 대용량 시 스택 오버플로 위험. readAsDataURL은 네이티브 구현으로 효율적.
+  const base64 = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = reader.result;
+      if (typeof dataUrl !== 'string') { reject(new Error('이미지 읽기 실패')); return; }
+      const comma = dataUrl.indexOf(',');
+      resolve(comma >= 0 ? dataUrl.slice(comma + 1) : dataUrl);
+    };
+    reader.onerror = () => reject(reader.error || new Error('이미지 읽기 실패'));
+    reader.readAsDataURL(blob);
+  });
+
   return { inlineData: { mimeType, data: base64 } };
 }
 
