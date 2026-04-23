@@ -49,7 +49,7 @@ const ClassQuestionItem = memo(function ClassQuestionItem({ q, onClick }) {
  * Admin-side accordion list of class questions.
  * Shows student-posted questions sorted by upvotes. Instructor can mark answered or dismiss.
  */
-function ClassQuestionList({ sessionId }) {
+function ClassQuestionList({ sessionId, embedded = false }) {
   const { questions, unansweredCount, markAnswered, dismissQuestion } =
     useClassQuestions(sessionId);
   const [collapsed, setCollapsed] = useState(false);
@@ -89,59 +89,22 @@ function ClassQuestionList({ sessionId }) {
     setSelectedQuestion(null);
   }
 
-  return (
-    <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-      <motion.button
-        onClick={() => setCollapsed(!collapsed)}
-        className="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150"
-        aria-expanded={!collapsed}
-        animate={shake ? { x: [0, -4, 4, -3, 3, -1, 1, 0] } : {}}
-        transition={{ duration: 0.5, ease: 'easeInOut' }}
-      >
-        <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
-          <HelpCircle size={14} className="text-slate-400" />
-          수업 질문
-          {unansweredCount > 0 && (
-            <motion.span
-              key={unansweredCount}
-              initial={{ scale: 1.3 }}
-              animate={{ scale: 1 }}
-              className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-[10px] font-bold"
-            >
-              {unansweredCount}
-            </motion.span>
-          )}
-        </span>
-        <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ duration: 0.2 }}>
-          <ChevronDown size={14} className="text-slate-400" />
-        </motion.div>
-      </motion.button>
-
+  const body = (
+    <div className={embedded ? 'space-y-1.5' : 'px-3.5 pb-3 space-y-1.5'}>
+      {questions.length === 0 && (
+        <p className="text-slate-400 dark:text-slate-500 text-xs py-1">
+          학생 질문이 없습니다
+        </p>
+      )}
       <AnimatePresence>
-        {!collapsed && (
-          <motion.div
-            initial={{ height: 0 }}
-            animate={{ height: 'auto' }}
-            exit={{ height: 0 }}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
-            className="overflow-hidden"
-          >
-            <div className="px-3.5 pb-3 space-y-1.5">
-              {questions.length === 0 && (
-                <p className="text-slate-400 dark:text-slate-500 text-xs py-1">
-                  학생 질문이 없습니다
-                </p>
-              )}
-              <AnimatePresence>
-                {questions.map((q) => (
-                  <ClassQuestionItem key={q.id} q={q} onClick={handleQuestionClick} />
-                ))}
-              </AnimatePresence>
-            </div>
-          </motion.div>
-        )}
+        {questions.map((q) => (
+          <ClassQuestionItem key={q.id} q={q} onClick={handleQuestionClick} />
+        ))}
       </AnimatePresence>
+    </div>
+  );
 
+  const modal = (
       <Modal
         open={!!selectedQuestion}
         onClose={handleClose}
@@ -182,6 +145,52 @@ function ClassQuestionList({ sessionId }) {
           </div>
         )}
       </Modal>
+  );
+
+  if (embedded) return <>{body}{modal}</>;
+
+  return (
+    <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <motion.button
+        onClick={() => setCollapsed(!collapsed)}
+        className="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150"
+        aria-expanded={!collapsed}
+        animate={shake ? { x: [0, -4, 4, -3, 3, -1, 1, 0] } : {}}
+        transition={{ duration: 0.5, ease: 'easeInOut' }}
+      >
+        <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+          <HelpCircle size={14} className="text-slate-400" />
+          수업 질문
+          {unansweredCount > 0 && (
+            <motion.span
+              key={unansweredCount}
+              initial={{ scale: 1.3 }}
+              animate={{ scale: 1 }}
+              className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-[10px] font-bold"
+            >
+              {unansweredCount}
+            </motion.span>
+          )}
+        </span>
+        <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ duration: 0.2 }}>
+          <ChevronDown size={14} className="text-slate-400" />
+        </motion.div>
+      </motion.button>
+
+      <AnimatePresence>
+        {!collapsed && (
+          <motion.div
+            initial={{ height: 0 }}
+            animate={{ height: 'auto' }}
+            exit={{ height: 0 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            {body}
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {modal}
     </div>
   );
 }

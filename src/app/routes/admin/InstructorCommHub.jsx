@@ -1,0 +1,103 @@
+import { memo, useState } from 'react';
+import { motion } from 'framer-motion';
+import { StickyNote, Hand, AlertCircle, HelpCircle } from 'lucide-react';
+import InstructorNotes, { useNotesState } from './InstructorNotes';
+import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
+import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
+import ClassQuestionList from '@/features/class-questions/components/ClassQuestionList';
+import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
+import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
+import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
+
+/**
+ * 강사 우측 소통 허브 — 메모/손들기/긴급질문/수업질문을 하나의 카드 안 탭으로 통합.
+ * 배경: 4개 개별 아코디언 카드가 쌓여 우측 패널이 지저분해짐 → 세로 긴 단일 카드 + 탭 전환.
+ * 배지 카운트는 각 탭 헤더에 표시 — 새로 들어온 항목 놓치지 않도록.
+ */
+
+const TABS = [
+  { id: 'notes', label: '메모', icon: StickyNote },
+  { id: 'hands', label: '손들기', icon: Hand },
+  { id: 'urgent', label: '긴급', icon: AlertCircle, urgent: true },
+  { id: 'class', label: '수업 질문', icon: HelpCircle },
+];
+
+function TabButton({ active, onClick, icon: Icon, label, count = 0, urgent = false }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      role="tab"
+      aria-selected={active}
+      className={`relative flex-1 min-w-0 flex items-center justify-center gap-1.5 px-2 py-2.5 text-xs font-semibold transition-colors duration-150 ${
+        active
+          ? 'text-slate-900 dark:text-slate-100'
+          : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+      }`}
+    >
+      <Icon size={13} className={active ? '' : 'text-slate-400'} />
+      <span className="truncate">{label}</span>
+      {count > 0 && (
+        <motion.span
+          key={count}
+          initial={{ scale: 1.3 }}
+          animate={{ scale: 1 }}
+          className={`inline-flex items-center justify-center min-w-[16px] h-[16px] px-1 rounded-full text-[9px] font-bold ${
+            urgent
+              ? 'bg-red-500 text-white animate-pulse'
+              : 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
+          }`}
+        >
+          {count}
+        </motion.span>
+      )}
+      {active && (
+        <motion.span
+          layoutId="comm-hub-underline"
+          className="absolute inset-x-2 bottom-0 h-[2px] bg-slate-900 dark:bg-slate-100 rounded-full"
+          transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+        />
+      )}
+    </button>
+  );
+}
+
+export default memo(function InstructorCommHub({ sessionId }) {
+  const [activeTab, setActiveTab] = useState('notes');
+
+  // 배지 카운트용 훅
+  const { count: handCount } = useHandRaises(sessionId);
+  const { unreadCount: urgentCount } = useUrgentQuestions(sessionId);
+  const { unansweredCount: classCount } = useClassQuestions(sessionId);
+  const { unreadCount: notesUnread } = useNotesState(sessionId);
+
+  // 긴급 질문은 pulsing 빨간 배지로 시선 유도 — 강제 탭 전환은 강사가 현재 작업 중인 탭을 방해할 수 있어 배제
+  const counts = { notes: notesUnread, hands: handCount, urgent: urgentCount, class: classCount };
+
+  return (
+    <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden">
+      {/* Tabs */}
+      <div role="tablist" aria-label="강사 소통" className="flex items-stretch border-b border-slate-200 dark:border-slate-700">
+        {TABS.map((t) => (
+          <TabButton
+            key={t.id}
+            active={activeTab === t.id}
+            onClick={() => setActiveTab(t.id)}
+            icon={t.icon}
+            label={t.label}
+            count={counts[t.id] || 0}
+            urgent={t.urgent}
+          />
+        ))}
+      </div>
+
+      {/* Body — 탭별 내용 */}
+      <div className="p-3.5">
+        {activeTab === 'notes' && <InstructorNotes sessionId={sessionId} embedded />}
+        {activeTab === 'hands' && <HandRaiseList sessionId={sessionId} embedded />}
+        {activeTab === 'urgent' && <UrgentQuestionList sessionId={sessionId} embedded />}
+        {activeTab === 'class' && <ClassQuestionList sessionId={sessionId} embedded />}
+      </div>
+    </div>
+  );
+});

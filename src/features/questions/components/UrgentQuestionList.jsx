@@ -43,7 +43,7 @@ const UrgentQuestionItem = memo(function UrgentQuestionItem({ q, onClick, onDism
   );
 });
 
-export default function UrgentQuestionList({ sessionId }) {
+export default function UrgentQuestionList({ sessionId, embedded = false }) {
   const { questionList, unreadCount } = useUrgentQuestions(sessionId);
   const [collapsed, setCollapsed] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState(null);
@@ -115,56 +115,21 @@ export default function UrgentQuestionList({ sessionId }) {
     setSelectedQuestion(null);
   }
 
-  return (
-    <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-      <button
-        onClick={() => setCollapsed(!collapsed)}
-        aria-expanded={!collapsed}
-        className="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150"
-      >
-        <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
-          <AlertCircle size={14} className="text-slate-400" />
-          긴급 질문
-          {unreadCount > 0 && (
-            <motion.span
-              key={unreadCount}
-              initial={{ scale: 1.3 }}
-              animate={{ scale: 1 }}
-              className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold animate-pulse"
-            >
-              {unreadCount}
-            </motion.span>
-          )}
-        </span>
-        <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ duration: 0.2 }}>
-          <ChevronDown size={14} className="text-slate-400" />
-        </motion.div>
-      </button>
-
+  const body = (
+    <div className={embedded ? 'space-y-1.5' : 'px-3.5 pb-3 space-y-1.5'}>
+      {questionList.length === 0 && (
+        <p className="text-slate-400 dark:text-slate-500 text-xs py-1">수신된 질문이 없습니다</p>
+      )}
       <AnimatePresence>
-        {!collapsed && (
-          <motion.div
-            initial={{ height: 0 }}
-            animate={{ height: 'auto' }}
-            exit={{ height: 0 }}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
-            className="overflow-hidden"
-          >
-            <div className="px-3.5 pb-3 space-y-1.5">
-              {questionList.length === 0 && (
-                <p className="text-slate-400 dark:text-slate-500 text-xs py-1">수신된 질문이 없습니다</p>
-              )}
-              <AnimatePresence>
-                {questionList.map((q) => (
-                  <UrgentQuestionItem key={q.id} q={q} onClick={handleQuestionClick} onDismiss={dismissOne} />
-                ))}
-              </AnimatePresence>
-            </div>
-          </motion.div>
-        )}
+        {questionList.map((q) => (
+          <UrgentQuestionItem key={q.id} q={q} onClick={handleQuestionClick} onDismiss={dismissOne} />
+        ))}
       </AnimatePresence>
+    </div>
+  );
 
-      <Modal
+  const modal = (
+    <Modal
         open={!!selectedQuestion}
         onClose={handleClose}
         ariaLabel="긴급 질문 확인"
@@ -221,6 +186,50 @@ export default function UrgentQuestionList({ sessionId }) {
           </div>
         )}
       </Modal>
+  );
+
+  if (embedded) return <>{body}{modal}</>;
+
+  return (
+    <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <button
+        onClick={() => setCollapsed(!collapsed)}
+        aria-expanded={!collapsed}
+        className="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150"
+      >
+        <span className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
+          <AlertCircle size={14} className="text-slate-400" />
+          긴급 질문
+          {unreadCount > 0 && (
+            <motion.span
+              key={unreadCount}
+              initial={{ scale: 1.3 }}
+              animate={{ scale: 1 }}
+              className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full bg-red-500 text-white text-[10px] font-bold animate-pulse"
+            >
+              {unreadCount}
+            </motion.span>
+          )}
+        </span>
+        <motion.div animate={{ rotate: collapsed ? 0 : 180 }} transition={{ duration: 0.2 }}>
+          <ChevronDown size={14} className="text-slate-400" />
+        </motion.div>
+      </button>
+
+      <AnimatePresence>
+        {!collapsed && (
+          <motion.div
+            initial={{ height: 0 }}
+            animate={{ height: 'auto' }}
+            exit={{ height: 0 }}
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            {body}
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {modal}
     </div>
   );
 }

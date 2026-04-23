@@ -25,7 +25,7 @@ const HandRaiseItem = memo(function HandRaiseItem({ id, nickname, index, onDismi
   );
 });
 
-export default function HandRaiseList({ sessionId }) {
+export default function HandRaiseList({ sessionId, embedded = false }) {
   const { raisedList, count } = useHandRaises(sessionId);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -60,6 +60,35 @@ export default function HandRaiseList({ sessionId }) {
       logger.error('전체 손들기 해제 실패:', err);
     }
   }
+
+  const body = (
+    <div className={embedded ? 'space-y-1.5' : 'px-3.5 pb-3 space-y-1.5'}>
+      {count > 0 && (
+        <div className="flex justify-end">
+          <button
+            onClick={(e) => { e.stopPropagation(); dismissAll(); }}
+            aria-label="모든 손들기 해제"
+            className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150"
+          >
+            전체 해제
+          </button>
+        </div>
+      )}
+      {count === 0 && (
+        <div className="flex items-center gap-2 py-1">
+          <PickMascot size="xs" />
+          <p className="text-slate-400 text-xs">손든 학생이 없습니다</p>
+        </div>
+      )}
+      <AnimatePresence>
+        {raisedList.map((p, i) => (
+          <HandRaiseItem key={p.id} id={p.id} nickname={p.nickname} index={i} onDismiss={dismissOne} />
+        ))}
+      </AnimatePresence>
+    </div>
+  );
+
+  if (embedded) return body;
 
   return (
     <div className="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
@@ -97,30 +126,7 @@ export default function HandRaiseList({ sessionId }) {
             transition={{ duration: 0.2, ease: 'easeInOut' }}
             className="overflow-hidden"
           >
-            <div className="px-3.5 pb-3 space-y-1.5">
-              {count > 0 && (
-                <div className="flex justify-end">
-                  <button
-                    onClick={(e) => { e.stopPropagation(); dismissAll(); }}
-                    aria-label="모든 손들기 해제"
-                    className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors duration-150"
-                  >
-                    전체 해제
-                  </button>
-                </div>
-              )}
-              {count === 0 && (
-                <div className="flex items-center gap-2 py-1">
-                  <PickMascot size="xs" />
-                  <p className="text-slate-400 text-xs">손든 학생이 없습니다</p>
-                </div>
-              )}
-              <AnimatePresence>
-                {raisedList.map((p, i) => (
-                  <HandRaiseItem key={p.id} id={p.id} nickname={p.nickname} index={i} onDismiss={dismissOne} />
-                ))}
-              </AnimatePresence>
-            </div>
+            {body}
           </motion.div>
         )}
       </AnimatePresence>

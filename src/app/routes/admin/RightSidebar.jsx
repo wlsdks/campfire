@@ -3,12 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Users, ChevronDown, Copy, Check, Monitor } from 'lucide-react';
 import ParticipantList from '@/features/participants/components/ParticipantList';
 import QRCode from '@/components/ui/QRCode';
-import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
-import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
-import ClassQuestionList from '@/features/class-questions/components/ClassQuestionList';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
 import TeamScoreboard from '@/features/teams/components/TeamScoreboard';
-import InstructorNotes from './InstructorNotes';
+import InstructorCommHub from './InstructorCommHub';
 import Button from '@/components/ui/Button';
 import Avatar from '@/components/ui/Avatar';
 import { useStaffAssignment } from '@/features/course/api/useStaffAssignment';
@@ -129,13 +126,8 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
         </div>
       )}
 
-      {/* Instructor notes */}
-      <InstructorNotes sessionId={sessionId} />
-
-      {/* Hand raises, urgent questions & class questions */}
-      <HandRaiseList sessionId={sessionId} />
-      <UrgentQuestionList sessionId={sessionId} />
-      <ClassQuestionList sessionId={sessionId} />
+      {/* 메모 / 손들기 / 긴급 / 수업질문 — 탭 통합 */}
+      <InstructorCommHub sessionId={sessionId} />
 
       {/* Team scoreboard accordion */}
       {teamScores && teamScores.length > 0 && (

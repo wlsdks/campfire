@@ -51,7 +51,14 @@ const NoteItem = memo(function NoteItem({ note, onToggle, onDelete }) {
   );
 });
 
-export default function InstructorNotes({ sessionId }) {
+// unread/read 개수 외부에서 미리 미리보기 배지에 쓸 수 있도록 훅 분리
+export function useNotesState(sessionId) {
+  const [notes, setNotes] = useState(() => loadNotes(sessionId));
+  const unreadCount = notes.filter((n) => !n.done).length;
+  return { notes, setNotes, unreadCount };
+}
+
+export default function InstructorNotes({ sessionId, embedded = false }) {
   const [notes, setNotes] = useState(() => loadNotes(sessionId));
   const [input, setInput] = useState('');
   const [expanded, setExpanded] = useState(true);
@@ -80,6 +87,43 @@ export default function InstructorNotes({ sessionId }) {
 
   const unread = notes.filter((n) => !n.done);
   const read = notes.filter((n) => n.done);
+
+  const body = (
+    <div className={embedded ? 'space-y-3' : 'px-4 pt-1 pb-4 space-y-3'}>
+      {/* Add input */}
+      <form onSubmit={handleAdd} className="relative">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="실습 중 할 말을 적어두세요"
+          className="w-full bg-slate-50 dark:bg-slate-700 rounded-xl px-4 py-3 pr-12 text-[15px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-600 transition-colors duration-150"
+        />
+        <motion.button
+          whileTap={{ scale: 0.85 }}
+          type="submit"
+          disabled={!input.trim()}
+          className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 disabled:opacity-20 flex items-center justify-center transition-opacity duration-150"
+        >
+          <Plus size={14} />
+        </motion.button>
+      </form>
+
+      {/* Notes list */}
+      {notes.length === 0 ? (
+        <p className="text-xs text-slate-400 text-center py-3">실습 중 할 말을 메모해두세요</p>
+      ) : (
+        <div className="divide-y divide-slate-100 dark:divide-slate-700">
+          <AnimatePresence>
+            {unread.map((n) => <NoteItem key={n.id} note={n} onToggle={handleToggle} onDelete={handleDelete} />)}
+            {read.map((n) => <NoteItem key={n.id} note={n} onToggle={handleToggle} onDelete={handleDelete} />)}
+          </AnimatePresence>
+        </div>
+      )}
+    </div>
+  );
+
+  if (embedded) return body;
 
   return (
     <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden">
@@ -114,38 +158,7 @@ export default function InstructorNotes({ sessionId }) {
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="px-4 pt-1 pb-4 space-y-3">
-              {/* Add input */}
-              <form onSubmit={handleAdd} className="relative">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="실습 중 할 말을 적어두세요"
-                  className="w-full bg-slate-50 dark:bg-slate-700 rounded-xl px-4 py-3 pr-12 text-[15px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-600 transition-colors duration-150"
-                />
-                <motion.button
-                  whileTap={{ scale: 0.85 }}
-                  type="submit"
-                  disabled={!input.trim()}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 disabled:opacity-20 flex items-center justify-center transition-opacity duration-150"
-                >
-                  <Plus size={14} />
-                </motion.button>
-              </form>
-
-              {/* Notes list */}
-              {notes.length === 0 ? (
-                <p className="text-xs text-slate-400 text-center py-3">실습 중 할 말을 메모해두세요</p>
-              ) : (
-                <div className="divide-y divide-slate-100 dark:divide-slate-700">
-                  <AnimatePresence>
-                    {unread.map((n) => <NoteItem key={n.id} note={n} onToggle={handleToggle} onDelete={handleDelete} />)}
-                    {read.map((n) => <NoteItem key={n.id} note={n} onToggle={handleToggle} onDelete={handleDelete} />)}
-                  </AnimatePresence>
-                </div>
-              )}
-            </div>
+            {body}
           </motion.div>
         )}
       </AnimatePresence>
