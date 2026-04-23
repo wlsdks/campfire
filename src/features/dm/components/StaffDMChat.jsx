@@ -1,10 +1,25 @@
 import { useState, useEffect, useRef, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, CheckCircle2 } from 'lucide-react';
+import { X, Send, CheckCircle2, Clipboard } from 'lucide-react';
 import { formatChatTime } from '@/lib/utils';
+import { useDMTyping } from '@/features/dm/api/useDM';
 
-const ChatMsg = memo(function ChatMsg({ msg, isOwn }) {
-  if (isOwn) {
+const ChatMsg = memo(function ChatMsg({ msg, isOwn, currentUserName }) {
+  if (msg.senderType === 'system') {
+    return (
+      <div className="flex justify-center my-1">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 dark:bg-slate-700/60 text-[11px] text-slate-500 dark:text-slate-400 border border-slate-100 dark:border-slate-700 max-w-[85%] text-center leading-snug">
+          <Clipboard size={11} className="shrink-0 text-slate-400" />
+          <span>{msg.text}</span>
+        </div>
+      </div>
+    );
+  }
+  // 스태프 뷰에서 "본인 메시지 vs 다른 스태프 메시지" 구분 — 이름으로 판정.
+  // senderType !== 'student'라도 sender가 본인 이름이 아니면 다른 스태프 → 왼쪽 버블에 이름 배지.
+  const isOwnStaff = isOwn && (!currentUserName || msg.sender === currentUserName);
+
+  if (isOwnStaff) {
     return (
       <div className="flex flex-col items-end gap-0.5">
         <div className="px-3.5 py-2.5 text-sm leading-relaxed bg-slate-900 dark:bg-slate-200 text-white dark:text-slate-900 rounded-2xl rounded-br-sm max-w-[75%]">
@@ -14,10 +29,21 @@ const ChatMsg = memo(function ChatMsg({ msg, isOwn }) {
       </div>
     );
   }
+  // 학생 메시지 또는 다른 스태프 메시지
+  const isOtherStaff = isOwn && !isOwnStaff;
   return (
     <div className="flex flex-col items-start gap-0.5 max-w-[80%]">
-      <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 px-1">{msg.sender}</span>
-      <div className="px-3.5 py-2.5 text-sm leading-relaxed bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-2xl rounded-tl-sm">
+      <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 px-1 inline-flex items-center gap-1">
+        {msg.sender}
+        {isOtherStaff && (
+          <span className="text-[9px] font-semibold bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-1.5 py-0.5 rounded-full">다른 스태프</span>
+        )}
+      </span>
+      <div className={`px-3.5 py-2.5 text-sm leading-relaxed rounded-2xl rounded-tl-sm ${
+        isOtherStaff
+          ? 'bg-indigo-50 dark:bg-indigo-500/10 text-slate-800 dark:text-slate-200 border border-indigo-100 dark:border-indigo-500/20'
+          : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200'
+      }`}>
         {msg.text}
       </div>
       <span className="text-[10px] text-slate-300 dark:text-slate-500 px-1">{formatChatTime(msg.timestamp)}</span>
@@ -26,12 +52,18 @@ const ChatMsg = memo(function ChatMsg({ msg, isOwn }) {
 });
 
 export default function StaffDMChat({
-  dm, open, onClose, onResolve, onSendMessage, staffName, senderType,
-  allActiveDMs, onSwitchDM,
+  dm, open, onClose, onResolve, onSendMessage, staffName, staffId, senderType,
+  allActiveDMs, onSwitchDM, sessionId,
 }) {
   const [inputText, setInputText] = useState('');
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef(null);
+
+  const { activeTypers, notifyTyping, clearTyping } = useDMTyping(
+    sessionId,
+    dm?.id,
+    { userId: staffId, userName: staffName }
+  );
 
   useEffect(() => {
     if (open && dm) {
@@ -39,12 +71,28 @@ export default function StaffDMChat({
     }
   }, [dm?.messageList?.length, open]);
 
+  // 모달 닫을 때 타이핑 신호 정리
+  useEffect(() => {
+    if (!open) clearTyping();
+  }, [open, clearTyping]);
+
+  // Esc로 모달 닫기
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [open, onClose]);
+
   async function handleSend() {
     const text = inputText.trim();
     if (!text || !dm || sending) return;
     setSending(true);
     const ok = await onSendMessage(dm.id, text, staffName, senderType);
-    if (ok) setInputText('');
+    if (ok) {
+      setInputText('');
+      clearTyping();
+    }
     setSending(false);
   }
 
@@ -70,7 +118,7 @@ export default function StaffDMChat({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             className="fixed inset-0 sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 sm:w-[400px] sm:h-[520px] bg-white dark:bg-slate-800 sm:rounded-2xl sm:shadow-2xl z-50 flex flex-col overflow-hidden"
           >
             {/* Header */}
@@ -86,14 +134,14 @@ export default function StaffDMChat({
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={handleResolve}
-                  className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/20 rounded-lg transition-colors duration-150"
+                  className="inline-flex items-center gap-1 px-3 py-2 min-h-[40px] text-xs font-medium text-emerald-600 hover:bg-emerald-50 dark:text-emerald-400 dark:hover:bg-emerald-900/20 rounded-lg transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40"
                 >
                   <CheckCircle2 size={14} />
                   해결 완료
                 </button>
                 <button
                   onClick={onClose}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150"
+                  className="p-2 min-h-[40px] min-w-[40px] rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40"
                   aria-label="닫기"
                 >
                   <X size={16} />
@@ -120,6 +168,34 @@ export default function StaffDMChat({
               </div>
             )}
 
+            {/* 다른 스태프 타이핑 중 인디케이터 */}
+            <AnimatePresence>
+              {activeTypers.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="px-5 py-2 bg-indigo-50/60 dark:bg-indigo-500/10 border-b border-indigo-100 dark:border-indigo-500/20 overflow-hidden"
+                >
+                  <p className="text-[11px] text-indigo-700 dark:text-indigo-300 font-medium flex items-center gap-1.5">
+                    <span className="flex gap-0.5">
+                      {[0, 1, 2].map((i) => (
+                        <motion.span
+                          key={i}
+                          className="w-1 h-1 rounded-full bg-indigo-500 dark:bg-indigo-400"
+                          animate={{ opacity: [0.3, 1, 0.3] }}
+                          transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
+                        />
+                      ))}
+                    </span>
+                    <span className="truncate">
+                      {activeTypers.map(t => t.name).join(', ')}님이 답변 작성 중
+                    </span>
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {/* Messages */}
             <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3 scrollbar-hide">
               {dm.messageList?.map((msg) => (
@@ -127,6 +203,7 @@ export default function StaffDMChat({
                   key={msg.id}
                   msg={msg}
                   isOwn={msg.senderType !== 'student'}
+                  currentUserName={staffName}
                 />
               ))}
               <div ref={messagesEndRef} />
@@ -137,13 +214,14 @@ export default function StaffDMChat({
               <input
                 type="text"
                 value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
+                onChange={(e) => { setInputText(e.target.value); if (e.target.value) notifyTyping(); }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     handleSend();
                   }
                 }}
+                onBlur={() => inputText.trim() === '' && clearTyping()}
                 placeholder="메시지를 입력하세요"
                 aria-label="도움 응답 메시지"
                 maxLength={500}

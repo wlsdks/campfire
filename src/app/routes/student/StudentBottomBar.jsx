@@ -41,8 +41,13 @@ export default memo(function StudentBottomBar({ sessionId }) {
 
   const pid = getParticipantId();
   const nickname = getNickname() || '익명';
-  const { activeDM, allActiveDMs, sendMessage: sendDMMessage, requestHelp, newlyResolved, clearNewlyResolved } = useStudentDM(sessionId, pid);
+  const {
+    activeDM, allActiveDMs, sendMessage: sendDMMessage, requestHelp,
+    newlyResolved, clearNewlyResolved,
+    newStaffMessage, clearNewStaffMessage,
+  } = useStudentDM(sessionId, pid);
   const [dmResolved, setDmResolved] = useState(null);
+  const [staffReplied, setStaffReplied] = useState(null);
 
   // Show toast when DM gets resolved
   useEffect(() => {
@@ -53,6 +58,20 @@ export default memo(function StudentBottomBar({ sessionId }) {
       return () => clearTimeout(t);
     }
   }, [newlyResolved, clearNewlyResolved]);
+
+  // Show toast when staff replies (특히 학생이 먼저 요청 안 했는데 스태프가 먼저 1:1 답변 시작한 경우)
+  useEffect(() => {
+    if (!newStaffMessage) return;
+    // DM 버블이 이미 열려있으면 토스트 불필요
+    if (showDMChat) {
+      clearNewStaffMessage();
+      return;
+    }
+    setStaffReplied(newStaffMessage);
+    clearNewStaffMessage();
+    const t = setTimeout(() => setStaffReplied(null), 4500);
+    return () => clearTimeout(t);
+  }, [newStaffMessage, clearNewStaffMessage, showDMChat]);
   const isRaised = handRaises[pid]?.raised === true;
   const [handAcknowledged, setHandAcknowledged] = useState(false);
   const wasRaisedRef = useRef(false);
@@ -118,6 +137,8 @@ export default memo(function StudentBottomBar({ sessionId }) {
           onSendMessage={sendDMMessage}
           onClose={() => setShowDMChat(false)}
           onRequestHelp={handleHelpRequest}
+          sessionId={sessionId}
+          participantId={pid}
         />
       )}
 
@@ -140,7 +161,14 @@ export default memo(function StudentBottomBar({ sessionId }) {
         </form>
       </Modal>
 
-      <StudentToasts submitted={submitted} submitError={submitError} dmResolved={dmResolved} handAcknowledged={handAcknowledged} />
+      <StudentToasts
+        submitted={submitted}
+        submitError={submitError}
+        dmResolved={dmResolved}
+        handAcknowledged={handAcknowledged}
+        staffReplied={staffReplied}
+        onOpenDM={() => { setStaffReplied(null); setShowDMChat(true); }}
+      />
 
       <motion.div
         initial={{ y: 80, opacity: 0 }}

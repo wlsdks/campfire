@@ -65,6 +65,17 @@ export default function StaffPage({ sessionId, session, adminUser, onBack, onLog
     setActionLoading(false);
   }, [sessionId, markAnswered, unified]);
 
+  // 1:1 답변 시 수업 질문 "답변 완료"만 동기화 (자동 다음 선택이나 UI 갱신은 하지 않음)
+  const handleMarkAnsweredById = useCallback(async (qId) => {
+    if (!qId) return;
+    try {
+      const staffName = adminUser?.displayName || '스태프';
+      await markAnswered(qId, staffName, 'staff');
+    } catch (err) {
+      logger.error('답변 완료 동기화 실패:', err);
+    }
+  }, [markAnswered, adminUser?.displayName]);
+
   const handleChatToggle = useCallback(() => {
     setChatOpen((prev) => !prev);
     if (!chatOpen) setHasUnreadChat(false);
@@ -199,6 +210,7 @@ export default function StaffPage({ sessionId, session, adminUser, onBack, onLog
             <StaffQuestionDetail
               question={selected}
               onAction={handleAction}
+              onMarkAnsweredById={handleMarkAnsweredById}
               loading={actionLoading}
               session={session}
               sessionId={sessionId}

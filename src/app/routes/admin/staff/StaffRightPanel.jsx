@@ -255,9 +255,11 @@ function DMSection({ sessionId, staffId, staffName, senderType }) {
         onResolve={resolveDM}
         onSendMessage={sendMessage}
         staffName={staffName}
+        staffId={staffId}
         senderType={senderType || 'staff'}
         allActiveDMs={activeDMs}
         onSwitchDM={setOpenDM}
+        sessionId={sessionId}
       />
     </>
   );

@@ -1,12 +1,23 @@
 import { useState, useEffect, useRef, memo } from 'react';
 import { createPortal } from 'react-dom';
-import { motion } from 'framer-motion';
-import { MessageSquare, Send, X, Plus, ArrowLeft, Headset, CheckCircle2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MessageSquare, Send, X, Plus, ArrowLeft, Headset, CheckCircle2, Clipboard } from 'lucide-react';
 import { formatChatTime } from '@/lib/utils';
 import Button from '@/components/ui/Button';
 import PickMascot from '@/components/ui/PickMascot';
+import { useDMTyping } from '@/features/dm/api/useDM';
 
 const DMMessage = memo(function DMMessage({ msg, isOwn }) {
+  if (msg.senderType === 'system') {
+    return (
+      <motion.div initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center my-1">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-50 dark:bg-slate-700/60 text-[11px] text-slate-500 dark:text-slate-400 border border-slate-100 dark:border-slate-700 max-w-[85%] text-center leading-snug">
+          <Clipboard size={11} className="shrink-0 text-slate-400" />
+          <span>{msg.text}</span>
+        </div>
+      </motion.div>
+    );
+  }
   return (
     <motion.div initial={{ opacity: 0, x: isOwn ? 8 : -8 }} animate={{ opacity: 1, x: 0 }} transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className={`flex flex-col ${isOwn ? 'items-end' : 'items-start'} gap-0.5`}>
@@ -64,7 +75,7 @@ const DMListItem = memo(function DMListItem({ dm, onClick }) {
  * Student DM modal — always opens from "도움" button.
  * Two tabs: [채팅방 목록 | 새 도움 요청]
  */
-export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessage, onClose, onRequestHelp }) {
+export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessage, onClose, onRequestHelp, sessionId, participantId }) {
   const [tab, setTab] = useState('list'); // 'list' | 'new'
   const [selectedDM, setSelectedDM] = useState(null);
   const [inputText, setInputText] = useState('');
@@ -72,6 +83,7 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
   const [requestText, setRequestText] = useState('');
   const [requestSending, setRequestSending] = useState(false);
   const [requestSent, setRequestSent] = useState(false);
+  const [showResolved, setShowResolved] = useState(false);
   const messagesEndRef = useRef(null);
 
   // 패널 열릴 때 배경 스크롤 잠금
@@ -81,8 +93,20 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
     return () => { document.body.style.overflow = prev; };
   }, []);
 
-  const allDMs = activeDMs || (activeDM ? [activeDM] : []);
-  const currentDM = selectedDM ? allDMs.find((d) => d.id === selectedDM.id) || selectedDM : null;
+  // Esc로 모달 닫기
+  useEffect(() => {
+    const handler = (e) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [onClose]);
+
+  const rawDMs = activeDMs || (activeDM ? [activeDM] : []);
+  const resolvedCount = rawDMs.filter((d) => d.status === 'resolved').length;
+  const allDMs = showResolved ? rawDMs : rawDMs.filter((d) => d.status !== 'resolved');
+  const currentDM = selectedDM ? rawDMs.find((d) => d.id === selectedDM.id) || selectedDM : null;
+
+  // 학생은 타이핑 신호 송신 안 함 — 읽기 전용으로 "스태프가 답변 작성 중" 표시.
+  const { activeTypers } = useDMTyping(sessionId, currentDM?.id, { userId: participantId });
 
   useEffect(() => {
     if (currentDM) messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -147,6 +171,30 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
               </div>
               <button onClick={onClose} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150" aria-label="닫기"><X size={16} /></button>
             </div>
+            <AnimatePresence>
+              {activeTypers.length > 0 && !isResolved && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="px-5 py-2 bg-slate-50 dark:bg-slate-700/50 border-b border-slate-100 dark:border-slate-700 overflow-hidden"
+                >
+                  <p className="text-[12px] text-slate-600 dark:text-slate-300 font-medium flex items-center gap-1.5">
+                    <span className="flex gap-0.5">
+                      {[0, 1, 2].map((i) => (
+                        <motion.span
+                          key={i}
+                          className="w-1 h-1 rounded-full bg-slate-500 dark:bg-slate-400"
+                          animate={{ opacity: [0.3, 1, 0.3] }}
+                          transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
+                        />
+                      ))}
+                    </span>
+                    <span className="truncate">{activeTypers[0].name}님이 답변 작성 중</span>
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
             <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-3 scrollbar-hide">
               {isWaiting && (
                 <div className="text-center py-6">
@@ -208,16 +256,40 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
             {tab === 'list' ? (
               <div className="flex-1 overflow-y-auto px-3 py-3 scrollbar-hide">
                 {allDMs.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-full gap-4 py-12">
-                    <PickMascot size="sm" mood="waiting" />
-                    <p className="text-[15px] text-slate-400 dark:text-slate-500 text-center">도움 요청 내역이 없습니다</p>
-                    <motion.button whileTap={{ scale: 0.96 }} onClick={() => setTab('new')}
-                      className="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-sm font-medium transition-colors duration-150">
-                      새 도움 요청하기
-                    </motion.button>
-                  </div>
+                  resolvedCount > 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full gap-4 py-12">
+                      <p className="text-sm text-slate-400 dark:text-slate-500">진행 중인 대화가 없습니다</p>
+                      <button
+                        onClick={() => setShowResolved(true)}
+                        className="text-xs text-slate-500 dark:text-slate-400 underline decoration-dotted underline-offset-4"
+                      >
+                        해결된 대화 {resolvedCount}개 보기
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center h-full gap-4 py-12">
+                      <PickMascot size="sm" mood="waiting" />
+                      <p className="text-[15px] text-slate-400 dark:text-slate-500 text-center">도움 요청 내역이 없습니다</p>
+                      <motion.button whileTap={{ scale: 0.96 }} onClick={() => setTab('new')}
+                        className="px-5 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-sm font-medium transition-colors duration-150">
+                        새 도움 요청하기
+                      </motion.button>
+                    </div>
+                  )
                 ) : (
-                  allDMs.map((dm) => <DMListItem key={dm.id} dm={dm} onClick={() => setSelectedDM(dm)} />)
+                  <>
+                    {allDMs.map((dm) => <DMListItem key={dm.id} dm={dm} onClick={() => setSelectedDM(dm)} />)}
+                    {resolvedCount > 0 && (
+                      <div className="flex justify-center pt-3 pb-1">
+                        <button
+                          onClick={() => setShowResolved((v) => !v)}
+                          className="text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 underline decoration-dotted underline-offset-4"
+                        >
+                          {showResolved ? '해결된 대화 숨기기' : `해결된 대화 ${resolvedCount}개 보기`}
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             ) : (
