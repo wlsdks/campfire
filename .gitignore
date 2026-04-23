@@ -36,3 +36,9 @@ Thumbs.db
 *.local
 screenshots/
 .playwright-mcp/
+.claude/
+# 루트에 저장되는 Playwright/수동 디버그 스크린샷 (하위 폴더 이미지는 계속 트래킹)
+/*.png
+/*.jpg
+# 공식 소셜 프리뷰/히어로 이미지는 예외
+!/student-join.png
