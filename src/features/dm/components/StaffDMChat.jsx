@@ -41,7 +41,7 @@ const ChatMsg = memo(function ChatMsg({ msg, isOwn, currentUserName }) {
       </span>
       <div className={`px-3.5 py-2.5 text-sm leading-relaxed rounded-2xl rounded-tl-sm ${
         isOtherStaff
-          ? 'bg-indigo-50 dark:bg-indigo-500/10 text-slate-800 dark:text-slate-200 border border-indigo-100 dark:border-indigo-500/20'
+          ? 'bg-slate-50 dark:bg-slate-700/70 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-600'
           : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200'
       }`}>
         {msg.text}
@@ -175,14 +175,14 @@ export default function StaffDMChat({
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="px-5 py-2 bg-indigo-50/60 dark:bg-indigo-500/10 border-b border-indigo-100 dark:border-indigo-500/20 overflow-hidden"
+                  className="px-5 py-2 bg-slate-50 dark:bg-slate-700/60 border-b border-slate-200 dark:border-slate-600 overflow-hidden"
                 >
-                  <p className="text-[11px] text-indigo-700 dark:text-indigo-300 font-medium flex items-center gap-1.5">
+                  <p className="text-[11px] text-slate-600 dark:text-slate-300 font-medium flex items-center gap-1.5">
                     <span className="flex gap-0.5">
                       {[0, 1, 2].map((i) => (
                         <motion.span
                           key={i}
-                          className="w-1 h-1 rounded-full bg-indigo-500 dark:bg-indigo-400"
+                          className="w-1 h-1 rounded-full bg-slate-500 dark:bg-slate-400"
                           animate={{ opacity: [0.3, 1, 0.3] }}
                           transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
                         />
