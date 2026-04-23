@@ -106,7 +106,7 @@ export default memo(function PersistentAssignmentBar({ sessionId, session, onAct
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
                         {s.code && (
-                          <span className="text-[9px] font-semibold text-indigo-600 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-500/10 px-1.5 py-0.5 rounded-full" title="HTML 코드 제출">
+                          <span className="text-[9px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded-full" title="HTML 코드 제출">
                             CODE
                           </span>
                         )}
