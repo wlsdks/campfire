@@ -236,16 +236,15 @@ const JudgeLiveCard = memo(function JudgeLiveCard({ judge, log }) {
  * 제출 수별 프레젠터 그리드 구성 — 뒷자리 가독성 vs 전체 조망 균형.
  * 소규모(1~3): 큰 카드로 주목. 중규모(4~12): 3~4열. 대규모(13+): 5~6열로 전체 조망.
  */
-// 구간별 카드 종횡비 — 카드 수가 많아질수록 세로를 압축해 그리드가 뷰포트 높이를 넘지 않게.
-// 1080p 뷰포트 기준 상단 제목/VizRenderer 헤더 제외하면 실제 가용 높이 ~820px.
-// 카드 2줄 + gap 을 고려해 aspect + pad를 타이트하게 설정.
+// 구간별 카드 종횡비/최대폭 — 뷰포트 초과하면 grid wrapper가 overflow-y-auto로 스크롤 허용.
+// 1080p 기준 나머지 공간 ~820px. 카드 크기는 "너무 크지 않게" 중간 톤.
 function getPresenterGridConfig(count) {
-  if (count <= 1) return { cols: 'grid-cols-1 sm:grid-cols-1', gap: 'gap-6', maxW: 'max-w-md', pad: 'p-5', name: 'text-2xl', title: 'text-base', aspect: 'aspect-[4/3]' };
-  if (count <= 2) return { cols: 'grid-cols-1 sm:grid-cols-2', gap: 'gap-5', maxW: 'max-w-3xl', pad: 'p-4', name: 'text-xl', title: 'text-sm', aspect: 'aspect-[4/3]' };
-  if (count <= 6) return { cols: 'grid-cols-2 sm:grid-cols-3', gap: 'gap-4', maxW: 'max-w-5xl', pad: 'p-3', name: 'text-base', title: 'text-xs', aspect: 'aspect-[3/2]' };
-  if (count <= 12) return { cols: 'grid-cols-3 sm:grid-cols-4', gap: 'gap-3', maxW: 'max-w-6xl', pad: 'p-2.5', name: 'text-sm', title: 'text-xs', aspect: 'aspect-[3/2]' };
-  if (count <= 30) return { cols: 'grid-cols-4 sm:grid-cols-5', gap: 'gap-2.5', maxW: 'max-w-7xl', pad: 'p-2', name: 'text-sm', title: 'text-[11px]', aspect: 'aspect-[16/9]' };
-  return { cols: 'grid-cols-5 sm:grid-cols-6', gap: 'gap-2', maxW: 'max-w-[90rem]', pad: 'p-1.5', name: 'text-xs', title: 'text-[10px]', aspect: 'aspect-[16/9]' };
+  if (count <= 1) return { cols: 'grid-cols-1', gap: 'gap-6', maxW: 'max-w-sm', pad: 'p-4', name: 'text-xl', title: 'text-sm', aspect: 'aspect-[4/3]' };
+  if (count <= 2) return { cols: 'grid-cols-2', gap: 'gap-4', maxW: 'max-w-2xl', pad: 'p-3', name: 'text-lg', title: 'text-xs', aspect: 'aspect-[4/3]' };
+  if (count <= 6) return { cols: 'grid-cols-3', gap: 'gap-3', maxW: 'max-w-3xl', pad: 'p-2.5', name: 'text-sm', title: 'text-xs', aspect: 'aspect-[3/2]' };
+  if (count <= 12) return { cols: 'grid-cols-4', gap: 'gap-3', maxW: 'max-w-5xl', pad: 'p-2', name: 'text-sm', title: 'text-[11px]', aspect: 'aspect-[3/2]' };
+  if (count <= 30) return { cols: 'grid-cols-5', gap: 'gap-2.5', maxW: 'max-w-6xl', pad: 'p-2', name: 'text-xs', title: 'text-[11px]', aspect: 'aspect-[16/9]' };
+  return { cols: 'grid-cols-6', gap: 'gap-2', maxW: 'max-w-[88rem]', pad: 'p-1.5', name: 'text-[11px]', title: 'text-[10px]', aspect: 'aspect-[16/9]' };
 }
 
 const SubmissionGrid = memo(function SubmissionGrid({ submissions, isPresenter }) {

@@ -159,7 +159,9 @@ export default function LivePage() {
         questionId={session?.currentQuestion}
       />
 
-      <div className="flex-1 flex items-center justify-center overflow-auto px-8 pt-6 pb-16">
+      {/* aiJudge처럼 카드가 많을 때는 상단 정렬 + 스크롤 — items-center면 뷰포트 초과 시 상단 잘림.
+          items-start + items-stretch로 컨텐츠가 위에서부터 자연스럽게 흐르도록. */}
+      <div className="flex-1 flex items-start justify-center overflow-y-auto px-8 pt-4 pb-10">
         <div className="w-full max-w-5xl mx-auto">
           <AnimatePresence mode="wait">
             {isGameMode ? (

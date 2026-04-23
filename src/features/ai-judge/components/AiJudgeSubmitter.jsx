@@ -1,6 +1,6 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, useRef, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Send, Sparkles, Trophy, Trash2, Edit3, AlertCircle, Image as ImageIcon, Code2 } from 'lucide-react';
+import { Check, Send, Sparkles, Trophy, Trash2, Edit3, AlertCircle, Image as ImageIcon, Code2, Upload } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import ImageUpload from '@/components/ui/ImageUpload';
 import ConfirmModal from '@/components/ui/ConfirmModal';
@@ -29,6 +29,39 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
   const [editing, setEditing] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [withdrawConfirmOpen, setWithdrawConfirmOpen] = useState(false);
+  const [codeFileName, setCodeFileName] = useState(''); // HTML 파일 업로드 시 파일명 표시
+  const fileInputRef = useRef(null);
+
+  // HTML 파일 업로드 — 시스템 파일 선택 다이얼로그 → 텍스트 읽어 code state로.
+  // 50KB 초과 시 앞부분만 가져오고 경고.
+  async function handleFileUpload(e) {
+    const file = e.target?.files?.[0];
+    if (!file) return;
+    // MIME이 안정적이지 않으니 확장자 + 크기만 1차 체크
+    const isHtml = /\.(html|htm)$/i.test(file.name);
+    if (!isHtml) {
+      setSubmitError('HTML 파일(.html, .htm)만 업로드할 수 있어요');
+      setTimeout(() => setSubmitError(null), 3500);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      return;
+    }
+    try {
+      const text = await file.text();
+      const truncated = text.slice(0, 50000);
+      setCode(truncated);
+      setCodeFileName(file.name);
+      if (text.length > 50000) {
+        setSubmitError(`파일이 50KB를 초과해 앞부분만 사용됩니다 (${Math.round(text.length / 1024)}KB)`);
+        setTimeout(() => setSubmitError(null), 4000);
+      }
+    } catch (err) {
+      setSubmitError(err?.message || '파일 읽기 실패');
+      setTimeout(() => setSubmitError(null), 3500);
+    } finally {
+      // 같은 파일 다시 선택 가능하도록 초기화
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  }
 
   useEffect(() => {
     if (submission && !editing) {
@@ -253,18 +286,42 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
           )}
         </div>
       ) : (
-        <div>
+        <div className="space-y-2">
+          {/* 파일 업로드 버튼 — 시스템 파일 선택기로 .html 첨부 */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="inline-flex items-center gap-1.5 px-3 py-2 min-h-[36px] text-[12px] font-medium bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40"
+            >
+              <Upload size={13} /> HTML 파일 선택
+            </button>
+            {codeFileName && (
+              <span className="text-[11px] text-slate-500 dark:text-slate-400 truncate flex items-center gap-1">
+                <Check size={12} className="text-emerald-500 shrink-0" />
+                <span className="truncate">{codeFileName}</span>
+              </span>
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".html,.htm,text/html"
+              onChange={handleFileUpload}
+              className="hidden"
+              aria-label="HTML 파일 업로드"
+            />
+          </div>
           <textarea
             value={code}
-            onChange={(e) => setCode(e.target.value)}
-            placeholder={`<!DOCTYPE html>\n<html>\n  <body>\n    <!-- 여기에 HTML/CSS/JS를 붙여넣으세요 -->\n  </body>\n</html>`}
+            onChange={(e) => { setCode(e.target.value); if (codeFileName) setCodeFileName(''); }}
+            placeholder={`파일을 선택하거나 직접 붙여넣으세요\n\n<!DOCTYPE html>\n<html>\n  <body>\n    <!-- HTML/CSS/JS -->\n  </body>\n</html>`}
             aria-label="HTML 코드"
             rows={10}
             maxLength={50000}
             className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded-lg px-3.5 py-2.5 text-[13px] font-mono text-slate-800 dark:text-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-y leading-relaxed"
           />
-          <div className="flex items-center justify-between mt-1.5 text-[11px] text-slate-400">
-            <span>HTML/CSS/JavaScript 통째로 붙여넣기</span>
+          <div className="flex items-center justify-between text-[11px] text-slate-400">
+            <span>파일 업로드 또는 직접 붙여넣기</span>
             <span className="tabular-nums">{code.length.toLocaleString()}/50,000</span>
           </div>
         </div>
