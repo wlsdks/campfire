@@ -1,10 +1,15 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HelpCircle, MessageSquare, Crown } from 'lucide-react';
+import { HelpCircle, MessageSquare, Crown, Trophy, Medal, Award } from 'lucide-react';
 import { useQAStats } from '@/features/class-questions/api/useQAStats';
 import EmptyState from '@/components/ui/EmptyState';
 
-const MEDAL = ['🥇', '🥈', '🥉'];
+// lucide 아이콘 + amber/slate 토큰 — 이모지 🥇🥈🥉 대신 (CLAUDE.md: NO emoji icons)
+const MEDAL_META = [
+  { Icon: Trophy, color: 'text-amber-500' },     // 1등 gold
+  { Icon: Medal, color: 'text-slate-400' },      // 2등 silver
+  { Icon: Award, color: 'text-amber-700 dark:text-amber-600' }, // 3등 bronze
+];
 
 function RankRow({ entry, rank, field }) {
   const value = field === 'questions' ? entry.questions : field === 'answers' ? entry.answers : entry.total;
@@ -22,10 +27,11 @@ function RankRow({ entry, rank, field }) {
           : 'bg-slate-50/50 dark:bg-slate-800/50'
       }`}
     >
-      <span className="w-8 text-center shrink-0">
-        {isPodium ? (
-          <span className="text-lg">{MEDAL[rank]}</span>
-        ) : (
+      <span className="w-8 flex items-center justify-center shrink-0">
+        {isPodium ? (() => {
+          const { Icon, color } = MEDAL_META[rank];
+          return <Icon size={18} className={color} />;
+        })() : (
           <span className="text-sm font-bold text-slate-400 tabular-nums">{rank + 1}</span>
         )}
       </span>
