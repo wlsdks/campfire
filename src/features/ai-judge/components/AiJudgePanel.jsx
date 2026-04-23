@@ -161,7 +161,8 @@ export default memo(function AiJudgePanel({ sessionId, questionId }) {
         <Play size={15} /> {count === 0 ? '제출을 기다리는 중' : `${count}건 심사 시작`}
       </Button>
       {count > 0 && (
-        <p className="text-xs text-slate-400 text-center">심사위원 7명이 병렬로 평가합니다 (약 {Math.ceil(count * 10 / 60)}분)</p>
+        // 예상 시간 = count / CONCURRENCY(2) × 건당 ~7s ÷ 60. 2명 동시 심사 + 판사 pacing(stagger+min think) 반영.
+        <p className="text-xs text-slate-400 text-center">심사위원 7명이 병렬로 평가합니다 (약 {Math.max(1, Math.ceil(count * 3.5 / 60))}분)</p>
       )}
       <p className="text-[11px] text-slate-400 text-center sm:hidden">
         모바일은 화면이 잠기면 심사가 중단될 수 있어요. 데스크톱에서 실행을 권장합니다.
