@@ -101,12 +101,21 @@ export default memo(function InstructorCommHub({ sessionId }) {
         ))}
       </div>
 
-      {/* Body — 탭별 내용 */}
+      {/* Body — 탭별 내용. 모든 탭을 항상 마운트하고 display 토글로 숨김.
+          이유: 탭별 Modal(selectedQuestion)이 열린 상태로 다른 탭 누르면 상태 소실되던 UX 버그 방지. */}
       <div className="p-3.5">
-        {activeTab === 'notes' && <InstructorNotes sessionId={sessionId} embedded />}
-        {activeTab === 'hands' && <HandRaiseList sessionId={sessionId} embedded />}
-        {activeTab === 'urgent' && <UrgentQuestionList sessionId={sessionId} embedded />}
-        {activeTab === 'class' && <ClassQuestionList sessionId={sessionId} embedded />}
+        <div className={activeTab === 'notes' ? '' : 'hidden'}>
+          <InstructorNotes sessionId={sessionId} embedded />
+        </div>
+        <div className={activeTab === 'hands' ? '' : 'hidden'}>
+          <HandRaiseList sessionId={sessionId} embedded />
+        </div>
+        <div className={activeTab === 'urgent' ? '' : 'hidden'}>
+          <UrgentQuestionList sessionId={sessionId} embedded />
+        </div>
+        <div className={activeTab === 'class' ? '' : 'hidden'}>
+          <ClassQuestionList sessionId={sessionId} embedded />
+        </div>
       </div>
     </CollapsibleSection>
   );
