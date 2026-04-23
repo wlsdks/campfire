@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { db } from '@/lib/firebase';
 import { isQuizQuestion, getQuizReward } from '@/lib/quiz';
 import { logger } from '@/lib/logger';
+import { getServerNow } from '@/features/timer/api/useTimer';
 
 const SPEED_QUIZ_TIMER = 10; // seconds per question
 const REVEAL_PAUSE = 3500;   // ms to show answer before next question
@@ -200,7 +201,8 @@ export function useSpeedQuiz(sessionId, session, { scores, participants, startTi
     const timer = sessionRef.current?.timer || {};
     if (!timer || !timer.endTime) return;
 
-    const remaining = Math.max(0, timer.endTime - Date.now()) + 500; // +500ms buffer
+    // 서버 시간 기준 remaining — 강사 기기 시계와 endTime 기준(서버)이 어긋나도 정확.
+    const remaining = Math.max(0, timer.endTime - getServerNow()) + 500; // +500ms buffer
     const id = setTimeout(() => {
       if (phase === 'question') {
         revealAndAdvance();
