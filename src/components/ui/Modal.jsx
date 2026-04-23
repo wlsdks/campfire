@@ -1,4 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Modal({ open, onClose, children, className = '', ariaLabel }) {
@@ -64,7 +65,11 @@ export default function Modal({ open, onClose, children, className = '', ariaLab
     []
   );
 
-  return (
+  // Portal로 document.body에 렌더. 조상 중 display:none/hidden (예: 탭 허브 비활성 탭)
+  // 이 있어도 Modal 자체는 영향받지 않음.
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <motion.div
@@ -92,6 +97,7 @@ export default function Modal({ open, onClose, children, className = '', ariaLab
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
