@@ -26,17 +26,18 @@ if (!genAI && import.meta.env.VITE_GEMINI_API_KEY) {
 }
 
 const MODEL_NAME = 'gemini-2.5-flash-lite';
-// 라이브 AI 심사 전용 — 최신 preview 모델 사용 (멀티모달 품질 우선)
-const LIVE_MODEL_NAME = 'gemini-2.5-pro';
+// 라이브 AI 심사 전용 — flash-lite로 전환 (Pro/Flash는 100명 규모에서 429/RPM 한도 다발).
+// lite는 Tier 1 기준 RPM ~4000으로 여유. 7판사 페르소나 동시 호출의 다양성은 prompt로 보강.
+const LIVE_MODEL_NAME = 'gemini-2.5-flash-lite';
 const MAX_INPUT_CHARS = 120000; // ~30K tokens, leaves room for system+prompt+output
 
-async function withRetry(fn, retries = 2, delayMs = 2000) {
+async function withRetry(fn, retries = 2, delayMs = 2000, timeoutMs = 45000) {
   for (let i = 0; i <= retries; i++) {
     try {
       return await Promise.race([
         fn(),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('API 타임아웃 (45초)')), 45000)
+          setTimeout(() => reject(new Error(`API 타임아웃 (${Math.round(timeoutMs / 1000)}초)`)), timeoutMs)
         ),
       ]);
     } catch (err) {
@@ -358,46 +359,125 @@ async function buildLiveParts(submission) {
  * 모델 fallback: LIVE_MODEL_NAME(preview) 실패 시 stable 모델로 자동 재시도 — preview 모델이
  * 지역/쿼터에 따라 제공 안 되는 경우도 있어 라이브 수업에서 중단되지 않도록 방어.
  */
-// pro → flash-latest → flash → flash-lite 순. pro는 품질 우선, rate limit 시 flash 계열로 자동 fallback.
+// flash-lite 우선 (RPM/비용 최적). lite가 모델 미지원/400 에러 시에만 flash로 fallback.
+// 429(rate)는 lite에서도 거의 안 터지지만 만약 발생하면 즉시 throw → 상위 retry가 처리.
 const LIVE_MODEL_FALLBACKS = [
-  LIVE_MODEL_NAME,           // gemini-2.5-pro (심사 품질 최우선)
-  'gemini-flash-latest',     // Flash alias
-  'gemini-2.5-flash',        // Flash stable
-  MODEL_NAME,                // gemini-2.5-flash-lite (최후 보루)
+  LIVE_MODEL_NAME,           // gemini-2.5-flash-lite (라이브 심사 기본)
+  'gemini-2.5-flash',        // 만에 하나 lite가 응답 못할 때
 ];
 
-async function evaluateLiveSubmission(judge, submission, questionTitle) {
-  if (!genAI) throw new Error('Gemini API가 초기화되지 않았습니다.');
+/**
+ * 7명 페르소나를 합친 system instruction 생성.
+ * 한 번의 호출로 모든 판사 결과를 받기 위함 — RPM/quota 절감.
+ */
+function buildAllJudgesSystemInstruction(questionTitle) {
+  const judgesBlock = JUDGES.map((j, i) => `### ${i + 1}. ${j.name} (id: "${j.id}") — ${j.role}
+- 성격: ${j.personality}
+- 평가 초점: ${j.focus}
+
+${j.systemPrompt}`).join('\n\n---\n\n');
+
+  const idsBlock = JUDGES.map(j => `  "${j.id}": { "score": (1~10 정수), "comment": "...", "highlight": "..." }`).join(',\n');
 
   const contextLine = questionTitle
-    ? `[수업 실습 주제]\n${questionTitle}\n\n`
+    ? `\n[수업 실습 주제]\n${questionTitle}\n`
     : '';
-  const systemInstruction = `${judge.systemPrompt}\n\n${LIVE_EVALUATION_GUIDE}\n\n${contextLine}위 주제에 대한 제출물을 평가하세요.`;
+
+  return `당신은 7명의 심사위원을 동시에 연기하는 평가자입니다. 같은 작품을 7개의 서로 다른 시선으로 봐야 합니다.
+
+⚠️ 절대 금지 사항 (이걸 어기면 평가는 무효):
+1. **7명이 비슷한 코멘트를 하는 것** — 각 판사의 전문 분야가 다르므로 같은 작품을 봐도 주목하는 지점이 달라야 합니다.
+2. **모든 판사가 비슷한 점수를 주는 것** — 강점/약점 인식이 다르므로 점수 분포가 자연스럽게 2~4점 차이가 나야 합니다 (예: 7,8,6,9,5,7,8).
+3. **판사 캐릭터 말투를 흐리게 쓰는 것** — 김기획은 "~하면 더 좋았을 것 같습니다" 전문 어조, 박사용은 "저는 이 부분이 헷갈렸어요" 일반인 어조, 이디자는 "여백이 참 좋네요" 감성 어조처럼 명확히 달라야 합니다.
+
+✅ 올바른 평가 예시:
+- 같은 작품을 보고 김기획은 "문제 정의가 약하다"(6점), 이디자는 "색감 조합이 인상적"(8점), 한완성은 "기능은 동작하나 에러 처리 없음"(7점)처럼 **각자의 렌즈로 다른 결론**.
+- 한 명이 칭찬한 부분을 다른 한 명이 비판하는 것이 자연스럽습니다.
+${contextLine}
+${LIVE_EVALUATION_GUIDE}
+
+[심사위원단 — 각자의 페르소나]
+
+${judgesBlock}
+
+---
+
+[출력 형식 — 반드시 이 JSON 구조로만 응답]
+순수 JSON만, 코드블록/설명 텍스트 금지. 7명 모두 빠짐없이 포함:
+
+{
+${idsBlock}
+}
+
+각 심사위원의 comment는 자기 캐릭터 말투를 명확히 드러내고(김기획=PM 어조, 박사용=일반 사용자 어조, 이디자=감성적 디자이너 어조 등), highlight는 그 판사 관점에서 본 한 줄 카피(40~70자)여야 합니다.`;
+}
+
+/**
+ * Evaluate one submission with ALL 7 judges in a SINGLE Gemini call.
+ * Returns { [judgeId]: { score, comment, highlight, judgeId, judgeName } }
+ *
+ * 이전 구조: 7명 × N건 = 7N회 호출 (rate limit + quota 부담)
+ * 신 구조: N건 = N회 호출 (1/7로 축소)
+ */
+async function evaluateAllJudgesAtOnce(submission, questionTitle) {
+  if (!genAI) throw new Error('Gemini API가 초기화되지 않았습니다.');
+
+  const systemInstruction = buildAllJudgesSystemInstruction(questionTitle);
   const parts = await buildLiveParts(submission);
 
   let lastErr = null;
   for (const modelName of LIVE_MODEL_FALLBACKS) {
     try {
       const model = genAI.getGenerativeModel({ model: modelName, systemInstruction });
-      // 2.5-pro는 thinking mode 필수 — thinkingBudget:0 거부. 다른 flash/lite 모델은 0으로
-      // thinking 끄는 게 속도 우선이라 유리. pro는 충분한 output 확보를 위해 토큰 한도도 증가.
       const isPro = /pro/i.test(modelName);
-      const result = await withRetry(() =>
-        model.generateContent({
+      // 7명분 출력 + 페르소나 다양성 확보:
+      // - maxOutputTokens 8192 (7판사 × ~400~600토큰 + JSON 오버헤드)
+      // - temperature 0.75: lite가 thinking 없이도 페르소나 차별화하도록 발산성 ↑
+      // - 타임아웃 60초: lite는 Pro보다 빠르지만 7판사 출력은 여전히 무거움
+      const result = await withRetry(
+        () => model.generateContent({
           contents: [{ role: 'user', parts }],
           generationConfig: {
-            temperature: 0.4,
-            maxOutputTokens: isPro ? 2048 : 1024,
+            temperature: 0.75,
+            maxOutputTokens: 8192,
             responseMimeType: 'application/json',
             ...(isPro ? {} : { thinkingConfig: { thinkingBudget: 0 } }),
           },
-        })
+        }),
+        2,
+        2500,
+        60000,
       );
-      return parseJudgeResponse(result.response.text());
+      const raw = parseJudgeResponse(result.response.text());
+
+      // 응답 검증 — 7명 모두 있어야 정상. 누락된 판사는 에러로 마킹.
+      const out = {};
+      for (const judge of JUDGES) {
+        const r = raw[judge.id];
+        if (r && typeof r.score === 'number') {
+          out[judge.id] = {
+            score: r.score,
+            comment: r.comment || '',
+            highlight: r.highlight || '',
+            judgeId: judge.id,
+            judgeName: judge.name,
+          };
+        } else {
+          out[judge.id] = {
+            judgeId: judge.id,
+            judgeName: judge.name,
+            score: 0,
+            comment: '심사 응답에서 이 판사 결과 누락',
+            highlight: '',
+            error: true,
+          };
+        }
+      }
+      return out;
     } catch (err) {
       lastErr = err;
       const msg = (err?.message || '').toLowerCase();
-      // 모델 미지원/잘못된 ID는 다음 fallback으로. 429(rate)나 파싱 에러는 즉시 throw.
+      // 모델 미지원/잘못된 ID는 다음 fallback. 429(rate)·파싱 에러는 즉시 throw.
       const isModelIssue = msg.includes('not found') || msg.includes('404') || msg.includes('400')
         || msg.includes('unsupported') || msg.includes('does not exist')
         || msg.includes('invalid') || msg.includes('is not supported');
@@ -408,52 +488,61 @@ async function evaluateLiveSubmission(judge, submission, questionTitle) {
 }
 
 /**
- * Live judging — 7 judges in parallel for one submission.
- * onJudgeStart(judge): 판사가 "지금 이 작품 보는 중" 시작 시점 훅 (라이브 중계용)
+ * Live judging — ONE Gemini call per submission, returns all 7 judges' verdicts.
+ * 호출 수: 7N → N (rate limit 부담 1/7로 감소).
+ *
+ * 학생들의 "판사 7명이 차례로 고민하는" 라이브 연출은 클라이언트에서 유지:
+ * API 응답 후, onJudgeStart/onJudgeComplete를 stagger로 순차 방송.
+ *
+ * onJudgeStart(judge): 판사가 "지금 이 작품 보는 중" 시작 시점 훅
  * onJudgeComplete(judgeId, result): 판사 완료
  */
 export async function judgeLiveSubmission(submission, questionTitle, onJudgeComplete, onJudgeStart) {
+  // pacing 파라미터 — 전자칠판에 7명 판사의 "조사 중 → 평가 완료" 흐름을 체감하도록.
+  const START_STAGGER_MS = 350;
+  const MIN_THINK_MS = 1800;
+  const THINK_JITTER_MS = 1200;
+  const DONE_STAGGER_MS = 250;  // 결과 도착 후 판사별 done 방송 간격
+
+  // 1) 모든 판사 thinking 시작 방송 (stagger) + 같은 시점에 백그라운드로 단일 API 호출 시작
+  const judgePromise = evaluateAllJudgesAtOnce(submission, questionTitle).catch((err) => err);
+
+  const startTimes = {};
+  for (let i = 0; i < JUDGES.length; i++) {
+    if (i > 0) await new Promise((r) => setTimeout(r, START_STAGGER_MS));
+    const judge = JUDGES[i];
+    startTimes[judge.id] = Date.now();
+    onJudgeStart?.(judge);
+  }
+
+  // 2) API 응답 대기
+  const apiResult = await judgePromise;
+  const apiFailed = apiResult instanceof Error;
+
+  // 3) 결과를 판사별로 stagger 방송 — 동시에 done되지 않도록 + MIN_THINK_MS 보장
   const results = {};
+  for (let i = 0; i < JUDGES.length; i++) {
+    const judge = JUDGES[i];
+    const startedAt = startTimes[judge.id];
+    const minDoneAt = startedAt + MIN_THINK_MS + Math.random() * THINK_JITTER_MS + i * DONE_STAGGER_MS;
 
-  // pacing 파라미터 — 학생들이 전자칠판에서 7명 판사의 "조사 중 → 평가 완료" 흐름을 체감하도록.
-  // Promise.all로 7명 동시 시작하면 thinking 배지가 찰나에 done으로 전환되어 '심사 과정'이 안 보임.
-  const START_STAGGER_MS = 350;          // 판사별 시작 간격 — 0s, 0.35s, 0.7s, … 2.1s까지 순차 노출
-  const MIN_THINK_MS = 1800;             // API 응답이 빨라도 최소 이 시간은 thinking 유지
-  const THINK_JITTER_MS = 1200;          // 판사별 랜덤 가변 — 일제히 done으로 바뀌지 않도록
+    if (apiFailed) {
+      results[judge.id] = {
+        judgeId: judge.id,
+        judgeName: judge.name,
+        score: 0,
+        comment: `심사 중 오류: ${apiResult.message}`,
+        highlight: '',
+        error: true,
+      };
+    } else {
+      results[judge.id] = apiResult[judge.id];
+    }
 
-  await Promise.all(
-    JUDGES.map(async (judge, idx) => {
-      // 시작 stagger — 모든 판사가 동시에 시작하면 긴장감이 없음
-      if (idx > 0) await new Promise((r) => setTimeout(r, idx * START_STAGGER_MS));
-
-      onJudgeStart?.(judge);
-      const minDoneAt = Date.now() + MIN_THINK_MS + Math.random() * THINK_JITTER_MS;
-
-      try {
-        const r = await evaluateLiveSubmission(judge, submission, questionTitle);
-        results[judge.id] = {
-          ...r,
-          judgeId: judge.id,
-          judgeName: judge.name,
-        };
-      } catch (error) {
-        results[judge.id] = {
-          judgeId: judge.id,
-          judgeName: judge.name,
-          score: 0,
-          comment: `심사 중 오류: ${error.message}`,
-          highlight: '',
-          error: true,
-        };
-      }
-
-      // API가 빨리 응답했으면 thinking 최소 시간 보장 — "진지하게 보고 있다"는 느낌 유지
-      const waitMs = minDoneAt - Date.now();
-      if (waitMs > 0) await new Promise((r) => setTimeout(r, waitMs));
-
-      onJudgeComplete?.(judge.id, results[judge.id]);
-    })
-  );
+    const waitMs = minDoneAt - Date.now();
+    if (waitMs > 0) await new Promise((r) => setTimeout(r, waitMs));
+    onJudgeComplete?.(judge.id, results[judge.id]);
+  }
 
   const valid = Object.values(results).filter(r => !r.error);
   const totalScore = valid.reduce((sum, r) => sum + (r.score || 0), 0);
