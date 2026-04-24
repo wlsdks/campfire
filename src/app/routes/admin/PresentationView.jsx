@@ -20,6 +20,7 @@ import { usePublishGameResult } from '@/features/games/api/useGameResult';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
 import TeamScoreboard from '@/features/teams/components/TeamScoreboard';
 import PersistentAssignmentBar from '@/features/ai-judge/components/PersistentAssignmentBar';
+import { useQuestionActions } from '@/hooks/useQuestionActions';
 
 const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
 const ClassQABoard = lazy(() => import('@/features/class-questions/components/ClassQABoard'));
@@ -364,13 +365,16 @@ function ExitHint({ onExit }) {
   );
 }
 
-function PresentRevealControls({ sessionId, session }) {
+function PresentRevealControls({ sessionId, session, onRevealQuiz, onRevealAnswer }) {
   const [drumroll, setDrumroll] = useState(false);
   const currentQId = session?.currentQuestion;
   const question = currentQId ? session?.questions?.[currentQId] : null;
   if (!question) return null;
 
-  const hasAnswer = question.correctAnswer && !isQuizQuestion(question);
+  // 퀴즈도 발표 모드에서 두구두구/정답 공개 가능. 단, 퀴즈는 점수 반영(revealQuiz)이 필요해
+  // useQuestionActions의 함수를 통해 처리 — 일반 정답형/MH는 단순 revealedAt만 찍음(revealAnswer).
+  const isQuiz = isQuizQuestion(question);
+  const hasAnswer = isQuiz || question.correctAnswer;
   const isMH = ['mysteryBox', 'hintQuiz'].includes(question.type);
   if (!hasAnswer && !isMH) return null;
 
@@ -408,10 +412,15 @@ function PresentRevealControls({ sessionId, session }) {
   }
 
   async function handleRevealAnswer() {
-    await update(ref(db, `sessions/${sessionId}`), {
-      [`questions/${currentQId}/revealedAt`]: Date.now(),
-      drumroll: null,
-    });
+    // 퀴즈는 useQuestionActions.revealQuiz가 점수 반영 + revealedAt까지 일괄 처리.
+    // 그 외(choice/ox/fillinblank/ranking/mysteryBox/hintQuiz)는 revealAnswer가 revealedAt만 찍음.
+    if (isQuiz) {
+      await onRevealQuiz?.(currentQId);
+    } else {
+      await onRevealAnswer?.(currentQId);
+    }
+    // drumroll 잔여 상태 정리 (두구두구 경유든 직접 클릭이든 항상 false로)
+    await update(ref(db, `sessions/${sessionId}`), { drumroll: null });
   }
 
   return (
@@ -510,9 +519,13 @@ function PresentModeMenu({ sessionId, currentMode }) {
   );
 }
 
-export default function PresentationView({ sessionId, session, currentMode, onlineList, leaderboard, drawParticipants, studentUrl, count, onExit, teamScores, scores }) {
+export default function PresentationView({ sessionId, session, currentMode, onlineList, leaderboard, drawParticipants, studentUrl, count, onExit, teamScores, scores, participants }) {
   const exitPresent = useCallback(() => onExit(), [onExit]);
   const { publishResult } = usePublishGameResult(sessionId);
+
+  // 발표 모드에서도 퀴즈/정답형 정답 공개를 트리거할 수 있도록 reveal 함수를 가져옴.
+  // QuestionManager는 이 모드에서 마운트되지 않으므로 PresentationView가 직접 hook 호출.
+  const { revealQuiz, revealAnswer } = useQuestionActions(sessionId, session?.questions || {}, session?.currentQuestion, scores, participants);
 
   const handleGameResult = useCallback((resultNames, mode) => {
     const nameArr = Array.isArray(resultNames) ? resultNames : [resultNames];
@@ -627,8 +640,8 @@ export default function PresentationView({ sessionId, session, currentMode, onli
 
       <PresentQROverlay sessionId={sessionId} studentUrl={studentUrl} count={count} />
 
-      {/* 힌트 퀴즈 / 미스터리 박스 컨트롤 — 하단 중앙 */}
-      <PresentRevealControls sessionId={sessionId} session={session} />
+      {/* 정답형/퀴즈/MH 두구두구 + 정답 공개 — 하단 중앙 */}
+      <PresentRevealControls sessionId={sessionId} session={session} onRevealQuiz={revealQuiz} onRevealAnswer={revealAnswer} />
 
       {/* 이미지 슬라이드 컨트롤 */}
       {(() => {

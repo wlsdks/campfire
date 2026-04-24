@@ -89,7 +89,7 @@ export default function AdminPage() {
     return (
       <PresentationView sessionId={s.sessionId} session={s.session} currentMode={currentMode} onlineList={s.onlineList}
         leaderboard={s.leaderboard} drawParticipants={s.drawParticipants} studentUrl={s.studentUrl} count={s.count} onExit={s.handleExitPresent}
-        teamScores={s.teamScores} scores={s.scores} />
+        teamScores={s.teamScores} scores={s.scores} participants={s.participants} />
     );
   }
 
