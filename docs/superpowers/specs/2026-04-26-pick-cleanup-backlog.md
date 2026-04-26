@@ -88,12 +88,13 @@
 
 ## P1 — 높음 (HIGH)
 
-### P1-1. tint 배경 71건 정리 (visualization/ai-judge 집중) ⏳ in progress
-- ✅ batch 1 `76c1c75` — visualization 4건 (AISummaryBanner, AnalogyHelper, WrongAnswerAnalysis ×2)
-- ✅ batch 2 `58e314f` — viz podium + ai-judge state 4건 (CorrectAnswerRanking, AiJudgeViz stateColor, AiJudgeViz 아바타, PersistentAssignmentCard)
-- ✅ batch 3 `17d1bca` — class-questions 역할/상태 배지 7건 (SubmissionPreview + ClassQAPanel + AnswerItem + QuestionCard)
-- ✅ batch 4 `b170b41` — P2-1 합침: staff/EngagementTab/StaffDMAlert red-50 6건 → slate + red dot
-- 남은: dm/DMBubble emerald + AIQuestionGenerator + QuestionFormSections amber 등 ~5건
+### P1-1. tint 배경 71건 정리 ✅ 마무리 (5 batch 누적 ~30건)
+- ✅ batch 1 `76c1c75` — visualization 4건
+- ✅ batch 2 `58e314f` — viz podium + ai-judge state 4건
+- ✅ batch 3 `17d1bca` — class-questions 역할/상태 배지 7건
+- ✅ batch 4 `b170b41` — P2-1 합침: staff/EngagementTab/StaffDMAlert red-50 6건
+- ✅ batch 5 `eba8e8f` — DM/AIQuestionGenerator/Report/QuestionFormSections 9건 (마무리)
+- 남은 항목: Badge.jsx canonical error 패턴 (의도), reaction bubble 색상(의도) — 유지
 - **증상**: §1 "박스 배경에 색상 tint 금지 — bg-white 또는 bg-slate-50만" 위반
 - **분포**: indigo-50/100 28건, emerald-50 24건, amber-50 19건
 - **주요 위치**:
