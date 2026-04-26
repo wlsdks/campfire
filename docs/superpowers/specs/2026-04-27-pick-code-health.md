@@ -135,8 +135,8 @@
 5. ~~**B1** stale 문서 삭제~~ ✅
 6. ~~**B3** CLAUDE.md 업데이트~~ ✅
 7. ~~**B5** package.json metadata~~ ✅
-8. **B4** README.md 업데이트 (20분) ← 다음 iteration
-9. **B6** PRD.md 이전 (10분)
+8. ~~**B4** README.md 업데이트~~ ✅ `49c2698`
+9. **B6** PRD.md 이전 (10분) ← 다음 iteration
 10. **B7** FEATURES.md 정리 (15분)
 11. **B2** UX-PATROL.md 결정 (5분)
 
