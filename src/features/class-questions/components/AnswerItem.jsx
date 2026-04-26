@@ -5,10 +5,16 @@ export default function AnswerItem({ answer: a, questionId, pid, onUpvote }) {
   const isOwn = a.participantId === pid;
   const hasUpvoted = a.upvotes?.[pid];
   const isAi = a.role === 'ai';
+  const isOfficial = a.role === 'admin' || a.role === 'staff';
   const roleLabel = a.role === 'admin' ? '강사' : a.role === 'staff' ? '스태프' : isAi ? 'AI 조교' : null;
 
+  // P2-4: 공식 답변(강사/스태프)은 학생이 한눈에 신뢰할 수 있도록 배경/링으로 시각 강조
+  const containerCls = isOfficial
+    ? 'rounded-lg bg-slate-50 dark:bg-slate-700/30 ring-1 ring-slate-200 dark:ring-slate-700 px-3 py-2.5'
+    : '';
+
   return (
-    <div className="flex gap-2.5">
+    <div className={`flex gap-2.5 ${containerCls}`}>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">{a.nickname}</span>
@@ -24,7 +30,7 @@ export default function AnswerItem({ answer: a, questionId, pid, onUpvote }) {
           {isOwn && <span className="text-[10px] text-slate-400">나</span>}
           <span className="text-[10px] text-slate-400">{timeAgo(a.timestamp)}</span>
         </div>
-        <p className="text-sm text-slate-700 dark:text-slate-200 mt-0.5 leading-relaxed">{a.text}</p>
+        <p className={`text-sm mt-0.5 leading-relaxed ${isOfficial ? 'text-slate-900 dark:text-slate-100' : 'text-slate-700 dark:text-slate-200'}`}>{a.text}</p>
         <button
           onClick={() => onUpvote(questionId, a.id, pid)}
           aria-label={hasUpvoted ? '추천 취소' : '추천'}
