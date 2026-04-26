@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ArrowLeft, MessageCircle, Hand, MessageSquare, Users, LogOut } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowLeft, MessageCircle, Hand, MessageSquare, Users, LogOut, FileText, Coffee, Trophy, Award, BarChart3 } from 'lucide-react';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 import Badge from '@/components/ui/Badge';
 import StaffDMAlert from '@/features/dm/components/StaffDMAlert';
@@ -15,6 +15,63 @@ const TABS = [
   { key: 'chat', label: '채팅', icon: MessageSquare },
   { key: 'participants', label: '참여자', icon: Users },
 ];
+
+// P2-3: 강사 진행 상황을 스태프가 한눈에 — 현재 active 질문 또는 mode 안내
+const MODE_LABEL = {
+  lottery: { label: '추첨 진행 중', Icon: Trophy },
+  breakTime: { label: '쉬는 시간', Icon: Coffee },
+  leaderboard: { label: '리더보드', Icon: Trophy },
+  awards: { label: '시상식', Icon: Award },
+  randomPicker: { label: '발표자 뽑기', Icon: Users },
+  comprehension: { label: '이해도 체크', Icon: BarChart3 },
+  quickSurvey: { label: '빠른 설문', Icon: BarChart3 },
+  discussion: { label: '그룹 토론', Icon: MessageSquare },
+  qaBoard: { label: 'Q&A 보드', Icon: MessageSquare },
+  qaRanking: { label: 'Q&A 랭킹', Icon: Trophy },
+  combinedRanking: { label: '합산 랭킹', Icon: Trophy },
+  joinShow: { label: '접속 현황', Icon: Users },
+  focus: { label: '집중 모드', Icon: Users },
+};
+
+function CurrentContext({ session }) {
+  const currentMode = session?.currentMode;
+  const currentQId = session?.currentQuestion;
+  const question = currentQId ? session?.questions?.[currentQId] : null;
+  const modeMeta = currentMode ? MODE_LABEL[currentMode] : null;
+
+  // 진행 중 질문이 있으면 우선 표시, 그 다음 special mode, 그 외 대기
+  const content = question
+    ? { Icon: FileText, primary: question.title || '제목 없음', secondary: '현재 질문' }
+    : modeMeta
+      ? { Icon: modeMeta.Icon, primary: modeMeta.label, secondary: null }
+      : { Icon: Coffee, primary: '대기 중', secondary: '강사 진행 대기' };
+
+  const { Icon } = content;
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={`${currentMode}-${currentQId}`}
+        initial={{ opacity: 0, y: -4 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -4 }}
+        transition={{ duration: 0.18 }}
+        className="px-5 py-2.5 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-100 dark:border-slate-700 flex items-center gap-2 shrink-0"
+        aria-live="polite"
+      >
+        <Icon size={14} className="text-slate-400 shrink-0" />
+        {content.secondary && (
+          <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider shrink-0">
+            {content.secondary}
+          </span>
+        )}
+        <span className="text-[13px] font-medium text-slate-700 dark:text-slate-200 truncate flex-1">
+          {content.primary}
+        </span>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
 
 export default function StaffMobileView({ sessionId, session, adminUser, onBack, onLogout }) {
   const [activeTab, setActiveTab] = useState('questions');
@@ -59,6 +116,9 @@ export default function StaffMobileView({ sessionId, session, adminUser, onBack,
           )}
         </div>
       </header>
+
+      {/* P2-3: 강사 현재 진행 상황 — 질문 변경 시 자동 갱신 */}
+      <CurrentContext session={session} />
 
       {/* Tab content */}
       <div className="flex-1 overflow-hidden">
