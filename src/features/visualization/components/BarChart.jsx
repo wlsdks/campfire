@@ -71,11 +71,11 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
 
         // Color by rank: top = darkest, stronger contrast for projectors
         const barColor = isCorrect
-          ? 'bg-indigo-600'
+          ? 'bg-indigo-500'
           : isWrong
             ? 'bg-slate-300 dark:bg-slate-600'
             : rank === 0
-              ? 'bg-indigo-600'
+              ? 'bg-indigo-500'
               : rank === 1
                 ? 'bg-indigo-400'
                 : 'bg-slate-300 dark:bg-slate-500';
