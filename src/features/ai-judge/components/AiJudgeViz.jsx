@@ -6,12 +6,12 @@ import { useLiveSubmissions, useLiveJudgeResults, useLiveJudging } from '../api/
 import { JUDGES } from '@/features/assignments/api/judges';
 import AiJudgePanel from './AiJudgePanel';
 
-// 금/은/동은 기능적 랭킹 표시 — 단일 색조(amber)에 명도만 달리해서 화면당 2-3색 원칙 유지.
-// 기능적 랭킹 색상 — 금/은/동. 화이트 텍스트 대비 WCAG 확보를 위해 최소 amber-400 이상.
+// §1 그라디언트 금지 — 단색 amber/slate, 명도 차로 금/은/동 위계 유지.
+// 화이트 텍스트 대비 WCAG 확보를 위해 amber-400 이상 사용.
 const RANK_META = [
-  { key: 'first', title: '1등', Icon: Trophy, grad: 'from-amber-500 to-amber-600', text: 'text-amber-500' },
-  { key: 'second', title: '2등', Icon: Medal, grad: 'from-slate-400 to-slate-500', text: 'text-slate-400' },
-  { key: 'third', title: '3등', Icon: Award, grad: 'from-amber-400 to-amber-500', text: 'text-amber-500' },
+  { key: 'first', title: '1등', Icon: Trophy, bg: 'bg-amber-500', text: 'text-amber-500' },
+  { key: 'second', title: '2등', Icon: Medal, bg: 'bg-slate-400', text: 'text-slate-400' },
+  { key: 'third', title: '3등', Icon: Award, bg: 'bg-amber-400', text: 'text-amber-500' },
 ];
 
 export default memo(function AiJudgeViz({ sessionId, questionId, isAdmin, isPresenter = false }) {
@@ -405,7 +405,7 @@ function TopThreeStage({ sessionId, questionId, top3, results, submissions, judg
 const RevealCard = memo(function RevealCard({ rankKey, winner }) {
   const meta = RANK_META.find(r => r.key === rankKey);
   if (!winner) return null;
-  const { Icon, title, grad } = meta;
+  const { Icon, title, bg } = meta;
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -413,7 +413,7 @@ const RevealCard = memo(function RevealCard({ rankKey, winner }) {
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       className="w-full max-w-xl rounded-3xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden"
     >
-      <div className={`bg-gradient-to-r ${grad} px-5 py-3 flex items-center gap-2 text-white`}>
+      <div className={`${bg} px-5 py-3 flex items-center gap-2 text-white`}>
         <Icon size={18} />
         <span className="text-lg font-bold">{title}</span>
         <span className="ml-auto text-2xl font-bold tabular-nums">
@@ -497,7 +497,7 @@ function FullResults({ top3, results, submissions, revealedUpTo, onSetRevealedUp
           const meta = RANK_META.find(r => r.key === k);
           return (
             <div key={k} className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden">
-              <div className={`bg-gradient-to-r ${meta.grad} px-4 py-2 text-white flex items-center gap-1.5`}>
+              <div className={`${meta.bg} px-4 py-2 text-white flex items-center gap-1.5`}>
                 <meta.Icon size={14} />
                 <span className="text-sm font-bold">{meta.title}</span>
                 <span className="ml-auto text-lg font-bold tabular-nums">

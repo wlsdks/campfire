@@ -4,10 +4,11 @@ import { Trophy, Sparkles, Medal, Award, Lock, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { getJudgeById } from '@/features/assignments/api/judges';
 
+// §1 그라디언트 금지 — 단색 + 톤 차로 위계 유지 (amber-500 vs amber-400, slate-400)
 const RANK_META = [
-  { key: 'first', title: '1등', color: 'from-amber-500 to-amber-600', Icon: Trophy },
-  { key: 'second', title: '2등', color: 'from-slate-400 to-slate-500', Icon: Medal },
-  { key: 'third', title: '3등', color: 'from-amber-400 to-amber-500', Icon: Award },
+  { key: 'first', title: '1등', color: 'bg-amber-500', Icon: Trophy },
+  { key: 'second', title: '2등', color: 'bg-slate-400', Icon: Medal },
+  { key: 'third', title: '3등', color: 'bg-amber-400', Icon: Award },
 ];
 
 // 공개 순서 기준 — 실제 존재하는 랭크만 순회.
@@ -54,7 +55,7 @@ export default memo(function LiveResultHero({ top3, myParticipantId, myResult, m
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: 'spring', stiffness: 400, damping: 18, delay: 0.1 }}
-              className={`absolute top-2 right-2 px-3 py-1.5 rounded-full bg-gradient-to-r ${myRankMeta.color} text-white text-sm font-bold shadow-lg flex items-center gap-1.5`}
+              className={`absolute top-2 right-2 px-3 py-1.5 rounded-full ${myRankMeta.color} text-white text-sm font-bold shadow-lg flex items-center gap-1.5`}
             >
               <myRankMeta.Icon size={14} /> {myRankMeta.title}
             </motion.div>
@@ -120,7 +121,7 @@ export default memo(function LiveResultHero({ top3, myParticipantId, myResult, m
                     }`}
                     aria-label={`${meta.title} ${w.name} 상세 사유 보기`}
                   >
-                    <div className={`w-9 h-9 rounded-lg bg-gradient-to-br ${meta.color} flex items-center justify-center shrink-0`}>
+                    <div className={`w-9 h-9 rounded-lg ${meta.color} flex items-center justify-center shrink-0`}>
                       <meta.Icon size={16} className="text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -194,7 +195,7 @@ export default memo(function LiveResultHero({ top3, myParticipantId, myResult, m
                 className="w-full sm:w-[min(92vw,480px)] max-h-[85dvh] overflow-y-auto bg-white dark:bg-slate-800 rounded-t-2xl sm:rounded-2xl shadow-2xl"
               >
                 {/* Header */}
-                <div className={`bg-gradient-to-br ${detailMeta.color} px-5 pt-[max(1.25rem,env(safe-area-inset-top))] pb-5 text-white relative`}>
+                <div className={`${detailMeta.color} px-5 pt-[max(1.25rem,env(safe-area-inset-top))] pb-5 text-white relative`}>
                   <button
                     onClick={() => setDetailRank(null)}
                     aria-label="닫기"
