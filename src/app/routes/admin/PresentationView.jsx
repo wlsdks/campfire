@@ -357,7 +357,7 @@ function ExitHint({ onExit }) {
   );
 }
 
-function PresentRevealControls({ sessionId, session, onRevealQuiz, onRevealAnswer }) {
+export function PresentRevealControls({ sessionId, session, onRevealQuiz, onRevealAnswer }) {
   const [drumroll, setDrumroll] = useState(false);
   const currentQId = session?.currentQuestion;
   const question = currentQId ? session?.questions?.[currentQId] : null;

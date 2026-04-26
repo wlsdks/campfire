@@ -16,7 +16,7 @@ import ChatPanel from '@/features/chat/components/ChatPanel';
 import { usePublishGameResult } from '@/features/games/api/useGameResult';
 import AdminSessionHeader from './AdminSessionHeader';
 import RightSidebar from './RightSidebar';
-import PresentationView from './PresentationView';
+import PresentationView, { PresentRevealControls } from './PresentationView';
 import ModeSwitcher from './ModeSwitcher';
 import TabletDrawers from './TabletDrawers';
 import CenterContent from './CenterContent';
@@ -207,6 +207,12 @@ export default function AdminPage() {
             teamScores={s.teamScores} courseId={s.session?.courseId} />
         )}
       </div>
+
+      {/* P1-5: 두구두구 + 정답 공개 floating bar — 발표 모드 진입 안 해도 사용 가능 */}
+      {!s.effectiveReadOnly && (
+        <PresentRevealControls sessionId={s.sessionId} session={s.session}
+          onRevealQuiz={s.revealQuiz} onRevealAnswer={s.revealAnswer} />
+      )}
     </div>
   );
 }

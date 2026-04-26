@@ -65,7 +65,7 @@ export function useAdminSession() {
   const { isActive: teamBattleActive, teamCount: teamBattleCount, teams, startTeamBattle, endTeamBattle } = useTeamBattle(sessionId);
   const teamScores = useTeamScores(teams, scores);
 
-  const { handleSubmit: submitQuestion, updateQuestion } = useQuestionActions(sessionId, session?.questions || {}, session?.currentQuestion, scores, participants);
+  const { handleSubmit: submitQuestion, updateQuestion, revealQuiz, revealAnswer } = useQuestionActions(sessionId, session?.questions || {}, session?.currentQuestion, scores, participants);
 
   const isSetting = session?.status === 'setting';
   const isReviewing = session?.status === 'reviewing';
@@ -241,6 +241,8 @@ export function useAdminSession() {
     handleRightDrawerOpen, handleRightDrawerClose,
     // Question form
     handleCenterFormSubmit, handleViewQuestion,
+    // Reveal actions (퀴즈 점수 반영 + 정답 공개)
+    revealQuiz, revealAnswer,
     // Action error
     actionError,
   };
