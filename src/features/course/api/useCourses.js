@@ -93,28 +93,3 @@ export function useCourses(adminUid, role) {
 
   return { courses, loading, createCourse, deleteCourse, refresh: fetchCourses };
 }
-
-/**
- * Real-time listener for courses (used by SessionDashboard to get courseId mappings).
- * Returns a map: { [courseName]: courseId }
- */
-export function useCourseMap(adminUid, role) {
-  const [courseMap, setCourseMap] = useState({});
-
-  useEffect(() => {
-    if (!adminUid) return;
-    const unsub = onValue(ref(db, 'courses'), (snap) => {
-      const val = snap.val() || {};
-      const map = {};
-      Object.entries(val).forEach(([id, data]) => {
-        if (role === 'master' || data.ownerId === adminUid) {
-          map[data.name] = id;
-        }
-      });
-      setCourseMap(map);
-    });
-    return () => unsub();
-  }, [adminUid, role]);
-
-  return courseMap;
-}

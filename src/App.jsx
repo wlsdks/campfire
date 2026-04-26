@@ -5,7 +5,6 @@ import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import PickMascot from '@/components/ui/PickMascot';
 import JoinPage from '@/app/routes/student/JoinPage';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
-import InstallPrompt from '@/components/ui/InstallPrompt';
 import { SuspenseFallback } from '@/components/ui/Skeleton';
 import { db } from '@/lib/firebase';
 import { getNickname, getParticipantId, hasJoinedSession, markSessionJoined, getSessionNickname } from '@/lib/participant';

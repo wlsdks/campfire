@@ -18,7 +18,6 @@ import AiJudgeSubmitter from '@/features/ai-judge/components/AiJudgeSubmitter';
 import PersistentAssignmentCard from '@/features/ai-judge/components/PersistentAssignmentCard';
 import AnswerRevealCard from '@/components/ui/AnswerRevealCard';
 import { getParticipantId } from '@/lib/participant';
-import DrumrollOverlay from '@/components/ui/DrumrollOverlay';
 import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
 import QuestionCard from './QuestionCard';

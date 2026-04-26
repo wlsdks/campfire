@@ -14,7 +14,3 @@ export function hapticSuccess() {
   if ('vibrate' in navigator) navigator.vibrate([10, 30, 10]);
 }
 
-/** Error — wrong answer, validation fail */
-export function hapticError() {
-  if ('vibrate' in navigator) navigator.vibrate([30, 50, 30, 50, 30]);
-}

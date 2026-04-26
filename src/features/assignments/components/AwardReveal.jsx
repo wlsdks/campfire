@@ -1,7 +1,6 @@
 import { memo, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { getAwardById, getJudgeById } from '@/features/assignments/api/judges';
-import Avatar from '@/components/ui/Avatar';
 
 const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 

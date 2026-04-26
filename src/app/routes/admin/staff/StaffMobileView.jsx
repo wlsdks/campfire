@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, MessageCircle, Hand, MessageSquare, Users, LogOut, FileText, Coffee, Trophy, Award, BarChart3 } from 'lucide-react';
 import { useParticipants } from '@/features/participants/api/useParticipants';
-import Badge from '@/components/ui/Badge';
 import StaffDMAlert from '@/features/dm/components/StaffDMAlert';
 import StaffQuestionsTab from './StaffQuestionsTab';
 import StaffHandRaisesTab from './StaffHandRaisesTab';

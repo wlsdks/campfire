@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, memo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Zap, Hand, MessageSquare, Trophy, Heart, Copy, Check, Ticket, Coffee, UserCircle, Award } from 'lucide-react';
-import Badge from '@/components/ui/Badge';
 import Avatar from '@/components/ui/Avatar';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';

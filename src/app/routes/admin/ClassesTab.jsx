@@ -1,7 +1,6 @@
 import { memo } from 'react';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
-import PickMascot from '@/components/ui/PickMascot';
 import { CourseGroup, UngroupedSessions } from './SessionList';
 import SessionSearchFilter from './SessionSearchFilter';
 import { Plus } from 'lucide-react';

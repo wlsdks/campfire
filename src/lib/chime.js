@@ -127,30 +127,3 @@ export function playIncorrect() {
   } catch { /* */ }
 }
 
-/**
- * Play a softer single-tone "tick" for timer warnings etc.
- */
-export function playTick() {
-  try {
-    const ctx = getAudioContext();
-    const now = ctx.currentTime;
-
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(880, now); // A5
-
-    gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(0.08, now + 0.01);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
-
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-
-    osc.start(now);
-    osc.stop(now + 0.15);
-  } catch {
-    // Silently fail
-  }
-}

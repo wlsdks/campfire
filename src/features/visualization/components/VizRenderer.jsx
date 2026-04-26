@@ -11,7 +11,6 @@ import DebateChart from './DebateChart';
 import RankingChart from './RankingChart';
 import FillBlankChart from './FillBlankChart';
 import CheckProgress from './CheckProgress';
-import TextAnswerChart from './TextAnswerChart';
 import MysteryBoxPresenter from './MysteryBoxPresenter';
 import HintQuizPresenter from './HintQuizPresenter';
 import CorrectAnswerRanking from './CorrectAnswerRanking';
