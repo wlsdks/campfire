@@ -4,6 +4,7 @@ import { Plus } from 'lucide-react';
 import { useAssignmentList } from '@/features/assignments/api/useAssignments';
 import Button from '@/components/ui/Button';
 import PickMascot from '@/components/ui/PickMascot';
+import EmptyState from '@/components/ui/EmptyState';
 import AssignmentDetail from '@/features/assignments/components/AssignmentDetail';
 import AssignmentCard from './AssignmentCard';
 import CreateAssignmentModal from './CreateAssignmentModal';
@@ -58,13 +59,13 @@ export default function AssignmentsTab({ sessions }) {
             <p className="text-sm text-slate-400">불러오는 중...</p>
           </div>
         ) : assignments.length === 0 ? (
-          <div className="py-16">
-            <PickMascot size="lg" mood="waiting" className="mx-auto" />
-            <div className="text-center mt-6 space-y-2">
-              <p className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">아직 등록된 과제가 없습니다</p>
-              <p className="text-slate-400 text-sm">과제를 등록하고 학생들의 제출물을 AI로 심사해보세요</p>
-            </div>
-          </div>
+          <EmptyState
+            title="아직 등록된 과제가 없습니다"
+            description="과제를 등록하고 학생들의 제출물을 AI로 심사해보세요"
+            mascotSize="lg"
+            mood="waiting"
+            className="py-16"
+          />
         ) : (
           <div className="space-y-3">
             {assignments.map(a => (

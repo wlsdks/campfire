@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Hand, AlertCircle, HelpCircle, Copy, Check, ChevronDown } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
-import PickMascot from '@/components/ui/PickMascot';
+import EmptyState from '@/components/ui/EmptyState';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
 import { useClassQuestions } from '@/features/class-questions/api/useClassQuestions';
@@ -121,10 +121,12 @@ export default function MobileParticipantsTab({ sessionId, onlineList, count, st
 
         <MobileSection icon={Users} title="참여자" count={onlineList.length}>
           {onlineList.length === 0 ? (
-            <div className="text-center py-8 space-y-3">
-              <PickMascot size="sm" mood="waiting" />
-              <p className="text-[15px] text-slate-400">아직 참여자가 없습니다</p>
-            </div>
+            <EmptyState
+              title="아직 참여자가 없습니다"
+              mascotSize="sm"
+              mood="waiting"
+              className="py-8"
+            />
           ) : (
             <div className="divide-y divide-slate-50 dark:divide-slate-700">
               {onlineList.map((p) => (
