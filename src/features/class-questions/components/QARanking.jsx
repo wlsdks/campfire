@@ -4,7 +4,6 @@ import { HelpCircle, MessageSquare, Crown, Trophy, Medal, Award } from 'lucide-r
 import { useQAStats } from '@/features/class-questions/api/useQAStats';
 import EmptyState from '@/components/ui/EmptyState';
 
-// lucide 아이콘 + amber/slate 토큰 — 이모지 🥇🥈🥉 대신 (CLAUDE.md: NO emoji icons)
 const MEDAL_META = [
   { Icon: Trophy, color: 'text-amber-500' },     // 1등 gold
   { Icon: Medal, color: 'text-slate-400' },      // 2등 silver

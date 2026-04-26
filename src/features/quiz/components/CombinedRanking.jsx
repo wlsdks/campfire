@@ -82,7 +82,7 @@ export default memo(function CombinedRanking({ session }) {
         <p className="text-sm text-slate-400 dark:text-slate-500">총 {totalQuestions}개 문항 · 정답자 {ranking.length}명</p>
       </motion.div>
 
-      {/* 🏆 포디움 — 1, 2, 3등 */}
+      {/* 포디움 */}
       {podium.length > 0 && (
         <div className="flex items-end justify-center gap-3 md:gap-5 mb-6 shrink-0">
           {/* 2등 (왼쪽) */}
