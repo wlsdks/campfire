@@ -1,11 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ref, onValue, set } from 'firebase/database';
+import { ref, onValue, runTransaction } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId } from '@/lib/participant';
 
+// P0-1c: 강사가 데스크톱(/admin) + 전자칠판(/live) 둘 다 열고 lottery 버튼을
+// 양쪽에서 트리거하면 각 화면이 독립적으로 random winner를 publish.
+// last-write-wins라 학생에게 잘못된 winner 노출 가능.
+//
+// 해결: runTransaction으로 atomic first-wins. 같은 mode의 결과가 2초 내에
+// 이미 publish됐으면 transaction abort (중복 draw로 간주).
+// 새 round (>2초 간격)는 새 winner로 정상 덮어쓰기.
+const PUBLISH_DEDUP_MS = 2000;
+
 /**
- * Writes a game result to Firebase.
- * Called from presenter/admin when a game completes.
+ * Writes a game result to Firebase atomically.
+ * Called from presenter/admin/live when a game completes.
  *
  * @param {string} sessionId
  * @returns {{ publishResult: (mode, winners, allParticipantIds) => Promise }}
@@ -22,7 +31,14 @@ export function usePublishGameResult(sessionId) {
       timestamp: Date.now(),
     };
 
-    await set(ref(db, `sessions/${sessionId}/gameResult`), result);
+    const resultRef = ref(db, `sessions/${sessionId}/gameResult`);
+    await runTransaction(resultRef, (current) => {
+      if (current && current.mode === mode && current.timestamp
+          && Date.now() - current.timestamp < PUBLISH_DEDUP_MS) {
+        return; // abort — 다른 화면이 직전에 같은 게임 결과 publish함
+      }
+      return result;
+    });
   }, [sessionId]);
 
   return { publishResult };
