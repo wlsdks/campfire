@@ -50,11 +50,9 @@
 
 ## Q1 — UX 폴리시
 
-### Q1-4. 에러 fallback 강화
-- ErrorBoundary 라우트별 메시지 한국어화 + 마스코트
-- Firebase 끊김 시 사용자 안내 (ConnectionBanner 강화)
-- Gemini API 실패 시 retry 가이드
-- **공수**: M (1.5h)
+### Q1-4. 에러 fallback 강화 ✅ `971fd72` — ErrorBoundary scope별 hint 추가 (5 라우트)
+- ErrorBoundary/ConnectionBanner는 이미 한국어 + 마스코트 잘 구현됨
+- Gemini retry는 useLiveJudging에 이미 30s timeout + 429/503 retry 적용됨
 
 ### Q1-5. 강사 onboarding (첫 세션)
 - "첫 클래스 만들기" 가이드 (선택적, 1회만)
@@ -123,8 +121,8 @@
 1. ~~**Q0-3** 번들 audit~~ ✅ 분석 완료 (개선은 Q2-perf로)
 2. ~~**Q0-1** 빈 상태~~ ✅ `98f6281`
 3. ~~**Q0-2** Skeleton 일관성~~ ✅ `174bd29`
-4. **Q1-4** 에러 fallback 강화 (1.5h) ← 다음 iteration
-5. **Q1-6** 세션 종료 후 가치 회수 (2h)
+4. ~~**Q1-4** 에러 fallback 강화~~ ✅ `971fd72`
+5. **Q1-6** 세션 종료 후 가치 회수 (2h) ← 다음 iteration
 6. **Q1-5** 강사 onboarding (1.5h)
 7. **Q2-8** 메모리 누수 audit (1.5h)
 8. **Q2-7** Firebase rules 보안 deep audit (2h, ⏸️ rules.json 수정 시 사용자 확인)
