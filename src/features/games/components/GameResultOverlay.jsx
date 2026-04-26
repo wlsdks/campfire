@@ -11,7 +11,6 @@ const MODE_LABELS = {
   lottery: '추첨',
   prizeDraw: '추첨',
   slotMachine: '777 슬롯',
-  plinko: '핀볼',
 };
 
 /**
