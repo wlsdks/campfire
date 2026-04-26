@@ -90,8 +90,8 @@ export default function ClassInsightCard({ session, participantCount, insights, 
                     </div>
                     <ol className="space-y-2.5">
                       {result.nextClassActions.map((a, i) => (
-                        <li key={i} className="flex gap-2.5 text-[13px] text-indigo-900 dark:text-indigo-100 leading-relaxed">
-                          <span className="shrink-0 w-5 h-5 rounded-full bg-indigo-600 dark:bg-indigo-500 text-white text-[11px] font-bold flex items-center justify-center mt-0.5">{i + 1}</span>
+                        <li key={i} className="flex gap-2 text-[13px] text-indigo-900 dark:text-indigo-100 leading-relaxed">
+                          <span className="shrink-0 w-4 text-[13px] font-bold text-indigo-600 dark:text-indigo-400 tabular-nums">{i + 1}.</span>
                           <span>{a}</span>
                         </li>
                       ))}

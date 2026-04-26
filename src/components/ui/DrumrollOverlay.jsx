@@ -1,5 +1,6 @@
 import { memo, useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Drum } from 'lucide-react';
 
 /**
  * DrumrollOverlay — 두구두구 긴장감 연출.
@@ -132,28 +133,26 @@ export default memo(function DrumrollOverlay({ active, onComplete, duration = 25
             </motion.p>
           </motion.div>
 
-          {/* 양쪽 북 이모지 대체 (lucide 아이콘 없으므로 CSS 원으로) */}
+          {/* 양쪽 드럼 — Peak-End Rule 절정 모먼트 */}
           <motion.div
             animate={phase >= 1
               ? { x: [-8, 8, -8], rotate: [-10, 10, -10] }
               : { x: [-4, 4, -4] }}
             transition={{ duration: phase === 2 ? 0.15 : 0.3, repeat: Infinity }}
-            className="absolute left-8 md:left-16 top-1/2 -translate-y-1/2"
+            className="absolute left-8 md:left-16 top-1/2 -translate-y-1/2 text-amber-500"
+            aria-hidden="true"
           >
-            <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-amber-500/30 border-2 border-amber-400/50 flex items-center justify-center">
-              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-amber-400/60" />
-            </div>
+            <Drum size={64} strokeWidth={1.75} className="md:w-20 md:h-20" />
           </motion.div>
           <motion.div
             animate={phase >= 1
               ? { x: [8, -8, 8], rotate: [10, -10, 10] }
               : { x: [4, -4, 4] }}
             transition={{ duration: phase === 2 ? 0.15 : 0.3, repeat: Infinity }}
-            className="absolute right-8 md:right-16 top-1/2 -translate-y-1/2"
+            className="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 text-amber-500"
+            aria-hidden="true"
           >
-            <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-amber-500/30 border-2 border-amber-400/50 flex items-center justify-center">
-              <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-amber-400/60" />
-            </div>
+            <Drum size={64} strokeWidth={1.75} className="md:w-20 md:h-20" />
           </motion.div>
         </motion.div>
       )}
