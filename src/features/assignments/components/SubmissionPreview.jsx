@@ -144,12 +144,12 @@ export default function SubmissionPreview({ submission, disabled }) {
               )}
 
               {result.quickWin && (
-                <div className="rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/40 px-3 py-2.5">
+                <div className="rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700 px-3 py-2.5">
                   <div className="flex items-center gap-1.5 mb-1">
-                    <Zap size={13} className="text-amber-600 dark:text-amber-400" />
-                    <p className="text-[11px] font-semibold text-amber-700 dark:text-amber-300 uppercase tracking-wider">당장 해볼 것</p>
+                    <Zap size={13} className="text-amber-500" />
+                    <p className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">당장 해볼 것</p>
                   </div>
-                  <p className="text-sm text-amber-900 dark:text-amber-100 leading-relaxed">{result.quickWin}</p>
+                  <p className="text-sm text-slate-900 dark:text-slate-100 leading-relaxed">{result.quickWin}</p>
                 </div>
               )}
             </div>

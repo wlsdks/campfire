@@ -15,10 +15,10 @@ export default function AnswerItem({ answer: a, questionId, pid, onUpvote }) {
           {roleLabel && (
             <span className={`inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold ${
               isAi
-                ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300'
+                ? 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
                 : 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
             }`}>
-              {isAi && <Sparkles size={8} />}{roleLabel}
+              {isAi && <Sparkles size={8} className="text-indigo-500" />}{roleLabel}
             </span>
           )}
           {isOwn && <span className="text-[10px] text-slate-400">나</span>}

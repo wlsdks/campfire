@@ -46,12 +46,12 @@ export default function QuestionCard({ question: q, index, pid, nickname, role, 
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ type: 'spring', stiffness: 300, damping: 25, delay: index * 0.03 }}
-      className={`rounded-xl shadow-sm overflow-hidden transition-all duration-300 ${
+      className={`rounded-xl shadow-sm overflow-hidden transition-all duration-300 bg-white dark:bg-slate-800 ${
         isHidden
-          ? 'bg-red-50/50 dark:bg-red-950/20 ring-1 ring-red-200 dark:ring-red-800/30'
+          ? 'ring-1 ring-red-300 dark:ring-red-800/50 opacity-70'
           : q.answeredByRole
-            ? 'bg-white dark:bg-slate-800 ring-1 ring-emerald-200 dark:ring-emerald-800/50'
-            : 'bg-white dark:bg-slate-800'
+            ? 'ring-1 ring-emerald-300 dark:ring-emerald-800/50'
+            : ''
       }`}
     >
       <div className="p-4 space-y-2.5">
@@ -67,12 +67,8 @@ export default function QuestionCard({ question: q, index, pid, nickname, role, 
               </span>
             )}
             {q.answeredByRole && (
-              <span className={`inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-semibold ${
-                q.answeredByRole === 'ai'
-                  ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300'
-                  : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400'
-              }`}>
-                <Check size={10} />
+              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                <Check size={10} className="text-emerald-500" />
                 {q.answeredByRole === 'staff' ? '스태프 답변' : q.answeredByRole === 'ai' ? 'AI 답변' : '강사 답변'}
               </span>
             )}
@@ -82,8 +78,8 @@ export default function QuestionCard({ question: q, index, pid, nickname, role, 
               </span>
             )}
             {q.aiAllowed && !q.aiSkipped && !q.answeredByRole && (q.answerCount || 0) === 0 && (
-              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-300">
-                <Sparkles size={9} className="animate-pulse" />
+              <span className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400">
+                <Sparkles size={9} className="animate-pulse text-indigo-500" />
                 AI 확인 중
               </span>
             )}
