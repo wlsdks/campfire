@@ -20,6 +20,7 @@ const SECONDARY_FIELDS = [
   'drumroll',
   'gameState',
   'persistentAssignmentId',
+  'activeAssignmentId',
 ];
 
 /**
