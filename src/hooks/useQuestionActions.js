@@ -18,6 +18,16 @@ function getNow() {
   return getServerNow();
 }
 
+// P1-6: revealQuiz가 점수 batch 도중에 currentQuestion이 바뀌면 학생이 lastPoints를
+// 보기 전에 다음 질문으로 넘어감. module-level Map으로 동일 세션 내 모든
+// useQuestionActions 인스턴스가 공유. revealQuiz Phase 2 시작 시 set, 끝나면 delete.
+const revealLocks = new Map();
+
+async function awaitRevealLock(sessionId) {
+  const pending = revealLocks.get(sessionId);
+  if (pending) await pending;
+}
+
 export function useQuestionActions(sessionId, questions, currentQuestion, scores, participants) {
   const [error, setError] = useState(null);
   const { toast, showToast } = useToast();
@@ -87,6 +97,12 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     const question = questions?.[qId];
     if (!question) return;
 
+    // 진행 중인 reveal batch 완료 대기 — lastPoints 보존
+    if (revealLocks.has(sessionId)) {
+      showToast('정답 공개 중... 잠시만 기다려주세요');
+      await awaitRevealLock(sessionId);
+    }
+
     try {
       const updates = {
         currentQuestion: qId,
@@ -125,6 +141,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
   }
 
   const clearActive = useCallback(async () => {
+    if (revealLocks.has(sessionId)) await awaitRevealLock(sessionId);
     try {
       await update(ref(db, `sessions/${sessionId}`), { currentQuestion: null, currentMode: 'waiting' });
     } catch {
@@ -312,32 +329,42 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       }
       await update(ref(db, `sessions/${sessionId}`), revealUpdates);
 
-      // Phase 2: Score updates in batches of 50
+      // Phase 2: Score updates in batches of 50 — lock으로 감싸 도중 currentQuestion 변경 방지
       if (!question.awardedAt) {
-        const BATCH_SIZE = 50;
-        for (let i = 0; i < voteEntries.length; i += BATCH_SIZE) {
-          const batch = voteEntries.slice(i, i + BATCH_SIZE);
-          const scoreUpdates = {};
-          batch.forEach(([participantId, vote]) => {
-            const reward = getQuizReward(question, vote);
-            const existingScore = (scores || {})[participantId] || {};
-            const nextStreak = reward.isCorrect ? (existingScore.streak || 0) + 1 : 0;
-            const nickname = (participants || {})[participantId]?.nickname || vote.nickname || existingScore.nickname || `참여자 ${participantId.slice(0, 4)}`;
-            const newTotal = Math.max(0, (existingScore.total || 0) + reward.points);
+        // 이전 reveal이 아직 batch 도중이면 (드물게) 완료 대기
+        await awaitRevealLock(sessionId);
+        let resolveLock;
+        const lockPromise = new Promise((r) => { resolveLock = r; });
+        revealLocks.set(sessionId, lockPromise);
+        try {
+          const BATCH_SIZE = 50;
+          for (let i = 0; i < voteEntries.length; i += BATCH_SIZE) {
+            const batch = voteEntries.slice(i, i + BATCH_SIZE);
+            const scoreUpdates = {};
+            batch.forEach(([participantId, vote]) => {
+              const reward = getQuizReward(question, vote);
+              const existingScore = (scores || {})[participantId] || {};
+              const nextStreak = reward.isCorrect ? (existingScore.streak || 0) + 1 : 0;
+              const nickname = (participants || {})[participantId]?.nickname || vote.nickname || existingScore.nickname || `참여자 ${participantId.slice(0, 4)}`;
+              const newTotal = Math.max(0, (existingScore.total || 0) + reward.points);
 
-            scoreUpdates[`scores/${participantId}`] = {
-              nickname,
-              total: newTotal,
-              tickets: (existingScore.tickets || 0) + reward.tickets,
-              lastPoints: reward.points,
-              lastTickets: reward.tickets,
-              streak: nextStreak,
-              bestStreak: Math.max(existingScore.bestStreak || 0, nextStreak),
-              lastQuestionId: qId,
-              updatedAt: now,
-            };
-          });
-          await update(ref(db, `sessions/${sessionId}`), scoreUpdates);
+              scoreUpdates[`scores/${participantId}`] = {
+                nickname,
+                total: newTotal,
+                tickets: (existingScore.tickets || 0) + reward.tickets,
+                lastPoints: reward.points,
+                lastTickets: reward.tickets,
+                streak: nextStreak,
+                bestStreak: Math.max(existingScore.bestStreak || 0, nextStreak),
+                lastQuestionId: qId,
+                updatedAt: now,
+              };
+            });
+            await update(ref(db, `sessions/${sessionId}`), scoreUpdates);
+          }
+        } finally {
+          revealLocks.delete(sessionId);
+          resolveLock();
         }
       }
     } catch {
@@ -375,6 +402,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
   }
 
   const showLeaderboard = useCallback(async () => {
+    if (revealLocks.has(sessionId)) await awaitRevealLock(sessionId);
     try {
       await update(ref(db, `sessions/${sessionId}`), { currentMode: 'leaderboard' });
     } catch {
