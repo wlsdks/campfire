@@ -99,9 +99,9 @@ export default function AISummaryBanner({ sessionId, questionId, questionTitle, 
                   </div>
                 )}
                 {result.insight && (
-                  <div className="rounded-lg bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-900/40 px-3 py-2">
+                  <div className="rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700 px-3 py-2">
                     <p className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-0.5">인사이트</p>
-                    <p className="text-sm text-indigo-900 dark:text-indigo-100 leading-relaxed">{result.insight}</p>
+                    <p className="text-sm text-slate-900 dark:text-slate-100 leading-relaxed">{result.insight}</p>
                   </div>
                 )}
               </div>

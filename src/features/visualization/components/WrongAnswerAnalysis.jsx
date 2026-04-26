@@ -87,11 +87,11 @@ export default function WrongAnswerAnalysis({ sessionId, questionId, questionTit
             >
               <div className="px-4 pb-4 pt-1 border-t border-slate-100 dark:border-slate-700">
                 {!result.canAnalyze ? (
-                  <div className="mt-3 flex items-start gap-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/40 px-3 py-2.5">
-                    <AlertCircle size={14} className="text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+                  <div className="mt-3 flex items-start gap-2 rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700 px-3 py-2.5">
+                    <AlertCircle size={14} className="text-amber-500 mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-[12px] font-semibold text-amber-700 dark:text-amber-300">AI 분석 보류</p>
-                      <p className="text-[12px] text-amber-800 dark:text-amber-200 mt-0.5 leading-relaxed">
+                      <p className="text-[12px] font-semibold text-slate-900 dark:text-slate-100">AI 분석 보류</p>
+                      <p className="text-[12px] text-slate-600 dark:text-slate-300 mt-0.5 leading-relaxed">
                         확실하지 않아 분석을 보류했어요. {result.reason ? `(${result.reason})` : ''} 학생들에게 직접 이유를 물어보시는 게 좋겠어요.
                       </p>
                     </div>
@@ -111,12 +111,12 @@ export default function WrongAnswerAnalysis({ sessionId, questionId, questionTit
                       </div>
                     )}
                     {result.suggestedExplanation && (
-                      <div className="rounded-lg bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-900/40 px-3 py-2.5">
+                      <div className="rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700 px-3 py-2.5">
                         <div className="flex items-center gap-1.5 mb-1">
                           <Lightbulb size={13} className="text-indigo-600 dark:text-indigo-400" />
-                          <p className="text-[11px] font-semibold text-indigo-700 dark:text-indigo-300 uppercase tracking-wider">부연 설명 추천</p>
+                          <p className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">부연 설명 추천</p>
                         </div>
-                        <p className="text-[13px] text-indigo-900 dark:text-indigo-100 leading-relaxed">{result.suggestedExplanation}</p>
+                        <p className="text-[13px] text-slate-900 dark:text-slate-100 leading-relaxed">{result.suggestedExplanation}</p>
                       </div>
                     )}
                     <p className="text-[10px] text-slate-400 italic">AI 추정·참고용입니다. 수업 맥락은 강사님이 가장 잘 아세요.</p>
