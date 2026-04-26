@@ -13,15 +13,15 @@ export default memo(function LiveHeader({ courseName, roundNumber, count, handCo
   const studentUrl = sessionId ? `${window.location.origin}/?s=${sessionId}` : '';
 
   return (
-    <header className="flex items-center justify-between px-6 py-3 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border-b border-slate-200/50 dark:border-slate-700/50 relative">
-      <div className="flex items-center gap-2.5">
+    <header className="flex items-center justify-between px-3 sm:px-6 py-3 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm border-b border-slate-200/50 dark:border-slate-700/50 relative gap-2">
+      <div className="flex items-center gap-2 shrink-0">
         <PickMascot size="xs" />
-        <span className="text-slate-900 dark:text-slate-100 font-bold text-lg tracking-tight">Pick</span>
+        <span className="hidden sm:inline text-slate-900 dark:text-slate-100 font-bold text-lg tracking-tight">Pick</span>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1 justify-center">
         {courseName && (
-          <span className="text-slate-500 dark:text-slate-300 text-base font-medium truncate max-w-[400px]">
+          <span className="text-slate-500 dark:text-slate-300 text-sm sm:text-base font-medium truncate min-w-0 max-w-[400px]">
             {courseName}
           </span>
         )}
@@ -30,10 +30,10 @@ export default memo(function LiveHeader({ courseName, roundNumber, count, handCo
             {roundNumber}차
           </Badge>
         )}
-        <ElapsedTime startedAt={startedAt} status={status} />
+        <span className="hidden sm:inline-flex"><ElapsedTime startedAt={startedAt} status={status} /></span>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
         <button
           onClick={() => setTheme(isDark ? 'light' : 'dark')}
           className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
