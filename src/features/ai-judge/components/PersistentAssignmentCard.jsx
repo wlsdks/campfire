@@ -70,7 +70,7 @@ export default memo(function PersistentAssignmentCard({ sessionId, questionId, q
         aria-label={`상시 과제 ${questionTitle || ''} 열기`}
       >
         <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
-          hasSubmitted ? 'bg-slate-900 dark:bg-slate-100' : 'bg-amber-50 dark:bg-amber-500/10'
+          hasSubmitted ? 'bg-slate-900 dark:bg-slate-100' : 'bg-slate-100 dark:bg-slate-700'
         }`}>
           {hasSubmitted
             ? (isDone

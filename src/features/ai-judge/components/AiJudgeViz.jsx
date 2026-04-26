@@ -173,9 +173,10 @@ const JudgeLiveCard = memo(function JudgeLiveCard({ judge, log }) {
   const hint = log?.hint;
   const score = log?.score;
 
-  const stateColor = state === 'done' ? 'border-emerald-200 dark:border-emerald-500/30 bg-emerald-50/40 dark:bg-emerald-500/5'
-    : state === 'thinking' ? 'border-indigo-200 dark:border-indigo-500/30 bg-white dark:bg-slate-800'
-    : state === 'error' ? 'border-red-200 dark:border-red-500/30 bg-red-50/40 dark:bg-red-500/5'
+  // 상태는 보더 색상으로만 신호 — 배경 tint 제거 (§1)
+  const stateColor = state === 'done' ? 'border-emerald-300 dark:border-emerald-500/40 bg-white dark:bg-slate-800'
+    : state === 'thinking' ? 'border-indigo-300 dark:border-indigo-500/40 bg-white dark:bg-slate-800'
+    : state === 'error' ? 'border-red-300 dark:border-red-500/40 bg-white dark:bg-slate-800'
     : 'border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800';
 
   return (
@@ -184,11 +185,11 @@ const JudgeLiveCard = memo(function JudgeLiveCard({ judge, log }) {
       className={`relative rounded-xl border p-3 transition-colors ${stateColor}`}
     >
       <div className="flex items-start gap-2.5">
-        {/* 판사 아바타 — thinking은 slate + pulse, done은 emerald(완료 시각언어 유지) */}
-        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${
-          state === 'thinking' ? 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 ring-2 ring-indigo-400/60 dark:ring-indigo-400/50 animate-pulse'
-          : state === 'done' ? 'bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-200'
-          : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
+        {/* 판사 아바타 — slate bg 통일, 상태는 ring + 텍스트 색상으로 표현 (§1) */}
+        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0 bg-slate-100 dark:bg-slate-700 ${
+          state === 'thinking' ? 'text-slate-700 dark:text-slate-200 ring-2 ring-indigo-400/60 dark:ring-indigo-400/50 animate-pulse'
+          : state === 'done' ? 'text-emerald-600 dark:text-emerald-300 ring-2 ring-emerald-400/60 dark:ring-emerald-400/50'
+          : 'text-slate-500 dark:text-slate-400'
         }`}>
           {judge.name.charAt(0)}
         </div>
