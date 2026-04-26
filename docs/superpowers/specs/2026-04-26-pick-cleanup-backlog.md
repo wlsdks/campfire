@@ -92,7 +92,8 @@
 - ✅ batch 1 `76c1c75` — visualization 4건 (AISummaryBanner, AnalogyHelper, WrongAnswerAnalysis ×2)
 - ✅ batch 2 `58e314f` — viz podium + ai-judge state 4건 (CorrectAnswerRanking, AiJudgeViz stateColor, AiJudgeViz 아바타, PersistentAssignmentCard)
 - ✅ batch 3 `17d1bca` — class-questions 역할/상태 배지 7건 (SubmissionPreview + ClassQAPanel + AnswerItem + QuestionCard)
-- 남은: staff red-50 (P2-1과 묶음) / admin staff 영역 / 그 외 잔여
+- ✅ batch 4 `b170b41` — P2-1 합침: staff/EngagementTab/StaffDMAlert red-50 6건 → slate + red dot
+- 남은: dm/DMBubble emerald + AIQuestionGenerator + QuestionFormSections amber 등 ~5건
 - **증상**: §1 "박스 배경에 색상 tint 금지 — bg-white 또는 bg-slate-50만" 위반
 - **분포**: indigo-50/100 28건, emerald-50 24건, amber-50 19건
 - **주요 위치**:
@@ -136,10 +137,7 @@
 
 ## P2 — 중간 (MEDIUM)
 
-### P2-1. staff 영역 red-50 배지 패턴 → slate + dot
-- **위치**: `src/app/routes/admin/staff/{StaffQuestionPanel.jsx:36,79, StaffQuestionsTab.jsx:74, StaffQuestionDetail.jsx:270,358}`
-- **fix**: slate-100 배지 + 작은 red-500 dot으로 통일
-- **공수**: M (1h)
+### P2-1. staff 영역 red-50 배지 패턴 → slate + dot ✅ `b170b41` (P1-1 batch 4와 통합 처리)
 
 ### P2-2. resetAllQuestions 파괴적 동작에 확인 모달
 - **증상**: staffChat·urgentQuestions·handRaises 일괄 삭제 — 스태프 답변 작성 중 사라짐
