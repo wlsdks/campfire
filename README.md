@@ -2,7 +2,7 @@
 
 > 가볍게 참여를 던지고 바로 반응하는, 실시간 강의 참여 플랫폼
 
-강사가 수업 중 질문을 출제하면 학생들이 모바일·노트북으로 즉시 응답합니다. 객관식부터 워드클라우드, 퀴즈, 팀 대항전, AI 심사 과제까지 — 수업을 재미있게 만드는 20+ 참여 도구를 한 곳에.
+강사가 수업 중 질문을 출제하면 학생들이 모바일·노트북으로 즉시 응답합니다. 객관식부터 워드클라우드, 퀴즈, AI 심사 과제까지 — 수업을 재미있게 만드는 10+ 참여 도구를 한 곳에.
 
 **Live**: https://jinan-6c884.web.app
 
@@ -41,7 +41,7 @@
 | **클래스 대시보드** | 강의별 그룹, 세션 생성/복제, 참여율 차트 |
 | **질문 관리** | 추가/수정/삭제/드래그 정렬, 보관함 재사용 |
 | **키보드 단축키** | ← → (이동), Space (다음), R (정답), L (리더보드), Esc (대기) |
-| **게임 모드** | 룰렛, 추첨, 스피드퀴즈, 팀 대항전, 미스터리 박스 |
+| **게임 모드** | 추첨(Lottery), 발표자 뽑기, 쉬는 시간 타이머, 접속 현황 |
 | **수업 기록** | 참여율·정답률 통계, 어려웠던 질문 분석, CSV 내보내기 |
 | **스태프 관리** | 스태프 계정 초대, 역할 분담 |
 | **세션 기록** | 질문별 응답 히스토리, 학생 리포트 |
@@ -98,18 +98,24 @@ src/
 │   ├── submit/          # /submit — 과제 제출
 │   └── report/          # /report — 학생 리포트
 ├── components/ui/       # 공통 UI 프리미티브 (비즈니스 로직 금지)
-├── features/            # 도메인별 기능 (api/ + components/)
-│   ├── session/
-│   ├── participants/
-│   ├── voting/
-│   ├── questions/       # AIQuestionGenerator, summarizeResponses
-│   ├── visualization/   # BarChart, WordCloud, AISummaryBanner
-│   ├── games/           # Roulette, Plinko, PrizeDraw
-│   ├── quiz/            # Leaderboard, useScores
-│   ├── reactions/
-│   ├── timer/
-│   ├── hand-raise/
-│   └── assignments/     # AI 심사, 과제 제출, SubmissionPreview
+├── features/            # 도메인별 기능 17개 (api/ + components/)
+│   ├── session/         # useSession, ConnectionBanner
+│   ├── participants/    # useParticipants, ParticipantList
+│   ├── voting/          # 9 voter (Choice/OX/Quiz/Wordcloud/Scale/Debate/Ranking/FillBlank/Check)
+│   ├── questions/       # AIQuestionGenerator, useUrgentQuestions
+│   ├── class-questions/ # ClassQAPanel, ClassQABoard (학생 Q&A)
+│   ├── hand-raise/      # useHandRaises, HandRaiseList
+│   ├── visualization/   # BarChart, WordCloud, AISummaryBanner, VizRenderer
+│   ├── games/           # Lottery, BreakTimer, RandomPicker, JoinShow
+│   ├── timer/           # useTimer (서버 시간 동기화)
+│   ├── reactions/       # ReactionBar, ReactionOverlay, ChatBubbleOverlay
+│   ├── quiz/            # useScores, Leaderboard, useSpeedQuiz
+│   ├── chat/            # 공개 채팅 (강사↔학생)
+│   ├── dm/              # DMBubble, StaffDMAlert (스태프-학생 1:1)
+│   ├── course/          # useCourses (강의 그룹)
+│   ├── ai-judge/        # 7판사 LIVE 심사
+│   ├── assignments/     # 사후 과제 제출/심사/시상
+│   └── report/          # ClassInsightCard, LearningReportCard
 ├── hooks/               # 크로스피처 훅
 ├── lib/                 # firebase.js, design-tokens.js
 └── styles/              # Tailwind + globals
@@ -198,7 +204,7 @@ sessions/{sessionId}
 ├── scores/{pid}      # 퀴즈 점수, 연속 정답, 업적
 ├── reactions, handRaises, urgentQuestions, classQuestions
 ├── chat, staffChat
-└── game state (roulette, lottery, plinko ...)
+└── game state (lottery, breakTimer, randomPicker, joinShow)
 
 assignments/{assignmentId}
 ├── title, description, status, aiJudging
