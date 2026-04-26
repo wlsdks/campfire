@@ -114,11 +114,8 @@
 - PresentRevealControls export → AdminPage 데스크톱 floating bar로 마운트
 - 모바일은 bottom tab 충돌 우려로 미적용 (별도 처리 필요시 추가)
 
-### P1-6. revealQuiz batch race 방어
-- **증상**: 50-batch 점수 반영 도중 강사가 다음 질문 클릭 → 학생 lastPoints 미표시
-- **fix**: revealQuiz 진행 중 lock flag (currentQuestion 변경 차단) 또는 배치 시작 후에만 currentQuestion advance 허용
-- **파일**: `src/hooks/useQuestionActions.js:316-341`
-- **공수**: M (1h)
+### P1-6. revealQuiz batch race 방어 ✅ `0d4c489`
+- module-level lock Map. revealQuiz Phase 2 동안 set, activateQuestion/clearActive/showLeaderboard에서 awaitRevealLock으로 대기.
 
 ### P1-7. timer expired vs reveal race
 - **증상**: 클라이언트 timerExpired는 set만, 서버 잠금 없음 → 5초 늦은 학생 투표가 reveal 후 들어옴
