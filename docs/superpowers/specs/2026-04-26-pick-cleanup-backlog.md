@@ -252,56 +252,44 @@
 
 Loop가 이 순서대로 진행. 각 iteration은 1개 항목 또는 큰 항목의 1단계.
 
-1. ~~**P0-4** 이모지 주석 제거~~ ✅ `8f9c44d`
-2. ~~**P0-2** 강사 ChatBubbleOverlay 추가~~ ✅ `41a369b`
-3. ~~**P0-3** 컬러 원형 배지 → 토큰~~ ✅ `334ae07`
-4. ~~**P0-1a** Lottery wiring~~ ✅ `ebd6405`
-5. ~~**P0-1b** RandomPicker publish~~ 🚫 cancelled (신기능 scope, 학생 UI 자체 없음)
-6. ~~**P1-3** shadow+border 중복 제거~~ ✅ `7bafb27`
-7. ~~**P1-2** 시상 그라디언트 단색화~~ ✅ `8fd681b`
-8. ~~**P1-5** drumroll 일반 admin 화면에~~ ✅ `991746d`
-9. ~~**P1-4** 전자칠판 손들기/긴급질문 카운트~~ ✅ `7d3bcbd`
-10. **P1-6** revealQuiz batch race 방어 (1h) ← 다음 iteration
-7. **P1-2** 시상 그라디언트 단색화 (30분)
-8. **P1-5** drumroll 일반 admin 화면에 (30분)
-9. **P1-4** 전자칠판 손들기/긴급질문 카운트 (1h)
-10. **P1-6** revealQuiz batch race 방어 (1h)
-11. **P1-7** ⏸️ timer expired vs reveal race (rules.json — 사용자 확인)
-12. **P1-8** handRaises reset race (45분)
-13. **P1-1** tint 배경 71건 정리 (3h, 분할)
-14. **P0-1c** 게임 race guard (강사 데스크톱+전자칠판 동시) (45분)
-15. **P2-1** staff red-50 배지 (1h)
-16~ (이전과 동일)
-3. **P0-3** 컬러 원형 배지 → 토큰 (30분)
-4. **P0-1** 게임 결과 발행 강사 측 보장 (1.5h, 분할)
-5. **P1-3** shadow+border 중복 제거 (10분)
-6. **P1-2** 시상 그라디언트 단색화 (30분)
-7. **P1-5** drumroll 일반 admin 화면에 (30분)
-8. **P1-4** 전자칠판 손들기/긴급질문 카운트 (1h)
-9. **P1-6** revealQuiz batch race 방어 (1h)
-10. **P1-7** timer expired vs reveal race (1h, rules.json 수정 사용자 확인 필요)
-11. **P1-8** handRaises reset race (45분)
-12. **P1-1** tint 배경 71건 정리 (3h, 5~6 iteration로 분할: visualization 우선 → ai-judge → 그 외)
-13. **P2-1** staff red-50 배지 정리 (1h)
-14. **P2-5** BarChart indigo-600 → 500 (5분)
-15. **P2-7** games cut: Plinko (30분)
-16. **P2-7** games cut: Roulette (30분)
-17. **P2-7** games cut: PrizeDraw (30분)
-18. **P2-7** games cut: SlotMachine (30분)
-19. **P2-9** teams cut (45분)
-20. **P2-8** 공개 chat cut (1.5h, 2 iteration로)
-21. **P2-10** MysteryBox/HintReveal cut (1.5h, 검증 포함)
-22. **P2-2** resetAllQuestions 확인 모달 (30분)
-23. **P2-3** 스태프 모바일 currentMode 동기화 (1h)
-24. **P2-4** answeredByRole 학생 표시 (45분)
-25. **P2-6** votes debounce 검토 (30분)
-26. **P2-12** interactions/messaging 폴더 통합 (3~4h, 3 iteration로 분할)
-27. **P3-1~4** 정리 일괄 (다크모드/inline style/SECONDARY_FIELDS/모바일 회귀 spot)
+### 완료 (시간순)
+- ~~**P0-4** 이모지 주석 제거~~ ✅ `8f9c44d`
+- ~~**P0-2** 강사 ChatBubbleOverlay 추가~~ ✅ `41a369b`
+- ~~**P0-3** 컬러 원형 배지 → 토큰~~ ✅ `334ae07`
+- ~~**P0-1a** Lottery wiring~~ ✅ `ebd6405` + Playwright spot-check 통과
+- ~~**P0-1b** RandomPicker publish~~ 🚫 cancelled (신기능 scope)
+- ~~**P1-3** shadow+border 중복 제거~~ ✅ `7bafb27`
+- ~~**P1-2** 시상 그라디언트 단색화~~ ✅ `8fd681b`
+- ~~**P1-5** drumroll 일반 admin 화면에~~ ✅ `991746d`
+- ~~**P1-4** 전자칠판 손들기/긴급질문 카운트~~ ✅ `7d3bcbd`
+- ~~**P1-6** revealQuiz batch race 방어~~ ✅ `0d4c489`
+
+### 다음 큐 (실행 순서)
+
+1. **P1-7** ⏸️ timer expired vs reveal race (1h) — **rules.json 수정 사용자 확인 필요**
+2. **P1-8** handRaises reset race (45분)
+3. **P1-1** tint 배경 71건 정리 (3h, 5~6 iteration로 분할: visualization 우선)
+4. **P0-1c** 게임 race guard (강사 데스크톱+전자칠판 동시) (45분)
+5. **P2-1** staff red-50 배지 정리 (1h)
+6. **P2-5** BarChart indigo-600 → 500 (5분)
+7. **P2-7** games cut: Plinko (30분)
+8. **P2-7** games cut: Roulette (30분)
+9. **P2-7** games cut: PrizeDraw (30분)
+10. **P2-7** games cut: SlotMachine (30분)
+11. **P2-9** teams cut (45분)
+12. **P2-8** ⏸️ 공개 chat cut (1.5h) — **사용자 final confirm 필요**
+13. **P2-10** MysteryBox/HintReveal cut (1.5h, 검증 포함)
+14. **P2-2** resetAllQuestions 확인 모달 (30분)
+15. **P2-3** 스태프 모바일 currentMode 동기화 (1h)
+16. **P2-4** answeredByRole 학생 표시 (45분)
+17. **P2-6** votes debounce 검토 (30분)
+18. **P2-12** ⏸️ interactions/messaging 폴더 통합 (3~4h) — **사용자 확인 필요**
+19. **P3-1~4** 정리 일괄 (다크모드/inline style/SECONDARY_FIELDS/모바일 회귀 spot)
 
 ### 멈춤 지점 (사용자 확인 필요)
-- #10 P1-7: database.rules.json 수정
-- #20 P2-8: chat 전체 cut 시작 전 final confirm
-- #26 P2-12: 통합 작업 시작 전
+- #1 P1-7: database.rules.json 수정
+- #12 P2-8: chat 전체 cut 시작 전 final confirm
+- #18 P2-12: 통합 작업 시작 전
 
 ---
 
