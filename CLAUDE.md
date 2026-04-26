@@ -16,18 +16,24 @@ Real-time classroom engagement platform. Instructors create sessions, students j
 src/
   app/routes/       → Thin page components (compose features, no business logic)
   components/ui/    → Shared UI primitives (Button, Card, Modal). NO business logic.
-  features/         → Business features, each with api/ + components/ subdirs
-    session/        → useSession, SessionStatus
+  features/         → Business features (17개), each with api/ + components/ subdirs
+    session/        → useSession, ConnectionBanner
     participants/   → useParticipants, ParticipantList, JoinToast
-    voting/         → useVotes, ChoiceVoter, OXVoter, TextInput, VoteConfirm
-    questions/      → useUrgentQuestions, UrgentQuestionList
+    voting/         → useVotes (9 voter 유형 — Choice/OX/Quiz/Wordcloud/Scale/Debate/Ranking/FillBlank/Check)
+    questions/      → useUrgentQuestions, AIQuestionGenerator
+    class-questions/→ ClassQAPanel, ClassQABoard, QARanking (학생 Q&A)
     hand-raise/     → useHandRaises, HandRaiseList
     visualization/  → BarChart, OXBattle, WordCloud, QACards, VizRenderer
-    games/          → Roulette, Lottery, PrizeDraw, SlotMachine, Plinko
-    timer/          → useTimer, TimerRing
-    reactions/      → useReactions, ReactionBar, ReactionOverlay
-    quiz/           → useScores, QuizResult, Leaderboard
-    assignments/    → useAssignments, SubmissionPage, AssignmentDetail, JudgingPanel, AwardsCeremony
+    games/          → Lottery, BreakTimer, RandomPicker, JoinShow (4개 — Phase 1 정리)
+    timer/          → useTimer, TimerRing, TimerCountdown (서버 시간 동기화)
+    reactions/      → useReactions, ReactionBar, ReactionOverlay, ChatBubbleOverlay
+    quiz/           → useScores, QuizResult, Leaderboard, useSpeedQuiz
+    chat/           → 공개 채팅 (강사↔학생) — D2 cut 검토 중
+    dm/             → DMBubble, StaffDMAlert (스태프-학생 1:1)
+    course/         → useCourses, CourseStaffModal (강의 그룹)
+    ai-judge/       → useLiveJudging, AiJudgePanel, AiJudgeViz, LiveResultHero (7판사)
+    assignments/    → SubmissionForm, SubmissionsView, SubmissionContentPreview, JudgingPanel, AwardsCeremony
+    report/         → ClassInsightCard, LearningReportCard, useEngagementData
   hooks/            → Cross-feature shared hooks only
   lib/              → firebase.js, design-tokens.js, utils
   assets/lottie/    → Lottie JSON files

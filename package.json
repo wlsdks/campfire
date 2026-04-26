@@ -1,7 +1,8 @@
 {
-  "name": "pinggo",
+  "name": "pick",
+  "description": "실시간 강의 참여 플랫폼 — 강사/스태프/학생/전자칠판 4모드 + AI 심사 7판사",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
