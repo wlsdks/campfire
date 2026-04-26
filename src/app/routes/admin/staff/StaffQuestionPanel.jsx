@@ -30,13 +30,8 @@ const QuestionItem = memo(function QuestionItem({ q, isSelected, onClick }) {
         <div className="flex-1 min-w-0">
           <p className="text-slate-700 dark:text-slate-200 leading-relaxed line-clamp-2">{q.text}</p>
           <div className="flex items-center gap-1.5 mt-1.5">
-            <span
-              className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium ${
-                isUrgent
-                  ? 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                  : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
-              }`}
-            >
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+              {isUrgent && <span className="w-1.5 h-1.5 rounded-full bg-red-500" />}
               {isUrgent ? '긴급' : '수업'}
             </span>
             <span className="text-slate-300 dark:text-slate-600 text-[10px]">

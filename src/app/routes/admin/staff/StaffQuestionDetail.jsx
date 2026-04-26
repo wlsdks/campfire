@@ -264,13 +264,8 @@ export default memo(function StaffQuestionDetail({ question, onAction, onMarkAns
       {/* Type badge */}
       <div className="flex items-center gap-2 mb-6">
         <Icon size={18} className="text-slate-400" />
-        <span
-          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-            isUrgent
-              ? 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-              : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
-          }`}
-        >
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+          {isUrgent && <span className="w-1.5 h-1.5 rounded-full bg-red-500" />}
           {isUrgent ? '긴급 질문' : '수업 질문'}
         </span>
       </div>

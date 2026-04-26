@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, Download } from 'lucide-react';
+import { Loader2, Download, AlertCircle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
 import Avatar from '@/components/ui/Avatar';
@@ -96,8 +96,9 @@ export default function EngagementTab({ sessions }) {
       )}
 
       {error && !loading && (
-        <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-4 border border-red-200 dark:border-red-800">
-          <p className="text-sm text-red-600 dark:text-red-400">데이터를 불러오지 못했습니다. 다시 시도해주세요.</p>
+        <div className="bg-slate-50 dark:bg-slate-700/30 rounded-xl p-4 ring-1 ring-red-300 dark:ring-red-800/50 flex items-start gap-2">
+          <AlertCircle size={16} className="text-red-500 shrink-0 mt-0.5" />
+          <p className="text-sm text-slate-700 dark:text-slate-200">데이터를 불러오지 못했습니다. 다시 시도해주세요.</p>
         </div>
       )}
 

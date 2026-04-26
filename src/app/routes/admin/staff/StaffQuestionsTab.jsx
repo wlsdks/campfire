@@ -69,11 +69,8 @@ export default function StaffQuestionsTab({ sessionId, adminUser }) {
                 <div className="flex-1 min-w-0">
                   <p className="text-slate-700 dark:text-slate-200 leading-relaxed">{q.text}</p>
                   <div className="flex items-center gap-2 mt-2">
-                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium ${
-                      isUrgent
-                        ? 'bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400'
-                        : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
-                    }`}>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300">
+                      {isUrgent && <span className="w-1.5 h-1.5 rounded-full bg-red-500" />}
                       {isUrgent ? '긴급' : '수업'}
                     </span>
                     <span className="text-slate-400 text-xs">{isUrgent ? '익명' : q.nickname}</span>
