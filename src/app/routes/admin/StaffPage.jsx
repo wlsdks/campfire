@@ -13,6 +13,7 @@ import StaffDMAlert from '@/features/dm/components/StaffDMAlert';
 import StaffQuestionPanel from './staff/StaffQuestionPanel';
 import StaffQuestionDetail from './staff/StaffQuestionDetail';
 import StaffRightPanel from './staff/StaffRightPanel';
+import { SuspenseFallback } from '@/components/ui/Skeleton';
 import StaffMobileView from './staff/StaffMobileView';
 
 const LazyClassQABoard = lazy(() => import('@/features/class-questions/components/ClassQABoard'));
@@ -203,7 +204,7 @@ export default function StaffPage({ sessionId, session, adminUser, onBack, onLog
         {/* Center: Question detail or Q&A Board */}
         <div className="flex-1 overflow-y-auto p-6">
           {showQABoard ? (
-            <Suspense fallback={<div className="flex items-center justify-center h-full text-slate-400 text-sm">불러오는 중...</div>}>
+            <Suspense fallback={<SuspenseFallback fullPage={false} />}>
               <LazyClassQABoard sessionId={sessionId} showInput={false} role="staff" isAdmin />
             </Suspense>
           ) : (

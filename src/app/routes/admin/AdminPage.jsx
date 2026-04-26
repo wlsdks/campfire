@@ -8,7 +8,7 @@ import SessionDashboard from './SessionDashboard';
 import QuestionManager from './QuestionManager';
 import JoinToast from '@/features/participants/components/JoinToast';
 import { PanelLeftOpen } from 'lucide-react';
-import PickMascot from '@/components/ui/PickMascot';
+import { SuspenseFallback } from '@/components/ui/Skeleton';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import AnswerBubbleOverlay from '@/features/voting/components/AnswerBubbleOverlay';
 import ChatBubbleOverlay from '@/features/reactions/components/ChatBubbleOverlay';
@@ -49,12 +49,7 @@ export default function AdminPage() {
   if (!s.sessionId) {
     if (s.adminUser?.role === 'staff') {
       return (
-        <Suspense fallback={
-          <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center gap-4">
-            <PickMascot size="md" mood="thinking" />
-            <p className="text-sm text-slate-400">불러오는 중...</p>
-          </div>
-        }>
+        <Suspense fallback={<SuspenseFallback />}>
           <StaffCourseDashboard adminUser={s.adminUser} onSelectSession={s.handleSelectSession} onLogout={s.handleLogout} />
         </Suspense>
       );
@@ -64,22 +59,12 @@ export default function AdminPage() {
         pendingAdmins={s.pendingAdmins} pendingCount={s.pendingCount} approveAdmin={s.approveAdmin} rejectAdmin={s.rejectAdmin} />
     );
   }
-  if (s.loading) return (
-    <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center gap-4">
-      <PickMascot size="md" mood="thinking" />
-      <p className="text-sm text-slate-400">불러오는 중...</p>
-    </div>
-  );
+  if (s.loading) return <SuspenseFallback />;
   if (!s.session) { s.handleBack(); return null; }
 
   if (s.adminUser?.role === 'staff') {
     return (
-      <Suspense fallback={
-        <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center gap-4">
-          <PickMascot size="md" mood="thinking" />
-          <p className="text-sm text-slate-400">불러오는 중...</p>
-        </div>
-      }>
+      <Suspense fallback={<SuspenseFallback />}>
         <StaffPage
           sessionId={s.sessionId}
           session={s.session}
