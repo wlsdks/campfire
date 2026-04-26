@@ -129,7 +129,7 @@
             },
             "votes": {
               "$participantId": {
-                ".validate": "newData.hasChild('value')",
+                ".validate": "newData.hasChild('value') && !root.child('sessions').child($sessionId).child('questions').child($questionId).child('revealedAt').exists() && (!root.child('sessions').child($sessionId).child('timer').child('endTime').exists() || now < root.child('sessions').child($sessionId).child('timer').child('endTime').val() + 2000)",
                 "value": {
                   ".validate": "newData.isString() && newData.val().length <= 200"
                 },

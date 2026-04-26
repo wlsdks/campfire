@@ -60,6 +60,8 @@ export default memo(function ActivePollView({
 }) {
   const { myVote } = useMyVote(sessionId, questionId);
   const hasVoted = !!myVote;
+  // P1-7: 타이머 만료 또는 정답 공개 시 vote 입력 차단 (서버 rules와 이중 방어)
+  const votingLocked = timerExpired || !!question?.revealedAt;
 
   return (
     <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center px-4 sm:px-5 pb-[calc(10rem+env(safe-area-inset-bottom))] sm:pb-40 pt-20">
@@ -151,14 +153,14 @@ export default memo(function ActivePollView({
               {question.type === 'choice' && (
                 question.revealedAt && question.correctAnswer
                   ? <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote} />
-                  : <ChoiceVoter sessionId={sessionId} questionId={questionId} options={question.options || []} disabled={timerExpired} />
+                  : <ChoiceVoter sessionId={sessionId} questionId={questionId} options={question.options || []} disabled={votingLocked} />
               )}
               {question.type === 'quiz' && (
                 <QuizVoter
                   sessionId={sessionId}
                   questionId={questionId}
                   question={question}
-                  disabled={timerExpired}
+                  disabled={votingLocked}
                   renderResult={(currentVote) => (
                     <QuizResultFromVote question={question} currentVote={currentVote} streak={myStreak} />
                   )}
@@ -167,30 +169,30 @@ export default memo(function ActivePollView({
               {question.type === 'ox' && (
                 question.revealedAt && question.correctAnswer
                   ? <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote} />
-                  : <OXVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
+                  : <OXVoter sessionId={sessionId} questionId={questionId} disabled={votingLocked} />
               )}
               {question.type === 'wordcloud' && (
-                <TextInput sessionId={sessionId} questionId={questionId} type="wordcloud" placeholder="단어를 입력하세요" maxLength={20} disabled={timerExpired} />
+                <TextInput sessionId={sessionId} questionId={questionId} type="wordcloud" placeholder="단어를 입력하세요" maxLength={20} disabled={votingLocked} />
               )}
               {question.type === 'qna' && (
-                <TextInput sessionId={sessionId} questionId={questionId} type="qna" placeholder="질문을 입력하세요" maxLength={200} disabled={timerExpired} />
+                <TextInput sessionId={sessionId} questionId={questionId} type="qna" placeholder="질문을 입력하세요" maxLength={200} disabled={votingLocked} />
               )}
               {question.type === 'scale' && (
-                <ScaleVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
+                <ScaleVoter sessionId={sessionId} questionId={questionId} disabled={votingLocked} />
               )}
               {question.type === 'debate' && (
-                <DebateVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
+                <DebateVoter sessionId={sessionId} questionId={questionId} disabled={votingLocked} />
               )}
               {question.type === 'ranking' && (
-                <RankingVoter sessionId={sessionId} questionId={questionId} options={question.options || []} disabled={timerExpired} />
+                <RankingVoter sessionId={sessionId} questionId={questionId} options={question.options || []} disabled={votingLocked} />
               )}
               {question.type === 'fillinblank' && (
                 question.revealedAt && question.correctAnswer
                   ? <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote} />
-                  : <FillBlankVoter sessionId={sessionId} questionId={questionId} title={question.title} correctAnswer={question.correctAnswer} disabled={timerExpired} />
+                  : <FillBlankVoter sessionId={sessionId} questionId={questionId} title={question.title} correctAnswer={question.correctAnswer} disabled={votingLocked} />
               )}
               {question.type === 'check' && (
-                <CheckVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
+                <CheckVoter sessionId={sessionId} questionId={questionId} disabled={votingLocked} />
               )}
               {question.type === 'imageSlide' && (
                 <ImageSlidePresenter images={question.slideImages || []} currentSlide={question.currentSlide || 0} />
@@ -199,14 +201,14 @@ export default memo(function ActivePollView({
                 <AiJudgeSubmitter
                   sessionId={sessionId}
                   questionId={questionId}
-                  disabled={timerExpired}
+                  disabled={votingLocked}
                 />
               )}
               {question.type === 'mysteryBox' && (
                 <>
                   {question.revealedAt && question.correctAnswer
                     ? <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote} />
-                    : <MysteryBoxVoter sessionId={sessionId} questionId={questionId} disabled={timerExpired} />
+                    : <MysteryBoxVoter sessionId={sessionId} questionId={questionId} disabled={votingLocked} />
                   }
                   {question.revealedAt && (
                     <CorrectAnswerRanking
@@ -227,7 +229,7 @@ export default memo(function ActivePollView({
                         questionId={questionId}
                         hints={question.hints || []}
                         revealedHints={question.revealedHints || 0}
-                        disabled={timerExpired}
+                        disabled={votingLocked}
                       />
                   }
                   {question.revealedAt && (
