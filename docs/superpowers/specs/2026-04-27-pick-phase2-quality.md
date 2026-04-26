@@ -18,11 +18,8 @@
 
 ## Q0 — Quick Wins (이번 cron 사이클 우선)
 
-### Q0-1. 빈 상태 (Empty States) 일관성 audit
-- 모든 라우트의 빈 상태 (세션 0/질문 0/제출 0/리액션 0/손들기 0 등) 스캔
-- 일관된 마스코트 + 안내 + CTA 패턴 적용
-- 기존 EmptyState 컴포넌트 재사용 강화
-- **공수**: M (1.5h, 분할 가능)
+### Q0-1. 빈 상태 (Empty States) 일관성 audit ✅ `98f6281` — AssignmentsTab + MobileParticipantsTab inline → EmptyState
+- 남은 inline 후보 (보류): QuickProgressCard (status text), CourseEditor sub-section
 
 ### Q0-2. Skeleton/로딩 상태 일관성
 - VotePageSkeleton, SuspenseFallback 등 기존 패턴 검사
@@ -128,8 +125,8 @@
 ## 작업 순서 (실행 큐)
 
 1. ~~**Q0-3** 번들 audit~~ ✅ 분석 완료 (개선은 Q2-perf로)
-2. **Q0-1** 빈 상태 audit + 정리 (1.5h) ← 다음 iteration
-3. **Q0-2** Skeleton 일관성 (1h)
+2. ~~**Q0-1** 빈 상태~~ ✅ `98f6281`
+3. **Q0-2** Skeleton 일관성 (1h) ← 다음 iteration
 4. **Q1-4** 에러 fallback 강화 (1.5h)
 5. **Q1-6** 세션 종료 후 가치 회수 (2h)
 6. **Q1-5** 강사 onboarding (1.5h)
