@@ -4,6 +4,7 @@ import { Copy, Check, Link2, Download } from 'lucide-react';
 import { exportResultsCSV } from '@/features/assignments/api/useSubmissions';
 import { JUDGES, getAwardById } from '@/features/assignments/api/judges';
 import JudgeResultCard from './JudgeResultCard';
+import SubmissionContentPreview from './SubmissionContentPreview';
 import Avatar from '@/components/ui/Avatar';
 import PickMascot from '@/components/ui/PickMascot';
 
@@ -106,7 +107,7 @@ function SubmissionCard({ submission, result, rank, awardInfo }) {
       </button>
 
       <AnimatePresence>
-        {expanded && result?.judges && (
+        {expanded && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
@@ -114,12 +115,21 @@ function SubmissionCard({ submission, result, rank, awardInfo }) {
             transition={{ duration: 0.2 }}
             className="overflow-hidden"
           >
-            <div className="px-5 pb-5 pt-1 border-t border-slate-100 dark:border-slate-700">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
-                {JUDGES.map((judge) => (
-                  <JudgeResultCard key={judge.id} judge={judge} result={result.judges[judge.id]} />
-                ))}
-              </div>
+            <div className="px-5 pb-5 pt-4 border-t border-slate-100 dark:border-slate-700 space-y-5">
+              <SubmissionContentPreview submission={submission} />
+
+              {result?.judges && (
+                <div>
+                  <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2.5">
+                    AI 심사위원 7명 평가
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {JUDGES.map((judge) => (
+                      <JudgeResultCard key={judge.id} judge={judge} result={result.judges[judge.id]} />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </motion.div>
         )}
