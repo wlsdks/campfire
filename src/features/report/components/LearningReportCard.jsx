@@ -116,14 +116,14 @@ export default function LearningReportCard({ stats }) {
                 )}
 
                 {result.reviewRecommend?.length > 0 && (
-                  <div className="rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/40 px-3 py-2.5">
+                  <div className="rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700 px-3 py-2.5">
                     <div className="flex items-center gap-1.5 mb-1.5">
-                      <Target size={13} className="text-amber-600 dark:text-amber-400" />
-                      <p className="text-[11px] font-semibold text-amber-700 dark:text-amber-300 uppercase tracking-wider">복습 추천</p>
+                      <Target size={13} className="text-amber-500" />
+                      <p className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">복습 추천</p>
                     </div>
                     <ul className="space-y-1">
                       {result.reviewRecommend.map((x, i) => (
-                        <li key={i} className="text-[13px] text-amber-900 dark:text-amber-100 leading-relaxed">· {x}</li>
+                        <li key={i} className="text-[13px] text-slate-700 dark:text-slate-200 leading-relaxed">· {x}</li>
                       ))}
                     </ul>
                   </div>

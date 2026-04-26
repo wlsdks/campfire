@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, X, Loader2, Plus, RefreshCw } from 'lucide-react';
+import { Sparkles, X, Loader2, Plus, RefreshCw, Check } from 'lucide-react';
 import { generateQuestions, isGeneratorReady } from '@/features/questions/api/generateQuestions';
 
 const TYPE_LABELS = {
@@ -215,11 +215,11 @@ export default function AIQuestionGenerator({ open, onClose, onUse, onUseMany })
                               disabled={used}
                               className={`shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all ${
                                 used
-                                  ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 cursor-default'
+                                  ? 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 cursor-default'
                                   : 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200'
                               }`}
                             >
-                              {used ? '추가됨' : <><Plus size={12} /> 추가</>}
+                              {used ? <><Check size={12} className="text-emerald-500" /> 추가됨</> : <><Plus size={12} /> 추가</>}
                             </button>
                           </div>
                         </motion.div>

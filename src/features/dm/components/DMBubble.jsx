@@ -59,11 +59,14 @@ const DMListItem = memo(function DMListItem({ dm, onClick }) {
           {!isWaiting && (
             <span className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded-full shrink-0">스태프</span>
           )}
-          <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-semibold shrink-0 ${
-            dm.status === 'resolved' ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400'
+          <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-semibold shrink-0 ${
+            dm.status === 'resolved' ? 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
               : isWaiting ? 'bg-slate-50 text-slate-400 dark:bg-slate-700 dark:text-slate-500'
               : 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
-          }`}>{dm.status === 'resolved' ? '해결됨' : isWaiting ? '대기중' : '진행중'}</span>
+          }`}>
+            {dm.status === 'resolved' && <span className="w-1 h-1 rounded-full bg-emerald-500" />}
+            {dm.status === 'resolved' ? '해결됨' : isWaiting ? '대기중' : '진행중'}
+          </span>
         </div>
         {lastMsg && <p className="text-xs text-slate-400 dark:text-slate-500 truncate mt-1 leading-relaxed">{lastMsg.text}</p>}
       </div>
@@ -166,7 +169,7 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
                 {!isWaiting && (
                   <span className="text-[9px] font-semibold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded-full shrink-0">스태프</span>
                 )}
-                {isResolved && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400 shrink-0">해결됨</span>}
+                {isResolved && <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 shrink-0"><span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />해결됨</span>}
                 {isWaiting && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 shrink-0">대기중</span>}
               </div>
               <button onClick={onClose} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150" aria-label="닫기"><X size={16} /></button>

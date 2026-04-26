@@ -205,7 +205,7 @@ export function WinnersSection({ winners, setWinners }) {
         <div className="space-y-2">
           {winners.map((name, i) => (
             <div key={i} className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-md bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 flex items-center justify-center text-[10px] font-bold shrink-0">
+              <span className="w-5 h-5 rounded-md bg-slate-100 dark:bg-slate-700 text-amber-600 dark:text-amber-400 flex items-center justify-center text-[10px] font-bold shrink-0">
                 {i + 1}
               </span>
               <input value={name}

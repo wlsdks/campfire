@@ -62,7 +62,7 @@ export default function QuestionCard({ question: q, index, pid, nickname, role, 
             </span>
             {isOwn && <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400">나</span>}
             {isHidden && (
-              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400">
+              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-red-50 text-red-700 dark:bg-red-900/30 dark:text-red-400">
                 <EyeOff size={9} /> 숨김
               </span>
             )}

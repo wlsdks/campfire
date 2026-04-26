@@ -3,8 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Loader2, AlertCircle, TrendingUp, Target, Info, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react';
 import { generateClassInsight, isInsightReady } from '@/features/report/api/generateClassInsight';
 
+// 심각도별 — 배경 통일(slate), 강조는 텍스트 색상으로 (§1)
 const SEVERITY_STYLES = {
-  high: 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800/50',
+  high: 'bg-slate-100 text-amber-700 border-slate-200 dark:bg-slate-700 dark:text-amber-300 dark:border-slate-600',
   medium: 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-700 dark:text-slate-300 dark:border-slate-600',
   low: 'bg-slate-50 text-slate-600 border-slate-100 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700',
 };
@@ -72,9 +73,9 @@ export default function ClassInsightCard({ session, participantCount, insights, 
           >
             {!result.canAnalyze ? (
               <div className="px-5 pb-5 pt-1">
-                <div className="flex items-start gap-2 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-900/40 px-3 py-2.5">
-                  <AlertCircle size={14} className="text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
-                  <p className="text-[12px] text-amber-800 dark:text-amber-200 leading-relaxed">
+                <div className="flex items-start gap-2 rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700 px-3 py-2.5">
+                  <AlertCircle size={14} className="text-amber-500 mt-0.5 shrink-0" />
+                  <p className="text-[12px] text-slate-700 dark:text-slate-200 leading-relaxed">
                     {result.reason || '의미 있는 인사이트를 도출하기에 데이터가 부족해요.'}
                   </p>
                 </div>
@@ -83,10 +84,10 @@ export default function ClassInsightCard({ session, participantCount, insights, 
               <div className="px-5 pb-5 pt-4 border-t border-slate-100 dark:border-slate-700 space-y-4">
                 {/* 1. 최상단 — 다음 수업 액션 (가장 actionable) */}
                 {result.nextClassActions?.length > 0 && (
-                  <div className="rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-900/40 p-4">
+                  <div className="rounded-xl bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700 p-4">
                     <div className="flex items-center gap-1.5 mb-3">
                       <Target size={14} className="text-indigo-600 dark:text-indigo-400" />
-                      <p className="text-[13px] font-bold text-indigo-700 dark:text-indigo-300">다음 수업, 이렇게 해보세요</p>
+                      <p className="text-[13px] font-bold text-slate-900 dark:text-slate-100">다음 수업, 이렇게 해보세요</p>
                     </div>
                     <ol className="space-y-2.5">
                       {result.nextClassActions.map((a, i) => (
