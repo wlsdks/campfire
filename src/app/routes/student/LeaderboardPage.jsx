@@ -85,7 +85,7 @@ function StickyMyRank({ rank, entry }) {
           transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           className="fixed bottom-[120px] left-1/2 -translate-x-1/2 z-20 w-[calc(100%-2.5rem)] max-w-md"
         >
-          <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-md px-4 py-3 flex items-center gap-3">
+          <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md px-4 py-3 flex items-center gap-3">
             <span className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-sm font-bold text-slate-600 dark:text-slate-300 shrink-0">
               {rank}
             </span>

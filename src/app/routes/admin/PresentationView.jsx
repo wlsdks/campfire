@@ -76,7 +76,7 @@ function PresentQROverlay({ sessionId, studentUrl, count }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 8 }}
             transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-            className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-100 dark:border-slate-700 p-4 md:p-5 w-56 md:w-64"
+            className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg p-4 md:p-5 w-56 md:w-64"
           >
             <div className="flex items-center justify-between mb-3">
               <span className="text-slate-900 dark:text-slate-100 text-sm font-semibold">참여 QR코드</span>
@@ -114,7 +114,7 @@ function PresentQROverlay({ sessionId, studentUrl, count }) {
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.15 }}
             onClick={toggle}
-            className="flex items-center gap-2.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-xl shadow-md border border-slate-100 dark:border-slate-700 px-3 py-2.5 hover:shadow-lg transition-shadow group"
+            className="flex items-center gap-2.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-xl shadow-md px-3 py-2.5 hover:shadow-lg transition-shadow group"
             aria-label="QR코드 열기"
           >
             <div className="bg-slate-900 rounded-lg p-1.5">
