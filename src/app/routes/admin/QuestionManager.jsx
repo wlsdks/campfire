@@ -9,6 +9,8 @@ import { useAdminKeyboardShortcuts } from '@/hooks/useAdminKeyboardShortcuts';
 import { useQuestionLibrary } from '@/features/questions/api/useQuestionLibrary';
 import { useQuestionActions } from '@/hooks/useQuestionActions';
 import { usePersistentAssignment } from '@/features/ai-judge/api/useLiveJudging';
+import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
+import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
 import QuestionForm from './QuestionForm';
 import QuestionList from './QuestionList';
 import QuickProgressCard from './QuickProgressCard';
@@ -69,6 +71,16 @@ export default function QuestionManager({
   const [aiGenOpen, setAiGenOpen] = useState(false);
   const { saveQuestion: saveToLibrary } = useQuestionLibrary(adminUid);
   const { assignmentId: persistentAssignmentId, setAssignment: setPersistent, clearAssignment: clearPersistent } = usePersistentAssignment(sessionId);
+  // P2-2: 초기화 모달에 in-flight 데이터 양 표시 — staffChat은 staff DM만 wipe(공개 chat은 별도)
+  const { count: handCount } = useHandRaises(sessionId);
+  const { unreadCount: urgentUnreadCount } = useUrgentQuestions(sessionId);
+  const inFlightLost = [
+    handCount > 0 && `손든 학생 ${handCount}명`,
+    urgentUnreadCount > 0 && `읽지 않은 긴급 질문 ${urgentUnreadCount}건`,
+  ].filter(Boolean);
+  const resetDescription = inFlightLost.length > 0
+    ? `진행 중인 데이터가 함께 사라집니다:\n• ${inFlightLost.join('\n• ')}\n\n모든 답변·점수·참여 기록을 초기화할까요? 참여자는 재접속하면 다시 표시됩니다.`
+    : '모든 답변, 점수, 참여 기록을 초기화할까요? 참여자는 재접속하면 다시 표시됩니다.';
 
   const {
     error, toast, questionList,
@@ -241,7 +253,7 @@ export default function QuestionManager({
         onConfirm={() => { setResetConfirmOpen(false); resetAllQuestions(); }}
         onCancel={() => setResetConfirmOpen(false)}
         title="전체 답변 초기화"
-        description="모든 답변, 점수, 참여 기록을 초기화할까요? 참여자는 재접속하면 다시 표시됩니다."
+        description={resetDescription}
         confirmLabel="초기화"
         variant="danger"
       />
