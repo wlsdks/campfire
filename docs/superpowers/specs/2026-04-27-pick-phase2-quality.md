@@ -21,11 +21,7 @@
 ### Q0-1. 빈 상태 (Empty States) 일관성 audit ✅ `98f6281` — AssignmentsTab + MobileParticipantsTab inline → EmptyState
 - 남은 inline 후보 (보류): QuickProgressCard (status text), CourseEditor sub-section
 
-### Q0-2. Skeleton/로딩 상태 일관성
-- VotePageSkeleton, SuspenseFallback 등 기존 패턴 검사
-- 누락 영역 (admin 사이드바 진입, 과제 상세, AI 심사 등) 추가
-- shimmer animation 토큰 활용
-- **공수**: M (1h, 분할 가능)
+### Q0-2. Skeleton/로딩 상태 일관성 ✅ `174bd29` — AdminPage 3건 + StaffPage 1건 inline 중복 → SuspenseFallback 통일
 
 ### Q0-3. 번들 사이즈 audit ✅ 분석 완료 (수정은 Q2로 이관)
 
@@ -126,8 +122,8 @@
 
 1. ~~**Q0-3** 번들 audit~~ ✅ 분석 완료 (개선은 Q2-perf로)
 2. ~~**Q0-1** 빈 상태~~ ✅ `98f6281`
-3. **Q0-2** Skeleton 일관성 (1h) ← 다음 iteration
-4. **Q1-4** 에러 fallback 강화 (1.5h)
+3. ~~**Q0-2** Skeleton 일관성~~ ✅ `174bd29`
+4. **Q1-4** 에러 fallback 강화 (1.5h) ← 다음 iteration
 5. **Q1-6** 세션 종료 후 가치 회수 (2h)
 6. **Q1-5** 강사 onboarding (1.5h)
 7. **Q2-8** 메모리 누수 audit (1.5h)
