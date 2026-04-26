@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
-import { ArrowLeft, BarChart3, Users, MessageSquare, Play, MoreHorizontal, Target, Ticket, Gift, Dices, CircleDot, Coffee, Trophy, Swords, Gamepad2 } from 'lucide-react';
+import { ArrowLeft, BarChart3, Users, MessageSquare, Play, MoreHorizontal, Ticket, Coffee, Trophy, Swords, Gamepad2 } from 'lucide-react';
 import JoinToast from '@/features/participants/components/JoinToast';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import AnswerBubbleOverlay from '@/features/voting/components/AnswerBubbleOverlay';
@@ -25,9 +25,7 @@ const TABS = [
 
 /* ─── Mode labels ─── */
 const MODE_MAP = {
-  roulette: { label: '돌림판', icon: Target },
   lottery: { label: '추첨', icon: Ticket },
-  
   breakTime: { label: '쉬는시간', icon: Coffee },
   leaderboard: { label: '리더보드', icon: Trophy },
   teamBattle: { label: '팀 대항전', icon: Swords },

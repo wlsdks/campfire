@@ -225,7 +225,6 @@ export const timing = {
   toastGracePeriod: 2000,
   successToastDuration: 2000,
   voteConfirmDelay: 2500,
-  rouletteSpinDuration: 4000,
   lotteryRevealInterval: 800,
   reactionBubbleLifetime: 2000,
   reactionCooldown: 3000,

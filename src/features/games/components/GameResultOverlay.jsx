@@ -7,7 +7,6 @@ import { getNickname } from '@/lib/participant';
 const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 
 const MODE_LABELS = {
-  roulette: '돌림판',
   lottery: '추첨',
   prizeDraw: '추첨',
   slotMachine: '777 슬롯',
