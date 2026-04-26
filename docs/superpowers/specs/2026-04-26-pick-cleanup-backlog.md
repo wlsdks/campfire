@@ -91,7 +91,8 @@
 ### P1-1. tint 배경 71건 정리 (visualization/ai-judge 집중) ⏳ in progress
 - ✅ batch 1 `76c1c75` — visualization 4건 (AISummaryBanner, AnalogyHelper, WrongAnswerAnalysis ×2)
 - ✅ batch 2 `58e314f` — viz podium + ai-judge state 4건 (CorrectAnswerRanking, AiJudgeViz stateColor, AiJudgeViz 아바타, PersistentAssignmentCard)
-- 남은: assignments / class-questions / staff red-50 (P2-1과 묶을지 검토) / 나머지 60건+
+- ✅ batch 3 `17d1bca` — class-questions 역할/상태 배지 7건 (SubmissionPreview + ClassQAPanel + AnswerItem + QuestionCard)
+- 남은: staff red-50 (P2-1과 묶음) / admin staff 영역 / 그 외 잔여
 - **증상**: §1 "박스 배경에 색상 tint 금지 — bg-white 또는 bg-slate-50만" 위반
 - **분포**: indigo-50/100 28건, emerald-50 24건, amber-50 19건
 - **주요 위치**:
