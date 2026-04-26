@@ -26,11 +26,6 @@ export default function CenterContent({
   participants,
   scores,
   count,
-  teamScores,
-  teamBattleActive,
-  teamBattleCount,
-  onStartTeamBattle,
-  onEndTeamBattle,
   onGameResult,
 }) {
   return (
@@ -117,13 +112,8 @@ export default function CenterContent({
               onlineList={onlineList}
               leaderboard={leaderboard}
               drawParticipants={drawParticipants}
-              teamScores={teamScores}
               scores={scores}
               count={count}
-              teamBattleActive={teamBattleActive}
-              teamBattleCount={teamBattleCount}
-              onStartTeamBattle={onStartTeamBattle}
-              onEndTeamBattle={onEndTeamBattle}
               onGameResult={onGameResult}
             />
           )}

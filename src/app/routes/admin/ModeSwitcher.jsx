@@ -1,8 +1,8 @@
 import { memo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Target, Ticket, Trophy, Swords, Gift, Dices, Coffee, X, ChevronDown, CircleDot, MessageSquare, Zap, Award, Eye, UserCircle, Activity, BarChart3, Timer, Medal } from 'lucide-react';
+import { Ticket, Trophy, Coffee, ChevronDown, MessageSquare, Award, Eye, UserCircle, Activity, BarChart3, Timer, Medal } from 'lucide-react';
 
-export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTickets, leaderboard, modeOpen, onToggle, onSwitchMode, teamBattleActive = false }) {
+export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTickets, leaderboard, modeOpen, onToggle, onSwitchMode }) {
   const containerRef = useRef(null);
 
   // Close on outside click
@@ -28,7 +28,6 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTic
     ]},
     { label: '결과', items: [
       ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
-      { mode: 'teamBattle', label: teamBattleActive ? '팀 스코어보드' : '팀 대항전', icon: Swords },
       { mode: 'awards', label: '시상식', icon: Award },
       { mode: 'combinedRanking', label: '합산 랭킹', icon: Medal, shortLabel: '합산' },
     ]},

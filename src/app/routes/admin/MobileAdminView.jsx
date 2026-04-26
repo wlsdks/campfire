@@ -10,7 +10,6 @@ import QuestionManager from './QuestionManager';
 
 import CenterContent from './CenterContent';
 import ChatPanel from '@/features/chat/components/ChatPanel';
-import TeamBattleControl from '@/features/teams/components/TeamBattleControl';
 
 import BottomSheet from '@/components/ui/BottomSheet';
 import MobileModePicker from './MobileModePicker';
@@ -28,7 +27,6 @@ const MODE_MAP = {
   lottery: { label: '추첨', icon: Ticket },
   breakTime: { label: '쉬는시간', icon: Coffee },
   leaderboard: { label: '리더보드', icon: Trophy },
-  teamBattle: { label: '팀 대항전', icon: Swords },
 };
 
 /* ─── Header ─── */
@@ -132,7 +130,7 @@ export default function MobileAdminView({ s }) {
   const [modesOpen, setModesOpen] = useState(false);
 
   const currentMode = s.session?.currentMode;
-  const isSpecialMode = ['lottery', 'combinedRanking', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
+  const isSpecialMode = ['lottery', 'combinedRanking', 'breakTime', 'leaderboard', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
 
   const onNewChatMsg = s.handleNewChatMessage;
   const handleNewChatMessage = useCallback(() => {
@@ -206,7 +204,6 @@ export default function MobileAdminView({ s }) {
                   effectiveReadOnly={s.effectiveReadOnly} session={s.session} currentMode={currentMode} sessionId={s.sessionId}
                   onlineList={s.onlineList} leaderboard={s.leaderboard} drawParticipants={s.drawParticipants}
                   participants={s.participants} scores={s.scores} count={s.count}
-                  teamScores={s.teamScores}
                   onGameResult={handleGameResult} />
               </div>
             </motion.div>
@@ -238,7 +235,6 @@ export default function MobileAdminView({ s }) {
         currentMode={currentMode}
         onSwitchMode={(mode) => { s.switchMode(mode); setActiveTab('results'); }}
         leaderboard={s.leaderboard}
-        teamBattleActive={s.teamBattleActive}
       />
 
       {/* Session settings bottom sheet */}
@@ -263,13 +259,6 @@ export default function MobileAdminView({ s }) {
               포인트 · 티켓 초기화
             </button>
           )}
-          <TeamBattleControl
-            isActive={s.teamBattleActive}
-            teamCount={s.teamBattleCount}
-            participantCount={s.count}
-            onStart={(count) => { s.startTeamBattle(s.onlineList.map((p) => p.id), count); setSettingsOpen(false); }}
-            onEnd={() => { s.endTeamBattle(); setSettingsOpen(false); }}
-          />
         </div>
       </BottomSheet>
 

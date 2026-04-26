@@ -8,8 +8,6 @@ import { useVotes } from '@/hooks/useVotes';
 import { useScores } from '@/features/quiz/api/useScores';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
-import { useTeamBattle } from '@/features/teams/api/useTeamBattle';
-import { useTeamScores } from '@/features/teams/api/useTeamBattle';
 import { usePublishGameResult } from '@/features/games/api/useGameResult';
 import VizRenderer from '@/features/visualization/components/VizRenderer';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
@@ -28,7 +26,6 @@ import LiveParticipation from './LiveParticipation';
 const Lottery = lazy(() => import('@/features/games/components/Lottery'));
 const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
 const Leaderboard = lazy(() => import('@/features/quiz/components/Leaderboard'));
-const TeamScoreboard = lazy(() => import('@/features/teams/components/TeamScoreboard'));
 const ClassQABoard = lazy(() => import('@/features/class-questions/components/ClassQABoard'));
 const QARanking = lazy(() => import('@/features/class-questions/components/QARanking'));
 const JoinShow = lazy(() => import('@/features/games/components/JoinShow'));
@@ -57,8 +54,6 @@ export default function LivePage() {
   const { scores, leaderboard } = useScores(sessionId);
   const { count: handCount } = useHandRaises(sessionId);
   const { unreadCount: urgentCount } = useUrgentQuestions(sessionId);
-  const { teams } = useTeamBattle(sessionId);
-  const teamScores = useTeamScores(teams, scores);
 
   const currentQId = session?.currentQuestion;
   const currentMode = session?.currentMode;
@@ -86,7 +81,7 @@ export default function LivePage() {
   }, [onlineList, drawParticipants, publishResult]);
 
   // Stable per-game callbacks (avoid re-creating on every render)
-  const isGameMode = ['lottery', 'combinedRanking', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'qaRanking', 'joinShow', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
+  const isGameMode = ['lottery', 'combinedRanking', 'breakTime', 'leaderboard', 'qaBoard', 'qaRanking', 'joinShow', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
   const isEnded = session?.status === 'ended';
   const hasActiveQuestion = ['poll', 'quiz'].includes(currentMode) && currentQId && question;
 
@@ -185,7 +180,6 @@ export default function LivePage() {
                   )}
                   {currentMode === 'breakTime' && <BreakTimer />}
                   {currentMode === 'leaderboard' && <div className="w-full max-w-2xl mx-auto [&_.max-w-xl]:max-w-2xl"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" /></div>}
-                  {currentMode === 'teamBattle' && <div className="w-full max-w-2xl mx-auto [&_.max-w-lg]:max-w-2xl"><TeamScoreboard teamScores={teamScores || []} /></div>}
                   {currentMode === 'qaBoard' && <div className="w-full max-w-4xl mx-auto"><ClassQABoard sessionId={sessionId} showInput={false} /></div>}
                   {currentMode === 'qaRanking' && <QARanking sessionId={sessionId} />}
                   {currentMode === 'joinShow' && <JoinShow sessionId={sessionId} />}

@@ -101,7 +101,6 @@ function CopyableCode({ code }) {
 const GAME_MODES = {
   lottery: { label: '추첨 진행 중', icon: Ticket },
   breakTime: { label: '쉬는 시간', icon: Coffee },
-  teamBattle: { label: '팀 대항전 진행 중', icon: Trophy },
   qaBoard: { label: 'Q&A 보드 진행 중', icon: Users },
   randomPicker: { label: '발표자 뽑기 진행 중', icon: UserCircle },
   awards: { label: '시상식 진행 중', icon: Award },

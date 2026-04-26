@@ -6,10 +6,6 @@ import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
 import { useScores } from '@/features/quiz/api/useScores';
-import { useMyTeam, useTeamScores } from '@/features/teams/api/useTeamBattle';
-import { useTeamBattle } from '@/features/teams/api/useTeamBattle';
-import TeamScoreboard from '@/features/teams/components/TeamScoreboard';
-import TeamBadge from '@/features/teams/components/TeamBadge';
 import { getParticipantId } from '@/lib/participant';
 
 /** Displays the student's own rank summary card at the top. */
@@ -102,12 +98,8 @@ function StickyMyRank({ rank, entry }) {
 }
 
 export default function LeaderboardPage({ sessionId }) {
-  const { scores, leaderboard } = useScores(sessionId);
+  const { leaderboard } = useScores(sessionId);
   const participantId = getParticipantId();
-
-  const { isActive: teamActive, myTeam } = useMyTeam(sessionId, participantId);
-  const { teams } = useTeamBattle(sessionId);
-  const teamScores = useTeamScores(teams, scores);
 
   const { myRank, myEntry } = useMemo(() => {
     const idx = leaderboard.findIndex((entry) => entry.id === participantId);
@@ -122,25 +114,6 @@ export default function LeaderboardPage({ sessionId }) {
       <StudentHeader sessionId={sessionId} />
 
       <div className="w-full max-w-md space-y-5">
-        {/* Team badge */}
-        {teamActive && myTeam && (
-          <div className="flex justify-center">
-            <TeamBadge teamName={myTeam.name} teamColors={myTeam.colors} memberCount={myTeam.memberCount} />
-          </div>
-        )}
-
-        {/* Team scoreboard */}
-        {teamActive && teamScores.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-4"
-          >
-            <TeamScoreboard teamScores={teamScores} title="팀 대항전" />
-          </motion.div>
-        )}
-
         <MyRankCard rank={myRank} entry={myEntry} total={leaderboard.length} />
 
         <Leaderboard

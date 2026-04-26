@@ -98,13 +98,13 @@ export default function AdminPage() {
 
 
   const currentMode = s.session?.currentMode;
-  const isSpecialMode = ['lottery', 'combinedRanking', 'breakTime', 'leaderboard', 'teamBattle', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
+  const isSpecialMode = ['lottery', 'combinedRanking', 'breakTime', 'leaderboard', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
 
   if (s.presentMode) {
     return (
       <PresentationView sessionId={s.sessionId} session={s.session} currentMode={currentMode} onlineList={s.onlineList}
         leaderboard={s.leaderboard} drawParticipants={s.drawParticipants} studentUrl={s.studentUrl} count={s.count} onExit={s.handleExitPresent}
-        teamScores={s.teamScores} scores={s.scores} participants={s.participants} />
+        scores={s.scores} participants={s.participants} />
     );
   }
 
@@ -119,8 +119,7 @@ export default function AdminPage() {
         speedQuizActive={s.speedQuizActive} onStartSpeedQuiz={s.startSpeedQuiz} onEndSpeedQuiz={s.endSpeedQuiz} speedQuizCount={s.speedQuizCount}
         modeButton={!s.effectiveReadOnly ? (
           <ModeSwitcher currentMode={currentMode} isSpecialMode={isSpecialMode} totalTickets={s.totalTickets}
-            leaderboard={s.leaderboard} modeOpen={s.modeOpen} onToggle={s.handleModeToggle} onSwitchMode={s.switchMode}
-            teamBattleActive={s.teamBattleActive} />
+            leaderboard={s.leaderboard} modeOpen={s.modeOpen} onToggle={s.handleModeToggle} onSwitchMode={s.switchMode} />
         ) : null}
       />
     </>
@@ -150,7 +149,7 @@ export default function AdminPage() {
         timerRunning={s.timerRunning} endTime={s.endTime} duration={s.duration} onTimerStart={s.startTimer} onTimerStop={s.stopTimer}
         onBack={s.handleBack} onStartSession={s.handleStartSession} onEndSession={s.handleEndSession} onPresentMode={s.handlePresentMode}
         isTablet={isTablet} onLeftDrawer={s.handleLeftDrawerOpen} onRightDrawer={s.handleRightDrawerOpen}
-        speedQuizActive={s.speedQuizActive} teamBattleActive={s.teamBattleActive}
+        speedQuizActive={s.speedQuizActive}
         isReviewing={s.isReviewing} onFullEndSession={s.handleFullEndSession}
         courseId={s.session?.courseId} courseName={s.session?.courseName} />
 
@@ -162,7 +161,7 @@ export default function AdminPage() {
             <RightSidebar session={s.session} sessionId={s.sessionId} effectiveReadOnly={s.effectiveReadOnly}
               participants={s.participants} onlineList={s.onlineList} count={s.count} leaderboard={s.leaderboard}
               voteCounts={s.voteCounts} studentUrl={s.studentUrl} sidebarCollapsed={false} isDrawer
-              teamScores={s.teamScores} courseId={s.session?.courseId} />
+              courseId={s.session?.courseId} />
           } />
       )}
 
@@ -193,10 +192,6 @@ export default function AdminPage() {
             effectiveReadOnly={s.effectiveReadOnly} session={s.session} currentMode={currentMode} sessionId={s.sessionId}
             onlineList={s.onlineList} leaderboard={s.leaderboard} drawParticipants={s.drawParticipants}
             participants={s.participants} scores={s.scores} count={s.count}
-            teamScores={s.teamScores}
-            teamBattleActive={s.teamBattleActive} teamBattleCount={s.teamBattleCount}
-            onStartTeamBattle={(count) => s.startTeamBattle(s.onlineList.map((p) => p.id), count)}
-            onEndTeamBattle={s.endTeamBattle}
             onGameResult={handleGameResult} />
         </div>
 
@@ -204,7 +199,7 @@ export default function AdminPage() {
           <RightSidebar session={s.session} sessionId={s.sessionId} effectiveReadOnly={s.effectiveReadOnly}
             participants={s.participants} onlineList={s.onlineList} count={s.count} leaderboard={s.leaderboard}
             voteCounts={s.voteCounts} studentUrl={s.studentUrl} sidebarCollapsed={s.sidebarCollapsed}
-            teamScores={s.teamScores} courseId={s.session?.courseId} />
+            courseId={s.session?.courseId} />
         )}
       </div>
 

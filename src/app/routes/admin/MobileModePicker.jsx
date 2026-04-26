@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
-import { BarChart3, MessageSquare, Target, Ticket, Gift, Dices, CircleDot, Coffee, Trophy, Swords, X, Activity, UserCircle, Eye, Timer, Award } from 'lucide-react';
+import { BarChart3, MessageSquare, Ticket, Coffee, Trophy, X, Activity, UserCircle, Eye, Timer, Award } from 'lucide-react';
 import BottomSheet from '@/components/ui/BottomSheet';
 
 /* ─── Mode Picker BottomSheet (grid layout, one-tap switch) ─── */
-export default function MobileModePicker({ open, onClose, currentMode, onSwitchMode, leaderboard, teamBattleActive }) {
+export default function MobileModePicker({ open, onClose, currentMode, onSwitchMode, leaderboard }) {
   const sections = [
     { title: '수업 도구', modes: [
       { mode: 'comprehension', label: '이해도 체크', icon: Activity },
@@ -20,7 +20,6 @@ export default function MobileModePicker({ open, onClose, currentMode, onSwitchM
       { mode: 'breakTime', label: '쉬는 시간', icon: Coffee },
       { mode: 'qaBoard', label: 'Q&A 보드', icon: MessageSquare },
       ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
-      ...(teamBattleActive ? [{ mode: 'teamBattle', label: '팀 대항전', icon: Swords }] : []),
       { mode: 'awards', label: '시상식', icon: Award },
     ]},
   ];

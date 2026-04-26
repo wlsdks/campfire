@@ -4,7 +4,6 @@ import { Users, ChevronDown, Copy, Check, Monitor } from 'lucide-react';
 import ParticipantList from '@/features/participants/components/ParticipantList';
 import QRCode from '@/components/ui/QRCode';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
-import TeamScoreboard from '@/features/teams/components/TeamScoreboard';
 import InstructorCommHub from './InstructorCommHub';
 import InstructorPeopleHub from './InstructorPeopleHub';
 import Button from '@/components/ui/Button';
@@ -46,7 +45,7 @@ function RightPanelAccordion({ title, count, defaultOpen = false, children }) {
   );
 }
 
-function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard, voteCounts, studentUrl, teamScores, courseId }) {
+function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard, voteCounts, studentUrl, courseId }) {
   const [copied, setCopied] = useState(false);
   const [liveCopied, setLiveCopied] = useState(false);
 
@@ -104,13 +103,6 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
 
       {/* 메모 / 손들기 / 긴급 / 수업질문 — 탭 통합 */}
       <InstructorCommHub sessionId={sessionId} />
-
-      {/* Team scoreboard accordion */}
-      {teamScores && teamScores.length > 0 && (
-        <RightPanelAccordion title="팀 대항전" count={teamScores.length} defaultOpen>
-          <TeamScoreboard teamScores={teamScores} title={null} />
-        </RightPanelAccordion>
-      )}
 
       {/* Leaderboard accordion */}
       {leaderboard.length > 0 && (
@@ -202,7 +194,6 @@ export default memo(function RightSidebar({
   studentUrl,
   sidebarCollapsed,
   isDrawer = false,
-  teamScores,
   courseId,
 }) {
   const content = effectiveReadOnly ? (
@@ -221,7 +212,6 @@ export default memo(function RightSidebar({
       leaderboard={leaderboard}
       voteCounts={voteCounts}
       studentUrl={studentUrl}
-      teamScores={teamScores}
       courseId={courseId}
     />
   );

@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useMemo, lazy, Suspense, useRef } fro
 import DrumrollOverlay from '@/components/ui/DrumrollOverlay';
 import { isQuizQuestion } from '@/lib/quiz';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, QrCode, X, Copy, Check, Swords, Hand, MessageSquare, ChevronDown, ChevronLeft, ChevronRight, Eye, Trophy } from 'lucide-react';
+import { Users, QrCode, X, Copy, Check, Hand, MessageSquare, ChevronDown, ChevronLeft, ChevronRight, Eye, Trophy } from 'lucide-react';
 import { ref, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import Button from '@/components/ui/Button';
@@ -18,7 +18,6 @@ import ChatBubbleOverlay from '@/features/reactions/components/ChatBubbleOverlay
 import AnswerBubbleOverlay from '@/features/voting/components/AnswerBubbleOverlay';
 import { usePublishGameResult } from '@/features/games/api/useGameResult';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
-import TeamScoreboard from '@/features/teams/components/TeamScoreboard';
 import PersistentAssignmentBar from '@/features/ai-judge/components/PersistentAssignmentBar';
 import { useQuestionActions } from '@/hooks/useQuestionActions';
 
@@ -148,7 +147,7 @@ function getModeVariants(mode) {
   if (mode === 'leaderboard') {
     return { initial: { opacity: 0, y: -30 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 30 } };
   }
-  if (['lottery', 'breakTime', 'teamBattle', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus', 'combinedRanking', 'qaRanking', 'joinShow'].includes(mode)) {
+  if (['lottery', 'breakTime', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus', 'combinedRanking', 'qaRanking', 'joinShow'].includes(mode)) {
     return { initial: { opacity: 0, scale: 0.88 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 1.06 } };
   }
   if (['poll', 'quiz'].includes(mode)) {
@@ -157,50 +156,7 @@ function getModeVariants(mode) {
   return { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } };
 }
 
-function TeamBattleSetup({ participantCount, onStart }) {
-  const [selectedCount, setSelectedCount] = useState(2);
-  const canStart = participantCount >= 4;
-
-  return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-md mx-auto" onClick={e => e.stopPropagation()}>
-      <Swords size={28} className="text-slate-400" />
-      <div className="text-center space-y-1">
-        <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">팀 대항전</h3>
-        <p className="text-slate-400 text-sm">참여자를 팀으로 나누고 퀴즈 점수를 경쟁합니다</p>
-      </div>
-      <div className="w-full space-y-4">
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-slate-500 dark:text-slate-400">팀 수</label>
-          <div className="flex gap-3">
-            {[2, 3, 4].map((n) => (
-              <button
-                key={n}
-                onClick={() => setSelectedCount(n)}
-                className={`flex-1 min-h-[48px] py-3 rounded-xl text-base font-bold transition-colors duration-150 active:scale-[0.96] ${
-                  selectedCount === n
-                    ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
-                }`}
-              >
-                {n}팀
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="flex items-center gap-1.5 text-sm text-slate-400">
-          <Users size={14} />
-          <span>현재 {participantCount}명 접속 중</span>
-          {!canStart && <span className="text-red-400">(최소 4명 필요)</span>}
-        </div>
-        <Button onClick={() => onStart(selectedCount)} variant="primary" size="lg" className="w-full" disabled={!canStart}>
-          <Swords size={18} /> 팀 배정 시작
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-function MainContent({ currentMode, sessionId, session, onlineList, leaderboard, drawParticipants, presentMode, studentUrl, count, teamScores, scores, onGameResult, teamBattleActive, onStartTeamBattle, onEndTeamBattle }) {
+function MainContent({ currentMode, sessionId, session, onlineList, leaderboard, drawParticipants, presentMode, studentUrl, count, scores, onGameResult }) {
   const currentQId = session?.currentQuestion;
   const isActive = ['poll', 'quiz'].includes(currentMode) && currentQId;
 
@@ -212,19 +168,6 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     );
     if (currentMode === 'breakTime') return <BreakTimer />;
     if (currentMode === 'leaderboard') return <div className="w-full max-w-xl md:max-w-2xl [&_.max-w-xl]:max-w-2xl px-2 md:px-0"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" /></div>;
-    if (currentMode === 'teamBattle') {
-      if (!teamBattleActive) return <TeamBattleSetup participantCount={count || onlineList.length} onStart={onStartTeamBattle} />;
-      return (
-        <div className="w-full max-w-2xl [&_.max-w-lg]:max-w-2xl space-y-4">
-          <TeamScoreboard teamScores={teamScores || []} />
-          {onEndTeamBattle && (
-            <div className="text-center">
-              <Button onClick={onEndTeamBattle} variant="ghost" size="sm"><X size={16} /> 팀 대항전 종료</Button>
-            </div>
-          )}
-        </div>
-      );
-    }
     if (currentMode === 'qaBoard') return <div className="w-full max-w-4xl"><ClassQABoard sessionId={sessionId} showInput={false} isAdmin /></div>;
     if (currentMode === 'qaRanking') return <QARanking sessionId={sessionId} />;
     if (currentMode === 'joinShow') return <JoinShow sessionId={sessionId} />;
@@ -511,7 +454,7 @@ function PresentModeMenu({ sessionId, currentMode }) {
   );
 }
 
-export default function PresentationView({ sessionId, session, currentMode, onlineList, leaderboard, drawParticipants, studentUrl, count, onExit, teamScores, scores, participants }) {
+export default function PresentationView({ sessionId, session, currentMode, onlineList, leaderboard, drawParticipants, studentUrl, count, onExit, scores, participants }) {
   const exitPresent = useCallback(() => onExit(), [onExit]);
   const { publishResult } = usePublishGameResult(sessionId);
 
@@ -624,7 +567,6 @@ export default function PresentationView({ sessionId, session, currentMode, onli
           presentMode
           studentUrl={studentUrl}
           count={count}
-          teamScores={teamScores}
           scores={scores}
           onGameResult={handleGameResult}
         />

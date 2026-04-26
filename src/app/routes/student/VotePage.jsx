@@ -7,7 +7,6 @@ import { useScores } from '@/features/quiz/api/useScores';
 import { useAchievements } from '@/features/quiz/api/useAchievements';
 import { useSpeedQuizStudent } from '@/features/quiz/api/useSpeedQuizStudent';
 import AchievementToast from '@/features/quiz/components/AchievementToast';
-import { useMyTeam } from '@/features/teams/api/useTeamBattle';
 import { getParticipantId } from '@/lib/participant';
 import { useQuestionChime } from '@/hooks/useQuestionChime';
 import StudentHeader from './StudentHeader';
@@ -43,7 +42,6 @@ export default memo(function VotePage({ sessionId }) {
   const { isSpeedQuiz, totalQuestions: speedQuizTotal } = useSpeedQuizStudent(sessionId);
   const participantId = getParticipantId();
   const myStreak = scores[participantId]?.streak || 0;
-  const { isActive: teamActive, myTeam } = useMyTeam(sessionId, participantId);
 
   const speedQuizIndex = useMemo(() => {
     if (!isSpeedQuiz) return 0;
@@ -121,8 +119,6 @@ export default memo(function VotePage({ sessionId }) {
             speedQuizIndex={speedQuizIndex}
             speedQuizTotal={speedQuizTotal}
             myStreak={myStreak}
-            teamActive={teamActive}
-            myTeam={myTeam}
             SuspenseFallback={SuspenseFallback}
             WaitingPage={WaitingPage}
             ActivePollView={ActivePollView}

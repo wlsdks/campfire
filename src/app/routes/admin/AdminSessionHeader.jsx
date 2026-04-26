@@ -5,7 +5,7 @@ import Button from '@/components/ui/Button';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 import TimerControls from '@/features/timer/components/TimerControls';
 import TimerRing from '@/features/timer/components/TimerRing';
-import { ArrowLeft, Clock, MessageCircle, Users, UserCog, Monitor, Play, Square, Layers, List, Zap, Swords, MessageSquareDot, XCircle, Sun, Moon } from 'lucide-react';
+import { ArrowLeft, Clock, MessageCircle, Users, UserCog, Monitor, Play, Square, Layers, List, Zap, MessageSquareDot, XCircle, Sun, Moon } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 import { lazy, Suspense } from 'react';
 
@@ -80,7 +80,6 @@ export default memo(function AdminSessionHeader({
   onLeftDrawer,
   onRightDrawer,
   speedQuizActive = false,
-  teamBattleActive = false,
   isReviewing = false,
   onFullEndSession,
   courseId,
@@ -150,16 +149,6 @@ export default memo(function AdminSessionHeader({
               >
                 <Zap size={10} />
                 스피드
-              </motion.div>
-            )}
-            {teamBattleActive && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-700 text-white rounded text-[11px] font-bold"
-              >
-                <Swords size={10} />
-                팀전
               </motion.div>
             )}
           </div>

@@ -29,7 +29,6 @@ import TimerCountdown from '@/features/timer/components/TimerCountdown';
 import SpeedQuizBanner from '@/features/quiz/components/SpeedQuizBanner';
 import SpeedQuizCombo from '@/features/quiz/components/SpeedQuizCombo';
 import StreakBadge from '@/features/quiz/components/StreakBadge';
-import TeamBadge from '@/features/teams/components/TeamBadge';
 import { QuizResultFromVote, TimerExpiredBanner } from './VoteHelpers';
 
 /**
@@ -51,9 +50,6 @@ export default memo(function ActivePollView({
   speedQuizIndex,
   speedQuizTotal,
   myStreak,
-  // Team
-  teamActive,
-  myTeam,
   // Persistent (상시) 과제
   persistentAssignmentId,
   persistentAssignmentTitle,
@@ -87,15 +83,6 @@ export default memo(function ActivePollView({
         {/* Speed quiz combo counter */}
         {isSpeedQuiz && question?.type === 'quiz' && myStreak >= 1 && (
           <SpeedQuizCombo streak={myStreak} />
-        )}
-
-        {/* Team badge */}
-        {teamActive && myTeam && (
-          <TeamBadge
-            teamName={myTeam.name}
-            teamColors={myTeam.colors}
-            memberCount={myTeam.memberCount}
-          />
         )}
 
         {/* Streak badge — shown on regular quiz (non-speed) when 3+ streak */}
