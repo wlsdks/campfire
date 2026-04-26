@@ -11,6 +11,7 @@ import { PanelLeftOpen } from 'lucide-react';
 import PickMascot from '@/components/ui/PickMascot';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import AnswerBubbleOverlay from '@/features/voting/components/AnswerBubbleOverlay';
+import ChatBubbleOverlay from '@/features/reactions/components/ChatBubbleOverlay';
 import ChatPanel from '@/features/chat/components/ChatPanel';
 import AdminSessionHeader from './AdminSessionHeader';
 import RightSidebar from './RightSidebar';
@@ -119,6 +120,7 @@ export default function AdminPage() {
         sessionId={s.sessionId}
         questionId={s.session?.currentQuestion}
       />
+      <ChatBubbleOverlay sessionId={s.sessionId} />
       <AnimatePresence>
         {s.actionError && (
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}

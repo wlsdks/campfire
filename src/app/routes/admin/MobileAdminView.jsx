@@ -4,6 +4,7 @@ import { ArrowLeft, BarChart3, Users, MessageSquare, Play, MoreHorizontal, Targe
 import JoinToast from '@/features/participants/components/JoinToast';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import AnswerBubbleOverlay from '@/features/voting/components/AnswerBubbleOverlay';
+import ChatBubbleOverlay from '@/features/reactions/components/ChatBubbleOverlay';
 import QuestionManager from './QuestionManager';
 
 import CenterContent from './CenterContent';
@@ -147,6 +148,7 @@ export default function MobileAdminView({ s }) {
         sessionId={s.sessionId}
         questionId={s.session?.currentQuestion}
       />
+      <ChatBubbleOverlay sessionId={s.sessionId} />
 
       <MobileHeader
         session={s.session}
