@@ -30,11 +30,28 @@
 - shimmer animation 토큰 활용
 - **공수**: M (1h, 분할 가능)
 
-### Q0-3. 번들 사이즈 audit (분석 only, 수정은 Q2로)
-- vite-plugin-bundle-visualizer 또는 stat 확인
-- AdminPage 236kb 분석 — lazy 분리 가능한 컴포넌트 찾기
-- vendor chunk 적정성 검토
-- **공수**: S (30min)
+### Q0-3. 번들 사이즈 audit ✅ 분석 완료 (수정은 Q2로 이관)
+
+**Top chunks (raw bytes / brotli-gzip)**:
+- AdminPage 242kb / 44kb — 가장 큼
+- index 232kb / 62kb — 메인 entry
+- VotePage 166kb / 29kb — 학생
+- vendor-firebase 164kb / 42kb — modular, 추가 절감 어려움
+- vendor-motion 135kb / 39kb — Framer Motion (큰 라이브러리)
+- SubmitPage 133kb / 33kb — JSZip 포함
+- VizRenderer 101kb / 19kb — 시각화
+- ChatBubbleOverlay 28kb / 8kb — overlay라 lazy 가능
+- ClassSummary 25kb, StatsView 22kb — chart 관련
+
+**개선 후보 (Q2-perf로 이관)**:
+1. **AdminPage lazy 추가** — AssignmentsTab/StatsView 분리 가능 (현재 일부만)
+2. **ChatBubbleOverlay lazy** — 활성 시점에만 로드, 강사 진입 시 즉시 필요 X
+3. **SubmitPage JSZip 분리** — code submission 시점에만 동적 import
+4. **vendor-motion**: framer-motion → motion (smaller subset) 검토 가능
+
+**유지 권장**:
+- vendor-firebase 164kb — modular import 이미 적용, 추가 절감 어려움
+- vendor-react 48kb — 정상 범위
 
 ---
 
@@ -110,8 +127,8 @@
 
 ## 작업 순서 (실행 큐)
 
-1. **Q0-3** 번들 audit (분석만, 30min) ← 1순위 (지표 확보)
-2. **Q0-1** 빈 상태 audit + 정리 (1.5h)
+1. ~~**Q0-3** 번들 audit~~ ✅ 분석 완료 (개선은 Q2-perf로)
+2. **Q0-1** 빈 상태 audit + 정리 (1.5h) ← 다음 iteration
 3. **Q0-2** Skeleton 일관성 (1h)
 4. **Q1-4** 에러 fallback 강화 (1.5h)
 5. **Q1-6** 세션 종료 후 가치 회수 (2h)
