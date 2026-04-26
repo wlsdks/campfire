@@ -128,14 +128,14 @@
 ## 작업 순서
 
 ### Phase 3 첫 cron 사이클 (즉시 실행)
-1. **A1** orphan 파일 4개 cut (5분, 검증 0)
-2. **A2** unused imports 9건 (10분)
-3. **A3** unused exports 3건 (10분)
-4. **A4** .gitignore + PNG cleanup (5분)
-5. **B1** stale 문서 삭제 (5분)
-6. **B3** CLAUDE.md 업데이트 (15분)
-7. **B5** package.json metadata (5분)
-8. **B4** README.md 업데이트 (20분)
+1. ~~**A1** orphan 파일 5개 cut (757줄)~~ ✅
+2. ~~**A2** unused imports 8건~~ ✅
+3. ~~**A3** unused exports 3건~~ ✅
+4. ~~**A4** PNG cleanup (59건)~~ ✅
+5. ~~**B1** stale 문서 삭제~~ ✅
+6. ~~**B3** CLAUDE.md 업데이트~~ ✅
+7. ~~**B5** package.json metadata~~ ✅
+8. **B4** README.md 업데이트 (20분) ← 다음 iteration
 9. **B6** PRD.md 이전 (10분)
 10. **B7** FEATURES.md 정리 (15분)
 11. **B2** UX-PATROL.md 결정 (5분)
