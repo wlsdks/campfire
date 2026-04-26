@@ -1,13 +1,13 @@
 import { memo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Sun, Moon, QrCode } from 'lucide-react';
+import { Users, Sun, Moon, QrCode, Hand, AlertCircle } from 'lucide-react';
 import PickMascot from '@/components/ui/PickMascot';
 import Badge from '@/components/ui/Badge';
 import QRCodeComponent from '@/components/ui/QRCode';
 import ElapsedTime from '@/components/ui/ElapsedTime';
 import { useTheme } from '@/hooks/useTheme';
 
-export default memo(function LiveHeader({ courseName, roundNumber, count, sessionId, startedAt, status }) {
+export default memo(function LiveHeader({ courseName, roundNumber, count, handCount = 0, urgentCount = 0, sessionId, startedAt, status }) {
   const { isDark, setTheme } = useTheme();
   const [qrOpen, setQrOpen] = useState(false);
   const studentUrl = sessionId ? `${window.location.origin}/?s=${sessionId}` : '';
@@ -42,6 +42,33 @@ export default memo(function LiveHeader({ courseName, roundNumber, count, sessio
           {isDark ? <Sun size={16} /> : <Moon size={16} />}
         </button>
         <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+        {/* P1-4: 손들기/긴급질문 카운트 — 강사 호명용. 명단은 프라이버시상 미노출 */}
+        {handCount > 0 && (
+          <motion.span
+            key={`hand-${handCount}`}
+            initial={{ opacity: 0.6, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 text-sm font-semibold tabular-nums"
+            aria-label={`손든 학생 ${handCount}명`}
+          >
+            <Hand size={14} className="text-slate-500 dark:text-slate-400" />
+            {handCount}
+          </motion.span>
+        )}
+        {urgentCount > 0 && (
+          <motion.span
+            key={`urgent-${urgentCount}`}
+            initial={{ opacity: 0.6, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm font-semibold tabular-nums"
+            aria-label={`읽지 않은 긴급 질문 ${urgentCount}건`}
+          >
+            <AlertCircle size={14} />
+            {urgentCount}
+          </motion.span>
+        )}
         <Users size={16} className="text-slate-400" />
         <motion.span
           key={count}

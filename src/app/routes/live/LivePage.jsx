@@ -6,6 +6,8 @@ import { useParticipants } from '@/features/participants/api/useParticipants';
 import { useTimer } from '@/features/timer/api/useTimer';
 import { useVotes } from '@/hooks/useVotes';
 import { useScores } from '@/features/quiz/api/useScores';
+import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
+import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
 import { useTeamBattle } from '@/features/teams/api/useTeamBattle';
 import { useTeamScores } from '@/features/teams/api/useTeamBattle';
 import { usePublishGameResult } from '@/features/games/api/useGameResult';
@@ -53,6 +55,8 @@ export default function LivePage() {
   const { onlineList, count } = useParticipants(sessionId);
   const { isRunning, endTime, duration } = useTimer(sessionId);
   const { scores, leaderboard } = useScores(sessionId);
+  const { count: handCount } = useHandRaises(sessionId);
+  const { unreadCount: urgentCount } = useUrgentQuestions(sessionId);
   const { teams } = useTeamBattle(sessionId);
   const teamScores = useTeamScores(teams, scores);
 
@@ -149,7 +153,9 @@ export default function LivePage() {
 
   return (
     <div className="h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col overflow-hidden">
-      <LiveHeader courseName={session?.courseName} roundNumber={session?.roundNumber} count={count} sessionId={sessionId} startedAt={session?.startedAt} status={session?.status} />
+      <LiveHeader courseName={session?.courseName} roundNumber={session?.roundNumber} count={count}
+        handCount={handCount} urgentCount={urgentCount}
+        sessionId={sessionId} startedAt={session?.startedAt} status={session?.status} />
       <JoinToast sessionId={sessionId} />
       <ReactionOverlay sessionId={sessionId} />
       <ChatBubbleOverlay sessionId={sessionId} />
