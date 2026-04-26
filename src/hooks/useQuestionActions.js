@@ -28,6 +28,11 @@ async function awaitRevealLock(sessionId) {
   if (pending) await pending;
 }
 
+// P1-8: resetAllQuestions가 학생-write 영역(handRaises/urgentQuestions/chat)을 null로
+// 비우는 순간 인플라이트 학생 write가 도착하면 잔존 데이터 발생. 600ms 후 재-sweep으로
+// catch. 같은 세션에서 새 reset이 곧이어 발생하면 직전 sweep은 무효화 (epoch 비교).
+const resetEpochs = new Map();
+
 export function useQuestionActions(sessionId, questions, currentQuestion, scores, participants) {
   const [error, setError] = useState(null);
   const { toast, showToast } = useToast();
@@ -471,6 +476,19 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       });
       await update(ref(db, `sessions/${sessionId}`), updates);
       showToast('모든 답변과 점수가 초기화되었습니다');
+
+      // P1-8: 600ms 후 학생-write 영역만 다시 sweep — 인플라이트 race 잔존 방지.
+      // 같은 세션에서 또 다른 reset이 일어나면 본 sweep은 폐기.
+      const epoch = Date.now();
+      resetEpochs.set(sessionId, epoch);
+      setTimeout(() => {
+        if (resetEpochs.get(sessionId) !== epoch) return;
+        update(ref(db, `sessions/${sessionId}`), {
+          handRaises: null,
+          urgentQuestions: null,
+          chat: null,
+        }).catch(() => { /* sweep 실패해도 본 reset은 이미 성공 */ });
+      }, 600);
     } catch {
       setError('전체 초기화에 실패했습니다.');
     }
