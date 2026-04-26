@@ -31,6 +31,7 @@ export default function CenterContent({
   teamBattleCount,
   onStartTeamBattle,
   onEndTeamBattle,
+  onGameResult,
 }) {
   return (
     <div className="h-full flex flex-col">
@@ -123,6 +124,7 @@ export default function CenterContent({
               teamBattleCount={teamBattleCount}
               onStartTeamBattle={onStartTeamBattle}
               onEndTeamBattle={onEndTeamBattle}
+              onGameResult={onGameResult}
             />
           )}
         </motion.div>

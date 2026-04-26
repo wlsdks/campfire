@@ -22,6 +22,7 @@ import TeamScoreboard from '@/features/teams/components/TeamScoreboard';
 import PersistentAssignmentBar from '@/features/ai-judge/components/PersistentAssignmentBar';
 import { useQuestionActions } from '@/hooks/useQuestionActions';
 
+const Lottery = lazy(() => import('@/features/games/components/Lottery'));
 const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
 const ClassQABoard = lazy(() => import('@/features/class-questions/components/ClassQABoard'));
 const AwardsCeremony = lazy(() => import('@/features/assignments/components/AwardsCeremony'));
@@ -207,16 +208,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
   let contentKey, content;
   const gameContent = (() => {
     if (currentMode === 'lottery') return (
-      <div className="flex flex-col items-center justify-center gap-5 py-12 text-center">
-        <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-          <Ticket size={28} className="text-slate-400" />
-        </div>
-        <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">추첨 모드</h3>
-        <p className="text-slate-500 dark:text-slate-400 text-sm max-w-xs">
-          전자칠판 화면에서 추첨을 진행해주세요.<br />
-          당첨 결과는 학생 화면에 자동으로 표시됩니다.
-        </p>
-      </div>
+      <Lottery participants={drawParticipants} onResult={(names) => onGameResult?.(names, 'lottery')} />
     );
     if (currentMode === 'breakTime') return <BreakTimer />;
     if (currentMode === 'leaderboard') return <div className="w-full max-w-xl md:max-w-2xl [&_.max-w-xl]:max-w-2xl px-2 md:px-0"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" /></div>;

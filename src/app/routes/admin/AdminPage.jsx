@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect } from 'react';
+import { lazy, Suspense, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle } from 'lucide-react';
 import { useMediaQuery } from '@/hooks/useMediaQuery';
@@ -13,6 +13,7 @@ import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import AnswerBubbleOverlay from '@/features/voting/components/AnswerBubbleOverlay';
 import ChatBubbleOverlay from '@/features/reactions/components/ChatBubbleOverlay';
 import ChatPanel from '@/features/chat/components/ChatPanel';
+import { usePublishGameResult } from '@/features/games/api/useGameResult';
 import AdminSessionHeader from './AdminSessionHeader';
 import RightSidebar from './RightSidebar';
 import PresentationView from './PresentationView';
@@ -30,6 +31,19 @@ export default function AdminPage() {
   const s = useAdminSession();
   const isMobile = useMediaQuery('(max-width: 767px)');
   const isTablet = useMediaQuery('(max-width: 1023px)');
+
+  // P0-1: 게임 결과 발행을 강사 일반 모드에서도 보장 (전자칠판 의존성 제거)
+  // 모든 early-return 전에 호출되어야 함 (Rules of Hooks)
+  const { publishResult } = usePublishGameResult(s.sessionId);
+  const handleGameResult = useCallback((resultNames, mode) => {
+    const nameArr = Array.isArray(resultNames) ? resultNames : [resultNames];
+    const allList = mode === 'lottery' ? s.drawParticipants : s.onlineList;
+    const winners = nameArr.map((name) => {
+      const p = allList.find((x) => x.nickname === name);
+      return { id: p?.id || name, nickname: name };
+    });
+    publishResult(mode, winners, allList.map((p) => p.id));
+  }, [s.onlineList, s.drawParticipants, publishResult]);
 
   if (!s.adminUser) return <AdminLogin onLogin={s.handleLogin} />;
   if (!s.sessionId) {
@@ -182,7 +196,8 @@ export default function AdminPage() {
             teamScores={s.teamScores}
             teamBattleActive={s.teamBattleActive} teamBattleCount={s.teamBattleCount}
             onStartTeamBattle={(count) => s.startTeamBattle(s.onlineList.map((p) => p.id), count)}
-            onEndTeamBattle={s.endTeamBattle} />
+            onEndTeamBattle={s.endTeamBattle}
+            onGameResult={handleGameResult} />
         </div>
 
         {!isTablet && (

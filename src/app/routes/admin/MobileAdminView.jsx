@@ -5,6 +5,7 @@ import JoinToast from '@/features/participants/components/JoinToast';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import AnswerBubbleOverlay from '@/features/voting/components/AnswerBubbleOverlay';
 import ChatBubbleOverlay from '@/features/reactions/components/ChatBubbleOverlay';
+import { usePublishGameResult } from '@/features/games/api/useGameResult';
 import QuestionManager from './QuestionManager';
 
 import CenterContent from './CenterContent';
@@ -140,6 +141,18 @@ export default function MobileAdminView({ s }) {
     if (activeTab !== 'chat') onNewChatMsg();
   }, [activeTab, onNewChatMsg]);
 
+  // P0-1: 모바일 강사 화면에서도 게임 결과 발행
+  const { publishResult } = usePublishGameResult(s.sessionId);
+  const handleGameResult = useCallback((resultNames, mode) => {
+    const nameArr = Array.isArray(resultNames) ? resultNames : [resultNames];
+    const allList = mode === 'lottery' ? s.drawParticipants : s.onlineList;
+    const winners = nameArr.map((name) => {
+      const p = allList.find((x) => x.nickname === name);
+      return { id: p?.id || name, nickname: name };
+    });
+    publishResult(mode, winners, allList.map((p) => p.id));
+  }, [s.onlineList, s.drawParticipants, publishResult]);
+
   return (
     <div className="h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col overflow-hidden">
       <JoinToast sessionId={s.sessionId} />
@@ -195,7 +208,8 @@ export default function MobileAdminView({ s }) {
                   effectiveReadOnly={s.effectiveReadOnly} session={s.session} currentMode={currentMode} sessionId={s.sessionId}
                   onlineList={s.onlineList} leaderboard={s.leaderboard} drawParticipants={s.drawParticipants}
                   participants={s.participants} scores={s.scores} count={s.count}
-                  teamScores={s.teamScores} />
+                  teamScores={s.teamScores}
+                  onGameResult={handleGameResult} />
               </div>
             </motion.div>
           )}
