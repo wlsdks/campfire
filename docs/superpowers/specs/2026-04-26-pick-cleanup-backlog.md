@@ -63,6 +63,7 @@
 
 ### P0-1. 게임 결과 발행을 강사 측에서도 보장
 - **a) Lottery wiring** ✅ `ebd6405` — MainContent placeholder 제거, AdminPage/MobileAdminView/CenterContent에 publish handler chain
+  - **Browser spot-check (Playwright)**: `/admin` 일반 모드 + 발표 모드 둘 다 추첨 컴포넌트 실제 렌더 확인. 0 console errors across 7 navigations. 데모 모드에서 모드 dropdown → 추첨 → "제비뽑기" UI 정상. 회귀 없음.
 - **b) RandomPicker publish** — 다음 cron에서 처리
 - **c) Race guard** (강사 데스크톱+전자칠판 동시 lottery) — P1로 이관 검토
 
