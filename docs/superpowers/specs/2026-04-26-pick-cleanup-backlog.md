@@ -68,11 +68,9 @@
 - **파일**: `src/features/games/api/useGameResult.js`, `src/app/routes/admin/AdminPage.jsx`, `src/features/games/components/{Lottery,Roulette,...}.jsx`
 - **공수**: M (1.5h)
 
-### P0-2. 강사 화면에 ChatBubbleOverlay 추가
+### P0-2. 강사 화면에 ChatBubbleOverlay 추가 ✅ `41a369b`
 - **증상**: 학생 한 줄 채팅 버블이 학생/전자칠판/PresentationView에는 표시되나 강사 일반 화면(데스크톱·모바일)에는 안 나옴 → 강사가 학생 반응 못 봄
-- **fix**: AdminPage(데스크톱) + MobileAdminView에 `<ChatBubbleOverlay />` 추가
-- **파일**: `src/app/routes/admin/AdminPage.jsx`, `src/app/routes/admin/MobileAdminView.jsx`
-- **공수**: S (30min)
+- **fix**: AdminPage + MobileAdminView에 `<ChatBubbleOverlay />` 추가
 
 ### P0-3. 컬러 원형 배지 → 토큰 패턴으로 교체
 - **증상**: §1 Anti-AI "컬러 원형 아이콘 배경" 위반
@@ -83,10 +81,9 @@
 - **fix**: bare 텍스트 + slate 텍스트 색상 + tabular-nums + 무게 차이로 위계 표현
 - **공수**: S (30min)
 
-### P0-4. 이모지 주석/문자 잔존 제거
-- **위치**: `src/features/quiz/components/CombinedRanking.jsx:85`, `src/features/assignments/components/SubmissionPreview.jsx:63`
-- **fix**: 주석에서 이모지 제거 (또는 lucide 아이콘 코멘트로)
-- **공수**: XS (5min)
+### P0-4. 이모지 주석/문자 잔존 제거 ✅ `8f9c44d`
+- **위치**: `CombinedRanking.jsx:85`, `SubmissionPreview.jsx:63`, `QARanking.jsx:7` (3개 발견)
+- **fix**: 이모지 포함 주석 일괄 제거
 
 ---
 
@@ -267,8 +264,9 @@
 
 Loop가 이 순서대로 진행. 각 iteration은 1개 항목 또는 큰 항목의 1단계.
 
-1. **P0-4** 이모지 주석 제거 (warm-up, 5분)
-2. **P0-2** 강사 ChatBubbleOverlay 추가 (30분)
+1. ~~**P0-4** 이모지 주석 제거~~ ✅ `8f9c44d`
+2. ~~**P0-2** 강사 ChatBubbleOverlay 추가~~ ✅ `41a369b`
+3. **P0-3** 컬러 원형 배지 → 토큰 (30분) ← 다음 iteration
 3. **P0-3** 컬러 원형 배지 → 토큰 (30분)
 4. **P0-1** 게임 결과 발행 강사 측 보장 (1.5h, 분할)
 5. **P1-3** shadow+border 중복 제거 (10분)
