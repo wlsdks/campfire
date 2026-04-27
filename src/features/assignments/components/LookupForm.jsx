@@ -16,7 +16,7 @@ export default function LookupForm({ assignmentId, onFound }) {
     try {
       const result = await lookupSubmission(assignmentId, name.trim(), pin);
       if (result.error === 'NOT_FOUND') setError('해당 이름의 제출물을 찾을 수 없습니다. 제출 시 입력한 이름을 정확히 입력해주세요.');
-      else if (result.error === 'PIN_MISMATCH') setError('이름은 확인되었지만, 비밀번호가 일치하지 않습니다. 다시 확인해주세요.');
+      else if (result.error === 'PIN_MISMATCH') setError('이름은 확인되었지만, 조회용 비밀번호가 일치하지 않습니다. 다시 확인해주세요.');
       else onFound(result.submission);
     } finally {
       setLoading(false);
@@ -35,7 +35,7 @@ export default function LookupForm({ assignmentId, onFound }) {
         />
       </div>
       <div>
-        <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">비밀번호</p>
+        <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">조회용 비밀번호</p>
         <input type="password" inputMode="numeric" pattern="[0-9]*" value={pin}
           onChange={(e) => { setPin(e.target.value.replace(/\D/g, '').slice(0, 4)); setError(''); }}
           placeholder="••••" maxLength={4}

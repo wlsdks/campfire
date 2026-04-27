@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
  * Instant tooltip — shows on hover with no delay.
  * Uses portal to avoid overflow:hidden clipping.
  */
-export default memo(function Tooltip({ label, children }) {
+export default memo(function Tooltip({ label, children, multiline = false }) {
   const [show, setShow] = useState(false);
   const [pos, setPos] = useState({ x: 0, y: 0, above: true });
   const ref = useRef(null);
@@ -47,7 +47,9 @@ export default memo(function Tooltip({ label, children }) {
               transform: pos.above ? 'translate(-50%, -100%)' : 'translate(-50%, 0)',
               zIndex: 9999,
             }}
-            className="px-2.5 py-1.5 rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-[11px] font-medium whitespace-nowrap pointer-events-none shadow-lg"
+            className={`px-2.5 py-1.5 rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-[11px] font-medium pointer-events-none shadow-lg ${
+              multiline ? 'whitespace-pre-line max-w-[260px] leading-relaxed' : 'whitespace-nowrap'
+            }`}
           >
             {label}
           </motion.div>

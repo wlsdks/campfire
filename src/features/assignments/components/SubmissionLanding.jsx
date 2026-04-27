@@ -75,7 +75,7 @@ export default function SubmissionLanding({
               <CheckCircle2 size={24} className="text-white dark:text-slate-900" />
             </div>
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mt-5">심사가 완료되었습니다</h2>
-            <p className="text-sm text-slate-400 mt-1.5">이름과 비밀번호로 내 결과를 확인하세요</p>
+            <p className="text-sm text-slate-400 mt-1.5">이름과 조회용 비밀번호로 내 결과를 확인하세요</p>
           </div>
 
           <div className="space-y-3 mt-8">
@@ -93,7 +93,7 @@ export default function SubmissionLanding({
               pattern="[0-9]*"
               value={lookupPin}
               onChange={(e) => onLookupPinChange(e.target.value.replace(/\D/g, '').slice(0, 4))}
-              placeholder="비밀번호 (숫자 4자리)"
+              placeholder="조회용 비밀번호 (숫자 4자리)"
               maxLength={4}
               onKeyDown={(e) => e.key === 'Enter' && onResultLookup()}
               className={`w-full bg-white dark:bg-slate-800 border rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 transition-all tracking-[0.3em] ${

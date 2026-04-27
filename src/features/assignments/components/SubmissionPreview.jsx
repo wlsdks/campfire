@@ -58,7 +58,7 @@ export default function SubmissionPreview({ submission, disabled }) {
   const label = loading ? 'AI가 살펴보는 중...'
     : remaining > 0 ? `잠시 후 다시 시도 (${remaining}초)`
     : !isGeminiReady() ? 'AI 예심 준비 안 됨'
-    : disabled ? '코드 파일을 먼저 업로드하세요'
+    : disabled ? 'PRD와 스크린샷을 먼저 입력하세요'
     : 'AI 예심 받기 (무료)';
   const showSparklesIcon = canUse && !loading && remaining === 0 && isGeminiReady() && !disabled;
 

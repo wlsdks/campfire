@@ -36,8 +36,9 @@ export function useSubmissionList(assignmentId) {
 /**
  * submitWork — 학생이 과제를 제출.
  * 같은 이름이면 기존 제출물을 업데이트.
+ * 신 폼: prdContent(텍스트) + screenshots(URL 배열) + code(HTML, 선택).
  */
-export async function submitWork(assignmentId, { name, pin, fileContent, fileName, prdContent, prdFileName, description }, options = {}) {
+export async function submitWork(assignmentId, { name, pin, prdContent, screenshots, code }, options = {}) {
   const { allowUpdate = false } = options;
   const subsRef = ref(db, `assignments/${assignmentId}/submissions`);
   const snap = await get(subsRef);
@@ -45,11 +46,9 @@ export async function submitWork(assignmentId, { name, pin, fileContent, fileNam
   const existingEntry = Object.entries(existing).find(([, v]) => v.name === name);
 
   const data = {
-    fileContent: fileContent || null,
-    fileName: fileName || null,
     prdContent: prdContent || null,
-    prdFileName: prdFileName || null,
-    description: description || null,
+    screenshots: Array.isArray(screenshots) && screenshots.length > 0 ? screenshots : null,
+    code: code || null,
   };
 
   if (existingEntry) {

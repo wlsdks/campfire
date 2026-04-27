@@ -10,5 +10,11 @@ service firebase.storage {
       allow read: if true;
       allow write: if request.resource.size < 10 * 1024 * 1024;
     }
+    // 사후 과제 제출물 — 결과물 스크린샷 (학생 업로드)
+    match /assignments/{allPaths=**} {
+      allow read: if true;
+      allow write: if request.resource.size < 15 * 1024 * 1024
+                && request.resource.contentType.matches('image/.*');
+    }
   }
 }

@@ -46,7 +46,7 @@ export default function SubmissionPage({ assignmentId }) {
       if (result.error === 'NOT_FOUND') {
         setResultLookupError('해당 이름의 제출물을 찾을 수 없습니다. 제출 시 입력한 이름을 정확히 입력해주세요.');
       } else if (result.error === 'PIN_MISMATCH') {
-        setResultLookupError('이름은 확인되었지만, 비밀번호가 일치하지 않습니다.');
+        setResultLookupError('이름은 확인되었지만, 조회용 비밀번호가 일치하지 않습니다.');
       } else {
         setFoundSubmission(result.submission);
         setView('result');
@@ -168,7 +168,7 @@ export default function SubmissionPage({ assignmentId }) {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2 }}
             >
-              <SubmissionForm onSubmit={handleSubmit} />
+              <SubmissionForm onSubmit={handleSubmit} assignmentId={assignmentId} />
             </motion.div>
           )}
 
@@ -186,7 +186,7 @@ export default function SubmissionPage({ assignmentId }) {
                   <Search size={20} className="text-slate-400" />
                 </div>
                 <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight mt-4">내 제출물 조회</h2>
-                <p className="text-sm text-slate-400 mt-1">제출 시 입력한 이름과 비밀번호를 입력하세요</p>
+                <p className="text-sm text-slate-400 mt-1">제출 시 입력한 이름과 조회용 비밀번호를 입력하세요</p>
               </div>
               <LookupForm
                 assignmentId={assignmentId}
@@ -223,7 +223,7 @@ export default function SubmissionPage({ assignmentId }) {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2 }}
             >
-              <SubmissionForm onSubmit={handleSubmit} existingSubmission={foundSubmission} />
+              <SubmissionForm onSubmit={handleSubmit} assignmentId={assignmentId} existingSubmission={foundSubmission} />
             </motion.div>
           )}
 

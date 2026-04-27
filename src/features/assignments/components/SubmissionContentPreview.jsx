@@ -1,25 +1,28 @@
 import { memo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExternalLink, FileCode2, FileText, X, Code as CodeIcon, Maximize2 } from 'lucide-react';
+import { ExternalLink, FileCode2, FileText, X, Code as CodeIcon, Maximize2, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const PRD_PREVIEW_CHARS = 320;
 const CODE_PREVIEW_LINES = 10;
 
 /**
  * SubmissionContentPreview — 강사용 학생 제출 내용 표시.
- * 모든 필드 조합(URL/이미지/코드/파일/설명/PRD)을 정돈된 형태로 노출.
- * 큰 콘텐츠(이미지·코드·PRD)는 모달/펼침으로 풀뷰 제공.
+ * 신 폼: PRD(텍스트) + screenshots(이미지 배열) + code(HTML, 선택).
+ * 구 폼 호환: imageUrl/fileName/prdFileName/description.
  */
 export default memo(function SubmissionContentPreview({ submission }) {
   const [imageOpen, setImageOpen] = useState(false);
+  const [imageIdx, setImageIdx] = useState(0);
   const [codeOpen, setCodeOpen] = useState(false);
   const [prdExpanded, setPrdExpanded] = useState(false);
 
   if (!submission) return null;
 
+  const screenshots = Array.isArray(submission.screenshots) ? submission.screenshots.filter(s => s?.url) : [];
   const hasAny = submission.imageUrl || submission.code || submission.projectUrl
     || submission.fileName || submission.description || submission.prdContent
-    || submission.prdFileName || submission.title;
+    || submission.prdFileName || submission.title
+    || screenshots.length > 0;
 
   if (!hasAny) {
     return <p className="text-sm text-slate-400 italic py-2">제출 내용이 없습니다</p>;
@@ -33,6 +36,10 @@ export default memo(function SubmissionContentPreview({ submission }) {
   const prd = submission.prdContent || '';
   const prdOverflow = prd.length > PRD_PREVIEW_CHARS;
   const prdShown = prdExpanded || !prdOverflow ? prd : prd.slice(0, PRD_PREVIEW_CHARS);
+
+  function openShot(i) { setImageIdx(i); setImageOpen(true); }
+  function nextShot() { setImageIdx((i) => (i + 1) % screenshots.length); }
+  function prevShot() { setImageIdx((i) => (i - 1 + screenshots.length) % screenshots.length); }
 
   const ts = submission.updatedAt || submission.submittedAt;
   const tsLabel = ts ? new Date(ts).toLocaleString('ko-KR', {
@@ -48,9 +55,36 @@ export default memo(function SubmissionContentPreview({ submission }) {
         </p>
       )}
 
-      {submission.imageUrl && (
+      {screenshots.length > 0 && (
+        <div>
+          <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">
+            결과물 스크린샷 ({screenshots.length}장)
+          </p>
+          <div className="grid grid-cols-3 gap-2">
+            {screenshots.map((s, i) => (
+              <button
+                key={s.url}
+                onClick={() => openShot(i)}
+                className="group relative block aspect-square overflow-hidden rounded-lg ring-1 ring-slate-200 dark:ring-slate-700 hover:ring-slate-400 dark:hover:ring-slate-500 transition-all active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40"
+                aria-label={`스크린샷 ${i + 1} 크게 보기`}
+              >
+                <img src={s.url} alt={`스크린샷 ${i + 1}`} className="w-full h-full object-cover bg-slate-50 dark:bg-slate-900" loading="lazy" />
+                <span className="absolute top-1 right-1 inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-slate-900/70 text-white text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Maximize2 size={9} />
+                </span>
+                <span className="absolute bottom-1 left-1.5 text-[10px] text-white bg-slate-900/60 rounded px-1.5 py-0.5 font-medium">
+                  {i + 1}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 구 폼 호환: 단일 imageUrl */}
+      {submission.imageUrl && screenshots.length === 0 && (
         <button
-          onClick={() => setImageOpen(true)}
+          onClick={() => { setImageIdx(0); setImageOpen(true); }}
           className="group relative block w-full overflow-hidden rounded-lg ring-1 ring-slate-200 dark:ring-slate-700 hover:ring-slate-400 dark:hover:ring-slate-500 transition-all active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40"
           aria-label="이미지 크게 보기"
         >
@@ -150,7 +184,7 @@ export default memo(function SubmissionContentPreview({ submission }) {
       )}
 
       <AnimatePresence>
-        {imageOpen && submission.imageUrl && (
+        {imageOpen && (screenshots.length > 0 || submission.imageUrl) && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
@@ -159,14 +193,38 @@ export default memo(function SubmissionContentPreview({ submission }) {
             role="dialog" aria-modal="true" aria-label="제출 이미지 확대"
           >
             <button
-              onClick={() => setImageOpen(false)}
+              onClick={(e) => { e.stopPropagation(); setImageOpen(false); }}
               className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
               aria-label="닫기"
             >
               <X size={20} />
             </button>
+
+            {screenshots.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => { e.stopPropagation(); prevShot(); }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                  aria-label="이전 이미지"
+                >
+                  <ChevronLeft size={22} />
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); nextShot(); }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                  aria-label="다음 이미지"
+                >
+                  <ChevronRight size={22} />
+                </button>
+                <span className="absolute bottom-6 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-white/10 text-white text-xs font-medium">
+                  {imageIdx + 1} / {screenshots.length}
+                </span>
+              </>
+            )}
+
             <motion.img
-              src={submission.imageUrl}
+              key={screenshots[imageIdx]?.url || submission.imageUrl}
+              src={screenshots[imageIdx]?.url || submission.imageUrl}
               alt="제출 이미지 확대"
               initial={{ scale: 0.92 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }}
               transition={{ type: 'spring', stiffness: 300, damping: 25 }}
