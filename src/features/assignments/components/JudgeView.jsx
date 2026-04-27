@@ -17,11 +17,12 @@ function sortByScore(submissions, results) {
 }
 
 // ─── Judge Tab ─────────────────────────────────────
-export default function JudgeView({ assignmentId, submissions, results, hasResults }) {
+export default function JudgeView({ assignmentId, submissions, results, hasResults, passThreshold = 3 }) {
   const sorted = useMemo(() => sortByScore(submissions, results), [submissions, results]);
   const [selectedSub, setSelectedSub] = useState(null);
 
   const selectedResult = selectedSub ? results[selectedSub.id] : null;
+  const isPassed = (summary) => (summary?.selectedCount ?? 0) >= passThreshold;
 
   return (
     <div className="space-y-6">
@@ -48,7 +49,7 @@ export default function JudgeView({ assignmentId, submissions, results, hasResul
 
       {/* 심사 컨트롤 */}
       <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5">
-        <JudgingPanel assignmentId={assignmentId} submissionCount={submissions.length} />
+        <JudgingPanel assignmentId={assignmentId} submissionCount={submissions.length} passThreshold={passThreshold} />
       </div>
 
       {/* 순위 — 클릭 시 심사평 모달 */}
@@ -77,7 +78,7 @@ export default function JudgeView({ assignmentId, submissions, results, hasResul
                   <div className="flex-1 min-w-0">
                     <p className="text-[15px] font-medium text-slate-900 dark:text-slate-100 truncate">{sub.name}</p>
                     <p className="text-[11px] text-slate-400 mt-0.5">
-                      {r.summary.passed ? '합격' : '불합격'} · {r.summary.selectedCount}/{r.summary.totalJudges}명 선택
+                      {isPassed(r.summary) ? '합격' : '불합격'} · {r.summary.selectedCount}/{r.summary.totalJudges}명 선택
                     </p>
                   </div>
                   <motion.span
@@ -111,7 +112,7 @@ export default function JudgeView({ assignmentId, submissions, results, hasResul
                 <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">{selectedSub.name}</h3>
                 <p className="text-sm text-slate-400 mt-0.5">
                   평균 {selectedResult.summary.avgScore}점 · {selectedResult.summary.selectedCount}/{selectedResult.summary.totalJudges}명 선택
-                  · {selectedResult.summary.passed ? '합격' : '불합격'}
+                  · {isPassed(selectedResult.summary) ? '합격' : '불합격'}
                 </p>
               </div>
               <button onClick={() => setSelectedSub(null)} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">

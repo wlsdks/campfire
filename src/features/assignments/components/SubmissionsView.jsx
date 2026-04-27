@@ -1,12 +1,13 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Copy, Check, Link2, Download } from 'lucide-react';
+import { Copy, Check, Link2, Download, ExternalLink } from 'lucide-react';
 import { exportResultsCSV } from '@/features/assignments/api/useSubmissions';
 import { JUDGES, getAwardById } from '@/features/assignments/api/judges';
 import JudgeResultCard from './JudgeResultCard';
 import SubmissionContentPreview from './SubmissionContentPreview';
 import Avatar from '@/components/ui/Avatar';
 import PickMascot from '@/components/ui/PickMascot';
+import Tooltip from '@/components/ui/Tooltip';
 
 /** Sort submissions by avgScore descending. */
 function sortByScore(submissions, results) {
@@ -36,9 +37,10 @@ function StatCard({ value, label }) {
 }
 
 // ─── Submission Card ───────────────────────────────
-function SubmissionCard({ submission, result, rank, awardInfo }) {
+function SubmissionCard({ submission, result, rank, awardInfo, passThreshold = 3 }) {
   const [expanded, setExpanded] = useState(false);
   const summary = result?.summary;
+  const passed = summary && (summary.selectedCount ?? 0) >= passThreshold;
 
   return (
     <motion.div
@@ -93,8 +95,8 @@ function SubmissionCard({ submission, result, rank, awardInfo }) {
                 {summary.avgScore}
               </motion.p>
               <div className="flex items-center gap-1.5 justify-end mt-1">
-                <span className={`text-[11px] font-medium ${summary.passed ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400'}`}>
-                  {summary.passed ? '합격' : '불합격'}
+                <span className={`text-[11px] font-medium ${passed ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400'}`}>
+                  {passed ? '합격' : '불합격'}
                 </span>
                 <span className="text-[11px] text-slate-300">·</span>
                 <span className="text-[11px] text-slate-400 tabular-nums">
@@ -139,15 +141,20 @@ function SubmissionCard({ submission, result, rank, awardInfo }) {
 }
 
 // ─── Submissions Tab ───────────────────────────────
-export default function SubmissionsView({ assignmentId, submissions, results, awards, hasResults }) {
+export default function SubmissionsView({ assignmentId, submissions, results, awards, hasResults, passThreshold = 3 }) {
   const [copied, setCopied] = useState(false);
   const submitUrl = `${window.location.origin}/submit?a=${assignmentId}`;
 
-  function handleCopy() {
+  function handleCopy(e) {
+    e?.stopPropagation();
     navigator.clipboard?.writeText(submitUrl);
-    window.open(submitUrl, '_blank');
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  }
+
+  function handleOpen(e) {
+    e?.stopPropagation();
+    window.open(submitUrl, '_blank');
   }
 
   const awardMap = useMemo(() => {
@@ -167,26 +174,41 @@ export default function SubmissionsView({ assignmentId, submissions, results, aw
   const { passedCount, avgScore } = useMemo(() => {
     if (!hasResults) return { passedCount: null, avgScore: null };
     const vals = Object.values(results);
-    const passed = vals.filter(r => r.summary?.passed).length;
+    const passed = vals.filter(r => (r.summary?.selectedCount ?? 0) >= passThreshold).length;
     const avg = (vals.reduce((s, r) => s + (r.summary?.avgScore || 0), 0) / Math.max(vals.length, 1)).toFixed(1);
     return { passedCount: passed, avgScore: avg };
-  }, [results, hasResults]);
+  }, [results, hasResults, passThreshold]);
 
   return (
     <div className="space-y-6">
-      <button
-        onClick={handleCopy}
-        className="w-full flex items-center gap-3 px-4 py-3.5 bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-[0.99]"
-      >
+      {/* 제출 링크 — 복사/이동 분리 */}
+      <div className="w-full flex items-center gap-2 px-4 py-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm">
         {copied
           ? <Check size={16} className="text-emerald-500 shrink-0" />
           : <Link2 size={16} className="text-slate-300 shrink-0" />
         }
-        <span className="text-sm text-slate-500 dark:text-slate-400 truncate flex-1 text-left">
+        <span className="text-sm text-slate-500 dark:text-slate-400 truncate flex-1 min-w-0">
           {copied ? '링크가 복사되었습니다' : submitUrl}
         </span>
-        <Copy size={14} className="text-slate-300 shrink-0" />
-      </button>
+        <Tooltip label="링크 복사">
+          <button
+            onClick={handleCopy}
+            aria-label="제출 링크 복사"
+            className="p-2 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40"
+          >
+            <Copy size={14} />
+          </button>
+        </Tooltip>
+        <Tooltip label="새 탭에서 열기">
+          <button
+            onClick={handleOpen}
+            aria-label="제출 페이지 새 탭에서 열기"
+            className="p-2 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40"
+          >
+            <ExternalLink size={14} />
+          </button>
+        </Tooltip>
+      </div>
 
       <div className="grid grid-cols-3 gap-3">
         <StatCard value={submissions.length} label="제출" />
@@ -212,7 +234,7 @@ export default function SubmissionsView({ assignmentId, submissions, results, aw
             </p>
             {hasResults && (
               <button
-                onClick={() => exportResultsCSV(submissions, results)}
+                onClick={() => exportResultsCSV(submissions, results, passThreshold)}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
               >
                 <Download size={13} />
@@ -228,6 +250,7 @@ export default function SubmissionsView({ assignmentId, submissions, results, aw
                 result={results[sub.id]}
                 rank={hasResults ? i + 1 : null}
                 awardInfo={awardMap[sub.id]}
+                passThreshold={passThreshold}
               />
             ))}
           </div>

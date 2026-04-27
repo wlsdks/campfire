@@ -114,7 +114,7 @@ export async function findSubmissionByName(assignmentId, name) {
  * exportResultsCSV — 심사 결과를 CSV로 다운로드.
  * BOM 포함하여 한국어 Excel 호환.
  */
-export function exportResultsCSV(submissions, results) {
+export function exportResultsCSV(submissions, results, passThreshold = 3) {
   const header = ['순위', '이름', '평균점수', '합격', '선택수', ...JUDGES.map(j => j.name), 'URL'];
 
   const sorted = [...submissions].sort((a, b) => {
@@ -127,11 +127,12 @@ export function exportResultsCSV(submissions, results) {
     const r = results[sub.id];
     const summary = r?.summary;
     const judgeScores = JUDGES.map(j => r?.judges?.[j.id]?.score ?? '');
+    const passed = summary && (summary.selectedCount ?? 0) >= passThreshold;
     return [
       i + 1,
       sub.name,
       summary?.avgScore ?? '',
-      summary?.passed ? 'O' : 'X',
+      passed ? 'O' : 'X',
       summary?.selectedCount ?? '',
       ...judgeScores,
       sub.projectUrl || '',

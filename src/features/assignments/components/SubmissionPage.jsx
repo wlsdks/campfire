@@ -236,7 +236,7 @@ export default function SubmissionPage({ assignmentId }) {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2 }}
             >
-              <SubmissionResult submission={foundSubmission} results={results} awards={awards} />
+              <SubmissionResult submission={foundSubmission} results={results} awards={awards} passThreshold={assignment?.passThreshold ?? 3} />
             </motion.div>
           )}
 

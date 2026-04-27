@@ -24,6 +24,10 @@ export function useJudging(assignmentId) {
       // Update assignment status
       await update(ref(db, `assignments/${assignmentId}`), { status: 'judging' });
 
+      // Read passThreshold (default 3 for backward compatibility)
+      const assignSnap = await get(ref(db, `assignments/${assignmentId}`));
+      const passThreshold = assignSnap.val()?.passThreshold ?? 3;
+
       // Fetch all submissions
       const subsSnap = await get(ref(db, `assignments/${assignmentId}/submissions`));
       const subsData = subsSnap.val() || {};
@@ -51,7 +55,7 @@ export function useJudging(assignmentId) {
         // Judge this submission
         const { results, summary } = await judgeSubmission(sub, (judgeId) => {
           setProgress(prev => prev ? { ...prev, currentJudge: judgeId } : prev);
-        });
+        }, passThreshold);
 
         // Save results to Firebase
         await set(ref(db, `assignments/${assignmentId}/results/${sub.id}`), {

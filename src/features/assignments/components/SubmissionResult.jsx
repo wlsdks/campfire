@@ -7,7 +7,7 @@ import PickMascot from '@/components/ui/PickMascot';
 /**
  * SubmissionResult — 학생이 본인 심사 결과를 확인하는 화면.
  */
-export default function SubmissionResult({ submission, results, awards }) {
+export default function SubmissionResult({ submission, results, awards, passThreshold = 3 }) {
   if (!results) {
     return (
       <motion.div
@@ -29,6 +29,7 @@ export default function SubmissionResult({ submission, results, awards }) {
   }
 
   const { judges, summary } = results;
+  const passed = (summary?.selectedCount ?? 0) >= passThreshold;
   const myAward = awards
     ? Object.entries(awards).find(([, v]) => v.submissionId === submission.id)?.[0]
     : null;
@@ -55,11 +56,11 @@ export default function SubmissionResult({ submission, results, awards }) {
         <p className="text-slate-400 text-sm">평균 점수 (10점 만점)</p>
         <div className="flex items-center justify-center gap-3">
           <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${
-            summary.passed
+            passed
               ? 'bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900'
               : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400'
           }`}>
-            {summary.passed ? '합격' : '불합격'}
+            {passed ? '합격' : '불합격'}
           </span>
           <span className="text-sm text-slate-400">
             {summary.selectedCount}/{summary.totalJudges}명 선택

@@ -31,6 +31,7 @@ export default function AssignmentDetail({ assignmentId, onBack }) {
 
   const hasResults = Object.keys(results).length > 0;
   const hasJudging = assignment?.hasJudging !== false; // 기본값 true (하위 호환)
+  const passThreshold = assignment?.passThreshold ?? 3; // 기본 3 (하위 호환)
   const TABS = hasJudging ? TABS_WITH_JUDGING : TABS_WITHOUT_JUDGING;
 
   if (!assignment) return null;
@@ -137,6 +138,7 @@ export default function AssignmentDetail({ assignmentId, onBack }) {
               results={results}
               awards={awards}
               hasResults={hasResults}
+              passThreshold={passThreshold}
             />
           )}
           {activeTab === 'judge' && (
@@ -145,6 +147,7 @@ export default function AssignmentDetail({ assignmentId, onBack }) {
               submissions={submissions}
               results={results}
               hasResults={hasResults}
+              passThreshold={passThreshold}
             />
           )}
           {activeTab === 'awards' && (

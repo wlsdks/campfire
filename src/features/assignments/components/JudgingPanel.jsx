@@ -1,17 +1,24 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Play, Square, Key, Loader2 } from 'lucide-react';
+import { Play, Key, Loader2 } from 'lucide-react';
 import { initGemini, getStoredApiKey, isGeminiReady } from '@/features/assignments/api/gemini';
 import { useJudging } from '@/features/assignments/api/useJudging';
+import { useAssignmentActions } from '@/features/assignments/api/useAssignments';
 import Button from '@/components/ui/Button';
 
 /**
  * JudgingPanel — 강사가 심사를 실행하고 진행률을 보는 패널.
  */
-export default function JudgingPanel({ assignmentId, submissionCount }) {
+export default function JudgingPanel({ assignmentId, submissionCount, passThreshold = 3 }) {
   const { startJudging, isJudging, progress, abort } = useJudging(assignmentId);
+  const { updateAssignment } = useAssignmentActions();
   const [apiKey, setApiKey] = useState(getStoredApiKey());
   const [showKeyInput, setShowKeyInput] = useState(!isGeminiReady());
+
+  function handleThresholdChange(v) {
+    const next = Math.max(1, Math.min(7, Number(v) || 3));
+    if (next !== passThreshold) updateAssignment(assignmentId, { passThreshold: next });
+  }
 
   function handleSaveKey() {
     if (!apiKey.trim()) return;
@@ -71,23 +78,48 @@ export default function JudgingPanel({ assignmentId, submissionCount }) {
   }
 
   return (
-    <div className="flex items-center gap-2">
-      <Button
-        onClick={startJudging}
-        variant="primary"
-        size="sm"
-        disabled={submissionCount === 0}
-      >
-        <Play size={14} />
-        심사 시작 ({submissionCount}건)
-      </Button>
-      <button
-        onClick={() => setShowKeyInput(true)}
-        className="p-2 rounded-lg text-slate-300 hover:text-slate-500 dark:hover:text-slate-400 transition-colors duration-150"
-        title="API 키 변경"
-      >
-        <Key size={14} />
-      </button>
+    <div className="space-y-4">
+      <div className="flex items-center gap-2">
+        <Button
+          onClick={startJudging}
+          variant="primary"
+          size="sm"
+          disabled={submissionCount === 0}
+        >
+          <Play size={14} />
+          심사 시작 ({submissionCount}건)
+        </Button>
+        <button
+          onClick={() => setShowKeyInput(true)}
+          className="p-2 rounded-lg text-slate-300 hover:text-slate-500 dark:hover:text-slate-400 transition-colors duration-150"
+          title="API 키 변경"
+        >
+          <Key size={14} />
+        </button>
+      </div>
+
+      {/* 합격 기준 — 심사 전후 모두 변경 가능. 변경 시 합격/불합격 표시가 즉시 반영됨. */}
+      <div className="pt-3 border-t border-slate-100 dark:border-slate-700 space-y-2">
+        <div className="flex items-center justify-between">
+          <p className="text-[13px] font-medium text-slate-700 dark:text-slate-200">합격 기준</p>
+          <p className="text-[13px] text-slate-500 dark:text-slate-400 tabular-nums">
+            심사위원 <span className="text-slate-900 dark:text-slate-100 font-semibold">{passThreshold}명</span> 이상 추천
+          </p>
+        </div>
+        <input
+          type="range"
+          min={1}
+          max={7}
+          step={1}
+          value={passThreshold}
+          onChange={(e) => handleThresholdChange(e.target.value)}
+          className="w-full accent-slate-900 dark:accent-slate-100"
+        />
+        <div className="flex justify-between text-[10px] text-slate-300 dark:text-slate-500 px-0.5">
+          {[1,2,3,4,5,6,7].map(n => <span key={n}>{n}</span>)}
+        </div>
+        <p className="text-[11px] text-slate-400 dark:text-slate-500">변경 시 합격/불합격 표시가 즉시 반영돼요 (재심사 불필요)</p>
+      </div>
     </div>
   );
 }

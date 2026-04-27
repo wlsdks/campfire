@@ -188,8 +188,9 @@ ${buildContent(submission)}
 
 /**
  * Full panel of 7 judges evaluates a single submission — in parallel.
+ * passThreshold: 통과로 인정할 최소 추천 수 (기본 3, 강사가 과제별로 지정).
  */
-export async function judgeSubmission(submission, onJudgeComplete) {
+export async function judgeSubmission(submission, onJudgeComplete, passThreshold = 3) {
   const results = {};
 
   await Promise.all(
@@ -224,7 +225,8 @@ export async function judgeSubmission(submission, onJudgeComplete) {
       selectedCount,
       totalJudges: valid.length,
       erroredJudges: JUDGES.length - valid.length,
-      passed: selectedCount >= 3,
+      passed: selectedCount >= passThreshold,
+      passThreshold,
       avgScore: Math.round(avgScore * 10) / 10,
       totalScore,
     },

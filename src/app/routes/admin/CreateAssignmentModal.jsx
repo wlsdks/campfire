@@ -11,6 +11,7 @@ function CreateAssignmentContent({ sessions, onClose }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [hasJudging, setHasJudging] = useState(true);
+  const [passThreshold, setPassThreshold] = useState(3);
   const [creating, setCreating] = useState(false);
 
   const courseNames = useMemo(() => {
@@ -39,6 +40,7 @@ function CreateAssignmentContent({ sessions, onClose }) {
         description: description.trim(),
         roundNumber: selectedRound ? Number(selectedRound) : null,
         hasJudging,
+        passThreshold,
       });
       onClose();
     } catch {
@@ -134,6 +136,31 @@ function CreateAssignmentContent({ sessions, onClose }) {
             <div className={`w-5 h-5 rounded-full bg-white dark:bg-slate-900 shadow-sm transition-transform ${hasJudging ? 'translate-x-5' : 'translate-x-0'}`} />
           </div>
         </button>
+
+        {/* 통과 기준 — AI 심사 켰을 때만 */}
+        {hasJudging && (
+          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-700/50 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <p className="text-[15px] font-medium text-slate-900 dark:text-slate-100">합격 기준</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400 tabular-nums">
+                심사위원 <span className="text-slate-900 dark:text-slate-100 font-semibold">{passThreshold}명</span> 이상 추천
+              </p>
+            </div>
+            <input
+              type="range"
+              min={1}
+              max={7}
+              step={1}
+              value={passThreshold}
+              onChange={(e) => setPassThreshold(Number(e.target.value))}
+              className="w-full accent-slate-900 dark:accent-slate-100"
+            />
+            <div className="flex justify-between text-[10px] text-slate-300 dark:text-slate-500 px-0.5">
+              {[1,2,3,4,5,6,7].map(n => <span key={n}>{n}</span>)}
+            </div>
+            <p className="text-xs text-slate-400">심사 후에도 변경 가능합니다</p>
+          </div>
+        )}
 
         {/* 생성 버튼 */}
         <div className="flex gap-2 pt-1">
