@@ -147,12 +147,14 @@ cd Pick
 npm install
 ```
 
-### 환경 변수 (`.env.local`)
+### 환경 변수 (`.env` 또는 `.env.local`)
 
 ```bash
 VITE_GEMINI_API_KEY=your_gemini_api_key_here
 ```
 
+> Vite 특성상 `VITE_*`는 빌드 타임에 dist 번들로 인라인됩니다. 프로덕션 배포 시 **Google AI Studio 콘솔에서 HTTP referrer 제한**(`*.web.app`, 본인 도메인만 허용)을 걸어 quota 보호하세요. 클라이언트 UI/localStorage 입력 경로는 제거됨 — `.env`로만 주입.
+>
 > Firebase 설정은 `src/lib/firebase.js`에 하드코딩 (공개 프로젝트). 개인 프로젝트로 전환 시 교체 필요.
 
 ### 로컬 개발
@@ -360,9 +362,10 @@ firebase deploy --only hosting --project jinan-6c884
 
 ## ⚠️ 보안 참고
 
-- **Gemini API 키**: 클라이언트 번들에 포함됨 (학원용 프로토타입). 상용화 시 서버 프록시 필수
-- **PIN 저장**: 과제 제출 PIN은 평문으로 RTDB에 저장. Firebase Rules로 read 제한 권장
-- **동명이인 보호**: 클라이언트 `isEdit` 플래그 기반. 엄격한 보호는 RTDB Rules에서 처리 필요
+- **Gemini API 키**: `.env`(`VITE_GEMINI_API_KEY`)로만 주입. UI/localStorage 입력 경로는 제거됨. Vite 특성상 빌드 시 클라이언트 번들에 인라인되므로 **Google AI Studio 콘솔에서 referrer 제한 + rate limit**으로 quota 보호. 상용화 시 Cloud Functions 서버 프록시 권장
+- **PIN 저장**: 과제 제출 PIN은 평문으로 RTDB에 저장. RTDB Rules에서 schema validation·name/pin immutability 적용됨 (`database.rules.json` `assignments/$assignmentId/submissions`). 진정한 read 차단은 Firebase Auth 도입 + owner-scoping 필요
+- **동명이인 보호**: 클라이언트 `isEdit` 플래그 + RTDB Rules에서 name immutability 강제. 신규 제출 시 같은 이름 차단은 클라이언트 사전 검증
+- **Auth 부재**: Firebase Auth 미사용 — 강사 로그인은 클라이언트가 `admins` 노드를 직접 읽어 username/passwordHash 비교. `sessions`/`assignments` root listing은 강사 대시보드에 필요해 read 차단 불가. 진정한 권한 분리는 후속 Auth 도입 phase 필요
 
 ---
 
