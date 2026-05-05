@@ -19,7 +19,7 @@ import QuestionPreview from './QuestionPreview';
 import AIQuestionGenerator from '@/features/questions/components/AIQuestionGenerator';
 import { isGeneratorReady } from '@/features/questions/api/generateQuestions';
 
-function IconButton({ onClick, label, children, hoverColor = 'hover:text-slate-600 dark:hover:text-slate-300', ...props }) {
+function TooltipIconButton({ onClick, label, children, hoverColor = 'hover:text-slate-600 dark:hover:text-slate-300', ...props }) {
   const [show, setShow] = useState(false);
   return (
     <div className="relative" onMouseEnter={() => setShow(true)} onMouseLeave={() => setShow(false)}>
@@ -129,19 +129,19 @@ export default function QuestionManager({
           <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">질문 목록</h2>
           <div className="flex items-center gap-1">
             {questionList.length > 0 && (
-              <IconButton onClick={() => setPreviewOpen(true)} label="미리보기" aria-label="문항 미리보기">
+              <TooltipIconButton onClick={() => setPreviewOpen(true)} label="미리보기" aria-label="문항 미리보기">
                 <Eye size={18} />
-              </IconButton>
+              </TooltipIconButton>
             )}
             {questionList.length > 0 && !readOnly && (
-              <IconButton onClick={() => setResetConfirmOpen(true)} label="초기화" aria-label="전체 답변 초기화" hoverColor="hover:text-red-500">
+              <TooltipIconButton onClick={() => setResetConfirmOpen(true)} label="초기화" aria-label="전체 답변 초기화" hoverColor="hover:text-red-500">
                 <RotateCcw size={18} />
-              </IconButton>
+              </TooltipIconButton>
             )}
             {!readOnly && onCollapse && (
-              <IconButton onClick={onCollapse} label="접기" aria-label="사이드바 접기">
+              <TooltipIconButton onClick={onCollapse} label="접기" aria-label="사이드바 접기">
                 <PanelLeftClose size={18} />
-              </IconButton>
+              </TooltipIconButton>
             )}
           </div>
         </div>

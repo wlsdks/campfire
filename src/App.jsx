@@ -74,8 +74,8 @@ function StudentRouter() {
         nickname,
         joinedAt: serverTimestamp(),
         online: true,
-      }).catch(() => {});
-      onDisconnect(onlineRef).set(false).catch(() => {});
+      }).catch((err) => console.warn('[presence] sync failed', err));
+      onDisconnect(onlineRef).set(false).catch((err) => console.warn('[presence] onDisconnect failed', err));
     }
 
     // Initial presence sync
