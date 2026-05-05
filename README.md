@@ -70,6 +70,20 @@
 
 ---
 
+## 📸 Screenshots
+
+| 학생 (모바일) | 학생 (데스크톱) |
+|---|---|
+| <img src="./docs/screenshots/03-landing-mobile.png" alt="학생 모바일 랜딩" width="280" /> | <img src="./docs/screenshots/01-landing-desktop.png" alt="학생 데스크톱 랜딩" width="640" /> |
+
+| 강사 로그인 |
+|---|
+| <img src="./docs/screenshots/02-admin-login.png" alt="강사 로그인" width="640" /> |
+
+> 🚧 본격 기능 화면(투표·퀴즈·워드클라우드·AI 7판사 심사·리더보드 등)은 추가 예정. 본인 인스턴스에서 캡쳐 후 `docs/screenshots/`에 추가하면 PR 환영.
+
+---
+
 ## 🛠️ Tech Stack
 
 ```
