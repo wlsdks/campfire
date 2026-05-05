@@ -159,8 +159,10 @@ function ReadOnlyRightSidebar({ session, participants, leaderboard, voteCounts }
 
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
-          <span className="text-slate-500 dark:text-slate-400 text-xs font-medium">참여율</span>
-          <span className="text-slate-600 dark:text-slate-300 text-xs font-semibold">{activeCount}/{allParticipants}명 활동</span>
+          <span className="text-slate-500 dark:text-slate-400 text-xs font-medium">
+            참여율 <span className="text-slate-700 dark:text-slate-200 font-semibold tabular-nums">{pct}%</span>
+          </span>
+          <span className="text-slate-500 dark:text-slate-400 text-xs">{activeCount}명 응답 / {allParticipants}명 참여</span>
         </div>
         <div className="w-full h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label={`참여율 ${pct}%`}>
           <div
