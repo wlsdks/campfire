@@ -113,7 +113,7 @@ function CreateAssignmentContent({ sessions, onClose }) {
         <div>
           <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">
             과제 설명
-            <span className="text-slate-300 dark:text-slate-500 ml-1.5 font-normal">선택</span>
+            <span className="text-slate-500 dark:text-slate-400 ml-1.5 font-normal">선택</span>
           </p>
           <textarea
             aria-label="과제 설명"

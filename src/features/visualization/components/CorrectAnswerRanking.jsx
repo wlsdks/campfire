@@ -63,7 +63,7 @@ export default memo(function CorrectAnswerRanking({ sessionId, questionId, corre
           return (
             <div key={entry.id} className={`flex items-center gap-3 px-4 py-2.5 ${i > 0 ? 'border-t border-slate-100 dark:border-slate-700' : ''} ${isMe ? 'bg-slate-50 dark:bg-slate-700' : ''}`}>
               <span className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 bg-slate-100 dark:bg-slate-700 ${
-                isPodium ? 'text-amber-600 dark:text-amber-400' : 'text-slate-400 dark:text-slate-500'
+                isPodium ? 'text-amber-600 dark:text-amber-400' : 'text-slate-500 dark:text-slate-400'
               }`}>{entry.rank}</span>
               <Avatar name={entry.nickname} size="xs" />
               <span className={`flex-1 text-sm truncate ${isMe ? 'font-bold text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-300'}`}>

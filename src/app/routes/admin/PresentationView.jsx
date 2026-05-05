@@ -81,7 +81,7 @@ function PresentQROverlay({ sessionId, studentUrl, count }) {
               <span className="text-slate-900 dark:text-slate-100 text-sm font-semibold">참여 QR코드</span>
               <button
                 onClick={toggle}
-                className="p-1 rounded-lg text-slate-300 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150"
+                className="p-1 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150"
                 aria-label="QR 닫기"
               >
                 <X size={16} />
