@@ -7,6 +7,7 @@ import Button from '@/components/ui/Button';
 import Tooltip from '@/components/ui/Tooltip';
 import SubmissionPreview from './SubmissionPreview';
 import SubmissionSuccessView from './SubmissionSuccessView';
+import PrdField from './PrdField';
 
 const MAX_SCREENSHOTS = 10;
 const MAX_IMAGE_SIZE = 15 * 1024 * 1024; // 15MB per image
@@ -313,25 +314,7 @@ export default function SubmissionForm({ onSubmit, existingSubmission, assignmen
       </AnimatePresence>
 
       {/* PRD 작성 — 필수 */}
-      <div>
-        <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">
-          PRD 작성
-          <span className="text-red-500 ml-1.5 font-normal">필수</span>
-        </p>
-        <textarea
-          value={prdContent}
-          onChange={(e) => setPrdContent(e.target.value.slice(0, MAX_PRD_CHARS))}
-          placeholder={`어떤 문제를 풀려고 했는지 / 누구를 위한 건지 / 어떤 기능을 만들었는지 자유롭게 작성해주세요.\n\n예) 우리 팀 회의록을 짧게 요약해주는 도구를 만들었습니다. 회의 끝나고 정리하는 게 너무 오래 걸려서…`}
-          rows={8}
-          className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-y transition-all leading-relaxed"
-        />
-        <div className="flex items-center justify-between mt-1.5">
-          <p className="text-xs text-slate-300 dark:text-slate-500">
-            {prdContent.trim().length < 50 && prdContent.trim().length > 0 && `조금 더 길게 작성해주세요 (50자 이상, 현재 ${prdContent.trim().length}자)`}
-          </p>
-          <p className="text-xs text-slate-300 dark:text-slate-500 tabular-nums">{prdContent.length.toLocaleString()}/{MAX_PRD_CHARS.toLocaleString()}</p>
-        </div>
-      </div>
+      <PrdField value={prdContent} onChange={setPrdContent} maxChars={MAX_PRD_CHARS} />
 
       {/* HTML 코드 / 파일 — 필수 */}
       <div>
