@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useMemo, lazy, Suspense, useRef } from 'react';
+import { useState, useCallback, useEffect, useMemo, lazy, Suspense } from 'react';
 import DrumrollOverlay from '@/components/ui/DrumrollOverlay';
 import { isQuizQuestion } from '@/lib/quiz';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -156,7 +156,7 @@ function getModeVariants(mode) {
   return { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } };
 }
 
-function MainContent({ currentMode, sessionId, session, onlineList, leaderboard, drawParticipants, presentMode, studentUrl, count, scores, onGameResult }) {
+function MainContent({ currentMode, sessionId, session, onlineList, leaderboard, drawParticipants, presentMode, studentUrl, count, onGameResult }) {
   const currentQId = session?.currentQuestion;
   const isActive = ['poll', 'quiz'].includes(currentMode) && currentQId;
 

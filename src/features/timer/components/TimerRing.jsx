@@ -13,7 +13,7 @@ function getColor(secondsLeft, totalSeconds) {
   return { ring: colors.error, text: 'text-red-500' };                        // red
 }
 
-export default function TimerRing({ endTime, duration, onExpire, size = 'md', dark = false }) {
+export default function TimerRing({ endTime, duration, onExpire, size = 'md' }) {
   const [secondsLeft, setSecondsLeft] = useState(duration);
 
   useEffect(() => {

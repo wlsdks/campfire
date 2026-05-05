@@ -182,7 +182,7 @@ const QuestionCard = memo(function QuestionCard({ q, participantId, nickname, on
 });
 
 export default memo(function ClassQAPanel({ sessionId, open, onClose, onNewQuestion }) {
-  const { questions, unansweredCount, postQuestion, toggleUpvote, postAnswer, canPost, canAnswer, loading } =
+  const { questions, postQuestion, toggleUpvote, postAnswer, canPost, canAnswer, loading } =
     useClassQuestions(sessionId);
   const [inputText, setInputText] = useState('');
   const [posting, setPosting] = useState(false);

@@ -16,7 +16,7 @@ export default function QuestionPreview({ questionList, open, onClose }) {
   if (!open || questionList.length === 0) return null;
 
   const total = questionList.length;
-  const [qId, question] = questionList[Math.min(current, total - 1)];
+  const [, question] = questionList[Math.min(current, total - 1)];
   const hasPrev = current > 0;
   const hasNext = current < total - 1;
 

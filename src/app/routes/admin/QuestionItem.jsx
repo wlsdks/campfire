@@ -36,7 +36,6 @@ export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView,
   const Icon = qType?.icon || MessageSquare;
   const isActive = currentQuestion === qId;
   const isQuiz = isQuizQuestion(q);
-  const isMH = ['mysteryBox', 'hintQuiz'].includes(q.type);
   const hasAnswer = !isQuiz && q.correctAnswer;
   const hasReveal = isQuiz || hasAnswer;
   const isAiJudge = q.type === 'aiJudge';

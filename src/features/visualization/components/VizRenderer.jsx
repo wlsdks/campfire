@@ -25,7 +25,7 @@ import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import { isQuizQuestion } from '@/lib/quiz';
 import { ref, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
-import { useCallback, lazy, Suspense, useState, useEffect } from 'react';
+import { lazy, Suspense, useState, useEffect } from 'react';
 
 const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 import { TYPE_LABELS } from '@/lib/question-types';

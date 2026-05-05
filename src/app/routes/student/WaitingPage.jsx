@@ -7,7 +7,7 @@ import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
 import IdleMascot from './IdleMascot';
-import { getNickname, getParticipantId } from '@/lib/participant';
+import { getNickname } from '@/lib/participant';
 import ReviewingBanner from '@/components/ui/ReviewingBanner';
 import { useGameResult } from '@/features/games/api/useGameResult';
 import PersistentAssignmentCard from '@/features/ai-judge/components/PersistentAssignmentCard';

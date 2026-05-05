@@ -4,10 +4,8 @@ import {
   createTestSession,
   activateQuestion,
   cleanupTestSession,
-  setupAdminPage,
   firebaseSet,
   firebaseGet,
-  firebaseDelete,
   waitForSync,
 } from './helpers';
 

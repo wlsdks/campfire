@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ref, get, set, remove, onValue } from 'firebase/database';
+import { ref, get, set, remove } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { uuid } from '@/lib/utils';
 

@@ -1,5 +1,5 @@
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
-import { lazy, Suspense, useEffect, useRef, useState, useCallback } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { Check, Ticket, X, Flame } from 'lucide-react';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
 const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));

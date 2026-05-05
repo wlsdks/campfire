@@ -1,5 +1,5 @@
 import { useState, useEffect, memo } from 'react';
-import { ref, set, onValue, push, serverTimestamp } from 'firebase/database';
+import { ref, onValue, push, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId, getNickname } from '@/lib/participant';
 import { motion } from 'framer-motion';

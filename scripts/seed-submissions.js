@@ -36,7 +36,6 @@ const HUES = [240, 260, 320, 40, 160, 210, 0, 170, 30, 280, 190, 55, 90, 300, 20
 const NAMES = ['김민준','이서연','박지훈','최예은','정하영','강민서','조유진','윤도윤','장서아','임채원','한시우','오지우','서주원','신하윤','문건우','배수호','권나연','손예진','황현수','류지민'];
 
 function placeholderUrl(hue, label) {
-  const bg = `hsl(${hue},70%,60%)`.replace('#', '');
   return `https://placehold.co/600x600/${hue.toString().padStart(3, '0')}6366f1/ffffff?text=${encodeURIComponent(label)}`;
 }
 

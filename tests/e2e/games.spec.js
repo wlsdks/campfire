@@ -312,7 +312,7 @@ test.describe('게임 모드 — 리더보드', () => {
     await waitForSync(page, 5000);
 
     // Should show leaderboard with student names and scores
-    const hasContent = await page.getByText('김민수').isVisible({ timeout: 10000 }).catch(() => false);
+    await page.getByText('김민수').isVisible({ timeout: 10000 }).catch(() => false);
     const bodyText = await page.textContent('body');
 
     // At least the page should have loaded with leaderboard content

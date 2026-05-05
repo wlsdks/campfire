@@ -22,7 +22,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions,
   const [duplicateEnabled, setDuplicateEnabled] = useState(false);
   const [duplicateSourceId, setDuplicateSourceId] = useState('');
 
-  const { courses: dbCourses, createCourse, refresh: refreshCourses } = useCourses(
+  const { courses: dbCourses, createCourse } = useCourses(
     adminUser?.uid, adminUser?.role
   );
 

@@ -6,7 +6,6 @@ import {
   cleanupTestSession,
   setupAdminPage,
   firebaseSet,
-  firebaseGet,
   waitForSync,
 } from './helpers';
 
@@ -83,9 +82,6 @@ test.describe('프레젠터 뷰', () => {
     const { page, context } = await setupAdminPage(browser, 'http://localhost:5173');
     await page.goto(`http://localhost:5173/present/${sid}`);
     await waitForSync(page, 3000);
-
-    // 나가기 버튼 확인
-    const exitBtn = page.getByRole('button', { name: /나가기/ });
 
     // 화면 중앙 클릭 — 종료되지 않아야 함
     await page.mouse.click(640, 400);

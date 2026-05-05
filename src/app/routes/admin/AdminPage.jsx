@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useCallback } from 'react';
+import { lazy, Suspense, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertCircle } from 'lucide-react';
 import { useMediaQuery } from '@/hooks/useMediaQuery';

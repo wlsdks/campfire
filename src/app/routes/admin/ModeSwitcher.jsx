@@ -2,7 +2,7 @@ import { memo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Ticket, Trophy, Coffee, ChevronDown, MessageSquare, Award, Eye, UserCircle, Activity, BarChart3, Timer, Medal, Zap, X } from 'lucide-react';
 
-export default memo(function ModeSwitcher({ currentMode, isSpecialMode, totalTickets, leaderboard, modeOpen, onToggle, onSwitchMode }) {
+export default memo(function ModeSwitcher({ currentMode, isSpecialMode, leaderboard, modeOpen, onToggle, onSwitchMode }) {
   const containerRef = useRef(null);
 
   // Close on outside click
