@@ -27,11 +27,17 @@ function useSessionInfo(sessionId) {
 
 /**
  * Detects keyboard open state via visualViewport API.
- * Returns true when virtual keyboard is likely visible (viewport shrinks > 100px).
+ * Returns true when virtual keyboard is likely visible (viewport shrinks > 120px).
+ *
+ * 모바일 viewport(<768px)에서만 작동. 데스크톱/태블릿에서 브라우저 창 크기 줄이면
+ * height 감소를 키보드로 오인해 hero가 collapse되던 false positive 회피.
  */
 function useKeyboardDetect() {
   const [keyboardOpen, setKeyboardOpen] = useState(false);
   useEffect(() => {
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+    if (!isMobile) return;
+
     const vv = window.visualViewport;
     if (!vv) return;
     // Capture baseline after initial render (avoids false positive on load)
