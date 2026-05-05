@@ -1,58 +1,20 @@
 import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Image as ImageIcon, Send, Check, X, Upload, Plus, Loader2, Code2, AlertCircle, Info } from 'lucide-react';
+import { Send, Check, AlertCircle } from 'lucide-react';
 import { ref as sRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/lib/firebase-storage';
 import Button from '@/components/ui/Button';
-import Tooltip from '@/components/ui/Tooltip';
 import SubmissionPreview from './SubmissionPreview';
 import SubmissionSuccessView from './SubmissionSuccessView';
 import PrdField from './PrdField';
 import HtmlCodeField from './HtmlCodeField';
+import IdentityFields from './IdentityFields';
+import ScreenshotsField from './ScreenshotsField';
 
 const MAX_SCREENSHOTS = 10;
 const MAX_IMAGE_SIZE = 15 * 1024 * 1024; // 15MB per image
 const MAX_PRD_CHARS = 10000;
 const MAX_CODE_CHARS = 50000; // HTML 코드 길이 제한 (라이브 AI 심사와 동일)
-
-function ScreenshotThumb({ shot, onRemove, idx }) {
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, scale: 0.92 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.92 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-      className="relative group rounded-lg overflow-hidden ring-1 ring-slate-200 dark:ring-slate-700 bg-slate-50 dark:bg-slate-900 aspect-square"
-    >
-      {shot.uploading ? (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Loader2 size={20} className="text-slate-400 animate-spin" />
-        </div>
-      ) : shot.error ? (
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 px-2 text-center">
-          <X size={16} className="text-red-400" />
-          <p className="text-[10px] text-red-500 leading-tight line-clamp-2">{shot.error}</p>
-        </div>
-      ) : (
-        <img src={shot.url} alt={shot.name || `스크린샷 ${idx + 1}`} className="w-full h-full object-cover" loading="lazy" />
-      )}
-      {!shot.uploading && (
-        <button
-          type="button"
-          onClick={() => onRemove(idx)}
-          aria-label="이미지 삭제"
-          className="absolute top-1 right-1 w-6 h-6 rounded-full bg-slate-900/70 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-900"
-        >
-          <X size={12} />
-        </button>
-      )}
-      <span className="absolute bottom-1 left-1.5 text-[10px] text-white bg-slate-900/60 rounded px-1.5 py-0.5 font-medium">
-        {idx + 1}
-      </span>
-    </motion.div>
-  );
-}
 
 /**
  * SubmissionForm — 학생 과제 제출 폼.
@@ -228,91 +190,17 @@ export default function SubmissionForm({ onSubmit, existingSubmission, assignmen
         transition={{ duration: 0.15 }}
       >
       <form onSubmit={handleSubmit} className="space-y-5 pb-4">
-      {/* 이름 */}
-      <div>
-        <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">이름</p>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => { if (!isEditMode) { setName(e.target.value); setNameError(''); } }}
-          placeholder="이름을 입력하세요"
-          maxLength={20}
-          readOnly={isEditMode}
-          className={`w-full border rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 transition-all ${
-            nameError
-              ? 'border-red-400 focus:ring-red-500/20 focus:border-red-500 bg-white dark:bg-slate-800'
-              : 'border-slate-200 dark:border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500'
-          } ${isEditMode ? 'bg-slate-100 dark:bg-slate-700 cursor-not-allowed' : 'bg-white dark:bg-slate-800'}`}
-          autoFocus={!isEditMode}
-        />
-        {nameError && <p className="text-xs text-red-500 mt-1.5 leading-relaxed">{nameError}</p>}
-      </div>
-
-      {/* 조회용 비밀번호 4자리 — 수정 모드에서는 숨김 */}
-      {!isEditMode && (
-        <div>
-          <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">
-            조회용 비밀번호
-            <span className="text-slate-300 dark:text-slate-500 ml-1.5 font-normal">숫자 4자리</span>
-          </p>
-          <input
-            type="password"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            value={pin}
-            onChange={(e) => {
-              const v = e.target.value.replace(/\D/g, '').slice(0, 4);
-              setPin(v);
-              setPinError('');
-            }}
-            placeholder="••••"
-            maxLength={4}
-            className={`w-full bg-white dark:bg-slate-800 border rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 transition-all tracking-[0.3em] ${
-              pinError
-                ? 'border-red-400 focus:ring-red-500/20 focus:border-red-500'
-                : 'border-slate-200 dark:border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500'
-            }`}
-          />
-          {pinError && <p className="text-xs text-red-500 mt-1.5">{pinError}</p>}
-          <p className="text-xs text-slate-300 dark:text-slate-500 mt-1.5">나중에 본인 제출물 조회·수정·취소 시 필요해요</p>
-        </div>
-      )}
-
-      {/* 조회용 비밀번호 확인 — 신규 제출 시만 */}
-      <AnimatePresence>
-      {!isEditMode && pin.length === 4 && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-          className="overflow-hidden"
-        >
-          <div className="pt-1">
-          <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">
-            조회용 비밀번호 확인
-          </p>
-          <input
-            type="password"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            value={pinConfirm}
-            onChange={(e) => setPinConfirm(e.target.value.replace(/\D/g, '').slice(0, 4))}
-            placeholder="••••"
-            maxLength={4}
-            className={`w-full bg-white dark:bg-slate-800 border rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 transition-all tracking-[0.3em] ${
-              pinConfirm.length === 4 && pin !== pinConfirm
-                ? 'border-red-400 focus:ring-red-500/20 focus:border-red-500'
-                : 'border-slate-200 dark:border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500'
-            }`}
-          />
-          {pinConfirm.length === 4 && pin !== pinConfirm && (
-            <p className="text-xs text-red-500 mt-1.5">조회용 비밀번호가 일치하지 않습니다</p>
-          )}
-          </div>
-        </motion.div>
-      )}
-      </AnimatePresence>
+      <IdentityFields
+        name={name}
+        onNameChange={(v) => { setName(v); setNameError(''); }}
+        nameError={nameError}
+        pin={pin}
+        onPinChange={(v) => { setPin(v); setPinError(''); }}
+        pinError={pinError}
+        pinConfirm={pinConfirm}
+        onPinConfirmChange={setPinConfirm}
+        isEditMode={isEditMode}
+      />
 
       {/* PRD 작성 — 필수 */}
       <PrdField value={prdContent} onChange={setPrdContent} maxChars={MAX_PRD_CHARS} />
@@ -329,78 +217,14 @@ export default function SubmissionForm({ onSubmit, existingSubmission, assignmen
       />
 
       {/* 결과물 스크린샷 — 다중 업로드 (선택) */}
-      <div>
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
-            결과물 스크린샷
-            <span className="text-slate-300 dark:text-slate-500 ml-0.5 font-normal">선택</span>
-            <Tooltip
-              multiline
-              label={`전체 화면을 캡쳐해서 첨부하면 더 정확한 평가를 받을 수 있어요.\n\n[Windows]\n• Windows + PrtSc — 전체 화면을 자동으로 "사진 > 스크린샷" 폴더에 저장\n• 또는 캡쳐 도구(Snipping Tool) 사용\n\n[Mac]\n• Command + Shift + 3 — 전체 화면을 바탕화면에 자동 저장\n• Command + Shift + 4 — 영역 지정 캡쳐`}
-            >
-              <button
-                type="button"
-                aria-label="스크린샷 캡쳐 방법 안내"
-                className="inline-flex items-center justify-center w-4 h-4 rounded-full text-slate-300 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
-              >
-                <Info size={13} />
-              </button>
-            </Tooltip>
-          </p>
-          <p className="text-[11px] text-slate-300 dark:text-slate-500">
-            {validShots.length}/{MAX_SCREENSHOTS}장
-          </p>
-        </div>
-
-        {screenshots.length === 0 ? (
-          <label className="group flex flex-col items-center gap-2 py-8 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-600 cursor-pointer hover:border-slate-300 dark:hover:border-slate-500 hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-all">
-            <Upload size={20} className="text-slate-300 dark:text-slate-500 group-hover:text-slate-400 transition-colors" />
-            <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">스크린샷 선택</span>
-            <span className="text-xs text-slate-400 dark:text-slate-500">PNG · JPG · 최대 {MAX_SCREENSHOTS}장 · 장당 15MB</span>
-            <input
-              ref={fileInputRef}
-              type="file"
-              onChange={handleAddScreenshots}
-              className="hidden"
-              accept="image/*"
-              multiple
-            />
-          </label>
-        ) : (
-          <div>
-            <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-              <AnimatePresence>
-                {screenshots.map((shot, i) => (
-                  <ScreenshotThumb
-                    key={shot.url || shot.tempId || i}
-                    shot={shot}
-                    onRemove={removeScreenshot}
-                    idx={i}
-                  />
-                ))}
-              </AnimatePresence>
-
-              {validShots.length < MAX_SCREENSHOTS && (
-                <label className="group flex flex-col items-center justify-center gap-1 aspect-square rounded-lg border-2 border-dashed border-slate-200 dark:border-slate-600 cursor-pointer hover:border-slate-300 dark:hover:border-slate-500 hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-all">
-                  <Plus size={18} className="text-slate-300 dark:text-slate-500 group-hover:text-slate-400" />
-                  <span className="text-[10px] text-slate-400">추가</span>
-                  <input
-                    type="file"
-                    onChange={handleAddScreenshots}
-                    className="hidden"
-                    accept="image/*"
-                    multiple
-                  />
-                </label>
-              )}
-            </div>
-            <p className="text-xs text-slate-300 dark:text-slate-500 mt-2 flex items-center gap-1.5">
-              <ImageIcon size={11} />
-              결과물을 보여줄 화면이 있으면 첨부하세요. 여러 장 한 번에 선택 가능합니다.
-            </p>
-          </div>
-        )}
-      </div>
+      <ScreenshotsField
+        screenshots={screenshots}
+        validShotCount={validShots.length}
+        onAddScreenshots={handleAddScreenshots}
+        onRemove={removeScreenshot}
+        fileInputRef={fileInputRef}
+        maxScreenshots={MAX_SCREENSHOTS}
+      />
 
       {/* Validation hint — 제출 가로막는 모든 사유 표시 */}
       {!canSubmit && !submitting && (name.trim() || prdContent.trim() || code.trim()) && (
