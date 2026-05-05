@@ -7,7 +7,7 @@ import { Hand, Users, ChevronDown, AlertTriangle, Radio, MessageSquare, ArrowRig
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
-import { useStaffDMs } from '@/features/dm/api/useDM';
+import { useStaffDMs } from '@/features/dm/api/useStaffDMs';
 import StaffDMChat from '@/features/dm/components/StaffDMChat';
 import { QUESTION_TYPE_MAP } from '@/lib/question-types';
 import Avatar from '@/components/ui/Avatar';

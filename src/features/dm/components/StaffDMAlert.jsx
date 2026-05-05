@@ -1,7 +1,7 @@
 import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, ArrowRight } from 'lucide-react';
-import { useStaffDMs } from '@/features/dm/api/useDM';
+import { useStaffDMs } from '@/features/dm/api/useStaffDMs';
 import StaffDMChat from '@/features/dm/components/StaffDMChat';
 
 const DMAlertItem = memo(function DMAlertItem({ dm, onRespond, onDismiss }) {

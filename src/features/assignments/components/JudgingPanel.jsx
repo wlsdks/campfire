@@ -1,7 +1,6 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Play, Key, Loader2 } from 'lucide-react';
-import { initGemini, getStoredApiKey, isGeminiReady } from '@/features/assignments/api/gemini';
+import { Play, AlertCircle, Loader2 } from 'lucide-react';
+import { isGeminiReady } from '@/features/assignments/api/gemini';
 import { useJudging } from '@/features/assignments/api/useJudging';
 import { useAssignmentActions } from '@/features/assignments/api/useAssignments';
 import Button from '@/components/ui/Button';
@@ -12,37 +11,20 @@ import Button from '@/components/ui/Button';
 export default function JudgingPanel({ assignmentId, submissionCount, passThreshold = 3 }) {
   const { startJudging, isJudging, progress, abort } = useJudging(assignmentId);
   const { updateAssignment } = useAssignmentActions();
-  const [apiKey, setApiKey] = useState(getStoredApiKey());
-  const [showKeyInput, setShowKeyInput] = useState(!isGeminiReady());
 
   function handleThresholdChange(v) {
     const next = Math.max(1, Math.min(7, Number(v) || 3));
     if (next !== passThreshold) updateAssignment(assignmentId, { passThreshold: next });
   }
 
-  function handleSaveKey() {
-    if (!apiKey.trim()) return;
-    initGemini(apiKey.trim());
-    setShowKeyInput(false);
-  }
-
-  if (showKeyInput) {
+  if (!isGeminiReady()) {
     return (
-      <div className="space-y-3">
+      <div className="space-y-2">
         <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
-          <Key size={14} className="text-slate-400" />
-          Gemini API 키
+          <AlertCircle size={14} className="text-amber-500" />
+          AI 심사 사용 불가
         </p>
-        <input
-          type="password"
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
-          placeholder="AIza..."
-          className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-[15px] text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors duration-150"
-          onKeyDown={(e) => e.key === 'Enter' && handleSaveKey()}
-        />
-        <p className="text-xs text-slate-400">Google AI Studio에서 발급받은 키를 입력하세요. 브라우저에만 저장됩니다.</p>
-        <Button onClick={handleSaveKey} variant="primary" size="sm" disabled={!apiKey.trim()}>저장</Button>
+        <p className="text-xs text-slate-400">서버에 Gemini API 키가 설정되지 않았습니다. 운영자에게 환경 변수(VITE_GEMINI_API_KEY) 설정을 요청해주세요.</p>
       </div>
     );
   }
@@ -89,13 +71,6 @@ export default function JudgingPanel({ assignmentId, submissionCount, passThresh
           <Play size={14} />
           심사 시작 ({submissionCount}건)
         </Button>
-        <button
-          onClick={() => setShowKeyInput(true)}
-          className="p-2 rounded-lg text-slate-300 hover:text-slate-500 dark:hover:text-slate-400 transition-colors duration-150"
-          title="API 키 변경"
-        >
-          <Key size={14} />
-        </button>
       </div>
 
       {/* 합격 기준 — 심사 전후 모두 변경 가능. 변경 시 합격/불합격 표시가 즉시 반영됨. */}

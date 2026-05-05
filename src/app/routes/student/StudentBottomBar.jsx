@@ -5,7 +5,7 @@ import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
 import { getParticipantId, getNickname, getLastSeen, saveLastSeen } from '@/lib/participant';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
-import { useStudentDM } from '@/features/dm/api/useDM';
+import { useStudentDM } from '@/features/dm/api/useStudentDM';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Hand, MessageCircle, MessageSquare, HelpCircle, Headset, Send } from 'lucide-react';
 import Modal from '@/components/ui/Modal';

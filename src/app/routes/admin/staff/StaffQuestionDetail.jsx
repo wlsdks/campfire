@@ -9,7 +9,7 @@ import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
 import StaffDMChat from '@/features/dm/components/StaffDMChat';
-import { useStaffDMs } from '@/features/dm/api/useDM';
+import { useStaffDMs } from '@/features/dm/api/useStaffDMs';
 import { timeAgo } from '@/lib/utils';
 
 function ActiveQuestionBanner({ session, sessionId }) {

@@ -2,7 +2,8 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { ref, onValue, set, update, get, remove, serverTimestamp } from 'firebase/database';
 import { ref as storageRef, deleteObject } from 'firebase/storage';
 import { db, storage } from '@/lib/firebase';
-import { judgeLiveSubmission, calculateLiveTop3 } from '@/features/assignments/api/gemini';
+import { judgeLiveSubmission } from '@/features/assignments/api/geminiLive';
+import { calculateLiveTop3 } from '@/features/assignments/api/awards';
 import { JUDGE_THINKING_SNIPPETS } from '@/features/assignments/api/judges';
 import { logger } from '@/lib/logger';
 

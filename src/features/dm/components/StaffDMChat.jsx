@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, CheckCircle2, Clipboard } from 'lucide-react';
 import { formatChatTime } from '@/lib/utils';
-import { useDMTyping } from '@/features/dm/api/useDM';
+import { useDMTyping } from '@/features/dm/api/useDMTyping';
 
 const ChatMsg = memo(function ChatMsg({ msg, isOwn, currentUserName }) {
   if (msg.senderType === 'system') {

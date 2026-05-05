@@ -4,10 +4,6 @@ let genAI = null;
 const MODEL_NAME = 'gemini-2.5-flash-lite';
 
 function getApiKey() {
-  if (typeof localStorage !== 'undefined') {
-    const stored = localStorage.getItem('pick_gemini_api_key');
-    if (stored) return stored;
-  }
   return import.meta.env.VITE_GEMINI_API_KEY || '';
 }
 

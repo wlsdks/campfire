@@ -1,9 +1,9 @@
 import { useState, memo } from 'react';
 import { motion } from 'framer-motion';
-import { Play, Key, Sparkles, Users, RotateCcw, Square, Trophy, Medal, Award } from 'lucide-react';
+import { Play, AlertCircle, Sparkles, Users, RotateCcw, Square, Trophy, Medal, Award } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import ConfirmModal from '@/components/ui/ConfirmModal';
-import { initGemini, getStoredApiKey, isGeminiReady } from '@/features/assignments/api/gemini';
+import { isGeminiReady } from '@/features/assignments/api/gemini';
 import { useLiveSubmissions, useLiveJudging, useLiveJudgeResults } from '../api/useLiveJudging';
 
 const DONE_RANK_META = [
@@ -20,38 +20,20 @@ export default memo(function AiJudgePanel({ sessionId, questionId }) {
   const { submissions } = useLiveSubmissions(sessionId, questionId);
   const { startJudging, isJudging, progress, abort, reset } = useLiveJudging(sessionId, questionId);
   const { judgeState, top3 } = useLiveJudgeResults(sessionId, questionId);
-  const [apiKey, setApiKey] = useState(getStoredApiKey());
-  const [showKeyInput, setShowKeyInput] = useState(!isGeminiReady());
   const [abortConfirmOpen, setAbortConfirmOpen] = useState(false);
-
-  function handleSaveKey() {
-    if (!apiKey.trim()) return;
-    initGemini(apiKey.trim());
-    setShowKeyInput(false);
-  }
 
   const count = submissions.length;
   const isDone = judgeState?.status === 'done' && top3;
   const hasError = judgeState?.status === 'error';
 
-  if (showKeyInput) {
+  if (!isGeminiReady()) {
     return (
-      <div className="rounded-xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 space-y-3">
+      <div className="rounded-xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 space-y-2">
         <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
-          <Key size={14} className="text-slate-400" />
-          Gemini API 키
+          <AlertCircle size={14} className="text-amber-500" />
+          AI 심사 사용 불가
         </p>
-        <input
-          type="password"
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
-          placeholder="AIza..."
-          aria-label="Gemini API 키"
-          className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3.5 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-          onKeyDown={(e) => e.key === 'Enter' && handleSaveKey()}
-        />
-        <p className="text-xs text-slate-400">Google AI Studio에서 발급받은 키. 브라우저에만 저장됩니다.</p>
-        <Button onClick={handleSaveKey} variant="primary" size="sm" disabled={!apiKey.trim()}>저장</Button>
+        <p className="text-xs text-slate-400">서버에 Gemini API 키가 설정되지 않았습니다. 운영자에게 환경 변수(VITE_GEMINI_API_KEY) 설정을 요청해주세요.</p>
       </div>
     );
   }
@@ -167,12 +149,6 @@ export default memo(function AiJudgePanel({ sessionId, questionId }) {
       <p className="text-[11px] text-slate-400 text-center sm:hidden">
         모바일은 화면이 잠기면 심사가 중단될 수 있어요. 데스크톱에서 실행을 권장합니다.
       </p>
-      <button
-        onClick={() => setShowKeyInput(true)}
-        className="inline-flex items-center gap-1.5 px-3 py-2 min-h-[36px] text-xs text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/40"
-      >
-        <Key size={12} /> API 키 변경
-      </button>
     </div>
   );
 });
