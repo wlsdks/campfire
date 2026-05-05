@@ -398,7 +398,14 @@ firebase deploy --only hosting --project jinan-6c884
 
 ## 🤝 기여
 
-개인 프로젝트입니다. 이슈/PR은 [wlsdks/pick](https://github.com/wlsdks/pick)에서 받습니다 (현재 OSS 공개 준비 중 — 변경 가능).
+개인 프로젝트지만 외부 기여 환영합니다.
+
+- **이슈 등록 전**: [기존 이슈](https://github.com/wlsdks/pick/issues) 확인
+- **버그 신고**: [bug_report 템플릿](./.github/ISSUE_TEMPLATE/bug_report.md) 사용 — 재현 단계 필수
+- **기능 제안**: [feature_request 템플릿](./.github/ISSUE_TEMPLATE/feature_request.md) 사용 — 사용자 시나리오 우선
+- **PR 절차**: [CONTRIBUTING.md](./CONTRIBUTING.md) 참고
+- **보안 취약점**: 공개 이슈 X — [SECURITY.md](./SECURITY.md) 절차 따라주세요
+- **행동 규범**: [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
 
 ---
 
