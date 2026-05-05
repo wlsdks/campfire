@@ -134,28 +134,54 @@ src/
 
 ### 요구사항
 
-- Node.js 20+
+- Node.js 22+ (`.env` 자동 로드를 위해 `--env-file` 플래그 사용)
 - npm 10+
 - Firebase 프로젝트 (RTDB + Hosting)
 - Gemini API 키 (AI 기능용)
 
-### 설치
+### 1) 설치
 
 ```bash
-git clone https://github.com/AslanLabs/Pick.git
-cd Pick
+git clone https://github.com/wlsdks/pick.git
+cd pick
 npm install
 ```
 
-### 환경 변수 (`.env` 또는 `.env.local`)
+### 2) Firebase 프로젝트 준비
+
+1. [Firebase 콘솔](https://console.firebase.google.com)에서 프로젝트 생성
+2. **Realtime Database** 활성화 (asia-southeast1 권장)
+3. **Storage** 활성화 (과제 스크린샷 업로드용)
+4. **Hosting** 활성화 (`firebase init hosting`)
+5. 프로젝트 설정 → 일반 → 내 앱 → Web 앱 SDK 구성에서 config 값 복사
+
+### 3) 환경 변수 (`.env`)
+
+`.env.example`을 복사해서 본인 값으로 채우세요:
 
 ```bash
-VITE_GEMINI_API_KEY=your_gemini_api_key_here
+cp .env.example .env
 ```
 
-> Vite 특성상 `VITE_*`는 빌드 타임에 dist 번들로 인라인됩니다. 프로덕션 배포 시 **Google AI Studio 콘솔에서 HTTP referrer 제한**(`*.web.app`, 본인 도메인만 허용)을 걸어 quota 보호하세요. 클라이언트 UI/localStorage 입력 경로는 제거됨 — `.env`로만 주입.
->
-> Firebase 설정은 `src/lib/firebase.js`에 하드코딩 (공개 프로젝트). 개인 프로젝트로 전환 시 교체 필요.
+채워야 할 항목:
+- `VITE_GEMINI_API_KEY` — [Google AI Studio](https://aistudio.google.com/app/apikey)에서 발급
+- `VITE_FIREBASE_*` — 위 2단계에서 복사한 값들
+
+> Vite 특성상 `VITE_*`는 빌드 타임에 dist 번들로 인라인됩니다. 프로덕션 배포 시 **Google AI Studio 콘솔에서 HTTP referrer 제한**(본인 도메인만 허용)을 걸어 quota 보호하세요. Firebase Web SDK config는 정책상 secret 아니지만(rules로 보호), 본인 프로젝트 격리를 위해 환경 변수로 분리.
+
+### 4) DB rules 배포
+
+```bash
+firebase deploy --only database --project YOUR_PROJECT_ID
+```
+
+### 5) 첫 강사 계정 시드 (선택)
+
+`staff-accounts.example.txt` 참고. 실제 운영 계정은 `staff-accounts.txt` (gitignored) 파일로 본인 환경에서 관리하세요. `/admin` 라우트의 회원가입 폼으로 직접 생성도 가능합니다 (마스터 계정 승인 필요).
+
+### 6) 본인 도메인으로 갈 때
+
+`index.html`의 `og:image` / `twitter:image` URL이 `https://pick.aslan.it.kr/og-image.jpg`로 박혀 있습니다 (배포자 본인 데모 인스턴스용). fork 후 본인 도메인으로 운영할 거면 이 두 줄을 본인 도메인으로 변경하세요.
 
 ### 로컬 개발
 
@@ -371,10 +397,10 @@ firebase deploy --only hosting --project jinan-6c884
 
 ## 🤝 기여
 
-Private 프로젝트 — 이슈·PR 이전에 [AslanLabs/Pick](https://github.com/AslanLabs/Pick)에 접근 권한 확인.
+개인 프로젝트입니다. 이슈/PR은 [wlsdks/pick](https://github.com/wlsdks/pick)에서 받습니다 (현재 OSS 공개 준비 중 — 변경 가능).
 
 ---
 
 ## 📄 License
 
-Private. © AslanLabs.
+[MIT](./LICENSE) — © 2026 jinan stark ([@wlsdks](https://github.com/wlsdks)).

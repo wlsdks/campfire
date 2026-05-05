@@ -13,6 +13,8 @@ dist-ssr/
 .env
 .env.local
 .env.*.local
+# 본인 인스턴스용 실제 계정 목록 (example만 트래킹)
+staff-accounts.txt
 
 # Editor & IDE
 .vscode/

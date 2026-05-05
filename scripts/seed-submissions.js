@@ -1,19 +1,24 @@
 // 전자칠판 N명 스케일 검증용 — Firebase RTDB에 더미 제출 삽입.
-// 사용:
-//   node scripts/seed-submissions.js <sessionId> <count>           # 자동으로 첫 aiJudge 질문 찾아 삽입
-//   node scripts/seed-submissions.js <sessionId> clear             # 전부 제거
+// 사용 (Node 22+: --env-file 플래그로 .env 자동 로드):
+//   node --env-file=.env scripts/seed-submissions.js <sessionId> <count>
+//   node --env-file=.env scripts/seed-submissions.js <sessionId> clear
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, set, remove, get } from 'firebase/database';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCsRs1BTT1NphOpbkoAwKn7rnrdQk16R2I",
-  authDomain: "jinan-6c884.firebaseapp.com",
-  databaseURL: "https://jinan-6c884-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "jinan-6c884",
-  storageBucket: "jinan-6c884.firebasestorage.app",
-  messagingSenderId: "956378670080",
-  appId: "1:956378670080:web:2147d0766564dd00dde4e5"
+  apiKey: process.env.VITE_FIREBASE_API_KEY,
+  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.VITE_FIREBASE_DATABASE_URL,
+  projectId: process.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.VITE_FIREBASE_APP_ID,
 };
+
+if (!firebaseConfig.apiKey || !firebaseConfig.databaseURL) {
+  console.error('Firebase config 누락 — `node --env-file=.env scripts/seed-submissions.js ...`로 실행해주세요. (.env.example 참고)');
+  process.exit(1);
+}
 
 const [,, sessionId, arg2] = process.argv;
 if (!sessionId || !arg2) {
