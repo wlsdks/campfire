@@ -59,7 +59,7 @@ export default function PresenterJudgingOverlay({ judgeState, judgeLog, submissi
               className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden"
             >
               {currentSubmission?.imageUrl ? (
-                <img src={currentSubmission.imageUrl} alt="" className="w-full aspect-square object-cover" />
+                <img src={currentSubmission.imageUrl} alt={`${currentName} 제출물`} className="w-full aspect-square object-cover" />
               ) : currentSubmission?.code ? (
                 <div className="w-full aspect-square bg-slate-900 flex flex-col items-center justify-center text-slate-400 gap-2">
                   <span className="text-4xl font-mono">{'</>'}</span>

@@ -53,7 +53,7 @@ export default function QuestionPreview({ questionList, open, onClose }) {
 
             {/* Image */}
             {question.imageUrl && (
-              <img src={question.imageUrl} alt="" className="max-h-64 rounded-xl object-cover mx-auto" />
+              <img src={question.imageUrl} alt={question.title || '질문 이미지'} className="max-h-64 rounded-xl object-cover mx-auto" />
             )}
 
             {/* Image slide */}

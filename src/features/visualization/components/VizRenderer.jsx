@@ -109,7 +109,7 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false, 
               </p>
             )}
             {question.imageUrl && (
-              <img src={question.imageUrl} alt="" className="mt-3 max-h-48 rounded-xl object-cover mx-auto" />
+              <img src={question.imageUrl} alt={question.title || '질문 이미지'} className="mt-3 max-h-48 rounded-xl object-cover mx-auto" />
             )}
           </div>
         );

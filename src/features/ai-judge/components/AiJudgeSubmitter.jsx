@@ -144,7 +144,7 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
         className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden"
       >
         {submission?.imageUrl && (
-          <img src={submission.imageUrl} alt="" className="w-full max-h-40 object-cover opacity-80" />
+          <img src={submission.imageUrl} alt="내 제출물" className="w-full max-h-40 object-cover opacity-80" />
         )}
         <div className="p-6 text-center space-y-4">
           <motion.div
@@ -184,7 +184,7 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
         className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden"
       >
         {submission.imageUrl && (
-          <img src={submission.imageUrl} alt="" className="w-full max-h-60 object-cover" />
+          <img src={submission.imageUrl} alt="내 제출물" className="w-full max-h-60 object-cover" />
         )}
         <div className="p-5 space-y-3">
           <div className="flex items-center gap-2">

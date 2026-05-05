@@ -47,7 +47,7 @@ export default memo(function LiveResultHero({ top3, myParticipantId, myResult, m
         >
           {/* 내 이미지 썸네일 — "내 거 잘 들어갔나?" 불안 해소 */}
           {mySubmission.imageUrl && (
-            <img src={mySubmission.imageUrl} alt="" className="w-full max-h-48 object-cover" />
+            <img src={mySubmission.imageUrl} alt="내 제출물" className="w-full max-h-48 object-cover" />
           )}
 
           {myRankMeta && myRankVisible && (

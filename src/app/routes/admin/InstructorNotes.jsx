@@ -113,6 +113,7 @@ export default function InstructorNotes({ sessionId, embedded = false }) {
       {/* Add input */}
       <form onSubmit={handleAdd} className="relative">
         <input
+          aria-label="강사 노트 추가"
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}

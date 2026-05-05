@@ -65,6 +65,7 @@ function CreateAssignmentContent({ sessions, onClose }) {
           <div className="flex-1">
             <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">클래스</p>
             <select
+              aria-label="클래스"
               value={selectedCourse}
               onChange={(e) => { setSelectedCourse(e.target.value); setSelectedRound(''); }}
               className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-[15px] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all appearance-none"
@@ -79,6 +80,7 @@ function CreateAssignmentContent({ sessions, onClose }) {
             <div className="w-24">
               <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">차수</p>
               <select
+                aria-label="차수"
                 value={selectedRound}
                 onChange={(e) => setSelectedRound(e.target.value)}
                 className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3 text-[15px] text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all appearance-none"
@@ -96,6 +98,7 @@ function CreateAssignmentContent({ sessions, onClose }) {
         <div>
           <p className="text-[13px] font-medium text-slate-500 dark:text-slate-400 mb-2">과제 제목</p>
           <input
+            aria-label="과제 제목"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -113,6 +116,7 @@ function CreateAssignmentContent({ sessions, onClose }) {
             <span className="text-slate-300 dark:text-slate-500 ml-1.5 font-normal">선택</span>
           </p>
           <textarea
+            aria-label="과제 설명"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="학생들에게 보여줄 과제 설명"
