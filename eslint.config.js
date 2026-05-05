@@ -34,12 +34,18 @@ export default defineConfig([
     rules: {
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
       'react/jsx-uses-vars': 'error',
+      // React 19 strict rule이 Firebase onValue subscription, useMediaQuery SSR sync,
+      // mount trigger(`setMounted(true)` after `useEffect(() => {}, [])`)같은
+      // 정당한 패턴까지 false positive로 잡아 노이즈 큼. 진짜 anti-pattern(예: props sync)은
+      // 코드 리뷰 + case-by-case로 처리하는 게 신호 대 잡음 비가 더 좋음.
+      'react-hooks/set-state-in-effect': 'off',
     },
   },
   {
-    files: ['vite.config.js'],
+    // Node.js 환경 — config / 시드 스크립트 / e2e 테스트
+    files: ['vite.config.js', 'scripts/**/*.{js,mjs}', 'tests/**/*.{js,mjs}', 'playwright.config.js'],
     languageOptions: {
-      globals: globals.node,
+      globals: { ...globals.node, ...globals.browser },
     },
   },
 ])
