@@ -5,10 +5,14 @@
  * 1. Creates a courses/{id} node with ownerId = master admin
  * 2. Updates each session with courseId and creatorId
  *
- * Run: node scripts/migrate-courses.mjs
+ * Run: node --env-file=.env scripts/migrate-courses.mjs
  */
 
-const DB_URL = 'https://jinan-6c884-default-rtdb.asia-southeast1.firebasedatabase.app';
+const DB_URL = process.env.VITE_FIREBASE_DATABASE_URL;
+if (!DB_URL) {
+  console.error('VITE_FIREBASE_DATABASE_URL 누락 — `node --env-file=.env scripts/migrate-courses.mjs` 형태로 실행하세요.');
+  process.exit(1);
+}
 
 function uid() {
   return 'crs_' + Math.random().toString(36).slice(2, 10);

@@ -1,12 +1,18 @@
 /**
- * 놀뭐클 바이브코딩 수업용 — DB 초기화 + 세션 생성
- * Run: node scripts/seed-vibe-class.mjs
+ * 배포자 강의(바이브코딩 수업) 시드 예시 — DB 초기화 + 세션 생성.
+ * fork 사용자는 이 스크립트를 본인 강의에 맞게 복사해서 수정하세요.
  *
- * 1) 기존 sessions, courseTemplates, questionLibrary 전체 삭제
+ * Run: node --env-file=.env scripts/seed-vibe-class.mjs
+ *
+ * 1) 기존 sessions, courseTemplates, questionLibrary 전체 삭제 (주의)
  * 2) "바이브코딩으로 나만의 서비스 만들기" 1차 세션 생성
  */
 
-const DB_URL = 'https://jinan-6c884-default-rtdb.asia-southeast1.firebasedatabase.app';
+const DB_URL = process.env.VITE_FIREBASE_DATABASE_URL;
+if (!DB_URL) {
+  console.error('VITE_FIREBASE_DATABASE_URL 누락 — `node --env-file=.env scripts/seed-vibe-class.mjs` 형태로 실행하세요.');
+  process.exit(1);
+}
 
 function uid() { return Math.random().toString(36).slice(2, 10); }
 function sid() { return `s_${uid()}`; }
@@ -272,9 +278,10 @@ async function seed() {
 
   await fbPut(`sessions/${sessionId}`, sessionData);
 
+  const baseUrl = process.env.VITE_APP_URL || 'http://localhost:5173';
   console.log('\n저장 완료!\n');
-  console.log(`학생 URL: https://jinan-6c884.web.app/?s=${sessionId}`);
-  console.log(`관리자:   https://jinan-6c884.web.app/admin?s=${sessionId}`);
+  console.log(`학생 URL: ${baseUrl}/?s=${sessionId}`);
+  console.log(`관리자:   ${baseUrl}/admin?s=${sessionId}`);
 }
 
 seed().catch((err) => {

@@ -39,6 +39,9 @@ Thumbs.db
 screenshots/
 .playwright-mcp/
 .claude/
+# 내부 작업 로그 (skill plans, audit findings 등)
+docs/superpowers/
+.improvements/
 # 루트에 저장되는 Playwright/수동 디버그 스크린샷 (하위 폴더 이미지는 계속 트래킹)
 /*.png
 /*.jpg

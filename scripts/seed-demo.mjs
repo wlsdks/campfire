@@ -1,13 +1,17 @@
 /**
- * Demo data seed script for Pinggo
- * Run: node scripts/seed-demo.mjs
+ * Demo data seed script for Pick
+ * Run: node --env-file=.env scripts/seed-demo.mjs
  *
  * Creates 5+ classes with various rounds, statuses, questions, participants, and votes.
  * All questions include correctAnswer.
  * Active sessions include chat, hand raises, urgent questions, and quiz scores.
  */
 
-const DB_URL = 'https://jinan-6c884-default-rtdb.asia-southeast1.firebasedatabase.app';
+const DB_URL = process.env.VITE_FIREBASE_DATABASE_URL;
+if (!DB_URL) {
+  console.error('VITE_FIREBASE_DATABASE_URL 누락 — `node --env-file=.env scripts/seed-demo.mjs` 형태로 실행하세요. (.env.example 참고)');
+  process.exit(1);
+}
 
 function uid() {
   return Math.random().toString(36).slice(2, 10);
