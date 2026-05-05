@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- RANK_META는 TopThreeStage + RevealCard + FullResults에서 공유. 별도 파일 분리 가능하지만 같은 도메인 collocation 유지 */
 import { memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Medal, Award, Eye, ChevronRight, RotateCcw } from 'lucide-react';

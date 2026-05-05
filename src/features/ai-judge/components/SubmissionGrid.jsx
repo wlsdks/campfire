@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- getPresenterGridConfig helper와 SubmissionGrid 컴포넌트 의도적 collocation (그리드 config는 컴포넌트 전용) */
 import { memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 

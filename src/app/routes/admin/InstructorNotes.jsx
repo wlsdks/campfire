@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- useNotesState hook과 InstructorNotes 컴포넌트 의도적 collocation */
 import { useState, useEffect, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { StickyNote, Plus, Check, X } from 'lucide-react';

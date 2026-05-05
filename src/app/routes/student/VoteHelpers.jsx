@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- vote 화면 helper 모음 (getModeVariants/ENTER_TRANSITION + 컴포넌트들) 의도적 collocation */
 import { lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Clock } from 'lucide-react';
