@@ -2,7 +2,7 @@ import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Image as ImageIcon, Send, Check, X, Upload, Plus, Loader2, Code2, AlertCircle, Info } from 'lucide-react';
 import { ref as sRef, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '@/lib/firebase';
+import { storage } from '@/lib/firebase-storage';
 import Button from '@/components/ui/Button';
 import Tooltip from '@/components/ui/Tooltip';
 import SubmissionPreview from './SubmissionPreview';

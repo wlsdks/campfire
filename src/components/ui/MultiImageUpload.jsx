@@ -1,6 +1,6 @@
 import { useState, useRef, memo } from 'react';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '@/lib/firebase';
+import { storage } from '@/lib/firebase-storage';
 import { compressImage } from '@/lib/image-utils';
 import { AnimatePresence } from 'framer-motion';
 import { ImagePlus, X, Loader2 } from 'lucide-react';
