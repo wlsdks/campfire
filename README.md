@@ -166,6 +166,7 @@ cp .env.example .env
 채워야 할 항목:
 - `VITE_GEMINI_API_KEY` — [Google AI Studio](https://aistudio.google.com/app/apikey)에서 발급
 - `VITE_FIREBASE_*` — 위 2단계에서 복사한 값들
+- `VITE_COURSE_CONTEXT` — (선택) 본인 강의 맥락. 7판사 AI 심사가 이 텍스트를 참고해 강의에 맞는 평가를 합니다. 비워두면 일반화된 기본 prompt 사용. 본인 강의에 더 깊이 맞춰진 prompt가 필요하면 `src/features/assignments/api/prompts.js`를 직접 수정
 
 > Vite 특성상 `VITE_*`는 빌드 타임에 dist 번들로 인라인됩니다. 프로덕션 배포 시 **Google AI Studio 콘솔에서 HTTP referrer 제한**(본인 도메인만 허용)을 걸어 quota 보호하세요. Firebase Web SDK config는 정책상 secret 아니지만(rules로 보호), 본인 프로젝트 격리를 위해 환경 변수로 분리.
 
