@@ -14,7 +14,7 @@ function formatElapsed(ms) {
  * Updates every 30 seconds. Shows nothing until at least 1 minute has passed.
  */
 export default function ElapsedTime({ startedAt, status, className = '' }) {
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
     if (!startedAt || status !== 'active') return;

@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect, memo } from 'react';
+import { useRef, useState, useMemo, useCallback, useEffect, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, Send, X } from 'lucide-react';
 import { ref, push, serverTimestamp } from 'firebase/database';
@@ -13,19 +13,24 @@ const PARTICLE_COUNT = 8;
 
 /** Tiny dot particles that burst outward on tap. */
 function TapParticles({ color }) {
-  const particles = useRef(
-    Array.from({ length: PARTICLE_COUNT }, (_, i) => {
+  // useMemo로 mount 시 한 번만 평가 — render body에서 Math.random 호출 회피.
+  // 결정적 분포(seeded)는 시각 효과상 불필요 (튀는 입자라 random 본 의미가 자연스러움)
+  const particles = useMemo(
+    () => Array.from({ length: PARTICLE_COUNT }, (_, i) => {
       const angle = (i / PARTICLE_COUNT) * 360;
       const rad = (angle * Math.PI) / 180;
+       
       const distance = 22 + Math.random() * 14;
       return {
         id: i,
         x: Math.cos(rad) * distance,
         y: Math.sin(rad) * distance,
+         
         size: 3 + Math.random() * 3,
       };
-    })
-  ).current;
+    }),
+    []
+  );
 
   return (
     <div className="absolute inset-0 pointer-events-none">

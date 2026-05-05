@@ -1,4 +1,4 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 import { ref, set, onValue, remove, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { getParticipantId } from '@/lib/participant';
@@ -89,15 +89,18 @@ function DonutChart({ counts, total }) {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
 
-  let offset = 0;
-  const segments = LEVELS.map(level => {
-    const count = counts[level.key] || 0;
-    const pct = total > 0 ? count / total : 0;
-    const dashLength = pct * circumference;
-    const seg = { ...level, count, pct, dashLength, offset };
-    offset += dashLength;
-    return seg;
-  });
+  // reduce로 cumulative offset 누적 — let 변수 reassign 회피
+  const segments = useMemo(() => {
+    return LEVELS.reduce((acc, level) => {
+      const count = counts[level.key] || 0;
+      const pct = total > 0 ? count / total : 0;
+      const dashLength = pct * circumference;
+      const offset = acc.length > 0
+        ? acc[acc.length - 1].offset + acc[acc.length - 1].dashLength
+        : 0;
+      return [...acc, { ...level, count, pct, dashLength, offset }];
+    }, []);
+  }, [counts, total, circumference]);
 
   return (
     <div className="relative inline-flex items-center justify-center">

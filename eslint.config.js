@@ -39,6 +39,10 @@ export default defineConfig([
       // 정당한 패턴까지 false positive로 잡아 노이즈 큼. 진짜 anti-pattern(예: props sync)은
       // 코드 리뷰 + case-by-case로 처리하는 게 신호 대 잡음 비가 더 좋음.
       'react-hooks/set-state-in-effect': 'off',
+      // useMemo 안에서 Date.now() / Math.random() 호출도 잡음. 시각 효과(파티클 burst)나
+      // day 단위 카운트다운처럼 useMemo로 "한 번만 평가"가 의도된 케이스에선 false positive.
+      // 진짜 stale closure 위험은 case-by-case 코드 리뷰로 잡음.
+      'react-hooks/purity': 'off',
     },
   },
   {

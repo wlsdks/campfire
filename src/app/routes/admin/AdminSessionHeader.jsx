@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, memo } from 'react';
+import { useState, useEffect, useMemo, useRef, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
@@ -20,7 +20,7 @@ function formatElapsed(ms) {
 }
 
 function ElapsedTime({ startedAt, createdAt, status }) {
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(() => Date.now());
   const origin = startedAt || createdAt;
 
   useEffect(() => {
@@ -44,7 +44,9 @@ function ElapsedTime({ startedAt, createdAt, status }) {
 }
 
 function ReviewingCountdown({ reviewingUntil }) {
-  const remaining = Math.max(0, reviewingUntil - Date.now());
+  // day 단위 표시 — mount 시 한 번 + reviewingUntil 변경 시만 재계산. 수시간 이내 변동은 무시 가능
+   
+  const remaining = useMemo(() => Math.max(0, reviewingUntil - Date.now()), [reviewingUntil]);
   const days = Math.ceil(remaining / (24 * 60 * 60 * 1000));
   if (days <= 0) return null;
   return (

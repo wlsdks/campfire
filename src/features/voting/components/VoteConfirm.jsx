@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 import { hapticSuccess } from '@/lib/haptics';
 
 // 8 particles at evenly-spaced angles
@@ -17,14 +17,24 @@ const PARTICLE_COLORS = [
 ];
 
 function ParticleBurst() {
+  // mount 시 한 번만 random 거리 계산 — render body에서 Math.random 호출 회피
+  const particles = useMemo(
+    () => PARTICLE_ANGLES.map((angle, i) => {
+      const rad = (angle * Math.PI) / 180;
+       
+      const distance = 36 + Math.random() * 12;
+      return {
+        tx: Math.cos(rad) * distance,
+        ty: Math.sin(rad) * distance,
+        size: 4 + (i % 3) * 2,
+      };
+    }),
+    []
+  );
   return (
     <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
       {PARTICLE_ANGLES.map((angle, i) => {
-        const rad = (angle * Math.PI) / 180;
-        const distance = 36 + Math.random() * 12;
-        const tx = Math.cos(rad) * distance;
-        const ty = Math.sin(rad) * distance;
-        const size = 4 + (i % 3) * 2; // 4, 6, or 8px
+        const { tx, ty, size } = particles[i];
         return (
           <motion.span
             key={i}
