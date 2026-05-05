@@ -95,7 +95,7 @@ export default function FullResults({ top3, results, submissions, revealedUpTo, 
           {sorted.map((s, i) => (
             <div key={s.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
               <span className="text-xs tabular-nums text-slate-400 w-5 text-right shrink-0">{i + 1}</span>
-              {s.imageUrl && <img src={s.imageUrl} alt={`${s.name} 제출물`} className="w-10 h-10 rounded object-cover shrink-0" />}
+              {s.imageUrl && <img src={s.imageUrl} alt={`${s.name} 제출물`} loading="lazy" className="w-10 h-10 rounded object-cover shrink-0" />}
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{s.name}</p>
                 {s.title && <p className="text-[11px] text-slate-400 truncate">{s.title}</p>}

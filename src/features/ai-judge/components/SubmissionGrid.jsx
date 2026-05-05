@@ -41,7 +41,7 @@ const SubmissionGrid = memo(function SubmissionGrid({ submissions, isPresenter }
             {(() => {
               // 프레젠터는 count에 따라 aspect 동적, 관리자 그리드(isPresenter=false)는 square 유지
               const asp = isPresenter ? presenterCfg.aspect : 'aspect-square';
-              if (s.imageUrl) return <img src={s.imageUrl} alt={`${s.name} 제출물`} className={`w-full ${asp} object-cover`} />;
+              if (s.imageUrl) return <img src={s.imageUrl} alt={`${s.name} 제출물`} loading="lazy" className={`w-full ${asp} object-cover`} />;
               if (s.code) return (
                 <div className={`w-full ${asp} bg-slate-900 flex flex-col items-center justify-center text-slate-400 gap-1`}>
                   <span className="text-2xl font-mono">{'</>'}</span>
