@@ -115,6 +115,8 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
 
   useEffect(() => {
     if (currentDM) messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // 새 메시지 추가(length 증가)에만 스크롤. currentDM 자체 변경(다른 DM 전환)은 의도적 무시
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDM?.messageList?.length]);
 
   async function handleSend() {

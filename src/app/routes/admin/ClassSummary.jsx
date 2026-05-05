@@ -81,6 +81,8 @@ export default memo(function ClassSummary({ session, participants, scores, leade
       if (q.votes) Object.keys(q.votes).forEach((pid) => ids.add(pid));
     });
     return [...ids];
+    // questionList도 questions에서 derive → 같이 변경됨
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questions]);
   const activeCount = voterIds.length;
   const activityRate = participantCount > 0 ? Math.min(100, Math.round((activeCount / participantCount) * 100)) : 0;

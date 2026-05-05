@@ -174,6 +174,8 @@ export function useSpeedQuiz(sessionId, session, { scores, participants, startTi
       logger.error('Speed quiz: reveal failed', e);
       advancingRef.current = false;
     }
+    // endSpeedQuizInternal은 같은 hook 내 함수 — 의도적 omit (recursive 호출이라 dep 추가 시 매 render 재생성)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId, stopTimer, getQuizQuestions, activateQuizQuestion]);
 
   // Watch the timer and auto-fire when it expires during speed quiz
@@ -262,7 +264,10 @@ export function useSpeedQuiz(sessionId, session, { scores, participants, startTi
   }, [sessionId, stopTimer]);
 
   // Derive counts from session data — recompute when questions or current question changes.
+  // getQuizQuestions / getCurrentQuizIndex는 hook 내 stable 함수 (변경되어도 같은 결과). 매 render 재생성 회피
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const quizCount = useMemo(() => getQuizQuestions().length, [session?.questions]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const currentQuizIndex = useMemo(() => getCurrentQuizIndex(), [session?.currentQuestion, session?.questions]);
 
   return {

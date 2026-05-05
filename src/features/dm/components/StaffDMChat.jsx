@@ -69,6 +69,8 @@ export default function StaffDMChat({
     if (open && dm) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }
+    // length 증가에만 스크롤. dm 자체 변경은 의도적 무시
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dm?.messageList?.length, open]);
 
   // 모달 닫을 때 타이핑 신호 정리

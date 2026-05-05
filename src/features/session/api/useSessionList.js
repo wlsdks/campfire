@@ -86,6 +86,8 @@ export function useSessionList(adminUid, role) {
 
   useEffect(() => {
     fetchSessions();
+    // mount 시 1회만 — fetchSessions는 hook 내 stable 함수
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const deleteSession = useCallback(async (sessionId) => {
@@ -174,6 +176,8 @@ export function useSessionList(adminUid, role) {
       logger.error('Failed to duplicate session:', err);
       return null;
     }
+    // adminUid는 hook param이라 컴포넌트 lifecycle 동안 stable
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessions]);
 
   return { sessions, loading, refresh: fetchSessions, deleteSession, duplicateSession };

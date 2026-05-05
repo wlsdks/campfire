@@ -35,6 +35,8 @@ export default function AchievementToast({ achievements }) {
     });
 
     if (!timerRef.current) showNext();
+    // showNext는 같은 컴포넌트 함수 + recursive trigger (timerRef로 self-driven)이라 의도적 omit
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [achievements]);
 
   function showNext() {

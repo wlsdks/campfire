@@ -64,6 +64,8 @@ export default function StaffPage({ sessionId, session, adminUser, onBack, onLog
       logger.error('질문 처리 실패:', err);
     }
     setActionLoading(false);
+    // adminUser?.displayName은 마운트 후 stable
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId, markAnswered, unified]);
 
   // 1:1 답변 시 수업 질문 "답변 완료"만 동기화 (자동 다음 선택이나 UI 갱신은 하지 않음)

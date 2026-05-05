@@ -521,6 +521,8 @@ export default function PresentationView({ sessionId, session, currentMode, onli
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
+    // session/sessionId는 keydown handler가 ref-style로 최신 값 access (closure 갱신은 keydown listener re-attach 대신 ref에 의존)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exitPresent, goPrev, goNext]);
 
   return (
