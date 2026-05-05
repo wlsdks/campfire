@@ -146,7 +146,9 @@ function ReadOnlyRightSidebar({ session, participants, leaderboard, voteCounts }
       Object.keys(q.votes).forEach((pid) => voterIds.add(pid));
     }
   });
-  const activeCount = voterIds.size;
+  // votes에 stale ID(참여자 노드 제거 후 잔존)가 있어도 현재 participants 등록자만 카운트
+  // → activeCount > allParticipants anomaly 회피
+  const activeCount = Array.from(voterIds).filter((pid) => participants[pid]).length;
   const pct = allParticipants > 0 ? Math.min(100, Math.round((activeCount / allParticipants) * 100)) : 0;
 
   return (

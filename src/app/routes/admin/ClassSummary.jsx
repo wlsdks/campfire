@@ -84,7 +84,8 @@ export default memo(function ClassSummary({ session, participants, scores, leade
     // questionList도 questions에서 derive → 같이 변경됨
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questions]);
-  const activeCount = voterIds.length;
+  // stale ID(참여자 노드 제거 후 잔존)는 제외 — 현재 participants 등록자만 카운트
+  const activeCount = voterIds.filter((pid) => participants[pid]).length;
   const activityRate = participantCount > 0 ? Math.min(100, Math.round((activeCount / participantCount) * 100)) : 0;
   const topStudent = leaderboard.length > 0 ? leaderboard[0] : null;
 
