@@ -432,13 +432,32 @@
         "submissions": {
           "$submissionId": {
             ".read": true,
-            ".write": true
+            ".write": true,
+            ".validate": "newData.hasChild('name')",
+            "name": {
+              ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 30 && (!data.exists() || data.child('name').val() === newData.child('name').val())"
+            },
+            "pin": {
+              ".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 8 && (!data.exists() || !data.child('pin').exists() || data.child('pin').val() === newData.child('pin').val()))"
+            },
+            "prdContent": {
+              ".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 10000)"
+            },
+            "code": {
+              ".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 50000)"
+            },
+            "screenshots": { ".validate": true },
+            "submittedAt": { ".validate": true },
+            "updatedAt": { ".validate": "!newData.exists() || newData.isNumber()" }
           }
         },
         "results": {
           "$submissionId": {
             ".read": true,
-            ".write": true
+            ".write": true,
+            "summary": { ".validate": true },
+            "judges": { ".validate": true },
+            "judgedAt": { ".validate": true }
           }
         },
         "awards": {
