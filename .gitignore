@@ -36,7 +36,7 @@ Thumbs.db
 
 # Debug
 *.local
-screenshots/
+/screenshots/
 .playwright-mcp/
 .claude/
 # 내부 작업 로그 (skill plans, audit findings 등)
