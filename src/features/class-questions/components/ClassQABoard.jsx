@@ -22,6 +22,7 @@ export default function ClassQABoard({ sessionId, showInput = true, role, isAdmi
   const [tab, setTab] = useState('all');
   const [inputText, setInputText] = useState('');
   const [anonymous, setAnonymous] = useState(false);
+  const [postError, setPostError] = useState('');
   const pid = getParticipantId();
   const nickname = getNickname() || '익명';
   const displayName = anonymous ? '익명' : nickname;
@@ -40,8 +41,10 @@ export default function ClassQABoard({ sessionId, showInput = true, role, isAdmi
   const handlePostQuestion = useCallback(async () => {
     const trimmed = inputText.trim();
     if (!trimmed) return;
+    setPostError('');
     const success = await postQuestion(trimmed, displayName, anonymous ? '' : pid);
     if (success) setInputText('');
+    else setPostError('질문 등록에 실패했습니다. 잠시 후 다시 시도해주세요.');
   }, [inputText, postQuestion, displayName, anonymous, pid]);
 
   if (questions.length === 0 && !showInput) {
@@ -132,6 +135,9 @@ export default function ClassQABoard({ sessionId, showInput = true, role, isAdmi
               <span className="text-sm text-slate-400 dark:text-slate-500">잠시 후 다시 질문할 수 있어요</span>
             )}
           </div>
+          {postError && (
+            <p className="text-sm text-red-500 dark:text-red-400 px-1">{postError}</p>
+          )}
         </motion.div>
       )}
 

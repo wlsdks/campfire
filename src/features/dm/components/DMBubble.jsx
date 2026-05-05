@@ -5,7 +5,7 @@ import { MessageSquare, Send, X, Plus, ArrowLeft, Headset, CheckCircle2, Clipboa
 import { formatChatTime } from '@/lib/utils';
 import Button from '@/components/ui/Button';
 import PickMascot from '@/components/ui/PickMascot';
-import { useDMTyping } from '@/features/dm/api/useDM';
+import { useDMTyping } from '@/features/dm/api/useDMTyping';
 
 const DMMessage = memo(function DMMessage({ msg, isOwn }) {
   if (msg.senderType === 'system') {
@@ -87,6 +87,8 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
   const [requestSending, setRequestSending] = useState(false);
   const [requestSent, setRequestSent] = useState(false);
   const [showResolved, setShowResolved] = useState(false);
+  const [sendError, setSendError] = useState('');
+  const [requestError, setRequestError] = useState('');
   const messagesEndRef = useRef(null);
 
   // 패널 열릴 때 배경 스크롤 잠금
@@ -119,8 +121,10 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
     const text = inputText.trim();
     if (!text || sending || !currentDM) return;
     setSending(true);
+    setSendError('');
     const ok = await onSendMessage(text, senderName);
     if (ok) setInputText('');
+    else setSendError('전송에 실패했습니다. 다시 시도해주세요.');
     setSending(false);
   }
 
@@ -128,12 +132,15 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
     e.preventDefault();
     if (!requestText.trim() || requestSending) return;
     setRequestSending(true);
+    setRequestError('');
     const ok = await onRequestHelp(requestText.trim());
     setRequestSending(false);
     if (ok) {
       setRequestText('');
       setRequestSent(true);
       setTimeout(() => { setRequestSent(false); setTab('list'); }, 1500);
+    } else {
+      setRequestError('도움 요청에 실패했습니다. 잠시 후 다시 시도해주세요.');
     }
   }
 
@@ -227,15 +234,20 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
                 <span className="text-xs text-slate-400 dark:text-slate-500">새로운 도움이 필요하면 다시 요청해주세요</span>
               </motion.div>
             ) : (
-              <div className="flex items-center gap-2 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:py-3 border-t border-slate-100 dark:border-slate-700 shrink-0">
-                <input type="text" value={inputText} onChange={(e) => setInputText(e.target.value)}
-                  onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-                  placeholder="메시지를 입력하세요" aria-label="도움 요청 메시지" maxLength={200} autoFocus
-                  className="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white dark:focus:bg-slate-600 transition-colors duration-150" />
-                <button onClick={handleSend} disabled={!inputText.trim() || sending}
-                  className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 disabled:opacity-30 hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150 shrink-0"
-                  aria-label="보내기"><Send size={16} /></button>
-              </div>
+              <>
+                {sendError && (
+                  <p className="px-4 pt-2 text-xs text-red-500 dark:text-red-400 border-t border-slate-100 dark:border-slate-700 shrink-0">{sendError}</p>
+                )}
+                <div className="flex items-center gap-2 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:py-3 border-t border-slate-100 dark:border-slate-700 shrink-0">
+                  <input type="text" value={inputText} onChange={(e) => setInputText(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+                    placeholder="메시지를 입력하세요" aria-label="도움 요청 메시지" maxLength={200} autoFocus
+                    className="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white dark:focus:bg-slate-600 transition-colors duration-150" />
+                  <button onClick={handleSend} disabled={!inputText.trim() || sending}
+                    className="flex items-center justify-center w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 disabled:opacity-30 hover:bg-slate-800 dark:hover:bg-slate-200 transition-colors duration-150 shrink-0"
+                    aria-label="보내기"><Send size={16} /></button>
+                </div>
+              </>
             )}
           </>
         ) : (
@@ -316,6 +328,9 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
                     <textarea value={requestText} onChange={(e) => setRequestText(e.target.value)}
                       placeholder="어떤 도움이 필요하신가요?" aria-label="도움 요청 내용" maxLength={200} rows={3} autoFocus
                       className="w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-4 py-3 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none transition-colors duration-150" />
+                    {requestError && (
+                      <p className="text-xs text-red-500 dark:text-red-400">{requestError}</p>
+                    )}
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-slate-400 tabular-nums">{requestText.length}/200</span>
                       <Button type="submit" variant="primary" size="md" disabled={!requestText.trim() || requestSending}>

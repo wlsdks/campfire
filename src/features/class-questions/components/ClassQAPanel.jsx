@@ -186,6 +186,7 @@ export default memo(function ClassQAPanel({ sessionId, open, onClose, onNewQuest
     useClassQuestions(sessionId);
   const [inputText, setInputText] = useState('');
   const [posting, setPosting] = useState(false);
+  const [postError, setPostError] = useState('');
   const [tab, setTab] = useState('all'); // 'all' | 'mine'
   const [aiAllowed, setAiAllowed] = useState(false);
   const inputRef = useRef(null);
@@ -223,8 +224,10 @@ export default memo(function ClassQAPanel({ sessionId, open, onClose, onNewQuest
     const text = inputText.trim();
     if (!text || !canPost || posting) return;
     setPosting(true);
+    setPostError('');
     const ok = await postQuestion(text, nickname, participantId, { aiAllowed });
     if (ok) setInputText('');
+    else setPostError('질문 등록에 실패했습니다. 잠시 후 다시 시도해주세요.');
     setPosting(false);
   }
 
@@ -361,6 +364,10 @@ export default memo(function ClassQAPanel({ sessionId, open, onClose, onNewQuest
                   </p>
                 )}
               </div>
+            )}
+
+            {postError && (
+              <p className="px-4 pt-2 text-xs text-red-500 dark:text-red-400 bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700 shrink-0">{postError}</p>
             )}
 
             {/* Input */}

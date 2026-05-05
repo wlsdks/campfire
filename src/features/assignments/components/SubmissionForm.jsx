@@ -70,6 +70,7 @@ export default function SubmissionForm({ onSubmit, existingSubmission, assignmen
   const [submitted, setSubmitted] = useState(false);
   const [pinError, setPinError] = useState('');
   const [nameError, setNameError] = useState('');
+  const [submitError, setSubmitError] = useState('');
   const fileInputRef = useRef(null);
   const htmlInputRef = useRef(null);
 
@@ -187,6 +188,7 @@ export default function SubmissionForm({ onSubmit, existingSubmission, assignmen
     setSubmitting(true);
     setPinError('');
     setNameError('');
+    setSubmitError('');
     try {
       await onSubmit({
         name: name.trim(),
@@ -201,6 +203,9 @@ export default function SubmissionForm({ onSubmit, existingSubmission, assignmen
         setPinError('조회용 비밀번호가 일치하지 않습니다');
       } else if (err.message === 'NAME_TAKEN') {
         setNameError('이미 사용 중인 이름입니다. 다른 이름을 쓰거나, 본인 제출물 수정이라면 "내 제출물 조회"를 이용하세요.');
+      } else {
+        console.error('[submission] failed', err);
+        setSubmitError('제출에 실패했습니다. 네트워크를 확인하고 다시 시도해주세요.');
       }
     } finally {
       setSubmitting(false);
@@ -517,6 +522,13 @@ export default function SubmissionForm({ onSubmit, existingSubmission, assignmen
           }}
           disabled={!hasPrd || !hasCode}
         />
+      )}
+
+      {submitError && (
+        <div className="flex items-start gap-2 px-3 py-2.5 rounded-lg bg-red-50 dark:bg-red-900/20 ring-1 ring-red-100 dark:ring-red-900/40 text-red-600 dark:text-red-400 text-xs">
+          <AlertCircle size={14} className="mt-0.5 shrink-0" />
+          <span>{submitError}</span>
+        </div>
       )}
 
       {/* Submit — sticky bottom */}
