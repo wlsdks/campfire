@@ -5,6 +5,7 @@ import { useTheme } from '@/hooks/useTheme';
 import PickMascot from '@/components/ui/PickMascot';
 import Avatar from '@/components/ui/Avatar';
 import ConnectionBanner from '@/components/ui/ConnectionBanner';
+import { useConnectionStatus } from '@/hooks/useConnectionStatus';
 import { useScores } from '@/features/quiz/api/useScores';
 import { useSession } from '@/features/session/api/useSession';
 import ElapsedTime from '@/components/ui/ElapsedTime';
@@ -54,6 +55,7 @@ function HeaderScore({ value }) {
 export default function StudentHeader({ sessionId }) {
   const { session } = useSession(sessionId);
   const { scores } = useScores(sessionId);
+  const { connected } = useConnectionStatus();
   const nickname = getNickname();
   const myScore = scores[getParticipantId()];
   const totalScore = myScore?.total || 0;
@@ -87,7 +89,18 @@ export default function StudentHeader({ sessionId }) {
       >
         <div className="flex items-center justify-between px-5 py-4 max-w-[620px] mx-auto">
           <div className="flex items-center gap-2.5">
-            <PickMascot size="xs" />
+            <div className="relative">
+              <PickMascot size="xs" />
+              {/* 연결 상태 dot — emerald 연결 / amber 끊김 (debounced).
+                  CLAUDE.md 페르소나 "Wi-Fi 불안정 시 연결 상태 표시 중요" 충족. */}
+              <span
+                className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full ring-2 ring-white dark:ring-slate-800 transition-colors duration-300 ${
+                  connected ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'
+                }`}
+                aria-label={connected ? '서버 연결됨' : '서버 재연결 중'}
+                title={connected ? '실시간 연결됨' : '재연결 중...'}
+              />
+            </div>
             <span className="font-bold text-lg text-slate-900 dark:text-slate-100 tracking-tight">Pick</span>
             <ElapsedTime startedAt={session?.startedAt} status={session?.status} />
           </div>

@@ -103,6 +103,7 @@ const GAME_MODES = {
   qaBoard: { label: 'Q&A 보드 진행 중', icon: Users },
   randomPicker: { label: '발표자 뽑기 진행 중', icon: UserCircle },
   awards: { label: '시상식 진행 중', icon: Award },
+  joinShow: { label: '참여자 확인 중', icon: Users },
 };
 
 export default memo(function WaitingPage({ sessionId, pendingEvent = null, courseName = null, currentMode = null, persistentAssignmentId = null, persistentAssignmentTitle = null }) {

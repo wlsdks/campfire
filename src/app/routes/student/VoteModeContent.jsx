@@ -108,14 +108,14 @@ export function VoteModeContent({
     );
   }
   if (currentMode === 'joinShow') {
+    // 학생 화면은 큰 카운터 대신 친절한 대기 안내 — joinShow는 전자칠판 전용 시각화고
+    // 학생 입장에선 "들어왔다는 걸 확인 중"임을 알면 충분 (WaitingPage의 GAME_MODES.joinShow 라벨로).
     return (
-      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pt-20 pb-[calc(10rem+env(safe-area-inset-bottom))]">
-        <StudentHeader sessionId={sessionId} />
-        <Suspense fallback={<SuspenseFallback />}>
-          <LazyJoinShow sessionId={sessionId} />
-        </Suspense>
-        <StudentBottomBar sessionId={sessionId} />
-      </div>
+      <WaitingPage
+        sessionId={sessionId}
+        courseName={session?.courseName}
+        currentMode="joinShow"
+      />
     );
   }
 
