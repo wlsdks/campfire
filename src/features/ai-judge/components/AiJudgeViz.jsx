@@ -37,7 +37,7 @@ export default memo(function AiJudgeViz({ sessionId, questionId, isAdmin, isPres
 
   // 프레젠터 + 심사 진행 중: 큰 화면용 피드백 오버레이 (판사별 라이브 thinking)
   if (isPresenter && isJudging) {
-    return <PresenterJudgingOverlay judgeState={judgeState} judgeLog={judgeLog} submissions={submissions} />;
+    return <PresenterJudgingOverlay judgeState={judgeState} judgeLog={judgeLog} submissions={submissions} results={results} />;
   }
 
   // 헤더도 SubmissionGrid와 같은 폭으로 맞춰 좌우 간격 과다 방지

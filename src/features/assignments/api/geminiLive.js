@@ -25,34 +25,44 @@ async function buildLiveParts(submission) {
   const textBits = [];
   if (submission.title) textBits.push(`[제목] ${submission.title}`);
   if (submission.description) textBits.push(`[설명]\n${submission.description.slice(0, 600)}`);
-  // HTML/JS/CSS 코드 제출 — 최대 40KB로 잘라서 평가. 작품 동작 품질도 함께 판단.
+  // HTML/JS/CSS 코드 제출 — 최대 80KB로 잘라서 평가. 클라/RTDB 한계 100KB와 호환.
+  // 80KB ≈ 20K tokens, flash-lite 1M 토큰 한계에는 충분히 여유.
   if (submission.code) {
-    const code = submission.code.length > 40000
-      ? submission.code.slice(0, 40000) + '\n[... 이하 생략 ...]'
+    const code = submission.code.length > 80000
+      ? submission.code.slice(0, 80000) + '\n[... 이하 생략 ...]'
       : submission.code;
     textBits.push(`[제출 코드 (HTML/JS/CSS)]\n${code}`);
   }
-  // 텍스트가 전혀 없고 이미지만 있는 경우에도 Gemini 멀티모달은 동작 — 빈 text 파트는 생략.
-  if (textBits.length > 0) parts.push({ text: textBits.join('\n') });
 
+  let imageFailed = false;
   if (submission.imageUrl) {
     // 3회까지 재시도 — 일시적 네트워크 지터 대응
     let imagePart = null;
-    let lastErr = null;
     for (let i = 0; i < 3; i++) {
       try {
         imagePart = await urlToInlinePart(submission.imageUrl);
         break;
-      } catch (err) {
-        lastErr = err;
+      } catch {
         if (i < 2) await new Promise(r => setTimeout(r, 400 * (i + 1)));
       }
     }
-    if (!imagePart) throw lastErr || new Error('이미지 로드 실패');
-    parts.push({ text: '\n[제출 이미지]' });
-    parts.push(imagePart);
+    if (imagePart) {
+      if (textBits.length > 0) parts.push({ text: textBits.join('\n') });
+      parts.push({ text: '\n[제출 이미지]' });
+      parts.push(imagePart);
+      return { parts, imageFailed: false };
+    }
+    // 이미지 로드 실패 — throw 대신 텍스트 fallback. 텍스트도 없으면 그때만 throw.
+    // 이전에는 imageUrl 한 번 거부되면 전체 제출이 실패했음. 라이브 수업에서 제출자 안타까움.
+    imageFailed = true;
+    textBits.push('[이미지를 불러올 수 없어 텍스트 정보만으로 평가합니다]');
   }
-  return parts;
+
+  if (textBits.length === 0) {
+    throw new Error('제출 내용을 불러올 수 없습니다 (이미지·텍스트 모두 비어있음)');
+  }
+  parts.push({ text: textBits.join('\n') });
+  return { parts, imageFailed };
 }
 
 /**
@@ -120,7 +130,7 @@ async function evaluateAllJudgesAtOnce(submission, questionTitle) {
   if (!genAI) throw new Error('Gemini API가 초기화되지 않았습니다.');
 
   const systemInstruction = buildAllJudgesSystemInstruction(questionTitle);
-  const parts = await buildLiveParts(submission);
+  const { parts, imageFailed } = await buildLiveParts(submission);
 
   let lastErr = null;
   for (const modelName of LIVE_MODEL_FALLBACKS) {
@@ -170,7 +180,7 @@ async function evaluateAllJudgesAtOnce(submission, questionTitle) {
           };
         }
       }
-      return out;
+      return { judges: out, imageFailed };
     } catch (err) {
       lastErr = err;
       const msg = (err?.message || '').toLowerCase();
@@ -196,10 +206,11 @@ async function evaluateAllJudgesAtOnce(submission, questionTitle) {
  */
 export async function judgeLiveSubmission(submission, questionTitle, onJudgeComplete, onJudgeStart) {
   // pacing 파라미터 — 전자칠판에 7명 판사의 "조사 중 → 평가 완료" 흐름을 체감하도록.
-  const START_STAGGER_MS = 350;
-  const MIN_THINK_MS = 1800;
-  const THINK_JITTER_MS = 1200;
-  const DONE_STAGGER_MS = 250;  // 결과 도착 후 판사별 done 방송 간격
+  // 30명 기준 1분 안 완료 목표로 단축. 7명 판사 thinking 연출은 유지하되 간격만 좁힘.
+  const START_STAGGER_MS = 180;
+  const MIN_THINK_MS = 900;
+  const THINK_JITTER_MS = 600;
+  const DONE_STAGGER_MS = 140;  // 결과 도착 후 판사별 done 방송 간격
 
   // 1) 모든 판사 thinking 시작 방송 (stagger) + 같은 시점에 백그라운드로 단일 API 호출 시작
   const judgePromise = evaluateAllJudgesAtOnce(submission, questionTitle).catch((err) => err);
@@ -218,6 +229,8 @@ export async function judgeLiveSubmission(submission, questionTitle, onJudgeComp
 
   // 3) 결과를 판사별로 stagger 방송 — 동시에 done되지 않도록 + MIN_THINK_MS 보장
   const results = {};
+  const apiJudges = apiFailed ? null : apiResult.judges;
+  const imageFailed = apiFailed ? false : !!apiResult.imageFailed;
   for (let i = 0; i < JUDGES.length; i++) {
     const judge = JUDGES[i];
     const startedAt = startTimes[judge.id];
@@ -233,7 +246,7 @@ export async function judgeLiveSubmission(submission, questionTitle, onJudgeComp
         error: true,
       };
     } else {
-      results[judge.id] = apiResult[judge.id];
+      results[judge.id] = apiJudges[judge.id];
     }
 
     const waitMs = minDoneAt - Date.now();
@@ -252,6 +265,7 @@ export async function judgeLiveSubmission(submission, questionTitle, onJudgeComp
       erroredJudges: JUDGES.length - valid.length,
       avgScore: Math.round(avgScore * 10) / 10,
       totalScore,
+      imageFailed,
     },
   };
 }

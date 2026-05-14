@@ -126,7 +126,7 @@ export function useSubmitLive(sessionId, questionId) {
       title: (title || '').slice(0, 200),
       description: (description || '').slice(0, 500),
       imageUrl: imageUrl ? String(imageUrl).slice(0, 2000) : null,
-      code: (code || '').slice(0, 50000),
+      code: (code || '').slice(0, 100000),
       // 최초 제출 시각 보존 — 재제출이 정렬 순서를 뒤섞지 않도록 (전자칠판 SubmissionGrid,
       // 심사 순서가 submittedAt 오름차순이므로 첫 제출 기준 유지가 공정)
       submittedAt: prevData?.submittedAt || serverTimestamp(),
@@ -225,10 +225,10 @@ export function useLiveJudging(sessionId, questionId) {
       // 배치 동시 심사 — 100명 규모에서 총 소요시간을 1/CONCURRENCY로 단축.
       // 값이 너무 크면 Gemini RPM 한계에 걸림 (유료 1000 RPM 기준 5~6 배치가 안전).
       //
-      // pacing: 5 → 2로 낮춤. 이유: 전자칠판에 "현재 심사 중" 제출자가 너무 빨리 교체돼서
-      // 학생들이 심사 과정(판사들이 고민하는 모습)을 체감할 시간이 부족했음. 2명 동시면
-      // 30명 기준 약 2분(한 건당 ~10초)으로 라이브 수업 긴장감과 속도 균형.
-      const CONCURRENCY = 2;
+      // 5명 동시 — 30명 약 42초 목표 (1건당 ~7초 × 30/5 ≈ 42초).
+      // flash-lite Tier1 RPM ~4000으로 5 동시는 안전 마진 충분.
+      // 일시 503은 withRetry 자동 처리.
+      const CONCURRENCY = 5;
       let completed = 0;
       let running = 0;
       let index = 0;

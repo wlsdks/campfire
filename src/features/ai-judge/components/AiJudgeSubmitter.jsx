@@ -47,11 +47,11 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
     }
     try {
       const text = await file.text();
-      const truncated = text.slice(0, 50000);
+      const truncated = text.slice(0, 100000);
       setCode(truncated);
       setCodeFileName(file.name);
-      if (text.length > 50000) {
-        setSubmitError(`파일이 50KB를 초과해 앞부분만 사용됩니다 (${Math.round(text.length / 1024)}KB)`);
+      if (text.length > 100000) {
+        setSubmitError(`파일이 100KB를 초과해 앞부분만 사용됩니다 (${Math.round(text.length / 1024)}KB)`);
         setTimeout(() => setSubmitError(null), 4000);
       }
     } catch (err) {
@@ -128,13 +128,22 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
           myResult={myResult}
           mySubmission={submission}
           revealedUpTo={judgeState?.revealedUpTo ?? 0}
+          results={results}
         />
       </motion.div>
     );
   }
 
-  // 심사 중
+  // 심사 중 — 학생 폰 화면. 현재 누가 심사 중인지 + 내 차례까지 N건 안내.
   if (isJudging) {
+    const cur = judgeState?.current || 0;
+    const total = judgeState?.total || 0;
+    const pct = total ? Math.min(100, (cur / total) * 100) : 0;
+    const currentName = judgeState?.currentName;
+    const isMyTurn = currentName && currentName === nickname;
+    // 본인이 아직 심사 안 받았으면 "내 차례까지 약 N건" 추정 — 정확한 위치는 모르나 평균적으로 남은건/2
+    const remaining = total > cur ? Math.max(0, total - cur) : 0;
+
     return (
       <motion.div
         role="status"
@@ -144,24 +153,62 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
         className="rounded-2xl border border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden"
       >
         {submission?.imageUrl && (
-          <img src={submission.imageUrl} alt="내 제출물" className="w-full max-h-40 object-cover opacity-80" />
+          <motion.img
+            src={submission.imageUrl}
+            alt="내 제출물"
+            className="w-full max-h-40 object-cover"
+            animate={isMyTurn ? { scale: [1, 1.02, 1] } : { scale: 1 }}
+            transition={isMyTurn ? { duration: 1.2, repeat: Infinity, ease: 'easeInOut' } : { duration: 0 }}
+          />
         )}
         <div className="p-6 text-center space-y-4">
+          {/* 두근거리는 sparkle — 본인 차례엔 indigo로 강조 + scale pulse */}
           <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-            className="w-14 h-14 rounded-full bg-slate-900 dark:bg-slate-100 mx-auto flex items-center justify-center"
+            animate={isMyTurn
+              ? { rotate: 360, scale: [1, 1.15, 1] }
+              : { rotate: 360 }}
+            transition={isMyTurn
+              ? { rotate: { duration: 1.5, repeat: Infinity, ease: 'linear' }, scale: { duration: 0.9, repeat: Infinity, ease: 'easeInOut' } }
+              : { duration: 2, repeat: Infinity, ease: 'linear' }}
+            className={`w-14 h-14 rounded-full mx-auto flex items-center justify-center ${
+              isMyTurn ? 'bg-indigo-500 ring-4 ring-indigo-200 dark:ring-indigo-500/30' : 'bg-slate-900 dark:bg-slate-100'
+            }`}
           >
             <Sparkles size={24} className="text-white dark:text-slate-900" />
           </motion.div>
+
           <div>
-            <p className="text-slate-900 dark:text-slate-100 text-lg font-bold">AI 심사 진행 중</p>
+            <p className="text-slate-900 dark:text-slate-100 text-lg font-bold">
+              {isMyTurn ? '✨ 지금 내 작품 심사 중!' : 'AI 심사 진행 중'}
+            </p>
             <p className="text-slate-400 text-sm mt-1">
-              {judgeState?.current && judgeState?.total
-                ? `${judgeState.current} / ${judgeState.total}명 심사 중`
-                : '곧 결과가 공개됩니다'}
+              {total > 0 ? (
+                <>
+                  <span className="font-semibold text-slate-600 dark:text-slate-300">{cur}</span>
+                  <span> / {total}명 심사 완료</span>
+                </>
+              ) : '곧 결과가 공개됩니다'}
             </p>
           </div>
+
+          {/* 진행률 바 */}
+          {total > 0 && (
+            <div className="w-full h-1.5 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-slate-900 dark:bg-slate-100 rounded-full"
+                animate={{ width: `${pct}%` }}
+                transition={{ duration: 0.4 }}
+              />
+            </div>
+          )}
+
+          {/* 현재 심사 중인 학생 + 남은 건수 */}
+          {currentName && !isMyTurn && (
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              지금 <span className="font-semibold text-slate-700 dark:text-slate-200">{currentName}</span>님 심사 중 · 남은 약 {remaining}건
+            </p>
+          )}
+
           {submission?.title && (
             <div className="text-xs text-slate-400 pt-2 border-t border-slate-100 dark:border-slate-700">
               내 제출: {submission.title}
@@ -331,12 +378,12 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
             placeholder={`파일을 선택하거나 직접 붙여넣으세요\n\n<!DOCTYPE html>\n<html>\n  <body>\n    <!-- HTML/CSS/JS -->\n  </body>\n</html>`}
             aria-label="HTML 코드"
             rows={10}
-            maxLength={50000}
+            maxLength={100000}
             className="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-600 rounded-lg px-3.5 py-2.5 text-[13px] font-mono text-slate-800 dark:text-slate-200 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-y leading-relaxed"
           />
           <div className="flex items-center justify-between text-[11px] text-slate-400">
             <span>파일 업로드 또는 직접 붙여넣기</span>
-            <span className="tabular-nums">{code.length.toLocaleString()}/50,000</span>
+            <span className="tabular-nums">{code.length.toLocaleString()}/100,000</span>
           </div>
         </div>
       )}

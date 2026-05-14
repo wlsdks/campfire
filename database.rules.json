@@ -146,7 +146,7 @@
                 "title": { ".validate": "newData.isString() && newData.val().length <= 200" },
                 "description": { ".validate": "newData.isString() && newData.val().length <= 500" },
                 "imageUrl": { ".validate": "newData.isString() && newData.val().length <= 2000" },
-                "code": { ".validate": "newData.isString() && newData.val().length <= 50000" },
+                "code": { ".validate": "newData.isString() && newData.val().length <= 100000" },
                 "submittedAt": { ".validate": true }
               }
             },
@@ -158,7 +158,8 @@
                   "avgScore": { ".validate": "newData.isNumber()" },
                   "totalScore": { ".validate": "newData.isNumber()" },
                   "totalJudges": { ".validate": "newData.isNumber()" },
-                  "erroredJudges": { ".validate": "newData.isNumber()" }
+                  "erroredJudges": { ".validate": "newData.isNumber()" },
+                  "imageFailed": { ".validate": "newData.isBoolean()" }
                 },
                 "judges": { ".validate": true },
                 "judgedAt": { ".validate": true }
@@ -444,7 +445,7 @@
               ".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 10000)"
             },
             "code": {
-              ".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 50000)"
+              ".validate": "!newData.exists() || (newData.isString() && newData.val().length <= 100000)"
             },
             "screenshots": { ".validate": true },
             "submittedAt": { ".validate": true },
