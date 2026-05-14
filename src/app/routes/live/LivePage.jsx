@@ -177,7 +177,7 @@ export default function LivePage() {
               >
                 <Suspense fallback={<GameFallback />}>
                   {currentMode === 'lottery' && (
-                    <Lottery participants={drawParticipants} onResult={(names) => handleGameResult(names, 'lottery')} />
+                    <Lottery participants={drawParticipants} onResult={(names) => handleGameResult(names, 'lottery')} presenter />
                   )}
                   {currentMode === 'breakTime' && <BreakTimer />}
                   {currentMode === 'leaderboard' && <div className="w-full max-w-2xl mx-auto [&_.max-w-xl]:max-w-2xl"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" /></div>}

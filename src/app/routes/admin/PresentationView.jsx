@@ -164,7 +164,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
   let contentKey, content;
   const gameContent = (() => {
     if (currentMode === 'lottery') return (
-      <Lottery participants={drawParticipants} onResult={(names) => onGameResult?.(names, 'lottery')} />
+      <Lottery participants={drawParticipants} onResult={(names) => onGameResult?.(names, 'lottery')} presenter={presentMode} />
     );
     if (currentMode === 'breakTime') return <BreakTimer />;
     if (currentMode === 'leaderboard') return <div className="w-full max-w-xl md:max-w-2xl [&_.max-w-xl]:max-w-2xl px-2 md:px-0"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" /></div>;

@@ -1,15 +1,10 @@
 import { useState, useRef, useEffect, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Ticket, Minus, Plus, RotateCcw, Sparkles } from 'lucide-react';
+import { Ticket, Minus, Plus, RotateCcw, Sparkles, Trophy } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Avatar from '@/components/ui/Avatar';
 
 const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
-
-const CARD_COLORS = [
-  'bg-slate-900', 'bg-slate-700', 'bg-slate-800',
-  'bg-slate-600', 'bg-slate-900',
-];
 
 function pickLotteryWinners(participants, count) {
   const hasTicketMode = participants.some((participant) => (participant.tickets || 0) > 0);
@@ -41,99 +36,105 @@ function pickLotteryWinners(participants, count) {
 }
 
 /**
- * SlotCard — 추첨 슬롯 한 칸.
- * rolling 페이즈: 이름이 빠르게 회전 (복권 슬롯머신).
- * stopped: 당첨자 확정. spring overshoot + particle 등장.
+ * BigSlot — 중앙 큰 슬롯 카드. 한 번에 한 명씩 dramatic하게.
+ * - rolling: 이름이 빠르게 지나감 (80ms 간격 슬롯머신)
+ * - stopped: 큰 spring overshoot + sparkle burst + (1등이면) confetti
  */
-function SlotCard({ index, color, rolling, displayName, winner, hasTicketMode, isFirst }) {
-  const isStopped = !rolling && !!winner;
+function BigSlot({ presenter, rollingName, winner, slotIdx, isLast, isFirst }) {
+  const stopped = !!winner;
+  const cardSize = presenter
+    ? 'w-80 h-96 md:w-96 md:h-[28rem]'
+    : 'w-56 h-72';
+  const nameSize = presenter ? 'text-5xl md:text-6xl' : 'text-3xl';
+  const avatarSize = presenter ? '2xl' : 'xl';
+  const badgeSize = presenter ? 'text-base px-4 py-1.5' : 'text-xs px-3 py-1';
 
   return (
-    <div style={{ perspective: 1000 }}>
+    <motion.div
+      key={`slot-${slotIdx}`}
+      initial={{ opacity: 0, scale: 0.85, y: 20 }}
+      animate={
+        stopped
+          ? { opacity: 1, scale: [1, 1.12, 0.96, 1.04, 1], y: 0 }
+          : { opacity: 1, scale: 1, y: 0, x: [0, -3, 3, -3, 3, 0] }
+      }
+      transition={
+        stopped
+          ? { scale: { type: 'spring', stiffness: 380, damping: 16 }, y: { duration: 0.3 } }
+          : { opacity: { duration: 0.3 }, scale: { duration: 0.3 }, y: { duration: 0.3 }, x: { duration: 0.18, repeat: Infinity, ease: 'easeInOut' } }
+      }
+      className={`relative ${cardSize} rounded-3xl bg-slate-900 shadow-2xl flex flex-col items-center justify-center overflow-hidden`}
+      style={{ perspective: 1000 }}
+    >
+      {/* Sheen sweep */}
       <motion.div
-        // rolling 중 살짝 진동, 멈출 때 spring overshoot
-        initial={{ rotateY: 90, opacity: 0, scale: 0.85 }}
-        animate={
-          isStopped
-            ? { rotateY: 0, opacity: 1, scale: [1, 1.12, 0.96, 1.04, 1] }
-            : rolling
-            ? { rotateY: 0, opacity: 1, scale: 1, x: [0, -2, 2, -2, 2, 0], y: [0, -1, 1, -1, 1, 0] }
-            : { rotateY: 0, opacity: 1, scale: 1 }
-        }
-        transition={
-          isStopped
-            ? { rotateY: { duration: 0.3 }, opacity: { duration: 0.2 }, scale: { type: 'spring', stiffness: 380, damping: 16 } }
-            : rolling
-            ? { rotateY: { duration: 0.3 }, scale: { duration: 0.2 }, x: { duration: 0.18, repeat: Infinity, ease: 'easeInOut' }, y: { duration: 0.22, repeat: Infinity, ease: 'easeInOut' } }
-            : { type: 'spring', stiffness: 280, damping: 22 }
-        }
-        className={`w-40 h-52 ${color} rounded-2xl flex flex-col items-center justify-center shadow-xl relative overflow-hidden`}
-        style={{ transformStyle: 'preserve-3d' }}
-      >
-        {/* Sheen sweep — rolling 중 반복, 멈추면 한 번만 */}
-        <motion.div
-          className="absolute inset-0 bg-white/15 rounded-2xl"
-          initial={{ x: '-100%', skewX: '-20deg' }}
-          animate={
-            rolling
-              ? { x: ['-100%', '200%'] }
-              : { x: '200%' }
-          }
-          transition={
-            rolling
-              ? { duration: 0.9, repeat: Infinity, ease: 'easeOut' }
-              : { duration: 0.45, ease: 'easeOut', delay: 0.1 }
-          }
-        />
+        className="absolute inset-0 bg-white/15 rounded-3xl pointer-events-none"
+        initial={{ x: '-100%', skewX: '-20deg' }}
+        animate={stopped ? { x: '200%' } : { x: ['-100%', '200%'] }}
+        transition={stopped ? { duration: 0.5, ease: 'easeOut', delay: 0.1 } : { duration: 0.9, repeat: Infinity, ease: 'easeOut' }}
+      />
 
-        {/* 멈출 때 sparkle particle 8개 */}
-        {isStopped && <SparkleBurst />}
+      {stopped && <SparkleBurst presenter={presenter} />}
+      {stopped && isFirst && <Suspense fallback={null}><ConfettiBurst /></Suspense>}
 
-        {/* 1등 카드만 confetti */}
-        {isStopped && isFirst && <Suspense fallback={null}><ConfettiBurst /></Suspense>}
-
-        <Avatar name={rolling ? displayName : winner?.nickname || '?'} size="lg" />
-
-        {/* rolling 중에는 블러 처리한 빠른 이름 */}
-        <div className={`text-white font-bold text-lg mt-2 transition ${rolling ? 'blur-[1px] opacity-90' : ''}`}>
-          {rolling ? displayName : winner?.nickname}
-        </div>
-
-        <span className={`mt-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
-          isStopped ? 'bg-white/30 text-white' : 'bg-white/10 text-white/60'
-        }`}>
-          {isStopped ? `#${index + 1} 당첨` : '추첨 중...'}
-        </span>
-
-        {isStopped && hasTicketMode && (
-          <div className="text-white/60 text-[10px] mt-1">티켓 {winner.tickets || 0}장</div>
-        )}
-      </motion.div>
-    </div>
+      <Avatar name={stopped ? winner.nickname : rollingName} size={avatarSize} />
+      <div className={`text-white font-bold mt-4 ${nameSize} ${!stopped ? 'blur-[1px] opacity-90' : ''}`}>
+        {stopped ? winner.nickname : rollingName}
+      </div>
+      <span className={`mt-3 rounded-full font-bold ${badgeSize} ${
+        stopped ? 'bg-amber-500 text-white' : 'bg-white/10 text-white/60'
+      }`}>
+        {stopped ? `#${slotIdx + 1} 당첨` : '추첨 중...'}
+      </span>
+      {stopped && isLast && (
+        <p className={`mt-2 text-white/60 ${presenter ? 'text-sm' : 'text-xs'}`}>
+          🎉 추첨 완료
+        </p>
+      )}
+    </motion.div>
   );
 }
 
-/** SparkleBurst — 슬롯이 멈출 때 amber/white 작은 별 8개 분출. */
-const SPARKLE_ANGLES = Array.from({ length: 8 }, (_, i) => (i * 360) / 8);
-function SparkleBurst() {
+/** PastWinner — 이미 발표된 winner의 작은 뱃지. row 정렬. */
+function PastWinner({ winner, slotIdx, presenter }) {
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, scale: 0.8, y: -10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ type: 'spring', stiffness: 360, damping: 22 }}
+      className={`inline-flex items-center gap-2 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 ${
+        presenter ? 'px-4 py-2 text-base' : 'px-3 py-1.5 text-sm'
+      }`}
+    >
+      <Trophy size={presenter ? 16 : 13} className="text-amber-500 shrink-0" />
+      <span className="text-slate-400 font-bold">#{slotIdx + 1}</span>
+      <span className="text-slate-900 dark:text-slate-100 font-bold">{winner.nickname}</span>
+    </motion.div>
+  );
+}
+
+/** SparkleBurst — 슬롯 멈출 때 amber/white 별 분출 */
+const SPARKLE_ANGLES = Array.from({ length: 12 }, (_, i) => (i * 360) / 12);
+function SparkleBurst({ presenter }) {
   return (
     <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
       {SPARKLE_ANGLES.map((angle, i) => {
         const rad = (angle * Math.PI) / 180;
-        const distance = 70 + Math.random() * 20;
+        const distance = (presenter ? 120 : 80) + Math.random() * 30;
         return (
           <motion.div
             key={i}
-            className={`absolute top-1/2 left-1/2 w-2 h-2 rounded-full ${i % 2 === 0 ? 'bg-amber-300' : 'bg-white'}`}
-            style={{ marginLeft: -4, marginTop: -4 }}
+            className={`absolute top-1/2 left-1/2 ${presenter ? 'w-3 h-3' : 'w-2 h-2'} rounded-full ${i % 2 === 0 ? 'bg-amber-300' : 'bg-white'}`}
+            style={{ marginLeft: presenter ? -6 : -4, marginTop: presenter ? -6 : -4 }}
             initial={{ x: 0, y: 0, scale: 0, opacity: 0 }}
             animate={{
               x: Math.cos(rad) * distance,
               y: Math.sin(rad) * distance,
-              scale: [0, 1.2, 0],
+              scale: [0, 1.4, 0],
               opacity: [0, 1, 0],
             }}
-            transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
+            transition={{ duration: 0.85, ease: [0.25, 0.1, 0.25, 1] }}
           />
         );
       })}
@@ -142,21 +143,23 @@ function SparkleBurst() {
 }
 
 /**
- * Lottery — 두근두근 복권/슬롯머신 풍 추첨.
+ * Lottery — 복권 풍 sequential 추첨.
  *
  * 흐름:
- *   1. 버튼 클릭 → N개 슬롯 카드 즉시 등장 (이름 빠르게 회전)
- *   2. 각 슬롯이 stagger로 멈춤 (1.6초 + 0.7초씩) — 마지막일수록 긴장감
- *   3. 멈출 때 spring overshoot + sparkle particle 분출
- *   4. 1등 슬롯에 confetti
+ *   1. 추첨 인원 N 설정 (1 이상)
+ *   2. "추첨하기" → 중앙에 큰 슬롯 1개 등장 → 이름 빠르게 회전 → 한 명 dramatic stop
+ *   3. 2초 대기 후 → 다음 슬롯 (이전 winner는 상단 뱃지로 이동)
+ *   4. N명 모두 끝나면 revealed 상태
  *
- * 총 시간: 1명 ~2초, 5명 ~5초 (이전 0.8초보다 dramatic)
+ * 한 번에 한 명씩 강조해서 진짜 복권/제비뽑기 느낌.
  */
-export default function Lottery({ participants, onResult }) {
+export default function Lottery({ participants, onResult, presenter = false }) {
   const [count, setCount] = useState(1);
   const [phase, setPhase] = useState('idle'); // idle | rolling | revealed
-  const [winners, setWinners] = useState([]); // confirmed (각자 stop된 순서대로)
-  const [rollingNames, setRollingNames] = useState([]); // 각 슬롯 현재 표시 이름
+  const [winners, setWinners] = useState([]); // 발표된 winner들 누적
+  const [rollingName, setRollingName] = useState(''); // 현재 슬롯의 회전 이름
+  const [currentSlot, setCurrentSlot] = useState(-1); // 현재 발표 중인 슬롯 (0~N-1)
+  const [pickedList, setPickedList] = useState([]); // 미리 결정된 winner 리스트
   const mountedRef = useRef(true);
   const timersRef = useRef([]);
   const intervalsRef = useRef([]);
@@ -176,55 +179,62 @@ export default function Lottery({ participants, onResult }) {
     : participants;
   const totalTickets = eligibleParticipants.reduce((sum, p) => sum + (p.tickets || 0), 0);
 
-  // 슬롯 개수 (rolling 중) — count 만큼 모두 즉시 등장해서 동시에 회전, stagger로 stop
-  const slotCount = phase === 'idle' ? 0 : count;
+  function rollSlot(slotIdx, picked) {
+    setCurrentSlot(slotIdx);
+    setRollingName(participants[0]?.nickname || '...');
+
+    // 80ms 간격 이름 회전
+    const interval = setInterval(() => {
+      if (!mountedRef.current) return;
+      const r = participants[Math.floor(Math.random() * participants.length)];
+      setRollingName(r.nickname);
+    }, 80);
+    intervalsRef.current.push(interval);
+
+    // 2초 후 stop + winner 발표
+    const stopAt = 2000;
+    const timer = setTimeout(() => {
+      if (!mountedRef.current) return;
+      clearInterval(interval);
+      setRollingName(picked[slotIdx].nickname);
+      setWinners((prev) => [...prev, picked[slotIdx]]);
+
+      // 마지막 슬롯이면 phase 변경, 아니면 1.2초 후 다음 슬롯
+      if (slotIdx === picked.length - 1) {
+        const endTimer = setTimeout(() => {
+          if (!mountedRef.current) return;
+          setPhase('revealed');
+          onResult?.(picked.map((w) => w.nickname));
+        }, 800);
+        timersRef.current.push(endTimer);
+      } else {
+        const nextTimer = setTimeout(() => {
+          if (!mountedRef.current) return;
+          rollSlot(slotIdx + 1, picked);
+        }, 1200);
+        timersRef.current.push(nextTimer);
+      }
+    }, stopAt);
+    timersRef.current.push(timer);
+  }
 
   function draw() {
     if (phase === 'rolling' || participants.length === 0) return;
 
-    // 1) 미리 winner 결정
     const normalizedCount = Number.isFinite(count) && count > 0 ? count : 1;
     const { winners: picked } = pickLotteryWinners(participants, normalizedCount);
     if (picked.length === 0) return;
 
-    setPhase('rolling');
-    setWinners([]);
-    setRollingNames(picked.map(() => participants[0]?.nickname || '...'));
-
-    // 2) 각 슬롯 빠르게 이름 회전 (slot machine — 80ms 간격)
     timersRef.current.forEach(clearTimeout);
     intervalsRef.current.forEach(clearInterval);
     timersRef.current = [];
     intervalsRef.current = [];
 
-    picked.forEach((_, slotIdx) => {
-      const interval = setInterval(() => {
-        if (!mountedRef.current) return;
-        const r = participants[Math.floor(Math.random() * participants.length)];
-        setRollingNames((prev) => prev.map((n, i) => (i === slotIdx ? r.nickname : n)));
-      }, 80);
-      intervalsRef.current.push(interval);
-    });
-
-    // 3) 각 슬롯을 stagger로 stop (첫 슬롯 1.6초, 그 다음 +0.7초씩 — 점점 긴장감)
-    picked.forEach((winner, slotIdx) => {
-      const stopAt = 1600 + slotIdx * 700;
-      const timer = setTimeout(() => {
-        if (!mountedRef.current) return;
-        clearInterval(intervalsRef.current[slotIdx]);
-        setWinners((prev) => {
-          const next = [...prev];
-          next[slotIdx] = winner;
-          return next;
-        });
-        setRollingNames((prev) => prev.map((n, i) => (i === slotIdx ? winner.nickname : n)));
-        if (slotIdx === picked.length - 1) {
-          setPhase('revealed');
-          onResult?.(picked.map((w) => w.nickname));
-        }
-      }, stopAt);
-      timersRef.current.push(timer);
-    });
+    setPhase('rolling');
+    setWinners([]);
+    setPickedList(picked);
+    setCurrentSlot(0);
+    rollSlot(0, picked);
   }
 
   function reset() {
@@ -232,7 +242,9 @@ export default function Lottery({ participants, onResult }) {
     intervalsRef.current.forEach(clearInterval);
     setPhase('idle');
     setWinners([]);
-    setRollingNames([]);
+    setCurrentSlot(-1);
+    setRollingName('');
+    setPickedList([]);
   }
 
   if (participants.length === 0) {
@@ -249,48 +261,51 @@ export default function Lottery({ participants, onResult }) {
     );
   }
 
-  const revealedCount = winners.filter(Boolean).length;
   const isRolling = phase === 'rolling';
+  const currentWinner = winners[currentSlot]; // currentSlot이 stop 됐으면 winner
 
   return (
-    <div className="flex flex-col items-center gap-6 w-full max-w-2xl mx-auto" onClick={(e) => e.stopPropagation()}>
-      {/* Count selector — rolling 중에는 숨김 */}
+    <div className="flex flex-col items-center gap-6 w-full max-w-3xl mx-auto" onClick={(e) => e.stopPropagation()}>
+      {/* Count selector — idle에서만 */}
       {phase === 'idle' && (
-        <div className="flex items-center gap-3">
-          <span className="text-slate-500 text-sm font-medium">추첨 인원</span>
-          <div className="flex items-center bg-white dark:bg-slate-800 rounded-lg shadow-sm overflow-hidden">
-            <button onClick={() => setCount(Math.max(1, count - 1))} aria-label="추첨 인원 감소" className="flex items-center justify-center w-12 h-12 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150">
-              <Minus size={16} />
-            </button>
-            <input
-              type="number"
-              min={1}
-              max={eligibleParticipants.length}
-              value={count}
-              onChange={(e) => setCount(Math.max(1, Math.min(eligibleParticipants.length, Number(e.target.value))))}
-              aria-label="추첨 인원 수"
-              className="w-12 h-12 bg-transparent text-slate-900 dark:text-slate-100 dark:bg-transparent text-center font-bold text-sm focus:outline-none"
-            />
-            <button onClick={() => setCount(Math.min(eligibleParticipants.length, count + 1))} aria-label="추첨 인원 증가" className="flex items-center justify-center w-12 h-12 text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150">
-              <Plus size={16} />
-            </button>
+        <>
+          <div className="flex items-center gap-3">
+            <span className={`text-slate-500 font-medium ${presenter ? 'text-base' : 'text-sm'}`}>당첨자 수</span>
+            <div className="flex items-center bg-white dark:bg-slate-800 rounded-lg shadow-sm overflow-hidden">
+              <button onClick={() => setCount(Math.max(1, count - 1))} aria-label="당첨자 수 감소" className={`flex items-center justify-center text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150 ${presenter ? 'w-14 h-14' : 'w-12 h-12'}`}>
+                <Minus size={presenter ? 20 : 16} />
+              </button>
+              <input
+                type="number"
+                min={1}
+                max={eligibleParticipants.length}
+                value={count}
+                onChange={(e) => setCount(Math.max(1, Math.min(eligibleParticipants.length, Number(e.target.value))))}
+                aria-label="당첨자 수"
+                className={`bg-transparent text-slate-900 dark:text-slate-100 dark:bg-transparent text-center font-bold focus:outline-none ${presenter ? 'w-16 h-14 text-lg' : 'w-12 h-12 text-sm'}`}
+              />
+              <button onClick={() => setCount(Math.min(eligibleParticipants.length, count + 1))} aria-label="당첨자 수 증가" className={`flex items-center justify-center text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 active:bg-slate-100 dark:active:bg-slate-600 transition-colors duration-150 ${presenter ? 'w-14 h-14' : 'w-12 h-12'}`}>
+                <Plus size={presenter ? 20 : 16} />
+              </button>
+            </div>
+            <span className={`text-slate-400 ${presenter ? 'text-base' : 'text-sm'}`}>/ {eligibleParticipants.length}명</span>
           </div>
-          <span className="text-slate-400 text-sm">/ {eligibleParticipants.length}명</span>
-        </div>
+          <div className="text-center space-y-1">
+            <p className={`text-slate-500 ${presenter ? 'text-base' : 'text-sm'}`}>
+              {hasTicketMode ? '티켓이 많을수록 당첨 확률이 올라갑니다' : '균등 추첨'}
+              {' · '}
+              <span className="font-medium">한 명씩 순서대로 발표</span>
+            </p>
+            {hasTicketMode && (
+              <p className={`text-slate-600 dark:text-slate-300 font-medium ${presenter ? 'text-base' : 'text-sm'}`}>
+                현재 티켓 총합 {totalTickets}장
+              </p>
+            )}
+          </div>
+        </>
       )}
 
-      {phase === 'idle' && (
-        <div className="text-center space-y-1">
-          <p className="text-slate-500 text-sm">
-            {hasTicketMode ? '퀴즈와 참여로 모은 티켓이 많을수록 당첨 확률이 올라갑니다' : '현재는 균등 추첨으로 진행됩니다'}
-          </p>
-          {hasTicketMode && (
-            <p className="text-slate-600 text-sm font-medium">현재 티켓 총합 {totalTickets}장</p>
-          )}
-        </div>
-      )}
-
-      {/* Rolling 페이즈 텍스트 — 두근두근 안내 */}
+      {/* Rolling 페이즈 헤더 */}
       <AnimatePresence>
         {isRolling && (
           <motion.div
@@ -299,69 +314,112 @@ export default function Lottery({ participants, onResult }) {
             exit={{ opacity: 0, y: -8 }}
             className="flex items-center gap-2"
           >
-            <motion.div
-              animate={{ rotate: [0, -8, 8, -8, 8, 0] }}
-              transition={{ duration: 0.6, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <Sparkles size={18} className="text-amber-500" />
+            <motion.div animate={{ rotate: [0, -8, 8, -8, 8, 0] }} transition={{ duration: 0.6, repeat: Infinity, ease: 'easeInOut' }}>
+              <Sparkles size={presenter ? 24 : 18} className="text-amber-500" />
             </motion.div>
-            <p className="text-slate-700 dark:text-slate-200 text-lg font-bold tracking-tight">
-              두근두근...
+            <p className={`text-slate-700 dark:text-slate-200 font-bold tracking-tight ${presenter ? 'text-2xl' : 'text-lg'}`}>
+              {currentWinner ? `${currentSlot + 1}등 발표!` : '두근두근...'}
             </p>
-            <span className="text-slate-400 text-sm tabular-nums">
-              {revealedCount}/{count}
+            <span className={`text-slate-400 tabular-nums ${presenter ? 'text-lg' : 'text-sm'}`}>
+              {currentSlot + 1}/{pickedList.length}
             </span>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Slot cards area — phase별 N개 카드 */}
-      <div
-        className={`min-h-[280px] px-4 ${
-          slotCount >= 4
-            ? 'grid grid-cols-2 gap-5 items-center justify-items-center'
-            : 'flex flex-wrap gap-5 justify-center items-center'
-        }`}
-      >
-        {slotCount > 0 ? (
-          Array.from({ length: slotCount }).map((_, i) => (
-            <SlotCard
-              key={i}
-              index={i}
-              color={CARD_COLORS[i % CARD_COLORS.length]}
-              rolling={isRolling && !winners[i]}
-              displayName={rollingNames[i] || '...'}
-              winner={winners[i]}
-              hasTicketMode={hasTicketMode}
-              isFirst={i === 0}
+      {/* 이미 발표된 winners — 상단 뱃지 row */}
+      {(isRolling && winners.length > 0 && currentSlot < pickedList.length - 1) && (
+        <div className="flex flex-wrap justify-center gap-2 px-4">
+          {winners.slice(0, currentSlot).map((w, i) => (
+            <PastWinner key={`past-${i}`} winner={w} slotIdx={i} presenter={presenter} />
+          ))}
+        </div>
+      )}
+
+      {/* 중앙: 현재 회전 중인 큰 슬롯 (rolling) 또는 발표 끝난 모든 winners (revealed) */}
+      <div className={`flex items-center justify-center ${presenter ? 'min-h-[28rem]' : 'min-h-[18rem]'}`}>
+        <AnimatePresence mode="wait">
+          {phase === 'idle' && (
+            <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center space-y-3">
+              <Ticket size={presenter ? 56 : 32} className="text-slate-400 mx-auto" />
+              <p className={`text-slate-400 ${presenter ? 'text-2xl' : 'text-base'}`}>추첨 버튼을 눌러주세요</p>
+            </motion.div>
+          )}
+
+          {isRolling && currentSlot >= 0 && (
+            <BigSlot
+              key={`slot-${currentSlot}-${winners[currentSlot] ? 'stop' : 'roll'}`}
+              presenter={presenter}
+              rollingName={rollingName}
+              winner={winners[currentSlot] || null}
+              slotIdx={currentSlot}
+              isLast={currentSlot === pickedList.length - 1 && !!winners[currentSlot]}
+              isFirst={currentSlot === 0}
             />
-          ))
-        ) : (
-          <div className="text-center space-y-2">
-            <Ticket size={28} className="text-slate-400 mx-auto" />
-            <p className="text-slate-400 text-base">추첨 버튼을 눌러주세요</p>
-          </div>
-        )}
+          )}
+
+          {phase === 'revealed' && (
+            <motion.div
+              key="revealed"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              className="flex flex-col items-center gap-5"
+            >
+              <Suspense fallback={null}><ConfettiBurst /></Suspense>
+              <h3 className={`font-black tracking-tight text-slate-900 dark:text-slate-100 ${presenter ? 'text-4xl' : 'text-2xl'}`}>
+                🎉 {winners.length}명 당첨!
+              </h3>
+              <div className={`flex flex-wrap justify-center ${presenter ? 'gap-4' : 'gap-3'}`}>
+                {winners.map((w, i) => (
+                  <motion.div
+                    key={`final-${i}`}
+                    layout
+                    initial={{ opacity: 0, scale: 0.85 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: i * 0.08, type: 'spring', stiffness: 360, damping: 22 }}
+                    className={`flex flex-col items-center bg-slate-900 rounded-2xl shadow-lg ${
+                      presenter ? 'w-40 h-48 p-5' : 'w-28 h-36 p-3'
+                    }`}
+                  >
+                    <Avatar name={w.nickname} size={presenter ? 'xl' : 'lg'} />
+                    <div className={`text-white font-bold mt-3 ${presenter ? 'text-xl' : 'text-base'}`}>{w.nickname}</div>
+                    <span className={`mt-2 rounded-full bg-amber-500 text-white font-bold ${presenter ? 'text-sm px-3 py-1' : 'text-[10px] px-2 py-0.5'}`}>
+                      #{i + 1} 당첨
+                    </span>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <div className="flex gap-3">
         {phase === 'revealed' && (
-          <Button onClick={reset} variant="secondary" size="lg">
-            <RotateCcw size={18} />
+          <Button onClick={reset} variant="secondary" size={presenter ? 'lg' : 'md'}>
+            <RotateCcw size={presenter ? 20 : 16} />
             초기화
           </Button>
         )}
-        <Button onClick={draw} disabled={isRolling || eligibleParticipants.length === 0} variant="primary" size="lg">
+        <Button
+          onClick={draw}
+          disabled={isRolling || eligibleParticipants.length === 0}
+          variant="primary"
+          size={presenter ? 'lg' : 'md'}
+        >
           {isRolling ? (
             <span className="flex items-center gap-2">
               <motion.span animate={{ rotate: 360 }} transition={{ duration: 1.2, repeat: Infinity, ease: 'linear' }}>
-                <Sparkles size={20} />
+                <Sparkles size={presenter ? 24 : 20} />
               </motion.span>
-              두근두근...
+              발표 중...
             </span>
           ) : (
             <span className="flex items-center gap-2">
-              <Ticket size={20} /> {phase === 'revealed' ? '다시 추첨' : hasTicketMode ? '보상 추첨' : '추첨하기'}
+              <Ticket size={presenter ? 24 : 20} />
+              {phase === 'revealed' ? '다시 추첨' : hasTicketMode ? '보상 추첨' : '추첨 시작'}
             </span>
           )}
         </Button>
