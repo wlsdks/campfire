@@ -143,6 +143,7 @@ export function useSessionList(adminUid, role) {
             const newQId = generateQuestionId();
             const {
               votes: _v,
+              aiGrades: _ag,
               activatedAt: _a,
               revealedAt: _r,
               awardedAt: _w,

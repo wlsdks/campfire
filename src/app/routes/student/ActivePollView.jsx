@@ -5,6 +5,7 @@ import ChoiceVoter from '@/features/voting/components/ChoiceVoter';
 import OXVoter from '@/features/voting/components/OXVoter';
 import QuizVoter from '@/features/voting/components/QuizVoter';
 import TextInput from '@/features/voting/components/TextInput';
+import SubjectiveVoter from '@/features/voting/components/SubjectiveVoter';
 import ScaleVoter from '@/features/voting/components/ScaleVoter';
 import DebateVoter from '@/features/voting/components/DebateVoter';
 import RankingVoter from '@/features/voting/components/RankingVoter';
@@ -162,6 +163,9 @@ export default memo(function ActivePollView({
               )}
               {question.type === 'qna' && (
                 <TextInput sessionId={sessionId} questionId={questionId} type="qna" placeholder="질문을 입력하세요" maxLength={200} disabled={votingLocked} />
+              )}
+              {question.type === 'subjective' && (
+                <SubjectiveVoter sessionId={sessionId} questionId={questionId} disabled={votingLocked} />
               )}
               {question.type === 'scale' && (
                 <ScaleVoter sessionId={sessionId} questionId={questionId} disabled={votingLocked} />

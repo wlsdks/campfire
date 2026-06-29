@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowUpDown, BarChart3, Trophy, Circle, Cloud, MessageSquare, Swords, TextCursorInput, Thermometer, AlertTriangle, CheckCircle, Image, HelpCircle, Lightbulb, Sparkles } from 'lucide-react';
+import { ArrowUpDown, BarChart3, Trophy, Circle, Cloud, MessageSquare, PenLine, Swords, TextCursorInput, Thermometer, AlertTriangle, CheckCircle, Image, HelpCircle, Lightbulb, Sparkles } from 'lucide-react';
 import AchievementSummary from '@/features/quiz/components/AchievementSummary';
 import ExportMenu from './ExportMenu';
 import ClassInsightCard from '@/features/report/components/ClassInsightCard';
@@ -11,6 +11,7 @@ const QTYPE_META = {
   ox: { label: 'O/X', icon: Circle },
   wordcloud: { label: '워드클라우드', icon: Cloud },
   qna: { label: 'Q&A', icon: MessageSquare },
+  subjective: { label: '주관식', icon: PenLine },
   scale: { label: '감정 온도계', icon: Thermometer },
   debate: { label: '찬반 토론', icon: Swords },
   ranking: { label: '순위 맞추기', icon: ArrowUpDown },

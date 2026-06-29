@@ -4,13 +4,14 @@ import { logger } from '@/lib/logger';
 import { getParticipantId, getNickname } from '@/lib/participant';
 import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, MessageCircle, Cloud } from 'lucide-react';
+import { Send, MessageCircle, Cloud, PenLine } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
 function SubmitConfirm({ type, value }) {
   const isQnA = type === 'qna';
+  const isSubjective = type === 'subjective';
   const isGuess = type === 'mysteryBox' || type === 'hintQuiz';
-  const Icon = isQnA ? MessageCircle : Cloud;
+  const Icon = isSubjective ? PenLine : isQnA ? MessageCircle : Cloud;
 
   return (
     <motion.div
@@ -32,14 +33,16 @@ function SubmitConfirm({ type, value }) {
 
         <div className="space-y-1 text-center">
           <p className="text-xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-            {isGuess ? '답변이 제출되었습니다' : isQnA ? '질문이 전달되었습니다' : '단어가 등록되었습니다'}
+            {isGuess ? '답변이 제출되었습니다' : isSubjective ? '답변이 제출되었습니다' : isQnA ? '질문이 전달되었습니다' : '단어가 등록되었습니다'}
           </p>
           <p className="text-sm text-slate-400">
             {isGuess
               ? '정답 공개를 기다려주세요'
-              : isQnA
-                ? '강사가 확인할 예정입니다'
-                : '워드클라우드에 반영되었습니다'}
+              : isSubjective
+                ? 'AI 채점 결과를 기다려주세요'
+                : isQnA
+                  ? '강사가 확인할 예정입니다'
+                  : '워드클라우드에 반영되었습니다'}
           </p>
         </div>
 
@@ -50,7 +53,7 @@ function SubmitConfirm({ type, value }) {
             transition={{ delay: 0.3 }}
             className="rounded-xl border border-slate-200 bg-slate-50 dark:bg-slate-700 dark:border-slate-600 px-4 py-3 text-center w-full"
           >
-            <p className="text-xs font-medium text-slate-400 dark:text-slate-500 mb-1">내가 {isGuess ? '입력한 답' : isQnA ? '보낸 질문' : '입력한 단어'}</p>
+            <p className="text-xs font-medium text-slate-400 dark:text-slate-500 mb-1">내가 {isGuess ? '입력한 답' : isSubjective ? '쓴 답변' : isQnA ? '보낸 질문' : '입력한 단어'}</p>
             <p className="text-sm font-medium text-slate-700 dark:text-slate-200">{value}</p>
           </motion.div>
         )}
@@ -59,7 +62,7 @@ function SubmitConfirm({ type, value }) {
   );
 }
 
-export default memo(function TextInput({ sessionId, questionId, type = 'wordcloud', placeholder, maxLength = 50, disabled = false }) {
+export default memo(function TextInput({ sessionId, questionId, type = 'wordcloud', placeholder, maxLength = 50, disabled = false, multiline = false }) {
   const [text, setText] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submittedValue, setSubmittedValue] = useState('');
@@ -95,19 +98,32 @@ export default memo(function TextInput({ sessionId, questionId, type = 'wordclou
       className="w-full space-y-3"
     >
       <div className="relative">
-        <input
-          type="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder={placeholder || '입력해주세요'}
-          aria-label={type === 'qna' ? '질문 입력' : '단어 입력'}
-          maxLength={maxLength}
-          enterKeyHint="send"
-          onKeyDown={(e) => { if (e.key === 'Enter' && !e.nativeEvent.isComposing) handleSubmit(e); }}
-          className="w-full bg-slate-50 border border-slate-200 dark:bg-slate-700 dark:border-slate-600 text-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 rounded-xl px-4 py-3.5 pr-16 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-600 transition-colors duration-150"
-          autoFocus
-        />
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-300 dark:text-slate-500 font-medium">
+        {multiline ? (
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder={placeholder || '입력해주세요'}
+            aria-label="답변 입력"
+            maxLength={maxLength}
+            rows={5}
+            className="w-full bg-slate-50 border border-slate-200 dark:bg-slate-700 dark:border-slate-600 text-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 rounded-xl px-4 py-3.5 pb-7 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-600 transition-colors duration-150 resize-none leading-relaxed"
+            autoFocus
+          />
+        ) : (
+          <input
+            type="text"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder={placeholder || '입력해주세요'}
+            aria-label={type === 'qna' ? '질문 입력' : '단어 입력'}
+            maxLength={maxLength}
+            enterKeyHint="send"
+            onKeyDown={(e) => { if (e.key === 'Enter' && !e.nativeEvent.isComposing) handleSubmit(e); }}
+            className="w-full bg-slate-50 border border-slate-200 dark:bg-slate-700 dark:border-slate-600 text-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 rounded-xl px-4 py-3.5 pr-16 text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-600 transition-colors duration-150"
+            autoFocus
+          />
+        )}
+        <span className={`absolute right-4 text-xs text-slate-300 dark:text-slate-500 font-medium ${multiline ? 'bottom-3' : 'top-1/2 -translate-y-1/2'}`}>
           {text.length}/{maxLength}
         </span>
       </div>

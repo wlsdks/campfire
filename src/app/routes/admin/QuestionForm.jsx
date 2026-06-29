@@ -38,6 +38,7 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
   const [imageUrl, setImageUrl] = useState(initialData?.imageUrl || '');
   const [hideTitle, setHideTitle] = useState(initialData?.hideTitle || false);
   const [slideImages, setSlideImages] = useState(initialData?.slideImages || []);
+  const [modelAnswer, setModelAnswer] = useState(initialData?.modelAnswer || '');
   const [localError, setLocalError] = useState(null);
 
   const isChoiceLike = type === 'choice' || type === 'quiz';
@@ -45,6 +46,7 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
   const isFillInBlank = type === 'fillinblank';
   const isMysteryBox = type === 'mysteryBox';
   const isHintQuiz = type === 'hintQuiz';
+  const isSubjective = type === 'subjective';
 
   async function handleAdd() {
     if (!title.trim()) { setLocalError('질문 내용을 입력해주세요.'); return; }
@@ -59,9 +61,11 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
     if (isHintQuiz && !correctAnswer.trim()) { setLocalError('정답을 입력해주세요.'); return; }
     if (isHintQuiz && hints.filter(h => h.trim()).length === 0) { setLocalError('최소 1개의 힌트가 필요합니다.'); return; }
     if (type === 'imageSlide' && slideImages.length === 0) { setLocalError('최소 1장의 이미지가 필요합니다.'); return; }
+    if (isSubjective && !modelAnswer.trim()) { setLocalError('모범답안을 입력해주세요. AI 채점 기준이 됩니다.'); return; }
     setLocalError(null);
     const submitData = { type, title, options: cleanOptions, correctAnswer, points, event, betting, hideTitle };
     if (imageUrl) submitData.imageUrl = imageUrl;
+    if (isSubjective) submitData.modelAnswer = modelAnswer.trim();
     if (isMysteryBox) {
       submitData.mysteryItems = mysteryItems.split('\n').map(s => s.trim()).filter(Boolean);
       const validReasons = answerReasons.filter(r => r.trim());
@@ -83,6 +87,7 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
     if (success) {
       setTitle(''); setOptions(['', '']); setCorrectAnswer('');
       setPoints(QUIZ_DEFAULTS.points); setEvent(null); setBetting(false);
+      setModelAnswer('');
       onCancel();
     }
   }
@@ -183,6 +188,22 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
           setHints={setHints} acceptableAnswers={acceptableAnswers}
           setAcceptableAnswers={setAcceptableAnswers} winners={winners}
           setWinners={setWinners} setLocalError={setLocalError} />}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isSubjective && (
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
+            <div className="pt-4">
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">모범답안 (AI 채점 기준)</p>
+              <textarea value={modelAnswer}
+                onChange={(e) => { setModelAnswer(e.target.value); setLocalError(null); }}
+                placeholder="핵심 키워드와 기대하는 답변 내용을 적어주세요. AI가 이 기준으로 학생 답변을 0~100점으로 채점합니다."
+                aria-label="모범답안" rows={3}
+                className={`${INPUT} resize-none leading-relaxed`} />
+              <p className="text-[11px] text-slate-400 mt-1.5">학생에게는 보이지 않습니다. 채점 시에만 사용돼요.</p>
+            </div>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       {/* Error */}

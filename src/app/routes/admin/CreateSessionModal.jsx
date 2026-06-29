@@ -133,6 +133,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions,
               const newQId = generateQuestionId();
               const {
                 votes: _votes,
+                aiGrades: _aiGrades,
                 activatedAt: _activatedAt,
                 revealedAt: _revealedAt,
                 awardedAt: _awardedAt,

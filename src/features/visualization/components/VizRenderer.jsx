@@ -3,6 +3,7 @@ import BarChart from './BarChart';
 import OXBattle from './OXBattle';
 import WordCloud from './WordCloud';
 import QACards from './QACards';
+import SubjectiveResults from './SubjectiveResults';
 import AISummaryBanner from './AISummaryBanner';
 import WrongAnswerAnalysis from './WrongAnswerAnalysis';
 import AnalogyHelper from './AnalogyHelper';
@@ -70,12 +71,14 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false, 
   if (!question) return null;
 
   const isQA = question.type === 'qna';
+  const isSubjective = question.type === 'subjective';
+  const isFeed = isQA || isSubjective; // 피드형 레이아웃(자체 헤더 보유) — hero 제목/비유 숨김
   const isEnded = session?.status === 'ended' || session?.status === 'reviewing';
   const hasCorrectAnswer = Boolean(question.correctAnswer);
   const answerRevealed = Boolean(question.revealedAt) || isEnded;
 
   return (
-    <div className={`flex flex-col w-full h-full overflow-y-auto ${isQA ? 'pt-4' : 'justify-center gap-6 py-4'} relative`}>
+    <div className={`flex flex-col w-full h-full overflow-y-auto ${isFeed ? 'pt-4' : 'justify-center gap-6 py-4'} relative`}>
       {/* 정답 공개 폭죽 — 다양한 위치에서 터짐 */}
       {confettiWave > 0 && hasCorrectAnswer && (
         <Suspense fallback={null}>
@@ -97,7 +100,7 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false, 
 
       {/* Header — hidden for Q&A, or when hideTitle is set.
           aiJudge + isPresenter 조합은 상단 공간이 커서 그리드 잘림 → 제목/간격 축소. */}
-      {!isQA && !question.hideTitle && (() => {
+      {!isFeed && !question.hideTitle && (() => {
         const compact = isPresenter && question.type === 'aiJudge';
         return (
           <div className={`text-center self-center ${compact ? 'space-y-1' : 'space-y-2'}`}>
@@ -122,7 +125,7 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false, 
       )}
 
       {/* AnalogyHelper — 발표 모드(전자칠판)에선 강사 보조 UI라 숨김. 그리드 공간 확보. */}
-      {isAdmin && !isQA && !isPresenter && (
+      {isAdmin && !isFeed && !isPresenter && (
         <AnalogyHelper
           questionTitle={question.title}
           options={options}
@@ -132,7 +135,7 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false, 
 
       {/* Visualization */}
       <ErrorBoundary scope="visualization" fullPage={false}>
-        <div className={isQA ? 'flex-1 overflow-y-auto px-4 py-3' : 'w-full'}>
+        <div className={isFeed ? 'flex-1 overflow-y-auto px-4 py-3' : 'w-full'}>
           {question.type === 'choice' && (
             <>
               <BarChart
@@ -251,6 +254,9 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false, 
               {isAdmin && <AISummaryBanner sessionId={sessionId} questionId={currentQId} questionTitle={question.title} questionType="qna" />}
               <QACards sessionId={sessionId} questionId={currentQId} title={question.title} />
             </>
+          )}
+          {isSubjective && (
+            <SubjectiveResults sessionId={sessionId} questionId={currentQId} question={question} isAdmin={isAdmin} />
           )}
           {question.type === 'aiJudge' && (
             <AiJudgeViz

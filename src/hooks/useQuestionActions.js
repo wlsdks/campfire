@@ -42,7 +42,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     [questions]
   );
 
-  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers, winners, imageUrl, slideImages, hideTitle }) {
+  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers, winners, imageUrl, slideImages, hideTitle, modelAnswer }) {
     try {
       setError(null);
       const qId = generateQuestionId();
@@ -88,6 +88,9 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
         questionData.maxSpeedBonus = QUIZ_DEFAULTS.maxSpeedBonus;
         if (event) questionData.event = event;
         if (betting) questionData.betting = true;
+      }
+      if (type === 'subjective' && modelAnswer?.trim()) {
+        questionData.modelAnswer = modelAnswer.trim();
       }
 
       await set(ref(db, `sessions/${sessionId}/questions/${qId}`), questionData);
@@ -154,7 +157,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     }
   }, [sessionId]);
 
-  async function updateQuestion(qId, { type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers, winners, imageUrl, slideImages, hideTitle }) {
+  async function updateQuestion(qId, { type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers, winners, imageUrl, slideImages, hideTitle, modelAnswer }) {
     try {
       setError(null);
       const existing = questions?.[qId];
@@ -180,6 +183,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       delete questionData.slideImages;
       delete questionData.imageUrl;
       delete questionData.hideTitle;
+      delete questionData.modelAnswer;
 
       const isChoiceLike = type === 'choice' || type === 'quiz';
       if (isChoiceLike) {
@@ -219,6 +223,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
         if (event) questionData.event = event;
         if (betting) questionData.betting = true;
       }
+      if (type === 'subjective' && modelAnswer?.trim()) questionData.modelAnswer = modelAnswer.trim();
       if (imageUrl) questionData.imageUrl = imageUrl;
       if (hideTitle) questionData.hideTitle = true;
       if (type === 'imageSlide' && slideImages?.length > 0) questionData.slideImages = slideImages;
@@ -255,7 +260,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       setError(null);
       const newId = generateQuestionId();
       const nextOrder = questionList.length + 1;
-      const { votes: _votes, activatedAt: _activatedAt, revealedAt: _revealedAt, awardedAt: _awardedAt, event: _event, ...rest } = source;
+      const { votes: _votes, aiGrades: _aiGrades, activatedAt: _activatedAt, revealedAt: _revealedAt, awardedAt: _awardedAt, event: _event, ...rest } = source;
       await set(ref(db, `sessions/${sessionId}/questions/${newId}`), { ...rest, title: `${source.title} (복사)`, order: nextOrder });
       showToast('질문이 복제되었습니다');
     } catch {
@@ -437,6 +442,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     try {
       await update(ref(db, `sessions/${sessionId}`), {
         [`questions/${qId}/votes`]: null,
+        [`questions/${qId}/aiGrades`]: null,
         [`questions/${qId}/revealedAt`]: null,
         [`questions/${qId}/activatedAt`]: null,
         [`questions/${qId}/revealedHints`]: 0,
@@ -467,6 +473,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       };
       questionList.forEach(([qId]) => {
         updates[`questions/${qId}/votes`] = null;
+        updates[`questions/${qId}/aiGrades`] = null;
         updates[`questions/${qId}/revealedAt`] = null;
         updates[`questions/${qId}/activatedAt`] = null;
         updates[`questions/${qId}/awardedAt`] = null;

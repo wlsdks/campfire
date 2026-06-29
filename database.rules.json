@@ -125,13 +125,16 @@
               ".validate": "newData.isString() && newData.val().length <= 500"
             },
             "type": {
-              ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz|imageSlide|aiJudge)$/)"
+              ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz|imageSlide|aiJudge|subjective)$/)"
+            },
+            "modelAnswer": {
+              ".validate": "newData.isString() && newData.val().length <= 1000"
             },
             "votes": {
               "$participantId": {
                 ".validate": "newData.hasChild('value') && !root.child('sessions').child($sessionId).child('questions').child($questionId).child('revealedAt').exists() && (!root.child('sessions').child($sessionId).child('timer').child('endTime').exists() || now < root.child('sessions').child($sessionId).child('timer').child('endTime').val() + 2000)",
                 "value": {
-                  ".validate": "newData.isString() && newData.val().length <= 200"
+                  ".validate": "newData.isString() && newData.val().length <= 500"
                 },
                 "nickname": {
                   ".validate": "newData.isString() && newData.val().length <= 10"
@@ -163,6 +166,15 @@
                 },
                 "judges": { ".validate": true },
                 "judgedAt": { ".validate": true }
+              }
+            },
+
+            "aiGrades": {
+              "$participantId": {
+                ".validate": "newData.hasChild('score')",
+                "score": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 100" },
+                "feedback": { ".validate": "newData.isString() && newData.val().length <= 500" },
+                "gradedAt": { ".validate": true }
               }
             },
 

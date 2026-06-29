@@ -105,7 +105,7 @@ export default function QuestionManager({
   async function handleSaveToLibrary(qId) {
     const question = questions?.[qId];
     if (!question || !adminUid) return;
-    const { votes: _v, activatedAt: _a, revealedAt: _r, awardedAt: _aw, event: _e, order: _o, ...rest } = question;
+    const { votes: _v, aiGrades: _ag, activatedAt: _a, revealedAt: _r, awardedAt: _aw, event: _e, order: _o, ...rest } = question;
     await saveToLibrary(rest);
   }
 

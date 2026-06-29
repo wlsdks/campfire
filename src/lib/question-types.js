@@ -1,4 +1,4 @@
-import { ArrowUpDown, BarChart3, CheckCircle, Circle, Cloud, HelpCircle, Image, Lightbulb, MessageSquare, Sparkles, Swords, TextCursorInput, Thermometer, Trophy } from 'lucide-react';
+import { ArrowUpDown, BarChart3, CheckCircle, Circle, Cloud, HelpCircle, Image, Lightbulb, MessageSquare, PenLine, Sparkles, Swords, TextCursorInput, Thermometer, Trophy } from 'lucide-react';
 
 /**
  * Canonical question type definitions.
@@ -11,6 +11,7 @@ export const QUESTION_TYPES = [
   { value: 'ox', label: 'O/X', icon: Circle },
   { value: 'wordcloud', label: '워드클라우드', icon: Cloud },
   { value: 'qna', label: 'Q&A', icon: MessageSquare },
+  { value: 'subjective', label: '주관식', icon: PenLine },
   { value: 'scale', label: '감정 온도계', icon: Thermometer },
   { value: 'debate', label: '찬반 토론', icon: Swords },
   { value: 'ranking', label: '순위 맞추기', icon: ArrowUpDown },
