@@ -5,7 +5,7 @@ import JoinToast from '@/features/participants/components/JoinToast';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import AnswerBubbleOverlay from '@/features/voting/components/AnswerBubbleOverlay';
 import ChatBubbleOverlay from '@/features/reactions/components/ChatBubbleOverlay';
-import { usePublishGameResult } from '@/features/games/api/useGameResult';
+import { useGameResultPublisher } from '@/features/games/api/useGameResult';
 import QuestionManager from './QuestionManager';
 
 import CenterContent from './CenterContent';
@@ -138,18 +138,8 @@ export default function MobileAdminView({ s }) {
   }, [activeTab, onNewChatMsg]);
 
   // P0-1: 모바일 강사 화면에서도 게임 결과 발행
-  const { publishResult } = usePublishGameResult(s.sessionId);
-  const handleGameResult = useCallback((resultNames, mode) => {
-    const nameArr = Array.isArray(resultNames) ? resultNames : [resultNames];
-    const allList = mode === 'lottery' ? s.drawParticipants : s.onlineList;
-    const winners = nameArr.map((item) => {
-      // Lottery는 {id,nickname} 객체 전달 → id 그대로(동명이인 오귀속 방지). 닉네임 문자열은 fallback.
-      if (item && typeof item === 'object') return { id: item.id, nickname: item.nickname };
-      const p = allList.find((x) => x.nickname === item);
-      return { id: p?.id || item, nickname: item };
-    });
-    publishResult(mode, winners, allList.map((p) => p.id));
-  }, [s.onlineList, s.drawParticipants, publishResult]);
+  // 게임 결과 발행 — winner-mapping 로직은 공유 훅에 일원화(4개 라우트 복제 제거)
+  const { handleGameResult } = useGameResultPublisher(s.sessionId, s.onlineList, s.drawParticipants);
 
   return (
     <div className="h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col overflow-hidden">

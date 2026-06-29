@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useCallback, useMemo } from 'react';
+import { lazy, Suspense, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSession } from '@/features/session/api/useSession';
@@ -8,7 +8,7 @@ import { useVotes } from '@/hooks/useVotes';
 import { useScores } from '@/features/quiz/api/useScores';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
-import { usePublishGameResult } from '@/features/games/api/useGameResult';
+import { useGameResultPublisher } from '@/features/games/api/useGameResult';
 import VizRenderer from '@/features/visualization/components/VizRenderer';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import ChatBubbleOverlay from '@/features/reactions/components/ChatBubbleOverlay';
@@ -60,8 +60,6 @@ export default function LivePage() {
   const question = currentQId ? session?.questions?.[currentQId] : null;
   const { totalVotes } = useVotes(sessionId, currentQId);
 
-  const { publishResult } = usePublishGameResult(sessionId);
-
   // drawParticipants: onlineList enriched with ticket data for weighted lottery.
   // 추첨 모드에서만 계산 — 그 외엔 scores 변경마다 300명 재계산하던 비용 제거.
   const drawParticipants = useMemo(
@@ -71,19 +69,8 @@ export default function LivePage() {
     [onlineList, scores, currentMode]
   );
 
-  // Publish game results to Firebase so students can see them.
-  const handleGameResult = useCallback((resultNames, mode) => {
-    const nameArr = Array.isArray(resultNames) ? resultNames : [resultNames];
-    const allList = mode === 'lottery' ? drawParticipants : onlineList;
-    const winners = nameArr.map((item) => {
-      // Lottery는 {id,nickname} 객체 전달 → id 그대로(동명이인 오귀속 방지). 닉네임 문자열은 fallback.
-      if (item && typeof item === 'object') return { id: item.id, nickname: item.nickname };
-      const p = allList.find((x) => x.nickname === item);
-      return { id: p?.id || item, nickname: item };
-    });
-    const allIds = allList.map((p) => p.id);
-    publishResult(mode, winners, allIds);
-  }, [onlineList, drawParticipants, publishResult]);
+  // 게임 결과 발행 — winner-mapping 로직은 공유 훅에 일원화(4개 라우트 복제 제거)
+  const { handleGameResult } = useGameResultPublisher(sessionId, onlineList, drawParticipants);
 
   // Stable per-game callbacks (avoid re-creating on every render)
   const isGameMode = ['lottery', 'combinedRanking', 'breakTime', 'leaderboard', 'qaBoard', 'qaRanking', 'joinShow', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);

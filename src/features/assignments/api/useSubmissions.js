@@ -100,17 +100,6 @@ export async function withdrawSubmission(assignmentId, submissionId) {
 }
 
 /**
- * findSubmissionByName — 이름으로 제출물 찾기 (결과 확인 시).
- */
-export async function findSubmissionByName(assignmentId, name) {
-  const subsRef = ref(db, `assignments/${assignmentId}/submissions`);
-  const snap = await get(subsRef);
-  const data = snap.val() || {};
-  const entry = Object.entries(data).find(([, v]) => v.name === name);
-  return entry ? { id: entry[0], ...entry[1] } : null;
-}
-
-/**
  * exportResultsCSV — 심사 결과를 CSV로 다운로드.
  * BOM 포함하여 한국어 Excel 호환.
  */

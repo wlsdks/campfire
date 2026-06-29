@@ -45,6 +45,34 @@ export function usePublishGameResult(sessionId) {
 }
 
 /**
+ * 게임 결과 발행 핸들러를 캡슐화 — AdminPage/PresentationView/MobileAdminView/LivePage 4곳에
+ * 글자 단위로 복제돼 있던 winner-mapping 로직을 단일 출처로 통합.
+ * Lottery는 {id,nickname} 객체를, RandomPicker 등은 닉네임 문자열을 넘기므로 둘 다 처리.
+ *
+ * @param {string} sessionId
+ * @param {Array<{id,nickname}>} onlineList 일반 게임용 참여자
+ * @param {Array<{id,nickname,tickets}>} drawParticipants 추첨용 참여자(가중)
+ * @returns {{ handleGameResult: (resultNames, mode) => void }}
+ */
+export function useGameResultPublisher(sessionId, onlineList, drawParticipants) {
+  const { publishResult } = usePublishGameResult(sessionId);
+
+  const handleGameResult = useCallback((resultNames, mode) => {
+    const nameArr = Array.isArray(resultNames) ? resultNames : [resultNames];
+    const allList = mode === 'lottery' ? drawParticipants : onlineList;
+    const winners = nameArr.map((item) => {
+      // 객체({id,nickname})면 id 그대로 — 동명이인 오귀속 방지. 닉네임 문자열은 fallback으로 find.
+      if (item && typeof item === 'object') return { id: item.id, nickname: item.nickname };
+      const p = allList.find((x) => x.nickname === item);
+      return { id: p?.id || item, nickname: item };
+    });
+    publishResult(mode, winners, allList.map((p) => p.id));
+  }, [onlineList, drawParticipants, publishResult]);
+
+  return { handleGameResult };
+}
+
+/**
  * Listens for game results on the student side.
  * Returns the current game result and whether this student won.
  *

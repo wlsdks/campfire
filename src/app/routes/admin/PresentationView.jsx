@@ -16,7 +16,7 @@ import Badge from '@/components/ui/Badge';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import ChatBubbleOverlay from '@/features/reactions/components/ChatBubbleOverlay';
 import AnswerBubbleOverlay from '@/features/voting/components/AnswerBubbleOverlay';
-import { usePublishGameResult } from '@/features/games/api/useGameResult';
+import { useGameResultPublisher } from '@/features/games/api/useGameResult';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
 import PersistentAssignmentBar from '@/features/ai-judge/components/PersistentAssignmentBar';
 import { useQuestionActions } from '@/hooks/useQuestionActions';
@@ -456,24 +456,13 @@ function PresentModeMenu({ sessionId, currentMode }) {
 
 export default function PresentationView({ sessionId, session, currentMode, onlineList, leaderboard, drawParticipants, studentUrl, count, onExit, scores, participants }) {
   const exitPresent = useCallback(() => onExit(), [onExit]);
-  const { publishResult } = usePublishGameResult(sessionId);
 
   // 발표 모드에서도 퀴즈/정답형 정답 공개를 트리거할 수 있도록 reveal 함수를 가져옴.
   // QuestionManager는 이 모드에서 마운트되지 않으므로 PresentationView가 직접 hook 호출.
   const { revealQuiz, revealAnswer } = useQuestionActions(sessionId, session?.questions || {}, session?.currentQuestion, scores, participants);
 
-  const handleGameResult = useCallback((resultNames, mode) => {
-    const nameArr = Array.isArray(resultNames) ? resultNames : [resultNames];
-    const allList = mode === 'lottery' ? drawParticipants : onlineList;
-    const winners = nameArr.map((item) => {
-      // Lottery는 {id,nickname} 객체 전달 → id 그대로(동명이인 오귀속 방지). 닉네임 문자열은 fallback.
-      if (item && typeof item === 'object') return { id: item.id, nickname: item.nickname };
-      const p = allList.find((x) => x.nickname === item);
-      return { id: p?.id || item, nickname: item };
-    });
-    const allIds = allList.map((p) => p.id);
-    publishResult(mode, winners, allIds);
-  }, [onlineList, drawParticipants, publishResult]);
+  // 게임 결과 발행 — winner-mapping 로직은 공유 훅에 일원화(4개 라우트 복제 제거)
+  const { handleGameResult } = useGameResultPublisher(sessionId, onlineList, drawParticipants);
 
   // 질문 네비게이션
   const questionList = useMemo(() => {
