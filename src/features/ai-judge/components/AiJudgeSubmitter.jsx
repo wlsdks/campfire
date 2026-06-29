@@ -108,9 +108,14 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
 
   async function handleWithdrawConfirmed() {
     setWithdrawConfirmOpen(false);
-    await withdraw(participantId);
-    setTitle(''); setDescription(''); setImageUrl(''); setCode('');
-    setEditing(false);
+    try {
+      await withdraw(participantId);
+      setTitle(''); setDescription(''); setImageUrl(''); setCode('');
+      setEditing(false);
+    } catch {
+      setSubmitError('제출 취소에 실패했어요. 잠시 후 다시 시도해주세요.');
+      setTimeout(() => setSubmitError(null), 3500);
+    }
   }
 
   // 심사 완료 후: 결과 화면 (TOP 공개는 강사 제어에 따라 단계적)

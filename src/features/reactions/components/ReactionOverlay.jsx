@@ -59,6 +59,8 @@ export default memo(function ReactionOverlay({ sessionId }) {
       setBubbles((prev) => [...prev.slice(-(limits.maxReactionBubbles - 1)), bubble]);
 
       const removeTimer = setTimeout(() => {
+        // 자기 자신을 배열에서 제거 — fire된 타이머 ID 무한 누적 방지(수업 내내 켜둔 전자칠판)
+        cleanupTimersRef.current = cleanupTimersRef.current.filter((t) => t !== removeTimer);
         if (!mountedRef.current) return;
         setBubbles((prev) => prev.filter((item) => item.id !== bubble.id));
       }, bubble.duration * 1000);

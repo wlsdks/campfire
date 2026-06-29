@@ -86,7 +86,12 @@ export function useJudging(assignmentId) {
       }
     } catch (err) {
       logger.error('심사 실행 실패:', err);
-      await update(ref(db, `assignments/${assignmentId}`), { status: 'open' });
+      // status는 open으로 되돌려 재시도 가능하게 하고, 원인을 judgeError에 남김(조용한 실패 방지).
+      // 이 복구 update 자체가 실패해도 unhandled rejection이 되지 않도록 보호.
+      await update(ref(db, `assignments/${assignmentId}`), {
+        status: 'open',
+        judgeError: err?.message || '심사 중 오류가 발생했습니다',
+      }).catch(() => { /* 복구 write 실패는 무시 */ });
     } finally {
       judgingRef.current = false;
       setIsJudging(false);

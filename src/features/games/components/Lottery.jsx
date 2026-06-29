@@ -204,7 +204,8 @@ export default function Lottery({ participants, onResult, presenter = false }) {
         const endTimer = setTimeout(() => {
           if (!mountedRef.current) return;
           setPhase('revealed');
-          onResult?.(picked.map((w) => w.nickname));
+          // 닉네임이 아닌 {id, nickname} 객체 전달 — 동명이인이어도 실제 뽑힌 학생 id로 당첨 귀속(오귀속 방지)
+          onResult?.(picked.map((w) => ({ id: w.id, nickname: w.nickname })));
         }, 800);
         timersRef.current.push(endTimer);
       } else {

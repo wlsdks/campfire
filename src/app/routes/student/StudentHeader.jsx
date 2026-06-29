@@ -55,7 +55,9 @@ function HeaderScore({ value }) {
 export default function StudentHeader({ sessionId }) {
   const { session } = useSession(sessionId);
   const { myScore } = useMyScore(sessionId);
-  const { connected } = useConnectionStatus();
+  const { connected, showBanner } = useConnectionStatus();
+  // dot은 debounce된 showBanner 기준 — 와이파이 jitter마다 amber 깜빡이던 것 방지(확정 오프라인에서만 amber)
+  const showOffline = showBanner === 'offline';
   const nickname = getNickname();
   const totalScore = myScore?.total || 0;
   const tickets = myScore?.tickets || 0;
@@ -94,7 +96,7 @@ export default function StudentHeader({ sessionId }) {
                   CLAUDE.md 페르소나 "Wi-Fi 불안정 시 연결 상태 표시 중요" 충족. */}
               <span
                 className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full ring-2 ring-white dark:ring-slate-800 transition-colors duration-300 ${
-                  connected ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse'
+                  showOffline ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'
                 }`}
                 aria-label={connected ? '서버 연결됨' : '서버 재연결 중'}
                 title={connected ? '실시간 연결됨' : '재연결 중...'}

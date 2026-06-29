@@ -43,6 +43,7 @@ export default memo(function AnswerBubbleOverlay({ sessionId, questionId }) {
       const bubble = queueRef.current.shift();
       setBubbles(prev => [...prev.slice(-(MAX_BUBBLES - 1)), bubble]);
       const t = setTimeout(() => {
+        timersRef.current = timersRef.current.filter((x) => x !== t); // fire된 타이머 누적 방지
         if (!mountedRef.current) return;
         setBubbles(prev => prev.filter(b => b.id !== bubble.id));
       }, bubble.duration * 1000);

@@ -38,9 +38,11 @@ export default function AdminPage() {
   const handleGameResult = useCallback((resultNames, mode) => {
     const nameArr = Array.isArray(resultNames) ? resultNames : [resultNames];
     const allList = mode === 'lottery' ? s.drawParticipants : s.onlineList;
-    const winners = nameArr.map((name) => {
-      const p = allList.find((x) => x.nickname === name);
-      return { id: p?.id || name, nickname: name };
+    const winners = nameArr.map((item) => {
+      // Lottery는 {id,nickname} 객체 전달 → id 그대로(동명이인 오귀속 방지). 닉네임 문자열은 fallback.
+      if (item && typeof item === 'object') return { id: item.id, nickname: item.nickname };
+      const p = allList.find((x) => x.nickname === item);
+      return { id: p?.id || item, nickname: item };
     });
     publishResult(mode, winners, allList.map((p) => p.id));
   }, [s.onlineList, s.drawParticipants, publishResult]);

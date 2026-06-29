@@ -113,17 +113,22 @@ export default function IdleMascot() {
   useEffect(() => {
     if (!mounted) return;
     let timer;
+    let cancelled = false; // 언마운트 후 await가 끝나며 새 타이머를 스케줄해 고아 체인이 생기던 것 차단
     const schedule = () => {
+      if (cancelled) return;
       const delay = 3000 + Math.random() * 3000;
       timer = setTimeout(async () => {
+        if (cancelled) return;
         await runAction(pick(IDLE_ACTIONS));
+        if (cancelled) return;
         schedule();
       }, delay);
     };
     timer = setTimeout(() => {
-      runAction(pick(IDLE_ACTIONS)).then(schedule);
+      if (cancelled) return;
+      runAction(pick(IDLE_ACTIONS)).then(() => { if (!cancelled) schedule(); });
     }, 2500);
-    return () => clearTimeout(timer);
+    return () => { cancelled = true; clearTimeout(timer); };
   }, [mounted, runAction]);
 
   // Periodic natural blink (separate from double-blink action)

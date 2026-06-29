@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { ref, set, get, serverTimestamp, onDisconnect } from 'firebase/database';
+import { ref, get } from 'firebase/database';
 import { db } from '@/lib/firebase';
-import { logger } from '@/lib/logger';
 import { getParticipantId, getNickname, setNickname as saveNickname, getSessionNickname } from '@/lib/participant';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, ArrowRight } from 'lucide-react';
@@ -80,32 +79,17 @@ export default function JoinPage({ sessionId, onJoin }) {
     }, 200);
   }
 
-  async function handleJoin(e) {
+  function handleJoin(e) {
     e.preventDefault();
     if (!isValid) return;
     setJoining(true);
     setError(null);
-
-    try {
-      const participantId = getParticipantId();
-      saveNickname(trimmed);
-
-      const participantRef = ref(db, `sessions/${sessionId}/participants/${participantId}`);
-      await set(participantRef, {
-        nickname: trimmed,
-        joinedAt: serverTimestamp(),
-        online: true,
-      });
-
-      const onlineRef = ref(db, `sessions/${sessionId}/participants/${participantId}/online`);
-      onDisconnect(onlineRef).set(false);
-
-      onJoin(participantId, trimmed);
-    } catch (err) {
-      logger.error('Join failed:', err);
-      setError('참여에 실패했습니다. 다시 시도해주세요.');
-      setJoining(false);
-    }
+    // presence 기록(participant 노드 + onDisconnect)은 App.jsx의 syncPresence가 일원화 담당.
+    // 여기서 직접 write하지 않아 (1) join 시 중복 full-set 제거, (2) 약한 네트워크에서
+    // write를 await하다 "입장 중…"에 무한 대기하던 문제를 피한다(낙관적 입장).
+    const participantId = getParticipantId();
+    saveNickname(trimmed);
+    onJoin(participantId, trimmed);
   }
 
   return (

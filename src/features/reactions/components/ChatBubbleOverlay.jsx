@@ -51,6 +51,7 @@ export default memo(function ChatBubbleOverlay({ sessionId }) {
 
       setBubbles(prev => [...prev.slice(-(MAX_BUBBLES - 1)), bubble]);
       setTimeout(() => {
+        seenRef.current.delete(key); // dedup Set 무한 증가 방지 — 표시 끝난 키 제거
         if (mountedRef.current) setBubbles(prev => prev.filter(b => b.id !== key));
       }, LIFETIME_MS);
     });

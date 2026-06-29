@@ -1,4 +1,4 @@
-import { onDisconnect, onValue, ref, set, serverTimestamp } from 'firebase/database';
+import { onDisconnect, onValue, ref, set, update, serverTimestamp } from 'firebase/database';
 import { BrowserRouter, Routes, Route, useSearchParams } from 'react-router-dom';
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
@@ -69,25 +69,22 @@ function StudentRouter() {
     const participantRef = ref(db, `sessions/${sessionId}/participants/${participantId}`);
     const onlineRef = ref(db, `sessions/${sessionId}/participants/${participantId}/online`);
 
-    function syncPresence() {
-      set(participantRef, {
-        nickname,
-        joinedAt: serverTimestamp(),
-        online: true,
-      }).catch((err) => console.warn('[presence] sync failed', err));
-      onDisconnect(onlineRef).set(false).catch((err) => console.warn('[presence] onDisconnect failed', err));
-    }
+    // 최초 1회만 참여자 메타 기록 — joinedAt은 여기서만 찍고 재접속마다 갱신하지 않음.
+    // (JoinPage가 아닌 App.jsx 한 곳에서 presence를 일원화 — 중복 write 제거)
+    set(participantRef, {
+      nickname,
+      joinedAt: serverTimestamp(),
+      online: true,
+    }).catch((err) => console.warn('[presence] init failed', err));
 
-    // Initial presence sync
-    syncPresence();
-
-    // Re-sync on reconnect — when Wi-Fi drops and returns,
-    // Firebase auto-reconnects but online stays false without this.
+    // 재접속(.info/connected) 시: online만 갱신(이미 true면 무변경 → 리스너 미발화) + onDisconnect 재무장.
+    // 전체 노드 set/joinedAt 재기록을 하지 않아, 교실 Wi-Fi 블립에 300명이 동시에 full-node write를
+    // 쏟아내 강사·전자칠판이 프리징되던 fan-out 폭주를 방지한다. joinedAt churn(리포트 참여시간 왜곡)도 제거.
     const connRef = ref(db, '.info/connected');
     const unsub = onValue(connRef, (snap) => {
-      if (snap.val() === true) {
-        syncPresence();
-      }
+      if (snap.val() !== true) return;
+      update(participantRef, { online: true }).catch((err) => console.warn('[presence] reconnect failed', err));
+      onDisconnect(onlineRef).set(false).catch((err) => console.warn('[presence] onDisconnect failed', err));
     });
 
     return () => unsub();

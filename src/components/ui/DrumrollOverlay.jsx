@@ -35,13 +35,15 @@ export default memo(function DrumrollOverlay({ active, onComplete, duration = 25
     }, duration);
 
     // 드럼 비트 생성
+    let cancelled = false;        // cleanup 시 비트 루프 확실히 중단 (stale `active` 대신)
+    const beatTimers = [];        // 재귀 setTimeout ID 추적 → cleanup에서 모두 정리
     if (ctx) {
       let beatInterval = 300;
       let beatCount = 0;
       const maxBeats = Math.floor(duration / 100);
 
       function playBeat() {
-        if (beatCount >= maxBeats || !active) return;
+        if (cancelled || beatCount >= maxBeats) return;
         try {
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
@@ -58,13 +60,15 @@ export default memo(function DrumrollOverlay({ active, onComplete, duration = 25
           beatCount++;
           const progress = beatCount / maxBeats;
           beatInterval = Math.max(60, 300 - progress * 250);
-          setTimeout(playBeat, beatInterval);
+          beatTimers.push(setTimeout(playBeat, beatInterval));
         } catch { /* ignore */ }
       }
-      setTimeout(playBeat, 200);
+      beatTimers.push(setTimeout(playBeat, 200));
     }
 
     return () => {
+      cancelled = true;
+      beatTimers.forEach(clearTimeout);
       clearTimeout(t1);
       clearTimeout(t2);
       if (timerRef.current) clearTimeout(timerRef.current);
