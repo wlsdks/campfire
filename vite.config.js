@@ -21,6 +21,11 @@ export default defineConfig({
       '@': path.resolve(srcDir),
     },
   },
+  // 순수 로직 단위 테스트 (vitest) — node 환경, 빠름. 리팩터 안전망.
+  test: {
+    environment: 'node',
+    include: ['src/**/*.test.{js,jsx}'],
+  },
   build: {
     rollupOptions: {
       output: {

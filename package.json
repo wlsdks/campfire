@@ -7,8 +7,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "check": "npm run lint && npm run build",
+    "check": "npm run lint && npm run test -- --run && npm run build",
     "lint": "eslint .",
+    "test": "vitest",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -40,6 +41,7 @@
     "globals": "^17.4.0",
     "tailwindcss": "^4.2.2",
     "vite": "^7.3.1",
-    "vite-plugin-compression": "^0.5.1"
+    "vite-plugin-compression": "^0.5.1",
+    "vitest": "^4.1.9"
   }
 }
