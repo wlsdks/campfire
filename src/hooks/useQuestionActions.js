@@ -4,12 +4,12 @@ import { getServerNow } from '@/features/timer/api/useTimer';
 import { db } from '@/lib/firebase';
 import { generateQuestionId } from '@/lib/utils';
 import {
-  QUIZ_DEFAULTS,
   getQuestionMode,
   getQuizReward,
   isQuizQuestion,
   normalizeQuizEvent,
 } from '@/lib/quiz';
+import { buildQuestionData, QUESTION_TYPE_FIELDS } from '@/lib/question';
 import { useToast } from '@/hooks/useToast';
 
 // 서버 시간 기준 — 강사 기기 시계 오차 없이 activatedAt/revealedAt/awardedAt 등
@@ -42,57 +42,17 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     [questions]
   );
 
-  async function handleSubmit({ type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers, winners, imageUrl, slideImages, hideTitle, modelAnswer }) {
+  async function handleSubmit(fields) {
     try {
       setError(null);
       const qId = generateQuestionId();
-      const questionData = { type, title: title.trim(), order: Object.keys(questions || {}).length + 1 };
-      if (imageUrl) questionData.imageUrl = imageUrl;
-      if (hideTitle) questionData.hideTitle = true;
-      if (type === 'imageSlide' && slideImages?.length > 0) questionData.slideImages = slideImages;
-      const isChoiceLike = type === 'choice' || type === 'quiz';
-
-      if (isChoiceLike) {
-        questionData.options = cleanOptions;
-        questionData.correctAnswer = cleanOptions.includes(correctAnswer) ? correctAnswer : cleanOptions[0];
-      }
-      if (type === 'ranking') {
-        questionData.options = cleanOptions;
-        questionData.correctAnswer = cleanOptions.map((_, i) => String(i)).join(',');
-      }
-      if (type === 'fillinblank') {
-        questionData.correctAnswer = correctAnswer?.trim() || '';
-      }
-      if (type === 'ox') {
-        questionData.correctAnswer = correctAnswer || 'O';
-      }
-      if (type === 'mysteryBox') {
-        questionData.correctAnswer = correctAnswer?.trim() || '';
-        if (mysteryItems?.length > 0) questionData.mysteryItems = mysteryItems;
-        if (answerReasons?.length > 0) questionData.answerReasons = answerReasons;
-        if (winners?.length > 0) questionData.winners = winners;
-      }
-      if (type === 'hintQuiz') {
-        questionData.correctAnswer = correctAnswer?.trim() || '';
-        questionData.hints = hints || [];
-        questionData.revealedHints = 0;
-        if (answerReasons?.length > 0) questionData.answerReasons = answerReasons;
-        if (acceptableAnswers?.length > 0) questionData.acceptableAnswers = acceptableAnswers;
-        if (winners?.length > 0) questionData.winners = winners;
-      }
-      if (type === 'quiz') {
-        questionData.points = points || QUIZ_DEFAULTS.points;
-        questionData.participationTickets = QUIZ_DEFAULTS.participationTickets;
-        questionData.correctBonusTickets = QUIZ_DEFAULTS.correctBonusTickets;
-        questionData.speedWindowMs = QUIZ_DEFAULTS.speedWindowMs;
-        questionData.maxSpeedBonus = QUIZ_DEFAULTS.maxSpeedBonus;
-        if (event) questionData.event = event;
-        if (betting) questionData.betting = true;
-      }
-      if (type === 'subjective' && modelAnswer?.trim()) {
-        questionData.modelAnswer = modelAnswer.trim();
-      }
-
+      // type별 필드 조립은 buildQuestionData(순수함수, 테스트 보유)로 일원화 — 생성·수정 공유
+      const questionData = {
+        type: fields.type,
+        title: fields.title.trim(),
+        order: Object.keys(questions || {}).length + 1,
+        ...buildQuestionData(fields.type, fields),
+      };
       await set(ref(db, `sessions/${sessionId}/questions/${qId}`), questionData);
       return true;
     } catch {
@@ -157,76 +117,17 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     }
   }, [sessionId]);
 
-  async function updateQuestion(qId, { type, title, options: cleanOptions, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers, winners, imageUrl, slideImages, hideTitle, modelAnswer }) {
+  async function updateQuestion(qId, fields) {
     try {
       setError(null);
       const existing = questions?.[qId];
       if (!existing) return false;
 
-      const questionData = { ...existing, type, title: title.trim() };
-      // Remove stale fields that may not apply to new type
-      delete questionData.options;
-      delete questionData.correctAnswer;
-      delete questionData.points;
-      delete questionData.participationTickets;
-      delete questionData.correctBonusTickets;
-      delete questionData.speedWindowMs;
-      delete questionData.maxSpeedBonus;
-      delete questionData.event;
-      delete questionData.betting;
-      delete questionData.hints;
-      delete questionData.revealedHints;
-      delete questionData.mysteryItems;
-      delete questionData.answerReasons;
-      delete questionData.acceptableAnswers;
-      delete questionData.winners;
-      delete questionData.slideImages;
-      delete questionData.imageUrl;
-      delete questionData.hideTitle;
-      delete questionData.modelAnswer;
-
-      const isChoiceLike = type === 'choice' || type === 'quiz';
-      if (isChoiceLike) {
-        questionData.options = cleanOptions;
-        questionData.correctAnswer = cleanOptions.includes(correctAnswer) ? correctAnswer : cleanOptions[0];
-      }
-      if (type === 'ranking') {
-        questionData.options = cleanOptions;
-        questionData.correctAnswer = cleanOptions.map((_, i) => String(i)).join(',');
-      }
-      if (type === 'fillinblank') {
-        questionData.correctAnswer = correctAnswer?.trim() || '';
-      }
-      if (type === 'ox') {
-        questionData.correctAnswer = correctAnswer || 'O';
-      }
-      if (type === 'mysteryBox') {
-        questionData.correctAnswer = correctAnswer?.trim() || '';
-        if (mysteryItems?.length > 0) questionData.mysteryItems = mysteryItems;
-        if (answerReasons?.length > 0) questionData.answerReasons = answerReasons;
-        if (winners?.length > 0) questionData.winners = winners;
-      }
-      if (type === 'hintQuiz') {
-        questionData.correctAnswer = correctAnswer?.trim() || '';
-        questionData.hints = hints || [];
-        questionData.revealedHints = 0;
-        if (answerReasons?.length > 0) questionData.answerReasons = answerReasons;
-        if (acceptableAnswers?.length > 0) questionData.acceptableAnswers = acceptableAnswers;
-        if (winners?.length > 0) questionData.winners = winners;
-      }
-      if (type === 'quiz') {
-        questionData.points = points || QUIZ_DEFAULTS.points;
-        questionData.participationTickets = QUIZ_DEFAULTS.participationTickets;
-        questionData.correctBonusTickets = QUIZ_DEFAULTS.correctBonusTickets;
-        questionData.speedWindowMs = QUIZ_DEFAULTS.speedWindowMs;
-        questionData.maxSpeedBonus = QUIZ_DEFAULTS.maxSpeedBonus;
-        if (event) questionData.event = event;
-        if (betting) questionData.betting = true;
-      }
-      if (type === 'subjective' && modelAnswer?.trim()) questionData.modelAnswer = modelAnswer.trim();
-      if (imageUrl) questionData.imageUrl = imageUrl;
-      if (hideTitle) questionData.hideTitle = true;
-      if (type === 'imageSlide' && slideImages?.length > 0) questionData.slideImages = slideImages;
+      // 기존 질문에서 type별 필드(stale)를 모두 제거한 뒤, 새 type 기준으로 재조립.
+      // 답변(votes)·메타(order/activatedAt 등)는 보존. 조립은 생성과 동일한 순수함수 사용.
+      const questionData = { ...existing, type: fields.type, title: fields.title.trim() };
+      QUESTION_TYPE_FIELDS.forEach((k) => delete questionData[k]);
+      Object.assign(questionData, buildQuestionData(fields.type, fields));
 
       await set(ref(db, `sessions/${sessionId}/questions/${qId}`), questionData);
       showToast('질문이 수정되었습니다');
