@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { ref, onValue, push, set, update, serverTimestamp, get } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
-import { JUDGES } from '@/features/assignments/api/judges';
+import { JUDGES } from '@/lib/judging/judges';
 
 /**
  * useSubmissionList — 과제의 제출물 목록 구독.

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Trophy, X } from 'lucide-react';
-import { getAwardById } from '@/features/assignments/api/judges';
+import { getAwardById } from '@/lib/judging/judges';
 import AwardsCeremony from './AwardsCeremony';
 import Button from '@/components/ui/Button';
 

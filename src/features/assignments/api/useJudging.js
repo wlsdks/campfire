@@ -1,8 +1,8 @@
 import { useState, useCallback, useRef } from 'react';
 import { ref, set, update, get, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
-import { judgeSubmission } from './gemini';
-import { calculateAwards } from './awards';
+import { judgeSubmission } from '@/lib/judging/gemini';
+import { calculateAwards } from '@/lib/judging/awards';
 import { logger } from '@/lib/logger';
 
 /**

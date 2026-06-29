@@ -1,6 +1,6 @@
 import { memo, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { getAwardById, getJudgeById } from '@/features/assignments/api/judges';
+import { getAwardById, getJudgeById } from '@/lib/judging/judges';
 
 const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 

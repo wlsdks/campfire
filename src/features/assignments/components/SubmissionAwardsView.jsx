@@ -1,5 +1,5 @@
 import { Trophy } from 'lucide-react';
-import { getAwardById } from '@/features/assignments/api/judges';
+import { getAwardById } from '@/lib/judging/judges';
 
 /** Student-facing awards results view (view === 'awardsView'). */
 export default function SubmissionAwardsView({ awards }) {

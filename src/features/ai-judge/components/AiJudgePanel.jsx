@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Play, AlertCircle, Sparkles, Users, RotateCcw, Square, Trophy, Medal, Award } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import ConfirmModal from '@/components/ui/ConfirmModal';
-import { isGeminiReady } from '@/features/assignments/api/gemini';
+import { isGeminiReady } from '@/lib/judging/gemini';
 import { useLiveSubmissions, useLiveJudging, useLiveJudgeResults } from '../api/useLiveJudging';
 
 const DONE_RANK_META = [

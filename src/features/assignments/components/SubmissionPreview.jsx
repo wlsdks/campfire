@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Check, TrendingUp, Zap, Loader2 } from 'lucide-react';
-import { previewSubmission, isGeminiReady } from '@/features/assignments/api/gemini';
+import { previewSubmission, isGeminiReady } from '@/lib/judging/gemini';
 
 const COOLDOWN_MS = 2 * 60 * 1000; // 2분
 const STORAGE_KEY = 'pick_preview_last_ts';

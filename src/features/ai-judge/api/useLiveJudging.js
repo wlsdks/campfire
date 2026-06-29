@@ -3,9 +3,9 @@ import { ref, onValue, set, update, get, remove, serverTimestamp } from 'firebas
 import { ref as storageRef, deleteObject } from 'firebase/storage';
 import { db } from '@/lib/firebase';
 import { storage } from '@/lib/firebase-storage';
-import { judgeLiveSubmission } from '@/features/assignments/api/geminiLive';
-import { calculateLiveTop3 } from '@/features/assignments/api/awards';
-import { JUDGE_THINKING_SNIPPETS } from '@/features/assignments/api/judges';
+import { judgeLiveSubmission } from '@/lib/judging/geminiLive';
+import { calculateLiveTop3 } from '@/lib/judging/awards';
+import { JUDGE_THINKING_SNIPPETS } from '@/lib/judging/judges';
 import { logger } from '@/lib/logger';
 
 function pickThinking(judgeId) {

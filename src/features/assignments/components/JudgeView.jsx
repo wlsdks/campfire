@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight, X } from 'lucide-react';
-import { JUDGES } from '@/features/assignments/api/judges';
+import { JUDGES } from '@/lib/judging/judges';
 import Modal from '@/components/ui/Modal';
 import JudgingPanel from './JudgingPanel';
 import JudgeResultCard from './JudgeResultCard';

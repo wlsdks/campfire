@@ -2,7 +2,7 @@ import { memo, useMemo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trophy, Sparkles, Medal, Award, Lock, X, TrendingUp, AlertCircle, MessageCircle, Code2 } from 'lucide-react';
 import { createPortal } from 'react-dom';
-import { getJudgeById } from '@/features/assignments/api/judges';
+import { getJudgeById } from '@/lib/judging/judges';
 
 // §1 그라디언트 금지 — 단색 + 톤 차로 위계 유지 (amber-500 vs amber-400, slate-400)
 const RANK_META = [

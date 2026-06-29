@@ -1,7 +1,7 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, CheckCircle2, Loader2, Crown, Trophy, Medal, Award, Clock } from 'lucide-react';
-import { JUDGES } from '@/features/assignments/api/judges';
+import { JUDGES } from '@/lib/judging/judges';
 
 /**
  * 프레젠터 화면용 — AI 심사 진행 중 표시. 좌측 현재 학생 작품 + 우측 7판사 라이브 패널 + 실시간 리더보드.

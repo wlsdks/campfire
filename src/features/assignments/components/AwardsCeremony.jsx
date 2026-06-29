@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, Trophy } from 'lucide-react';
 import { useAwards } from '@/features/assignments/api/useAwards';
 import { useAssignment } from '@/features/assignments/api/useAssignments';
-import { getAwardById } from '@/features/assignments/api/judges';
+import { getAwardById } from '@/lib/judging/judges';
 import AwardReveal from './AwardReveal';
 import Button from '@/components/ui/Button';
 

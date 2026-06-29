@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Trophy, Clock } from 'lucide-react';
-import { JUDGES, AWARDS, getAwardById } from '@/features/assignments/api/judges';
+import { JUDGES, AWARDS, getAwardById } from '@/lib/judging/judges';
 import JudgeResultCard from './JudgeResultCard';
 import PickMascot from '@/components/ui/PickMascot';
 

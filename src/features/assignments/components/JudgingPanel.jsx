@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Play, AlertCircle, Loader2 } from 'lucide-react';
-import { isGeminiReady } from '@/features/assignments/api/gemini';
+import { isGeminiReady } from '@/lib/judging/gemini';
 import { useJudging } from '@/features/assignments/api/useJudging';
 import { useAssignmentActions } from '@/features/assignments/api/useAssignments';
 import Button from '@/components/ui/Button';
