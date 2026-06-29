@@ -123,6 +123,7 @@ const results = {
   voteLatencies: {},
   textBubbleLatencies: [],
   reactionLatencies: [],
+  chatLatencies: [],
   listenerLatencies: [],
   errors: [],
 };
@@ -350,6 +351,32 @@ async function reactionBurstTest() {
   log(`✅ 리액션 완료 — ${results.reactionLatencies.length}건, 평균 ${avg(results.reactionLatencies)}ms`);
 }
 
+// --- Phase 5b: Chat burst (공개 채팅 — 300명 동시 채팅) ---
+const CHAT_MSGS = ['안녕하세요!', 'ㅋㅋㅋ', '오 신기하다', '질문 있어요', '재밌어요', '동의합니다', '잘 보고있어요', '대박', '굿굿', '+1'];
+async function chatBurstTest() {
+  log(`\n💬 채팅 폭발 테스트 (${USER_COUNT}명 × 2회)...`);
+  for (let round = 0; round < 2; round++) {
+    const promises = [];
+    for (let i = 0; i < USER_COUNT; i++) {
+      const text = CHAT_MSGS[Math.floor(Math.random() * CHAT_MSGS.length)];
+      const start = performance.now();
+      const p = push(ref(dbs[i], `sessions/${SESSION_ID}/chat`), {
+        text,
+        sender: `학생${i + 1}`.slice(0, 20),
+        senderType: 'student',
+        timestamp: Date.now(),
+      }).then(() => {
+        results.chatLatencies.push(performance.now() - start);
+      }).catch(err => results.errors.push({ phase: 'chat', user: i, error: err.message }));
+      promises.push(p);
+    }
+    await Promise.all(promises);
+    log(`  라운드 ${round + 1}/2 — 평균 ${avg(results.chatLatencies.slice(-USER_COUNT))}ms`);
+    await sleep(500);
+  }
+  log(`✅ 채팅 완료 — ${results.chatLatencies.length}건, 평균 ${avg(results.chatLatencies)}ms`);
+}
+
 // --- Phase 6: Listener latency ---
 async function testListenerLatency() {
   log(`\n📡 실시간 리스너 지연 측정 (50명 샘플)...`);
@@ -430,6 +457,9 @@ function printReport() {
   log(`\n[리액션] ${results.reactionLatencies.length}건`);
   log(`  평균: ${avg(results.reactionLatencies)}ms | P95: ${p95(results.reactionLatencies)}ms`);
 
+  log(`\n[채팅] ${results.chatLatencies.length}건`);
+  log(`  평균: ${avg(results.chatLatencies)}ms | P95: ${p95(results.chatLatencies)}ms`);
+
   log(`\n[리스너 지연] ${results.listenerLatencies.length}개`);
   log(`  평균: ${avg(results.listenerLatencies)}ms | P95: ${p95(results.listenerLatencies)}ms`);
 
@@ -476,6 +506,8 @@ async function main() {
     await textBubbleBurstTest();
     await sleep(1000);
     await reactionBurstTest();
+    await sleep(1000);
+    await chatBurstTest();
     printReport();
   } catch (err) {
     log(`\n❌ 테스트 실패: ${err.message}`);
