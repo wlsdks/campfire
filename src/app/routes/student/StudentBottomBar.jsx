@@ -4,7 +4,7 @@ import { ref, set, push, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
 import { getParticipantId, getNickname, getLastSeen, saveLastSeen } from '@/lib/participant';
-import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
+import { useMyHandRaise } from '@/features/hand-raise/api/useHandRaises';
 import { useStudentDM } from '@/features/dm/api/useStudentDM';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Hand, MessageCircle, MessageSquare, HelpCircle, Headset, Send } from 'lucide-react';
@@ -37,7 +37,7 @@ export default memo(function StudentBottomBar({ sessionId }) {
   const [isAnonymous, setIsAnonymous] = useState(true);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState(null);
-  const { handRaises } = useHandRaises(sessionId);
+  const { raised: isRaised } = useMyHandRaise(sessionId);
 
   const pid = getParticipantId();
   const nickname = getNickname() || '익명';
@@ -72,7 +72,6 @@ export default memo(function StudentBottomBar({ sessionId }) {
     const t = setTimeout(() => setStaffReplied(null), 4500);
     return () => clearTimeout(t);
   }, [newStaffMessage, clearNewStaffMessage, showDMChat]);
-  const isRaised = handRaises[pid]?.raised === true;
   const [handAcknowledged, setHandAcknowledged] = useState(false);
   const wasRaisedRef = useRef(false);
   const selfToggledRef = useRef(false);

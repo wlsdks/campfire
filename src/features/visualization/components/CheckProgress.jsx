@@ -4,6 +4,8 @@ import { Check } from 'lucide-react';
 import { useVotes } from '@/hooks/useVotes';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 
+const MAX_AVATARS = 40; // 완료 아바타 렌더 상한 — 300명 동시 완료 시 렌더 렉 방지
+
 export default memo(function CheckProgress({ sessionId, questionId }) {
   const { totalVotes, voteList } = useVotes(sessionId, questionId);
   const { participants, count } = useParticipants(sessionId);
@@ -24,15 +26,11 @@ export default memo(function CheckProgress({ sessionId, questionId }) {
       {/* Big progress number */}
       <div className="text-center space-y-4">
         <div className="flex items-baseline justify-center gap-1">
-          <motion.span
-            key={totalVotes}
-            initial={{ scale: 0.8, opacity: 0.5 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 22 }}
+          <span
             className="text-7xl font-black tabular-nums text-slate-900 dark:text-slate-100"
           >
             {totalVotes}
-          </motion.span>
+          </span>
           <span className="text-3xl font-bold text-slate-300 dark:text-slate-600">
             / {totalParticipants}
           </span>
@@ -65,13 +63,14 @@ export default memo(function CheckProgress({ sessionId, questionId }) {
             완료 ({totalVotes}명)
           </p>
           <div className="flex flex-wrap gap-2">
+            {/* 최근 완료 N명만 렌더 — 300명 동시 완료 시 전원 spring으로 인한 렉 방지 */}
             <AnimatePresence>
-              {completedList.map((v, i) => (
+              {completedList.slice(0, MAX_AVATARS).map((v, i) => (
                 <motion.div
                   key={v.id}
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 25, delay: i * 0.03 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 25, delay: Math.min(i, 12) * 0.03 }}
                   className="inline-flex items-center gap-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full pl-1.5 pr-3 py-1"
                 >
                   <div className="w-5 h-5 rounded-full bg-slate-900 dark:bg-slate-100 flex items-center justify-center">
@@ -83,6 +82,11 @@ export default memo(function CheckProgress({ sessionId, questionId }) {
                 </motion.div>
               ))}
             </AnimatePresence>
+            {completedList.length > MAX_AVATARS && (
+              <span className="inline-flex items-center px-3 py-1 text-xs font-medium text-slate-400 dark:text-slate-500">
+                외 {completedList.length - MAX_AVATARS}명
+              </span>
+            )}
           </div>
         </div>
       )}

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, memo } from 'react';
-import { onChildAdded, ref } from 'firebase/database';
+import { onChildAdded, ref, query, limitToLast } from 'firebase/database';
 import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '@/lib/firebase';
 
@@ -25,7 +25,8 @@ export default memo(function ChatBubbleOverlay({ sessionId }) {
 
   useEffect(() => {
     if (!sessionId) return;
-    const bubbleRef = ref(db, `sessions/${sessionId}/chatBubbles`);
+    // limitToLast로 마운트 시 chatBubbles 전체 히스토리 다운로드 방지 (300명 누적분 차단)
+    const bubbleRef = query(ref(db, `sessions/${sessionId}/chatBubbles`), limitToLast(MAX_BUBBLES));
     let initialLoad = true;
 
     const unsub = onChildAdded(bubbleRef, (snap) => {
@@ -73,7 +74,7 @@ export default memo(function ChatBubbleOverlay({ sessionId }) {
             className="absolute bottom-40"
             style={{ left: `${b.x}%` }}
           >
-            <div className="bg-white/85 dark:bg-slate-700/85 backdrop-blur rounded-2xl px-3 py-1.5 shadow-md">
+            <div className="bg-white/95 dark:bg-slate-700/95 rounded-2xl px-3 py-1.5 shadow-md">
               <p className="text-[13px] font-medium text-slate-900 dark:text-slate-100 leading-tight whitespace-nowrap">{b.text}</p>
               <p className="text-[9px] text-slate-400 mt-0.5">{b.nickname}</p>
             </div>

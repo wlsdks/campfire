@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Clock } from 'lucide-react';
 import { getServerNow } from '@/features/timer/api/useTimer';
@@ -27,22 +27,29 @@ function formatTime(seconds) {
  */
 export default function TimerCountdown({ endTime, duration, onExpire }) {
   const [secondsLeft, setSecondsLeft] = useState(duration);
+  const firedRef = useRef(false);
 
   useEffect(() => {
     if (!endTime) return;
+    firedRef.current = false;
+    let interval;
 
     function tick() {
+      // 만료 후엔 interval 정지 — onExpire가 200ms마다 무한 호출되던 버그 방지
+      if (firedRef.current) { if (interval) clearInterval(interval); return; }
       // 서버 시간 기준 remaining — 학생 기기 시계 편차 보정 (endTime은 서버 기준으로 저장됨)
       const remaining = Math.max(0, Math.ceil((endTime - getServerNow()) / 1000));
       setSecondsLeft(remaining);
       if (remaining <= 0) {
+        firedRef.current = true;
         onExpire?.();
+        if (interval) clearInterval(interval);
       }
     }
 
     tick();
-    const interval = setInterval(tick, 200);
-    return () => clearInterval(interval);
+    interval = setInterval(tick, 200);
+    return () => { if (interval) clearInterval(interval); };
   }, [endTime, onExpire]);
 
   const progress = duration > 0 ? secondsLeft / duration : 0;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { colors } from '@/lib/design-tokens';
 import { getServerNow } from '@/features/timer/api/useTimer';
@@ -15,23 +15,29 @@ function getColor(secondsLeft, totalSeconds) {
 
 export default function TimerRing({ endTime, duration, onExpire, size = 'md' }) {
   const [secondsLeft, setSecondsLeft] = useState(duration);
+  const firedRef = useRef(false);
 
   useEffect(() => {
     if (!endTime) return;
+    firedRef.current = false;
+    let interval;
 
     function tick() {
+      // 만료 후엔 interval 정지 — onExpire(=stopTimer write)가 200ms마다 반복 호출되던 버그 방지
+      if (firedRef.current) { if (interval) clearInterval(interval); return; }
       // 서버 시간 기준 remaining — 학생 기기 시계 편차 보정 (endTime은 서버 시간 기준 저장됨)
       const remaining = Math.max(0, Math.ceil((endTime - getServerNow()) / 1000));
       setSecondsLeft(remaining);
       if (remaining <= 0) {
+        firedRef.current = true;
         onExpire?.();
-        return;
+        if (interval) clearInterval(interval);
       }
     }
 
     tick();
-    const interval = setInterval(tick, 200);
-    return () => clearInterval(interval);
+    interval = setInterval(tick, 200);
+    return () => { if (interval) clearInterval(interval); };
   }, [endTime, onExpire]);
 
   const progress = duration > 0 ? secondsLeft / duration : 0;

@@ -7,7 +7,7 @@ import VoteErrorToast from './VoteErrorToast';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
 import { getNickname, getParticipantId } from '@/lib/participant';
-import { useVotes } from '@/hooks/useVotes';
+import { useMyVoteFull } from '@/hooks/useMyVote';
 import VoteConfirm from './VoteConfirm';
 import BetSelector from './BetSelector';
 import ConfidenceMeter from './ConfidenceMeter';
@@ -34,8 +34,8 @@ const BET_LABELS = { 1: '1x 안전', 2: '2x 자신', 3: '3x 올인' };
  */
 export default memo(function QuizVoter({ sessionId, questionId, question, renderResult, disabled = false }) {
   const participantId = getParticipantId();
-  const { votes } = useVotes(sessionId, questionId);
-  const currentVote = votes[participantId] || null;
+  const { myVote } = useMyVoteFull(sessionId, questionId);
+  const currentVote = myVote || null;
   const [selected, setSelected] = useState(null);
   const [betMultiplier, setBetMultiplier] = useState(null);
   const [pendingAnswer, setPendingAnswer] = useState(null);

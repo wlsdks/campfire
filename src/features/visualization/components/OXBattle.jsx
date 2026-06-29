@@ -20,18 +20,16 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
       <div className="flex items-center justify-between text-center">
         <div className={`flex-1 space-y-2 py-4 rounded-xl transition-[opacity,background-color,box-shadow] duration-300 ${oCorrect ? 'ring-2 ring-indigo-500/30 bg-slate-50/50 dark:bg-slate-800/50' : revealed && !oCorrect ? 'opacity-50' : ''}`}>
           <div className="relative inline-block">
-            <motion.div
-              key={oCount}
-              initial={{ scale: 1.3 }}
-              animate={{ scale: 1 }}
-              className={`text-7xl font-black ${
+            {/* key 제거 — 득표 변할 때마다 거대 숫자/글자 remount+spring 재시작하던 렉 방지 (텍스트는 그대로 갱신됨) */}
+            <div
+              className={`text-7xl font-black transition-colors duration-300 ${
                 revealed
                   ? oCorrect ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-300 dark:text-slate-600'
                   : oWinning ? 'text-indigo-600 dark:text-indigo-400' : 'text-indigo-400 dark:text-indigo-500'
               }`}
             >
               O
-            </motion.div>
+            </div>
             {oCorrect && (
               <motion.span
                 initial={{ scale: 0, rotate: -45 }}
@@ -43,14 +41,11 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
               </motion.span>
             )}
           </div>
-          <motion.div
-            key={`o-${oCount}`}
-            initial={{ scale: 1.15 }}
-            animate={{ scale: 1 }}
-            className={`text-3xl font-bold tracking-tight ${oCorrect ? 'text-indigo-700 dark:text-indigo-400' : 'text-slate-900 dark:text-slate-100'}`}
+          <div
+            className={`text-3xl font-bold tracking-tight tabular-nums ${oCorrect ? 'text-indigo-700 dark:text-indigo-400' : 'text-slate-900 dark:text-slate-100'}`}
           >
             {oCount}
-          </motion.div>
+          </div>
           <div className="text-slate-400 dark:text-slate-500 text-sm">명</div>
         </div>
 
@@ -60,18 +55,15 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
 
         <div className={`flex-1 space-y-2 py-4 rounded-xl transition-[opacity,background-color,box-shadow] duration-300 ${xCorrect ? 'bg-slate-100/80 dark:bg-slate-700/50 ring-2 ring-slate-400/30 dark:ring-slate-500/30' : revealed && !xCorrect ? 'opacity-50' : ''}`}>
           <div className="relative inline-block">
-            <motion.div
-              key={xCount}
-              initial={{ scale: 1.3 }}
-              animate={{ scale: 1 }}
-              className={`text-7xl font-black ${
+            <div
+              className={`text-7xl font-black transition-colors duration-300 ${
                 revealed
                   ? xCorrect ? 'text-slate-700 dark:text-slate-200' : 'text-slate-300 dark:text-slate-600'
                   : xWinning ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400 dark:text-slate-500'
               }`}
             >
               X
-            </motion.div>
+            </div>
             {xCorrect && (
               <motion.span
                 initial={{ scale: 0, rotate: -45 }}
@@ -83,14 +75,11 @@ export default memo(function OXBattle({ sessionId, questionId, correctValue = nu
               </motion.span>
             )}
           </div>
-          <motion.div
-            key={`x-${xCount}`}
-            initial={{ scale: 1.15 }}
-            animate={{ scale: 1 }}
-            className={`text-3xl font-bold tracking-tight ${xCorrect ? 'text-slate-800 dark:text-slate-200' : 'text-slate-900 dark:text-slate-100'}`}
+          <div
+            className={`text-3xl font-bold tracking-tight tabular-nums ${xCorrect ? 'text-slate-800 dark:text-slate-200' : 'text-slate-900 dark:text-slate-100'}`}
           >
             {xCount}
-          </motion.div>
+          </div>
           <div className="text-slate-400 dark:text-slate-500 text-sm">명</div>
         </div>
       </div>

@@ -7,7 +7,7 @@ import { getParticipantId, getNickname } from '@/lib/participant';
 import { useReactions } from '@/features/reactions/api/useReactions';
 import { REACTIONS } from '@/features/reactions/reactionConfig';
 
-const COOLDOWN_MS = 500;
+const COOLDOWN_MS = 3000; // 스펙: 학생당 3초 1회 — 300명 시 write 폭주(최대 ~600/s → ~100/s)로 감소
 const FLASH_MS = 500;
 const PARTICLE_COUNT = 8;
 
@@ -95,7 +95,7 @@ const BUBBLE_MAX = 20;
 const BUBBLE_COOLDOWN = 3000;
 
 export default function ReactionBar({ sessionId, bubbleSessionId }) {
-  const { sendReaction } = useReactions(sessionId);
+  const { sendReaction } = useReactions(sessionId, { subscribe: false });
   const [flashType, setFlashType] = useState(null);
   const cooldownRef = useRef(0);
   const flashTimerRef = useRef(null);

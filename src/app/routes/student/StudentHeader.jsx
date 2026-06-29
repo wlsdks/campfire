@@ -6,10 +6,10 @@ import PickMascot from '@/components/ui/PickMascot';
 import Avatar from '@/components/ui/Avatar';
 import ConnectionBanner from '@/components/ui/ConnectionBanner';
 import { useConnectionStatus } from '@/hooks/useConnectionStatus';
-import { useScores } from '@/features/quiz/api/useScores';
+import { useMyScore } from '@/features/quiz/api/useScores';
 import { useSession } from '@/features/session/api/useSession';
 import ElapsedTime from '@/components/ui/ElapsedTime';
-import { getParticipantId, getNickname, clearSessionJoined } from '@/lib/participant';
+import { getNickname, clearSessionJoined } from '@/lib/participant';
 
 function ThemeToggle() {
   const { isDark, setTheme } = useTheme();
@@ -54,10 +54,9 @@ function HeaderScore({ value }) {
 
 export default function StudentHeader({ sessionId }) {
   const { session } = useSession(sessionId);
-  const { scores } = useScores(sessionId);
+  const { myScore } = useMyScore(sessionId);
   const { connected } = useConnectionStatus();
   const nickname = getNickname();
-  const myScore = scores[getParticipantId()];
   const totalScore = myScore?.total || 0;
   const tickets = myScore?.tickets || 0;
 

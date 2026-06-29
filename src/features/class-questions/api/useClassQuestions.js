@@ -1,4 +1,4 @@
-import { ref, onValue, push, update, remove, serverTimestamp, increment } from 'firebase/database';
+import { ref, onValue, push, update, remove, serverTimestamp, increment, query, limitToLast } from 'firebase/database';
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
@@ -22,7 +22,8 @@ export function useClassQuestions(sessionId) {
 
   useEffect(() => {
     if (!sessionId) return;
-    const qRef = ref(db, `sessions/${sessionId}/classQuestions`);
+    // limitToLast로 누적 질문 무한 다운로드 방지 — 최근 100개만 구독
+    const qRef = query(ref(db, `sessions/${sessionId}/classQuestions`), limitToLast(100));
     const unsub = onValue(qRef, (snap) => {
       setRaw(snap.val() || {});
       setLoading(false);

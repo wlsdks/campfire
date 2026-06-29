@@ -136,7 +136,7 @@ export default memo(function AnswerBubbleOverlay({ sessionId, questionId }) {
             className="absolute bottom-24"
             style={{ left: `${bubble.left}%` }}
           >
-            <div className="px-4 py-2 rounded-full bg-white/90 dark:bg-slate-800/90 border border-slate-200/60 dark:border-slate-600/60 shadow-lg backdrop-blur-sm max-w-[220px]">
+            <div className="px-4 py-2 rounded-full bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-600/60 shadow-lg max-w-[220px]">
               <p className="text-base font-semibold text-slate-700 dark:text-slate-200 truncate leading-tight">
                 {bubble.text}
               </p>

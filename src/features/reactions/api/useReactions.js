@@ -4,11 +4,13 @@ import { db } from '@/lib/firebase';
 
 const MAX_STORED = 50;
 
-export function useReactions(sessionId) {
+// subscribe=false: 전송만 하고 reactions 목록은 구독하지 않음(ReactionBar 등).
+// 300명 전원이 전송 컴포넌트에서 불필요한 reactions onValue를 들지 않게 함.
+export function useReactions(sessionId, { subscribe = true } = {}) {
   const [reactions, setReactions] = useState([]);
 
   useEffect(() => {
-    if (!sessionId) return;
+    if (!sessionId || !subscribe) return;
     const reactionsRef = query(ref(db, `sessions/${sessionId}/reactions`), limitToLast(MAX_STORED));
     const unsub = onValue(reactionsRef, (snap) => {
       const data = snap.val();
@@ -17,7 +19,7 @@ export function useReactions(sessionId) {
       setReactions(list);
     });
     return () => unsub();
-  }, [sessionId]);
+  }, [sessionId, subscribe]);
 
   const sendReaction = useCallback(async (type) => {
     if (!sessionId) return false;

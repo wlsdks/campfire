@@ -103,9 +103,8 @@ export default memo(function ReactionOverlay({ sessionId }) {
               className="absolute bottom-[max(4.75rem,env(safe-area-inset-bottom))]"
               style={{ left: `${bubble.left}%` }}
             >
-              <motion.div
-                animate={{ scale: [1, 1.08, 1], rotate: [0, 3, -3, 0] }}
-                transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+              {/* 무한 펄스 제거 — 외부 keyframe scale이 이미 생동감 제공. 동시 버블 최대 15개 × repeat:Infinity 제거로 프레임 비용 절감 */}
+              <div
                 className={`flex items-center justify-center rounded-full border shadow-md ${reaction.bubbleBg} ${reaction.bubbleBorder}`}
                 style={{ width: bubble.size, height: bubble.size }}
               >
@@ -114,7 +113,7 @@ export default memo(function ReactionOverlay({ sessionId }) {
                   className={reaction.bubbleIcon}
                   fill={fillHeart ? 'currentColor' : 'none'}
                 />
-              </motion.div>
+              </div>
             </motion.div>
           );
         })}

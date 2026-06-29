@@ -1,6 +1,27 @@
 import { ref, onValue, set } from 'firebase/database';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { db } from '@/lib/firebase';
+import { getParticipantId } from '@/lib/participant';
+
+/**
+ * 학생 전용 경량 훅 — 본인 점수 노드만 구독.
+ * 전체 scores 컬렉션(300명) 구독 대신 sessions/{id}/scores/{pid}만 onValue.
+ * 300명 동시접속 fan-out 방지 — 전체 leaderboard가 필요한 곳만 useScores 사용.
+ */
+export function useMyScore(sessionId) {
+  const [myScore, setMyScore] = useState(null);
+
+  useEffect(() => {
+    if (!sessionId) return;
+    const pid = getParticipantId();
+    if (!pid) return;
+    const myRef = ref(db, `sessions/${sessionId}/scores/${pid}`);
+    const unsub = onValue(myRef, (snap) => setMyScore(snap.val()));
+    return () => unsub();
+  }, [sessionId]);
+
+  return { myScore };
+}
 
 export function useScores(sessionId) {
   const [scores, setScores] = useState({});

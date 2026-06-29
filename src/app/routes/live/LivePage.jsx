@@ -62,10 +62,13 @@ export default function LivePage() {
 
   const { publishResult } = usePublishGameResult(sessionId);
 
-  // drawParticipants: onlineList enriched with ticket data for weighted lottery
+  // drawParticipants: onlineList enriched with ticket data for weighted lottery.
+  // 추첨 모드에서만 계산 — 그 외엔 scores 변경마다 300명 재계산하던 비용 제거.
   const drawParticipants = useMemo(
-    () => onlineList.map((p) => ({ ...p, ...scores[p.id], tickets: scores[p.id]?.tickets || 0 })),
-    [onlineList, scores]
+    () => currentMode === 'lottery'
+      ? onlineList.map((p) => ({ ...p, ...scores[p.id], tickets: scores[p.id]?.tickets || 0 }))
+      : [],
+    [onlineList, scores, currentMode]
   );
 
   // Publish game results to Firebase so students can see them.

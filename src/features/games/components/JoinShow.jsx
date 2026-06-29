@@ -42,15 +42,12 @@ function Confetti({ trigger }) {
     <div className="fixed inset-0 pointer-events-none z-20 overflow-hidden">
       {particles.map(p => (
         <motion.div key={p.id}
-          initial={{ left: `${p.ox}%`, top: `${p.oy}%`, opacity: 1, scale: 1 }}
-          animate={{
-            left: `calc(${p.ox}% + ${p.dx}px)`,
-            top: `calc(${p.oy}% + ${p.dy}px)`,
-            opacity: 0, scale: 0.2, rotate: p.rot,
-          }}
+          initial={{ x: 0, y: 0, opacity: 1, scale: 1 }}
+          animate={{ x: p.dx, y: p.dy, opacity: 0, scale: 0.2, rotate: p.rot }}
           transition={{ duration: p.dur, delay: p.delay, ease: 'easeOut' }}
           className="absolute rounded-sm"
-          style={{ width: p.size, height: p.size * p.ratio, backgroundColor: p.color }}
+          // 이동을 x/y(transform)로 — left/top(layout) reflow 제거, 300명 입장 폭죽 90입자 컴포지터 처리
+          style={{ left: `${p.ox}%`, top: `${p.oy}%`, width: p.size, height: p.size * p.ratio, backgroundColor: p.color }}
         />
       ))}
     </div>

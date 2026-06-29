@@ -36,19 +36,18 @@ export default memo(function WordCloud({ sessionId, questionId }) {
 
   return (
     <div className="w-full max-w-3xl mx-auto">
-      <motion.div
-        layout
+      <div
         className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2.5 p-6 min-h-[300px]"
       >
         <AnimatePresence initial={false}>
           {words.map((word, i) => (
+            // layout(FLIP) 제거 — 매 집계 갱신마다 40단어 전체 위치 재계산 reflow 방지. enter/exit만 유지
             <motion.span
-              layout
               key={word.text}
               initial={{ opacity: 0, scale: 0.6 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.5 }}
-              transition={{ type: 'spring', stiffness: 260, damping: 22, delay: i * 0.008 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 22, delay: Math.min(i, 12) * 0.008 }}
               style={{ fontSize: getFontSize(word.count) }}
               className={`font-bold cursor-default max-w-full break-keep ${WORD_CLASSES[i % WORD_CLASSES.length]}`}
               title={`${word.text}: ${word.count}회`}
@@ -63,7 +62,7 @@ export default memo(function WordCloud({ sessionId, questionId }) {
             <p className="text-slate-400 dark:text-slate-500 text-base">아직 입력이 없습니다</p>
           </div>
         )}
-      </motion.div>
+      </div>
       {totalVotes > 0 && (
         <div className="text-center text-slate-400 dark:text-slate-500 text-sm mt-2">
           총 {totalVotes}개 응답

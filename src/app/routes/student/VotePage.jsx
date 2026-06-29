@@ -3,7 +3,7 @@ import { useSession } from '@/features/session/api/useSession';
 import { motion, AnimatePresence } from 'framer-motion';
 import { VotePageSkeleton, SuspenseFallback } from '@/components/ui/Skeleton';
 import { useTimer } from '@/features/timer/api/useTimer';
-import { useScores } from '@/features/quiz/api/useScores';
+import { useMyScore } from '@/features/quiz/api/useScores';
 import { useAchievements } from '@/features/quiz/api/useAchievements';
 import { useSpeedQuizStudent } from '@/features/quiz/api/useSpeedQuizStudent';
 import AchievementToast from '@/features/quiz/components/AchievementToast';
@@ -37,11 +37,12 @@ export default memo(function VotePage({ sessionId }) {
     prevEndTimeRef.current = endTime;
   }, [session?.currentQuestion, endTime]);
 
-  const { scores } = useScores(sessionId);
-  const { achievements } = useAchievements(session, scores);
-  const { isSpeedQuiz, totalQuestions: speedQuizTotal } = useSpeedQuizStudent(sessionId);
+  const { myScore } = useMyScore(sessionId);
   const participantId = getParticipantId();
-  const myStreak = scores[participantId]?.streak || 0;
+  // useAchievements는 본인 점수(scores[pid])만 사용 → 본인 점수만 넘겨 전체 구독 회피
+  const { achievements } = useAchievements(session, participantId ? { [participantId]: myScore } : {});
+  const { isSpeedQuiz, totalQuestions: speedQuizTotal } = useSpeedQuizStudent(sessionId);
+  const myStreak = myScore?.streak || 0;
 
   const speedQuizIndex = useMemo(() => {
     if (!isSpeedQuiz) return 0;
