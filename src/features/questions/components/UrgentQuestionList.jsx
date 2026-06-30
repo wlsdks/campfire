@@ -50,10 +50,18 @@ export default function UrgentQuestionList({ sessionId, embedded = false }) {
   const reviewingIdRef = useRef(null);
   const deleteTimerRef = useRef(null);
 
-  // Cleanup delete timer on unmount
+  // Cleanup on unmount: delete 타이머 정리 + 열린 채 남은 reviewing 플래그 해제.
+  // (강사가 검토 모달을 연 상태로 handleBack/새로고침/세션전환 시 reviewing=true가 Firebase에
+  //  잔존해 학생 '검토 중' 배너가 영구히 안 사라지던 정합성 버그 방지.)
   useEffect(() => {
-    return () => { if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current); };
-  }, []);
+    return () => {
+      if (deleteTimerRef.current) clearTimeout(deleteTimerRef.current);
+      if (reviewingIdRef.current) {
+        update(ref(db, `sessions/${sessionId}/urgentQuestions/${reviewingIdRef.current}`), { reviewing: false }).catch(() => {});
+        reviewingIdRef.current = null;
+      }
+    };
+  }, [sessionId]);
 
   async function markRead(questionId) {
     try {

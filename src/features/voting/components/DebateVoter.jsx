@@ -83,7 +83,14 @@ export default memo(function DebateVoter({ sessionId, questionId, disabled = fal
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (myVote && !submitted) { setSide(myVote); setSubmitted(true); }
+    // 저장 형태는 `${side}:${opinion}`(예: "for:동의함") — side만 추출해 복원해야
+    // 새로고침 시 찬/반 라벨·(나) 마커가 올바르게 표시되고 의견 텍스트도 살아난다.
+    if (myVote && !submitted) {
+      const ci = myVote.indexOf(':');
+      setSide(ci >= 0 ? myVote.slice(0, ci) : myVote);
+      if (ci >= 0) setOpinion(myVote.slice(ci + 1));
+      setSubmitted(true);
+    }
   }, [myVote, submitted]);
 
   useEffect(() => {

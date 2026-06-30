@@ -67,7 +67,9 @@ export function useSpeedQuiz(sessionId, session, { scores, participants, startTi
 
   // Activate a quiz question with timer
   const activateQuizQuestion = useCallback(async (qId) => {
-    const now = Date.now();
+    // 서버 보정 시각 — 학생 vote.timestamp(serverTimestamp)와 동일 기준이라야 속도 보너스
+    // (elapsedMs = vote.timestamp - activatedAt)가 강사 기기 시계 오차 없이 정확해짐.
+    const now = getServerNow();
     try {
       await update(ref(db, `sessions/${sessionId}`), {
         currentQuestion: qId,
@@ -98,7 +100,7 @@ export function useSpeedQuiz(sessionId, session, { scores, participants, startTi
     }
 
     try {
-      const now = Date.now();
+      const now = getServerNow(); // revealedAt/awardedAt도 서버 기준으로 통일
       const voteEntries = Object.entries(question.votes || {});
       const updates = {
         currentMode: 'quiz',

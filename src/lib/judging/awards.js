@@ -55,8 +55,13 @@ export function calculateLiveTop3(allResults) {
 export function calculateAwards(allResults) {
   if (!allResults.length) return {};
 
+  // 전 판사 실패(totalJudges=0) 제출은 순위에서 제외 — calculateLiveTop3와 동일 기준.
+  // (점수 없는 제출이 0점으로 상위권에 끼어 시상되는 정합성 오류 방지)
+  const valid = allResults.filter((r) => (r.summary?.totalJudges ?? 0) > 0);
+  if (!valid.length) return {};
+
   const awards = {};
-  const sorted = [...allResults].sort((a, b) => b.summary.avgScore - a.summary.avgScore);
+  const sorted = [...valid].sort((a, b) => b.summary.avgScore - a.summary.avgScore);
 
   const rankAwards = ['grand', 'excellence', 'outstanding'];
   sorted.slice(0, 3).forEach((entry, i) => {

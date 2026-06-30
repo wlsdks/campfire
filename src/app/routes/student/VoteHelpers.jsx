@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Clock } from 'lucide-react';
 import QuizResult from '@/features/quiz/components/QuizResult';
 import { getQuizReward } from '@/lib/quiz';
+import { getComboMultiplier } from '@/features/quiz/api/useSpeedQuiz';
 
 // --- Lazy-loaded mode pages ---
 const LazyLeaderboardPage = lazy(() => import('./LeaderboardPage'));
@@ -37,13 +38,18 @@ export function getModeVariants(modeKey) {
 export const ENTER_TRANSITION = { type: 'spring', stiffness: 280, damping: 26 };
 
 /** Renders QuizResult from vote data passed by QuizVoter. */
-export function QuizResultFromVote({ question, currentVote, streak = 0 }) {
+export function QuizResultFromVote({ question, currentVote, streak = 0, isSpeedQuiz = false }) {
   if (!currentVote) return null;
   const reward = getQuizReward(question, currentVote);
+  // 스피드 퀴즈는 서버가 콤보 배수(3연속 1.2x, 5연속 1.5x)를 적용해 적립하므로,
+  // 표시 점수도 동일 배수를 반영해야 '+점수'가 실제 가산점과 일치(정합성).
+  const points = isSpeedQuiz && reward.isCorrect
+    ? Math.round(reward.points * getComboMultiplier(streak))
+    : reward.points;
   return (
     <QuizResult
       isCorrect={reward.isCorrect}
-      points={reward.points}
+      points={points}
       tickets={reward.tickets}
       correctAnswer={question.correctAnswer}
       event={question.event || null}

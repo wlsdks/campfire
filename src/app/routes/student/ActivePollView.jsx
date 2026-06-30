@@ -129,8 +129,11 @@ export default memo(function ActivePollView({
         {/* Voter area */}
         <ErrorBoundary scope="voter" fullPage={false}>
           <AnimatePresence mode="wait">
+            {/* activatedAt을 key에 포함 — 강사가 '답변 초기화'(activatedAt=null)/재활성 시 voter가
+                remount되어 voted/submitted 로컬 state가 초기화됨(학생이 다시 투표 가능). 투표 중엔
+                activatedAt이 안 변하므로 불필요한 remount 없음. */}
             <motion.div
-              key={`voter-${questionId}`}
+              key={`voter-${questionId}-${question.activatedAt ?? 'na'}`}
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
@@ -149,7 +152,7 @@ export default memo(function ActivePollView({
                   question={question}
                   disabled={votingLocked}
                   renderResult={(currentVote) => (
-                    <QuizResultFromVote question={question} currentVote={currentVote} streak={myStreak} />
+                    <QuizResultFromVote question={question} currentVote={currentVote} streak={myStreak} isSpeedQuiz={isSpeedQuiz} />
                   )}
                 />
               )}

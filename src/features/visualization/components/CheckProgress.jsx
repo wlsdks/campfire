@@ -52,7 +52,7 @@ export default memo(function CheckProgress({ sessionId, questionId }) {
         </div>
         <div className="flex justify-between text-sm text-slate-400 dark:text-slate-500 tabular-nums">
           <span>{pct}% 완료</span>
-          <span>{totalParticipants - totalVotes}명 남음</span>
+          <span>{Math.max(0, totalParticipants - totalVotes)}명 남음</span>
         </div>
       </div>
 
