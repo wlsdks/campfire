@@ -152,11 +152,11 @@ export default function LivePage() {
         questionId={session?.currentQuestion}
       />
 
-      {/* 정렬 분기:
-          - 활성 질문 시각화(aiJudge 그리드 등): items-start — 카드 많으면 뷰포트 초과 가능, 상단 잘림 방지
-          - 게임 모드(joinShow 카운터, lottery, breakTime) + empty 상태(마스코트): items-center — 짧은 컨텐츠는 정중앙. */}
-      <div className={`flex-1 flex justify-center overflow-y-auto px-8 pt-4 pb-10 ${hasActiveQuestion ? 'items-start' : 'items-center'}`}>
-        <div className="w-full max-w-5xl mx-auto">
+      {/* 정렬: items-start + 자식 my-auto = 콘텐츠가 뷰포트보다 짧으면 정중앙(프로젝터 여백낭비 방지),
+          넘치면(aiJudge 그리드 등) 상단부터 스크롤되어 상단 잘림도 방지 — 두 요구를 동시 충족.
+          폭은 QHD(2560) 프로젝터에서 작게 떠 보이지 않도록 2xl 이상에서 확장. */}
+      <div className="flex-1 flex justify-center items-start overflow-y-auto px-8 pt-4 pb-10">
+        <div className="w-full max-w-5xl 2xl:max-w-6xl mx-auto my-auto">
           <AnimatePresence mode="wait">
             {isGameMode ? (
               <motion.div
