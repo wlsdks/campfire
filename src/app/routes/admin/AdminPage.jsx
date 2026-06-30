@@ -30,7 +30,7 @@ const StaffCourseDashboard = lazy(() => import('./StaffCourseDashboard'));
 export default function AdminPage() {
   const s = useAdminSession();
   const isMobile = useMediaQuery('(max-width: 767px)');
-  const isTablet = useMediaQuery('(max-width: 1023px)');
+  const isTablet = useMediaQuery('(max-width: 1199px)');
 
   // P0-1: 게임 결과 발행을 강사 일반 모드에서도 보장 (전자칠판 의존성 제거)
   // 모든 early-return 전에 호출되어야 함 (Rules of Hooks)

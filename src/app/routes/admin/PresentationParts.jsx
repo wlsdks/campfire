@@ -16,9 +16,10 @@ import UrgentQuestionList from '@/features/questions/components/UrgentQuestionLi
 export function PresentEmptyState({ sessionId, studentUrl, count }) {
   return (
     <div className="flex flex-col items-center justify-center gap-4 md:gap-6 px-2">
-      <QRCode url={studentUrl} size={180} />
-      <p className="text-slate-500 dark:text-slate-400 text-sm md:text-base break-all max-w-xs md:max-w-md text-center">{studentUrl}</p>
-      <p className="text-slate-400 dark:text-slate-500 text-xs md:text-sm text-center">학생들이 QR코드를 스캔하여 참여할 수 있습니다</p>
+      {/* 프로젝터 뒷자리에서도 스캔 가능하도록 크게 — QHD(2560)에서 더 확대 */}
+      <QRCode url={studentUrl} size={260} />
+      <p className="text-slate-500 dark:text-slate-400 text-base md:text-lg break-all max-w-md md:max-w-xl text-center">{studentUrl}</p>
+      <p className="text-slate-500 dark:text-slate-300 text-sm md:text-lg font-medium text-center">학생들이 QR코드를 스캔하여 참여할 수 있습니다</p>
       <div className="flex items-center gap-2 md:gap-3 flex-wrap justify-center">
         <Badge variant="neutral"><Users size={14} className="mr-1" />{count}명 접속 중</Badge>
         <Badge variant="neutral">{sessionId}</Badge>

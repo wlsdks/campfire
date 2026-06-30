@@ -19,7 +19,7 @@ import StaffMobileView from './staff/StaffMobileView';
 const LazyClassQABoard = lazy(() => import('@/features/class-questions/components/ClassQABoard'));
 
 export default function StaffPage({ sessionId, session, adminUser, onBack, onLogout }) {
-  const isTablet = useMediaQuery('(max-width: 1023px)');
+  const isTablet = useMediaQuery('(max-width: 1199px)');
   const [selected, setSelected] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
