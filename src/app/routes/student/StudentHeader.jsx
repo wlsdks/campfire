@@ -7,7 +7,7 @@ import Avatar from '@/components/ui/Avatar';
 import ConnectionBanner from '@/components/ui/ConnectionBanner';
 import { useConnectionStatus } from '@/hooks/useConnectionStatus';
 import { useMyScore } from '@/features/quiz/api/useScores';
-import { useSession } from '@/features/session/api/useSession';
+import { useSessionMeta } from '@/features/session/api/useSession';
 import ElapsedTime from '@/components/ui/ElapsedTime';
 import { getNickname, clearSessionJoined } from '@/lib/participant';
 
@@ -53,7 +53,8 @@ function HeaderScore({ value }) {
 }
 
 export default function StudentHeader({ sessionId }) {
-  const { session } = useSession(sessionId);
+  // 경량 메타(startedAt/status)만 구독 — full useSession 중복 구독(questions+13필드) 제거
+  const { startedAt, status } = useSessionMeta(sessionId);
   const { myScore } = useMyScore(sessionId);
   const { connected, showBanner } = useConnectionStatus();
   // dot은 debounce된 showBanner 기준 — 와이파이 jitter마다 amber 깜빡이던 것 방지(확정 오프라인에서만 amber)
@@ -86,7 +87,7 @@ export default function StudentHeader({ sessionId }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         aria-label="Pick 학생 헤더"
-        className="fixed top-0 left-0 right-0 z-20 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md"
+        className="fixed top-0 left-0 right-0 z-20 bg-white dark:bg-slate-800"
       >
         <div className="flex items-center justify-between px-5 py-4 max-w-[620px] mx-auto">
           <div className="flex items-center gap-2.5">
@@ -103,7 +104,7 @@ export default function StudentHeader({ sessionId }) {
               />
             </div>
             <span className="font-bold text-lg text-slate-900 dark:text-slate-100 tracking-tight">Pick</span>
-            <ElapsedTime startedAt={session?.startedAt} status={session?.status} />
+            <ElapsedTime startedAt={startedAt} status={status} />
           </div>
 
           <div className="flex items-center gap-4">

@@ -17,6 +17,9 @@ const SIZES = {
  */
 export default function PickMascot({ size = 'md', mood = 'happy', className = '' }) {
   const px = SIZES[size] || SIZES.md;
+  // 작은 인스턴스(xs/sm — 헤더 로고/아바타, 300대 상시 마운트)는 무한 애니메이션 비활성.
+  // 큰 hero(md/lg — 대기/빈 화면)에서만 7종 idle 애니메이션 구동(브랜드 딜라이트 유지).
+  const idle = px >= SIZES.md;
   const uid = useId();
   const g = (name) => `pick-${uid}-${name}`;
 
@@ -49,8 +52,8 @@ export default function PickMascot({ size = 'md', mood = 'happy', className = ''
 
   const isFocus = mood === 'focus';
 
-  // Blink animation
-  const blinkAnim = {
+  // Blink animation (idle 인스턴스만)
+  const blinkAnim = !idle ? {} : {
     animate: { scaleY: [1, 1, 0.08, 1, 1] },
     transition: { duration: 4, repeat: Infinity, times: [0, 0.45, 0.5, 0.55, 1] },
   };
@@ -64,8 +67,8 @@ export default function PickMascot({ size = 'md', mood = 'happy', className = ''
       aria-hidden="true"
       className={className}
       style={{ display: 'block' }}
-      animate={{ ...bob, ...breathe, ...tilt }}
-      transition={{ y: bobTiming, scale: breatheTiming, rotate: tiltTiming }}
+      animate={idle ? { ...bob, ...breathe, ...tilt } : undefined}
+      transition={idle ? { y: bobTiming, scale: breatheTiming, rotate: tiltTiming } : undefined}
     >
       <defs>
         {/* Mane gradient — warm, soft */}
@@ -186,13 +189,13 @@ export default function PickMascot({ size = 'md', mood = 'happy', className = ''
       {/* ── Cheeks ── bigger, pinker blush */}
       <motion.circle
         cx="35" cy="67" r="9" fill={`url(#${g('blush')})`}
-        animate={{ opacity: [0.6, 1, 0.6] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+        animate={idle ? { opacity: [0.6, 1, 0.6] } : undefined}
+        transition={idle ? { duration: 3, repeat: Infinity, ease: 'easeInOut' } : undefined}
       />
       <motion.circle
         cx="85" cy="67" r="9" fill={`url(#${g('blush')})`}
-        animate={{ opacity: [0.6, 1, 0.6] }}
-        transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.3 }}
+        animate={idle ? { opacity: [0.6, 1, 0.6] } : undefined}
+        transition={idle ? { duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 0.3 } : undefined}
       />
 
       {/* ── Whisker dots ── */}

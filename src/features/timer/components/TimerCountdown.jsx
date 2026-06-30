@@ -86,9 +86,10 @@ export default function TimerCountdown({ endTime, duration, onExpire }) {
           </motion.span>
         </div>
         <div className="h-1.5 bg-slate-200/60 dark:bg-slate-600/60 rounded-full overflow-hidden">
+          {/* width 대신 scaleX(GPU 합성) — 활성질문 내내 300대 모바일에서 layout/paint 반복 제거 */}
           <motion.div
-            className={`h-full rounded-full ${color.bar}`}
-            animate={{ width: `${progress * 100}%` }}
+            className={`h-full w-full origin-left rounded-full ${color.bar}`}
+            animate={{ scaleX: progress }}
             transition={{ duration: 0.3, ease: 'linear' }}
           />
         </div>

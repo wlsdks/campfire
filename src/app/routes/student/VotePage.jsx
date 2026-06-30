@@ -18,7 +18,10 @@ import DrumrollOverlay from '@/components/ui/DrumrollOverlay';
 import ChatBubbleOverlay from '@/features/reactions/components/ChatBubbleOverlay';
 
 export default memo(function VotePage({ sessionId }) {
-  const { session, loading } = useSession(sessionId);
+  // 본인 participantId 전달 → useSession이 타인 votes를 버려, 다른 학생 투표마다
+  // 전 학생 단말이 리렌더되던 fan-out 차단(본인 투표 시에만 리렌더).
+  const myPid = getParticipantId();
+  const { session, loading } = useSession(sessionId, { participantId: myPid });
   const { isRunning: timerRunning, endTime, duration } = useTimer(sessionId);
   const [timerExpired, setTimerExpired] = useState(false);
 
@@ -38,7 +41,7 @@ export default memo(function VotePage({ sessionId }) {
   }, [session?.currentQuestion, endTime]);
 
   const { myScore } = useMyScore(sessionId);
-  const participantId = getParticipantId();
+  const participantId = myPid;
   // useAchievements는 본인 점수(scores[pid])만 사용 → 본인 점수만 넘겨 전체 구독 회피
   const { achievements } = useAchievements(session, participantId ? { [participantId]: myScore } : {});
   const { isSpeedQuiz, totalQuestions: speedQuizTotal } = useSpeedQuizStudent(sessionId);
