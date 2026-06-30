@@ -2,6 +2,7 @@ import { useState, useRef, memo } from 'react';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/lib/firebase-storage';
 import { compressImage } from '@/lib/image-utils';
+import { logger } from '@/lib/logger';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ImagePlus, X, Loader2 } from 'lucide-react';
 
@@ -40,7 +41,7 @@ export default memo(function ImageUpload({ value, onChange, folder = 'questions'
       const url = await getDownloadURL(storageRef);
       onChange(url);
     } catch (err) {
-      console.error('Image upload failed:', err);
+      logger.error('Image upload failed:', err);
       setError('업로드 실패. 다시 시도해주세요.');
       setTimeout(() => setError(null), 3000);
     }

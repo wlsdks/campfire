@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { logger } from '@/lib/logger';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Check, AlertCircle } from 'lucide-react';
 import { ref as sRef, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -175,7 +176,7 @@ export default function SubmissionForm({ onSubmit, existingSubmission, assignmen
       } else if (err.message === 'NAME_TAKEN') {
         setNameError('이미 사용 중인 이름입니다. 다른 이름을 쓰거나, 본인 제출물 수정이라면 "내 제출물 조회"를 이용하세요.');
       } else {
-        console.error('[submission] failed', err);
+        logger.error('[submission] failed', err);
         setSubmitError('제출에 실패했습니다. 네트워크를 확인하고 다시 시도해주세요.');
       }
     } finally {

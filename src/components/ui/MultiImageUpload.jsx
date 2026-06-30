@@ -7,6 +7,7 @@ import { ImagePlus, X, Loader2 } from 'lucide-react';
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, useSortable, rectSortingStrategy, arrayMove } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { logger } from '@/lib/logger';
 
 const MAX_SIZE_MB = 20;
 const MAX_IMAGES = 10;
@@ -89,7 +90,7 @@ export default memo(function MultiImageUpload({ images = [], onChange }) {
         const url = await getDownloadURL(storageRef);
         urls.push(url);
       } catch (err) {
-        console.error('Image upload failed:', valid[i].name, err);
+        logger.error('Image upload failed:', valid[i].name, err);
         failCount++;
       }
     }

@@ -1,37 +1,4 @@
-export default function Skeleton({ className = '', width, height }) {
-  return (
-    <div
-      className={`animate-shimmer rounded-lg ${className}`}
-      style={{ width, height }}
-    />
-  );
-}
-
-export function SkeletonText({ lines = 3, className = '' }) {
-  return (
-    <div className={`space-y-2.5 ${className}`}>
-      {Array.from({ length: lines }).map((_, i) => (
-        <div
-          key={i}
-          className="animate-shimmer rounded h-4"
-          style={{ width: i === lines - 1 ? '60%' : '100%' }}
-        />
-      ))}
-    </div>
-  );
-}
-
-export function SkeletonCard({ className = '' }) {
-  return (
-    <div className={`bg-white dark:bg-slate-800 rounded-xl shadow-sm p-5 ${className}`}>
-      <div className="animate-shimmer rounded-lg h-5 w-2/3 mb-3" />
-      <div className="space-y-2">
-        <div className="animate-shimmer rounded h-4 w-full" />
-        <div className="animate-shimmer rounded h-4 w-4/5" />
-      </div>
-    </div>
-  );
-}
+// 미사용 Skeleton/SkeletonText/SkeletonCard 제거 — 실사용: VotePageSkeleton, SuspenseFallback.
 
 /** Layout-matching skeleton for student vote page. */
 export function VotePageSkeleton() {

@@ -8,6 +8,7 @@ import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import { SuspenseFallback } from '@/components/ui/Skeleton';
 import { db } from '@/lib/firebase';
 import { getNickname, getParticipantId, hasJoinedSession, markSessionJoined, getSessionNickname } from '@/lib/participant';
+import { logger } from '@/lib/logger';
 import { useTheme } from '@/hooks/useTheme';
 
 const VotePage = lazy(() => import('@/app/routes/student/VotePage'));
@@ -75,7 +76,7 @@ function StudentRouter() {
       nickname,
       joinedAt: serverTimestamp(),
       online: true,
-    }).catch((err) => console.warn('[presence] init failed', err));
+    }).catch((err) => logger.warn('[presence] init failed', err));
 
     // 재접속(.info/connected) 시: online만 갱신(이미 true면 무변경 → 리스너 미발화) + onDisconnect 재무장.
     // 전체 노드 set/joinedAt 재기록을 하지 않아, 교실 Wi-Fi 블립에 300명이 동시에 full-node write를
@@ -83,8 +84,8 @@ function StudentRouter() {
     const connRef = ref(db, '.info/connected');
     const unsub = onValue(connRef, (snap) => {
       if (snap.val() !== true) return;
-      update(participantRef, { online: true }).catch((err) => console.warn('[presence] reconnect failed', err));
-      onDisconnect(onlineRef).set(false).catch((err) => console.warn('[presence] onDisconnect failed', err));
+      update(participantRef, { online: true }).catch((err) => logger.warn('[presence] reconnect failed', err));
+      onDisconnect(onlineRef).set(false).catch((err) => logger.warn('[presence] onDisconnect failed', err));
     });
 
     // cleanup: 리스너 해제 + 이전 세션의 onDisconnect 무장 해제(세션 전환 시 잔존 방지)

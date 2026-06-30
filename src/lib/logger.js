@@ -7,4 +7,6 @@ const noop = () => {};
 export const logger = {
   error: import.meta.env.DEV ? console.error.bind(console) : noop,
   warn: import.meta.env.DEV ? console.warn.bind(console) : noop,
+  log: import.meta.env.DEV ? console.log.bind(console) : noop,
+  info: import.meta.env.DEV ? console.info.bind(console) : noop,
 };
