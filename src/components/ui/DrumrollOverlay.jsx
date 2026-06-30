@@ -11,6 +11,10 @@ export default memo(function DrumrollOverlay({ active, onComplete, duration = 25
   const [phase, setPhase] = useState(0); // 0=시작, 1=가속, 2=절정
   const audioRef = useRef(null);
   const timerRef = useRef(null);
+  // onComplete를 ref로 — 부모(PresentationView)가 inline 콜백을 매 렌더 새로 넘겨도
+  // effect가 재구독돼 AudioContext churn·완료타이머 리셋되던 것 방지(deps에서 제외).
+  const onCompleteRef = useRef(onComplete);
+  useEffect(() => { onCompleteRef.current = onComplete; });
 
   // 드럼 사운드 생성 (Web Audio API)
   useEffect(() => {
@@ -31,7 +35,7 @@ export default memo(function DrumrollOverlay({ active, onComplete, duration = 25
     const t1 = setTimeout(() => setPhase(1), duration * 0.3);
     const t2 = setTimeout(() => setPhase(2), duration * 0.7);
     timerRef.current = setTimeout(() => {
-      onComplete?.();
+      onCompleteRef.current?.();
     }, duration);
 
     // 드럼 비트 생성
@@ -76,7 +80,7 @@ export default memo(function DrumrollOverlay({ active, onComplete, duration = 25
         try { audioRef.current.close(); } catch { /* ignore */ }
       }
     };
-  }, [active, duration, onComplete]);
+  }, [active, duration]);
 
   return (
     <AnimatePresence>

@@ -135,20 +135,23 @@ export default function IdleMascot() {
   useEffect(() => {
     if (!mounted) return;
     let timer;
+    let cancelled = false; // 언마운트 후 await 종료 시 재귀 스케줄 차단(고아 체인 방지)
     const scheduleBlink = () => {
+      if (cancelled) return;
       const delay = 3000 + Math.random() * 2500;
       timer = setTimeout(async () => {
+        if (cancelled) return;
         if (!busyRef.current) {
           try {
             await blink.start({ scaleY: 0.08, transition: { duration: 0.07 } });
             await blink.start({ scaleY: 1, transition: { duration: 0.12 } });
           } catch { /* unmounted */ }
         }
-        scheduleBlink();
+        if (!cancelled) scheduleBlink();
       }, delay);
     };
     scheduleBlink();
-    return () => clearTimeout(timer);
+    return () => { cancelled = true; clearTimeout(timer); };
   }, [mounted, blink]);
 
   return (

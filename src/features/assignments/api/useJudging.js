@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { ref, set, update, get, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { judgeSubmission } from '@/lib/judging/gemini';
@@ -14,6 +14,10 @@ export function useJudging(assignmentId) {
   const [progress, setProgress] = useState(null); // { current, total, currentJudge, currentSubmission }
   const abortRef = useRef(false);
   const judgingRef = useRef(false);
+
+  // 언마운트 시 심사 루프 중단 — 장시간 루프가 언마운트 후 setProgress/setIsJudging 하던 것 방지.
+  // 루프는 매 반복 abortRef.current를 확인(break)하므로 즉시 멎는다.
+  useEffect(() => () => { abortRef.current = true; }, []);
 
   const startJudging = useCallback(async () => {
     if (!assignmentId || judgingRef.current) return;

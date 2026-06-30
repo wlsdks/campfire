@@ -57,16 +57,23 @@ function PresenterStage({ order, totalRanks, top3, revealedUpTo, setRevealedUpTo
 
   // reveal 진행 — 다음 등수가 1등이고 totalRanks ≥ 2면 카운트다운 후 reveal, 아니면 즉시.
   // 카운트다운 각 1초씩 (총 2초) — 학생들이 "다음 큰 거 온다" 긴장감 충분히 체감.
+  // 카운트다운 타이머 추적 — onClick이 cleanup 반환을 버려 언마운트 후 t1/t2가
+  // 살아남아 Firebase revealedUpTo를 써버리던 누수 방지. ref에 모아 언마운트/재호출 시 정리.
+  const countdownTimersRef = useRef([]);
+  useEffect(() => () => { countdownTimersRef.current.forEach(clearTimeout); }, []);
+
   const advanceTo = useCallback((nextRevealed) => {
+    countdownTimersRef.current.forEach(clearTimeout); // 이전 카운트다운 정리
+    countdownTimersRef.current = [];
     const nextRankKey = order[Math.min(nextRevealed - 1, order.length - 1)];
     if (nextRankKey === 'first' && order.length >= 2) {
       setCountdown(2);
-      const t1 = setTimeout(() => setCountdown(1), 1000);
-      const t2 = setTimeout(() => {
+      countdownTimersRef.current.push(setTimeout(() => setCountdown(1), 1000));
+      countdownTimersRef.current.push(setTimeout(() => {
         setCountdown(null);
         setRevealedUpTo(nextRevealed);
-      }, 2000);
-      return () => { clearTimeout(t1); clearTimeout(t2); };
+      }, 2000));
+      return;
     }
     setRevealedUpTo(nextRevealed);
   }, [order, setRevealedUpTo]);

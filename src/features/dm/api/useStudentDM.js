@@ -15,24 +15,24 @@ export function useStudentDM(sessionId, participantId) {
   useEffect(() => {
     if (!sessionId || !participantId) return;
 
-    const dmRef = ref(db, `sessions/${sessionId}/dm`);
-    const unsub = onValue(dmRef, (snap) => {
-      const data = snap.val();
-      if (!data) {
-        setThreads({});
-        return;
-      }
-      // Filter threads for this student
-      const filtered = {};
-      for (const [id, thread] of Object.entries(data)) {
-        if (thread.studentId === participantId) {
-          filtered[id] = thread;
-        }
-      }
-      setThreads(filtered);
+    // 본인 DM만 구독 — 전체 /dm 트리를 받아 클라에서 필터링하면 (1) 타 학생의 1:1 상담 메시지
+    // 본문까지 모든 학생 단말로 내려가는 사생활 노출, (2) 불필요한 전체 다운로드가 발생한다.
+    // dmByStudent/{pid} 포인터(직접 key) → 본인 스레드(직접 key)만 구독해 둘 다 해소(쿼리/인덱스 불필요).
+    const pointerRef = ref(db, `sessions/${sessionId}/dmByStudent/${participantId}`);
+    let threadUnsub = null;
+
+    const ptrUnsub = onValue(pointerRef, (ptrSnap) => {
+      const dmId = ptrSnap.val();
+      if (threadUnsub) { threadUnsub(); threadUnsub = null; }
+      if (!dmId) { setThreads({}); return; }
+      const threadRef = ref(db, `sessions/${sessionId}/dm/${dmId}`);
+      threadUnsub = onValue(threadRef, (tSnap) => {
+        const t = tSnap.val();
+        setThreads(t ? { [dmId]: t } : {});
+      });
     });
 
-    return () => unsub();
+    return () => { ptrUnsub(); if (threadUnsub) threadUnsub(); };
   }, [sessionId, participantId]);
 
   // All DM threads (including resolved) with messages
