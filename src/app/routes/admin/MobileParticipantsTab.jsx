@@ -132,7 +132,12 @@ export default function MobileParticipantsTab({ sessionId, onlineList, count, st
               {onlineList.map((p) => (
                 <div key={p.id} className="flex items-center gap-3.5 py-3.5">
                   <Avatar name={p.nickname} size="md" />
-                  <span className="text-[16px] font-medium text-slate-700 dark:text-slate-200 flex-1">{p.nickname}</span>
+                  <div className="flex-1 min-w-0 leading-tight">
+                    <span className="text-[16px] font-medium text-slate-700 dark:text-slate-200 block truncate">{p.nickname}</span>
+                    {p.employeeId && (
+                      <span className="text-xs text-slate-400 dark:text-slate-500 tabular-nums">사번 {p.employeeId}</span>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
