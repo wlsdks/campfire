@@ -13,16 +13,20 @@ const NICKNAME_MAX = 10;
 const EMPLOYEE_ID_MAX = 20;
 const FORM_ID = 'join-form';
 
-/** Fetch session course name for display (lightweight one-time read). */
+/** Fetch session course name + 행사모드(사번 필수) flag for display (lightweight one-time read). */
 function useSessionInfo(sessionId) {
   const [courseName, setCourseName] = useState(null);
+  const [requireEmployeeId, setRequireEmployeeId] = useState(false);
   useEffect(() => {
     if (!sessionId) return;
     get(ref(db, `sessions/${sessionId}/courseName`))
       .then((snap) => setCourseName(snap.val() || null))
       .catch(() => {});
+    get(ref(db, `sessions/${sessionId}/requireEmployeeId`))
+      .then((snap) => setRequireEmployeeId(snap.val() === true))
+      .catch(() => {});
   }, [sessionId]);
-  return { courseName };
+  return { courseName, requireEmployeeId };
 }
 
 /**
@@ -63,12 +67,21 @@ export default function JoinPage({ sessionId, onJoin }) {
   const [showEmployeeId, setShowEmployeeId] = useState(() => !!getSessionEmployeeId(sessionId));
   const inputRef = useRef(null);
   const inputWrapRef = useRef(null);
-  const { courseName } = useSessionInfo(sessionId);
+  const { courseName, requireEmployeeId } = useSessionInfo(sessionId);
   const keyboardOpen = useKeyboardDetect();
 
   const trimmed = nickname.trim();
   const tooShort = touched && trimmed.length > 0 && trimmed.length < NICKNAME_MIN;
-  const isValid = trimmed.length >= NICKNAME_MIN;
+  const nicknameValid = trimmed.length >= NICKNAME_MIN;
+  // 기업 행사모드: 사번 필수. 그 외: 선택.
+  const employeeOk = !requireEmployeeId || employeeId.trim().length > 0;
+  const isValid = nicknameValid; // 닉네임 유효(아바타 미리보기용)
+  const canJoin = nicknameValid && employeeOk; // 입장 가능 = 닉네임 + (필수 시)사번
+
+  // 행사모드(사번 필수)면 입력창을 자동으로 펼침
+  useEffect(() => {
+    if (requireEmployeeId) setShowEmployeeId(true);
+  }, [requireEmployeeId]);
 
   // Reliable autoFocus for mobile browsers (slight delay for page transition)
   useEffect(() => {
@@ -85,7 +98,7 @@ export default function JoinPage({ sessionId, onJoin }) {
 
   function handleJoin(e) {
     e.preventDefault();
-    if (!isValid) return;
+    if (!canJoin) return;
     setJoining(true);
     setError(null);
     // presence 기록(participant 노드 + onDisconnect)은 App.jsx의 syncPresence가 일원화 담당.
@@ -231,7 +244,7 @@ export default function JoinPage({ sessionId, onJoin }) {
                 </span>
               </div>
 
-              {/* 사번 입력(선택) — 닉네임만으로 참여 가능. 토글하면 닉네임 아래 입력창이 열림. */}
+              {/* 사번 입력 — 행사모드면 필수(항상 표시), 아니면 선택(토글). */}
               <div className="pt-0.5">
                 {!showEmployeeId ? (
                   <button
@@ -254,13 +267,22 @@ export default function JoinPage({ sessionId, onJoin }) {
                       value={employeeId}
                       onChange={(e) => setEmployeeId(e.target.value)}
                       onFocus={handleInputFocus}
-                      placeholder="사번 입력 (선택)"
-                      aria-label="사번 (선택사항)"
+                      placeholder={requireEmployeeId ? '사번 입력 (필수)' : '사번 입력 (선택)'}
+                      aria-label={requireEmployeeId ? '사번 (필수)' : '사번 (선택사항)'}
+                      aria-required={requireEmployeeId}
                       maxLength={EMPLOYEE_ID_MAX}
                       autoComplete="off"
-                      className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3.5 text-base text-center text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:focus:ring-indigo-400/20 focus:border-indigo-500 dark:focus:border-indigo-400 transition-colors duration-150"
+                      className={`w-full bg-white dark:bg-slate-800 border rounded-2xl px-4 py-3.5 text-base text-center text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 placeholder:font-normal focus:outline-none focus:ring-2 transition-colors duration-150 ${
+                        requireEmployeeId && touched && employeeId.trim().length === 0
+                          ? 'border-red-300 focus:ring-red-500/15 focus:border-red-400'
+                          : 'border-slate-200 dark:border-slate-700 focus:ring-indigo-500/20 dark:focus:ring-indigo-400/20 focus:border-indigo-500 dark:focus:border-indigo-400'
+                      }`}
                     />
-                    <p className="text-[11px] text-center text-slate-400 dark:text-slate-500">선택사항이에요 — 입력하지 않아도 참여할 수 있어요</p>
+                    <p className="text-[11px] text-center text-slate-400 dark:text-slate-500">
+                      {requireEmployeeId
+                        ? '이 행사는 사번 입력이 필요해요'
+                        : '선택사항이에요 — 입력하지 않아도 참여할 수 있어요'}
+                    </p>
                   </motion.div>
                 )}
               </div>
@@ -283,7 +305,7 @@ export default function JoinPage({ sessionId, onJoin }) {
             form={FORM_ID}
             variant="primary"
             size="lg"
-            disabled={!isValid || joining}
+            disabled={!canJoin || joining}
             className="w-full rounded-2xl shadow-lg"
           >
             {joining ? (

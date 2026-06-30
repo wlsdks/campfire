@@ -85,6 +85,9 @@
         "courseId": {
           ".validate": "newData.isString() && newData.val().length <= 50"
         },
+        "requireEmployeeId": {
+          ".validate": "newData.isBoolean()"
+        },
 
         "status": {
           ".write": true,

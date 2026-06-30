@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertCircle, Copy, Plus, Loader2 } from 'lucide-react';
+import { AlertCircle, Copy, Plus, Loader2, IdCard } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
 export default function CreateSessionStepConfirm({
@@ -11,6 +11,8 @@ export default function CreateSessionStepConfirm({
   onToggleDuplicate,
   duplicateSourceId,
   onSetDuplicateSourceId,
+  requireEmployeeId,
+  onToggleEmployeeId,
   error,
   creating,
   onBack,
@@ -56,6 +58,27 @@ export default function CreateSessionStepConfirm({
           </div>
         </div>
       </div>
+
+      {/* 기업 행사모드 — 켜면 학생 입장 시 사번(직원번호) 필수 입력 */}
+      <button
+        onClick={onToggleEmployeeId}
+        className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-colors duration-150 active:scale-[0.98] text-left ${
+          requireEmployeeId
+            ? 'border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-700'
+            : 'border-slate-100 dark:border-slate-700 hover:border-slate-200'
+        }`}
+      >
+        <IdCard size={16} className={requireEmployeeId ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400'} />
+        <div className="flex-1">
+          <p className={`text-sm font-medium ${requireEmployeeId ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500'}`}>
+            기업 행사모드
+          </p>
+          <p className="text-xs text-slate-400">입장 시 사번(직원번호)을 필수로 받습니다</p>
+        </div>
+        <div className={`w-9 h-5 rounded-full transition-colors relative shrink-0 ${requireEmployeeId ? 'bg-slate-900 dark:bg-slate-100' : 'bg-slate-200 dark:bg-slate-600'}`}>
+          <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-all ${requireEmployeeId ? 'left-4' : 'left-0.5'}`} />
+        </div>
+      </button>
 
       {previousRounds.length > 0 && (
         <div className="space-y-3">

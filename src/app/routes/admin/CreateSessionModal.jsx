@@ -21,6 +21,8 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions,
   // Duplication state
   const [duplicateEnabled, setDuplicateEnabled] = useState(false);
   const [duplicateSourceId, setDuplicateSourceId] = useState('');
+  // 기업 행사모드 — 켜면 입장 시 사번(직원번호) 필수
+  const [requireEmployeeId, setRequireEmployeeId] = useState(false);
 
   const { courses: dbCourses, createCourse } = useCourses(
     adminUser?.uid, adminUser?.role
@@ -92,6 +94,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions,
     setError(null);
     setDuplicateEnabled(false);
     setDuplicateSourceId('');
+    setRequireEmployeeId(false);
   }
 
   function handleToggleDuplicate() {
@@ -119,6 +122,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions,
         courseId: selectedCourseId || null,
         creatorId: adminUser?.uid || null,
         roundNumber,
+        ...(requireEmployeeId ? { requireEmployeeId: true } : {}), // 기업 행사모드 — 사번 필수
       };
 
       if (duplicateEnabled && duplicateSourceId) {
@@ -190,6 +194,8 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions,
             onToggleDuplicate={handleToggleDuplicate}
             duplicateSourceId={duplicateSourceId}
             onSetDuplicateSourceId={setDuplicateSourceId}
+            requireEmployeeId={requireEmployeeId}
+            onToggleEmployeeId={() => setRequireEmployeeId((v) => !v)}
             error={error}
             creating={creating}
             onBack={handleReset}
