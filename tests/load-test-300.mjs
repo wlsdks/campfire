@@ -161,6 +161,7 @@ async function createSessionAndJoin() {
     currentMode: 'waiting',
     currentQuestion: null,
     createdAt: Date.now(),
+    requireEmployeeId: true, // 이벤트 모드 — 참여자마다 사번 포함
     questions,
   });
 
@@ -178,6 +179,7 @@ async function createSessionAndJoin() {
         nickname: `학생${i + 1}`,
         joinedAt: Date.now(),
         online: true,
+        employeeId: `2026${String(i + 1).padStart(4, '0')}`, // 이벤트 모드 사번
       }).then(() => {
         results.joinLatencies.push(performance.now() - start);
         joined++;
