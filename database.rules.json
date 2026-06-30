@@ -221,6 +221,9 @@
             ".validate": "newData.hasChild('nickname')",
             "nickname": {
               ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 10"
+            },
+            "employeeId": {
+              ".validate": "newData.isString() && newData.val().length <= 20"
             }
           }
         },

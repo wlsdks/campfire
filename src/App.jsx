@@ -7,7 +7,7 @@ import JoinPage from '@/app/routes/student/JoinPage';
 import ErrorBoundary from '@/components/ui/ErrorBoundary';
 import { SuspenseFallback } from '@/components/ui/Skeleton';
 import { db } from '@/lib/firebase';
-import { getNickname, getParticipantId, hasJoinedSession, markSessionJoined, getSessionNickname } from '@/lib/participant';
+import { getNickname, getParticipantId, hasJoinedSession, markSessionJoined, getSessionNickname, getSessionEmployeeId } from '@/lib/participant';
 import { logger } from '@/lib/logger';
 import { useTheme } from '@/hooks/useTheme';
 
@@ -65,6 +65,7 @@ function StudentRouter() {
 
     const nickname = (getSessionNickname(sessionId) || getNickname()).trim();
     if (!nickname) return;
+    const employeeId = getSessionEmployeeId(sessionId).trim();
 
     const participantId = getParticipantId();
     const participantRef = ref(db, `sessions/${sessionId}/participants/${participantId}`);
@@ -76,6 +77,7 @@ function StudentRouter() {
       nickname,
       joinedAt: serverTimestamp(),
       online: true,
+      ...(employeeId ? { employeeId } : {}), // 사번(선택) — 입력했을 때만 기록
     }).catch((err) => logger.warn('[presence] init failed', err));
 
     // 재접속(.info/connected) 시: online만 갱신(이미 true면 무변경 → 리스너 미발화) + onDisconnect 재무장.
@@ -157,8 +159,8 @@ function StudentRouter() {
         >
           <JoinPage
             sessionId={sessionId}
-            onJoin={(participantId, nickname) => {
-              markSessionJoined(sessionId, participantId, nickname);
+            onJoin={(participantId, nickname, employeeId) => {
+              markSessionJoined(sessionId, participantId, nickname, employeeId);
               setJoined(true);
             }}
           />

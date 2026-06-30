@@ -71,7 +71,7 @@ export function hasJoinedSession(sessionId) {
  * @param {string} participantId
  * @param {string} [nickname] - Session-specific nickname
  */
-export function markSessionJoined(sessionId, participantId, nickname) {
+export function markSessionJoined(sessionId, participantId, nickname, employeeId) {
   if (!sessionId || !participantId) return;
   const joinedSessions = readJoinedSessions();
   writeJoinedSessions({
@@ -80,6 +80,7 @@ export function markSessionJoined(sessionId, participantId, nickname) {
       participantId,
       joinedAt: Date.now(),
       ...(nickname ? { nickname } : {}),
+      ...(employeeId ? { employeeId } : {}),
     },
   });
 }
@@ -93,6 +94,17 @@ export function getSessionNickname(sessionId) {
   if (!sessionId) return '';
   const joinedSessions = readJoinedSessions();
   return joinedSessions[sessionId]?.nickname || '';
+}
+
+/**
+ * Returns the (optional) employee number entered for a session, or empty string.
+ * @param {string} sessionId
+ * @returns {string}
+ */
+export function getSessionEmployeeId(sessionId) {
+  if (!sessionId) return '';
+  const joinedSessions = readJoinedSessions();
+  return joinedSessions[sessionId]?.employeeId || '';
 }
 
 /**

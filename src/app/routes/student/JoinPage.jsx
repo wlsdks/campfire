@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { ref, get } from 'firebase/database';
 import { db } from '@/lib/firebase';
-import { getParticipantId, getNickname, setNickname as saveNickname, getSessionNickname } from '@/lib/participant';
+import { getParticipantId, getNickname, setNickname as saveNickname, getSessionNickname, getSessionEmployeeId } from '@/lib/participant';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Loader2, ArrowRight } from 'lucide-react';
 import PickMascot from '@/components/ui/PickMascot';
@@ -10,6 +10,7 @@ import Button from '@/components/ui/Button';
 
 const NICKNAME_MIN = 2;
 const NICKNAME_MAX = 10;
+const EMPLOYEE_ID_MAX = 20;
 const FORM_ID = 'join-form';
 
 /** Fetch session course name for display (lightweight one-time read). */
@@ -57,6 +58,9 @@ export default function JoinPage({ sessionId, onJoin }) {
   const [joining, setJoining] = useState(false);
   const [error, setError] = useState(null);
   const [touched, setTouched] = useState(false);
+  // 사번(선택) — 기본 닫힘. 이전에 입력했으면 펼친 채로 복원.
+  const [employeeId, setEmployeeId] = useState(() => getSessionEmployeeId(sessionId));
+  const [showEmployeeId, setShowEmployeeId] = useState(() => !!getSessionEmployeeId(sessionId));
   const inputRef = useRef(null);
   const inputWrapRef = useRef(null);
   const { courseName } = useSessionInfo(sessionId);
@@ -89,7 +93,7 @@ export default function JoinPage({ sessionId, onJoin }) {
     // write를 await하다 "입장 중…"에 무한 대기하던 문제를 피한다(낙관적 입장).
     const participantId = getParticipantId();
     saveNickname(trimmed);
-    onJoin(participantId, trimmed);
+    onJoin(participantId, trimmed, employeeId.trim());
   }
 
   return (
@@ -225,6 +229,40 @@ export default function JoinPage({ sessionId, onJoin }) {
                 }`}>
                   {trimmed.length}/{NICKNAME_MAX}
                 </span>
+              </div>
+
+              {/* 사번 입력(선택) — 닉네임만으로 참여 가능. 토글하면 닉네임 아래 입력창이 열림. */}
+              <div className="pt-0.5">
+                {!showEmployeeId ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowEmployeeId(true)}
+                    className="w-full text-center text-xs text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors py-1.5"
+                  >
+                    + 사번 입력하기 <span className="text-slate-300 dark:text-slate-600">(선택)</span>
+                  </button>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+                    className="overflow-hidden space-y-1.5 pt-1"
+                  >
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={employeeId}
+                      onChange={(e) => setEmployeeId(e.target.value)}
+                      onFocus={handleInputFocus}
+                      placeholder="사번 입력 (선택)"
+                      aria-label="사번 (선택사항)"
+                      maxLength={EMPLOYEE_ID_MAX}
+                      autoComplete="off"
+                      className="w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3.5 text-base text-center text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-indigo-500/20 dark:focus:ring-indigo-400/20 focus:border-indigo-500 dark:focus:border-indigo-400 transition-colors duration-150"
+                    />
+                    <p className="text-[11px] text-center text-slate-400 dark:text-slate-500">선택사항이에요 — 입력하지 않아도 참여할 수 있어요</p>
+                  </motion.div>
+                )}
               </div>
             </div>
           </form>
