@@ -299,7 +299,9 @@ async function textBubbleBurstTest() {
 
     for (let i = 0; i < batchUsers; i++) {
       const userIdx = (round * 50 + i) % USER_COUNT;
-      const pid = `lt_u${String(userIdx).padStart(4, '0')}_r${round}`;
+      // 실제 참여자 pid 사용(재투표는 같은 키 덮어쓰기 — 현실적). votes 규칙이 participant
+      // 존재를 요구하므로 합성 _r{round} 키는 거부됨(보안 규칙 정상 동작).
+      const pid = `lt_u${String(userIdx).padStart(4, '0')}`;
       const text = TEXT_ANSWERS[Math.floor(Math.random() * TEXT_ANSWERS.length)];
       const start = performance.now();
 
