@@ -1,6 +1,7 @@
 import { memo, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, FileCode2, FileText, X, Code as CodeIcon, Maximize2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { safeHttpUrl } from '@/lib/utils';
 
 const PRD_PREVIEW_CHARS = 320;
 const CODE_PREVIEW_LINES = 10;
@@ -100,9 +101,9 @@ export default memo(function SubmissionContentPreview({ submission }) {
         </button>
       )}
 
-      {submission.projectUrl && (
+      {safeHttpUrl(submission.projectUrl) && (
         <a
-          href={submission.projectUrl}
+          href={safeHttpUrl(submission.projectUrl)}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-slate-50 dark:bg-slate-700/30 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors group"

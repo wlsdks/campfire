@@ -13,7 +13,7 @@ const ChatMessage = memo(function ChatMessage({ msg, isOwn }) {
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         className="flex flex-col items-end gap-1"
       >
-        <div className="inline-block px-4 py-2.5 text-[15px] leading-relaxed bg-slate-900 dark:bg-slate-200 text-white dark:text-slate-900 rounded-2xl rounded-br-sm max-w-[80%]">
+        <div className="inline-block px-4 py-2.5 text-[15px] leading-relaxed bg-slate-900 dark:bg-slate-200 text-white dark:text-slate-900 rounded-2xl rounded-br-sm max-w-[80%] break-words whitespace-pre-wrap">
           {msg.text}
         </div>
         <span className="text-[11px] text-slate-300 dark:text-slate-500 px-1">{formatChatTime(msg.timestamp)}</span>
@@ -41,7 +41,7 @@ const ChatMessage = memo(function ChatMessage({ msg, isOwn }) {
             <span className="ml-1.5 text-[11px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-50 dark:bg-slate-600 px-1.5 py-0.5 rounded-full">스태프</span>
           )}
         </span>
-        <div className="inline-block px-4 py-2.5 text-[15px] leading-relaxed bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-2xl rounded-tl-sm">
+        <div className="inline-block px-4 py-2.5 text-[15px] leading-relaxed bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-2xl rounded-tl-sm break-words whitespace-pre-wrap">
           {msg.text}
         </div>
         <span className="text-[11px] text-slate-300 dark:text-slate-500 px-1">{formatChatTime(msg.timestamp)}</span>

@@ -40,7 +40,7 @@ function DetailModal({ item, onClose }) {
             <X size={18} />
           </button>
         </div>
-        <p className="text-base text-slate-800 dark:text-slate-100 leading-relaxed">{item.value}</p>
+        <p className="text-base text-slate-800 dark:text-slate-100 leading-relaxed break-words">{item.value}</p>
       </motion.div>
     </motion.div>
   );

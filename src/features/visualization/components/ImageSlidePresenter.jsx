@@ -53,6 +53,7 @@ export default memo(function ImageSlidePresenter({ images = [], currentSlide = 0
             transition={SPRING}
             loading="eager"
             onLoad={() => setLoaded(true)}
+            onError={() => setLoaded(true)}
             className="w-full h-full object-contain relative z-10"
           />
         </AnimatePresence>

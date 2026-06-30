@@ -249,7 +249,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
         if (q?.type === 'imageSlide' && q.slideImages?.length > 1) {
           const cur = q.currentSlide || 0;
           if (cur < q.slideImages.length - 1) {
-            update(ref(db, `sessions/${sessionId}/questions/${session.currentQuestion}`), { currentSlide: cur + 1 });
+            update(ref(db, `sessions/${sessionId}/questions/${session.currentQuestion}`), { currentSlide: cur + 1 }).catch(() => {});
           }
         }
       }
@@ -286,7 +286,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
               update(ref(db, `sessions/${sessionId}`), {
                 currentQuestion: qId, currentMode: mode,
                 [`questions/${qId}/activatedAt`]: Date.now(),
-              });
+              }).catch(() => {});
             }}
           />
         </div>
@@ -322,7 +322,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
         const total = q.slideImages.length;
         return (
           <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
-            <Button onClick={() => update(ref(db, `sessions/${sessionId}/questions/${session.currentQuestion}`), { currentSlide: Math.max(0, cur - 1) })}
+            <Button onClick={() => update(ref(db, `sessions/${sessionId}/questions/${session.currentQuestion}`), { currentSlide: Math.max(0, cur - 1) }).catch(() => {})}
               variant="secondary" size="lg" disabled={cur <= 0}>
               <ChevronLeft size={20} /> 이전
             </Button>
@@ -330,7 +330,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
               <span className="text-white/60 text-sm font-medium tabular-nums">{cur + 1} / {total}</span>
               <p className="text-white/30 text-[10px] mt-0.5">Space로 이동</p>
             </div>
-            <Button onClick={() => update(ref(db, `sessions/${sessionId}/questions/${session.currentQuestion}`), { currentSlide: Math.min(total - 1, cur + 1) })}
+            <Button onClick={() => update(ref(db, `sessions/${sessionId}/questions/${session.currentQuestion}`), { currentSlide: Math.min(total - 1, cur + 1) }).catch(() => {})}
               variant="primary" size="lg" disabled={cur >= total - 1}>
               다음 <ChevronRight size={20} />
             </Button>

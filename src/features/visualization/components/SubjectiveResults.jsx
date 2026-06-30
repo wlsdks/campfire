@@ -37,7 +37,7 @@ function DetailModal({ item, grade, onClose }) {
             <X size={18} />
           </button>
         </div>
-        <p className="text-base text-slate-800 dark:text-slate-100 leading-relaxed whitespace-pre-wrap">{item.value}</p>
+        <p className="text-base text-slate-800 dark:text-slate-100 leading-relaxed whitespace-pre-wrap break-words">{item.value}</p>
         {grade && (
           <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700">
             <div className="flex items-center gap-2 mb-1.5">

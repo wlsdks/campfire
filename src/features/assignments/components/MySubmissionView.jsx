@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, ExternalLink, FileCode2, FileText, Pencil, Trash2, Image as ImageIcon, Code as CodeIcon } from 'lucide-react';
 import { withdrawSubmission } from '@/features/assignments/api/useSubmissions';
+import { safeHttpUrl } from '@/lib/utils';
 import Button from '@/components/ui/Button';
 
 // ─── MySubmissionView ──────────────────────────────
@@ -27,12 +28,12 @@ export default function MySubmissionView({ submission, assignmentId, onBack, onE
       </div>
 
       <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm divide-y divide-slate-100 dark:divide-slate-700">
-        {submission.projectUrl && (
+        {safeHttpUrl(submission.projectUrl) && (
           <div className="flex items-center gap-3 px-5 py-4">
             <Link size={15} className="text-slate-400 shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-xs text-slate-400 mb-0.5">프로젝트 URL</p>
-              <a href={submission.projectUrl} target="_blank" rel="noopener noreferrer"
+              <a href={safeHttpUrl(submission.projectUrl)} target="_blank" rel="noopener noreferrer"
                 className="text-sm text-slate-900 dark:text-slate-100 truncate block hover:underline">
                 {submission.projectUrl}
               </a>

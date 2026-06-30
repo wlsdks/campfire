@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { createPortal } from 'react-dom';
+import { useEffect, useRef } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
@@ -15,6 +16,16 @@ export default function ConfirmModal({
   variant = 'primary',
 }) {
   const isDanger = variant === 'danger';
+  const dialogRef = useRef(null);
+
+  // a11y: 열림 시 Esc로 취소 + 다이얼로그에 포커스 이동(스크린리더/키보드 사용자)
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => { if (e.key === 'Escape') onCancel?.(); };
+    window.addEventListener('keydown', onKey);
+    dialogRef.current?.focus();
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open, onCancel]);
 
   if (typeof document === 'undefined') return null;
 
@@ -33,11 +44,16 @@ export default function ConfirmModal({
           />
           <motion.div
             key="confirm-dialog"
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={title}
+            tabIndex={-1}
             initial={{ opacity: 0, scale: 0.95, y: 8 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 8 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-[360px] bg-white dark:bg-slate-800 rounded-2xl shadow-2xl z-50 overflow-hidden"
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%-2rem)] max-w-[360px] bg-white dark:bg-slate-800 rounded-2xl shadow-2xl z-50 overflow-hidden outline-none"
           >
             <div className="px-6 pt-8 pb-6">
               {/* Icon */}

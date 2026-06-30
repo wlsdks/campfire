@@ -1,4 +1,20 @@
 /**
+ * 사용자 제출 URL을 href에 넣기 전 스킴 검증 — javascript:/data: 등 위험 스킴 차단.
+ * http/https만 통과시키고, 그 외(또는 파싱 실패)는 undefined 반환(링크 비활성).
+ * @param {string} url
+ * @returns {string|undefined}
+ */
+export function safeHttpUrl(url) {
+  if (!url || typeof url !== 'string') return undefined;
+  try {
+    const p = new URL(url, window.location.origin);
+    return (p.protocol === 'http:' || p.protocol === 'https:') ? url : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
  * Generate a UUID v4 with fallback for older browsers (Safari <15.3, Android).
  * Uses crypto.randomUUID() when available, falls back to crypto.getRandomValues().
  * @returns {string} UUID v4 string
