@@ -6,7 +6,6 @@ import {
   setupStudentPage,
   waitForSync,
   firebaseSet,
-  firebaseGet,
 } from './helpers';
 
 /**
