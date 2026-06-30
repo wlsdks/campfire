@@ -185,12 +185,13 @@ export function useLiveJudging(sessionId, questionId) {
   const [progress, setProgress] = useState(null); // { current, total, currentName }
   const abortRef = useRef(false);
   const judgingRef = useRef(false);
+  const mountedRef = useRef(true);
 
   // Unmount 시 진행 중 심사 자동 중단 — 강사가 세션을 나가거나 로그아웃할 때
   // aiJudgeState가 'judging'으로 남아 좀비가 되는 것을 방지.
   // 이후 scheduleNext 순환에서 abortRef를 감지해 'aborted'로 최종 기록.
   useEffect(() => {
-    return () => { abortRef.current = true; };
+    return () => { abortRef.current = true; mountedRef.current = false; };
   }, []);
 
   const startJudging = useCallback(async () => {
@@ -294,7 +295,7 @@ export function useLiveJudging(sessionId, questionId) {
               }
               completed++;
               running--;
-              setProgress({ current: completed, total: submissions.length, currentName: sub.name });
+              if (mountedRef.current) setProgress({ current: completed, total: submissions.length, currentName: sub.name });
               scheduleNext();
             })();
           }
@@ -323,8 +324,7 @@ export function useLiveJudging(sessionId, questionId) {
       await update(ref(db, `${base}/aiJudgeState`), { status: 'error', message: err.message || '알 수 없는 오류' });
     } finally {
       judgingRef.current = false;
-      setIsJudging(false);
-      setProgress(null);
+      if (mountedRef.current) { setIsJudging(false); setProgress(null); }
     }
   }, [sessionId, questionId]);
 

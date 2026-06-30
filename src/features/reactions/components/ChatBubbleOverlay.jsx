@@ -13,12 +13,11 @@ const LIFETIME_MS = 3000;
 export default memo(function ChatBubbleOverlay({ sessionId }) {
   const [bubbles, setBubbles] = useState([]);
   const seenRef = useRef(new Set());
-  const readyRef = useRef(false);
   const mountedRef = useRef(true);
+  const timersRef = useRef([]); // 버블 제거 + initialLoad 타이머 추적 → cleanup에서 일괄 정리
 
   useEffect(() => {
     mountedRef.current = true;
-    readyRef.current = false;
     seenRef.current = new Set();
     return () => { mountedRef.current = false; };
   }, [sessionId]);
@@ -50,16 +49,19 @@ export default memo(function ChatBubbleOverlay({ sessionId }) {
       };
 
       setBubbles(prev => [...prev.slice(-(MAX_BUBBLES - 1)), bubble]);
-      setTimeout(() => {
+      const t = setTimeout(() => {
+        timersRef.current = timersRef.current.filter((x) => x !== t);
         seenRef.current.delete(key); // dedup Set 무한 증가 방지 — 표시 끝난 키 제거
         if (mountedRef.current) setBubbles(prev => prev.filter(b => b.id !== key));
       }, LIFETIME_MS);
+      timersRef.current.push(t);
     });
 
     // After initial snapshot fires, mark ready
-    setTimeout(() => { initialLoad = false; }, 500);
+    const initTimer = setTimeout(() => { initialLoad = false; }, 500);
+    timersRef.current.push(initTimer);
 
-    return () => unsub();
+    return () => { unsub(); timersRef.current.forEach(clearTimeout); timersRef.current = []; };
   }, [sessionId]);
 
   return (

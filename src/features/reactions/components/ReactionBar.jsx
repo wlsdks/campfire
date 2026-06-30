@@ -99,6 +99,7 @@ export default function ReactionBar({ sessionId, bubbleSessionId }) {
   const [flashType, setFlashType] = useState(null);
   const cooldownRef = useRef(0);
   const flashTimerRef = useRef(null);
+  const shakeTimerRef = useRef(null);
 
   // Bubble input state
   const [bubbleOpen, setBubbleOpen] = useState(false);
@@ -111,6 +112,7 @@ export default function ReactionBar({ sessionId, bubbleSessionId }) {
   useEffect(() => () => {
     if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
     if (bubbleCooldownRef.current) clearTimeout(bubbleCooldownRef.current);
+    if (shakeTimerRef.current) clearTimeout(shakeTimerRef.current);
   }, []);
 
   const [cooldownShake, setCooldownShake] = useState(null);
@@ -119,7 +121,8 @@ export default function ReactionBar({ sessionId, bubbleSessionId }) {
     const now = performance.now();
     if (now - cooldownRef.current < COOLDOWN_MS) {
       setCooldownShake(type);
-      setTimeout(() => setCooldownShake(null), 300);
+      if (shakeTimerRef.current) clearTimeout(shakeTimerRef.current);
+      shakeTimerRef.current = setTimeout(() => setCooldownShake(null), 300);
       return;
     }
     cooldownRef.current = now;

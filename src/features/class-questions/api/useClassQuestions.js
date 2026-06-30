@@ -14,6 +14,7 @@ const COOLDOWN_MS = 3000;
  */
 export function useClassQuestions(sessionId) {
   const [raw, setRaw] = useState({});
+  const rawRef = useRef({}); // raw의 최신값 — 토글 콜백이 raw 의존(매 스냅샷 새 identity)하지 않도록
   const [loading, setLoading] = useState(true);
   const [canPost, setCanPost] = useState(true);
   const [canAnswer, setCanAnswer] = useState(true);
@@ -25,7 +26,9 @@ export function useClassQuestions(sessionId) {
     // limitToLast로 누적 질문 무한 다운로드 방지 — 최근 100개만 구독
     const qRef = query(ref(db, `sessions/${sessionId}/classQuestions`), limitToLast(100));
     const unsub = onValue(qRef, (snap) => {
-      setRaw(snap.val() || {});
+      const val = snap.val() || {};
+      rawRef.current = val; // 콜백이 매 스냅샷마다 새 identity 되지 않도록 ref로도 보관
+      setRaw(val);
       setLoading(false);
     });
     return () => {
@@ -133,7 +136,7 @@ export function useClassQuestions(sessionId) {
         db,
         `sessions/${sessionId}/classQuestions/${questionId}/upvotes/${participantId}`,
       );
-      const current = raw[questionId]?.upvotes?.[participantId];
+      const current = rawRef.current[questionId]?.upvotes?.[participantId];
       try {
         if (current) {
           await remove(upRef);
@@ -147,7 +150,7 @@ export function useClassQuestions(sessionId) {
         logger.error('Toggle upvote failed:', err);
       }
     },
-    [sessionId, raw],
+    [sessionId],
   );
 
   const markAnswered = useCallback(
@@ -181,7 +184,7 @@ export function useClassQuestions(sessionId) {
     async (questionId) => {
       if (!sessionId || !questionId) return;
       try {
-        const current = raw[questionId]?.hidden || false;
+        const current = rawRef.current[questionId]?.hidden || false;
         await update(ref(db, `sessions/${sessionId}/classQuestions/${questionId}`), {
           hidden: !current,
         });
@@ -189,7 +192,7 @@ export function useClassQuestions(sessionId) {
         logger.error('Toggle hidden failed:', err);
       }
     },
-    [sessionId, raw],
+    [sessionId],
   );
 
   const postAnswer = useCallback(
@@ -238,7 +241,7 @@ export function useClassQuestions(sessionId) {
         db,
         `sessions/${sessionId}/classQuestions/${questionId}/answers/${answerId}/upvotes/${participantId}`,
       );
-      const current = raw[questionId]?.answers?.[answerId]?.upvotes?.[participantId];
+      const current = rawRef.current[questionId]?.answers?.[answerId]?.upvotes?.[participantId];
       try {
         if (current) {
           await remove(upRef);
@@ -252,7 +255,7 @@ export function useClassQuestions(sessionId) {
         logger.error('Toggle answer upvote failed:', err);
       }
     },
-    [sessionId, raw],
+    [sessionId],
   );
 
   return {

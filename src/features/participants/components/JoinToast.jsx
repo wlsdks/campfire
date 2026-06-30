@@ -64,8 +64,8 @@ export default function JoinToast({ sessionId }) {
       drainQueue();
     });
 
-    setTimeout(() => { initial = false; }, 2000);
-    return () => { unsub(); queueRef.current = []; };
+    const initTimer = setTimeout(() => { initial = false; }, 2000);
+    return () => { unsub(); clearTimeout(initTimer); queueRef.current = []; };
     // drainQueue는 같은 컴포넌트 inline 함수 + ref-based이라 stale closure 영향 없음
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sessionId]);

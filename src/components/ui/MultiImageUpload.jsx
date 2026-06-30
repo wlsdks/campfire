@@ -1,4 +1,4 @@
-import { useState, useRef, memo } from 'react';
+import { useState, useRef, useEffect, memo } from 'react';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { storage } from '@/lib/firebase-storage';
 import { compressImage } from '@/lib/image-utils';
@@ -38,7 +38,16 @@ export default memo(function MultiImageUpload({ images = [], onChange }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
   const inputRef = useRef(null);
+  const errorTimerRef = useRef(null);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 5 } }));
+
+  // error 자동 해제 단일 타이머 — 언마운트 미정리 해소
+  const showError = (msg, ms = 3000) => {
+    setError(msg);
+    if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
+    errorTimerRef.current = setTimeout(() => setError(null), ms);
+  };
+  useEffect(() => () => { if (errorTimerRef.current) clearTimeout(errorTimerRef.current); }, []);
 
   function handleDragEnd(event) {
     const { active, over } = event;
@@ -56,15 +65,13 @@ export default memo(function MultiImageUpload({ images = [], onChange }) {
     const remaining = MAX_IMAGES - images.length;
     const toUpload = files.slice(0, remaining);
     if (toUpload.length === 0) {
-      setError(`최대 ${MAX_IMAGES}장까지 가능합니다`);
-      setTimeout(() => setError(null), 3000);
+      showError(`최대 ${MAX_IMAGES}장까지 가능합니다`);
       return;
     }
 
     const valid = toUpload.filter(f => f.size <= MAX_SIZE_MB * 1024 * 1024);
     if (valid.length < toUpload.length) {
-      setError(`${toUpload.length - valid.length}개 파일이 ${MAX_SIZE_MB}MB 초과`);
-      setTimeout(() => setError(null), 3000);
+      showError(`${toUpload.length - valid.length}개 파일이 ${MAX_SIZE_MB}MB 초과`);
     }
     if (valid.length === 0) return;
 
@@ -88,8 +95,7 @@ export default memo(function MultiImageUpload({ images = [], onChange }) {
     }
     if (urls.length > 0) onChange([...images, ...urls]);
     if (failCount > 0) {
-      setError(`${failCount}개 이미지 업로드 실패`);
-      setTimeout(() => setError(null), 3000);
+      showError(`${failCount}개 이미지 업로드 실패`);
     }
     setUploading(false);
   }

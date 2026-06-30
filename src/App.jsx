@@ -87,7 +87,11 @@ function StudentRouter() {
       onDisconnect(onlineRef).set(false).catch((err) => console.warn('[presence] onDisconnect failed', err));
     });
 
-    return () => unsub();
+    // cleanup: 리스너 해제 + 이전 세션의 onDisconnect 무장 해제(세션 전환 시 잔존 방지)
+    return () => {
+      unsub();
+      onDisconnect(onlineRef).cancel().catch(() => { /* 이미 해제됨 무시 */ });
+    };
   }, [joined, sessionId]);
 
   if (!sessionId) {

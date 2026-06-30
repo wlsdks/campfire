@@ -31,6 +31,15 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
   const [withdrawConfirmOpen, setWithdrawConfirmOpen] = useState(false);
   const [codeFileName, setCodeFileName] = useState(''); // HTML 파일 업로드 시 파일명 표시
   const fileInputRef = useRef(null);
+  const errorTimerRef = useRef(null);
+
+  // 에러 표시 + 자동 해제를 단일 타이머로 — 5곳 중복 + 언마운트 미정리 해소.
+  function showError(msg, ms = 3500) {
+    setSubmitError(msg);
+    if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
+    errorTimerRef.current = setTimeout(() => setSubmitError(null), ms);
+  }
+  useEffect(() => () => { if (errorTimerRef.current) clearTimeout(errorTimerRef.current); }, []);
 
   // HTML 파일 업로드 — 시스템 파일 선택 다이얼로그 → 텍스트 읽어 code state로.
   // 50KB 초과 시 앞부분만 가져오고 경고.
@@ -40,8 +49,7 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
     // MIME이 안정적이지 않으니 확장자 + 크기만 1차 체크
     const isHtml = /\.(html|htm)$/i.test(file.name);
     if (!isHtml) {
-      setSubmitError('HTML 파일(.html, .htm)만 업로드할 수 있어요');
-      setTimeout(() => setSubmitError(null), 3500);
+      showError('HTML 파일(.html, .htm)만 업로드할 수 있어요');
       if (fileInputRef.current) fileInputRef.current.value = '';
       return;
     }
@@ -51,12 +59,10 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
       setCode(truncated);
       setCodeFileName(file.name);
       if (text.length > 100000) {
-        setSubmitError(`파일이 100KB를 초과해 앞부분만 사용됩니다 (${Math.round(text.length / 1024)}KB)`);
-        setTimeout(() => setSubmitError(null), 4000);
+        showError(`파일이 100KB를 초과해 앞부분만 사용됩니다 (${Math.round(text.length / 1024)}KB)`, 4000);
       }
     } catch (err) {
-      setSubmitError(err?.message || '파일 읽기 실패');
-      setTimeout(() => setSubmitError(null), 3500);
+      showError(err?.message || '파일 읽기 실패');
     } finally {
       // 같은 파일 다시 선택 가능하도록 초기화
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -99,8 +105,7 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
       });
       setEditing(false);
     } catch (err) {
-      setSubmitError(err?.message || '제출에 실패했습니다. 다시 시도해주세요.');
-      setTimeout(() => setSubmitError(null), 3500);
+      showError(err?.message || '제출에 실패했습니다. 다시 시도해주세요.');
     } finally {
       setSubmitting(false);
     }
@@ -113,8 +118,7 @@ export default memo(function AiJudgeSubmitter({ sessionId, questionId, disabled 
       setTitle(''); setDescription(''); setImageUrl(''); setCode('');
       setEditing(false);
     } catch {
-      setSubmitError('제출 취소에 실패했어요. 잠시 후 다시 시도해주세요.');
-      setTimeout(() => setSubmitError(null), 3500);
+      showError('제출 취소에 실패했어요. 잠시 후 다시 시도해주세요.');
     }
   }
 

@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Check, AlertCircle } from 'lucide-react';
 import { ref as sRef, uploadBytes, getDownloadURL } from 'firebase/storage';
@@ -38,6 +38,15 @@ export default function SubmissionForm({ onSubmit, existingSubmission, assignmen
   const [submitError, setSubmitError] = useState('');
   const fileInputRef = useRef(null);
   const htmlInputRef = useRef(null);
+  const codeErrorTimerRef = useRef(null);
+
+  // codeError 자동 해제 단일 타이머 — 언마운트 미정리 해소
+  function showCodeError(msg, ms = 3500) {
+    setCodeError(msg);
+    if (codeErrorTimerRef.current) clearTimeout(codeErrorTimerRef.current);
+    codeErrorTimerRef.current = setTimeout(() => setCodeError(''), ms);
+  }
+  useEffect(() => () => { if (codeErrorTimerRef.current) clearTimeout(codeErrorTimerRef.current); }, []);
 
   const isEditMode = !!existingSubmission;
 
@@ -117,8 +126,7 @@ export default function SubmissionForm({ onSubmit, existingSubmission, assignmen
     if (!file) return;
     const isHtml = /\.(html|htm)$/i.test(file.name);
     if (!isHtml) {
-      setCodeError('HTML 파일(.html, .htm)만 업로드할 수 있어요');
-      setTimeout(() => setCodeError(''), 3500);
+      showCodeError('HTML 파일(.html, .htm)만 업로드할 수 있어요');
       if (htmlInputRef.current) htmlInputRef.current.value = '';
       return;
     }
@@ -128,12 +136,10 @@ export default function SubmissionForm({ onSubmit, existingSubmission, assignmen
       setCode(truncated);
       setCodeFileName(file.name);
       if (text.length > MAX_CODE_CHARS) {
-        setCodeError(`파일이 50KB를 초과해 앞부분만 사용됩니다 (${Math.round(text.length / 1024)}KB)`);
-        setTimeout(() => setCodeError(''), 4000);
+        showCodeError(`파일이 50KB를 초과해 앞부분만 사용됩니다 (${Math.round(text.length / 1024)}KB)`, 4000);
       }
     } catch (err) {
-      setCodeError(err?.message || '파일 읽기 실패');
-      setTimeout(() => setCodeError(''), 3500);
+      showCodeError(err?.message || '파일 읽기 실패');
     } finally {
       if (htmlInputRef.current) htmlInputRef.current.value = '';
     }

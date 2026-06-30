@@ -42,7 +42,9 @@ export function useSpeedQuiz(sessionId, session, { scores, participants, startTi
   }, [sessionId]);
 
   // Cleanup phase timer on unmount
+  const mountedRef = useRef(true);
   useEffect(() => () => {
+    mountedRef.current = false;
     if (phaseTimerRef.current) clearTimeout(phaseTimerRef.current);
   }, []);
 
@@ -154,13 +156,14 @@ export function useSpeedQuiz(sessionId, session, { scores, participants, startTi
 
       // After reveal pause, advance or finish
       phaseTimerRef.current = setTimeout(async () => {
+        if (!mountedRef.current) return;
         if (nextQ) {
           await activateQuizQuestion(nextQ[0]);
         } else {
           // All quiz questions done, show leaderboard
           try {
             await update(ref(db, `sessions/${sessionId}`), { currentMode: 'leaderboard' });
-            setPhase('done');
+            if (mountedRef.current) setPhase('done');
             // End speed quiz after leaderboard is shown
             phaseTimerRef.current = setTimeout(async () => {
               await endSpeedQuizInternal();
