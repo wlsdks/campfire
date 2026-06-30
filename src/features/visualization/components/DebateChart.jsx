@@ -162,7 +162,6 @@ export default memo(function DebateChart({ sessionId, questionId }) {
               {filteredOpinions.map((op) => (
                 <motion.div
                   key={op.id}
-                  layout
                   initial={{ opacity: 0, x: op.side === 'for' ? -12 : 12 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0 }}

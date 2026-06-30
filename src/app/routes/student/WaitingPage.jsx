@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, memo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Zap, Hand, MessageSquare, Trophy, Heart, Copy, Check, Ticket, Coffee, UserCircle, Award } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
-import { useParticipants } from '@/features/participants/api/useParticipants';
+import { useParticipantCount } from '@/features/participants/api/useParticipants';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
 import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
@@ -107,7 +107,7 @@ const GAME_MODES = {
 };
 
 export default memo(function WaitingPage({ sessionId, pendingEvent = null, courseName = null, currentMode = null, persistentAssignmentId = null, persistentAssignmentTitle = null }) {
-  const { count } = useParticipants(sessionId);
+  const count = useParticipantCount(sessionId);
   const nickname = getNickname();
   const { isWinner, winnerNames, gameResult } = useGameResult(sessionId);
 
