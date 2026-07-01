@@ -71,19 +71,25 @@ export default function JoinToast({ sessionId }) {
   }, [sessionId]);
 
   return (
-    <div className="fixed top-14 right-3 z-40 flex flex-col gap-1" role="log" aria-label="참여자 알림" aria-live="polite">
+    <div className="fixed top-20 right-4 z-30 flex flex-col items-end gap-2 pointer-events-none" role="log" aria-label="참여자 알림" aria-live="polite">
       <AnimatePresence>
         {visible.map((item) => (
           <motion.div
             key={item.id}
-            initial={{ opacity: 0, x: 30, scale: 0.9 }}
+            initial={{ opacity: 0, x: 44, scale: 0.92 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: 30, scale: 0.9 }}
-            transition={{ duration: 0.12 }}
-            className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm shadow border border-slate-100 dark:border-slate-700 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-900 dark:text-slate-100 flex items-center gap-1.5 whitespace-nowrap"
+            exit={{ opacity: 0, x: 44, scale: 0.9 }}
+            transition={{ type: 'spring', stiffness: 420, damping: 30 }}
+            className="flex items-center gap-2.5 bg-white/95 dark:bg-slate-800/95 backdrop-blur-md shadow-lg ring-1 ring-slate-900/5 dark:ring-white/10 pl-2 pr-4 py-2 rounded-full whitespace-nowrap"
           >
-            <Avatar name={item.nickname} size="xs" />
-            <span>{item.nickname}</span>
+            <div className="relative shrink-0">
+              <Avatar name={item.nickname} size="sm" />
+              <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-800" />
+            </div>
+            <div className="flex flex-col leading-tight">
+              <span className="text-sm font-bold text-slate-900 dark:text-slate-100">{item.nickname}</span>
+              <span className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400">입장했어요</span>
+            </div>
           </motion.div>
         ))}
       </AnimatePresence>
