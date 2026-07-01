@@ -102,7 +102,7 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
 
   return (
     <>
-      <div className="w-full max-w-4xl mx-auto">
+      <div className="w-full max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
@@ -130,8 +130,9 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
 
         {error && <p className="mb-3 text-sm text-red-500">{error}</p>}
 
-        {/* Response feed */}
-        <div className="space-y-2.5">
+        {/* Response masonry — 넓은 화면(프로젝터)에서 다단으로 답변을 한눈에.
+            좁은 화면은 1~2열로 자동 축소(반응형 columns). */}
+        <div className="columns-1 sm:columns-2 xl:columns-3 gap-3">
           {sorted.map((vote, i) => {
             const grade = grades[vote.id];
             return (
@@ -139,20 +140,17 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
                 key={vote.id}
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.03, type: 'spring', stiffness: 300, damping: 25 }}
+                // stagger 상한 — 답변 수백 개여도 마지막 카드가 늦게 뜨지 않게(최대 ~0.4s)
+                transition={{ delay: Math.min(i, 16) * 0.025, type: 'spring', stiffness: 300, damping: 25 }}
                 onClick={() => setSelected(vote)}
-                className="w-full text-left rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 hover:border-slate-300 dark:hover:border-slate-600 transition-colors duration-150"
+                className="block w-full break-inside-avoid mb-3 text-left rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 hover:border-slate-300 dark:hover:border-slate-600 transition-colors duration-150"
               >
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 mb-1.5">
                   <Avatar name={vote.nickname || '익명'} size="sm" />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{vote.nickname || '익명'}</span>
-                      {grade && <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded ${scoreColor(grade.score)}`}>{grade.score}점</span>}
-                    </div>
-                    <p className="text-sm text-slate-700 dark:text-slate-200 leading-relaxed line-clamp-2">{vote.value}</p>
-                  </div>
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400 truncate">{vote.nickname || '익명'}</span>
+                  {grade && <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded ml-auto shrink-0 ${scoreColor(grade.score)}`}>{grade.score}점</span>}
                 </div>
+                <p className="text-[15px] text-slate-700 dark:text-slate-200 leading-relaxed break-words">{vote.value}</p>
               </motion.button>
             );
           })}
