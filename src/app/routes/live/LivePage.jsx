@@ -19,6 +19,7 @@ import Badge from '@/components/ui/Badge';
 import PickMascot from '@/components/ui/PickMascot';
 
 import { useTheme } from '@/hooks/useTheme';
+import ConnectionBanner from '@/components/ui/ConnectionBanner';
 import LiveHeader from './LiveHeader';
 import DrumrollOverlay from '@/components/ui/DrumrollOverlay';
 import LiveParticipation from './LiveParticipation';
@@ -143,6 +144,7 @@ export default function LivePage() {
       <LiveHeader courseName={session?.courseName} roundNumber={session?.roundNumber} count={count}
         handCount={handCount} urgentCount={urgentCount}
         sessionId={sessionId} startedAt={session?.startedAt} status={session?.status} />
+      <ConnectionBanner />
       <JoinToast sessionId={sessionId} />
       <ReactionOverlay sessionId={sessionId} />
       <ChatBubbleOverlay sessionId={sessionId} />

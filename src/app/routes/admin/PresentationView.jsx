@@ -20,6 +20,8 @@ import { useGameResultPublisher } from '@/features/games/api/useGameResult';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
 import PersistentAssignmentBar from '@/features/ai-judge/components/PersistentAssignmentBar';
 import { useQuestionActions } from '@/hooks/useQuestionActions';
+import { useTimer } from '@/features/timer/api/useTimer';
+import TimerControls from '@/features/timer/components/TimerControls';
 import { PresentEmptyState, PresentQROverlay, GameFallback, SideNoticesPanel, ExitHint, PresentModeMenu } from './PresentationParts';
 
 const Lottery = lazy(() => import('@/features/games/components/Lottery'));
@@ -208,6 +210,10 @@ export default function PresentationView({ sessionId, session, currentMode, onli
   // 게임 결과 발행 — winner-mapping 로직은 공유 훅에 일원화(4개 라우트 복제 제거)
   const { handleGameResult } = useGameResultPublisher(sessionId, onlineList, drawParticipants);
 
+  // 발표모드에서도 타이머 제어 — 헤더로 나가지 않고 preset(15/30/60초)로 바로 시작/중지.
+  const { isRunning: timerRunning, startTimer, stopTimer } = useTimer(sessionId);
+  const activeQuestion = ['poll', 'quiz'].includes(currentMode) && session?.currentQuestion;
+
   // 질문 네비게이션
   const questionList = useMemo(() => {
     return Object.entries(session?.questions || {}).sort((a, b) => (a[1].order || 0) - (b[1].order || 0));
@@ -241,7 +247,12 @@ export default function PresentationView({ sessionId, session, currentMode, onli
     const handler = (e) => {
       if (e.key === 'Escape') exitPresent();
       if (e.key === 'ArrowLeft') goPrev();
-      if (e.key === 'ArrowRight') goNext();
+      if (e.key === 'ArrowRight') {
+        // 정답 공개 직후 2.5초는 화살표 전진 차단(결과 볼 틈 확보). 하단 '다음' 버튼은 정상.
+        const cur = session?.questions?.[session?.currentQuestion];
+        if (cur?.revealedAt && Date.now() - cur.revealedAt < 2500) return;
+        goNext();
+      }
       // 스페이스바: 이미지 슬라이드 다음 장
       if (e.key === ' ' || e.code === 'Space') {
         e.preventDefault();
@@ -271,6 +282,13 @@ export default function PresentationView({ sessionId, session, currentMode, onli
       />
 
       <SideNoticesPanel sessionId={sessionId} />
+
+      {/* 발표모드 타이머 — 활성 질문일 때 우상단 (나가기 아래) */}
+      {activeQuestion && (
+        <div className="fixed top-16 right-4 z-20 w-56 bg-slate-900/85 dark:bg-slate-800/90 backdrop-blur-sm rounded-xl p-3 shadow-lg ring-1 ring-white/10">
+          <TimerControls isRunning={timerRunning} onStart={startTimer} onStop={stopTimer} />
+        </div>
+      )}
 
       {/* 상시 과제 바 — 발표 모드에서도 강사가 제출 상태/심사 상태 확인 가능.
           단, 상시 과제 자체가 현재 활성 질문일 때는 메인 뷰에 이미 노출되므로 중복 방지 (학생 VoteModeContent와 동일 규칙). */}

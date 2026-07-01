@@ -35,11 +35,15 @@ export function useAdminKeyboardShortcuts({
     }
 
     const activeIndex = questionList.findIndex(([qId]) => qId === currentQuestion);
+    // 정답 공개 직후 2.5초는 다음 질문 전진 차단 — 학생이 결과를 볼 틈도 없이 화살표로 넘어가던 오조작 방지.
+    const currentQData = activeIndex >= 0 ? questionList[activeIndex][1] : null;
+    const advanceBlocked = !!currentQData?.revealedAt && (Date.now() - currentQData.revealedAt) < 2500;
 
     switch (e.key) {
       case 'ArrowRight':
       case 'ArrowDown': {
         e.preventDefault();
+        if (advanceBlocked) break;
         const nextIndex = activeIndex >= 0 ? activeIndex + 1 : 0;
         if (nextIndex < questionList.length) {
           onActivate?.(questionList[nextIndex][0]);
@@ -59,6 +63,7 @@ export function useAdminKeyboardShortcuts({
 
       case ' ': {
         e.preventDefault();
+        if (advanceBlocked) break;
         // Space = advance to next, same as ArrowRight
         const nextIdx = activeIndex >= 0 ? activeIndex + 1 : 0;
         if (nextIdx < questionList.length) {

@@ -7,6 +7,8 @@ import QRCode from '@/components/ui/QRCode';
 import Badge from '@/components/ui/Badge';
 import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
 import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
+import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
+import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
 
 /**
  * PresentationView의 순수 표시 컴포넌트 모음 — 컨테이너에서 분리(632→~390줄).
@@ -124,8 +126,21 @@ export const GameFallback = () => (
 );
 
 /** Collapsible panel for HandRaiseList + UrgentQuestionList — always toggleable. */
+// 손든 학생·긴급질문 알림 개수 배지 (0이면 숨김)
+function NotifBadge({ count }) {
+  if (!count) return null;
+  return (
+    <span className="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold tabular-nums shadow ring-2 ring-white dark:ring-slate-900 animate-pulse">
+      {count > 99 ? '99+' : count}
+    </span>
+  );
+}
+
 export function SideNoticesPanel({ sessionId }) {
   const [open, setOpen] = useState(false);
+  const { count: handCount } = useHandRaises(sessionId);
+  const { unreadCount: urgentCount } = useUrgentQuestions(sessionId);
+  const notifCount = (handCount || 0) + (urgentCount || 0);
   return (
     <>
       {/* Desktop: toggleable top-left panel */}
@@ -133,12 +148,13 @@ export function SideNoticesPanel({ sessionId }) {
         <motion.button
           onClick={() => setOpen((v) => !v)}
           whileTap={{ scale: 0.94 }}
-          className="flex items-center gap-1.5 bg-slate-900/80 dark:bg-slate-800/90 backdrop-blur-sm text-white px-3 py-2 rounded-xl text-xs font-medium shadow-lg mb-2"
-          aria-label="알림 패널 열기/닫기"
+          className="relative flex items-center gap-1.5 bg-slate-900/80 dark:bg-slate-800/90 backdrop-blur-sm text-white px-3 py-2 rounded-xl text-xs font-medium shadow-lg mb-2"
+          aria-label={`알림 패널 열기/닫기${notifCount ? ` (${notifCount}건)` : ''}`}
         >
           <Hand size={13} />
           <MessageSquare size={13} />
           <ChevronDown size={12} className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+          {!open && <NotifBadge count={notifCount} />}
         </motion.button>
         <AnimatePresence>
           {open && (
@@ -161,12 +177,13 @@ export function SideNoticesPanel({ sessionId }) {
         <motion.button
           onClick={(e) => { e.stopPropagation(); setOpen((v) => !v); }}
           whileTap={{ scale: 0.94 }}
-          className="flex items-center gap-1.5 bg-slate-900/80 dark:bg-slate-800/90 backdrop-blur-sm text-white px-3 py-2 rounded-xl text-xs font-medium shadow-lg"
-          aria-label="알림 패널 열기"
+          className="relative flex items-center gap-1.5 bg-slate-900/80 dark:bg-slate-800/90 backdrop-blur-sm text-white px-3 py-2 rounded-xl text-xs font-medium shadow-lg"
+          aria-label={`알림 패널 열기${notifCount ? ` (${notifCount}건)` : ''}`}
         >
           <Hand size={13} />
           <MessageSquare size={13} />
           <ChevronDown size={12} className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+          {!open && <NotifBadge count={notifCount} />}
         </motion.button>
 
         <AnimatePresence>
