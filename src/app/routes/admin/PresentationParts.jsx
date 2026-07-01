@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, QrCode, X, Copy, Check, Hand, MessageSquare, ChevronDown, Trophy, Medal, Ticket, Coffee, Award, HelpCircle, UserPlus } from 'lucide-react';
 import { ref, update } from 'firebase/database';
@@ -15,15 +15,27 @@ import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions'
  * 외부 importer가 없고 로직 결합이 적은 leaf만 추출. 키보드/슬라이드/reveal 로직은 컨테이너에 유지.
  */
 
+// 프로젝터 뒷자리에서도 스캔 가능하도록 QR을 화면 크기에 반응해 크게 — 1920→~450px, 2560(QHD)→~560px
+function useProjectorQRSize() {
+  const [size, setSize] = useState(400);
+  useEffect(() => {
+    const calc = () => setSize(Math.round(Math.min(Math.max(Math.min(window.innerWidth, window.innerHeight) * 0.42, 300), 560)));
+    calc();
+    window.addEventListener('resize', calc);
+    return () => window.removeEventListener('resize', calc);
+  }, []);
+  return size;
+}
+
 export function PresentEmptyState({ sessionId, studentUrl, count }) {
+  const qrSize = useProjectorQRSize();
   return (
-    <div className="flex flex-col items-center justify-center gap-4 md:gap-6 px-2">
-      {/* 프로젝터 뒷자리에서도 스캔 가능하도록 크게 — QHD(2560)에서 더 확대 */}
-      <QRCode url={studentUrl} size={260} />
-      <p className="text-slate-500 dark:text-slate-400 text-base md:text-lg break-all max-w-md md:max-w-xl text-center">{studentUrl}</p>
-      <p className="text-slate-500 dark:text-slate-300 text-sm md:text-lg font-medium text-center">학생들이 QR코드를 스캔하여 참여할 수 있습니다</p>
+    <div className="flex flex-col items-center justify-center gap-5 md:gap-7 px-2">
+      <QRCode url={studentUrl} size={qrSize} />
+      <p className="text-slate-500 dark:text-slate-400 text-lg md:text-xl break-all max-w-md md:max-w-2xl text-center">{studentUrl}</p>
+      <p className="text-slate-600 dark:text-slate-200 text-lg md:text-2xl font-semibold text-center">학생들이 QR코드를 스캔하여 참여할 수 있습니다</p>
       <div className="flex items-center gap-2 md:gap-3 flex-wrap justify-center">
-        <Badge variant="neutral"><Users size={14} className="mr-1" />{count}명 접속 중</Badge>
+        <Badge variant="neutral"><Users size={16} className="mr-1" />{count}명 접속 중</Badge>
         <Badge variant="neutral">{sessionId}</Badge>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { memo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Ticket, Trophy, Coffee, ChevronDown, MessageSquare, Award, Eye, UserCircle, Activity, BarChart3, Timer, Medal, Zap, X } from 'lucide-react';
+import { Ticket, Trophy, Coffee, ChevronDown, MessageSquare, Award, Eye, UserCircle, Activity, BarChart3, Timer, Medal, Zap, X, UserPlus } from 'lucide-react';
 
 export default memo(function ModeSwitcher({ currentMode, isSpecialMode, leaderboard, modeOpen, onToggle, onSwitchMode }) {
   const containerRef = useRef(null);
@@ -21,6 +21,7 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, leaderbo
 
     ]},
     { label: '참여', items: [
+      { mode: 'joinShow', label: '접속 현황', icon: UserPlus },
       { mode: 'comprehension', label: '이해도 체크', icon: Activity },
       { mode: 'quickSurvey', label: '빠른 설문', icon: BarChart3 },
       { mode: 'discussion', label: '그룹 토론', icon: Timer },
