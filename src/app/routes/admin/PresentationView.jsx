@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo, lazy, Suspense } from 'react';
 import DrumrollOverlay from '@/components/ui/DrumrollOverlay';
-import { isQuizQuestion } from '@/lib/quiz';
+import { isQuizQuestion, QUIZ_EVENT_PRESETS, normalizeQuizEvent } from '@/lib/quiz';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, QrCode, X, Copy, Check, Hand, MessageSquare, ChevronDown, ChevronLeft, ChevronRight, Eye, Trophy } from 'lucide-react';
 import { ref, update } from 'firebase/database';
@@ -218,7 +218,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
   }, [session?.questions]);
   const currentQIdx = questionList.findIndex(([id]) => id === session?.currentQuestion);
 
-  const goToQuestion = useCallback(async (qId) => {
+  const goToQuestion = useCallback(async (qId, nextEvent = null) => {
     const q = session?.questions?.[qId];
     if (!q) return;
     const mode = isQuizQuestion(q) ? 'quiz' : 'poll';
@@ -231,16 +231,24 @@ export default function PresentationView({ sessionId, session, currentMode, onli
     if (q.type === 'imageSlide') updates[`questions/${qId}/currentSlide`] = 0;
     if (q.type === 'hintQuiz') updates[`questions/${qId}/revealedHints`] = 0;
     if (['mysteryBox', 'hintQuiz'].includes(q.type)) updates[`questions/${qId}/revealedWinners`] = 0;
+    // 발표모드에서도 이벤트(2배점수/티켓러시/잭팟) 적용 — 대시보드 빠른진행과 동일 경로
+    updates[`questions/${qId}/event`] = nextEvent && isQuizQuestion(q) ? normalizeQuizEvent(nextEvent) : null;
     await update(ref(db, `sessions/${sessionId}`), updates);
   }, [sessionId, session?.questions]);
+
+  // 다음 퀴즈에 걸 이벤트 (발표모드용 — 기존엔 대시보드 빠른진행에서만 가능)
+  const [nextEvent, setNextEvent] = useState(null);
 
   const goPrev = useCallback(() => {
     if (currentQIdx > 0) goToQuestion(questionList[currentQIdx - 1][0]);
   }, [currentQIdx, questionList, goToQuestion]);
 
   const goNext = useCallback(() => {
-    if (currentQIdx < questionList.length - 1) goToQuestion(questionList[currentQIdx + 1][0]);
-  }, [currentQIdx, questionList, goToQuestion]);
+    if (currentQIdx < questionList.length - 1) {
+      goToQuestion(questionList[currentQIdx + 1][0], nextEvent);
+      setNextEvent(null); // 1회성 — 적용 후 해제
+    }
+  }, [currentQIdx, questionList, goToQuestion, nextEvent]);
 
   useEffect(() => {
     const handler = (e) => {
@@ -352,6 +360,33 @@ export default function PresentationView({ sessionId, session, currentMode, onli
               variant="primary" size="lg" disabled={cur >= total - 1}>
               다음 <ChevronRight size={20} />
             </Button>
+          </div>
+        );
+      })()}
+
+      {/* 다음 퀴즈 이벤트 선택 — 다음 문항이 퀴즈일 때만 노출, '다음' 클릭 시 적용 */}
+      {(() => {
+        const nextQ = questionList[currentQIdx + 1]?.[1];
+        if (!nextQ || !isQuizQuestion(nextQ)) return null;
+        return (
+          <div className="fixed bottom-[4.75rem] left-4 md:bottom-[5.5rem] md:left-6 z-20 flex items-center gap-1.5">
+            <span className="text-[11px] font-semibold text-white/50 mr-0.5">다음 퀴즈 이벤트</span>
+            {QUIZ_EVENT_PRESETS.map((preset) => {
+              const on = nextEvent?.id === preset.id;
+              return (
+                <button
+                  key={preset.id}
+                  onClick={() => setNextEvent(on ? null : preset)}
+                  title={preset.description}
+                  className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold backdrop-blur-sm transition-all active:scale-95 ${
+                    on ? 'bg-amber-400 text-slate-900 shadow-lg'
+                       : 'bg-slate-900/70 text-white/80 ring-1 ring-white/15 hover:bg-slate-900 hover:text-white'
+                  }`}
+                >
+                  {preset.label}
+                </button>
+              );
+            })}
           </div>
         );
       })()}
