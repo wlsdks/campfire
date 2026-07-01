@@ -51,9 +51,12 @@ function DetailModal({ item, grade, onClose }) {
   );
 }
 
+const WALL_LIMIT = 18; // 스크롤 없이 화면에 채우는 최신 답변 수(3열×6행). 초과분은 밀려남 → 더보기로 열람.
+
 export default memo(function SubjectiveResults({ sessionId, questionId, question, isAdmin }) {
   const { voteList } = useVotes(sessionId, questionId);
   const [selected, setSelected] = useState(null);
+  const [expanded, setExpanded] = useState(false);
   const [grades, setGrades] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -130,31 +133,47 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
 
         {error && <p className="mb-3 text-sm text-red-500">{error}</p>}
 
-        {/* Response masonry — 넓은 화면(프로젝터)에서 다단으로 답변을 한눈에.
-            좁은 화면은 1~2열로 자동 축소(반응형 columns). */}
-        <div className="columns-1 sm:columns-2 xl:columns-3 gap-3">
-          {sorted.map((vote, i) => {
-            const grade = grades[vote.id];
-            return (
-              <motion.button
-                key={vote.id}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                // stagger 상한 — 답변 수백 개여도 마지막 카드가 늦게 뜨지 않게(최대 ~0.4s)
-                transition={{ delay: Math.min(i, 16) * 0.025, type: 'spring', stiffness: 300, damping: 25 }}
-                onClick={() => setSelected(vote)}
-                className="block w-full break-inside-avoid mb-3 text-left rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 hover:border-slate-300 dark:hover:border-slate-600 transition-colors duration-150"
-              >
-                <div className="flex items-center gap-2 mb-1.5">
-                  <Avatar name={vote.nickname || '익명'} size="sm" />
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400 truncate">{vote.nickname || '익명'}</span>
-                  {grade && <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded ml-auto shrink-0 ${scoreColor(grade.score)}`}>{grade.score}점</span>}
-                </div>
-                <p className="text-[15px] text-slate-700 dark:text-slate-200 leading-relaxed break-words">{vote.value}</p>
-              </motion.button>
-            );
-          })}
+        {/* 응답 벽 — 기본은 스크롤 없이 최신 WALL_LIMIT개만 3열 그리드로 채우고, 새 답변이 오면
+            오래된 게 밀려나감(rolling). '더보기'를 누르면 전체를 스크롤로 열람.
+            기본 모드는 항상 ~18개만 렌더 → 답변 수백 개여도 약한 노트북 DOM 부담 없음. */}
+        <div className={`grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 ${expanded ? 'max-h-[64vh] overflow-y-auto scrollbar-hide pr-1' : ''}`}>
+          <AnimatePresence initial={false} mode="popLayout">
+            {(expanded ? sorted : sorted.slice(0, WALL_LIMIT)).map((vote) => {
+              const grade = grades[vote.id];
+              return (
+                <motion.button
+                  key={vote.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.92 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.92 }}
+                  transition={{ type: 'spring', stiffness: 320, damping: 26 }}
+                  onClick={() => setSelected(vote)}
+                  className="text-left rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 hover:border-slate-300 dark:hover:border-slate-600 transition-colors duration-150"
+                >
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <Avatar name={vote.nickname || '익명'} size="sm" />
+                    <span className="text-xs font-medium text-slate-500 dark:text-slate-400 truncate">{vote.nickname || '익명'}</span>
+                    {grade && <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded ml-auto shrink-0 ${scoreColor(grade.score)}`}>{grade.score}점</span>}
+                  </div>
+                  <p className="text-[15px] text-slate-700 dark:text-slate-200 leading-relaxed break-words line-clamp-3">{vote.value}</p>
+                </motion.button>
+              );
+            })}
+          </AnimatePresence>
         </div>
+
+        {/* 더보기 / 접기 — WALL_LIMIT 초과 시에만 */}
+        {sorted.length > WALL_LIMIT && (
+          <div className="mt-5 text-center">
+            <button
+              onClick={() => setExpanded((v) => !v)}
+              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors duration-150"
+            >
+              {expanded ? '접기' : `전체 ${sorted.length}개 응답 더보기`}
+            </button>
+          </div>
+        )}
 
         {sorted.length === 0 && (
           <div className="text-center py-20 space-y-3 flex flex-col items-center">
