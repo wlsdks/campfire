@@ -137,17 +137,18 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
             오래된 게 밀려나감(rolling). '더보기'를 누르면 전체를 스크롤로 열람.
             기본 모드는 항상 ~18개만 렌더 → 답변 수백 개여도 약한 노트북 DOM 부담 없음. */}
         <div className={`grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 ${expanded ? 'max-h-[64vh] overflow-y-auto scrollbar-hide pr-1' : ''}`}>
-          <AnimatePresence initial={false} mode="popLayout">
+          <AnimatePresence initial={false}>
             {(expanded ? sorted : sorted.slice(0, WALL_LIMIT)).map((vote) => {
               const grade = grades[vote.id];
               return (
                 <motion.button
                   key={vote.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.92 }}
+                  // layout(위치 이동 애니) 미사용 — CSS grid에서 janky하게 우르르 밀리던 것 제거.
+                  // 새 카드만 통통 팝(scale)으로 들어오고, 나머지는 즉시 자리 잡음. exit는 페이드.
+                  initial={{ opacity: 0, scale: 0.7 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.92 }}
-                  transition={{ type: 'spring', stiffness: 320, damping: 26 }}
+                  exit={{ opacity: 0, transition: { duration: 0.15 } }}
+                  transition={{ type: 'spring', stiffness: 440, damping: 22, opacity: { duration: 0.18 } }}
                   onClick={() => setSelected(vote)}
                   className="text-left rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 hover:border-slate-300 dark:hover:border-slate-600 transition-colors duration-150"
                 >
