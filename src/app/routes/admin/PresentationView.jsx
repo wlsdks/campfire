@@ -357,17 +357,17 @@ export default function PresentationView({ sessionId, session, currentMode, onli
       })()}
 
       {/* Bottom bar — participant count + navigation */}
-      <div className="fixed bottom-3 left-3 md:bottom-5 md:left-5 flex items-center gap-2.5">
-        <Badge variant="neutral" className="text-sm py-2 px-3.5"><Users size={16} className="mr-1.5" />{count}명</Badge>
+      <div className="fixed bottom-4 left-4 md:bottom-6 md:left-6 flex items-center gap-3">
+        <Badge variant="neutral" size="lg"><Users size={20} className="mr-2" />{count}명</Badge>
         {questionList.length > 1 && (
           <>
             <button onClick={goPrev} disabled={currentQIdx <= 0}
-              className="px-3.5 py-2 rounded-xl bg-slate-900/60 hover:bg-slate-900/90 disabled:opacity-30 text-white text-sm font-semibold transition-all backdrop-blur-sm shadow-lg hover:shadow-xl active:scale-95">
+              className="px-5 py-3 rounded-xl bg-slate-900/60 hover:bg-slate-900/90 disabled:opacity-30 text-white text-base font-semibold transition-all backdrop-blur-sm shadow-lg hover:shadow-xl active:scale-95">
               ← 이전
             </button>
-            <span className="text-sm text-white/60 tabular-nums font-medium">{currentQIdx + 1}/{questionList.length}</span>
+            <span className="text-base text-white/70 tabular-nums font-semibold px-1">{currentQIdx + 1}/{questionList.length}</span>
             <button onClick={goNext} disabled={currentQIdx >= questionList.length - 1}
-              className="px-3.5 py-2 rounded-xl bg-slate-900/60 hover:bg-slate-900/90 disabled:opacity-30 text-white text-sm font-semibold transition-all backdrop-blur-sm shadow-lg hover:shadow-xl active:scale-95">
+              className="px-5 py-3 rounded-xl bg-slate-900/60 hover:bg-slate-900/90 disabled:opacity-30 text-white text-base font-semibold transition-all backdrop-blur-sm shadow-lg hover:shadow-xl active:scale-95">
               다음 →
             </button>
           </>

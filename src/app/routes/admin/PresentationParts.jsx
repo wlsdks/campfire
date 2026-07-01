@@ -34,9 +34,9 @@ export function PresentEmptyState({ sessionId, studentUrl, count }) {
       <QRCode url={studentUrl} size={qrSize} />
       <p className="text-slate-500 dark:text-slate-400 text-lg md:text-xl break-all max-w-md md:max-w-2xl text-center">{studentUrl}</p>
       <p className="text-slate-600 dark:text-slate-200 text-lg md:text-2xl font-semibold text-center">학생들이 QR코드를 스캔하여 참여할 수 있습니다</p>
-      <div className="flex items-center gap-2 md:gap-3 flex-wrap justify-center">
-        <Badge variant="neutral"><Users size={16} className="mr-1" />{count}명 접속 중</Badge>
-        <Badge variant="neutral">{sessionId}</Badge>
+      <div className="flex items-center gap-3 flex-wrap justify-center">
+        <Badge variant="neutral" size="xl"><Users size={20} className="mr-2" />{count}명 접속 중</Badge>
+        <Badge variant="neutral" size="xl">{sessionId}</Badge>
       </div>
     </div>
   );
@@ -108,16 +108,16 @@ export function PresentQROverlay({ sessionId, studentUrl, count }) {
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.15 }}
             onClick={toggle}
-            className="flex items-center gap-2.5 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-xl shadow-md px-3 py-2.5 hover:shadow-lg transition-shadow group"
+            className="flex items-center gap-3 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-xl shadow-md px-4 py-3 hover:shadow-lg transition-shadow group"
             aria-label="QR코드 열기"
           >
-            <div className="bg-slate-900 rounded-lg p-1.5">
-              <QrCode size={16} className="text-white" />
+            <div className="bg-slate-900 rounded-lg p-2">
+              <QrCode size={20} className="text-white" />
             </div>
             <div className="text-left">
-              <span className="text-slate-900 dark:text-slate-100 text-sm font-bold tracking-wider block leading-tight">{sessionId}</span>
-              <span className="text-slate-400 dark:text-slate-500 text-[11px] flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
+              <span className="text-slate-900 dark:text-slate-100 text-base font-bold tracking-wider block leading-tight">{sessionId}</span>
+              <span className="text-slate-400 dark:text-slate-500 text-xs flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 inline-block" />
                 {count}명
               </span>
             </div>
@@ -224,9 +224,9 @@ export function ExitHint({ onExit }) {
   return (
     <button
       onClick={onExit}
-      className="fixed top-3 right-3 md:top-5 md:right-5 bg-slate-900/80 dark:bg-slate-700/80 hover:bg-slate-900 dark:hover:bg-slate-600 text-white px-4 py-2 rounded-xl text-sm transition-all duration-150 z-20 flex items-center gap-1.5 shadow-lg hover:shadow-xl active:scale-95"
+      className="fixed top-4 right-4 md:top-6 md:right-6 bg-slate-900/80 dark:bg-slate-700/80 hover:bg-slate-900 dark:hover:bg-slate-600 text-white px-5 py-3 rounded-xl text-base font-medium transition-all duration-150 z-20 flex items-center gap-2 shadow-lg hover:shadow-xl active:scale-95"
     >
-      <X size={14} />
+      <X size={18} />
       <span className="hidden sm:inline">나가기</span>
       <span className="hidden md:inline text-white/50 ml-1">ESC</span>
     </button>
@@ -262,7 +262,7 @@ export function PresentModeMenu({ sessionId, currentMode }) {
       <div className="relative">
         <button
           onClick={() => setOpen(!open)}
-          className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all backdrop-blur-sm shadow-lg active:scale-95 ${
+          className={`px-5 py-3 rounded-xl text-base font-semibold transition-all backdrop-blur-sm shadow-lg active:scale-95 ${
             open ? 'bg-white text-slate-900 shadow-xl' : 'bg-slate-900/70 hover:bg-slate-900/95 hover:shadow-xl text-white ring-1 ring-white/20 hover:ring-white/40'
           }`}
         >
