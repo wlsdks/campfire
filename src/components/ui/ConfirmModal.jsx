@@ -11,7 +11,7 @@ import Button from '@/components/ui/Button';
  */
 export default function ConfirmModal({
   open, onConfirm, onCancel,
-  title, description,
+  title, description, children,
   confirmLabel = '확인', cancelLabel = '취소',
   variant = 'primary',
 }) {
@@ -81,6 +81,7 @@ export default function ConfirmModal({
                   </p>
                 )}
               </div>
+              {children && <div className="mt-4">{children}</div>}
             </div>
 
             {/* Buttons */}

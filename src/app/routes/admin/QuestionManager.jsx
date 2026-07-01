@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BookmarkPlus, PanelLeftClose, Plus, Eye, RotateCcw, Sparkles } from 'lucide-react';
+import { BookmarkPlus, PanelLeftClose, Plus, Eye, RotateCcw, Sparkles, Check } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import ConfirmModal from '@/components/ui/ConfirmModal';
 import Toast from '@/components/ui/Toast';
@@ -68,6 +68,7 @@ export default function QuestionManager({
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
+  const [resetClearParticipants, setResetClearParticipants] = useState(false);
   const [aiGenOpen, setAiGenOpen] = useState(false);
   const { saveQuestion: saveToLibrary } = useQuestionLibrary(adminUid);
   const { assignmentId: persistentAssignmentId, setAssignment: setPersistent, clearAssignment: clearPersistent } = usePersistentAssignment(sessionId);
@@ -85,7 +86,7 @@ export default function QuestionManager({
   const {
     error, toast, questionList,
     handleSubmit, activateQuestion, clearActive,
-    deleteQuestion, duplicateQuestion, moveQuestion, reorderQuestion,
+    deleteQuestion, duplicateQuestion, moveQuestion, reorderQuestion, resetQuestion,
     importFromLibrary, revealQuiz, revealHint, revealAnswer, resetAllQuestions, showLeaderboard,
   } = useQuestionActions(sessionId, questions, currentQuestion, scores, participants);
 
@@ -219,7 +220,7 @@ export default function QuestionManager({
         questionList={questionList} currentQuestion={currentQuestion}
         onActivate={handleActivate} onReveal={revealQuiz} onRevealAnswer={revealAnswer} onShowLeaderboard={showLeaderboard}
         onClearActive={clearActive} onEdit={!readOnly ? (onEditClick || undefined) : undefined}
-        onDuplicate={duplicateQuestion} onDelete={deleteQuestion}
+        onDuplicate={duplicateQuestion} onDelete={deleteQuestion} onReset={resetQuestion}
         onReorder={reorderQuestion}
         onMoveUp={(qId) => moveQuestion(qId, 'up')} onMoveDown={(qId) => moveQuestion(qId, 'down')}
         readOnly={readOnly} onView={readOnly ? onViewQuestion : undefined}
@@ -250,13 +251,27 @@ export default function QuestionManager({
 
       <ConfirmModal
         open={resetConfirmOpen}
-        onConfirm={() => { setResetConfirmOpen(false); resetAllQuestions(); }}
-        onCancel={() => setResetConfirmOpen(false)}
+        onConfirm={() => { setResetConfirmOpen(false); resetAllQuestions(resetClearParticipants); setResetClearParticipants(false); }}
+        onCancel={() => { setResetConfirmOpen(false); setResetClearParticipants(false); }}
         title="전체 답변 초기화"
         description={resetDescription}
         confirmLabel="초기화"
         variant="danger"
-      />
+      >
+        <button
+          type="button"
+          onClick={() => setResetClearParticipants((v) => !v)}
+          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-700/50 text-left"
+        >
+          <span className={`w-5 h-5 rounded-md border flex items-center justify-center shrink-0 transition-colors ${resetClearParticipants ? 'bg-slate-900 dark:bg-slate-100 border-slate-900 dark:border-slate-100 text-white dark:text-slate-900' : 'border-slate-300 dark:border-slate-500'}`}>
+            {resetClearParticipants && <Check size={13} />}
+          </span>
+          <span className="text-sm text-slate-600 dark:text-slate-300 leading-snug">
+            참여자 목록도 함께 비우기
+            <span className="block text-[11px] text-slate-400">리허설 접속자를 정리하고 본 행사를 깨끗하게 시작</span>
+          </span>
+        </button>
+      </ConfirmModal>
     </div>
   );
 }

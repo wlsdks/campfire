@@ -356,7 +356,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     }
   }
 
-  async function resetAllQuestions() {
+  async function resetAllQuestions(clearParticipants = false) {
     try {
       const updates = {
         gameResult: null,
@@ -371,6 +371,8 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
         urgentQuestions: null,
         staffChat: null,
         // classQuestions, qaStats는 세션 누적 데이터로 초기화하지 않음
+        // 리허설→본행사: 참여자까지 비우면 접속자/추첨 대상이 깨끗해짐
+        ...(clearParticipants ? { participants: null } : {}),
       };
       questionList.forEach(([qId]) => {
         updates[`questions/${qId}/votes`] = null;

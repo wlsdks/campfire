@@ -2,7 +2,7 @@ import { memo, useState, useEffect, useCallback } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import Tooltip from '@/components/ui/Tooltip';
-import { GripVertical, BookmarkPlus, Check, Copy, MessageSquare, Pencil, Play, Square, Trash2, Trophy, Loader2, Pin, PinOff } from 'lucide-react';
+import { GripVertical, BookmarkPlus, Check, Copy, MessageSquare, Pencil, Play, Square, Trash2, Trophy, Loader2, Pin, PinOff, RotateCcw } from 'lucide-react';
 import Badge from '@/components/ui/Badge';
 import { isQuizQuestion } from '@/lib/quiz';
 import { QUESTION_TYPES } from '@/lib/question-types';
@@ -31,7 +31,8 @@ function ActionButton({ onClick, className, children, 'aria-label': ariaLabel, f
 }
 
 /** Shared question item UI — used both sortable (desktop) and static (mobile/readOnly). */
-export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView, onActivate, onReveal, onRevealAnswer, onShowLeaderboard, onClearActive, onEdit, onDuplicate, onDelete, onSaveToLibrary, isPersistent = false, onTogglePersistent, isDragging = false, dragProps = {} }) {
+export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView, onActivate, onReveal, onRevealAnswer, onShowLeaderboard, onClearActive, onEdit, onDuplicate, onDelete, onReset, onSaveToLibrary, isPersistent = false, onTogglePersistent, isDragging = false, dragProps = {} }) {
+  const hasVotes = Object.keys(q?.votes || {}).length > 0;
   const qType = QUESTION_TYPES.find((t) => t.value === q.type);
   const Icon = qType?.icon || MessageSquare;
   const isActive = currentQuestion === qId;
@@ -135,6 +136,11 @@ export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView,
             <Tooltip label="질문 복제"><button onClick={() => onDuplicate(qId)} className="p-1.5 rounded-md text-slate-400 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="질문 복제">
               <Copy size={12} />
             </button></Tooltip>
+            {onReset && hasVotes && (
+              <Tooltip label="이 질문 응답 초기화"><button onClick={() => onReset(qId)} className="p-1.5 rounded-md text-slate-400 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="이 질문 응답 초기화">
+                <RotateCcw size={12} />
+              </button></Tooltip>
+            )}
             <Tooltip label="질문 삭제"><button onClick={() => onDelete(qId)} className="p-1.5 rounded-md text-slate-400 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-700 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="질문 삭제">
               <Trash2 size={12} />
             </button></Tooltip>

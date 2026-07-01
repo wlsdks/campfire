@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/useToast';
 import { ChevronDown } from 'lucide-react';
 import PickMascot from '@/components/ui/PickMascot';
 import { QuestionItemContent, SortableItem } from './QuestionItem';
+import ConfirmModal from '@/components/ui/ConfirmModal';
 
 /** Detect mobile once for DnD gating (no drag on mobile). */
 function useIsMobile() {
@@ -22,7 +23,7 @@ function useIsMobile() {
 
 export default memo(function QuestionList({
   questionList, currentQuestion, onActivate, onReveal, onRevealAnswer, onShowLeaderboard, onClearActive,
-  onEdit, onDuplicate, onDelete, readOnly = false, onView, onReorder, onSaveToLibrary,
+  onEdit, onDuplicate, onDelete, onReset, readOnly = false, onView, onReorder, onSaveToLibrary,
   persistentAssignmentId, onTogglePersistent,
 }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -33,7 +34,29 @@ export default memo(function QuestionList({
   const ids = questionList.map(([qId]) => qId);
 
   const handleDuplicateWithToast = useCallback((id) => { onDuplicate(id); showToast('질문이 복제되었습니다'); }, [onDuplicate, showToast]);
-  const handleDeleteWithToast = useCallback((id) => { onDelete(id); showToast('질문이 삭제되었습니다'); }, [onDelete, showToast]);
+  // 응답이 있는 질문은 실수 삭제 방지 — 확인 모달. 응답 없으면 즉시 삭제.
+  const [pendingDelete, setPendingDelete] = useState(null);
+  const requestDelete = useCallback((id) => {
+    const entry = questionList.find(([qId]) => qId === id);
+    const voteCount = entry ? Object.keys(entry[1]?.votes || {}).length : 0;
+    if (voteCount > 0) { setPendingDelete({ id, voteCount }); return; }
+    onDelete(id); showToast('질문이 삭제되었습니다');
+  }, [questionList, onDelete, showToast]);
+  const confirmDelete = useCallback(() => {
+    if (pendingDelete) { onDelete(pendingDelete.id); showToast('질문이 삭제되었습니다'); }
+    setPendingDelete(null);
+  }, [pendingDelete, onDelete, showToast]);
+  // 개별 질문 응답만 초기화 — 전체 초기화 없이 이 질문 응답/공개상태만 리셋(확인 필요).
+  const [pendingReset, setPendingReset] = useState(null);
+  const requestReset = useCallback((id) => {
+    const entry = questionList.find(([qId]) => qId === id);
+    const voteCount = entry ? Object.keys(entry[1]?.votes || {}).length : 0;
+    setPendingReset({ id, voteCount });
+  }, [questionList]);
+  const confirmReset = useCallback(() => {
+    if (pendingReset) { onReset?.(pendingReset.id); showToast('이 질문의 응답을 초기화했습니다'); }
+    setPendingReset(null);
+  }, [pendingReset, onReset, showToast]);
   const handleSaveWithToast = useCallback((id) => { onSaveToLibrary?.(id); showToast('보관함에 저장되었습니다'); }, [onSaveToLibrary, showToast]);
 
   function handleDragEnd(event) {
@@ -76,7 +99,8 @@ export default memo(function QuestionList({
                         onActivate={onActivate} onReveal={onReveal} onRevealAnswer={onRevealAnswer} onShowLeaderboard={onShowLeaderboard}
                         onClearActive={onClearActive} onEdit={onEdit}
                         onDuplicate={handleDuplicateWithToast}
-                        onDelete={handleDeleteWithToast}
+                        onDelete={requestDelete}
+                        onReset={!readOnly && onReset ? requestReset : null}
                         onSaveToLibrary={onSaveToLibrary ? handleSaveWithToast : null}
                         isPersistent={persistentAssignmentId === qId}
                         onTogglePersistent={onTogglePersistent}
@@ -91,7 +115,8 @@ export default memo(function QuestionList({
                     onView={onView} onActivate={onActivate} onReveal={onReveal} onRevealAnswer={onRevealAnswer} onShowLeaderboard={onShowLeaderboard}
                     onClearActive={onClearActive} onEdit={onEdit}
                     onDuplicate={handleDuplicateWithToast}
-                    onDelete={handleDeleteWithToast}
+                    onDelete={requestDelete}
+                    onReset={!readOnly && onReset ? requestReset : null}
                     onSaveToLibrary={onSaveToLibrary ? handleSaveWithToast : null}
                     isPersistent={persistentAssignmentId === qId}
                     onTogglePersistent={onTogglePersistent}
@@ -112,6 +137,28 @@ export default memo(function QuestionList({
       </AnimatePresence>
 
       <Toast message={toast} />
+
+      <ConfirmModal
+        open={!!pendingDelete}
+        onConfirm={confirmDelete}
+        onCancel={() => setPendingDelete(null)}
+        title="이 질문을 삭제할까요?"
+        description={pendingDelete ? `이미 ${pendingDelete.voteCount}명이 응답했습니다. 삭제하면 응답 데이터도 함께 사라지며 되돌릴 수 없어요.` : ''}
+        confirmLabel="삭제"
+        cancelLabel="취소"
+        variant="danger"
+      />
+
+      <ConfirmModal
+        open={!!pendingReset}
+        onConfirm={confirmReset}
+        onCancel={() => setPendingReset(null)}
+        title="이 질문만 초기화할까요?"
+        description={pendingReset ? `이 질문의 응답 ${pendingReset.voteCount}건과 정답 공개 상태가 지워집니다. 다른 질문·점수는 그대로예요.` : ''}
+        confirmLabel="초기화"
+        cancelLabel="취소"
+        variant="primary"
+      />
     </div>
   );
 });
