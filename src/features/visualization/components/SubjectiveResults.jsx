@@ -6,6 +6,8 @@ import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
 import { useVotes } from '@/hooks/useVotes';
 import { gradeSubjective, isGradingReady } from '@/features/questions/api/gradeSubjective';
+import Badge from '@/components/ui/Badge';
+import { TYPE_LABELS } from '@/lib/question-types';
 import PickMascot from '@/components/ui/PickMascot';
 import Avatar from '@/components/ui/Avatar';
 
@@ -51,7 +53,8 @@ function DetailModal({ item, grade, onClose }) {
   );
 }
 
-const WALL_LIMIT = 18; // 스크롤 없이 화면에 채우는 최신 답변 수(3열×6행). 초과분은 밀려남 → 더보기로 열람.
+// 스크롤 없이 채우는 최신 답변 수(3열×N행) — 뷰포트 높이에 맞춰 6/5/4행. 초과분은 더보기로.
+const wallLimitFor = (vh) => (vh >= 1040 ? 18 : vh >= 920 ? 15 : 12);
 
 export default memo(function SubjectiveResults({ sessionId, questionId, question, isAdmin }) {
   const { voteList } = useVotes(sessionId, questionId);
@@ -90,18 +93,33 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
   const seenRef = useRef(new Set()); // 한 번이라도 벽에 올린 답변 id(영구) — 재등장·재반짝 방지
   const seededRef = useRef(false);
   const [slots, setSlots] = useState([]);
+  const [wallLimit, setWallLimit] = useState(() => wallLimitFor(typeof window !== 'undefined' ? window.innerHeight : 1080));
+  const wallLimitRef = useRef(wallLimit);
+  useEffect(() => {
+    const calc = () => setWallLimit(wallLimitFor(window.innerHeight));
+    calc(); window.addEventListener('resize', calc);
+    return () => window.removeEventListener('resize', calc);
+  }, []);
+  useEffect(() => {
+    wallLimitRef.current = wallLimit;
+    if (slotsRef.current.length > wallLimit) { // 축소 시 즉시 잘라 스크롤 제거
+      slotsRef.current = slotsRef.current.slice(0, wallLimit);
+      ptrRef.current = ptrRef.current % wallLimit;
+      setSlots([...slotsRef.current]);
+    }
+  }, [wallLimit]);
 
   // 질문 전환 시 시드 초기화 → 다음 로드에서 다시 씨딩.
   useEffect(() => {
     seededRef.current = false;
   }, [questionId]);
 
-  // 첫 로드(sorted가 처음 채워질 때): 현재 답변 '전체'를 seen 처리하고 최신 WALL_LIMIT개를
+  // 첫 로드(sorted가 처음 채워질 때): 현재 답변 '전체'를 seen 처리하고 최신 wallLimit개를
   // 즉시 벽에 깐다. → 리로드로 기존 답변이 한꺼번에 들어와도 반짝이지 않고, 이후 신규만 glow.
   useEffect(() => {
     if (seededRef.current || sorted.length === 0) return;
     seededRef.current = true;
-    const recent = sorted.slice(0, WALL_LIMIT); // newest first
+    const recent = sorted.slice(0, wallLimitRef.current); // newest first
     slotsRef.current = recent;
     ptrRef.current = 0;
     seenRef.current = new Set(sorted.map((v) => v.id));
@@ -114,12 +132,12 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
       const next = sortedRef.current.find((v) => !seenRef.current.has(v.id));
       if (!next) return; // 신규 없음 → 완전 유휴(재배치·반짝임 0)
       seenRef.current.add(next.id);
-      if (slotsRef.current.length < WALL_LIMIT) {
+      if (slotsRef.current.length < wallLimitRef.current) {
         slotsRef.current = [...slotsRef.current, next]; // 채움 단계 — 다음 빈 칸
       } else {
         slotsRef.current = slotsRef.current.slice();
         slotsRef.current[ptrRef.current] = next; // 순환 교체 — 가장 오래된 칸부터
-        ptrRef.current = (ptrRef.current + 1) % WALL_LIMIT;
+        ptrRef.current = (ptrRef.current + 1) % wallLimitRef.current;
       }
       setSlots([...slotsRef.current]);
     };
@@ -160,6 +178,7 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
         {/* Header */}
         <div className="mb-6 flex items-start justify-between gap-4">
           <div>
+            <div className="mb-1.5"><Badge variant="primary">{TYPE_LABELS[question?.type] || '주관식'}</Badge></div>
             {title && <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight leading-tight mb-1">{title}</h2>}
             <div className="flex items-center gap-3 text-sm text-slate-400 dark:text-slate-500">
               <span className="flex items-center gap-1"><Users size={14} />{sorted.length}명 응답</span>
@@ -246,8 +265,8 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
           </div>
         )}
 
-        {/* 더보기 / 접기 — WALL_LIMIT 초과 시에만 */}
-        {sorted.length > WALL_LIMIT && (
+        {/* 더보기 / 접기 — wallLimit 초과 시에만 */}
+        {sorted.length > wallLimit && (
           <div className="mt-5 text-center">
             <button
               onClick={toggleExpanded}
