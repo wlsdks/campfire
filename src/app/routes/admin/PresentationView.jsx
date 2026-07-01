@@ -226,6 +226,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
       currentQuestion: qId, currentMode: mode,
       [`questions/${qId}/activatedAt`]: Date.now(),
       [`questions/${qId}/revealedAt`]: null,
+      timer: null, // 이전 질문 타이머 잔존 → 다음 질문 학생 잠금 전파 방지
     };
     if (q.type === 'imageSlide') updates[`questions/${qId}/currentSlide`] = 0;
     if (q.type === 'hintQuiz') updates[`questions/${qId}/revealedHints`] = 0;

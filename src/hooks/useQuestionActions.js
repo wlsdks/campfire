@@ -80,6 +80,8 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       // 모든 질문 유형: 활성화 시 revealedAt 초기화
       updates[`questions/${qId}/activatedAt`] = getNow();
       updates[`questions/${qId}/revealedAt`] = null;
+      // 이전 질문의 타이머 잔존 시 다음 질문까지 "시간 종료" 잠금이 전파되던 버그 — 전환 시 정리
+      updates.timer = null;
 
       if (isQuizQuestion(question)) {
         updates[`questions/${qId}/awardedAt`] = null;

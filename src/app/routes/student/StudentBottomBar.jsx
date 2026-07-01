@@ -193,25 +193,14 @@ export default memo(function StudentBottomBar({ sessionId }) {
                 aria-label={isRaised ? '손 내리기' : '손들기'}
                 className={isRaised ? BTN_ACTIVE : BTN_DEFAULT}
               >
-                {/* Pulse ring when raised */}
-                <AnimatePresence>
-                  {isRaised && (
-                    <motion.span
-                      key="ring"
-                      initial={{ opacity: 0.6, scale: 0.8 }}
-                      animate={{ opacity: 0, scale: 1.8 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 1.2, repeat: Infinity, ease: 'easeOut' }}
-                      className="absolute inset-0 rounded-xl bg-slate-900 dark:bg-slate-100 pointer-events-none"
-                    />
-                  )}
-                </AnimatePresence>
+                {/* 든 상태 표시는 BTN_ACTIVE 색으로 충분 — 무한 pulse ring은 산만해 제거,
+                    손 흔들기 모션은 드는 순간 1회만 */}
                 <motion.div
                   animate={isRaised
                     ? { rotate: [0, -18, 14, -10, 8, 0], y: [0, -2, 0] }
                     : { rotate: 0, y: 0 }}
                   transition={isRaised
-                    ? { duration: 0.7, repeat: Infinity, repeatDelay: 2.5, ease: 'easeInOut' }
+                    ? { duration: 0.7, ease: 'easeInOut' }
                     : { type: 'spring', stiffness: 300, damping: 25 }}
                 >
                   <Hand size={22} />
