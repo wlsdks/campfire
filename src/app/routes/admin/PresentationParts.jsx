@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, QrCode, X, Copy, Check, Hand, MessageSquare, ChevronDown, Trophy, Medal, Ticket, Coffee, Award, HelpCircle, UserPlus, Zap, Timer } from 'lucide-react';
 import { ref, update } from 'firebase/database';
@@ -280,16 +280,28 @@ const PRESENT_MODES = [
   { mode: 'awards', label: '시상식', icon: Award },
 ];
 
-export function PresentModeMenu({ sessionId, currentMode }) {
+export function PresentModeMenu({ sessionId, currentMode, currentQuestion }) {
   const [open, setOpen] = useState(false);
+  // 특수 모드 진입 시 직전 질문/모드 기억 — "질문으로 돌아가기"가 실제로 그 질문을 복원.
+  // (switchMode가 currentQuestion을 null로 지우므로 기억 없이는 대기화면으로만 떨어짐)
+  const prevQuestionRef = useRef(null);
 
   async function switchMode(mode) {
+    if (['poll', 'quiz'].includes(currentMode) && currentQuestion) {
+      prevQuestionRef.current = { q: currentQuestion, m: currentMode };
+    }
     await update(ref(db, `sessions/${sessionId}`), { currentMode: mode, currentQuestion: null });
     setOpen(false);
   }
 
   async function backToQuestion() {
-    await update(ref(db, `sessions/${sessionId}`), { currentMode: 'waiting' });
+    const prev = prevQuestionRef.current;
+    if (prev) {
+      // activatedAt은 유지(votes 보존) — 화면만 해당 질문으로 복귀
+      await update(ref(db, `sessions/${sessionId}`), { currentMode: prev.m, currentQuestion: prev.q });
+    } else {
+      await update(ref(db, `sessions/${sessionId}`), { currentMode: 'waiting' });
+    }
     setOpen(false);
   }
 
@@ -328,7 +340,7 @@ export function PresentModeMenu({ sessionId, currentMode }) {
               className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700"
             >
               <X size={14} />
-              질문으로 돌아가기
+              {prevQuestionRef.current ? '질문으로 돌아가기' : '대기 화면으로'}
             </button>
           </div>
         )}

@@ -388,7 +388,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
       </div>
 
       {/* 좌측 상단 — 모드 전환 (알림 토글 옆) */}
-      <PresentModeMenu sessionId={sessionId} currentMode={currentMode} />
+      <PresentModeMenu sessionId={sessionId} currentMode={currentMode} currentQuestion={session?.currentQuestion} />
     </div>
   );
 }
