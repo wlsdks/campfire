@@ -4,6 +4,7 @@ import StudentHeader from './StudentHeader';
 import StudentBottomBar from './StudentBottomBar';
 import WaitingPage from './WaitingPage';
 import ActivePollView from './ActivePollView';
+import StudentResultCard from './StudentResultCard';
 
 const LazyLeaderboardPage = lazy(() => import('./LeaderboardPage'));
 const LazySessionEndedPage = lazy(() => import('./SessionEndedPage'));
@@ -12,7 +13,6 @@ const LazyFocusOverlay = lazy(() => import('@/features/session/components/FocusO
 const LazyComprehensionCheck = lazy(() => import('@/features/session/components/ComprehensionCheck'));
 const LazyQuickSurvey = lazy(() => import('@/features/session/components/QuickSurvey'));
 const LazyGroupDiscussion = lazy(() => import('@/features/session/components/GroupDiscussion'));
-const LazyCombinedRanking = lazy(() => import('@/features/quiz/components/CombinedRanking'));
 const LazyQARanking = lazy(() => import('@/features/class-questions/components/QARanking'));
 const LazyJoinShow = lazy(() => import('@/features/games/components/JoinShow'));
 
@@ -48,12 +48,12 @@ export function VoteModeContent({
     );
   }
   if (currentMode === 'combinedRanking') {
+    // 학생 단말은 votes가 본인 것만이라 전체 순위 계산 불가 → 본인 결과만 보여주고 전자칠판 안내.
     return (
       <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 px-4 pt-20 pb-[calc(10rem+env(safe-area-inset-bottom))]">
         <StudentHeader sessionId={sessionId} />
-        <Suspense fallback={<SuspenseFallback />}>
-          <LazyCombinedRanking session={session} />
-        </Suspense>
+        <StudentResultCard session={session} />
+        <StudentBottomBar sessionId={sessionId} />
       </div>
     );
   }
