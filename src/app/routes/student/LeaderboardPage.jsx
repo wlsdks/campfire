@@ -12,7 +12,8 @@ import { getParticipantId } from '@/lib/participant';
 function MyRankCard({ rank, entry, total }) {
   if (!entry) return null;
 
-  const pct = total > 1 ? Math.round(((total - rank) / (total - 1)) * 100) : 100;
+  // 상위 % = 내 순위/전체 (1위·301명 → 상위 1%). 기존 식은 역산이라 1위가 '상위 100%'로 표시되던 버그.
+  const pct = Math.max(1, Math.ceil((rank / total) * 100));
 
   return (
     <motion.div

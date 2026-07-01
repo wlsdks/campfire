@@ -163,12 +163,19 @@ export default memo(function VoteConfirm({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.1, duration: 0.25 }}
-            className="text-sm text-slate-400 dark:text-slate-500 flex items-center justify-center gap-1"
+            className="text-sm text-slate-400 dark:text-slate-500"
           >
             {waiting ? waitingDescription : submittedDescription}
-            {waiting && (
-              <span className="flex gap-0.5 ml-0.5">
-                {[0, 1, 2].map((i) => (
+          </motion.p>
+          {/* 대기 dots — 문장 꼬리에 붙어 어색하던 것을 아래 중앙으로 분리 */}
+          {waiting && (
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.15 }}
+              className="flex justify-center gap-1 pt-2"
+            >
+              {[0, 1, 2].map((i) => (
                   <motion.span
                     key={i}
                     className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500"
@@ -176,9 +183,8 @@ export default memo(function VoteConfirm({
                     transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
                   />
                 ))}
-              </span>
-            )}
-          </motion.p>
+            </motion.span>
+          )}
         </div>
 
         {/* Selected answer pill */}
