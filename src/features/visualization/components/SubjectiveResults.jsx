@@ -138,21 +138,22 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
             janky해서 flex-wrap 사용. 기본은 스크롤 없이 최신 WALL_LIMIT개, 더보기로 전체 열람.
             기본 모드는 ~18개만 렌더 → 약한 노트북 DOM 부담 없음. */}
         <div className={`flex flex-wrap gap-3 content-start ${expanded ? 'max-h-[64vh] overflow-y-auto scrollbar-hide pr-1' : ''}`}>
-          <AnimatePresence initial={false}>
+          <AnimatePresence initial={false} mode="popLayout">
             {(expanded ? sorted : sorted.slice(0, WALL_LIMIT)).map((vote) => {
               const grade = grades[vote.id];
               return (
                 <motion.button
                   key={vote.id}
                   layout
-                  initial={{ opacity: 0, scale: 0.6 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.85, transition: { duration: 0.18 } }}
-                  // layout: 부드러운 슬라이드(밀림) / scale: 통통 팝 / opacity: 페이드
+                  // 새 답변은 왼쪽에서 스윽 들어오고(옆으로 미는 느낌), 나머지는 크리스프한
+                  // easeOut 슬라이드로 밀림(spring 오버슈트·scale 팝 제거 — 빠르게 쌓여도 '들리는' 겹침 없음).
+                  initial={{ opacity: 0, x: -22 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, transition: { duration: 0.12 } }}
                   transition={{
-                    layout: { type: 'spring', stiffness: 340, damping: 30 },
-                    scale: { type: 'spring', stiffness: 460, damping: 20 },
-                    opacity: { duration: 0.2 },
+                    layout: { duration: 0.26, ease: [0.33, 1, 0.68, 1] },
+                    x: { duration: 0.26, ease: [0.33, 1, 0.68, 1] },
+                    opacity: { duration: 0.18 },
                   }}
                   onClick={() => setSelected(vote)}
                   className="w-full sm:w-[calc(50%-0.375rem)] xl:w-[calc(33.333%-0.5rem)] h-[104px] overflow-hidden text-left rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 hover:border-slate-300 dark:hover:border-slate-600 transition-colors duration-150"
