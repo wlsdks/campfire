@@ -89,8 +89,9 @@ export default function StudentHeader({ sessionId }) {
         aria-label="Pick 학생 헤더"
         className="fixed top-0 left-0 right-0 z-20 bg-white dark:bg-slate-800"
       >
-        <div className="flex items-center justify-between px-5 py-4 max-w-[620px] mx-auto">
-          <div className="flex items-center gap-2.5">
+        {/* 393px 폰에서 점수·티켓 칩 등장 시 줄바꿈 방지 — 간격 축소 + nowrap */}
+        <div className="flex items-center justify-between px-4 py-4 max-w-[620px] mx-auto">
+          <div className="flex items-center gap-2 shrink-0">
             <div className="relative">
               <PickMascot size="xs" />
               {/* 연결 상태 dot — emerald 연결 / amber 끊김 (debounced).
@@ -118,16 +119,16 @@ export default function StudentHeader({ sessionId }) {
             )}
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
             {totalScore > 0 && (
               <motion.span
                 key="score"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1"
+                className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1 whitespace-nowrap tabular-nums"
               >
-                <Trophy size={14} className="text-slate-500 dark:text-slate-400" />
+                <Trophy size={14} className="text-slate-500 dark:text-slate-400 shrink-0" />
                 <HeaderScore value={totalScore} />
               </motion.span>
             )}
@@ -137,7 +138,7 @@ export default function StudentHeader({ sessionId }) {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
-                className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1"
+                className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1 whitespace-nowrap tabular-nums"
               >
                 <Ticket size={14} className="text-slate-500 dark:text-slate-400" />
                 {tickets}
@@ -148,7 +149,7 @@ export default function StudentHeader({ sessionId }) {
               onClick={toggleMute}
               aria-label={muted ? '알림음 켜기' : '알림음 끄기'}
               aria-pressed={!muted}
-              className="w-10 h-10 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150"
+              className="w-8 h-8 shrink-0 flex items-center justify-center rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors duration-150"
             >
               {muted
                 ? <VolumeOff size={16} />
