@@ -29,6 +29,10 @@ export function buildQuestionData(type, fields = {}) {
   if (type === 'fillinblank') {
     data.correctAnswer = correctAnswer?.trim() || '';
   }
+  if (type === 'shortAnswer') {
+    data.correctAnswer = correctAnswer?.trim() || '';
+    if (acceptableAnswers?.length > 0) data.acceptableAnswers = acceptableAnswers;
+  }
   if (type === 'ox') {
     data.correctAnswer = correctAnswer || 'O';
   }

@@ -161,6 +161,58 @@ export function FillBlankSection({ title, correctAnswer, setCorrectAnswer, setLo
   );
 }
 
+export function ShortAnswerSection({ correctAnswer, setCorrectAnswer, acceptableAnswers, setAcceptableAnswers, setLocalError }) {
+  const charCount = Array.from((correctAnswer || '').replace(/\s/g, '')).length;
+  function addAcceptable() { if (acceptableAnswers.length < 5) setAcceptableAnswers(prev => [...prev, '']); }
+  function removeAcceptable(index) { setAcceptableAnswers(prev => prev.filter((_, i) => i !== index)); }
+  return (
+    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}
+      exit={{ opacity: 0, height: 0 }} className={GAP}>
+      <div className="rounded-xl border border-slate-200 dark:border-slate-600 p-3 space-y-3">
+        <div>
+          <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">정답</p>
+          <input value={correctAnswer}
+            onChange={(e) => { setCorrectAnswer(e.target.value); setLocalError(null); }}
+            placeholder="정답 (예: 블렌디드 러닝)" aria-label="단답 정답"
+            maxLength={50}
+            className={`${INPUT} py-2.5`} />
+          <p className="text-[11px] text-slate-400 mt-1.5">
+            공개 전 전자칠판엔 <span className="font-semibold text-slate-500 dark:text-slate-400">{charCount > 0 ? '○'.repeat(Math.min(charCount, 12)) : '○○○'}</span> 처럼 글자수만 표시돼요{charCount > 0 ? ` (${charCount}글자)` : ''}. 대소문자·띄어쓰기는 무시하고 채점합니다.
+          </p>
+        </div>
+        <div>
+          <div className="flex items-center justify-between mb-1.5">
+            <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">허용 답변 <span className="normal-case font-normal">(선택, 최대 5개)</span></p>
+            {acceptableAnswers.length < 5 && (
+              <button onClick={addAcceptable}
+                className="text-xs font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 flex items-center gap-0.5 transition-colors duration-150">
+                <Plus size={12} /> 추가
+              </button>
+            )}
+          </div>
+          <p className="text-[11px] text-slate-400 mb-2">정답과 다른 표현도 정답 인정 (예: "대한민국", "한국")</p>
+          {acceptableAnswers.length > 0 && (
+            <div className="space-y-1.5">
+              {acceptableAnswers.map((ans, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <input value={ans}
+                    onChange={(e) => { const next = [...acceptableAnswers]; next[i] = e.target.value; setAcceptableAnswers(next); }}
+                    placeholder="허용할 다른 표현" aria-label={`허용 답변 ${i + 1}`}
+                    maxLength={50}
+                    className={`flex-1 ${INPUT} py-2`} />
+                  <button onClick={() => removeAcceptable(i)}
+                    className="p-1 rounded-lg text-slate-300 dark:text-slate-600 hover:text-red-500 transition-colors duration-150 active:scale-90"
+                    aria-label="허용 답변 삭제"><X size={14} /></button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 export function OXAnswerSection({ correctAnswer, setCorrectAnswer, setLocalError }) {
   return (
     <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}

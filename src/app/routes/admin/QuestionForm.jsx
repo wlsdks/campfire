@@ -15,6 +15,7 @@ import {
   QuizSettingsSection,
   MysteryBoxSection,
   HintQuizSection,
+  ShortAnswerSection,
 } from './QuestionFormSections';
 
 const INPUT = 'w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors duration-150';
@@ -47,6 +48,7 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
   const isMysteryBox = type === 'mysteryBox';
   const isHintQuiz = type === 'hintQuiz';
   const isSubjective = type === 'subjective';
+  const isShortAnswer = type === 'shortAnswer';
 
   async function handleAdd() {
     if (!title.trim()) { setLocalError('질문 내용을 입력해주세요.'); return; }
@@ -58,6 +60,7 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
     if ((type === 'quiz' || type === 'choice') && !correctAnswer) { setLocalError('정답을 선택해주세요.'); return; }
     if (type === 'ox' && !correctAnswer) { setLocalError('정답을 선택해주세요.'); return; }
     if (isMysteryBox && !correctAnswer.trim()) { setLocalError('정답을 입력해주세요.'); return; }
+    if (isShortAnswer && !correctAnswer.trim()) { setLocalError('정답을 입력해주세요.'); return; }
     if (isHintQuiz && !correctAnswer.trim()) { setLocalError('정답을 입력해주세요.'); return; }
     if (isHintQuiz && hints.filter(h => h.trim()).length === 0) { setLocalError('최소 1개의 힌트가 필요합니다.'); return; }
     if (type === 'imageSlide' && slideImages.length === 0) { setLocalError('최소 1장의 이미지가 필요합니다.'); return; }
@@ -73,6 +76,10 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
     }
     if (isHintQuiz) {
       submitData.hints = hints.filter(h => h.trim());
+      const validAcceptable = acceptableAnswers.filter(a => a.trim());
+      if (validAcceptable.length > 0) submitData.acceptableAnswers = validAcceptable;
+    }
+    if (isShortAnswer) {
       const validAcceptable = acceptableAnswers.filter(a => a.trim());
       if (validAcceptable.length > 0) submitData.acceptableAnswers = validAcceptable;
     }
@@ -162,6 +169,11 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
       <AnimatePresence>
         {isFillInBlank && <FillBlankSection title={title} correctAnswer={correctAnswer}
           setCorrectAnswer={setCorrectAnswer} setLocalError={setLocalError} />}
+      </AnimatePresence>
+      <AnimatePresence>
+        {isShortAnswer && <ShortAnswerSection correctAnswer={correctAnswer}
+          setCorrectAnswer={setCorrectAnswer} acceptableAnswers={acceptableAnswers}
+          setAcceptableAnswers={setAcceptableAnswers} setLocalError={setLocalError} />}
       </AnimatePresence>
       <AnimatePresence>
         {isChoiceLike && <CorrectAnswerSection options={options} correctAnswer={correctAnswer}

@@ -11,6 +11,7 @@ import ScaleChart from './ScaleChart';
 import DebateChart from './DebateChart';
 import RankingChart from './RankingChart';
 import FillBlankChart from './FillBlankChart';
+import ShortAnswerChart from './ShortAnswerChart';
 import CheckProgress from './CheckProgress';
 import MysteryBoxPresenter from './MysteryBoxPresenter';
 import HintQuizPresenter from './HintQuizPresenter';
@@ -202,6 +203,14 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false, 
               sessionId={sessionId}
               questionId={currentQId}
               title={question.title}
+              correctAnswer={question.correctAnswer}
+              revealed={answerRevealed}
+            />
+          )}
+          {question.type === 'shortAnswer' && (
+            <ShortAnswerChart
+              sessionId={sessionId}
+              questionId={currentQId}
               correctAnswer={question.correctAnswer}
               revealed={answerRevealed}
             />

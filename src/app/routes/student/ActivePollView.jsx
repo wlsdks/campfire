@@ -10,6 +10,7 @@ import ScaleVoter from '@/features/voting/components/ScaleVoter';
 import DebateVoter from '@/features/voting/components/DebateVoter';
 import RankingVoter from '@/features/voting/components/RankingVoter';
 import FillBlankVoter from '@/features/voting/components/FillBlankVoter';
+import ShortAnswerVoter from '@/features/voting/components/ShortAnswerVoter';
 import CheckVoter from '@/features/voting/components/CheckVoter';
 import MysteryBoxVoter from '@/features/voting/components/MysteryBoxVoter';
 import HintQuizVoter from '@/features/voting/components/HintQuizVoter';
@@ -183,6 +184,11 @@ export default memo(function ActivePollView({
                 question.revealedAt && question.correctAnswer
                   ? <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote} />
                   : <FillBlankVoter sessionId={sessionId} questionId={questionId} title={question.title} correctAnswer={question.correctAnswer} disabled={votingLocked} />
+              )}
+              {question.type === 'shortAnswer' && (
+                question.revealedAt && question.correctAnswer
+                  ? <AnswerRevealCard correctAnswer={question.correctAnswer} myAnswer={myVote} />
+                  : <ShortAnswerVoter sessionId={sessionId} questionId={questionId} disabled={votingLocked} />
               )}
               {question.type === 'check' && (
                 <CheckVoter sessionId={sessionId} questionId={questionId} disabled={votingLocked} />
