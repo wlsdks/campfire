@@ -2,7 +2,7 @@
   "rules": {
     "admins": {
       ".read": true,
-      ".write": false,
+      ".write": true,
       "$uid": {
         ".validate": "newData.hasChild('username') && newData.hasChild('passwordHash')",
         "username": { ".validate": "newData.isString() && newData.val().length >= 2 && newData.val().length <= 20" },
