@@ -1,4 +1,4 @@
-import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform, animate } from 'framer-motion';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Trophy, Ticket, Volume2, VolumeOff, Sun, Moon, Users } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
@@ -75,6 +75,18 @@ export default function StudentHeader({ sessionId }) {
     });
   }, []);
 
+  // 티켓 툴팁 — 탭(모바일)/호버(데스크탑)로 용도 안내, 바깥 터치 시 닫기
+  const [ticketTip, setTicketTip] = useState(false);
+  const ticketTipRef = useRef(null);
+  useEffect(() => {
+    if (!ticketTip) return;
+    const onOutside = (e) => {
+      if (ticketTipRef.current && !ticketTipRef.current.contains(e.target)) setTicketTip(false);
+    };
+    document.addEventListener('pointerdown', onOutside);
+    return () => document.removeEventListener('pointerdown', onOutside);
+  }, [ticketTip]);
+
   const handleChangeNickname = useCallback(() => {
     clearSessionJoined(sessionId);
     window.dispatchEvent(new CustomEvent('pick:change-nickname'));
@@ -133,16 +145,44 @@ export default function StudentHeader({ sessionId }) {
               </motion.span>
             )}
             {tickets > 0 && (
-              <motion.span
-                key="tickets"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
-                className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1 whitespace-nowrap tabular-nums"
-              >
-                <Ticket size={14} className="text-slate-500 dark:text-slate-400" />
-                {tickets}
-              </motion.span>
+              <span className="relative" ref={ticketTipRef}>
+                <motion.button
+                  key="tickets"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
+                  whileTap={{ scale: 0.94 }}
+                  onClick={() => setTicketTip((v) => !v)}
+                  onMouseEnter={() => setTicketTip(true)}
+                  onMouseLeave={() => setTicketTip(false)}
+                  aria-label={`티켓 ${tickets}장 — 추첨 응모권`}
+                  className="text-sm font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1 whitespace-nowrap tabular-nums"
+                >
+                  <Ticket size={14} className="text-slate-500 dark:text-slate-400" />
+                  {tickets}
+                </motion.button>
+                <AnimatePresence>
+                  {ticketTip && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -4, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -4, scale: 0.96 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute top-full right-0 mt-2 w-56 z-40 rounded-xl bg-slate-900 text-white shadow-xl ring-1 ring-white/15 px-3.5 py-3 text-left"
+                    >
+                      <p className="text-[13px] font-bold flex items-center gap-1.5 mb-1">
+                        <Ticket size={13} className="text-amber-400" />추첨 응모권
+                      </p>
+                      <p className="text-xs text-slate-300 leading-relaxed">
+                        많이 모을수록 추첨에서 당첨 확률이 올라가요!
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-1.5">
+                        퀴즈 참여 +1장 · 정답 +2장
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </span>
             )}
             <motion.button
               whileTap={{ scale: 0.9 }}
