@@ -21,6 +21,7 @@ const SECONDARY_FIELDS = [
   'gameState',
   'persistentAssignmentId',
   'activeAssignmentId',
+  'requireEmployeeId',
 ];
 
 /**
