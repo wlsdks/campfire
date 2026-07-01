@@ -95,7 +95,7 @@ export default function SubmissionLanding({
               onChange={(e) => onLookupPinChange(e.target.value.replace(/\D/g, '').slice(0, 4))}
               placeholder="조회용 비밀번호 (숫자 4자리)"
               maxLength={4}
-              onKeyDown={(e) => e.key === 'Enter' && onResultLookup()}
+              onKeyDown={(e) => e.key === 'Enter' && !e.nativeEvent.isComposing && onResultLookup()}
               className={`w-full bg-white dark:bg-slate-800 border rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 transition-all tracking-[0.3em] ${
                 resultLookupError ? 'border-red-400 focus:ring-red-500/20' : 'border-slate-200 dark:border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500'
               }`}

@@ -155,7 +155,7 @@ export default function QuestionCard({ question: q, index, pid, nickname, role, 
                   type="text"
                   value={answerText}
                   onChange={(e) => setAnswerText(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handlePostAnswer()}
+                  onKeyDown={(e) => e.key === 'Enter' && !e.nativeEvent.isComposing && handlePostAnswer()}
                   placeholder="답변 작성..."
                   maxLength={500}
                   className="flex-1 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg px-3 py-2 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all"

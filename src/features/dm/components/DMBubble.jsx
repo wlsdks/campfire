@@ -242,7 +242,7 @@ export default function DMBubble({ activeDMs, activeDM, senderName, onSendMessag
                 )}
                 <div className="flex items-center gap-2 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] sm:py-3 border-t border-slate-100 dark:border-slate-700 shrink-0">
                   <input type="text" value={inputText} onChange={(e) => setInputText(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+                    onKeyDown={(e) => { if (e.key === 'Enter' && !e.nativeEvent.isComposing && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
                     placeholder="메시지를 입력하세요" aria-label="도움 요청 메시지" maxLength={200} autoFocus
                     className="flex-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl px-4 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:border-slate-400 focus:bg-white dark:focus:bg-slate-600 transition-colors duration-150" />
                   <button onClick={handleSend} disabled={!inputText.trim() || sending}

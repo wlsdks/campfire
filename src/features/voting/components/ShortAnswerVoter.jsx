@@ -75,7 +75,7 @@ export default memo(function ShortAnswerVoter({ sessionId, questionId, disabled 
           <input
             type="text"
             value={answer}
-            onChange={(e) => setAnswer(e.target.value.slice(0, 30))}
+            onChange={(e) => setAnswer([...e.target.value].slice(0, 30).join(''))}
             placeholder="답을 입력하세요"
             aria-label="단답 입력"
             enterKeyHint="done"
@@ -85,7 +85,7 @@ export default memo(function ShortAnswerVoter({ sessionId, questionId, disabled 
             autoFocus
           />
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-300 dark:text-slate-500 font-medium tabular-nums">
-            {answer.length}/30
+            {[...answer].length}/30
           </span>
         </div>
 

@@ -181,7 +181,7 @@ export default memo(function FillBlankVoter({ sessionId, questionId, title, corr
           <input
             type="text"
             value={answer}
-            onChange={(e) => setAnswer(e.target.value.slice(0, 30))}
+            onChange={(e) => setAnswer([...e.target.value].slice(0, 30).join(''))}
             placeholder="빈칸에 들어갈 답을 입력하세요"
             aria-label="빈칸 답변"
             enterKeyHint="done"
@@ -190,7 +190,7 @@ export default memo(function FillBlankVoter({ sessionId, questionId, title, corr
             autoFocus
           />
           <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-slate-300 dark:text-slate-500 font-medium tabular-nums">
-            {answer.length}/30
+            {[...answer].length}/30
           </span>
         </div>
 

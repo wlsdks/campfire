@@ -102,7 +102,7 @@ export default function ClassQABoard({ sessionId, showInput = true, role, isAdmi
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handlePostQuestion()}
+              onKeyDown={(e) => e.key === 'Enter' && !e.nativeEvent.isComposing && handlePostQuestion()}
               placeholder="궁금한 점을 자유롭게 질문하세요"
               maxLength={200}
               className="flex-1 bg-slate-50 dark:bg-slate-700 border-2 border-slate-200 dark:border-slate-600 rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 focus:bg-white dark:focus:bg-slate-600 transition-all"

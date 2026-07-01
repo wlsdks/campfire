@@ -254,7 +254,7 @@ export default function StaffCourseDashboard({ adminUser, onSelectSession, onLog
             type="text"
             value={staffNickname}
             onChange={(e) => setStaffNickname(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleNicknameConfirm()}
+            onKeyDown={(e) => e.key === 'Enter' && !e.nativeEvent.isComposing && handleNicknameConfirm()}
             placeholder={adminUser?.displayName || '닉네임'}
             maxLength={10}
             autoFocus

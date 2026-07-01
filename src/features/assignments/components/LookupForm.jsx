@@ -39,7 +39,7 @@ export default function LookupForm({ assignmentId, onFound }) {
         <input type="password" inputMode="numeric" pattern="[0-9]*" value={pin}
           onChange={(e) => { setPin(e.target.value.replace(/\D/g, '').slice(0, 4)); setError(''); }}
           placeholder="••••" maxLength={4}
-          onKeyDown={(e) => e.key === 'Enter' && handleLookup()}
+          onKeyDown={(e) => e.key === 'Enter' && !e.nativeEvent.isComposing && handleLookup()}
           className={`w-full bg-white dark:bg-slate-800 border rounded-xl px-4 py-3.5 text-base text-slate-900 dark:text-slate-100 placeholder:text-slate-300 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 transition-all tracking-[0.3em] ${
             error ? 'border-red-400 focus:ring-red-500/20' : 'border-slate-200 dark:border-slate-700 focus:ring-indigo-500/20 focus:border-indigo-500'
           }`}

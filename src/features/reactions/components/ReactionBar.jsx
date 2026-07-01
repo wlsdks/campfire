@@ -173,8 +173,8 @@ export default function ReactionBar({ sessionId, bubbleSessionId }) {
               ref={bubbleInputRef}
               type="text"
               value={bubbleText}
-              onChange={e => setBubbleText(e.target.value.slice(0, BUBBLE_MAX))}
-              onKeyDown={e => { if (e.key === 'Enter') handleBubbleSend(); if (e.key === 'Escape') setBubbleOpen(false); }}
+              onChange={e => setBubbleText([...e.target.value].slice(0, BUBBLE_MAX).join(''))}
+              onKeyDown={e => { if (e.key === 'Enter' && !e.nativeEvent.isComposing) handleBubbleSend(); if (e.key === 'Escape') setBubbleOpen(false); }}
               placeholder="한마디..."
               maxLength={BUBBLE_MAX}
               className="w-28 bg-transparent text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none"
