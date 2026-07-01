@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, memo, lazy, Suspense } from 'react';
+import { useState, useEffect, useCallback, useRef, memo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, Zap, Hand, MessageSquare, Trophy, Heart, Copy, Check, Ticket, Coffee, UserCircle, Award } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
@@ -114,9 +114,57 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
   // 당첨 결과가 있고, 현재 추첨 모드일 때 인라인으로 표시
   const showGameResult = gameResult && currentMode === 'lottery';
 
+  // 당첨자 본인 풀스크린 연출 — 새 추첨 결과가 뜨는 순간 3.2초 + 진동, 이후 기존 인라인 카드로
+  const [winBlast, setWinBlast] = useState(false);
+  const lastResultRef = useRef(null);
+  useEffect(() => {
+    const key = gameResult?.at || gameResult?.timestamp || (gameResult ? JSON.stringify(gameResult.winners || []) : null);
+    if (!key || key === lastResultRef.current) return;
+    // key 기록은 당첨 확정 시에만 — gameResult가 isWinner 판정보다 먼저 도착하는 틱에서 소모 방지
+    if (isWinner && currentMode === 'lottery') {
+      lastResultRef.current = key;
+      setWinBlast(true);
+      if ('vibrate' in navigator) navigator.vibrate([90, 40, 90, 40, 180]);
+      const t = setTimeout(() => setWinBlast(false), 3200);
+      return () => clearTimeout(t);
+    }
+  }, [gameResult, isWinner, currentMode]);
+
   return (
     <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center p-4 pb-[calc(10rem+env(safe-area-inset-bottom))] pt-20">
       <StudentHeader sessionId={sessionId} />
+
+      {/* 🎉 당첨 풀스크린 블라스트 */}
+      <AnimatePresence>
+        {winBlast && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-slate-950/85 backdrop-blur-sm"
+          >
+            <Suspense fallback={null}><ConfettiBurst /></Suspense>
+            <motion.div
+              initial={{ scale: 0.4, rotate: -12 }}
+              animate={{ scale: [0.4, 1.25, 1], rotate: 0 }}
+              transition={{ type: 'spring', stiffness: 320, damping: 18 }}
+              className="w-28 h-28 rounded-full bg-amber-400 flex items-center justify-center shadow-[0_0_80px_rgba(251,191,36,0.55)]"
+            >
+              <Trophy size={56} className="text-slate-900" />
+            </motion.div>
+            <motion.p
+              initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
+              className="mt-6 text-4xl font-black tracking-tight text-white"
+            >
+              🎉 당첨!
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}
+              className="mt-2 text-base font-medium text-amber-200"
+            >
+              {nickname}님, 축하합니다!
+            </motion.p>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* 상시 과제 — 대기 화면에도 노출되어 학생이 언제든 제출 가능 */}
       {persistentAssignmentId && (
