@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect, useRef, memo } from 'react';
-import { ref, onValue, set, update, serverTimestamp } from 'firebase/database';
+import { ref, onValue, set, update, increment, serverTimestamp } from 'firebase/database';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Loader2, Users, X } from 'lucide-react';
+import { Sparkles, Loader2, Users, X, Star } from 'lucide-react';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
 import { useVotes } from '@/hooks/useVotes';
@@ -17,7 +17,7 @@ function scoreColor(score) {
   return 'text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-700';
 }
 
-function DetailModal({ item, grade, onClose }) {
+function DetailModal({ item, grade, onClose, isAdmin, isSpotlit, onSpotlight }) {
   if (!item) return null;
   return (
     <motion.div
@@ -47,6 +47,20 @@ function DetailModal({ item, grade, onClose }) {
             </div>
             {grade.feedback && <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{grade.feedback}</p>}
           </div>
+        )}
+        {/* 우수 답변 스포트라이트 — 전자칠판에 크게 + 최초 1회 티켓 +3 */}
+        {isAdmin && (
+          <button
+            onClick={() => onSpotlight(item)}
+            className={`mt-5 w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-semibold transition-colors active:scale-[0.98] ${
+              isSpotlit
+                ? 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+                : 'bg-amber-400 hover:bg-amber-300 text-slate-900'
+            }`}
+          >
+            <Star size={15} fill={isSpotlit ? 'none' : 'currentColor'} />
+            {isSpotlit ? '스포트라이트 내리기' : '전자칠판에 스포트라이트 (+티켓 3장)'}
+          </button>
         )}
       </motion.div>
     </motion.div>
@@ -145,6 +159,28 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
     return () => clearInterval(id);
   }, []);
 
+  // 우수 답변 스포트라이트 — question.spotlight로 전 서페이스(전자칠판/발표/대시보드) 동기
+  const spotlight = question?.spotlight || null;
+  const spotAwarded = question?.spotlightAwarded || {};
+  const toggleSpotlight = async (vote) => {
+    const qRef = ref(db, `sessions/${sessionId}/questions/${questionId}`);
+    if (spotlight?.voteId === vote.id) {
+      await update(qRef, { spotlight: null }).catch(() => {});
+    } else {
+      const updates = { spotlight: { voteId: vote.id, pid: vote.id, nickname: vote.nickname || '익명', value: vote.value, at: Date.now() } };
+      const firstTime = !spotAwarded[vote.id];
+      if (firstTime) updates[`spotlightAwarded/${vote.id}`] = true;
+      await update(qRef, updates).catch(() => {});
+      if (firstTime) {
+        // 티켓 +3 (원자적 증가) — 선정 보상, 재선정 시 중복 지급 없음
+        await update(ref(db, `sessions/${sessionId}/scores/${vote.id}`), {
+          tickets: increment(3), nickname: vote.nickname || '익명',
+        }).catch(() => {});
+      }
+    }
+    setSelected(null);
+  };
+
   const gradedCount = Object.keys(grades).length;
   const canGrade = isAdmin && isGradingReady() && modelAnswer && sorted.length > 0 && !loading;
 
@@ -202,6 +238,39 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
         </div>
 
         {error && <p className="mb-3 text-sm text-red-500">{error}</p>}
+
+        <div className="relative">
+        {/* 스포트라이트 오버레이 — 벽 위에 크게, 강사만 닫기 가능 */}
+        <AnimatePresence>
+          {spotlight && (
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="absolute inset-0 z-20 flex items-center justify-center rounded-2xl bg-slate-950/60 backdrop-blur-[2px] p-6"
+            >
+              <motion.div
+                initial={{ scale: 0.9, y: 16, opacity: 0 }} animate={{ scale: 1, y: 0, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+                className="relative w-full max-w-2xl bg-white dark:bg-slate-800 rounded-2xl shadow-2xl ring-2 ring-amber-400/70 px-8 py-7"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="flex items-center gap-1.5 text-amber-500 text-sm font-bold"><Star size={16} fill="currentColor" />우수 답변</span>
+                  <span className="text-xs font-semibold text-slate-400">티켓 +3</span>
+                  {isAdmin && (
+                    <button onClick={() => toggleSpotlight({ id: spotlight.voteId, nickname: spotlight.nickname, value: spotlight.value })}
+                      className="ml-auto text-slate-400 hover:text-slate-600 dark:hover:text-slate-200" aria-label="스포트라이트 내리기">
+                      <X size={18} />
+                    </button>
+                  )}
+                </div>
+                <p className="text-xl md:text-2xl font-bold text-slate-900 dark:text-slate-100 leading-relaxed break-words">“{spotlight.value}”</p>
+                <div className="mt-4 flex items-center gap-2">
+                  <Avatar name={spotlight.nickname} size="sm" />
+                  <span className="text-sm font-medium text-slate-500 dark:text-slate-400">{spotlight.nickname}</span>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* 응답 벽 — 각 칸 위치 고정. 새 답변은 다음 빈 칸/가장 오래된 칸에서 '제자리 크로스페이드'로
             들어오고 그때만 테두리 glow. 재배치·밀림이 없어 어지럽지 않다. 더보기는 같은 높이 안에서 내부 스크롤. */}
@@ -290,10 +359,20 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
             </div>
           </div>
         )}
+        </div>
       </div>
 
       <AnimatePresence>
-        {selected && <DetailModal item={selected} grade={grades[selected.id]} onClose={() => setSelected(null)} />}
+        {selected && (
+          <DetailModal
+            item={selected}
+            grade={grades[selected.id]}
+            onClose={() => setSelected(null)}
+            isAdmin={isAdmin}
+            isSpotlit={spotlight?.voteId === selected.id}
+            onSpotlight={toggleSpotlight}
+          />
+        )}
       </AnimatePresence>
     </>
   );

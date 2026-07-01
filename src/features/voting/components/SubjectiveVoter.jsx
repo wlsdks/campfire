@@ -1,3 +1,4 @@
+import { Star } from 'lucide-react';
 import { useState, useEffect, memo } from 'react';
 import { ref, onValue } from 'firebase/database';
 import { motion } from 'framer-motion';
@@ -56,9 +57,35 @@ export default memo(function SubjectiveVoter({ sessionId, questionId, disabled }
     return () => unsub();
   }, [sessionId, questionId]);
 
-  if (grade && typeof grade.score === 'number') return <GradeCard grade={grade} />;
+  // 내 답변이 스포트라이트로 선정됐는지 — 전자칠판 쇼케이스 + 티켓 보상 안내
+  const [spotlit, setSpotlit] = useState(false);
+  useEffect(() => {
+    if (!sessionId || !questionId) return;
+    const pid = getParticipantId();
+    const unsub = onValue(ref(db, `sessions/${sessionId}/questions/${questionId}/spotlight`), (snap) => {
+      setSpotlit(snap.val()?.pid === pid);
+    });
+    return () => unsub();
+  }, [sessionId, questionId]);
+
+  const spotBanner = spotlit && (
+    <motion.div
+      initial={{ opacity: 0, y: 8, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 24 }}
+      className="w-full rounded-xl bg-amber-50 dark:bg-amber-400/10 ring-1 ring-amber-400/60 px-4 py-3.5 flex items-center gap-3"
+    >
+      <span className="w-9 h-9 rounded-full bg-amber-400 text-slate-900 flex items-center justify-center shrink-0"><Star size={17} fill="currentColor" /></span>
+      <span className="text-sm font-semibold text-amber-700 dark:text-amber-300 leading-snug">
+        내 답변이 전자칠판에 소개되고 있어요! <span className="font-bold">티켓 +3장</span> 🎉
+      </span>
+    </motion.div>
+  );
+
+  if (grade && typeof grade.score === 'number') return <div className="space-y-3">{spotBanner}<GradeCard grade={grade} /></div>;
 
   return (
+    <div className="space-y-3">
+    {spotBanner}
     <TextInput
       sessionId={sessionId}
       questionId={questionId}
@@ -68,5 +95,6 @@ export default memo(function SubjectiveVoter({ sessionId, questionId, disabled }
       multiline
       disabled={disabled}
     />
+    </div>
   );
 });
