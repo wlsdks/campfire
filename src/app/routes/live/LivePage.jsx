@@ -20,6 +20,7 @@ import PickMascot from '@/components/ui/PickMascot';
 
 import { useTheme } from '@/hooks/useTheme';
 import ConnectionBanner from '@/components/ui/ConnectionBanner';
+import EventStats from '@/features/participants/components/EventStats';
 import LiveHeader from './LiveHeader';
 import DrumrollOverlay from '@/components/ui/DrumrollOverlay';
 import LiveParticipation from './LiveParticipation';
@@ -222,9 +223,13 @@ export default function LivePage() {
                 <h2 className="text-xl font-semibold text-slate-500 dark:text-slate-300 tracking-tight">
                   다음 질문을 기다리는 중...
                 </h2>
-                <Badge variant="neutral">
-                  {count}명 접속 중
-                </Badge>
+                {session?.requireEmployeeId ? (
+                  <EventStats participants={onlineList} count={count} variant="presenter" />
+                ) : (
+                  <Badge variant="neutral">
+                    {count}명 접속 중
+                  </Badge>
+                )}
               </motion.div>
             )}
           </AnimatePresence>

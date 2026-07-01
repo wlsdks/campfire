@@ -2,6 +2,7 @@ import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Users, ChevronDown, Copy, Check, Monitor } from 'lucide-react';
 import ParticipantList from '@/features/participants/components/ParticipantList';
+import EventStats from '@/features/participants/components/EventStats';
 import QRCode from '@/components/ui/QRCode';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
 import InstructorCommHub from './InstructorCommHub';
@@ -83,6 +84,9 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
         <motion.span key={count} initial={{ scale: 1.15 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 400, damping: 22 }} className="text-slate-900 dark:text-slate-100 font-bold text-2xl tabular-nums tracking-tight inline-block">{count}</motion.span>
         <span className="text-slate-500 dark:text-slate-400 text-xs">명 접속 중</span>
       </div>
+
+      {/* 기업 행사모드: 사번 등록 통계 */}
+      {session?.requireEmployeeId && <EventStats participants={onlineList} count={count} variant="sidebar" />}
 
       {activeQ && (
         <div className="space-y-1.5">

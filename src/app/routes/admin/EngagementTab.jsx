@@ -110,11 +110,19 @@ export default function EngagementTab({ sessions }) {
           animate={{ opacity: 1, y: 0 }}
           className="space-y-6"
         >
-          <motion.div variants={stagger.container} initial="initial" animate="animate" className="grid grid-cols-3 gap-4 max-sm:gap-3">
-            <SummaryCard label="참여자" value={data.summary.totalStudents} subtitle={`${data.summary.totalQuestions}개 질문`} />
-            <SummaryCard label="평균 참여율" value={`${data.summary.avgEngagement}%`} progress={data.summary.avgEngagement} />
-            <SummaryCard label="완주율" value={`${data.summary.completionRate}%`} subtitle={`${data.summary.fullParticipation}명 전 문항 응답`} />
-          </motion.div>
+          {(() => {
+            const registered = data.students.filter((st) => st.employeeId).length;
+            const isEvent = registered > 0;
+            const regPct = data.summary.totalStudents > 0 ? Math.round((registered / data.summary.totalStudents) * 100) : 0;
+            return (
+              <motion.div variants={stagger.container} initial="initial" animate="animate" className={`grid gap-4 max-sm:gap-3 ${isEvent ? 'grid-cols-2 md:grid-cols-4' : 'grid-cols-3'}`}>
+                <SummaryCard label="참여자" value={data.summary.totalStudents} subtitle={`${data.summary.totalQuestions}개 질문`} />
+                {isEvent && <SummaryCard label="사번 등록" value={registered} subtitle={`등록률 ${regPct}%`} />}
+                <SummaryCard label="평균 참여율" value={`${data.summary.avgEngagement}%`} progress={data.summary.avgEngagement} />
+                <SummaryCard label="완주율" value={`${data.summary.completionRate}%`} subtitle={`${data.summary.fullParticipation}명 전 문항 응답`} />
+              </motion.div>
+            );
+          })()}
 
           <div>
             <div className="flex items-center justify-between mb-4">
