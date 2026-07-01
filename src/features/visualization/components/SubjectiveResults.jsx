@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, memo } from 'react';
+import { useState, useMemo, useEffect, useRef, memo } from 'react';
 import { ref, onValue, set, serverTimestamp } from 'firebase/database';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Loader2, Users, X } from 'lucide-react';
@@ -76,6 +76,53 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
     [voteList]
   );
 
+  // 차분한 append 방식 — 칸 위치는 고정, 새 답변은 다음 빈 칸(왼→오)에 fade-in, 꽉 차면
+  // 가장 오래된 칸부터 순환 교체. 재배치·밀림이 없어 어지럽지 않다. 0.8초에 딱 한 장씩만
+  // 흘리고, '한 번도 안 보여준 진짜 신규'만 테두리 glow(indigo)로 표시 → 새 답변이 명확.
+  const sortedRef = useRef(sorted);
+  sortedRef.current = sorted;
+  const slotsRef = useRef([]);
+  const ptrRef = useRef(0);
+  const seenRef = useRef(new Set()); // 한 번이라도 벽에 올린 답변 id(영구) — 재등장·재반짝 방지
+  const seededRef = useRef(false);
+  const [slots, setSlots] = useState([]);
+
+  // 질문 전환 시 시드 초기화 → 다음 로드에서 다시 씨딩.
+  useEffect(() => {
+    seededRef.current = false;
+  }, [questionId]);
+
+  // 첫 로드(sorted가 처음 채워질 때): 현재 답변 '전체'를 seen 처리하고 최신 WALL_LIMIT개를
+  // 즉시 벽에 깐다. → 리로드로 기존 답변이 한꺼번에 들어와도 반짝이지 않고, 이후 신규만 glow.
+  useEffect(() => {
+    if (seededRef.current || sorted.length === 0) return;
+    seededRef.current = true;
+    const recent = sorted.slice(0, WALL_LIMIT); // newest first
+    slotsRef.current = recent;
+    ptrRef.current = 0;
+    seenRef.current = new Set(sorted.map((v) => v.id));
+    setSlots([...recent]);
+  }, [sorted]);
+
+  useEffect(() => {
+    const step = () => {
+      // '한 번도 안 보여준' 진짜 신규 1개만(sorted는 newest first → 최신부터). 밀려난 옛 답변은 재선택 안 됨.
+      const next = sortedRef.current.find((v) => !seenRef.current.has(v.id));
+      if (!next) return; // 신규 없음 → 완전 유휴(재배치·반짝임 0)
+      seenRef.current.add(next.id);
+      if (slotsRef.current.length < WALL_LIMIT) {
+        slotsRef.current = [...slotsRef.current, next]; // 채움 단계 — 다음 빈 칸
+      } else {
+        slotsRef.current = slotsRef.current.slice();
+        slotsRef.current[ptrRef.current] = next; // 순환 교체 — 가장 오래된 칸부터
+        ptrRef.current = (ptrRef.current + 1) % WALL_LIMIT;
+      }
+      setSlots([...slotsRef.current]);
+    };
+    const id = setInterval(step, 800);
+    return () => clearInterval(id);
+  }, []);
+
   const gradedCount = Object.keys(grades).length;
   const canGrade = isAdmin && isGradingReady() && modelAnswer && sorted.length > 0 && !loading;
 
@@ -133,28 +180,15 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
 
         {error && <p className="mb-3 text-sm text-red-500">{error}</p>}
 
-        {/* 응답 벽 — flex-wrap + 고정 크기 카드 + layout. 새 답변이 index 0로 들어오면
-            나머지 카드가 layout 애니로 부드럽게 밀려남(드르르륵). CSS grid는 layout 애니가
-            janky해서 flex-wrap 사용. 기본은 스크롤 없이 최신 WALL_LIMIT개, 더보기로 전체 열람.
-            기본 모드는 ~18개만 렌더 → 약한 노트북 DOM 부담 없음. */}
-        <div className={`flex flex-wrap gap-3 content-start ${expanded ? 'max-h-[64vh] overflow-y-auto scrollbar-hide pr-1' : ''}`}>
-          <AnimatePresence initial={false} mode="popLayout">
-            {(expanded ? sorted : sorted.slice(0, WALL_LIMIT)).map((vote) => {
+        {/* 응답 벽 — 각 칸 위치 고정. 새 답변은 다음 빈 칸/가장 오래된 칸에서 '제자리 크로스페이드'로
+            들어오고 그때만 테두리 glow. 재배치·밀림이 없어 어지럽지 않다. 더보기는 전체 스크롤. */}
+        {expanded ? (
+          <div className="flex flex-wrap gap-3 content-start max-h-[64vh] overflow-y-auto scrollbar-hide pr-1">
+            {sorted.map((vote) => {
               const grade = grades[vote.id];
               return (
-                <motion.button
+                <button
                   key={vote.id}
-                  layout
-                  // 새 답변은 왼쪽에서 스윽 들어오고(옆으로 미는 느낌), 나머지는 크리스프한
-                  // easeOut 슬라이드로 밀림(spring 오버슈트·scale 팝 제거 — 빠르게 쌓여도 '들리는' 겹침 없음).
-                  initial={{ opacity: 0, x: -22 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, transition: { duration: 0.12 } }}
-                  transition={{
-                    layout: { duration: 0.26, ease: [0.33, 1, 0.68, 1] },
-                    x: { duration: 0.26, ease: [0.33, 1, 0.68, 1] },
-                    opacity: { duration: 0.18 },
-                  }}
                   onClick={() => setSelected(vote)}
                   className="w-full sm:w-[calc(50%-0.375rem)] xl:w-[calc(33.333%-0.5rem)] h-[104px] overflow-hidden text-left rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 hover:border-slate-300 dark:hover:border-slate-600 transition-colors duration-150"
                 >
@@ -164,11 +198,49 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
                     {grade && <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded ml-auto shrink-0 ${scoreColor(grade.score)}`}>{grade.score}점</span>}
                   </div>
                   <p className="text-[15px] text-slate-700 dark:text-slate-200 leading-relaxed break-words line-clamp-2">{vote.value}</p>
-                </motion.button>
+                </button>
               );
             })}
-          </AnimatePresence>
-        </div>
+          </div>
+        ) : (
+          <div className="flex flex-wrap gap-3 content-start">
+            {slots.map((vote, idx) => (
+              <div key={idx} className="relative w-full sm:w-[calc(50%-0.375rem)] xl:w-[calc(33.333%-0.5rem)] h-[104px]">
+                {/* initial={false} → 초기 채움은 반짝임 없이, 이후 새로 들어온 답변만 glow */}
+                <AnimatePresence initial={false}>
+                  {vote && (
+                    <motion.button
+                      key={vote.id}
+                      initial={{ opacity: 0 }}
+                      animate={{
+                        opacity: 1,
+                        boxShadow: [
+                          '0 0 0 0 rgba(99,102,241,0)',
+                          '0 0 16px 2px rgba(99,102,241,0.45)',
+                          '0 0 0 0 rgba(99,102,241,0)',
+                        ],
+                      }}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        opacity: { duration: 0.5, ease: 'easeInOut' },
+                        boxShadow: { duration: 1.5, times: [0, 0.3, 1], ease: 'easeOut' },
+                      }}
+                      onClick={() => setSelected(vote)}
+                      className="absolute inset-0 overflow-hidden text-left rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 hover:border-slate-300 dark:hover:border-slate-600 transition-colors duration-150"
+                    >
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <Avatar name={vote.nickname || '익명'} size="sm" />
+                        <span className="text-xs font-medium text-slate-500 dark:text-slate-400 truncate">{vote.nickname || '익명'}</span>
+                        {grades[vote.id] && <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded ml-auto shrink-0 ${scoreColor(grades[vote.id].score)}`}>{grades[vote.id].score}점</span>}
+                      </div>
+                      <p className="text-[15px] text-slate-700 dark:text-slate-200 leading-relaxed break-words line-clamp-2">{vote.value}</p>
+                    </motion.button>
+                  )}
+                </AnimatePresence>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* 더보기 / 접기 — WALL_LIMIT 초과 시에만 */}
         {sorted.length > WALL_LIMIT && (
