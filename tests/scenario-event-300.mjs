@@ -22,9 +22,14 @@ const firebaseConfig = {
 };
 
 const USER_COUNT = 300;
-const SESSION_ID = 'scn_evt_' + Math.random().toString(36).slice(2, 8);
+// sid=<id> 인자로 고정 세션ID 지정 가능(라이브 관전용). --keep 시 정리 안 함.
+const SID_ARG = (process.argv.find((a) => a.startsWith('sid=')) || '').slice(4);
+const SESSION_ID = SID_ARG || ('scn_evt_' + Math.random().toString(36).slice(2, 8));
+const KEEP = process.argv.includes('--keep');
+const WATCH = process.argv.includes('--watch'); // 관전 페이싱(문항 사이 여유)
 const CHURN_COUNT = 30; // 연결 끊김/재접속 테스트 대상 수
 const Q_COUNT = 10;
+const BASE = 'https://pick.aslan.it.kr';
 
 const ANSWERS = [
   '실습이 정말 유익했어요', '협업하는 부분이 인상 깊었습니다', '발표 자료가 깔끔했어요',
@@ -59,6 +64,11 @@ async function setup() {
     requireEmployeeId: true, questions,
   });
   log(`✅ 이벤트모드 방 생성: ${SESSION_ID} (주관식 ${Q_COUNT}문항)`);
+  console.log('\n' + '━'.repeat(65));
+  console.log('  🖥️  전자칠판(관전):  ' + `${BASE}/live?s=${SESSION_ID}`);
+  console.log('  🧑‍🏫 강사 화면:       ' + `${BASE}/admin?s=${SESSION_ID}`);
+  console.log('  📱 학생 입장:        ' + `${BASE}/?s=${SESSION_ID}`);
+  console.log('━'.repeat(65) + '\n');
 }
 
 async function joinAll() {
@@ -144,13 +154,21 @@ async function interactQuestion(qIdx) {
 async function runScenario() {
   log(`\n💬 주관식 10문항 상호작용(각 문항: 300답변 + 채팅 + 이모티콘 남발)...`);
   for (let q = 0; q < Q_COUNT; q++) {
+    log(`  ▶ 주관식 ${q + 1}/10 활성화 → 300명 답변 + 채팅 + 이모티콘...`);
     await interactQuestion(q);
     log(`  문항 ${q + 1}/10 완료 — 답변 ${results.answer.length}, 채팅 ${results.chat.length}, 리액션 ${results.reaction.length} 누적`);
-    await sleep(400);
+    await sleep(WATCH ? 4000 : 400); // 관전 모드: 전자칠판에서 결과 볼 여유
   }
+  if (WATCH) { await update(ref(dbs[0], `sessions/${SESSION_ID}`), { currentQuestion: null, currentMode: 'waiting' }).catch(() => {}); }
 }
 
 async function cleanup() {
+  if (KEEP) {
+    log(`\n🔒 --keep: 세션 유지(관전용). 나중에 삭제하려면: node tests/scenario-event-300.mjs (또는 수동 remove)`);
+    log(`   현재 세션: ${SESSION_ID} — 300명 online, 답변/채팅/이모티콘 데이터 남아있음`);
+    for (const app of apps) { try { await deleteApp(app); } catch { /* ignore */ } }
+    return;
+  }
   log(`\n🧹 완전 원상복구...`);
   try {
     await remove(ref(dbs[0], `sessions/${SESSION_ID}`));
@@ -169,6 +187,7 @@ async function main() {
   try {
     await setup();
     await joinAll();
+    if (WATCH) { log(`\n👀 전자칠판에서 300명 입장 확인하세요 — 12초 후 시나리오 시작...`); await sleep(12000); }
     conn = await connectionTest();
     await runScenario();
   } catch (e) {

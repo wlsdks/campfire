@@ -31,7 +31,14 @@ const JOIN_WINDOW_MS = 25000;
 const Q_WINDOW_MS = 28000;
 const PARTICIPATION = 0.82;
 
-const QUESTIONS = {
+const SUBJ_ONLY = process.argv.includes('--subjective');
+const QUESTIONS = SUBJ_ONLY ? {
+  q1: { title: '오늘 세션에서 가장 인상 깊었던 점은?', type: 'subjective', order: 0 },
+  q2: { title: '가장 유익했던 실습/활동은 무엇이었나요?', type: 'subjective', order: 1 },
+  q3: { title: '현업에 어떻게 적용하고 싶으신가요?', type: 'subjective', order: 2 },
+  q4: { title: '강사님께 한마디 남겨주세요', type: 'subjective', order: 3 },
+  q5: { title: '다음에 다루면 좋을 주제를 자유롭게 적어주세요', type: 'subjective', order: 4 },
+} : {
   q1: { title: '오늘 세션에서 가장 인상 깊었던 점은?', type: 'subjective', order: 0 },
   q2: { title: '난이도는 어땠나요?', type: 'choice', options: ['너무 쉬움', '적당함', '조금 어려움', '많이 어려움'], order: 1 },
   q3: { title: '현업에 어떻게 적용하고 싶으신가요?', type: 'subjective', order: 2 },

@@ -47,3 +47,7 @@ docs/superpowers/
 /*.jpg
 # 공식 소셜 프리뷰/히어로 이미지는 예외
 !/student-join.png
+
+# Playwright test artifacts
+playwright-report/
+test-results/
