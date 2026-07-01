@@ -133,31 +133,36 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
 
         {error && <p className="mb-3 text-sm text-red-500">{error}</p>}
 
-        {/* 응답 벽 — 기본은 스크롤 없이 최신 WALL_LIMIT개만 3열 그리드로 채우고, 새 답변이 오면
-            오래된 게 밀려나감(rolling). '더보기'를 누르면 전체를 스크롤로 열람.
-            기본 모드는 항상 ~18개만 렌더 → 답변 수백 개여도 약한 노트북 DOM 부담 없음. */}
-        <div className={`grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 ${expanded ? 'max-h-[64vh] overflow-y-auto scrollbar-hide pr-1' : ''}`}>
+        {/* 응답 벽 — flex-wrap + 고정 크기 카드 + layout. 새 답변이 index 0로 들어오면
+            나머지 카드가 layout 애니로 부드럽게 밀려남(드르르륵). CSS grid는 layout 애니가
+            janky해서 flex-wrap 사용. 기본은 스크롤 없이 최신 WALL_LIMIT개, 더보기로 전체 열람.
+            기본 모드는 ~18개만 렌더 → 약한 노트북 DOM 부담 없음. */}
+        <div className={`flex flex-wrap gap-3 content-start ${expanded ? 'max-h-[64vh] overflow-y-auto scrollbar-hide pr-1' : ''}`}>
           <AnimatePresence initial={false}>
             {(expanded ? sorted : sorted.slice(0, WALL_LIMIT)).map((vote) => {
               const grade = grades[vote.id];
               return (
                 <motion.button
                   key={vote.id}
-                  // layout(위치 이동 애니) 미사용 — CSS grid에서 janky하게 우르르 밀리던 것 제거.
-                  // 새 카드만 통통 팝(scale)으로 들어오고, 나머지는 즉시 자리 잡음. exit는 페이드.
-                  initial={{ opacity: 0, scale: 0.7 }}
+                  layout
+                  initial={{ opacity: 0, scale: 0.6 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, transition: { duration: 0.15 } }}
-                  transition={{ type: 'spring', stiffness: 440, damping: 22, opacity: { duration: 0.18 } }}
+                  exit={{ opacity: 0, scale: 0.85, transition: { duration: 0.18 } }}
+                  // layout: 부드러운 슬라이드(밀림) / scale: 통통 팝 / opacity: 페이드
+                  transition={{
+                    layout: { type: 'spring', stiffness: 340, damping: 30 },
+                    scale: { type: 'spring', stiffness: 460, damping: 20 },
+                    opacity: { duration: 0.2 },
+                  }}
                   onClick={() => setSelected(vote)}
-                  className="text-left rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 hover:border-slate-300 dark:hover:border-slate-600 transition-colors duration-150"
+                  className="w-full sm:w-[calc(50%-0.375rem)] xl:w-[calc(33.333%-0.5rem)] h-[104px] overflow-hidden text-left rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 py-3.5 hover:border-slate-300 dark:hover:border-slate-600 transition-colors duration-150"
                 >
                   <div className="flex items-center gap-2 mb-1.5">
                     <Avatar name={vote.nickname || '익명'} size="sm" />
                     <span className="text-xs font-medium text-slate-500 dark:text-slate-400 truncate">{vote.nickname || '익명'}</span>
                     {grade && <span className={`text-[11px] font-bold px-1.5 py-0.5 rounded ml-auto shrink-0 ${scoreColor(grade.score)}`}>{grade.score}점</span>}
                   </div>
-                  <p className="text-[15px] text-slate-700 dark:text-slate-200 leading-relaxed break-words line-clamp-3">{vote.value}</p>
+                  <p className="text-[15px] text-slate-700 dark:text-slate-200 leading-relaxed break-words line-clamp-2">{vote.value}</p>
                 </motion.button>
               );
             })}
