@@ -60,6 +60,7 @@ function getSortedQuestions(questions) {
 
 // Imported from question-types.js but aliased to match existing usage
 import { TYPE_LABELS as QTYPE_LABELS } from '@/lib/question-types';
+import { isAnswerCorrect } from '@/lib/quiz';
 
 /**
  * Exports question-level summary CSV.
@@ -120,7 +121,8 @@ export function exportQuestionSummary(session, participants, filename) {
 
     let correctRate = '';
     if (data.correctAnswer && voteCount > 0) {
-      const correctCount = Object.values(votes).filter((v) => v.value === data.correctAnswer).length;
+      // 텍스트형은 대소문자·띄어쓰기 무시, 객관식은 정확 일치.
+      const correctCount = Object.values(votes).filter((v) => isAnswerCorrect(data, v.value)).length;
       correctRate = Math.round((correctCount / voteCount) * 100);
     }
 

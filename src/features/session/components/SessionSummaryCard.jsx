@@ -5,6 +5,7 @@ import Badge from '@/components/ui/Badge';
 import { useScores } from '@/features/quiz/api/useScores';
 import { useAchievements } from '@/features/quiz/api/useAchievements';
 import { getParticipantId, getNickname } from '@/lib/participant';
+import { isAnswerCorrect } from '@/lib/quiz';
 import CelebrationMascot from './CelebrationMascot';
 
 const ACHIEVEMENT_ICONS = { Sparkle, Flame, CheckCheck, Zap, Crown };
@@ -76,7 +77,7 @@ function useStudentStats(session, sessionId) {
         answered++;
         if (q.correctAnswer) {
           gradable++;
-          const isCorrect = myVote.value === q.correctAnswer;
+          const isCorrect = isAnswerCorrect(q, myVote.value); // 텍스트형 공백·대소문자 무시
           if (isCorrect) correct++;
           if (!isCorrect && myVote.confidence === 'high') confidentWrong++;
         }

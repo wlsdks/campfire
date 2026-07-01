@@ -4,6 +4,7 @@ import { ArrowUpDown, BarChart3, Trophy, Circle, Cloud, MessageSquare, PenLine, 
 import AchievementSummary from '@/features/quiz/components/AchievementSummary';
 import ExportMenu from './ExportMenu';
 import ClassInsightCard from '@/features/report/components/ClassInsightCard';
+import { isAnswerCorrect } from '@/lib/quiz';
 
 const QTYPE_META = {
   choice: { label: '객관식', icon: BarChart3 },
@@ -39,12 +40,8 @@ function getQuestionInsights(questions, participantCount) {
     let correctCount = 0;
 
     if (hasCorrectAnswer && voteCount > 0) {
-      const isFillBlank = q.type === 'fillinblank';
-      const normalizedCA = isFillBlank ? q.correctAnswer.trim().toLowerCase() : q.correctAnswer;
-      correctCount = Object.values(votes).filter((v) => {
-        if (isFillBlank) return (v.value || '').trim().toLowerCase() === normalizedCA;
-        return v.value === q.correctAnswer;
-      }).length;
+      // 텍스트형(빈칸/미스터리/힌트)은 대소문자·띄어쓰기 무시, 객관식은 정확 일치.
+      correctCount = Object.values(votes).filter((v) => isAnswerCorrect(q, v.value)).length;
       correctRate = Math.round((correctCount / voteCount) * 100);
     }
 

@@ -2,6 +2,7 @@ import { memo, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Trophy, Search } from 'lucide-react';
 import { useVotes } from '@/hooks/useVotes';
+import { normalizeAnswer } from '@/lib/utils';
 import Avatar from '@/components/ui/Avatar';
 
 const SPRING = { type: 'spring', stiffness: 300, damping: 25 };
@@ -13,9 +14,9 @@ export default memo(function CorrectAnswerRanking({ sessionId, questionId, corre
 
   const { ranking, myRank } = useMemo(() => {
     if (!correctAnswer) return { ranking: [], myRank: -1 };
-    const allCorrect = [correctAnswer, ...acceptableAnswers].map(a => a.trim().toLowerCase());
+    const allCorrect = [correctAnswer, ...acceptableAnswers].map(normalizeAnswer);
     const correct = voteList
-      .filter(v => allCorrect.includes((v.value || '').trim().toLowerCase()))
+      .filter(v => allCorrect.includes(normalizeAnswer(v.value)))
       .sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0))
       .map((v, i) => ({ rank: i + 1, id: v.id, nickname: v.nickname || `참여자 ${(v.id || '').slice(0, 4)}` }));
     const myIdx = myParticipantId ? correct.findIndex(c => c.id === myParticipantId) : -1;

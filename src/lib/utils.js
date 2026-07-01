@@ -15,6 +15,17 @@ export function safeHttpUrl(url) {
 }
 
 /**
+ * 정답 비교용 정규화 — 자유 입력형(빈칸/미스터리박스/힌트퀴즈) 답변을 비교하기 전에 적용.
+ * 소문자화 + 모든 공백(스페이스·탭·전각공백 U+3000 포함) 제거 → "머신 러닝"과 "머신러닝"을
+ * 같은 답으로 인정한다. 대소문자·띄어쓰기 차이만 흡수하며, 오탈자는 그대로 오답 처리.
+ * @param {string} s
+ * @returns {string}
+ */
+export function normalizeAnswer(s) {
+  return (s || '').toLowerCase().replace(/\s+/g, '');
+}
+
+/**
  * Generate a UUID v4 with fallback for older browsers (Safari <15.3, Android).
  * Uses crypto.randomUUID() when available, falls back to crypto.getRandomValues().
  * @returns {string} UUID v4 string

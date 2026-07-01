@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { getParticipantId } from '@/lib/participant';
+import { isAnswerCorrect } from '@/lib/quiz';
 
 /**
  * Achievement definitions.
@@ -64,7 +65,7 @@ function computeContext(questions, participantId, scores) {
       answered++;
       if (q.correctAnswer) {
         gradable++;
-        if (myVote.value === q.correctAnswer) {
+        if (isAnswerCorrect(q, myVote.value)) { // 텍스트형 공백·대소문자 무시
           correct++;
           currentStreak++;
           if (currentStreak > bestStreak) bestStreak = currentStreak;

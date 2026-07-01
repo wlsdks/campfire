@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { ref, get } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
+import { isAnswerCorrect } from '@/lib/quiz';
 
 export function useRecentQuestions(sessions) {
   const [questions, setQuestions] = useState([]);
@@ -45,12 +46,8 @@ export function useRecentQuestions(sessions) {
             let correctCount = 0;
 
             if (hasCorrectAnswer && responseCount > 0) {
-              const isFillBlank = q.type === 'fillinblank';
-              const normalizedCA = isFillBlank ? q.correctAnswer.trim().toLowerCase() : q.correctAnswer;
-              correctCount = Object.values(votes).filter((v) => {
-                if (isFillBlank) return (v.value || '').trim().toLowerCase() === normalizedCA;
-                return v.value === q.correctAnswer;
-              }).length;
+              // 텍스트형은 대소문자·띄어쓰기 무시, 객관식은 정확 일치.
+              correctCount = Object.values(votes).filter((v) => isAnswerCorrect(q, v.value)).length;
               correctRate = Math.round((correctCount / responseCount) * 100);
             }
 
@@ -59,7 +56,7 @@ export function useRecentQuestions(sessions) {
             if (hasCorrectAnswer && responseCount > 0) {
               const confVotes = Object.values(votes).filter((v) => v.confidence === 'high');
               if (confVotes.length > 0) {
-                const confWrong = confVotes.filter((v) => v.value !== q.correctAnswer).length;
+                const confWrong = confVotes.filter((v) => !isAnswerCorrect(q, v.value)).length;
                 highConfidenceWrongRate = Math.round((confWrong / confVotes.length) * 100);
               }
             }

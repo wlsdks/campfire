@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Medal, Search, Crown, Award } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
 import PickMascot from '@/components/ui/PickMascot';
+import { isAnswerCorrect } from '@/lib/quiz';
 
 const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 
@@ -22,15 +23,11 @@ export default memo(function CombinedRanking({ session }) {
     const scoreMap = {};
 
     Object.values(questions).forEach((q) => {
-      const correctAnswer = q.correctAnswer;
-      if (!correctAnswer) return;
-      const acceptableAnswers = q.acceptableAnswers || [];
-      const allCorrect = [correctAnswer, ...acceptableAnswers].map(a => a.trim().toLowerCase());
+      if (!q.correctAnswer) return;
       const votes = q.votes || {};
 
       Object.entries(votes).forEach(([pid, vote]) => {
-        const val = (vote.value || '').trim().toLowerCase();
-        const isCorrect = allCorrect.includes(val);
+        const isCorrect = isAnswerCorrect(q, vote.value); // 텍스트형은 대소문자·띄어쓰기 무시, 객관식은 정확 일치
         if (!scoreMap[pid]) {
           scoreMap[pid] = { id: pid, nickname: vote.nickname || `참여자 ${pid.slice(0, 4)}`, correct: 0, answered: 0 };
         }

@@ -3,6 +3,7 @@ import { useSession } from '@/features/session/api/useSession';
 import { useScores } from '@/features/quiz/api/useScores';
 import { computeAchievements } from '@/features/quiz/api/useAchievements';
 import { TYPE_LABELS } from '@/lib/question-types';
+import { isAnswerCorrect } from '@/lib/quiz';
 
 /**
  * Loads all data needed for a student's learning report.
@@ -27,7 +28,7 @@ export function useReportData(sessionId, participantId) {
     const questionDetails = questionEntries.map(([qId, q]) => {
       const myVote = q.votes?.[participantId];
       const hasAnswer = !!q.correctAnswer;
-      const isCorrect = hasAnswer && myVote?.value === q.correctAnswer;
+      const isCorrect = hasAnswer && isAnswerCorrect(q, myVote?.value); // 텍스트형 공백·대소문자 무시
 
       if (myVote) answered++;
       if (hasAnswer && myVote) {

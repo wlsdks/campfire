@@ -2,6 +2,7 @@ import { useState, useCallback, useRef } from 'react';
 import { ref, get } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
+import { isAnswerCorrect } from '@/lib/quiz';
 
 /**
  * useEngagementData — 세션별 학생 참여도 데이터를 한 번에 가져옴.
@@ -47,7 +48,7 @@ export function useEngagementData() {
           const vote = q.votes?.[pid];
           if (vote) {
             answered++;
-            if (q.correctAnswer && vote.value === q.correctAnswer) {
+            if (isAnswerCorrect(q, vote.value)) { // 텍스트형 공백·대소문자 무시
               correct++;
             }
           }

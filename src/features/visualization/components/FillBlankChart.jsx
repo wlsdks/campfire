@@ -1,6 +1,7 @@
 import { useMemo, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useVotes } from '@/hooks/useVotes';
+import { normalizeAnswer } from '@/lib/utils';
 import { Check, X } from 'lucide-react';
 
 /** Renders the sentence with the blank highlighted. */
@@ -35,15 +36,15 @@ export default memo(function FillBlankChart({ sessionId, questionId, title, corr
   const { voteList, totalVotes } = useVotes(sessionId, questionId);
 
   const { correctCount, topAnswers } = useMemo(() => {
-    // Map: normalized → { display (first-seen casing), count }
+    // Map: normalized(대소문자·띄어쓰기 무시) → { display (first-seen), count }
     const groupMap = new Map();
     let correct = 0;
-    const normalizedCorrect = (correctAnswer || '').trim().toLowerCase();
+    const normalizedCorrect = normalizeAnswer(correctAnswer);
 
     voteList.forEach((v) => {
       const raw = (v.value || '').trim();
       if (!raw) return;
-      const normalized = raw.toLowerCase();
+      const normalized = normalizeAnswer(raw);
       const existing = groupMap.get(normalized);
       if (existing) {
         existing.count++;
@@ -53,12 +54,12 @@ export default memo(function FillBlankChart({ sessionId, questionId, title, corr
       if (normalizedCorrect && normalized === normalizedCorrect) correct++;
     });
 
-    const sorted = Array.from(groupMap.values())
-      .sort((a, b) => b.count - a.count)
-      .map(({ display, count }) => ({
+    const sorted = Array.from(groupMap.entries())
+      .sort((a, b) => b[1].count - a[1].count)
+      .map(([normalized, { display, count }]) => ({
         answer: display,
         count,
-        isCorrect: normalizedCorrect && display.toLowerCase() === normalizedCorrect,
+        isCorrect: normalizedCorrect && normalized === normalizedCorrect,
       }));
 
     return { correctCount: correct, topAnswers: sorted };

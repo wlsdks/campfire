@@ -1,3 +1,5 @@
+import { normalizeAnswer } from './utils';
+
 export const QUIZ_DEFAULTS = {
   points: 100,
   maxSpeedBonus: 50,
@@ -34,6 +36,32 @@ const QUIZ_EVENT_MAP = Object.fromEntries(
 
 export function isQuizQuestion(question) {
   return question?.type === 'quiz';
+}
+
+// 자유 입력형(학생이 직접 타이핑) — 정답 매칭 시 대소문자·띄어쓰기를 무시한다.
+// 객관식(choice/ox/quiz)은 선택지 정확 일치라 여기 포함하지 않는다.
+const TEXT_ANSWER_TYPES = new Set(['fillinblank', 'mysteryBox', 'hintQuiz', 'shortAnswer']);
+
+export function isTextAnswerType(type) {
+  return TEXT_ANSWER_TYPES.has(type);
+}
+
+/**
+ * 정답 여부 판정(공통). 자유 입력형은 normalizeAnswer로 대소문자·띄어쓰기 무시 + acceptableAnswers
+ * 허용, 그 외(객관식/OX)는 선택지 정확 일치. correctAnswer가 없으면 채점 대상 아님 → false.
+ * @param {object} question
+ * @param {string} value 학생 답변
+ * @returns {boolean}
+ */
+export function isAnswerCorrect(question, value) {
+  if (!question?.correctAnswer) return false;
+  if (isTextAnswerType(question.type)) {
+    const n = normalizeAnswer(value);
+    if (!n) return false;
+    return [question.correctAnswer, ...(question.acceptableAnswers || [])]
+      .some((a) => normalizeAnswer(a) === n);
+  }
+  return value === question.correctAnswer;
 }
 
 export function getQuestionMode(question) {

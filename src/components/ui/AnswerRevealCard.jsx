@@ -1,15 +1,16 @@
 import { memo } from 'react';
 import { motion } from 'framer-motion';
 import { Check, X } from 'lucide-react';
+import { normalizeAnswer } from '@/lib/utils';
 
 /**
  * AnswerRevealCard — 학생 화면에서 정답 공개 시 표시.
- * 정답 + 내가 맞았는지 여부.
+ * 정답 + 내가 맞았는지 여부. (대소문자·띄어쓰기 무시)
  */
 export default memo(function AnswerRevealCard({ correctAnswer, myAnswer }) {
   if (!correctAnswer) return null;
 
-  const isCorrect = myAnswer && correctAnswer.trim().toLowerCase() === (myAnswer || '').trim().toLowerCase();
+  const isCorrect = !!myAnswer && normalizeAnswer(correctAnswer) === normalizeAnswer(myAnswer);
   const hasAnswered = !!myAnswer;
 
   return (
