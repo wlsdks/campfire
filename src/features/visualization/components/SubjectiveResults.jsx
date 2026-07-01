@@ -204,9 +204,13 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
         {error && <p className="mb-3 text-sm text-red-500">{error}</p>}
 
         {/* 응답 벽 — 각 칸 위치 고정. 새 답변은 다음 빈 칸/가장 오래된 칸에서 '제자리 크로스페이드'로
-            들어오고 그때만 테두리 glow. 재배치·밀림이 없어 어지럽지 않다. 더보기는 전체 스크롤. */}
+            들어오고 그때만 테두리 glow. 재배치·밀림이 없어 어지럽지 않다. 더보기는 같은 높이 안에서 내부 스크롤. */}
         {expanded ? (
-          <div className="flex flex-wrap gap-3 content-start max-h-[64vh] overflow-y-auto scrollbar-hide pr-1">
+          /* 확장 시에도 접힌 벽과 '같은 높이' 유지 — 페이지 스크롤 대신 이 안에서만 스크롤 */
+          <div
+            className="flex flex-wrap gap-3 content-start overflow-y-auto scrollbar-hide pr-1"
+            style={{ maxHeight: (wallLimit / 3) * 104 + (wallLimit / 3 - 1) * 12 }}
+          >
             {sorted.map((vote) => {
               const grade = grades[vote.id];
               return (
