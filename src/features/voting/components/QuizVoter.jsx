@@ -10,7 +10,6 @@ import { getNickname, getParticipantId } from '@/lib/participant';
 import { useMyVoteFull } from '@/hooks/useMyVote';
 import VoteConfirm from './VoteConfirm';
 import BetSelector from './BetSelector';
-import ConfidenceMeter from './ConfidenceMeter';
 
 const OPTION_STYLES = [
   { bg: 'bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700', text: 'text-slate-800 dark:text-slate-200', badge: 'bg-slate-800 dark:bg-slate-200 dark:text-slate-900', letter: 'A' },
@@ -38,8 +37,6 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
   const currentVote = myVote || null;
   const [selected, setSelected] = useState(null);
   const [betMultiplier, setBetMultiplier] = useState(null);
-  const [pendingAnswer, setPendingAnswer] = useState(null);
-  const [showConfidence, setShowConfidence] = useState(false);
 
   const [error, setError] = useState(null);
   const bettingEnabled = question?.betting === true;
@@ -53,7 +50,6 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
 
   async function submitVote(option, confidence) {
     setSelected(option);
-    setShowConfidence(false);
     setError(null);
     try {
       const voteData = {
@@ -71,26 +67,14 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
     } catch (err) {
       logger.error('Quiz vote failed:', err);
       setSelected(null);
-      setPendingAnswer(null);
       setError('답안 제출에 실패했습니다. 다시 선택해주세요.');
     }
   }
 
   function handleVote(option) {
     if (disabled || selected !== null) return;
-    // If user taps quickly while confidence is already showing, skip it
-    if (showConfidence) {
-      submitVote(option, null);
-      return;
-    }
-    setPendingAnswer(option);
-    setShowConfidence(true);
-  }
-
-  function handleConfidence(level) {
-    if (pendingAnswer) {
-      submitVote(pendingAnswer, level);
-    }
+    // 확신도(베팅) 단계 제거 — 선택 즉시 제출 (사용자 요청: 팝업 없이 빠른 응답)
+    submitVote(option, null);
   }
 
   if (question?.revealedAt && currentVote) {
@@ -220,8 +204,8 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
               {(question?.options || []).map((option, index) => {
                 const style = OPTION_STYLES[index % OPTION_STYLES.length];
                 const letter = String.fromCharCode(65 + index);
-                const isSelected = selected === option || pendingAnswer === option;
-                const isLocked = selected !== null || showConfidence;
+                const isSelected = selected === option;
+                const isLocked = selected !== null;
                 return (
                   <motion.button
                     key={option}
@@ -253,11 +237,6 @@ export default memo(function QuizVoter({ sessionId, questionId, question, render
               })}
             </div>
 
-            <AnimatePresence>
-              {showConfidence && (
-                <ConfidenceMeter onConfirm={handleConfidence} />
-              )}
-            </AnimatePresence>
           </motion.div>
         )}
       </AnimatePresence>
