@@ -62,8 +62,10 @@ export default memo(function CombinedRanking({ session }) {
     ? ranking.filter(e => e.rank > 3 && e.nickname.toLowerCase().includes(search.trim().toLowerCase()))
     : ranking.slice(3);
 
+  // overflow-hidden: 발표모드(items-center 부모)에서 maxHeight를 뚫고 리스트가 페이지를
+  // 1만px+로 늘리던 문제 차단 — 4위 이하는 내부 스크롤러가 담당
   return (
-    <div className="w-full max-w-2xl mx-auto flex flex-col relative pt-14" style={{ maxHeight: '85vh' }}>
+    <div className="w-full max-w-2xl mx-auto flex flex-col relative pt-14 overflow-hidden" style={{ maxHeight: '85vh' }}>
       {/* 폭죽 1회 */}
       <Suspense fallback={null}><ConfettiBurst /></Suspense>
 
