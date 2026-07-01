@@ -116,6 +116,7 @@ export default function ReactionBar({ sessionId, bubbleSessionId }) {
 
   // Bubble input state
   const [bubbleOpen, setBubbleOpen] = useState(false);
+  const barRef = useRef(null);
   const [bubbleText, setBubbleText] = useState('');
   const [canBubble, setCanBubble] = useState(true);
   const bubbleSendingRef = useRef(false); // 동기적 중복 방지
@@ -127,6 +128,16 @@ export default function ReactionBar({ sessionId, bubbleSessionId }) {
     if (bubbleCooldownRef.current) clearTimeout(bubbleCooldownRef.current);
     if (shakeTimerRef.current) clearTimeout(shakeTimerRef.current);
   }, []);
+
+  // 한마디 입력이 열려 있을 때 바깥 터치/클릭하면 닫기
+  useEffect(() => {
+    if (!bubbleOpen) return;
+    const onOutside = (e) => {
+      if (barRef.current && !barRef.current.contains(e.target)) setBubbleOpen(false);
+    };
+    document.addEventListener('pointerdown', onOutside);
+    return () => document.removeEventListener('pointerdown', onOutside);
+  }, [bubbleOpen]);
 
   const [cooldownShake, setCooldownShake] = useState(null);
 
@@ -172,7 +183,7 @@ export default function ReactionBar({ sessionId, bubbleSessionId }) {
   }, [bubbleText, canBubble, bubbleSessionId, sessionId]);
 
   return (
-    <div className="relative">
+    <div className="relative" ref={barRef}>
       {/* 본인 화면 이모지 플로터 — 탭 위치에서 위로 떠오르며 페이드(로컬 피드백) */}
       <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-center overflow-visible z-10">
         <AnimatePresence>

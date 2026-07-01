@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef, memo } from 'react';
-import { ref, onValue, set, serverTimestamp } from 'firebase/database';
+import { ref, onValue, set, update, serverTimestamp } from 'firebase/database';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Loader2, Users, X } from 'lucide-react';
 import { db } from '@/lib/firebase';
@@ -56,7 +56,11 @@ const WALL_LIMIT = 18; // 스크롤 없이 화면에 채우는 최신 답변 수
 export default memo(function SubjectiveResults({ sessionId, questionId, question, isAdmin }) {
   const { voteList } = useVotes(sessionId, questionId);
   const [selected, setSelected] = useState(null);
-  const [expanded, setExpanded] = useState(false);
+  // 더보기 확장을 question.wallExpanded로 동기화 — 발표모드에서 누르면 전자칠판도 함께 확장/접힘
+  const expanded = !!question?.wallExpanded;
+  const toggleExpanded = () => {
+    update(ref(db, `sessions/${sessionId}/questions/${questionId}`), { wallExpanded: !expanded }).catch(() => {});
+  };
   const [grades, setGrades] = useState({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -246,7 +250,7 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
         {sorted.length > WALL_LIMIT && (
           <div className="mt-5 text-center">
             <button
-              onClick={() => setExpanded((v) => !v)}
+              onClick={toggleExpanded}
               className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full text-sm font-medium bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors duration-150"
             >
               {expanded ? '접기' : `전체 ${sorted.length}개 응답 더보기`}

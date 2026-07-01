@@ -9,9 +9,10 @@ const STORAGE_KEY = 'pinggo_theme';
 export function useTheme() {
   const [theme, setThemeState] = useState(() => {
     try {
-      return localStorage.getItem(STORAGE_KEY) || 'system';
+      // 디폴트 다크 — 최초 방문자는 다크로 시작, 헤더 토글로 라이트 전환 가능
+      return localStorage.getItem(STORAGE_KEY) || 'dark';
     } catch {
-      return 'system';
+      return 'dark';
     }
   });
 
