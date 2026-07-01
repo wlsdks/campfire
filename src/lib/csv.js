@@ -177,8 +177,10 @@ export function exportParticipantResponses(session, participants, scores, filena
   const sorted = getSortedQuestions(session?.questions);
   const hasScores = Object.keys(scores || {}).length > 0;
 
-  // Header: 닉네임 + question titles + optional score columns
-  const header = ['닉네임'];
+  // Header: 닉네임 (+ 사번, 기업 행사모드) + question titles + optional score columns
+  const pids = Object.keys(participants || {});
+  const hasEmployeeId = pids.some((pid) => participants[pid]?.employeeId);
+  const header = ['닉네임', ...(hasEmployeeId ? ['사번'] : [])];
   sorted.forEach((q, i) => {
     header.push(`Q${i + 1}. ${q.data.title || ''}`);
   });
@@ -189,11 +191,10 @@ export function exportParticipantResponses(session, participants, scores, filena
   const rows = [header];
 
   // Build a row per participant
-  const pids = Object.keys(participants || {});
   pids.forEach((pid) => {
     const p = participants[pid];
     const nickname = p?.nickname || scores?.[pid]?.nickname || pid;
-    const row = [nickname];
+    const row = [nickname, ...(hasEmployeeId ? [p?.employeeId || ''] : [])];
 
     sorted.forEach((q) => {
       // aiJudge는 votes 대신 submissions 경로를 본다

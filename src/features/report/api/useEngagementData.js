@@ -65,6 +65,7 @@ export function useEngagementData() {
         return {
           id: pid,
           nickname: scoreData?.nickname || pData.nickname || '익명',
+          employeeId: pData.employeeId || '',
           answered,
           totalQuestions,
           engagementRate,

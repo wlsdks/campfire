@@ -33,9 +33,11 @@ export default function EngagementTab({ sessions }) {
     const session = conductedSessions.find(s => s.id === selectedSession);
     const sessionLabel = session ? `${session.courseName || '미분류'}${session.roundNumber ? ` ${session.roundNumber}차` : ''}` : '';
 
-    const header = ['이름', '참여율(%)', '정답률(%)', '점수', '응답수', '접속시간'];
+    const hasEmployeeId = data.students.some(st => st.employeeId);
+    const header = ['이름', ...(hasEmployeeId ? ['사번'] : []), '참여율(%)', '정답률(%)', '점수', '응답수', '접속시간'];
     const rows = data.students.map(st => [
       st.nickname,
+      ...(hasEmployeeId ? [st.employeeId || ''] : []),
       st.engagementRate,
       st.correctRate ?? '',
       st.totalScore,
