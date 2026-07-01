@@ -3,6 +3,7 @@ import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
 import { getParticipantId, getNickname } from '@/lib/participant';
 import { motion } from 'framer-motion';
+import { RotateCcw } from 'lucide-react';
 import { useState, useEffect, memo } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { hapticTap } from '@/lib/haptics';
@@ -22,17 +23,18 @@ const OPTION_STYLES = [
 export default memo(function ChoiceVoter({ sessionId, questionId, options, disabled = false }) {
   const { myVote } = useMyVote(sessionId, questionId);
   const [voted, setVoted] = useState(false);
+  const [changing, setChanging] = useState(false); // 답 바꾸기 중 — 복원 effect가 즉시 voted로 되돌리는 것 차단
   const [selected, setSelected] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
   // Restore vote state from Firebase (handles refresh/re-activation)
   useEffect(() => {
-    if (myVote && !voted) {
+    if (myVote && !voted && !changing) {
       setSelected(myVote);
       setVoted(true);
     }
-  }, [myVote, voted]);
+  }, [myVote, voted, changing]);
 
   useEffect(() => {
     if (!error) return;
@@ -53,6 +55,7 @@ export default memo(function ChoiceVoter({ sessionId, questionId, options, disab
         timestamp: serverTimestamp(),
       });
       setVoted(true);
+      setChanging(false);
     } catch (err) {
       logger.error('Vote failed:', err);
       setSelected(null);
@@ -71,9 +74,10 @@ export default memo(function ChoiceVoter({ sessionId, questionId, options, disab
         {/* 정답 공개/마감 전(!disabled)엔 답 변경 허용 — 실수 정정. 재선택 시 덮어씀. */}
         {!disabled && (
           <button
-            onClick={() => { setVoted(false); setSelected(null); }}
-            className="w-full text-center text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 py-2 transition-colors duration-150"
+            onClick={() => { setChanging(true); setVoted(false); setSelected(null); }}
+            className="w-full flex items-center justify-center gap-1.5 text-sm font-medium text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 ring-1 ring-slate-200/70 dark:ring-slate-700/60 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-xl py-2.5 transition-colors duration-150 active:scale-[0.98]"
           >
+            <RotateCcw size={15} />
             답 바꾸기
           </button>
         )}
