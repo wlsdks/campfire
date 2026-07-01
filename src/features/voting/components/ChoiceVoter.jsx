@@ -68,6 +68,15 @@ export default memo(function ChoiceVoter({ sessionId, questionId, options, disab
     return (
       <div className="space-y-3">
         <VoteConfirm selectedAnswer={letter ? `${letter}. ${selected}` : selected} />
+        {/* 정답 공개/마감 전(!disabled)엔 답 변경 허용 — 실수 정정. 재선택 시 덮어씀. */}
+        {!disabled && (
+          <button
+            onClick={() => { setVoted(false); setSelected(null); }}
+            className="w-full text-center text-sm font-medium text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 py-2 transition-colors duration-150"
+          >
+            답 바꾸기
+          </button>
+        )}
         <StudentLiveResults
           sessionId={sessionId}
           questionId={questionId}

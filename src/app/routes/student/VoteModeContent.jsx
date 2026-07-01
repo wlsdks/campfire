@@ -60,7 +60,7 @@ export function VoteModeContent({
   if (currentMode === 'focus') {
     return (
       <Suspense fallback={<SuspenseFallback />}>
-        <LazyFocusOverlay />
+        <LazyFocusOverlay sessionId={sessionId} />
       </Suspense>
     );
   }
