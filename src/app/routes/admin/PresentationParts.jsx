@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, QrCode, X, Copy, Check, Hand, MessageSquare, ChevronDown, Trophy, Medal, Ticket, Coffee, Award, HelpCircle, UserPlus } from 'lucide-react';
+import { Users, QrCode, X, Copy, Check, Hand, MessageSquare, ChevronDown, Trophy, Medal, Ticket, Coffee, Award, HelpCircle, UserPlus, Zap, Timer } from 'lucide-react';
 import { ref, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import QRCode from '@/components/ui/QRCode';
 import Badge from '@/components/ui/Badge';
 import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
 import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
+import TimerControls from '@/features/timer/components/TimerControls';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
 
@@ -159,13 +160,14 @@ export function SideNoticesPanel({ sessionId }) {
       <div className="hidden md:block fixed top-5 left-5 z-10">
         <motion.button
           onClick={() => setOpen((v) => !v)}
+          whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.94 }}
-          className="relative flex items-center gap-1.5 bg-slate-900/80 dark:bg-slate-800/90 backdrop-blur-sm text-white px-3 py-2 rounded-xl text-xs font-medium shadow-lg mb-2"
+          className="relative flex items-center gap-2 bg-slate-900/80 hover:bg-slate-900 dark:bg-slate-800/90 dark:hover:bg-slate-700 backdrop-blur-sm text-white px-4 py-2.5 rounded-xl text-sm font-semibold shadow-lg hover:shadow-xl ring-1 ring-white/10 hover:ring-white/30 transition-all duration-150 mb-2"
           aria-label={`알림 패널 열기/닫기${notifCount ? ` (${notifCount}건)` : ''}`}
         >
-          <Hand size={13} />
-          <MessageSquare size={13} />
-          <ChevronDown size={12} className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+          <Hand size={17} />
+          <MessageSquare size={17} />
+          <ChevronDown size={15} className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
           {!open && <NotifBadge count={notifCount} />}
         </motion.button>
         <AnimatePresence>
@@ -219,17 +221,51 @@ export function SideNoticesPanel({ sessionId }) {
   );
 }
 
-/** Exit hint + button — ESC on desktop, explicit button on all. */
+/** Exit hint + button — ESC on desktop, explicit button on all.
+ *  위치는 상위 top-right 클러스터가 담당(타이머 버튼과 정렬). */
 export function ExitHint({ onExit }) {
   return (
     <button
       onClick={onExit}
-      className="fixed top-4 right-4 md:top-6 md:right-6 bg-slate-900/80 dark:bg-slate-700/80 hover:bg-slate-900 dark:hover:bg-slate-600 text-white px-5 py-3 rounded-xl text-base font-medium transition-all duration-150 z-20 flex items-center gap-2 shadow-lg hover:shadow-xl active:scale-95"
+      className="bg-slate-900/80 dark:bg-slate-700/80 hover:bg-slate-900 dark:hover:bg-slate-600 text-white px-5 py-3 rounded-xl text-base font-medium transition-all duration-150 flex items-center gap-2 shadow-lg hover:shadow-xl active:scale-95"
     >
       <X size={18} />
       <span className="hidden sm:inline">나가기</span>
       <span className="hidden md:inline text-white/50 ml-1">ESC</span>
     </button>
+  );
+}
+
+/** 타이머 시계 버튼 — 나가기 왼쪽. 클릭 시 프리셋(15/30/60/커스텀) 드롭다운.
+ *  기존 상시 노출 패널이 나가기 버튼과 겹치던 문제 해결. */
+export function PresentTimerButton({ isRunning, onStart, onStop }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        aria-label="타이머"
+        className={`flex items-center gap-2 px-5 py-3 rounded-xl text-base font-medium shadow-lg hover:shadow-xl transition-all duration-150 active:scale-95 backdrop-blur-sm ${
+          isRunning
+            ? 'bg-indigo-600 hover:bg-indigo-500 text-white ring-1 ring-indigo-400/40'
+            : open
+              ? 'bg-white text-slate-900 ring-1 ring-slate-200'
+              : 'bg-slate-900/80 dark:bg-slate-700/80 hover:bg-slate-900 dark:hover:bg-slate-600 text-white'
+        }`}
+      >
+        <Timer size={18} />
+        <span className="hidden sm:inline">{isRunning ? '진행 중' : '타이머'}</span>
+      </button>
+      {open && (
+        <div className="absolute top-full right-0 mt-2 w-64 bg-slate-900/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-xl p-3 shadow-xl ring-1 ring-white/10">
+          <TimerControls
+            isRunning={isRunning}
+            onStart={(s) => { onStart(s); setOpen(false); }}
+            onStop={() => { onStop(); setOpen(false); }}
+          />
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -258,19 +294,20 @@ export function PresentModeMenu({ sessionId, currentMode }) {
   }
 
   return (
-    <div className="fixed bottom-24 right-3 md:bottom-28 md:right-5 z-20">
+    <div className="fixed top-4 left-32 md:top-5 md:left-36 z-30">
       <div className="relative">
         <button
           onClick={() => setOpen(!open)}
-          className={`px-5 py-3 rounded-xl text-base font-semibold transition-all backdrop-blur-sm shadow-lg active:scale-95 ${
-            open ? 'bg-white text-slate-900 shadow-xl' : 'bg-slate-900/70 hover:bg-slate-900/95 hover:shadow-xl text-white ring-1 ring-white/20 hover:ring-white/40'
+          className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all backdrop-blur-sm shadow-lg active:scale-95 ${
+            open ? 'bg-white text-slate-900 shadow-xl ring-1 ring-slate-200' : 'bg-slate-900/80 hover:bg-slate-900 hover:shadow-xl text-white ring-1 ring-white/10 hover:ring-white/30'
           }`}
         >
-          ⚡ 모드
+          <Zap size={16} className={open ? 'text-amber-500' : 'text-amber-400'} />
+          모드
         </button>
 
         {open && (
-          <div className="absolute bottom-full right-0 mb-2 w-40 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 py-1.5 overflow-hidden">
+          <div className="absolute top-full left-0 mt-2 w-40 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 py-1.5 overflow-hidden">
             {PRESENT_MODES.map(({ mode, label, icon: Icon }) => (
               <button
                 key={mode}

@@ -9,6 +9,9 @@ const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 
 const SPRING_BOUNCY = { type: 'spring', stiffness: 400, damping: 22 };
 
+// 포디움 원 안 이니셜 — 코드포인트 단위(이모지 안전), 최대 2글자.
+const podiumInitials = (name) => (Array.from(name || '').slice(0, 2).join('').toUpperCase() || '?');
+
 const PODIUM_STYLES = [
   { bg: 'bg-amber-400', ring: 'ring-amber-300', text: 'text-amber-900', label: '1st', icon: Crown },
   { bg: 'bg-slate-300', ring: 'ring-slate-200', text: 'text-slate-700', label: '2nd', icon: Award },
@@ -91,7 +94,7 @@ export default memo(function CombinedRanking({ session }) {
               className="flex flex-col items-center"
             >
               <div className={`w-16 h-16 md:w-20 md:h-20 rounded-full ${PODIUM_STYLES[1].bg} ring-4 ${PODIUM_STYLES[1].ring} flex items-center justify-center mb-2 shadow-lg`}>
-                <Avatar name={podium[1].nickname} size="lg" />
+                <span className={`text-xl md:text-2xl font-black ${PODIUM_STYLES[1].text}`}>{podiumInitials(podium[1].nickname)}</span>
               </div>
               <span className="text-sm md:text-base font-bold text-slate-700 dark:text-slate-200 truncate max-w-[100px]">{podium[1].nickname}</span>
               <span className="text-xs text-slate-400 dark:text-slate-500 tabular-nums">{podium[1].correct}/{totalQuestions}</span>
@@ -116,7 +119,7 @@ export default memo(function CombinedRanking({ session }) {
                 <Crown size={28} className="text-amber-400 mb-1" />
               </motion.div>
               <div className={`w-20 h-20 md:w-24 md:h-24 rounded-full ${PODIUM_STYLES[0].bg} ring-4 ${PODIUM_STYLES[0].ring} flex items-center justify-center mb-2 shadow-xl`}>
-                <Avatar name={podium[0].nickname} size="xl" />
+                <span className={`text-2xl md:text-3xl font-black ${PODIUM_STYLES[0].text}`}>{podiumInitials(podium[0].nickname)}</span>
               </div>
               <span className="text-base md:text-lg font-bold text-slate-900 dark:text-slate-100 truncate max-w-[120px]">{podium[0].nickname}</span>
               <span className="text-sm text-slate-400 dark:text-slate-500 tabular-nums">{podium[0].correct}/{totalQuestions}</span>
@@ -135,7 +138,7 @@ export default memo(function CombinedRanking({ session }) {
               className="flex flex-col items-center"
             >
               <div className={`w-14 h-14 md:w-16 md:h-16 rounded-full ${PODIUM_STYLES[2].bg} ring-4 ${PODIUM_STYLES[2].ring} flex items-center justify-center mb-2 shadow-lg`}>
-                <Avatar name={podium[2].nickname} size="md" />
+                <span className={`text-lg md:text-xl font-black ${PODIUM_STYLES[2].text}`}>{podiumInitials(podium[2].nickname)}</span>
               </div>
               <span className="text-sm md:text-base font-bold text-slate-700 dark:text-slate-200 truncate max-w-[100px]">{podium[2].nickname}</span>
               <span className="text-xs text-slate-400 dark:text-slate-500 tabular-nums">{podium[2].correct}/{totalQuestions}</span>
@@ -156,25 +159,29 @@ export default memo(function CombinedRanking({ session }) {
         </div>
       )}
 
-      {/* 4위 이하 — 스크롤 */}
+      {/* 4위 이하 — 스크롤. 마지막 행이 둥근 모서리에 반쯤 잘려 이상하게 보이던 것 → 하단 페이드로 자연스럽게 */}
       {rest.length > 0 && (
-        <div className="flex-1 overflow-y-auto bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          {rest.map((entry, i) => (
-            <div key={entry.id} className={`flex items-center gap-3 px-4 py-2.5 ${i > 0 ? 'border-t border-slate-100 dark:border-slate-700' : ''}`}>
-              <span className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500 flex items-center justify-center text-xs font-bold shrink-0">
-                {entry.rank}
-              </span>
-              <Avatar name={entry.nickname} size="xs" />
-              <span className="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{entry.nickname}</span>
-              <div className="text-right shrink-0">
-                <span className="text-base font-bold text-slate-900 dark:text-slate-100 tabular-nums">{entry.correct}</span>
-                <span className="text-xs text-slate-400 dark:text-slate-500 ml-0.5">/{totalQuestions}</span>
+        <div className="relative flex-1 min-h-0">
+          <div className="h-full overflow-y-auto bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm pb-3">
+            {rest.map((entry, i) => (
+              <div key={entry.id} className={`flex items-center gap-3 px-4 py-2.5 ${i > 0 ? 'border-t border-slate-100 dark:border-slate-700' : ''}`}>
+                <span className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500 flex items-center justify-center text-xs font-bold shrink-0">
+                  {entry.rank}
+                </span>
+                <Avatar name={entry.nickname} size="xs" />
+                <span className="flex-1 text-sm font-medium text-slate-700 dark:text-slate-200 truncate">{entry.nickname}</span>
+                <div className="text-right shrink-0">
+                  <span className="text-base font-bold text-slate-900 dark:text-slate-100 tabular-nums">{entry.correct}</span>
+                  <span className="text-xs text-slate-400 dark:text-slate-500 ml-0.5">/{totalQuestions}</span>
+                </div>
               </div>
-            </div>
-          ))}
-          {rest.length === 0 && search && (
-            <div className="py-6 text-center text-xs text-slate-400">검색 결과 없음</div>
-          )}
+            ))}
+            {rest.length === 0 && search && (
+              <div className="py-6 text-center text-xs text-slate-400">검색 결과 없음</div>
+            )}
+          </div>
+          {/* 하단 페이드 오버레이 — 스크롤 중 잘리는 행을 배경으로 부드럽게 */}
+          <div className="pointer-events-none absolute bottom-0 inset-x-0 h-10 rounded-b-2xl bg-gradient-to-t from-white dark:from-slate-800 to-transparent" />
         </div>
       )}
     </div>

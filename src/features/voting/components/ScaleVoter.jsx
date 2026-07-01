@@ -10,16 +10,6 @@ import { useVotes } from '@/hooks/useVotes';
 import { useMyVote } from '@/hooks/useMyVote';
 import { Users } from 'lucide-react';
 
-/**
- * Labels at specific scale positions for orientation.
- * Kept minimal — just edge labels and center.
- */
-const SCALE_LABELS = [
-  { value: 0, label: '전혀' },
-  { value: 50, label: '보통' },
-  { value: 100, label: '매우' },
-];
-
 /** Map 0–100 to a slate gradient shade for the thumb/fill. */
 function getScaleColor(value) {
   if (value <= 20) return 'bg-slate-300';
@@ -73,7 +63,13 @@ function ScaleLiveAverage({ sessionId, questionId, myValue }) {
   );
 }
 
-export default memo(function ScaleVoter({ sessionId, questionId, disabled = false }) {
+export default memo(function ScaleVoter({ sessionId, questionId, minLabel, maxLabel, disabled = false }) {
+  // 강사가 설정한 척도 라벨을 학생에게도 그대로 — 발표자 화면과 일치. 미설정 시 기본값.
+  const scaleLabels = useMemo(() => [
+    { value: 0, label: minLabel || '전혀' },
+    { value: 50, label: '보통' },
+    { value: 100, label: maxLabel || '매우' },
+  ], [minLabel, maxLabel]);
   const { myVote } = useMyVote(sessionId, questionId);
   const [value, setValue] = useState(50);
   const [submitted, setSubmitted] = useState(false);
@@ -191,7 +187,7 @@ export default memo(function ScaleVoter({ sessionId, questionId, disabled = fals
 
         {/* Scale labels */}
         <div className="flex justify-between mt-2.5">
-          {SCALE_LABELS.map((l) => (
+          {scaleLabels.map((l) => (
             <button
               key={l.value}
               type="button"

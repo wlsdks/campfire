@@ -195,7 +195,7 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false, 
               <WordCloud sessionId={sessionId} questionId={currentQId} />
             </>
           )}
-          {question.type === 'scale' && <ScaleChart sessionId={sessionId} questionId={currentQId} />}
+          {question.type === 'scale' && <ScaleChart sessionId={sessionId} questionId={currentQId} minLabel={question.minLabel} maxLabel={question.maxLabel} />}
           {question.type === 'debate' && <DebateChart sessionId={sessionId} questionId={currentQId} />}
           {question.type === 'ranking' && <RankingChart sessionId={sessionId} questionId={currentQId} items={options} />}
           {question.type === 'fillinblank' && (

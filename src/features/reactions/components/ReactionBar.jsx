@@ -101,6 +101,19 @@ export default function ReactionBar({ sessionId, bubbleSessionId }) {
   const flashTimerRef = useRef(null);
   const shakeTimerRef = useRef(null);
 
+  // 학생 본인 화면에도 이모지가 떠오르게 — 탭 즉시 "반응했다"는 만족 피드백(전자칠판 안 봐도 됨).
+  // Firebase 구독 없이 로컬 애니메이션이라 가볍고 즉각적. 전자칠판 오버레이와 별개.
+  const [floaters, setFloaters] = useState([]);
+  const floaterIdRef = useRef(0);
+  const spawnFloater = useCallback((type) => {
+    const reaction = REACTIONS.find((r) => r.type === type);
+    if (!reaction) return;
+    const id = ++floaterIdRef.current;
+    const drift = ((id * 37) % 60) - 30; // 결정적 좌우 분산(연타 시 겹침 방지)
+    setFloaters((f) => [...f, { id, Icon: reaction.icon, color: reaction.accentColor, type, drift }]);
+    setTimeout(() => setFloaters((f) => f.filter((x) => x.id !== id)), 1200);
+  }, []);
+
   // Bubble input state
   const [bubbleOpen, setBubbleOpen] = useState(false);
   const [bubbleText, setBubbleText] = useState('');
@@ -128,6 +141,7 @@ export default function ReactionBar({ sessionId, bubbleSessionId }) {
     cooldownRef.current = now;
     if ('vibrate' in navigator) navigator.vibrate(8);
     setFlashType(type);
+    spawnFloater(type);
     sendReaction(type);
     if (flashTimerRef.current) clearTimeout(flashTimerRef.current);
     flashTimerRef.current = setTimeout(() => setFlashType(null), FLASH_MS);
@@ -159,6 +173,25 @@ export default function ReactionBar({ sessionId, bubbleSessionId }) {
 
   return (
     <div className="relative">
+      {/* 본인 화면 이모지 플로터 — 탭 위치에서 위로 떠오르며 페이드(로컬 피드백) */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 flex justify-center overflow-visible z-10">
+        <AnimatePresence>
+          {floaters.map((f) => (
+            <motion.div
+              key={f.id}
+              initial={{ opacity: 0, y: 4, scale: 0.4 }}
+              animate={{ opacity: [0, 1, 1, 0], y: -84, scale: [0.4, 1.3, 1, 0.85], x: f.drift }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1.1, ease: 'easeOut', times: [0, 0.2, 0.6, 1] }}
+              className="absolute"
+              style={{ color: f.color }}
+            >
+              <f.Icon size={30} fill={f.type === 'heart' ? 'currentColor' : 'none'} strokeWidth={2} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
       {/* Bubble input popup */}
       <AnimatePresence>
         {bubbleOpen && (

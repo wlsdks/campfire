@@ -1,14 +1,13 @@
 import { motion, useMotionValue, useTransform, animate } from 'framer-motion';
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { Trophy, Ticket, Volume2, VolumeOff, Sun, Moon } from 'lucide-react';
+import { Trophy, Ticket, Volume2, VolumeOff, Sun, Moon, Users } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 import PickMascot from '@/components/ui/PickMascot';
 import Avatar from '@/components/ui/Avatar';
 import ConnectionBanner from '@/components/ui/ConnectionBanner';
 import { useConnectionStatus } from '@/hooks/useConnectionStatus';
 import { useMyScore } from '@/features/quiz/api/useScores';
-import { useSessionMeta } from '@/features/session/api/useSession';
-import ElapsedTime from '@/components/ui/ElapsedTime';
+import { useParticipantCount } from '@/features/participants/api/useParticipants';
 import { getNickname, clearSessionJoined } from '@/lib/participant';
 
 function ThemeToggle() {
@@ -53,8 +52,9 @@ function HeaderScore({ value }) {
 }
 
 export default function StudentHeader({ sessionId }) {
-  // 경량 메타(startedAt/status)만 구독 — full useSession 중복 구독(questions+13필드) 제거
-  const { startedAt, status } = useSessionMeta(sessionId);
+  // 실시간 참여자 수 — 경과시간보다 학생에게 유의미. useParticipantCount는 300ms 디바운스 +
+  // count 변할 때만 리렌더라 300명 규모에서도 부하 최소(입장/퇴장 시에만 갱신).
+  const liveCount = useParticipantCount(sessionId);
   const { myScore } = useMyScore(sessionId);
   const { connected, showBanner } = useConnectionStatus();
   // dot은 debounce된 showBanner 기준 — 와이파이 jitter마다 amber 깜빡이던 것 방지(확정 오프라인에서만 amber)
@@ -104,7 +104,18 @@ export default function StudentHeader({ sessionId }) {
               />
             </div>
             <span className="font-bold text-lg text-slate-900 dark:text-slate-100 tracking-tight">Pick</span>
-            <ElapsedTime startedAt={startedAt} status={status} />
+            {liveCount > 0 && (
+              <motion.span
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                className="flex items-center gap-1 text-xs font-medium text-slate-400 dark:text-slate-500 tabular-nums"
+                title="실시간 참여자 수"
+              >
+                <Users size={13} />
+                {liveCount}
+              </motion.span>
+            )}
           </div>
 
           <div className="flex items-center gap-4">

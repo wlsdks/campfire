@@ -41,8 +41,17 @@ function AnimatedCount({ value, className }) {
   return <span className={className}>{display}</span>;
 }
 
+// 선택지 개수에 따라 크기 자동 조절 — 적을수록 크게(임팩트), 많을수록 컴팩트(스크롤 방지).
+// 전자칠판/발표모드에서 문항 수가 달라도 세로 스크롤 없이 "딱 맞게" 채운다.
+function sizeTier(n) {
+  if (n <= 4) return { gap: 'space-y-5', bar: 'h-14', label: 'text-xl lg:text-2xl', count: 'text-4xl lg:text-5xl', pct: 'text-base', check: 'w-6 h-6', checkIcon: 14, ring: 'p-3 -mx-3' };
+  if (n <= 6) return { gap: 'space-y-4', bar: 'h-11', label: 'text-lg lg:text-xl', count: 'text-3xl lg:text-4xl', pct: 'text-sm', check: 'w-5 h-5', checkIcon: 12, ring: 'p-3 -mx-3' };
+  return { gap: 'space-y-2.5', bar: 'h-9', label: 'text-base lg:text-lg', count: 'text-2xl lg:text-3xl', pct: 'text-sm', check: 'w-5 h-5', checkIcon: 12, ring: 'p-2 -mx-2' };
+}
+
 export default memo(function BarChart({ sessionId, questionId, options, correctValue = null, revealed = false }) {
   const { totalVotes, countByValue } = useVotes(sessionId, questionId);
+  const S = sizeTier(options.length);
 
   // Pre-compute counts once so rankMap doesn't depend on the function reference
   const counts = useMemo(
@@ -61,7 +70,7 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
   }, [counts]);
 
   return (
-    <div className="space-y-5 w-full max-w-xl mx-auto px-4">
+    <div className={`${S.gap} w-full max-w-xl mx-auto px-4`}>
       {options.map((option, i) => {
         const count = counts[i];
         const pct = totalVotes > 0 ? (count / totalVotes) * 100 : 0;
@@ -88,7 +97,7 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.03, type: 'spring', stiffness: 300, damping: 25 }}
-            className={`space-y-1.5 transition-opacity duration-300 ${isCorrect ? 'rounded-lg ring-2 ring-indigo-500/30 p-3 -mx-3 bg-slate-50/50 dark:bg-slate-800/50' : isWrong ? 'opacity-60' : ''}`}
+            className={`space-y-1.5 transition-opacity duration-300 ${isCorrect ? `rounded-lg ring-2 ring-indigo-500/30 ${S.ring} bg-slate-50/50 dark:bg-slate-800/50` : isWrong ? 'opacity-60' : ''}`}
           >
             <div className="flex justify-between items-baseline gap-2">
               <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -97,26 +106,26 @@ export default memo(function BarChart({ sessionId, questionId, options, correctV
                     initial={{ scale: 0, rotate: -45 }}
                     animate={{ scale: 1, rotate: 0 }}
                     transition={{ type: 'spring', stiffness: 500, damping: 30, delay: 0.15 }}
-                    className="flex items-center justify-center w-5 h-5 rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shrink-0"
+                    className={`flex items-center justify-center ${S.check} rounded-full bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 shrink-0`}
                   >
-                    <Check size={12} strokeWidth={3} />
+                    <Check size={S.checkIcon} strokeWidth={3} />
                   </motion.span>
                 )}
-                <span className={`font-medium text-lg lg:text-xl truncate ${isCorrect ? 'text-indigo-700 dark:text-indigo-400 font-semibold' : isWrong ? 'text-slate-400' : 'text-slate-700 dark:text-slate-200'}`}>
+                <span className={`font-medium ${S.label} truncate ${isCorrect ? 'text-indigo-700 dark:text-indigo-400 font-semibold' : isWrong ? 'text-slate-400' : 'text-slate-700 dark:text-slate-200'}`}>
                   {option}
                 </span>
               </div>
               <div className="flex items-baseline gap-1.5">
                 <AnimatedCount
                   value={count}
-                  className={`font-bold text-2xl lg:text-3xl tabular-nums ${isCorrect ? 'text-indigo-700 dark:text-indigo-400' : countColor}`}
+                  className={`font-bold ${S.count} tabular-nums ${isCorrect ? 'text-indigo-700 dark:text-indigo-400' : countColor}`}
                 />
-                <span className={`text-sm tabular-nums ${isCorrect ? 'text-indigo-500 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'}`}>
+                <span className={`${S.pct} tabular-nums ${isCorrect ? 'text-indigo-500 dark:text-indigo-400' : 'text-slate-400 dark:text-slate-500'}`}>
                   {formatPercent(count, totalVotes)}
                 </span>
               </div>
             </div>
-            <div className={`h-11 ${isWrong ? 'bg-slate-50 dark:bg-slate-800' : 'bg-slate-100 dark:bg-slate-700'} rounded-lg overflow-hidden`}>
+            <div className={`${S.bar} ${isWrong ? 'bg-slate-50 dark:bg-slate-800' : 'bg-slate-100 dark:bg-slate-700'} rounded-lg overflow-hidden`}>
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.max(pct, count > 0 ? 2 : 0)}%` }}

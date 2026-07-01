@@ -172,7 +172,7 @@ export default memo(function ActivePollView({
                 <SubjectiveVoter sessionId={sessionId} questionId={questionId} disabled={votingLocked} />
               )}
               {question.type === 'scale' && (
-                <ScaleVoter sessionId={sessionId} questionId={questionId} disabled={votingLocked} />
+                <ScaleVoter sessionId={sessionId} questionId={questionId} minLabel={question.minLabel} maxLabel={question.maxLabel} disabled={votingLocked} />
               )}
               {question.type === 'debate' && (
                 <DebateVoter sessionId={sessionId} questionId={questionId} disabled={votingLocked} />

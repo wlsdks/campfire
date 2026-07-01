@@ -71,7 +71,7 @@ export default function AchievementToast({ achievements }) {
           transition={{ type: 'spring', stiffness: 300, damping: 25 }}
           className="fixed bottom-[calc(9rem+env(safe-area-inset-bottom))] left-1/2 -translate-x-1/2 z-50 pointer-events-none"
         >
-          <div className="relative overflow-hidden bg-slate-900 text-white rounded-xl shadow-lg">
+          <div className="relative overflow-hidden bg-slate-900 text-white rounded-xl shadow-2xl shadow-black/40 ring-1 ring-white/15">
             <div className="flex items-center gap-3 pl-3 pr-5 py-2.5">
               {/* Animated icon */}
               <motion.div

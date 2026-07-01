@@ -12,7 +12,6 @@ import VizRenderer from '@/features/visualization/components/VizRenderer';
 import JoinToast from '@/features/participants/components/JoinToast';
 import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
 import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
-import Badge from '@/components/ui/Badge';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import ChatBubbleOverlay from '@/features/reactions/components/ChatBubbleOverlay';
 import AnswerBubbleOverlay from '@/features/voting/components/AnswerBubbleOverlay';
@@ -21,8 +20,7 @@ import Leaderboard from '@/features/quiz/components/Leaderboard';
 import PersistentAssignmentBar from '@/features/ai-judge/components/PersistentAssignmentBar';
 import { useQuestionActions } from '@/hooks/useQuestionActions';
 import { useTimer } from '@/features/timer/api/useTimer';
-import TimerControls from '@/features/timer/components/TimerControls';
-import { PresentEmptyState, PresentQROverlay, GameFallback, SideNoticesPanel, ExitHint, PresentModeMenu } from './PresentationParts';
+import { PresentEmptyState, PresentQROverlay, GameFallback, SideNoticesPanel, ExitHint, PresentModeMenu, PresentTimerButton } from './PresentationParts';
 
 const Lottery = lazy(() => import('@/features/games/components/Lottery'));
 const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
@@ -283,12 +281,13 @@ export default function PresentationView({ sessionId, session, currentMode, onli
 
       <SideNoticesPanel sessionId={sessionId} />
 
-      {/* 발표모드 타이머 — 활성 질문일 때 우상단 (나가기 아래) */}
-      {activeQuestion && (
-        <div className="fixed top-16 right-4 z-20 w-56 bg-slate-900/85 dark:bg-slate-800/90 backdrop-blur-sm rounded-xl p-3 shadow-lg ring-1 ring-white/10">
-          <TimerControls isRunning={timerRunning} onStart={startTimer} onStop={stopTimer} />
-        </div>
-      )}
+      {/* 우상단 클러스터 — 타이머 버튼(활성 질문일 때) + 나가기, 나란히 정렬 */}
+      <div className="fixed top-4 right-4 md:top-6 md:right-6 z-30 flex items-center gap-2">
+        {activeQuestion && (
+          <PresentTimerButton isRunning={timerRunning} onStart={startTimer} onStop={stopTimer} />
+        )}
+        <ExitHint onExit={exitPresent} />
+      </div>
 
       {/* 상시 과제 바 — 발표 모드에서도 강사가 제출 상태/심사 상태 확인 가능.
           단, 상시 과제 자체가 현재 활성 질문일 때는 메인 뷰에 이미 노출되므로 중복 방지 (학생 VoteModeContent와 동일 규칙). */}
@@ -356,28 +355,40 @@ export default function PresentationView({ sessionId, session, currentMode, onli
         );
       })()}
 
-      {/* Bottom bar — participant count + navigation */}
-      <div className="fixed bottom-4 left-4 md:bottom-6 md:left-6 flex items-center gap-3">
-        <Badge variant="neutral" size="lg"><Users size={20} className="mr-2" />{count}명</Badge>
+      {/* Bottom bar — live attendee count + navigation (통일된 pill, 정렬 일관) */}
+      <div className="fixed bottom-4 left-4 md:bottom-6 md:left-6 z-20 flex items-center gap-2.5">
+        {/* 실시간 접속 인원 — LIVE 뱃지로 "지금 접속 중"임을 명확히. h-12로 네비 pill과 높이 일치 */}
+        <div className="flex items-center gap-2.5 h-12 bg-slate-900/75 dark:bg-slate-800/85 backdrop-blur-sm rounded-xl px-4 shadow-lg ring-1 ring-white/10">
+          <span className="flex items-center gap-1.5">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-60 animate-ping" />
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
+            </span>
+            <span className="text-white text-sm font-bold tracking-wide">LIVE</span>
+          </span>
+          <span className="h-4 w-px bg-white/20" />
+          <span className="flex items-center gap-1.5 text-white text-base font-semibold tabular-nums">
+            <Users size={18} />{count}명
+          </span>
+        </div>
+        {/* 질문 네비게이션 — 동일 h-12 */}
         {questionList.length > 1 && (
-          <>
+          <div className="flex items-center gap-1 h-12 bg-slate-900/75 dark:bg-slate-800/85 backdrop-blur-sm rounded-xl px-2 shadow-lg ring-1 ring-white/10">
             <button onClick={goPrev} disabled={currentQIdx <= 0}
-              className="px-5 py-3 rounded-xl bg-slate-900/60 hover:bg-slate-900/90 disabled:opacity-30 text-white text-base font-semibold transition-all backdrop-blur-sm shadow-lg hover:shadow-xl active:scale-95">
+              className="px-3.5 py-1.5 rounded-lg hover:bg-white/10 disabled:opacity-25 disabled:hover:bg-transparent text-white text-base font-semibold transition-colors active:scale-95">
               ← 이전
             </button>
-            <span className="text-base text-white/70 tabular-nums font-semibold px-1">{currentQIdx + 1}/{questionList.length}</span>
+            <span className="text-sm text-white/60 tabular-nums font-semibold px-2 min-w-[3rem] text-center">{Math.max(currentQIdx + 1, 0)}/{questionList.length}</span>
             <button onClick={goNext} disabled={currentQIdx >= questionList.length - 1}
-              className="px-5 py-3 rounded-xl bg-slate-900/60 hover:bg-slate-900/90 disabled:opacity-30 text-white text-base font-semibold transition-all backdrop-blur-sm shadow-lg hover:shadow-xl active:scale-95">
+              className="px-3.5 py-1.5 rounded-lg hover:bg-white/10 disabled:opacity-25 disabled:hover:bg-transparent text-white text-base font-semibold transition-colors active:scale-95">
               다음 →
             </button>
-          </>
+          </div>
         )}
       </div>
 
-      {/* 우측 하단 — 모드 전환 */}
+      {/* 좌측 상단 — 모드 전환 (알림 토글 옆) */}
       <PresentModeMenu sessionId={sessionId} currentMode={currentMode} />
-
-      <ExitHint onExit={exitPresent} />
     </div>
   );
 }

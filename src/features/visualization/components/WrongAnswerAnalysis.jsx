@@ -48,7 +48,7 @@ export default function WrongAnswerAnalysis({ sessionId, questionId, questionTit
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto mt-4">
+    <div className="w-full max-w-xl mx-auto mt-4">
       <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden">
         <div className="flex items-center gap-3 px-4 py-3">
           <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center shrink-0">
