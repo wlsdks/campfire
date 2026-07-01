@@ -233,11 +233,17 @@ export default function PresentationView({ sessionId, session, currentMode, onli
     if (['mysteryBox', 'hintQuiz'].includes(q.type)) updates[`questions/${qId}/revealedWinners`] = 0;
     // 발표모드에서도 이벤트(2배점수/티켓러시/잭팟) 적용 — 대시보드 빠른진행과 동일 경로
     updates[`questions/${qId}/event`] = nextEvent && isQuizQuestion(q) ? normalizeQuizEvent(nextEvent) : null;
+    updates.pendingEvent = null; // 예고 소진
     await update(ref(db, `sessions/${sessionId}`), updates);
   }, [sessionId, session?.questions]);
 
   // 다음 퀴즈에 걸 이벤트 (발표모드용 — 기존엔 대시보드 빠른진행에서만 가능)
   const [nextEvent, setNextEvent] = useState(null);
+  // 세션 pendingEvent 동기 — 학생 대기화면 "다음 퀴즈 예고" 배너와 연동(대시보드 경로와 파리티)
+  const armNextEvent = useCallback((preset) => {
+    setNextEvent(preset);
+    update(ref(db, `sessions/${sessionId}`), { pendingEvent: preset || null }).catch(() => {});
+  }, [sessionId]);
 
   const goPrev = useCallback(() => {
     if (currentQIdx > 0) goToQuestion(questionList[currentQIdx - 1][0]);
@@ -376,7 +382,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
               return (
                 <button
                   key={preset.id}
-                  onClick={() => setNextEvent(on ? null : preset)}
+                  onClick={() => armNextEvent(on ? null : preset)}
                   title={preset.description}
                   className={`px-2.5 py-1.5 rounded-lg text-xs font-semibold backdrop-blur-sm transition-all active:scale-95 ${
                     on ? 'bg-amber-400 text-slate-900 shadow-lg'
