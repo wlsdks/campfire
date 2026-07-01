@@ -175,7 +175,7 @@ export default memo(function StudentBottomBar({ sessionId }) {
         transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.1 }}
         role="toolbar"
         aria-label="참여 도구"
-        className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 z-30 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
+        className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200/70 dark:border-slate-700/50 z-30 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]"
       >
         <div className="max-w-[620px] mx-auto px-5 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))]">
           <div className="mb-2">

@@ -95,13 +95,13 @@ export default memo(function JoinShow({ sessionId }) {
       <Confetti trigger={confettiTrigger} />
 
       <div className="text-center">
-        <p className="text-emerald-400 text-xs md:text-sm font-bold tracking-[0.2em] uppercase mb-2">참여자</p>
+        <p className="text-emerald-600 dark:text-emerald-400 text-xs md:text-sm font-bold tracking-[0.2em] uppercase mb-2">참여자</p>
         <motion.div key={count} animate={{ scale: [1, 1.02, 1] }} transition={{ duration: 0.15 }}
-          className="text-[8rem] md:text-[11rem] lg:text-[14rem] font-black text-white leading-[0.85] tracking-tighter"
+          className="text-[8rem] md:text-[11rem] lg:text-[14rem] font-black text-slate-900 dark:text-white leading-[0.85] tracking-tighter"
           style={{ textShadow: '0 0 80px rgba(16,185,129,0.12)' }}>
           <Counter value={count} />
         </motion.div>
-        <p className="text-slate-500 text-sm md:text-base mt-2">명 접속 중</p>
+        <p className="text-slate-400 dark:text-slate-500 text-sm md:text-base mt-2">명 접속 중</p>
 
         <div className="h-10 mt-3 flex items-center justify-center">
           {currentMilestone > 0 && (
@@ -109,7 +109,7 @@ export default memo(function JoinShow({ sessionId }) {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              className="text-emerald-400 text-xl md:text-2xl font-black tracking-tight">
+              className="text-emerald-600 dark:text-emerald-400 text-xl md:text-2xl font-black tracking-tight">
               {currentMilestone}명 돌파!
             </motion.p>
           )}

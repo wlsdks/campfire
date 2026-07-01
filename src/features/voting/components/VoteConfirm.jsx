@@ -132,7 +132,7 @@ export default memo(function VoteConfirm({
       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
       role="status"
       aria-live="polite"
-      className="w-full rounded-xl bg-white dark:bg-slate-800 px-5 py-8 shadow-sm"
+      className="w-full rounded-xl bg-white dark:bg-slate-800 px-5 py-8 shadow-sm ring-1 ring-slate-200/70 dark:ring-slate-700/60"
     >
       <div className="flex flex-col items-center gap-5">
         {/* Check with particles — breathe when waiting */}

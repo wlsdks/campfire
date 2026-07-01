@@ -78,7 +78,7 @@ function CopyableCode({ code }) {
   return (
     <button
       onClick={handleCopy}
-      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium bg-white dark:bg-slate-800 text-slate-500 dark:text-slate-400 transition-colors duration-150 active:scale-[0.96]"
+      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-[13px] font-medium bg-white dark:bg-slate-800 shadow-sm ring-1 ring-slate-200/70 dark:ring-slate-700/60 text-slate-500 dark:text-slate-400 transition-colors duration-150 active:scale-[0.96]"
       aria-label="세션 코드 복사"
     >
       {code}
@@ -188,7 +188,7 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
                     className={`flex items-center gap-3 rounded-2xl py-3 px-5 ${
                       isMeWinner
                         ? 'bg-slate-900 dark:bg-slate-100'
-                        : 'bg-white dark:bg-slate-800'
+                        : 'bg-white dark:bg-slate-800 shadow-sm ring-1 ring-slate-200/70 dark:ring-slate-700/60'
                     }`}
                   >
                     <Avatar name={name} size="md" />
@@ -262,7 +262,7 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
                 transition={{ delay: 0.2, type: 'spring', stiffness: 300, damping: 25 }}
               >
                 {GAME_MODES[currentMode] ? (
-                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-medium">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-800 shadow-sm ring-1 ring-slate-200/70 dark:ring-slate-700/60 text-slate-600 dark:text-slate-300 text-sm font-medium">
                     {(() => { const MIcon = GAME_MODES[currentMode].icon; return <MIcon size={16} className="text-slate-400" />; })()}
                     <span>{GAME_MODES[currentMode].label}</span>
                     {currentMode !== 'breakTime' && (
@@ -297,7 +297,7 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
                   initial={{ scale: 1.05 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 400, damping: 20 }}
-                  className="flex items-center gap-2 bg-white dark:bg-slate-800 rounded-xl px-4 py-2.5"
+                  className="flex items-center gap-2 bg-white dark:bg-slate-800 rounded-xl px-4 py-2.5 shadow-sm ring-1 ring-slate-200/70 dark:ring-slate-700/60"
                 >
                   <motion.div
                     key={`icon-${count}`}

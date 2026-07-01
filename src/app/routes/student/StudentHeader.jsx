@@ -87,7 +87,7 @@ export default function StudentHeader({ sessionId }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 25 }}
         aria-label="Pick 학생 헤더"
-        className="fixed top-0 left-0 right-0 z-20 bg-white dark:bg-slate-800"
+        className="fixed top-0 left-0 right-0 z-20 bg-white dark:bg-slate-800 border-b border-slate-200/70 dark:border-slate-700/50"
       >
         {/* 393px 폰에서 점수·티켓 칩 등장 시 줄바꿈 방지 — 간격 축소 + nowrap */}
         <div className="flex items-center justify-between px-4 py-4 max-w-[620px] mx-auto">
