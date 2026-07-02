@@ -60,7 +60,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     );
     if (currentMode === 'breakTime') return <BreakTimer sessionId={sessionId} />;
     if (currentMode === 'leaderboard') return <div className="w-full max-w-xl md:max-w-2xl [&_.max-w-xl]:max-w-2xl px-2 md:px-0"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" /></div>;
-    if (currentMode === 'qaBoard') return <div className="w-full max-w-4xl"><ClassQABoard sessionId={sessionId} showInput={false} isAdmin /></div>;
+    if (currentMode === 'qaBoard') return <div className="w-full max-w-4xl"><ClassQABoard sessionId={sessionId} showInput={false} isAdmin role="admin" /></div>;
     if (currentMode === 'qaRanking') return <QARanking sessionId={sessionId} />;
     if (currentMode === 'joinShow') return <JoinShow sessionId={sessionId} />;
     if (currentMode === 'awards') return <AwardsCeremony assignmentId={session?.activeAssignmentId} />;

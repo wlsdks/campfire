@@ -26,6 +26,9 @@ export default function ClassQABoard({ sessionId, showInput = true, role, isAdmi
   const pid = getParticipantId();
   const nickname = getNickname() || '익명';
   const displayName = anonymous ? '익명' : nickname;
+  // 강사/스태프 화면(발표모드·전자칠판)의 답변 명의 — localStorage 참가자 닉네임이
+  // 그대로 붙으면 강사 답변이 학생 답변처럼 보임
+  const answererName = role === 'admin' ? '강사' : role === 'staff' ? '스태프' : nickname;
 
   const filtered = useMemo(() => {
     const base = tab === 'unanswered' ? questions.filter((q) => !q.answered) : questions;
@@ -157,7 +160,7 @@ export default function ClassQABoard({ sessionId, showInput = true, role, isAdmi
                 question={q}
                 index={i}
                 pid={pid}
-                nickname={nickname}
+                nickname={answererName}
                 role={role}
                 isAdmin={isAdmin}
                 sessionId={sessionId}

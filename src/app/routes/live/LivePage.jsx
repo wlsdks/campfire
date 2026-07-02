@@ -176,7 +176,7 @@ export default function LivePage() {
                   )}
                   {currentMode === 'breakTime' && <BreakTimer sessionId={sessionId} />}
                   {currentMode === 'leaderboard' && <div className="w-full max-w-2xl mx-auto [&_.max-w-xl]:max-w-2xl"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" /></div>}
-                  {currentMode === 'qaBoard' && <div className="w-full max-w-4xl mx-auto"><ClassQABoard sessionId={sessionId} showInput={false} /></div>}
+                  {currentMode === 'qaBoard' && <div className="w-full max-w-4xl mx-auto"><ClassQABoard sessionId={sessionId} showInput={false} isAdmin role="admin" /></div>}
                   {currentMode === 'qaRanking' && <QARanking sessionId={sessionId} />}
                   {currentMode === 'joinShow' && <JoinShow sessionId={sessionId} />}
                   {currentMode === 'awards' && <AwardsCeremony assignmentId={session?.activeAssignmentId} readOnly />}
