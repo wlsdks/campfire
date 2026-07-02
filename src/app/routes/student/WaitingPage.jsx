@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef, memo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, Zap, Hand, MessageSquare, Trophy, Heart, Copy, Check, Ticket, Coffee, UserCircle, Award } from 'lucide-react';
+import { Users, Zap, Hand, MessageSquare, Trophy, Heart, Copy, Check, Ticket, Coffee, UserCircle, Award, Mic } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
 import { useParticipantCount } from '@/features/participants/api/useParticipants';
 import QuizEventBanner from '@/components/ui/QuizEventBanner';
@@ -111,21 +111,23 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
   const nickname = getNickname();
   const { isWinner, winnerNames, gameResult } = useGameResult(sessionId);
 
-  // 당첨 결과가 있고, 현재 추첨 모드일 때 인라인으로 표시
-  const showGameResult = gameResult && currentMode === 'lottery';
+  // 결과 표시 — 추첨(lottery)·발표자 뽑기(randomPicker) 공용. 모드 전환 잔재 노출 방지로 mode 일치 요구
+  const isPickerResult = currentMode === 'randomPicker';
+  const showGameResult = gameResult && gameResult.mode === currentMode
+    && (currentMode === 'lottery' || currentMode === 'randomPicker');
 
-  // 당첨자 본인 풀스크린 연출 — 새 추첨 결과가 뜨는 순간 3.2초 + 진동, 이후 기존 인라인 카드로
-  const [winBlast, setWinBlast] = useState(false);
+  // 당첨/지목 본인 풀스크린 연출 — 새 결과가 뜨는 순간 3.2초 + 진동, 이후 기존 인라인 카드로
+  const [winBlast, setWinBlast] = useState(null); // null | 'lottery' | 'randomPicker'
   const lastResultRef = useRef(null);
   useEffect(() => {
     const key = gameResult?.at || gameResult?.timestamp || (gameResult ? JSON.stringify(gameResult.winners || []) : null);
     if (!key || key === lastResultRef.current) return;
     // key 기록은 당첨 확정 시에만 — gameResult가 isWinner 판정보다 먼저 도착하는 틱에서 소모 방지
-    if (isWinner && currentMode === 'lottery') {
+    if (isWinner && gameResult?.mode === currentMode && (currentMode === 'lottery' || currentMode === 'randomPicker')) {
       lastResultRef.current = key;
-      setWinBlast(true);
+      setWinBlast(currentMode);
       if ('vibrate' in navigator) navigator.vibrate([90, 40, 90, 40, 180]);
-      const t = setTimeout(() => setWinBlast(false), 3200);
+      const t = setTimeout(() => setWinBlast(null), 3200);
       return () => clearTimeout(t);
     }
   }, [gameResult, isWinner, currentMode]);
@@ -148,19 +150,21 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
               transition={{ type: 'spring', stiffness: 320, damping: 18 }}
               className="w-28 h-28 rounded-full bg-amber-400 flex items-center justify-center shadow-[0_0_80px_rgba(251,191,36,0.55)]"
             >
-              <Trophy size={56} className="text-slate-900" />
+              {winBlast === 'randomPicker'
+                ? <Mic size={56} className="text-slate-900" />
+                : <Trophy size={56} className="text-slate-900" />}
             </motion.div>
             <motion.p
               initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
               className="mt-6 text-4xl font-black tracking-tight text-white"
             >
-              🎉 당첨!
+              {winBlast === 'randomPicker' ? '🎤 발표 차례!' : '🎉 당첨!'}
             </motion.p>
             <motion.p
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}
               className="mt-2 text-base font-medium text-amber-200"
             >
-              {nickname}님, 축하합니다!
+              {winBlast === 'randomPicker' ? `${nickname}님, 앞으로 나와주세요!` : `${nickname}님, 축하합니다!`}
             </motion.p>
           </motion.div>
         )}
@@ -201,7 +205,9 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
                   animate={{ rotate: [0, -12, 12, -6, 6, 0] }}
                   transition={{ duration: 0.5, delay: 0.3, ease: 'easeInOut' }}
                 >
-                  <Trophy size={36} className="text-white dark:text-slate-900" />
+                  {isPickerResult
+                    ? <Mic size={36} className="text-white dark:text-slate-900" />
+                    : <Trophy size={36} className="text-white dark:text-slate-900" />}
                 </motion.div>
               </div>
             </motion.div>
@@ -209,7 +215,9 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
             {/* Result heading */}
             <div className="space-y-2">
               <h2 className="text-2xl font-black tracking-tight text-slate-900 dark:text-slate-100">
-                {isWinner ? '축하합니다!' : '당첨자 발표'}
+                {isPickerResult
+                  ? (isWinner ? '발표 차례예요!' : '발표자 발표')
+                  : (isWinner ? '축하합니다!' : '당첨자 발표')}
               </h2>
               {isWinner && (
                 <motion.p
@@ -218,7 +226,7 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
                   transition={{ delay: 0.3 }}
                   className="text-slate-500 dark:text-slate-400 text-sm"
                 >
-                  추첨에서 당첨되었어요!
+                  {isPickerResult ? '앞으로 나와 마이크를 잡아주세요' : '추첨에서 당첨되었어요!'}
                 </motion.p>
               )}
             </div>
@@ -264,7 +272,7 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
                 transition={{ delay: 0.6 }}
                 className="text-slate-400 dark:text-slate-500 text-sm"
               >
-                다음 기회에 도전해보세요
+                {isPickerResult ? '큰 박수로 응원해주세요!' : '다음 기회에 도전해보세요'}
               </motion.p>
             )}
           </motion.div>

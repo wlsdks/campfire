@@ -64,7 +64,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     if (currentMode === 'qaRanking') return <QARanking sessionId={sessionId} />;
     if (currentMode === 'joinShow') return <JoinShow sessionId={sessionId} />;
     if (currentMode === 'awards') return <AwardsCeremony assignmentId={session?.activeAssignmentId} />;
-    if (currentMode === 'randomPicker') return <RandomPicker participants={onlineList} />;
+    if (currentMode === 'randomPicker') return <RandomPicker participants={onlineList} onResult={(w) => onGameResult?.(w, 'randomPicker')} />;
     if (currentMode === 'comprehension') return <ComprehensionPresenter sessionId={sessionId} />;
     if (currentMode === 'quickSurvey') return <SurveyPresenter sessionId={sessionId} />;
     if (currentMode === 'discussion') return <DiscussionPresenter sessionId={sessionId} />;

@@ -8,9 +8,9 @@ import { hapticSuccess } from '@/lib/haptics';
 /**
  * RandomPicker — 랜덤 발표자 선정 (콜드콜).
  * 이름이 빠르게 순환 → 감속 → 멈춤 → 발표자 reveal.
- * 연속 중복 방지.
+ * 연속 중복 방지. 확정 시 onResult([{id,nickname}]) — 뽑힌 학생 폰에 알림(gameResult publish).
  */
-export default function RandomPicker({ participants }) {
+export default function RandomPicker({ participants, onResult }) {
   const [picking, setPicking] = useState(false);
   const [selected, setSelected] = useState(null);
   const [displayName, setDisplayName] = useState(null);
@@ -37,9 +37,11 @@ export default function RandomPicker({ participants }) {
 
     // Exclude recently picked (up to last 3) to prevent repetition
     const excluded = new Set(history.slice(-Math.min(3, Math.floor(names.length / 2))));
-    const candidates = names.filter(n => !excluded.has(n));
-    const pool = candidates.length > 0 ? candidates : names;
-    const winner = pool[Math.floor(Math.random() * pool.length)];
+    // 참가자 객체로 뽑아 id를 보존 — 닉네임 문자열만 넘기면 동명이인 오귀속 가능
+    const candidates = participants.filter(p => !excluded.has(p.nickname));
+    const pool = candidates.length > 0 ? candidates : participants;
+    const winnerP = pool[Math.floor(Math.random() * pool.length)];
+    const winner = winnerP.nickname;
 
     // Fast cycling phase (80ms intervals)
     let count = 0;
@@ -64,6 +66,7 @@ export default function RandomPicker({ participants }) {
               setSelected(winner);
               setHistory(prev => [...prev, winner]);
               hapticSuccess();
+              onResult?.([{ id: winnerP.id, nickname: winnerP.nickname }]);
             }, 300);
             return;
           }
@@ -75,7 +78,7 @@ export default function RandomPicker({ participants }) {
         decelStep();
       }
     }, 80);
-  }, [picking, names, history]);
+  }, [picking, names, history, participants, onResult]);
 
   if (names.length === 0) {
     return (

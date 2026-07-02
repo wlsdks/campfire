@@ -180,7 +180,7 @@ export default function LivePage() {
                   {currentMode === 'qaRanking' && <QARanking sessionId={sessionId} />}
                   {currentMode === 'joinShow' && <JoinShow sessionId={sessionId} />}
                   {currentMode === 'awards' && <AwardsCeremony assignmentId={session?.activeAssignmentId} readOnly />}
-                  {currentMode === 'randomPicker' && <RandomPicker participants={onlineList} />}
+                  {currentMode === 'randomPicker' && <RandomPicker participants={onlineList} onResult={(w) => handleGameResult(w, 'randomPicker')} />}
                   {currentMode === 'comprehension' && <ComprehensionPresenter sessionId={sessionId} />}
                   {currentMode === 'quickSurvey' && <SurveyPresenter sessionId={sessionId} />}
                   {currentMode === 'discussion' && <DiscussionPresenter sessionId={sessionId} />}
