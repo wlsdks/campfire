@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import { ref, set, remove, update, get, runTransaction, increment } from 'firebase/database';
+import { ref, set, remove, update, get, runTransaction, increment, query, orderByKey, limitToLast, endBefore } from 'firebase/database';
 import { getServerNow } from '@/features/timer/api/useTimer';
 import { db } from '@/lib/firebase';
 import { generateQuestionId } from '@/lib/utils';
@@ -32,6 +32,28 @@ async function awaitRevealLock(sessionId) {
 // 비우는 순간 인플라이트 학생 write가 도착하면 잔존 데이터 발생. 600ms 후 재-sweep으로
 // catch. 같은 세션에서 새 reset이 곧이어 발생하면 직전 sweep은 무효화 (epoch 비교).
 const resetEpochs = new Map();
+
+// 휘발성 피드(리액션·한마디)를 최근 KEEP개만 유지 — 스펙("최근 50개")과 달리 push만 하고
+// 정리가 없어 세션 내내 무한 누적되던 것을, 질문 전환 시점(강사 단일 작성자)에 트림.
+// 채팅/긴급질문은 '기록'이므로 트림하지 않음.
+const FEED_KEEP = 50;
+export async function trimEphemeralFeeds(sessionId) {
+  for (const node of ['reactions', 'chatBubbles']) {
+    try {
+      const base = ref(db, `sessions/${sessionId}/${node}`);
+      const keepSnap = await get(query(base, orderByKey(), limitToLast(FEED_KEEP)));
+      const keepKeys = Object.keys(keepSnap.val() || {});
+      if (keepKeys.length < FEED_KEEP) continue; // 50개 미만 — 정리 불필요
+      const oldest = keepKeys.sort()[0];
+      const oldSnap = await get(query(base, orderByKey(), endBefore(oldest)));
+      const oldKeys = Object.keys(oldSnap.val() || {});
+      if (!oldKeys.length) continue;
+      const updates = {};
+      oldKeys.forEach((k) => { updates[k] = null; });
+      await update(base, updates);
+    } catch { /* 정리 실패는 무해 — 다음 전환 때 재시도 */ }
+  }
+}
 
 export function useQuestionActions(sessionId, questions, currentQuestion, scores, participants) {
   const [error, setError] = useState(null);
@@ -104,6 +126,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       }
 
       await update(ref(db, `sessions/${sessionId}`), updates);
+      trimEphemeralFeeds(sessionId); // 비동기 — 실패 무해
       showToast('질문이 활성화되었습니다');
     } catch {
       // Silently fail
