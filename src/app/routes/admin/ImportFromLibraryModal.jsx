@@ -1,19 +1,29 @@
 import { useState, useMemo } from 'react';
-import { Search, X, Check, MessageSquare } from 'lucide-react';
+import { Search, X, Check, MessageSquare, Trash2 } from 'lucide-react';
 import { useQuestionLibrary } from '@/features/questions/api/useQuestionLibrary';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
 import PickMascot from '@/components/ui/PickMascot';
 import { QUESTION_TYPES } from '@/lib/question-types';
 
-function PickableCard({ question, selected, onToggle }) {
+function PickableCard({ question, selected, onToggle, onDelete }) {
   const qType = QUESTION_TYPES.find((t) => t.value === question.type);
   const Icon = qType?.icon || MessageSquare;
 
   return (
+    <div className="relative">
+    {onDelete && (
+      <button
+        onClick={onDelete}
+        aria-label="보관함에서 삭제"
+        className="absolute right-2 top-2 z-10 p-1.5 rounded-md text-slate-300 dark:text-slate-600 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors duration-150 active:scale-90"
+      >
+        <Trash2 size={13} />
+      </button>
+    )}
     <button
       onClick={onToggle}
-      className={`w-full text-left p-3 rounded-xl border transition-colors duration-150 active:scale-[0.98] ${
+      className={`w-full text-left p-3 pr-9 rounded-xl border transition-colors duration-150 active:scale-[0.98] ${
         selected
           ? 'border-slate-400 bg-slate-50 dark:bg-slate-700 dark:border-slate-500 shadow-sm'
           : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
@@ -66,13 +76,20 @@ function PickableCard({ question, selected, onToggle }) {
         </div>
       </div>
     </button>
+    </div>
   );
 }
 
 export default function ImportFromLibraryModal({ open, onClose, adminUid, onImport }) {
-  const { questions, loading } = useQuestionLibrary(adminUid);
+  const { questions, loading, deleteQuestion } = useQuestionLibrary(adminUid);
   const [selected, setSelected] = useState(new Set());
   const [searchQuery, setSearchQuery] = useState('');
+
+  // 보관함 항목 삭제 — 그동안 저장만 되고 지울 방법이 UI에 없어 누적됨
+  function handleDelete(qId) {
+    deleteQuestion(qId);
+    setSelected((prev) => { const next = new Set(prev); next.delete(qId); return next; });
+  }
 
   const filtered = useMemo(() => {
     if (!searchQuery.trim()) return questions;
@@ -158,6 +175,7 @@ export default function ImportFromLibraryModal({ open, onClose, adminUid, onImpo
                 question={q}
                 selected={selected.has(q.id)}
                 onToggle={() => toggleSelect(q.id)}
+                onDelete={() => handleDelete(q.id)}
               />
             ))
           )}
