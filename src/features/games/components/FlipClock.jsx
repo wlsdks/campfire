@@ -54,13 +54,16 @@ function Pair({ value }) {
 }
 
 /**
- * FlipClock — 현재 시각을 split-flap 풍으로 크게 표시(전자칠판용).
- * @param {boolean} showSeconds 초 표시 여부(기본 true)
+ * FlipClock — split-flap 풍 대형 시계(전자칠판용).
+ * 기본: 현재 시각. values를 주면(예: [분,초] 또는 [시,분,초]) 그 값을 표시 — 카운트다운용.
+ * @param {boolean} showSeconds 초 표시 여부(현재시각 모드, 기본 true)
+ * @param {number[]} [values]   두 자리 그룹 배열 — 주어지면 내부 시계 대신 이 값 표시
  */
-export default memo(function FlipClock({ showSeconds = true }) {
+export default memo(function FlipClock({ showSeconds = true, values = null }) {
   const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
+    if (values) return; // 외부 값 모드 — 내부 tick 불필요
     // 초 경계에 맞춰 정렬 후 1초 간격 갱신 — 초가 튀지 않게
     let id;
     const align = setTimeout(() => {
@@ -68,19 +71,18 @@ export default memo(function FlipClock({ showSeconds = true }) {
       id = setInterval(() => setNow(new Date()), 1000);
     }, 1000 - (Date.now() % 1000));
     return () => { clearTimeout(align); clearInterval(id); };
-  }, []);
+  }, [values]);
+
+  const groups = values ?? [now.getHours(), now.getMinutes(), ...(showSeconds ? [now.getSeconds()] : [])];
 
   return (
     <div className="flex items-center gap-[clamp(0.5rem,2vw,1.5rem)]">
-      <Pair value={now.getHours()} />
-      <Colon />
-      <Pair value={now.getMinutes()} />
-      {showSeconds && (
-        <>
-          <Colon />
-          <Pair value={now.getSeconds()} />
-        </>
-      )}
+      {groups.map((v, i) => (
+        <span key={i} className="contents">
+          {i > 0 && <Colon />}
+          <Pair value={v} />
+        </span>
+      ))}
     </div>
   );
 });

@@ -18,7 +18,7 @@ import AnswerBubbleOverlay from '@/features/voting/components/AnswerBubbleOverla
 import { useGameResultPublisher } from '@/features/games/api/useGameResult';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
 import PersistentAssignmentBar from '@/features/ai-judge/components/PersistentAssignmentBar';
-import { useQuestionActions } from '@/hooks/useQuestionActions';
+import { useQuestionActions, trimEphemeralFeeds } from '@/hooks/useQuestionActions';
 import { useTimer } from '@/features/timer/api/useTimer';
 import { PresentEmptyState, PresentQROverlay, GameFallback, SideNoticesPanel, ExitHint, PresentModeMenu, PresentTimerButton } from './PresentationParts';
 
@@ -58,7 +58,7 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     if (currentMode === 'lottery') return (
       <Lottery participants={drawParticipants} onResult={(names) => onGameResult?.(names, 'lottery')} presenter={presentMode} />
     );
-    if (currentMode === 'breakTime') return <BreakTimer />;
+    if (currentMode === 'breakTime') return <BreakTimer sessionId={sessionId} />;
     if (currentMode === 'leaderboard') return <div className="w-full max-w-xl md:max-w-2xl [&_.max-w-xl]:max-w-2xl px-2 md:px-0"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" /></div>;
     if (currentMode === 'qaBoard') return <div className="w-full max-w-4xl"><ClassQABoard sessionId={sessionId} showInput={false} isAdmin /></div>;
     if (currentMode === 'qaRanking') return <QARanking sessionId={sessionId} />;
@@ -235,6 +235,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
     updates[`questions/${qId}/event`] = nextEvent && isQuizQuestion(q) ? normalizeQuizEvent(nextEvent) : null;
     updates.pendingEvent = null; // 예고 소진
     await update(ref(db, `sessions/${sessionId}`), updates);
+    trimEphemeralFeeds(sessionId); // 리액션·한마디 최근 50 유지(비동기, 실패 무해)
   }, [sessionId, session?.questions]);
 
   // 다음 퀴즈에 걸 이벤트 (발표모드용 — 기존엔 대시보드 빠른진행에서만 가능)
