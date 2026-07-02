@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect, useRef, memo } from 'react';
-import { ref, onValue, set, update, increment, serverTimestamp } from 'firebase/database';
+import { ref, onValue, set, update, increment, runTransaction, serverTimestamp } from 'firebase/database';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Loader2, Users, X, Star } from 'lucide-react';
 import { db } from '@/lib/firebase';
@@ -161,22 +161,25 @@ export default memo(function SubjectiveResults({ sessionId, questionId, question
 
   // 우수 답변 스포트라이트 — question.spotlight로 전 서페이스(전자칠판/발표/대시보드) 동기
   const spotlight = question?.spotlight || null;
-  const spotAwarded = question?.spotlightAwarded || {};
   const toggleSpotlight = async (vote) => {
     const qRef = ref(db, `sessions/${sessionId}/questions/${questionId}`);
     if (spotlight?.voteId === vote.id) {
       await update(qRef, { spotlight: null }).catch(() => {});
     } else {
-      const updates = { spotlight: { voteId: vote.id, pid: vote.id, nickname: vote.nickname || '익명', value: vote.value, at: Date.now() } };
-      const firstTime = !spotAwarded[vote.id];
-      if (firstTime) updates[`spotlightAwarded/${vote.id}`] = true;
-      await update(qRef, updates).catch(() => {});
-      if (firstTime) {
-        // 티켓 +3 (원자적 증가) — 선정 보상, 재선정 시 중복 지급 없음
-        await update(ref(db, `sessions/${sessionId}/scores/${vote.id}`), {
-          tickets: increment(3), nickname: vote.nickname || '익명',
-        }).catch(() => {});
-      }
+      await update(qRef, { spotlight: { voteId: vote.id, pid: vote.id, nickname: vote.nickname || '익명', value: vote.value, at: Date.now() } }).catch(() => {});
+      // 보상 선점을 트랜잭션으로 — 두 강사 화면이 동시에 같은 답변을 픽해도 +3은 1회만
+      try {
+        const claim = await runTransaction(
+          ref(db, `sessions/${sessionId}/questions/${questionId}/spotlightAwarded/${vote.id}`),
+          (cur) => (cur ? undefined : true)
+        );
+        if (claim.committed) {
+          // total: increment(0) — 스코어 노드가 없던 학생도 rules validate(nickname+total 필수) 통과
+          await update(ref(db, `sessions/${sessionId}/scores/${vote.id}`), {
+            tickets: increment(3), total: increment(0), nickname: vote.nickname || '익명',
+          });
+        }
+      } catch { /* 선점 실패(이미 지급) — 무시 */ }
     }
     setSelected(null);
   };

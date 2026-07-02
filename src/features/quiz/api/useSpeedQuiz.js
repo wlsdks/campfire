@@ -1,4 +1,4 @@
-import { ref, onValue, update, set, remove } from 'firebase/database';
+import { ref, onValue, update, set, remove, runTransaction, increment } from 'firebase/database';
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { db } from '@/lib/firebase';
 import { isQuizQuestion, getQuizReward } from '@/lib/quiz';
@@ -107,8 +107,16 @@ export function useSpeedQuiz(sessionId, session, { scores, participants, startTi
         [`questions/${currentQId}/revealedAt`]: now,
       };
 
+      // awardedAt 트랜잭션 선점 — 다중 기기 동시 리빌 시 이중 지급 방지 (revealQuiz와 동일 정책)
+      let iAward = false;
       if (!question.awardedAt) {
-        updates[`questions/${currentQId}/awardedAt`] = now;
+        const claim = await runTransaction(
+          ref(db, `sessions/${sessionId}/questions/${currentQId}/awardedAt`),
+          (cur) => (cur ? undefined : now)
+        );
+        iAward = claim.committed;
+      }
+      if (iAward) {
         const currentScores = scoresRef.current;
         const currentParticipants = participantsRef.current;
 
@@ -123,19 +131,16 @@ export function useSpeedQuiz(sessionId, session, { scores, participants, startTi
           const comboMultiplier = getComboMultiplier(nextStreak);
           const boostedPoints = Math.round(reward.points * comboMultiplier);
 
-          // Total never goes below 0 (betting penalty can be negative)
-          const newTotal = Math.max(0, (existingScore.total || 0) + boostedPoints);
-          updates[`scores/${participantId}`] = {
-            nickname,
-            total: newTotal,
-            tickets: (existingScore.tickets || 0) + reward.tickets,
-            lastPoints: boostedPoints,
-            lastTickets: reward.tickets,
-            streak: nextStreak,
-            bestStreak: Math.max(existingScore.bestStreak || 0, nextStreak),
-            lastQuestionId: currentQId,
-            updatedAt: now,
-          };
+          // total/tickets는 원자 increment — 동시 지급(스포트라이트 등) 유실 방지
+          updates[`scores/${participantId}/total`] = increment(boostedPoints);
+          updates[`scores/${participantId}/tickets`] = increment(reward.tickets);
+          updates[`scores/${participantId}/nickname`] = nickname;
+          updates[`scores/${participantId}/lastPoints`] = boostedPoints;
+          updates[`scores/${participantId}/lastTickets`] = reward.tickets;
+          updates[`scores/${participantId}/streak`] = nextStreak;
+          updates[`scores/${participantId}/bestStreak`] = Math.max(existingScore.bestStreak || 0, nextStreak);
+          updates[`scores/${participantId}/lastQuestionId`] = currentQId;
+          updates[`scores/${participantId}/updatedAt`] = now;
         });
       }
 

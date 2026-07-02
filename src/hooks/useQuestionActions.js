@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo } from 'react';
-import { ref, set, remove, update, get } from 'firebase/database';
+import { ref, set, remove, update, get, runTransaction, increment } from 'firebase/database';
 import { getServerNow } from '@/features/timer/api/useTimer';
 import { db } from '@/lib/firebase';
 import { generateQuestionId } from '@/lib/utils';
@@ -232,18 +232,26 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
       const now = getNow();
       const voteEntries = Object.entries(question.votes || {});
 
-      // Phase 1: Reveal answer + mark awarded
-      const revealUpdates = {
+      // Phase 1: Reveal answer
+      await update(ref(db, `sessions/${sessionId}`), {
         currentMode: 'quiz',
         [`questions/${qId}/revealedAt`]: now,
-      };
+      });
+
+      // awardedAt을 트랜잭션으로 '선점' — 강사 다중 기기(노트북+태블릿)가 동시에
+      // 정답공개를 눌러도 커밋 승자 1명만 Phase 2(점수 지급)를 실행. 로컬 스냅샷
+      // 가드(question.awardedAt)만으론 sync 지연 윈도우에서 이중 지급 가능했음.
+      let iAward = false;
       if (!question.awardedAt) {
-        revealUpdates[`questions/${qId}/awardedAt`] = now;
+        const claim = await runTransaction(
+          ref(db, `sessions/${sessionId}/questions/${qId}/awardedAt`),
+          (cur) => (cur ? undefined : now) // 이미 있으면 abort
+        );
+        iAward = claim.committed;
       }
-      await update(ref(db, `sessions/${sessionId}`), revealUpdates);
 
       // Phase 2: Score updates in batches of 50 — lock으로 감싸 도중 currentQuestion 변경 방지
-      if (!question.awardedAt) {
+      if (iAward) {
         // 이전 reveal이 아직 batch 도중이면 (드물게) 완료 대기
         await awaitRevealLock(sessionId);
         let resolveLock;
@@ -259,19 +267,18 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
               const existingScore = (scores || {})[participantId] || {};
               const nextStreak = reward.isCorrect ? (existingScore.streak || 0) + 1 : 0;
               const nickname = (participants || {})[participantId]?.nickname || vote.nickname || existingScore.nickname || `참여자 ${participantId.slice(0, 4)}`;
-              const newTotal = Math.max(0, (existingScore.total || 0) + reward.points);
-
-              scoreUpdates[`scores/${participantId}`] = {
-                nickname,
-                total: newTotal,
-                tickets: (existingScore.tickets || 0) + reward.tickets,
-                lastPoints: reward.points,
-                lastTickets: reward.tickets,
-                streak: nextStreak,
-                bestStreak: Math.max(existingScore.bestStreak || 0, nextStreak),
-                lastQuestionId: qId,
-                updatedAt: now,
-              };
+              // total/tickets는 원자 increment — 절대값 set은 동시 진행 중인 다른 지급
+              // (예: 스포트라이트 티켓 +3)을 stale 스냅샷으로 덮어 유실시킬 수 있음.
+              // (베팅 패널티로 이론상 0 미만 가능하나 표시 계층에서 무해 — 기본 이벤트는 항상 ≥0)
+              scoreUpdates[`scores/${participantId}/total`] = increment(reward.points);
+              scoreUpdates[`scores/${participantId}/tickets`] = increment(reward.tickets);
+              scoreUpdates[`scores/${participantId}/nickname`] = nickname;
+              scoreUpdates[`scores/${participantId}/lastPoints`] = reward.points;
+              scoreUpdates[`scores/${participantId}/lastTickets`] = reward.tickets;
+              scoreUpdates[`scores/${participantId}/streak`] = nextStreak;
+              scoreUpdates[`scores/${participantId}/bestStreak`] = Math.max(existingScore.bestStreak || 0, nextStreak);
+              scoreUpdates[`scores/${participantId}/lastQuestionId`] = qId;
+              scoreUpdates[`scores/${participantId}/updatedAt`] = now;
             });
             await update(ref(db, `sessions/${sessionId}`), scoreUpdates);
           }
@@ -348,9 +355,15 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
         [`questions/${qId}/aiGrades`]: null,
         [`questions/${qId}/revealedAt`]: null,
         [`questions/${qId}/activatedAt`]: null,
+        // awardedAt 미정리 시 재진행 후 정답공개가 선점 가드에 막혀 점수가 영영 안 나감
+        [`questions/${qId}/awardedAt`]: null,
         [`questions/${qId}/revealedHints`]: 0,
         [`questions/${qId}/revealedWinners`]: 0,
         [`questions/${qId}/currentSlide`]: 0,
+        // 주관식 부속 상태도 리셋 (스포트라이트 잔존/재선정 차단/확장 잔존 방지)
+        [`questions/${qId}/spotlight`]: null,
+        [`questions/${qId}/spotlightAwarded`]: null,
+        [`questions/${qId}/wallExpanded`]: null,
       });
       showToast('답변이 초기화되었습니다');
     } catch {
@@ -385,6 +398,9 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
         updates[`questions/${qId}/revealedHints`] = 0;
         updates[`questions/${qId}/revealedWinners`] = 0;
         updates[`questions/${qId}/currentSlide`] = 0;
+        updates[`questions/${qId}/spotlight`] = null;
+        updates[`questions/${qId}/spotlightAwarded`] = null;
+        updates[`questions/${qId}/wallExpanded`] = null;
       });
       await update(ref(db, `sessions/${sessionId}`), updates);
       showToast('모든 답변과 점수가 초기화되었습니다');
