@@ -177,7 +177,7 @@ export default function StudentHeader({ sessionId }) {
                         많이 모을수록 추첨에서 당첨 확률이 올라가요!
                       </p>
                       <p className="text-[11px] text-slate-400 mt-1.5">
-                        퀴즈 참여 +1장 · 정답 +2장
+                        퀴즈 참여 +1장 · 정답 +2장 · 우수 답변 선정 +3장
                       </p>
                     </motion.div>
                   )}
