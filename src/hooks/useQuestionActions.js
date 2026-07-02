@@ -330,6 +330,22 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     }
   }
 
+  // 이미지 슬라이드 이동 — 대시보드/발표모드 공용 (전자칠판·학생은 currentSlide 구독)
+  async function setSlide(qId, index) {
+    const question = questions?.[qId];
+    if (question?.type !== 'imageSlide') return;
+    const total = (question.slideImages || []).length;
+    if (!total) return;
+    const next = Math.max(0, Math.min(total - 1, index));
+    try {
+      await update(ref(db, `sessions/${sessionId}`), {
+        [`questions/${qId}/currentSlide`]: next,
+      });
+    } catch {
+      // Silently fail
+    }
+  }
+
   async function revealAnswer(qId) {
     const question = questions?.[qId];
     if (!question) return;
@@ -463,6 +479,7 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
     revealQuiz,
     revealHint,
     revealAnswer,
+    setSlide,
     resetQuestion,
     resetAllQuestions,
     showLeaderboard,

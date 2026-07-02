@@ -1,5 +1,5 @@
 import { useState, memo } from 'react';
-import { Play, Square, Zap, PartyPopper, Check, Trophy, ChevronRight, Eye } from 'lucide-react';
+import { Play, Square, Zap, PartyPopper, Check, Trophy, ChevronLeft, ChevronRight, Eye } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { QUIZ_EVENT_PRESETS, isQuizQuestion } from '@/lib/quiz';
 
@@ -24,6 +24,7 @@ export default memo(function QuickProgressCard({
   onReveal,
   onRevealHint,
   onRevealAnswer,
+  onSlide,
   onShowLeaderboard,
   onNextEvent,
   speedQuizActive,
@@ -285,6 +286,27 @@ export default memo(function QuickProgressCard({
           )}
         </div>
       )}
+
+      {/* 이미지 슬라이드 이동 — 발표모드에 안 들어가도 대시보드에서 넘길 수 있게 */}
+      {currentQ?.type === 'imageSlide' && (currentQ.slideImages?.length || 0) > 0 && (() => {
+        const cur = currentQ.currentSlide || 0;
+        const total = currentQ.slideImages.length;
+        return (
+          <div className="flex items-center gap-2">
+            <Button onClick={() => onSlide?.(currentEntry[0], cur - 1)} variant="secondary" size="sm"
+              disabled={cur <= 0} className="flex-1">
+              <ChevronLeft size={14} /> 이전
+            </Button>
+            <span className="text-xs font-medium tabular-nums text-slate-500 dark:text-slate-400 shrink-0 px-1">
+              {cur + 1} / {total}
+            </span>
+            <Button onClick={() => onSlide?.(currentEntry[0], cur + 1)} variant="secondary" size="sm"
+              disabled={cur >= total - 1} className="flex-1">
+              다음 <ChevronRight size={14} />
+            </Button>
+          </div>
+        );
+      })()}
 
       {/* Context-aware CTA buttons — taller touch targets on mobile */}
       <div className="grid grid-cols-2 gap-2">

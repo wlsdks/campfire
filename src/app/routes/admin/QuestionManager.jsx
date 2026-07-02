@@ -87,7 +87,7 @@ export default function QuestionManager({
     error, toast, questionList,
     handleSubmit, activateQuestion, clearActive,
     deleteQuestion, duplicateQuestion, moveQuestion, reorderQuestion, resetQuestion,
-    importFromLibrary, revealQuiz, revealHint, revealAnswer, resetAllQuestions, showLeaderboard,
+    importFromLibrary, revealQuiz, revealHint, revealAnswer, setSlide, resetAllQuestions, showLeaderboard,
   } = useQuestionActions(sessionId, questions, currentQuestion, scores, participants);
 
   const handleTogglePersistent = useCallback((qId) => {
@@ -182,6 +182,7 @@ export default function QuestionManager({
             onReveal={revealQuiz}
             onRevealHint={revealHint}
             onRevealAnswer={revealAnswer}
+            onSlide={setSlide}
             onShowLeaderboard={showLeaderboard}
             onNextEvent={handleNextEvent}
             speedQuizActive={speedQuizActive}

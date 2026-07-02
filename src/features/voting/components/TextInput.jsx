@@ -2,10 +2,11 @@ import { ref, set, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
 import { getParticipantId, getNickname } from '@/lib/participant';
-import { useState, memo } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, MessageCircle, Cloud, PenLine } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import { useMyVote } from '@/hooks/useMyVote';
 
 function SubmitConfirm({ type, value }) {
   const isQnA = type === 'qna';
@@ -63,10 +64,16 @@ function SubmitConfirm({ type, value }) {
 }
 
 export default memo(function TextInput({ sessionId, questionId, type = 'wordcloud', placeholder, maxLength = 50, disabled = false, multiline = false }) {
+  const { myVote } = useMyVote(sessionId, questionId);
   const [text, setText] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [submittedValue, setSubmittedValue] = useState('');
   const [error, setError] = useState(null);
+
+  // 새로고침/재마운트 시 이미 제출한 답 복원 — 없으면 빈 입력창이 다시 떠서 중복 제출(덮어쓰기) 가능
+  useEffect(() => {
+    if (myVote && !submitted) { setSubmittedValue(myVote); setSubmitted(true); }
+  }, [myVote, submitted]);
 
   async function handleSubmit(e) {
     e.preventDefault();
