@@ -1,22 +1,9 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getGeminiModel, isGeminiConfigured } from '@/lib/gemini/client';
 
-let genAI = null;
 const MODEL_NAME = 'gemini-2.5-flash-lite';
 
-function getApiKey() {
-  return import.meta.env.VITE_GEMINI_API_KEY || '';
-}
-
-function ensureClient() {
-  if (genAI) return genAI;
-  const key = getApiKey();
-  if (!key) throw new Error('Gemini API 키가 설정되지 않았습니다.');
-  genAI = new GoogleGenerativeAI(key);
-  return genAI;
-}
-
 export function isSummaryReady() {
-  return !!getApiKey();
+  return isGeminiConfigured();
 }
 
 const PROMPT = `당신은 강의 중 학생들의 응답을 실시간으로 읽고 패턴을 요약하는 분석가입니다.
@@ -32,8 +19,7 @@ const PROMPT = `당신은 강의 중 학생들의 응답을 실시간으로 읽�
 }`;
 
 export async function summarizeResponses({ questionTitle, questionType, responses }) {
-  const client = ensureClient();
-  const model = client.getGenerativeModel({
+  const model = getGeminiModel({
     model: MODEL_NAME,
     systemInstruction: PROMPT,
   });

@@ -1,22 +1,9 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getGeminiModel, isGeminiConfigured } from '@/lib/gemini/client';
 
-let genAI = null;
 const MODEL_NAME = 'gemini-2.5-flash-lite';
 
-function getApiKey() {
-  return import.meta.env.VITE_GEMINI_API_KEY || '';
-}
-
-function ensureClient() {
-  if (genAI) return genAI;
-  const key = getApiKey();
-  if (!key) throw new Error('Gemini API 키가 설정되지 않았습니다.');
-  genAI = new GoogleGenerativeAI(key);
-  return genAI;
-}
-
 export function isAiAnswerReady() {
-  return !!getApiKey();
+  return isGeminiConfigured();
 }
 
 const PROMPT = `당신은 한국어 강의 현장의 신중한 AI 조교입니다.
@@ -35,8 +22,7 @@ const PROMPT = `당신은 한국어 강의 현장의 신중한 AI 조교입니�
 답변 시 말투: 존중하는 어조, 친근하되 전문적으로. "~입니다" 체.`;
 
 export async function generateStaffAnswer({ question, sessionContext = '' }) {
-  const client = ensureClient();
-  const model = client.getGenerativeModel({
+  const model = getGeminiModel({
     model: MODEL_NAME,
     systemInstruction: PROMPT,
   });

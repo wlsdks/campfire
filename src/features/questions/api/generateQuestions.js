@@ -1,22 +1,9 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getGeminiModel, isGeminiConfigured } from '@/lib/gemini/client';
 
-let genAI = null;
 const MODEL_NAME = 'gemini-2.5-flash-lite';
 
-function getApiKey() {
-  return import.meta.env.VITE_GEMINI_API_KEY || '';
-}
-
-function ensureClient() {
-  if (genAI) return genAI;
-  const key = getApiKey();
-  if (!key) throw new Error('Gemini API 키가 설정되지 않았습니다.');
-  genAI = new GoogleGenerativeAI(key);
-  return genAI;
-}
-
 export function isGeneratorReady() {
-  return !!getApiKey();
+  return isGeminiConfigured();
 }
 
 const SUPPORTED_TYPES = ['choice', 'ox', 'wordcloud', 'scale'];
@@ -50,8 +37,7 @@ const PROMPT = `당신은 한국어 워크숍/강의 진행자를 돕는 AI 조�
 - options는 choice에만 포함`;
 
 export async function generateQuestions({ topic, count = 4 }) {
-  const client = ensureClient();
-  const model = client.getGenerativeModel({
+  const model = getGeminiModel({
     model: MODEL_NAME,
     systemInstruction: PROMPT,
   });

@@ -1,22 +1,9 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getGeminiModel, isGeminiConfigured } from '@/lib/gemini/client';
 
-let genAI = null;
 const MODEL_NAME = 'gemini-2.5-flash-lite';
 
-function getApiKey() {
-  return import.meta.env.VITE_GEMINI_API_KEY || '';
-}
-
-function ensureClient() {
-  if (genAI) return genAI;
-  const key = getApiKey();
-  if (!key) throw new Error('Gemini API 키가 설정되지 않았습니다.');
-  genAI = new GoogleGenerativeAI(key);
-  return genAI;
-}
-
 export function isReportReady() {
-  return !!getApiKey();
+  return isGeminiConfigured();
 }
 
 const PROMPT = `당신은 한국어 학습자에게 개인 맞춤 수업 요약을 작성하는 차분한 교육 조수입니다.
@@ -59,8 +46,7 @@ export async function generateLearningReport({ stats }) {
     return { canGenerate: false, reason: '참여 데이터 부족 (최소 2문제 응답 필요)' };
   }
 
-  const client = ensureClient();
-  const model = client.getGenerativeModel({
+  const model = getGeminiModel({
     model: MODEL_NAME,
     systemInstruction: PROMPT,
   });

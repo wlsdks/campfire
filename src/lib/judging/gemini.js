@@ -3,28 +3,15 @@
  * 라이브 수업 심사는 ./geminiLive 로 분리.
  * 시상 계산은 ./awards 로 분리.
  *
- * API key는 빌드 타임 환경 변수(VITE_GEMINI_API_KEY)에서만 주입한다.
- * 클라이언트 UI/localStorage 입력 경로는 키 노출 위험이 커서 제거됨 — Google AI Studio
- * 콘솔에서 HTTP referrer 제한과 rate limit으로 quota 보호.
+ * API key는 이 번들에 존재하지 않는다 — Cloudflare Worker 프록시가 서버 시크릿으로
+ * 들고 있다. 클라이언트 설정은 프록시 URL뿐. 자세한 배경은 worker/README.md 참조.
  */
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getGeminiModel, isGeminiConfigured } from '@/lib/gemini/client';
 import { JUDGES } from './judges';
 import { EVALUATION_GUIDE, PREVIEW_PROMPT } from './prompts';
 
-let genAI = null;
-
-const ENV_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
-if (ENV_API_KEY) {
-  genAI = new GoogleGenerativeAI(ENV_API_KEY);
-}
-
 export function isGeminiReady() {
-  return genAI !== null;
-}
-
-/** Internal client accessor used by sibling modules (geminiLive). */
-export function getGenAI() {
-  return genAI;
+  return isGeminiConfigured();
 }
 
 const MODEL_NAME = 'gemini-2.5-flash-lite';
@@ -154,9 +141,7 @@ async function buildScreenshotParts(submission, max = 5) {
 }
 
 export async function evaluateSubmission(judge, submission) {
-  if (!genAI) throw new Error('Gemini API가 초기화되지 않았습니다.');
-
-  const model = genAI.getGenerativeModel({
+  const model = getGeminiModel({
     model: MODEL_NAME,
     systemInstruction: `${judge.systemPrompt}\n\n${EVALUATION_GUIDE}`,
   });
@@ -237,9 +222,7 @@ export async function judgeSubmission(submission, onJudgeComplete, passThreshold
  * Pre-submission preview — 제출 전 형성 피드백. 점수 없이 개선 힌트만.
  */
 export async function previewSubmission(submission) {
-  if (!genAI) throw new Error('Gemini API가 초기화되지 않았습니다.');
-
-  const model = genAI.getGenerativeModel({
+  const model = getGeminiModel({
     model: MODEL_NAME,
     systemInstruction: PREVIEW_PROMPT,
   });

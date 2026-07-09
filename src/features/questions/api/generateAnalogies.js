@@ -1,22 +1,9 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getGeminiModel, isGeminiConfigured } from '@/lib/gemini/client';
 
-let genAI = null;
 const MODEL_NAME = 'gemini-2.5-flash-lite';
 
-function getApiKey() {
-  return import.meta.env.VITE_GEMINI_API_KEY || '';
-}
-
-function ensureClient() {
-  if (genAI) return genAI;
-  const key = getApiKey();
-  if (!key) throw new Error('Gemini API 키가 설정되지 않았습니다.');
-  genAI = new GoogleGenerativeAI(key);
-  return genAI;
-}
-
 export function isAnalogyReady() {
-  return !!getApiKey();
+  return isGeminiConfigured();
 }
 
 const PROMPT = `당신은 한국어 강의 현장에서 강사를 돕는 교수법 전문가입니다.
@@ -56,8 +43,7 @@ const PROMPT = `당신은 한국어 강의 현장에서 강사를 돕는 교수�
 의심스러우면 거부. 애매한 비유로 학생 혼란 시키는 것보다 "비유 없음"이 낫습니다.`;
 
 export async function generateAnalogies({ questionTitle, options, correctAnswer, audience = '비개발자 수강생' }) {
-  const client = ensureClient();
-  const model = client.getGenerativeModel({
+  const model = getGeminiModel({
     model: MODEL_NAME,
     systemInstruction: PROMPT,
   });

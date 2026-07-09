@@ -1,22 +1,9 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getGeminiModel, isGeminiConfigured } from '@/lib/gemini/client';
 
-let genAI = null;
 const MODEL_NAME = 'gemini-2.5-flash-lite';
 
-function getApiKey() {
-  return import.meta.env.VITE_GEMINI_API_KEY || '';
-}
-
-function ensureClient() {
-  if (genAI) return genAI;
-  const key = getApiKey();
-  if (!key) throw new Error('Gemini API 키가 설정되지 않았습니다.');
-  genAI = new GoogleGenerativeAI(key);
-  return genAI;
-}
-
 export function isAnalyzerReady() {
-  return !!getApiKey();
+  return isGeminiConfigured();
 }
 
 const PROMPT = `당신은 한국어 강의 현장에서 퀴즈 오답 패턴을 분석하는 교수법 전문가입니다.
@@ -56,8 +43,7 @@ const PROMPT = `당신은 한국어 강의 현장에서 퀴즈 오답 패턴을 
 의심스러우면 거부하세요. 틀린 분석보다 "분석 보류"가 교육적으로 훨씬 낫습니다.`;
 
 export async function analyzeWrongAnswers({ questionTitle, options, correctAnswer, voteDistribution }) {
-  const client = ensureClient();
-  const model = client.getGenerativeModel({
+  const model = getGeminiModel({
     model: MODEL_NAME,
     systemInstruction: PROMPT,
   });
