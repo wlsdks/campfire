@@ -53,7 +53,14 @@ const PATH_RE = /^\/v1beta\/models\/([a-z0-9.-]+):([a-zA-Z]+)$/;
  * 상한을 묶어 최악의 경우를 제한하고, 진짜 안전망은 AI Studio의 일일 quota다.
  */
 const WINDOW_MS = 60_000;
-const MAX_PER_WINDOW = 30;
+/**
+ * 한도는 "사용자 1명"이 아니라 "교실 하나"를 기준으로 잡는다.
+ * (1) 과제 심사는 제출물 1건마다 판사 7명을 동시에 호출한다(lib/judging/gemini.js judgeSubmission).
+ *     50명 심사 = 350회를 7~8분에 쏘므로 분당 50회가 정상 트래픽이다.
+ * (2) 교실 전원이 학교 NAT를 거치면 공인 IP가 하나로 합쳐져 학생용 AI 기능까지 같은 카운터를 쓴다.
+ * 30회였을 때는 5번째 제출물부터 자기 요청을 스스로 막았다. 개별 스로틀이 아니라 폭주 상한이다.
+ */
+const MAX_PER_WINDOW = 300;
 const hits = new Map();
 
 function rateLimited(ip) {

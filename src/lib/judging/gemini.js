@@ -17,7 +17,15 @@ export function isGeminiReady() {
 const MODEL_NAME = 'gemini-2.5-flash-lite';
 const MAX_INPUT_CHARS = 120000; // ~30K tokens, leaves room for system+prompt+output
 
-export async function withRetry(fn, retries = 2, delayMs = 2000, timeoutMs = 45000) {
+/**
+ * 일시적 실패는 지수 백오프로 재시도한다.
+ *
+ * 고정 2초 × 2회였을 때, Gemini가 "high demand"(503)로 몇 분간 밀리면 4초 안에 재시도를
+ * 다 소진하고 판사가 오류로 확정됐다. 과부하는 초 단위가 아니라 분 단위로 풀리므로
+ * 2s → 4s → 8s → 16s로 벌려 총 30초까지 기다린다. 판사 7명이 동시에 재시도하며 같은 순간
+ * 몰리는 것도 피해야 해서 ±25% 지터를 준다.
+ */
+export async function withRetry(fn, retries = 4, delayMs = 2000, timeoutMs = 45000) {
   for (let i = 0; i <= retries; i++) {
     try {
       return await Promise.race([
@@ -31,10 +39,13 @@ export async function withRetry(fn, retries = 2, delayMs = 2000, timeoutMs = 450
       const msg = err.message || '';
       const isTransient =
         msg.includes('429') || msg.includes('503') ||
+        msg.includes('high demand') || msg.includes('overloaded') ||
         msg.includes('NETWORK') || msg.includes('network') ||
         msg.includes('Failed to fetch') || msg.includes('타임아웃');
       if (!isTransient) throw err;
-      await new Promise(r => setTimeout(r, delayMs));
+      const backoff = delayMs * 2 ** i;
+      const jitter = backoff * (0.75 + Math.random() * 0.5);
+      await new Promise(r => setTimeout(r, jitter));
     }
   }
 }
@@ -140,11 +151,15 @@ async function buildScreenshotParts(submission, max = 5) {
   return out;
 }
 
+/**
+ * flash-lite가 과부하(503 "high demand")로 계속 거절하면 flash로 넘어간다.
+ * lite와 flash는 서로 다른 용량 풀이라 한쪽이 밀려도 다른 쪽은 여유가 있는 경우가 많다.
+ * 두 모델 모두 프록시 허용목록(functions/index.js ALLOWED_MODELS)에 있어야 통과한다.
+ */
+const MODEL_FALLBACKS = [MODEL_NAME, 'gemini-2.5-flash'];
+
 export async function evaluateSubmission(judge, submission) {
-  const model = getGeminiModel({
-    model: MODEL_NAME,
-    systemInstruction: `${judge.systemPrompt}\n\n${EVALUATION_GUIDE}`,
-  });
+  const systemInstruction = `${judge.systemPrompt}\n\n${EVALUATION_GUIDE}`;
 
   const prompt = `[심사 대상]
 - 제출자: ${submission.name}
@@ -156,19 +171,32 @@ ${buildContent(submission)}
   const screenshotParts = await buildScreenshotParts(submission, 5);
   const parts = [{ text: prompt }, ...screenshotParts];
 
-  const result = await withRetry(() =>
-    model.generateContent({
-      contents: [{ role: 'user', parts }],
-      generationConfig: {
-        temperature: 0.35,
-        maxOutputTokens: 4096,
-        responseMimeType: 'application/json',
-        thinkingConfig: { thinkingBudget: 0 },
-      },
-    })
-  );
-
-  return parseJudgeResponse(result.response.text());
+  let lastErr = null;
+  for (const modelName of MODEL_FALLBACKS) {
+    const model = getGeminiModel({ model: modelName, systemInstruction });
+    try {
+      const result = await withRetry(() =>
+        model.generateContent({
+          contents: [{ role: 'user', parts }],
+          generationConfig: {
+            temperature: 0.35,
+            maxOutputTokens: 4096,
+            responseMimeType: 'application/json',
+            thinkingConfig: { thinkingBudget: 0 },
+          },
+        })
+      );
+      return parseJudgeResponse(result.response.text());
+    } catch (err) {
+      lastErr = err;
+      // 과부하/용량 문제일 때만 다음 모델로. 파싱 실패나 잘못된 요청은 모델을 바꿔도 같으므로 즉시 포기.
+      const msg = (err?.message || '').toLowerCase();
+      const isCapacity = msg.includes('503') || msg.includes('high demand')
+        || msg.includes('overloaded') || msg.includes('429');
+      if (!isCapacity) throw err;
+    }
+  }
+  throw lastErr || new Error('모든 모델이 응답하지 못했습니다.');
 }
 
 /**
