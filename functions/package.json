@@ -1,0 +1,12 @@
+{
+  "name": "campfire-functions",
+  "description": "Gemini API 프록시 — API 키를 서버에만 보관한다",
+  "main": "index.js",
+  "engines": {
+    "node": "20"
+  },
+  "dependencies": {
+    "firebase-functions": "^6.1.0"
+  },
+  "private": true
+}

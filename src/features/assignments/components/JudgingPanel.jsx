@@ -24,7 +24,7 @@ export default function JudgingPanel({ assignmentId, submissionCount, passThresh
           <AlertCircle size={14} className="text-amber-500" />
           AI 심사 사용 불가
         </p>
-        <p className="text-xs text-slate-400">서버에 Gemini API 키가 설정되지 않았습니다. 운영자에게 환경 변수(VITE_GEMINI_API_KEY) 설정을 요청해주세요.</p>
+        <p className="text-xs text-slate-400">Gemini 프록시가 설정되지 않았습니다. 운영자에게 환경 변수(VITE_GEMINI_PROXY_URL) 설정을 요청해주세요.</p>
       </div>
     );
   }

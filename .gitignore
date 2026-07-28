@@ -13,6 +13,9 @@ dist-ssr/
 .env
 .env.local
 .env.*.local
+# Cloud Functions 로컬 시크릿/의존성
+functions/node_modules/
+functions/.env
 # 본인 인스턴스용 실제 계정 목록 (example만 트래킹)
 staff-accounts.txt
 

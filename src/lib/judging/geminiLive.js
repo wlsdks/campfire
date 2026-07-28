@@ -4,7 +4,8 @@
  * 합치면 698줄까지 커져 navigability가 떨어짐.
  */
 import { JUDGES } from './judges';
-import { getGenAI, withRetry, urlToInlinePart, parseJudgeResponse } from './gemini';
+import { getGeminiModel } from '@/lib/gemini/client';
+import { withRetry, urlToInlinePart, parseJudgeResponse } from './gemini';
 import { LIVE_EVALUATION_GUIDE } from './prompts';
 
 // 라이브 AI 심사 전용 — flash-lite로 전환 (Pro/Flash는 100명 규모에서 429/RPM 한도 다발).
@@ -126,16 +127,13 @@ const LIVE_MODEL_FALLBACKS = [
  * 신 구조: N건 = N회 호출 (1/7로 축소)
  */
 async function evaluateAllJudgesAtOnce(submission, questionTitle) {
-  const genAI = getGenAI();
-  if (!genAI) throw new Error('Gemini API가 초기화되지 않았습니다.');
-
   const systemInstruction = buildAllJudgesSystemInstruction(questionTitle);
   const { parts, imageFailed } = await buildLiveParts(submission);
 
   let lastErr = null;
   for (const modelName of LIVE_MODEL_FALLBACKS) {
     try {
-      const model = genAI.getGenerativeModel({ model: modelName, systemInstruction });
+      const model = getGeminiModel({ model: modelName, systemInstruction });
       const isPro = /pro/i.test(modelName);
       // 7명분 출력 + 페르소나 다양성 확보:
       // - maxOutputTokens 8192 (7판사 × ~400~600토큰 + JSON 오버헤드)
