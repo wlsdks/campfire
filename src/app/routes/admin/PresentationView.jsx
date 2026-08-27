@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect, useMemo, lazy, Suspense } from 'react
 import DrumrollOverlay from '@/components/ui/DrumrollOverlay';
 import { isQuizQuestion, QUIZ_EVENT_PRESETS, normalizeQuizEvent } from '@/lib/quiz';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, QrCode, X, Copy, Check, Hand, MessageSquare, ChevronDown, ChevronLeft, ChevronRight, Eye, Trophy } from 'lucide-react';
+import { Users, QrCode, X, Copy, Check, Hand, MessageSquare, ChevronDown, ChevronLeft, ChevronRight, Eye, Trophy, Maximize, Minimize } from 'lucide-react';
 import { ref, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import Button from '@/components/ui/Button';
@@ -21,8 +21,10 @@ import PersistentAssignmentBar from '@/features/ai-judge/components/PersistentAs
 import { useQuestionActions, trimEphemeralFeeds } from '@/hooks/useQuestionActions';
 import { useTimer } from '@/features/timer/api/useTimer';
 import { PresentEmptyState, PresentQROverlay, GameFallback, SideNoticesPanel, ExitHint, PresentModeMenu, PresentTimerButton } from './PresentationParts';
+import { usePresentationScreen } from '@/hooks/usePresentationScreen';
 
 const Lottery = lazy(() => import('@/features/games/components/Lottery'));
+const ScratchCard = lazy(() => import('@/features/games/components/ScratchCard'));
 const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
 const ClassQABoard = lazy(() => import('@/features/class-questions/components/ClassQABoard'));
 const AwardsCeremony = lazy(() => import('@/features/assignments/components/AwardsCeremony'));
@@ -39,7 +41,7 @@ function getModeVariants(mode) {
   if (mode === 'leaderboard') {
     return { initial: { opacity: 0, y: -30 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 30 } };
   }
-  if (['lottery', 'breakTime', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus', 'combinedRanking', 'qaRanking', 'joinShow'].includes(mode)) {
+  if (['lottery', 'scratchCard', 'breakTime', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus', 'combinedRanking', 'qaRanking', 'joinShow'].includes(mode)) {
     return { initial: { opacity: 0, scale: 0.88 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 1.06 } };
   }
   if (['poll', 'quiz'].includes(mode)) {
@@ -56,7 +58,22 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
   let contentKey, content;
   const gameContent = (() => {
     if (currentMode === 'lottery') return (
-      <Lottery participants={drawParticipants} onResult={(names) => onGameResult?.(names, 'lottery')} presenter={presentMode} />
+      <Lottery
+        participants={drawParticipants}
+        onResult={(names) => onGameResult?.(names, 'lottery')}
+        presenter={presentMode}
+        sessionId={sessionId}
+        role="control"
+      />
+    );
+    if (currentMode === 'scratchCard') return (
+      <ScratchCard
+        participants={drawParticipants}
+        onResult={(w) => onGameResult?.(w, 'scratchCard')}
+        presenter={presentMode}
+        sessionId={sessionId}
+        role="control"
+      />
     );
     if (currentMode === 'breakTime') return <BreakTimer sessionId={sessionId} />;
     if (currentMode === 'leaderboard') return <div className="w-full max-w-xl md:max-w-2xl [&_.max-w-xl]:max-w-2xl px-2 md:px-0"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" emptyLabel="아직 점수가 없습니다" /></div>;
@@ -64,7 +81,9 @@ function MainContent({ currentMode, sessionId, session, onlineList, leaderboard,
     if (currentMode === 'qaRanking') return <QARanking sessionId={sessionId} />;
     if (currentMode === 'joinShow') return <JoinShow sessionId={sessionId} />;
     if (currentMode === 'awards') return <AwardsCeremony assignmentId={session?.activeAssignmentId} />;
-    if (currentMode === 'randomPicker') return <RandomPicker participants={onlineList} onResult={(w) => onGameResult?.(w, 'randomPicker')} />;
+    if (currentMode === 'randomPicker') return (
+      <RandomPicker participants={onlineList} onResult={(w) => onGameResult?.(w, 'randomPicker')} sessionId={sessionId} role="control" />
+    );
     if (currentMode === 'comprehension') return <ComprehensionPresenter sessionId={sessionId} />;
     if (currentMode === 'quickSurvey') return <SurveyPresenter sessionId={sessionId} />;
     if (currentMode === 'discussion') return <DiscussionPresenter sessionId={sessionId} />;
@@ -200,6 +219,8 @@ export function PresentRevealControls({ sessionId, session, onRevealQuiz, onReve
 
 export default function PresentationView({ sessionId, session, currentMode, onlineList, leaderboard, drawParticipants, studentUrl, count, onExit, scores, participants }) {
   const exitPresent = useCallback(() => onExit(), [onExit]);
+  // 발표 모드에 있는 동안만 전체화면 + 화면 꺼짐 방지
+  const { isFullscreen, toggleFullscreen, fullscreenSupported } = usePresentationScreen();
 
   // 발표 모드에서도 퀴즈/정답형 정답 공개를 트리거할 수 있도록 reveal 함수를 가져옴.
   // QuestionManager는 이 모드에서 마운트되지 않으므로 PresentationView가 직접 hook 호출.
@@ -301,6 +322,16 @@ export default function PresentationView({ sessionId, session, currentMode, onli
       <div className="fixed top-4 right-4 md:top-6 md:right-6 z-30 flex items-center gap-2">
         {activeQuestion && (
           <PresentTimerButton isRunning={timerRunning} onStart={startTimer} onStop={stopTimer} />
+        )}
+        {fullscreenSupported && (
+          <button
+            onClick={toggleFullscreen}
+            aria-label={isFullscreen ? '전체화면 해제' : '전체화면'}
+            title={isFullscreen ? '전체화면 해제' : '전체화면'}
+            className="p-2.5 rounded-xl bg-slate-900/80 hover:bg-slate-900 text-white ring-1 ring-white/10 hover:ring-white/30 backdrop-blur-sm shadow-lg transition-all active:scale-95"
+          >
+            {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
+          </button>
         )}
         <ExitHint onExit={exitPresent} />
       </div>
@@ -431,7 +462,7 @@ export default function PresentationView({ sessionId, session, currentMode, onli
       </div>
 
       {/* 좌측 상단 — 모드 전환 (알림 토글 옆) */}
-      <PresentModeMenu sessionId={sessionId} currentMode={currentMode} currentQuestion={session?.currentQuestion} />
+      <PresentModeMenu sessionId={sessionId} currentMode={currentMode} currentQuestion={session?.currentQuestion} hasLeaderboard={leaderboard.length > 0} />
     </div>
   );
 }

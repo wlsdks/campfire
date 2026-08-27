@@ -1,5 +1,7 @@
 import { memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ExternalLink, Globe } from 'lucide-react';
+import { embedDisplayUrl, safeEmbedUrl } from '@/lib/embed';
 import { useMyVote } from '@/hooks/useMyVote';
 import ChoiceVoter from '@/features/voting/components/ChoiceVoter';
 import OXVoter from '@/features/voting/components/OXVoter';
@@ -195,6 +197,26 @@ export default memo(function ActivePollView({
               )}
               {question.type === 'imageSlide' && (
                 <ImageSlidePresenter images={question.slideImages || []} currentSlide={question.currentSlide || 0} />
+              )}
+              {/* 웹페이지는 강사 화면·전자칠판에서 보여주는 자료다. 학생 폰에는 같은 주소를
+                  새 창으로 열 수 있는 버튼만 준다(작은 화면에 남의 사이트를 끼워 넣지 않는다). */}
+              {question.type === 'webEmbed' && safeEmbedUrl(question.embedUrl).url && (
+                <div className="flex flex-col items-center gap-3 py-6 text-center">
+                  <Globe size={28} className="text-slate-300 dark:text-slate-600" />
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    앞 화면에서 함께 보는 자료입니다
+                  </p>
+                  <a
+                    href={safeEmbedUrl(question.embedUrl).url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 px-4 py-2.5 text-sm font-medium active:scale-[0.98] transition-transform duration-150"
+                  >
+                    <ExternalLink size={15} />
+                    내 폰에서 열기
+                  </a>
+                  <span className="text-xs text-slate-400 tabular-nums">{embedDisplayUrl(question.embedUrl)}</span>
+                </div>
               )}
               {question.type === 'aiJudge' && (
                 <AiJudgeSubmitter

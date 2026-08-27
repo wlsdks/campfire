@@ -59,7 +59,7 @@ function StaffPanel({ staffList }) {
   );
 }
 
-export default memo(function InstructorPeopleHub({ onlineList, voteCounts, courseId }) {
+export default memo(function InstructorPeopleHub({ onlineList, voteCounts, courseId, peopleLabel = '참여자' }) {
   const [activeTab, setActiveTab] = useState('participants');
   const { staffList } = useStaffAssignment(courseId);
 
@@ -70,9 +70,11 @@ export default memo(function InstructorPeopleHub({ onlineList, voteCounts, cours
   const hasStaff = !!courseId;
 
   const summaryParts = [];
-  if (participantCount > 0) summaryParts.push(`참여자 ${participantCount}`);
+  if (participantCount > 0) summaryParts.push(`${peopleLabel} ${participantCount}`);
   if (hasStaff && staffCount > 0) summaryParts.push(`스태프 ${staffCount}`);
-  const summary = summaryParts.length > 0 ? summaryParts.join(' · ') : '아직 접속 전';
+  // 추첨 전용 세션에는 접속이라는 개념이 없다 — 라벨에 맞춰 빈 상태 문구도 바꾼다
+  const emptyLabel = peopleLabel === '참여자' ? '아직 접속 전' : '명단 없음';
+  const summary = summaryParts.length > 0 ? summaryParts.join(' · ') : emptyLabel;
 
   return (
     <CollapsibleSection title="인원" summary={summary} defaultOpen>
@@ -82,7 +84,7 @@ export default memo(function InstructorPeopleHub({ onlineList, voteCounts, cours
             active={activeTab === 'participants'}
             onClick={() => setActiveTab('participants')}
             icon={Users}
-            label="참여자"
+            label={peopleLabel}
             count={participantCount}
           />
           <TabButton

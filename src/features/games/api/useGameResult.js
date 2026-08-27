@@ -59,12 +59,16 @@ export function useGameResultPublisher(sessionId, onlineList, drawParticipants) 
 
   const handleGameResult = useCallback((resultNames, mode) => {
     const nameArr = Array.isArray(resultNames) ? resultNames : [resultNames];
-    const allList = mode === 'lottery' ? drawParticipants : onlineList;
+    // 추첨 계열(슬롯/즉석복권)은 가중치가 실린 추첨 명단에서, 나머지는 접속자에서 뽑는다
+    const allList = mode === 'lottery' || mode === 'scratchCard' ? drawParticipants : onlineList;
     const winners = nameArr.map((item) => {
       // 객체({id,nickname})면 id 그대로 — 동명이인 오귀속 방지. 닉네임 문자열은 fallback으로 find.
-      if (item && typeof item === 'object') return { id: item.id, nickname: item.nickname };
+      // employeeId는 추첨 전용 모드(명단 추첨)에서 당첨자를 확인하는 실제 식별자라 결과에 함께 남긴다.
+      if (item && typeof item === 'object') {
+        return { id: item.id, nickname: item.nickname, ...(item.employeeId ? { employeeId: item.employeeId } : {}) };
+      }
       const p = allList.find((x) => x.nickname === item);
-      return { id: p?.id || item, nickname: item };
+      return { id: p?.id || item, nickname: item, ...(p?.employeeId ? { employeeId: p.employeeId } : {}) };
     });
     publishResult(mode, winners, allList.map((p) => p.id));
   }, [onlineList, drawParticipants, publishResult]);

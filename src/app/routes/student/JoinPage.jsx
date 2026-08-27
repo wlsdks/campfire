@@ -17,6 +17,8 @@ const FORM_ID = 'join-form';
 function useSessionInfo(sessionId) {
   const [courseName, setCourseName] = useState(null);
   const [requireEmployeeId, setRequireEmployeeId] = useState(false);
+  // 추첨 전용 세션 — 입장을 막는다. 들어온 사람이 그대로 추첨 대상이 되어 명단을 오염시키기 때문.
+  const [drawOnly, setDrawOnly] = useState(false);
   // null=확인 중, true/false=판정 — 오타 코드로 조인하면 유령 세션이 생기고 무한 대기하므로 사전 차단
   const [exists, setExists] = useState(null);
   useEffect(() => {
@@ -27,11 +29,14 @@ function useSessionInfo(sessionId) {
     get(ref(db, `sessions/${sessionId}/requireEmployeeId`))
       .then((snap) => setRequireEmployeeId(snap.val() === true))
       .catch(() => {});
+    get(ref(db, `sessions/${sessionId}/drawOnly`))
+      .then((snap) => setDrawOnly(snap.val() === true))
+      .catch(() => {});
     get(ref(db, `sessions/${sessionId}/createdAt`))
       .then((snap) => setExists(snap.exists()))
       .catch(() => setExists(true)); // 네트워크 오류로 확인 불가 시엔 낙관적으로 통과
   }, [sessionId]);
-  return { courseName, requireEmployeeId, exists };
+  return { courseName, requireEmployeeId, drawOnly, exists };
 }
 
 /**
@@ -72,7 +77,7 @@ export default function JoinPage({ sessionId, onJoin }) {
   const [showEmployeeId, setShowEmployeeId] = useState(() => !!getSessionEmployeeId(sessionId));
   const inputRef = useRef(null);
   const inputWrapRef = useRef(null);
-  const { courseName, requireEmployeeId, exists } = useSessionInfo(sessionId);
+  const { courseName, requireEmployeeId, drawOnly, exists } = useSessionInfo(sessionId);
   const keyboardOpen = useKeyboardDetect();
 
   const trimmed = nickname.trim();
@@ -103,7 +108,7 @@ export default function JoinPage({ sessionId, onJoin }) {
 
   function handleJoin(e) {
     e.preventDefault();
-    if (!canJoin || exists === false) return;
+    if (!canJoin || exists === false || drawOnly) return;
     setJoining(true);
     setError(null);
     // presence 기록(participant 노드 + onDisconnect)은 App.jsx의 syncPresence가 일원화 담당.
@@ -129,6 +134,28 @@ export default function JoinPage({ sessionId, onJoin }) {
             <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
               입력하신 코드 <span className="font-bold text-slate-700 dark:text-slate-200 tabular-nums">{sessionId}</span>에 해당하는 세션이 없습니다.
               <br />세션 코드를 다시 확인해주세요.
+            </p>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // 추첨 전용 세션 — 입장한 사람이 곧 추첨 대상이 되므로 링크를 열어도 참여를 막는다.
+  if (drawOnly) {
+    return (
+      <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center px-5">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+          className="text-center space-y-4 max-w-sm"
+        >
+          <div className="flex justify-center"><PickMascot size="md" mood="waiting" /></div>
+          <div className="space-y-1.5">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">추첨 전용 세션이에요</h1>
+            <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+              이 세션은 진행자가 명단으로 추첨만 진행합니다.
+              <br />앞 화면에서 결과를 확인해주세요.
             </p>
           </div>
         </motion.div>

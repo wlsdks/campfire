@@ -3,6 +3,7 @@ import { ref, onChildAdded } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { motion, AnimatePresence } from 'framer-motion';
 import Avatar from '@/components/ui/Avatar';
+import { ROSTER_SOURCE } from '@/lib/roster';
 
 const MAX_VISIBLE = 5;
 const DISPLAY_MS = 400;
@@ -58,6 +59,9 @@ export default function JoinToast({ sessionId }) {
       if (initial) return;
       const data = snapshot.val();
       if (!data?.nickname) return;
+      // 강사가 명단에 직접 넣은 사람은 입장한 것이 아니다. 붙여넣기 한 번에 수십 명이
+      // "입장했어요"로 쏟아지면 사실과도 다르고 화면도 뒤덮인다.
+      if (data.source === ROSTER_SOURCE) return;
 
       if (queueRef.current.length >= MAX_QUEUE) queueRef.current.splice(0, 10);
       queueRef.current.push(data.nickname);

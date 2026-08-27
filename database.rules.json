@@ -25,7 +25,9 @@
           "$qId": {
             ".validate": "newData.hasChild('title') && newData.hasChild('type')",
             "title": { ".validate": "newData.isString() && newData.val().length <= 500" },
-            "type": { ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz|imageSlide|aiJudge|subjective|shortAnswer)$/)" },
+            "embedUrl": { ".validate": "newData.isString() && newData.val().length <= 2000 && newData.val().matches(/^https?:\\/\\//)" },
+            "mode": { ".validate": "newData.isString() && newData.val().length <= 30" },
+            "type": { ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz|imageSlide|webEmbed|modeCard|aiJudge|subjective|shortAnswer)$/)" },
             "$other": { ".validate": true }
           }
         }
@@ -38,7 +40,7 @@
         "$qId": {
           ".validate": "newData.hasChild('title') && newData.hasChild('type')",
           "title": { ".validate": "newData.isString() && newData.val().length <= 500" },
-          "type": { ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz|imageSlide|aiJudge|subjective|shortAnswer)$/)" },
+          "type": { ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz|imageSlide|webEmbed|modeCard|aiJudge|subjective|shortAnswer)$/)" },
           "savedAt": { ".validate": "newData.isNumber()" },
           "updatedAt": { ".validate": "newData.isNumber()" },
           "$other": { ".validate": true }
@@ -88,6 +90,9 @@
         "requireEmployeeId": {
           ".validate": "newData.isBoolean()"
         },
+        "drawOnly": {
+          ".validate": "newData.isBoolean()"
+        },
 
         "status": {
           ".write": true,
@@ -128,7 +133,7 @@
               ".validate": "newData.isString() && newData.val().length <= 500"
             },
             "type": {
-              ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz|imageSlide|aiJudge|subjective|shortAnswer)$/)"
+              ".validate": "newData.isString() && newData.val().matches(/^(choice|ox|quiz|wordcloud|qna|scale|debate|ranking|fillinblank|check|mysteryBox|hintQuiz|imageSlide|webEmbed|modeCard|aiJudge|subjective|shortAnswer)$/)"
             },
             "modelAnswer": {
               ".validate": "newData.isString() && newData.val().length <= 1000"
@@ -227,6 +232,12 @@
             },
             "employeeId": {
               ".validate": "newData.isString() && newData.val().length <= 20"
+            },
+            "source": {
+              ".validate": "newData.isString() && newData.val().length <= 20"
+            },
+            "order": {
+              ".validate": "newData.isNumber()"
             }
           }
         },

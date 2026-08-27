@@ -6,14 +6,14 @@ import { QUIZ_DEFAULTS } from './quiz';
  * base 필드(type/title/order, 수정 시 기존 객체 병합)는 호출부가 담당한다.
  *
  * @param {string} type 질문 유형
- * @param {object} fields 폼 입력 { options, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers, winners, imageUrl, slideImages, hideTitle, modelAnswer }
+ * @param {object} fields 폼 입력 { options, correctAnswer, points, event, betting, hints, mysteryItems, answerReasons, acceptableAnswers, winners, imageUrl, slideImages, hideTitle, modelAnswer, embedUrl }
  * @returns {object} type별로 채워진 필드 객체
  */
 export function buildQuestionData(type, fields = {}) {
   const {
     options: cleanOptions = [], correctAnswer, points, event, betting,
     hints, mysteryItems, answerReasons, acceptableAnswers, winners,
-    imageUrl, slideImages, hideTitle, modelAnswer,
+    imageUrl, slideImages, hideTitle, modelAnswer, embedUrl,
   } = fields;
   const data = {};
 
@@ -65,6 +65,7 @@ export function buildQuestionData(type, fields = {}) {
   if (imageUrl) data.imageUrl = imageUrl;
   if (hideTitle) data.hideTitle = true;
   if (type === 'imageSlide' && slideImages?.length > 0) data.slideImages = slideImages;
+  if (type === 'webEmbed' && embedUrl) data.embedUrl = embedUrl;
 
   return data;
 }
@@ -77,5 +78,5 @@ export const QUESTION_TYPE_FIELDS = [
   'options', 'correctAnswer', 'points', 'participationTickets', 'correctBonusTickets',
   'speedWindowMs', 'maxSpeedBonus', 'event', 'betting', 'hints', 'revealedHints',
   'mysteryItems', 'answerReasons', 'acceptableAnswers', 'winners', 'slideImages',
-  'imageUrl', 'hideTitle', 'modelAnswer',
+  'imageUrl', 'hideTitle', 'modelAnswer', 'embedUrl',
 ];

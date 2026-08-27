@@ -1,86 +1,158 @@
-import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import { useState, useRef, useEffect, useMemo, useCallback, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UserCircle, RefreshCw } from 'lucide-react';
+import { UserCircle, RefreshCw, Monitor } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Avatar from '@/components/ui/Avatar';
+import { useDrawDisplay, drawPrimary, drawSecondary } from '@/lib/draw-display';
+import { useGameMirror } from '../api/useGameMirror';
+import DrawDisplayToggle from './DrawDisplayToggle';
 import { hapticSuccess } from '@/lib/haptics';
+
+const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
+
+/** 빠르게 도는 구간. 이 뒤부터 3·2·1이 시작된다. */
+const SPIN_MS = 2000;
+/** 카운트다운 한 칸. 숫자 하나를 눈으로 읽고 "다음!" 하고 셀 수 있는 길이. */
+const TICK_MS = 1000;
+/**
+ * 1이 끝난 뒤 이름을 가리는 시간.
+ * 이름은 멈추지 않고 계속 돌되 뿌옇게 가려진다 — 멈춘 채로 뜸을 들이면 "이미 정해졌는데
+ * 왜 안 나오지"처럼 보이고, 가려진 채 도는 편이 "지금 고르는 중"으로 읽힌다.
+ */
+const MASK_MS = 700;
+/** 카운트다운 숫자별 회전 간격과 흐림. 숫자가 내려갈수록 느려지고 뿌예진다. */
+const TENSION = { 3: { spin: 240, blur: 3 }, 2: { spin: 400, blur: 5 }, 1: { spin: 620, blur: 8 } };
 
 /**
  * RandomPicker — 랜덤 발표자 선정 (콜드콜).
  * 이름이 빠르게 순환 → 감속 → 멈춤 → 발표자 reveal.
  * 연속 중복 방지. 확정 시 onResult([{id,nickname}]) — 뽑힌 학생 폰에 알림(gameResult publish).
  */
-export default function RandomPicker({ participants, onResult }) {
+export default function RandomPicker({ participants, onResult, sessionId, role = 'control' }) {
+  // 전자칠판(view)은 조작하지 않는다 — 강사 화면이 뽑는 과정을 그대로 비춘다.
+  const isView = role === 'view';
+  const { remote, publish } = useGameMirror(sessionId, { role, mode: 'randomPicker' });
   const [picking, setPicking] = useState(false);
-  const [selected, setSelected] = useState(null);
-  const [displayName, setDisplayName] = useState(null);
+  const [selected, setSelected] = useState(null);       // 확정된 발표자(객체)
+  const [rolling, setRolling] = useState(null);         // 도는 중 스쳐가는 사람(객체)
+  const [countdown, setCountdown] = useState(null);     // 3 | 2 | 1 | null
+  const [masked, setMasked] = useState(false);           // 공개 직전, 이름을 가린 채 돌리는 구간
+  const [displayMode, setDisplayMode] = useDrawDisplay();
   const [history, setHistory] = useState([]);
   const mountedRef = useRef(true);
   const intervalRef = useRef(null);
-  const timeoutRef = useRef(null);
+  const timeoutsRef = useRef([]);
+  const serialRef = useRef(0);
 
   useEffect(() => {
     mountedRef.current = true;
+    const timeouts = timeoutsRef.current;
+    const interval = intervalRef;
     return () => {
       mountedRef.current = false;
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (interval.current) clearInterval(interval.current);
+      timeouts.forEach(clearTimeout);
     };
   }, []);
 
   const names = useMemo(() => participants.map(p => p.nickname), [participants]);
 
+  // 강사 화면의 진행 상태를 전자칠판으로 흘려보낸다
+  useEffect(() => {
+    if (isView) return;
+    publish({
+      serial: serialRef.current,
+      picking,
+      countdown: countdown ?? null,
+      masked,
+      selected: selected ? { id: selected.id, nickname: selected.nickname, ...(selected.employeeId ? { employeeId: selected.employeeId } : {}) } : null,
+    });
+  }, [isView, picking, countdown, masked, selected, publish]);
+
+  // 전자칠판이 따라 그릴 값
+  const viewPicking = isView ? !!remote?.picking : picking;
+  const viewSelected = isView ? (remote?.selected || null) : selected;
+  const viewCountdown = isView ? (remote?.countdown ?? null) : countdown;
+  const viewMasked = isView ? !!remote?.masked : masked;
+
+  // 전자칠판에서도 이름이 돌아야 한다 — 굴러가는 이름은 연출이라 각 화면이 따로 만든다
+  useEffect(() => {
+    if (!isView) return;
+    if (!viewPicking || viewSelected || participants.length === 0) return;
+    const interval = viewMasked ? 60 : (TENSION[viewCountdown]?.spin ?? 90);
+    const spin = setInterval(() => {
+      setRolling(participants[Math.floor(Math.random() * participants.length)]);
+    }, interval);
+    return () => clearInterval(spin);
+  }, [isView, viewPicking, viewSelected, viewCountdown, viewMasked, participants]);
+  const hasEmployeeIds = useMemo(() => participants.some(p => p.employeeId), [participants]);
+  const randomPerson = useCallback(() => participants[Math.floor(Math.random() * participants.length)], [participants]);
+
+  /**
+   * 뽑기 연출 타임라인.
+   *
+   * 예전에는 이름이 빠르게 돌다가 그냥 멈췄다. 너무 빨라서 긴장할 틈이 없었다.
+   * 지금은 세 단계로 나눈다 — 빠르게 돌기 → 3·2·1 카운트다운(점점 느려지고 흐려짐) → 공개.
+   * 카운트다운 동안 회전 간격과 흐림이 함께 커져서 "곧 나온다"가 눈에 보인다.
+   */
   const pick = useCallback(() => {
     if (picking || names.length === 0) return;
+    serialRef.current += 1;
     setPicking(true);
     setSelected(null);
+    setCountdown(null);
+    setMasked(false);
 
-    // Exclude recently picked (up to last 3) to prevent repetition
+    // 최근에 뽑힌 사람은 잠시 제외 — 같은 사람이 연달아 나오면 뽑기로 보이지 않는다
     const excluded = new Set(history.slice(-Math.min(3, Math.floor(names.length / 2))));
     // 참가자 객체로 뽑아 id를 보존 — 닉네임 문자열만 넘기면 동명이인 오귀속 가능
     const candidates = participants.filter(p => !excluded.has(p.nickname));
     const pool = candidates.length > 0 ? candidates : participants;
     const winnerP = pool[Math.floor(Math.random() * pool.length)];
-    const winner = winnerP.nickname;
 
-    // Fast cycling phase (80ms intervals)
-    let count = 0;
-    const totalCycles = 25 + Math.floor(Math.random() * 10);
-    intervalRef.current = setInterval(() => {
-      if (!mountedRef.current) return;
-      count++;
-      setDisplayName(names[Math.floor(Math.random() * names.length)]);
+    const spin = (intervalMs) => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      intervalRef.current = setInterval(() => {
+        if (!mountedRef.current) return;
+        setRolling(randomPerson());
+      }, intervalMs);
+    };
+    const at = (ms, fn) => {
+      const id = setTimeout(() => { if (mountedRef.current) fn(); }, ms);
+      timeoutsRef.current.push(id);
+    };
 
-      // Slow down in last 8 cycles
-      if (count >= totalCycles - 8) {
-        clearInterval(intervalRef.current);
-        // Decelerating phase
-        let remaining = totalCycles - count;
-        function decelStep() {
-          if (!mountedRef.current || remaining <= 0) {
-            // Final: show winner
-            setDisplayName(winner);
-            timeoutRef.current = setTimeout(() => {
-              if (!mountedRef.current) return;
-              setPicking(false);
-              setSelected(winner);
-              setHistory(prev => [...prev, winner]);
-              hapticSuccess();
-              onResult?.([{ id: winnerP.id, nickname: winnerP.nickname }]);
-            }, 300);
-            return;
-          }
-          remaining--;
-          const delay = 120 + (totalCycles - count - remaining) * 40;
-          setDisplayName(names[Math.floor(Math.random() * names.length)]);
-          timeoutRef.current = setTimeout(decelStep, delay);
-        }
-        decelStep();
-      }
-    }, 80);
-  }, [picking, names, history, participants, onResult]);
+    // 공개 순간에 confetti 청크를 처음 불러오면 그 틈에 화면이 한 번 걸린다. 미리 받아둔다.
+    import('@/components/ui/ConfettiBurst').catch(() => {});
 
-  if (names.length === 0) {
+    spin(70);                                                 // 0.0s 빠르게 돌기
+    at(SPIN_MS, () => { setCountdown(3); spin(TENSION[3].spin); });
+    at(SPIN_MS + TICK_MS, () => { setCountdown(2); spin(TENSION[2].spin); });
+    at(SPIN_MS + TICK_MS * 2, () => { setCountdown(1); spin(TENSION[1].spin); });
+    // 1이 끝나면 이름을 가린다. 회전은 계속 — 가려진 채로 빠르게 돌다가 확정된 사람이 나온다.
+    at(SPIN_MS + TICK_MS * 3, () => {
+      setCountdown(null);
+      setMasked(true);
+      spin(60);
+    });
+    at(SPIN_MS + TICK_MS * 3 + MASK_MS, () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      setMasked(false);
+      setRolling(winnerP);
+      setPicking(false);
+      setSelected(winnerP);
+      setHistory(prev => [...prev, winnerP.nickname]);
+      hapticSuccess();
+      // employeeId까지 넘긴다 — 사번으로 호명하는 자리에서는 사번이 실제 식별자다
+      onResult?.([{
+        id: winnerP.id,
+        nickname: winnerP.nickname,
+        ...(winnerP.employeeId ? { employeeId: winnerP.employeeId } : {}),
+      }]);
+    });
+  }, [picking, names, history, participants, randomPerson, onResult]);
+
+  if (!isView && names.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-16" onClick={e => e.stopPropagation()}>
         <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
@@ -94,12 +166,40 @@ export default function RandomPicker({ participants, onResult }) {
 
   return (
     <div className="flex flex-col items-center gap-8 w-full max-w-lg mx-auto" onClick={e => e.stopPropagation()}>
-      <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">발표자 뽑기</h3>
+      <div className="h-16 flex items-center justify-center">
+        <AnimatePresence mode="wait">
+          {viewCountdown ? (
+            <motion.span
+              key={`cd-${viewCountdown}`}
+              initial={{ scale: 2.2, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              // 퇴장은 짧은 tween으로 고정한다. spring 퇴장이 끝나기를 기다리는 사이
+              // 다음 숫자가 통째로 건너뛰어졌다(3 → 1로 보이던 문제).
+              exit={{ scale: 0.6, opacity: 0, transition: { duration: 0.12 } }}
+              transition={{ type: 'spring', stiffness: 320, damping: 16 }}
+              className="text-6xl font-black tabular-nums text-slate-900 dark:text-slate-100 tracking-tighter"
+            >
+              {viewCountdown}
+            </motion.span>
+          ) : (
+            <motion.h3
+              key="title"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.12 } }}
+              className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100"
+            >
+              발표자 뽑기
+            </motion.h3>
+          )}
+        </AnimatePresence>
+      </div>
+      {hasEmployeeIds && <DrawDisplayToggle mode={displayMode} onChange={setDisplayMode} />}
 
       {/* Name display area */}
       <div className="w-full flex flex-col items-center gap-6">
         <AnimatePresence mode="wait">
-          {selected ? (
+          {viewSelected ? (
             <motion.div
               key="selected-avatar"
               initial={{ scale: 0.8, opacity: 0 }}
@@ -107,23 +207,33 @@ export default function RandomPicker({ participants, onResult }) {
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ type: 'spring', stiffness: 400, damping: 22 }}
             >
-              <Avatar name={selected} size="2xl" />
+              <Avatar name={viewSelected.nickname} size="2xl" />
+              <Suspense fallback={null}><ConfettiBurst /></Suspense>
             </motion.div>
-          ) : picking && displayName ? (
+          ) : viewPicking && rolling ? (
             <motion.div
               key="cycling"
               initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+              animate={{ opacity: 1, scale: [1, 1.04, 1] }}
               exit={{ opacity: 0 }}
-              className="w-32 h-32 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden"
+              transition={{ scale: { duration: 0.6, repeat: Infinity, ease: 'easeInOut' } }}
+              className="relative w-32 h-32 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center overflow-hidden"
             >
+              {/* 릴이 도는 동안 훑고 지나가는 광택 */}
+              <motion.div
+                className="absolute inset-0 bg-white/25 dark:bg-white/10"
+                initial={{ x: '-120%', skewX: '-18deg' }}
+                animate={{ x: ['-120%', '160%'] }}
+                transition={{ duration: 0.9, repeat: Infinity, ease: 'easeInOut' }}
+              />
               <motion.span
-                key={displayName}
-                initial={{ opacity: 0.3 }}
-                animate={{ opacity: 0.6 }}
+                key={rolling.id}
+                initial={{ y: '80%', opacity: 0.2 }}
+                animate={{ y: '0%', opacity: 0.65 }}
+                transition={{ duration: 0.09, ease: 'linear' }}
                 className="text-4xl font-bold text-slate-900 dark:text-slate-100"
               >
-                {displayName.charAt(0).toUpperCase()}
+                {(drawPrimary(rolling, displayMode) || '?').charAt(0).toUpperCase()}
               </motion.span>
             </motion.div>
           ) : (
@@ -147,27 +257,47 @@ export default function RandomPicker({ participants, onResult }) {
         {/* Name text */}
         <div className="h-16 flex items-center justify-center">
           <AnimatePresence mode="wait">
-            {selected ? (
+            {viewSelected ? (
               <motion.div
                 key="selected"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                initial={{ opacity: 0.6, scale: 0.92, filter: 'blur(16px)' }}
+                animate={{
+                  opacity: 1,
+                  scale: 1,
+                  filter: 'blur(0px)',
+                  x: [0, -12, 10, -8, 6, -3, 0], // 흐림이 걷히는 동안 한 번 흔들린다
+                }}
+                transition={{
+                  opacity: { duration: 0.5, ease: 'easeOut' },
+                  scale: { type: 'spring', stiffness: 260, damping: 15, delay: 0.25 },
+                  filter: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+                  x: { duration: 0.6, ease: 'easeInOut', delay: 0.3 },
+                }}
                 className="text-center"
               >
-                <p className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">{selected}</p>
+                <p className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-slate-100 tracking-tight tabular-nums">
+                  {drawPrimary(viewSelected, displayMode)}
+                </p>
+                {drawSecondary(viewSelected, displayMode) && (
+                  <p className="text-lg text-slate-400 tabular-nums mt-1">{drawSecondary(viewSelected, displayMode)}</p>
+                )}
               </motion.div>
-            ) : picking && displayName ? (
+            ) : viewPicking && rolling ? (
               <motion.p
-                key={displayName}
-                initial={{ opacity: 0.3 }}
-                animate={{ opacity: 0.6 }}
-                className="text-3xl font-bold text-slate-400 dark:text-slate-500 tracking-tight"
+                key={rolling.id}
+                initial={{ y: 14, opacity: 0.15 }}
+                animate={{ y: 0, opacity: 0.6 }}
+                exit={{ y: -14, opacity: 0 }}
+                transition={{ duration: 0.09, ease: 'linear' }}
+                style={{ filter: `blur(${viewMasked ? 18 : (TENSION[viewCountdown]?.blur ?? 0.6)}px)` }}
+                className="text-3xl font-bold text-slate-400 dark:text-slate-500 tracking-tight tabular-nums"
               >
-                {displayName}
+                {drawPrimary(rolling, displayMode)}
               </motion.p>
             ) : (
-              <p className="text-lg text-slate-400">버튼을 눌러 발표자를 뽑으세요</p>
+              <p className="text-lg text-slate-400">
+                {isView ? '강사 화면에서 뽑으면 여기에 나옵니다' : '버튼을 눌러 발표자를 뽑으세요'}
+              </p>
             )}
           </AnimatePresence>
         </div>
@@ -175,7 +305,7 @@ export default function RandomPicker({ participants, onResult }) {
 
       {/* Selected badge */}
       <AnimatePresence>
-        {selected && (
+        {viewSelected && (
           <motion.span
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -188,10 +318,16 @@ export default function RandomPicker({ participants, onResult }) {
         )}
       </AnimatePresence>
 
-      {/* Controls */}
+      {/* Controls — 전자칠판에는 조작 수단을 두지 않는다 */}
+      {isView ? (
+        <p className="inline-flex items-center gap-1.5 text-slate-400 text-sm">
+          <Monitor size={14} />
+          강사 화면을 그대로 보여주는 중입니다
+        </p>
+      ) : (
       <div className="flex gap-3">
         {selected && (
-          <Button onClick={() => { setSelected(null); setDisplayName(null); }} variant="secondary" size="lg">
+          <Button onClick={() => { setSelected(null); setRolling(null); }} variant="secondary" size="lg">
             <RefreshCw size={18} /> 다시 뽑기
           </Button>
         )}
@@ -208,6 +344,7 @@ export default function RandomPicker({ participants, onResult }) {
           ) : selected ? '한 번 더' : '발표자 뽑기'}
         </Button>
       </div>
+      )}
 
       {/* History */}
       {history.length > 0 && (

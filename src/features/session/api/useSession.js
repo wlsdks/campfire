@@ -22,6 +22,7 @@ const SECONDARY_FIELDS = [
   'persistentAssignmentId',
   'activeAssignmentId',
   'requireEmployeeId',
+  'drawOnly',
 ];
 
 /**

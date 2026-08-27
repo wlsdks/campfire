@@ -10,6 +10,7 @@ import {
   normalizeQuizEvent,
 } from '@/lib/quiz';
 import { buildQuestionData, QUESTION_TYPE_FIELDS } from '@/lib/question';
+import { MODE_CARD_TYPE } from '@/lib/modes';
 import { useToast } from '@/hooks/useToast';
 
 // 서버 시간 기준 — 강사 기기 시계 오차 없이 activatedAt/revealedAt/awardedAt 등
@@ -86,6 +87,22 @@ export function useQuestionActions(sessionId, questions, currentQuestion, scores
   async function activateQuestion(qId, nextEvent) {
     const question = questions?.[qId];
     if (!question) return;
+
+    // 모드 카드는 질문이 아니라 화면 전환이다. 목록에 미리 꽂아두고 순서대로 눌러 진행한다.
+    if (question.type === MODE_CARD_TYPE) {
+      try {
+        const updates = { currentMode: question.mode, currentQuestion: null, timer: null };
+        // 추첨 계열은 직전 판의 당첨자가 학생 폰에 다시 뜨지 않게 결과를 비운다
+        if (question.mode === 'lottery' || question.mode === 'scratchCard') {
+          updates.gameResult = null;
+          updates.gameState = null;
+        }
+        await update(ref(db, `sessions/${sessionId}`), updates);
+      } catch {
+        showToast('모드 전환에 실패했습니다.');
+      }
+      return;
+    }
 
     // 진행 중인 reveal batch 완료 대기 — lastPoints 보존
     if (revealLocks.has(sessionId)) {

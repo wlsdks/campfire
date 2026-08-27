@@ -1,8 +1,11 @@
-import { useState, useRef, useEffect, lazy, Suspense } from 'react';
+import { useState, useRef, useEffect, useMemo, lazy, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Ticket, Minus, Plus, RotateCcw, Sparkles, Trophy } from 'lucide-react';
+import { Ticket, Minus, Plus, RotateCcw, Sparkles, Trophy, Monitor } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Avatar from '@/components/ui/Avatar';
+import { useDrawDisplay, drawPrimary, drawSecondary } from '@/lib/draw-display';
+import { useGameMirror } from '../api/useGameMirror';
+import DrawDisplayToggle from './DrawDisplayToggle';
 
 const ConfettiBurst = lazy(() => import('@/components/ui/ConfettiBurst'));
 
@@ -40,7 +43,7 @@ function pickLotteryWinners(participants, count) {
  * - rolling: 이름이 빠르게 지나감 (80ms 간격 슬롯머신)
  * - stopped: 큰 spring overshoot + sparkle burst + (1등이면) confetti
  */
-function BigSlot({ presenter, rollingName, winner, slotIdx, isLast, isFirst }) {
+function BigSlot({ presenter, rollingPerson, winner, slotIdx, isLast, isFirst, displayMode }) {
   const stopped = !!winner;
   const cardSize = presenter
     ? 'w-80 h-96 md:w-96 md:h-[28rem]'
@@ -77,10 +80,30 @@ function BigSlot({ presenter, rollingName, winner, slotIdx, isLast, isFirst }) {
       {stopped && <SparkleBurst presenter={presenter} />}
       {stopped && isFirst && <Suspense fallback={null}><ConfettiBurst /></Suspense>}
 
-      <Avatar name={stopped ? winner.nickname : rollingName} size={avatarSize} />
-      <div className={`text-white font-bold mt-4 ${nameSize} ${!stopped ? 'blur-[1px] opacity-90' : ''}`}>
-        {stopped ? winner.nickname : rollingName}
+      <Avatar name={stopped ? winner.nickname : rollingPerson?.nickname} size={avatarSize} />
+      {/* 롤링 중에는 이름이 아래에서 위로 넘어간다 — 슬롯머신 릴이 도는 감각 */}
+      <div className={`relative overflow-hidden mt-4 ${presenter ? 'h-16 md:h-20' : 'h-10'} flex items-center justify-center w-full px-3`}>
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.div
+            key={stopped ? `w-${winner.id}` : `r-${rollingPerson?.id}-${slotIdx}`}
+            initial={stopped ? { opacity: 0, scale: 0.8 } : { y: '110%', opacity: 0.5 }}
+            animate={stopped ? { opacity: 1, scale: 1 } : { y: '0%', opacity: 0.9 }}
+            exit={stopped ? { opacity: 0 } : { y: '-110%', opacity: 0 }}
+            transition={stopped
+              ? { type: 'spring', stiffness: 400, damping: 18 }
+              : { duration: 0.08, ease: 'linear' }}
+            className={`text-white font-bold tracking-tight truncate max-w-full tabular-nums ${nameSize} ${!stopped ? 'blur-[0.6px]' : ''}`}
+          >
+            {drawPrimary(stopped ? winner : rollingPerson, displayMode)}
+          </motion.div>
+        </AnimatePresence>
       </div>
+      {/* 사번 추첨은 당첨자를 사번으로 확인한다. 한쪽만 등록된 사람은 중복 표시하지 않는다. */}
+      {stopped && drawSecondary(winner, displayMode) && (
+        <div className={`text-white/70 font-medium tabular-nums ${presenter ? 'text-2xl' : 'text-base'}`}>
+          {drawSecondary(winner, displayMode)}
+        </div>
+      )}
       <span className={`mt-3 rounded-full font-bold ${badgeSize} ${
         stopped ? 'bg-amber-500 text-white' : 'bg-white/10 text-white/60'
       }`}>
@@ -96,7 +119,7 @@ function BigSlot({ presenter, rollingName, winner, slotIdx, isLast, isFirst }) {
 }
 
 /** PastWinner — 이미 발표된 winner의 작은 뱃지. row 정렬. */
-function PastWinner({ winner, slotIdx, presenter }) {
+function PastWinner({ winner, slotIdx, presenter, displayMode }) {
   return (
     <motion.div
       layout
@@ -109,7 +132,10 @@ function PastWinner({ winner, slotIdx, presenter }) {
     >
       <Trophy size={presenter ? 16 : 13} className="text-amber-500 shrink-0" />
       <span className="text-slate-400 font-bold">#{slotIdx + 1}</span>
-      <span className="text-slate-900 dark:text-slate-100 font-bold">{winner.nickname}</span>
+      <span className="text-slate-900 dark:text-slate-100 font-bold tabular-nums">{drawPrimary(winner, displayMode)}</span>
+      {drawSecondary(winner, displayMode) && (
+        <span className="text-slate-400 tabular-nums">{drawSecondary(winner, displayMode)}</span>
+      )}
     </motion.div>
   );
 }
@@ -153,16 +179,50 @@ function SparkleBurst({ presenter }) {
  *
  * 한 번에 한 명씩 강조해서 진짜 복권/제비뽑기 느낌.
  */
-export default function Lottery({ participants, onResult, presenter = false }) {
+export default function Lottery({ participants, onResult, presenter = false, sessionId, role = 'control' }) {
+  // 전자칠판(view)은 조작하지 않는다 — 강사 화면이 돌리는 추첨을 그대로 비춘다.
+  const isView = role === 'view';
+  const { remote, publish } = useGameMirror(sessionId, { role, mode: 'lottery' });
   const [count, setCount] = useState(1);
   const [phase, setPhase] = useState('idle'); // idle | rolling | revealed
   const [winners, setWinners] = useState([]); // 발표된 winner들 누적
-  const [rollingName, setRollingName] = useState(''); // 현재 슬롯의 회전 이름
+  const [rollingPerson, setRollingPerson] = useState(null); // 현재 슬롯에서 돌고 있는 사람
+  const [displayMode, setDisplayMode] = useDrawDisplay();
   const [currentSlot, setCurrentSlot] = useState(-1); // 현재 발표 중인 슬롯 (0~N-1)
   const [pickedList, setPickedList] = useState([]); // 미리 결정된 winner 리스트
   const mountedRef = useRef(true);
   const timersRef = useRef([]);
   const intervalsRef = useRef([]);
+  const serialRef = useRef(0);
+
+  // 강사 화면의 진행 상태를 전자칠판으로 흘려보낸다
+  useEffect(() => {
+    if (isView) return;
+    publish({ serial: serialRef.current, phase, currentSlot, winners, total: pickedList.length });
+  }, [isView, phase, currentSlot, winners, pickedList.length, publish]);
+
+  // 전자칠판이 따라 그릴 값 — 조작 화면에서는 자기 상태를 그대로 쓴다
+  const viewPhase = isView ? (remote?.phase || 'idle') : phase;
+  const viewSlot = isView ? (remote?.currentSlot ?? -1) : currentSlot;
+  const viewWinners = useMemo(() => (isView ? (remote?.winners || []) : winners), [isView, remote?.winners, winners]);
+  const viewTotal = isView ? (remote?.total || 0) : pickedList.length;
+
+  // 전자칠판에서도 이름이 돌아야 한다 — 굴러가는 이름은 연출이라 각 화면이 따로 만든다
+  useEffect(() => {
+    if (!isView) return;
+    if (viewPhase !== 'rolling' || viewWinners[viewSlot] || participants.length === 0) return;
+    const spin = setInterval(() => {
+      setRollingPerson(participants[Math.floor(Math.random() * participants.length)]);
+    }, 80);
+    return () => clearInterval(spin);
+  }, [isView, viewPhase, viewSlot, viewWinners, participants]);
+
+  // 확정된 슬롯에서는 당첨자에 멈춘다
+  useEffect(() => {
+    if (!isView) return;
+    const stopped = viewWinners[viewSlot];
+    if (stopped) setRollingPerson(stopped);
+  }, [isView, viewWinners, viewSlot]);
 
   useEffect(() => {
     mountedRef.current = true;
@@ -174,6 +234,7 @@ export default function Lottery({ participants, onResult, presenter = false }) {
   }, []);
 
   const hasTicketMode = participants.some((p) => (p.tickets || 0) > 0);
+  const hasEmployeeIds = participants.some((p) => p.employeeId);
   const eligibleParticipants = hasTicketMode
     ? participants.filter((p) => (p.tickets || 0) > 0)
     : participants;
@@ -181,13 +242,12 @@ export default function Lottery({ participants, onResult, presenter = false }) {
 
   function rollSlot(slotIdx, picked) {
     setCurrentSlot(slotIdx);
-    setRollingName(participants[0]?.nickname || '...');
+    setRollingPerson(participants[0] || null);
 
     // 80ms 간격 이름 회전
     const interval = setInterval(() => {
       if (!mountedRef.current) return;
-      const r = participants[Math.floor(Math.random() * participants.length)];
-      setRollingName(r.nickname);
+      setRollingPerson(participants[Math.floor(Math.random() * participants.length)]);
     }, 80);
     intervalsRef.current.push(interval);
 
@@ -196,7 +256,7 @@ export default function Lottery({ participants, onResult, presenter = false }) {
     const timer = setTimeout(() => {
       if (!mountedRef.current) return;
       clearInterval(interval);
-      setRollingName(picked[slotIdx].nickname);
+      setRollingPerson(picked[slotIdx]);
       setWinners((prev) => [...prev, picked[slotIdx]]);
 
       // 마지막 슬롯이면 phase 변경, 아니면 1.2초 후 다음 슬롯
@@ -205,7 +265,12 @@ export default function Lottery({ participants, onResult, presenter = false }) {
           if (!mountedRef.current) return;
           setPhase('revealed');
           // 닉네임이 아닌 {id, nickname} 객체 전달 — 동명이인이어도 실제 뽑힌 학생 id로 당첨 귀속(오귀속 방지)
-          onResult?.(picked.map((w) => ({ id: w.id, nickname: w.nickname })));
+          // employeeId까지 넘긴다 — 사번 추첨에서는 사번이 당첨자를 확인하는 실제 식별자다
+          onResult?.(picked.map((w) => ({
+            id: w.id,
+            nickname: w.nickname,
+            ...(w.employeeId ? { employeeId: w.employeeId } : {}),
+          })));
         }, 800);
         timersRef.current.push(endTimer);
       } else {
@@ -231,6 +296,7 @@ export default function Lottery({ participants, onResult, presenter = false }) {
     timersRef.current = [];
     intervalsRef.current = [];
 
+    serialRef.current += 1;
     setPhase('rolling');
     setWinners([]);
     setPickedList(picked);
@@ -244,11 +310,11 @@ export default function Lottery({ participants, onResult, presenter = false }) {
     setPhase('idle');
     setWinners([]);
     setCurrentSlot(-1);
-    setRollingName('');
+    setRollingPerson(null);
     setPickedList([]);
   }
 
-  if (participants.length === 0) {
+  if (!isView && participants.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-4 py-16" onClick={(e) => e.stopPropagation()}>
         <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
@@ -262,13 +328,13 @@ export default function Lottery({ participants, onResult, presenter = false }) {
     );
   }
 
-  const isRolling = phase === 'rolling';
-  const currentWinner = winners[currentSlot]; // currentSlot이 stop 됐으면 winner
+  const isRolling = viewPhase === 'rolling';
+  const currentWinner = viewWinners[viewSlot]; // 해당 슬롯이 멈췄으면 winner
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-3xl mx-auto" onClick={(e) => e.stopPropagation()}>
-      {/* Count selector — idle에서만 */}
-      {phase === 'idle' && (
+      {/* Count selector — 조작 화면의 idle에서만. 전자칠판에는 조작 수단을 두지 않는다. */}
+      {!isView && viewPhase === 'idle' && (
         <>
           <div className="flex items-center gap-3">
             <span className={`text-slate-500 font-medium ${presenter ? 'text-base' : 'text-sm'}`}>당첨자 수</span>
@@ -306,6 +372,12 @@ export default function Lottery({ participants, onResult, presenter = false }) {
         </>
       )}
 
+      {/* 표시 기준은 추첨 중에도 바꿀 수 있어야 한다. 발표 도중 "사번으로 불러주세요" 같은
+          요청이 들어오면 판을 다시 돌릴 수는 없다. */}
+      {!isView && hasEmployeeIds && (
+        <DrawDisplayToggle mode={displayMode} onChange={setDisplayMode} presenter={presenter} />
+      )}
+
       {/* Rolling 페이즈 헤더 */}
       <AnimatePresence>
         {isRolling && (
@@ -319,20 +391,20 @@ export default function Lottery({ participants, onResult, presenter = false }) {
               <Sparkles size={presenter ? 24 : 18} className="text-amber-500" />
             </motion.div>
             <p className={`text-slate-700 dark:text-slate-200 font-bold tracking-tight ${presenter ? 'text-2xl' : 'text-lg'}`}>
-              {currentWinner ? `${currentSlot + 1}등 발표!` : '두근두근...'}
+              {currentWinner ? `${viewSlot + 1}등 발표!` : '두근두근...'}
             </p>
             <span className={`text-slate-400 tabular-nums ${presenter ? 'text-lg' : 'text-sm'}`}>
-              {currentSlot + 1}/{pickedList.length}
+              {viewSlot + 1}/{viewTotal}
             </span>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* 이미 발표된 winners — 상단 뱃지 row */}
-      {(isRolling && winners.length > 0 && currentSlot < pickedList.length - 1) && (
+      {(isRolling && viewWinners.length > 0 && viewSlot < viewTotal - 1) && (
         <div className="flex flex-wrap justify-center gap-2 px-4">
-          {winners.slice(0, currentSlot).map((w, i) => (
-            <PastWinner key={`past-${i}`} winner={w} slotIdx={i} presenter={presenter} />
+          {viewWinners.slice(0, viewSlot).map((w, i) => (
+            <PastWinner key={`past-${i}`} winner={w} slotIdx={i} presenter={presenter} displayMode={displayMode} />
           ))}
         </div>
       )}
@@ -340,26 +412,29 @@ export default function Lottery({ participants, onResult, presenter = false }) {
       {/* 중앙: 현재 회전 중인 큰 슬롯 (rolling) 또는 발표 끝난 모든 winners (revealed) */}
       <div className={`flex items-center justify-center ${presenter ? 'min-h-[28rem]' : 'min-h-[18rem]'}`}>
         <AnimatePresence mode="wait">
-          {phase === 'idle' && (
+          {viewPhase === 'idle' && (
             <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-center space-y-3">
               <Ticket size={presenter ? 56 : 32} className="text-slate-400 mx-auto" />
-              <p className={`text-slate-400 ${presenter ? 'text-2xl' : 'text-base'}`}>추첨 버튼을 눌러주세요</p>
+              <p className={`text-slate-400 ${presenter ? 'text-2xl' : 'text-base'}`}>
+                {isView ? '강사 화면에서 추첨을 시작하면 여기에 나옵니다' : '추첨 버튼을 눌러주세요'}
+              </p>
             </motion.div>
           )}
 
-          {isRolling && currentSlot >= 0 && (
+          {isRolling && viewSlot >= 0 && (
             <BigSlot
-              key={`slot-${currentSlot}-${winners[currentSlot] ? 'stop' : 'roll'}`}
+              key={`slot-${viewSlot}-${viewWinners[viewSlot] ? 'stop' : 'roll'}`}
               presenter={presenter}
-              rollingName={rollingName}
-              winner={winners[currentSlot] || null}
-              slotIdx={currentSlot}
-              isLast={currentSlot === pickedList.length - 1 && !!winners[currentSlot]}
-              isFirst={currentSlot === 0}
+              rollingPerson={rollingPerson}
+              displayMode={displayMode}
+              winner={viewWinners[viewSlot] || null}
+              slotIdx={viewSlot}
+              isLast={viewSlot === viewTotal - 1 && !!viewWinners[viewSlot]}
+              isFirst={viewSlot === 0}
             />
           )}
 
-          {phase === 'revealed' && (
+          {viewPhase === 'revealed' && (
             <motion.div
               key="revealed"
               initial={{ opacity: 0, y: 12 }}
@@ -370,10 +445,10 @@ export default function Lottery({ participants, onResult, presenter = false }) {
             >
               <Suspense fallback={null}><ConfettiBurst /></Suspense>
               <h3 className={`font-black tracking-tight text-slate-900 dark:text-slate-100 ${presenter ? 'text-4xl' : 'text-2xl'}`}>
-                🎉 {winners.length}명 당첨!
+                🎉 {viewWinners.length}명 당첨!
               </h3>
               <div className={`flex flex-wrap justify-center ${presenter ? 'gap-4' : 'gap-3'}`}>
-                {winners.map((w, i) => (
+                {viewWinners.map((w, i) => (
                   <motion.div
                     key={`final-${i}`}
                     layout
@@ -385,7 +460,15 @@ export default function Lottery({ participants, onResult, presenter = false }) {
                     }`}
                   >
                     <Avatar name={w.nickname} size={presenter ? 'xl' : 'lg'} />
-                    <div className={`text-white font-bold mt-3 ${presenter ? 'text-xl' : 'text-base'}`}>{w.nickname}</div>
+                    {/* 발표 후 남는 화면 — 강사가 당첨자를 호명하는 곳이라 사번이 여기에도 있어야 한다. */}
+                    <div className={`text-white font-bold mt-3 tabular-nums truncate max-w-full ${presenter ? 'text-xl' : 'text-base'}`}>
+                      {drawPrimary(w, displayMode)}
+                    </div>
+                    {drawSecondary(w, displayMode) && (
+                      <div className={`text-white/60 font-medium tabular-nums truncate max-w-full ${presenter ? 'text-base mt-1' : 'text-[11px]'}`}>
+                        {drawSecondary(w, displayMode)}
+                      </div>
+                    )}
                     <span className={`mt-2 rounded-full bg-amber-500 text-white font-bold ${presenter ? 'text-sm px-3 py-1' : 'text-[10px] px-2 py-0.5'}`}>
                       #{i + 1} 당첨
                     </span>
@@ -397,8 +480,14 @@ export default function Lottery({ participants, onResult, presenter = false }) {
         </AnimatePresence>
       </div>
 
+      {isView ? (
+        <p className="inline-flex items-center gap-1.5 text-slate-400 text-sm">
+          <Monitor size={14} />
+          강사 화면을 그대로 보여주는 중입니다
+        </p>
+      ) : (
       <div className="flex gap-3">
-        {phase === 'revealed' && (
+        {viewPhase === 'revealed' && (
           <Button onClick={reset} variant="secondary" size={presenter ? 'lg' : 'md'}>
             <RotateCcw size={presenter ? 20 : 16} />
             초기화
@@ -420,11 +509,12 @@ export default function Lottery({ participants, onResult, presenter = false }) {
           ) : (
             <span className="flex items-center gap-2">
               <Ticket size={presenter ? 24 : 20} />
-              {phase === 'revealed' ? '다시 추첨' : hasTicketMode ? '보상 추첨' : '추첨 시작'}
+              {viewPhase === 'revealed' ? '다시 추첨' : hasTicketMode ? '보상 추첨' : '추첨 시작'}
             </span>
           )}
         </Button>
       </div>
+      )}
     </div>
   );
 }

@@ -17,6 +17,7 @@ import MysteryBoxPresenter from './MysteryBoxPresenter';
 import HintQuizPresenter from './HintQuizPresenter';
 import CorrectAnswerRanking from './CorrectAnswerRanking';
 import ImageSlidePresenter from './ImageSlidePresenter';
+import WebEmbedPresenter from './WebEmbedPresenter';
 import BetDistribution from './BetDistribution';
 import ConfidenceStats from './ConfidenceStats';
 import AiJudgeViz from '@/features/ai-judge/components/AiJudgeViz';
@@ -222,6 +223,9 @@ export default memo(function VizRenderer({ sessionId, session, isAdmin = false, 
               currentSlide={question.currentSlide || 0}
               onSlideChange={isAdmin ? (idx) => update(ref(db, `sessions/${sessionId}/questions/${currentQId}`), { currentSlide: idx }) : undefined}
             />
+          )}
+          {question.type === 'webEmbed' && (
+            <WebEmbedPresenter url={question.embedUrl} presenter={isPresenter} title={question.title} />
           )}
           {question.type === 'mysteryBox' && (
             <>

@@ -4,6 +4,7 @@ import { Users, QrCode, X, Copy, Check, Hand, MessageSquare, ChevronDown, Trophy
 import { ref, update } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import QRCode from '@/components/ui/QRCode';
+import { modeGroups } from '@/lib/modes';
 import Badge from '@/components/ui/Badge';
 import HandRaiseList from '@/features/hand-raise/components/HandRaiseList';
 import UrgentQuestionList from '@/features/questions/components/UrgentQuestionList';
@@ -269,19 +270,11 @@ export function PresentTimerButton({ isRunning, onStart, onStop }) {
   );
 }
 
-const PRESENT_MODES = [
-  { mode: 'joinShow', label: '접속 현황', icon: UserPlus },
-  { mode: 'combinedRanking', label: '합산 랭킹', icon: Medal },
-  { mode: 'leaderboard', label: '리더보드', icon: Trophy },
-  { mode: 'qaBoard', label: 'Q&A 보드', icon: MessageSquare },
-  { mode: 'qaRanking', label: 'Q&A 랭킹', icon: HelpCircle },
-  { mode: 'lottery', label: '추첨', icon: Ticket },
-  { mode: 'breakTime', label: '쉬는 시간', icon: Coffee },
-  { mode: 'awards', label: '시상식', icon: Award },
-];
-
-export function PresentModeMenu({ sessionId, currentMode, currentQuestion }) {
+export function PresentModeMenu({ sessionId, currentMode, currentQuestion, hasLeaderboard = false }) {
   const [open, setOpen] = useState(false);
+  // 돌아갈 질문이 있는지 — 렌더에서 ref를 읽지 않도록 상태로 따로 들고 있는다
+  const [hasPrevQuestion, setHasPrevQuestion] = useState(false);
+  const groups = modeGroups({ hasLeaderboard });
   // 특수 모드 진입 시 직전 질문/모드 기억 — "질문으로 돌아가기"가 실제로 그 질문을 복원.
   // (switchMode가 currentQuestion을 null로 지우므로 기억 없이는 대기화면으로만 떨어짐)
   const prevQuestionRef = useRef(null);
@@ -289,6 +282,7 @@ export function PresentModeMenu({ sessionId, currentMode, currentQuestion }) {
   async function switchMode(mode) {
     if (['poll', 'quiz'].includes(currentMode) && currentQuestion) {
       prevQuestionRef.current = { q: currentQuestion, m: currentMode };
+      setHasPrevQuestion(true);
     }
     await update(ref(db, `sessions/${sessionId}`), { currentMode: mode, currentQuestion: null });
     setOpen(false);
@@ -319,20 +313,27 @@ export function PresentModeMenu({ sessionId, currentMode, currentQuestion }) {
         </button>
 
         {open && (
-          <div className="absolute top-full left-0 mt-2 w-40 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 py-1.5 overflow-hidden">
-            {PRESENT_MODES.map(({ mode, label, icon: Icon }) => (
-              <button
-                key={mode}
-                onClick={() => switchMode(mode)}
-                className={`w-full flex items-center gap-2 px-3 py-2 text-sm transition-colors ${
-                  currentMode === mode
-                    ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 font-semibold'
-                    : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
-                }`}
-              >
-                <Icon size={14} />
-                {label}
-              </button>
+          <div className="absolute top-full left-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-xl border border-slate-200 dark:border-slate-700 py-1.5 max-h-[70vh] overflow-y-auto">
+            {/* 목록은 lib/modes.js 한 곳에서 온다 — 발표 중에도 대시보드와 같은 모드를 켤 수 있다 */}
+            {groups.map((group, gi) => (
+              <div key={group.label}>
+                {gi > 0 && <div className="border-t border-slate-100 dark:border-slate-700 my-1" />}
+                <p className="px-3 pt-1.5 pb-1 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{group.label}</p>
+                {group.items.map(({ mode, label, icon: Icon }) => (
+                  <button
+                    key={mode}
+                    onClick={() => switchMode(mode)}
+                    className={`w-full flex items-center gap-2 px-3 py-2 text-sm transition-colors ${
+                      currentMode === mode
+                        ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 font-semibold'
+                        : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700'
+                    }`}
+                  >
+                    <Icon size={14} />
+                    {label}
+                  </button>
+                ))}
+              </div>
             ))}
             <div className="border-t border-slate-100 dark:border-slate-700 my-1" />
             <button
@@ -340,7 +341,7 @@ export function PresentModeMenu({ sessionId, currentMode, currentQuestion }) {
               className="w-full flex items-center gap-2 px-3 py-2 text-sm text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700"
             >
               <X size={14} />
-              {prevQuestionRef.current ? '질문으로 돌아가기' : '대기 화면으로'}
+              {hasPrevQuestion ? '질문으로 돌아가기' : '대기 화면으로'}
             </button>
           </div>
         )}

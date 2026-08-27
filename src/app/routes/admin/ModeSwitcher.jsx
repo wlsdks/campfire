@@ -1,8 +1,9 @@
 import { memo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Ticket, Trophy, Coffee, ChevronDown, MessageSquare, Award, Eye, UserCircle, Activity, BarChart3, Timer, Medal, Zap, X, UserPlus } from 'lucide-react';
+import { ChevronDown, Zap, X, Plus } from 'lucide-react';
+import { modeGroups, modeLabel } from '@/lib/modes';
 
-export default memo(function ModeSwitcher({ currentMode, isSpecialMode, leaderboard, modeOpen, onToggle, onSwitchMode }) {
+export default memo(function ModeSwitcher({ currentMode, isSpecialMode, leaderboard, modeOpen, onToggle, onSwitchMode, onAddModeCard }) {
   const containerRef = useRef(null);
 
   // Close on outside click
@@ -15,33 +16,8 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, leaderbo
     return () => document.removeEventListener('mousedown', handler);
   }, [modeOpen, onToggle]);
 
-  const modeGroups = [
-    { label: '게임', items: [
-      { mode: 'lottery', label: '추첨', icon: Ticket },
-
-    ]},
-    { label: '참여', items: [
-      { mode: 'joinShow', label: '접속 현황', icon: UserPlus },
-      { mode: 'comprehension', label: '이해도 체크', icon: Activity },
-      { mode: 'quickSurvey', label: '빠른 설문', icon: BarChart3 },
-      { mode: 'discussion', label: '그룹 토론', icon: Timer },
-      { mode: 'qaBoard', label: 'Q&A 보드', icon: MessageSquare },
-    ]},
-    { label: '결과', items: [
-      ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
-      { mode: 'awards', label: '시상식', icon: Award },
-      { mode: 'combinedRanking', label: '합산 랭킹', icon: Medal, shortLabel: '합산' },
-    ]},
-    { label: '기타', items: [
-      { mode: 'randomPicker', label: '발표자 뽑기', icon: UserCircle },
-      { mode: 'focus', label: '집중!', icon: Eye },
-      { mode: 'breakTime', label: '쉬는 시간', icon: Coffee },
-    ]},
-  ];
-  const modes = modeGroups.flatMap(g => g.items);
-
-  const activeMode = modes.find(m => m.mode === currentMode);
-  const activeLabel = activeMode?.shortLabel || activeMode?.label;
+  const groups = modeGroups({ hasLeaderboard: leaderboard.length > 0 });
+  const activeLabel = modeLabel(currentMode, { short: true });
 
   return (
     <div ref={containerRef} className="relative">
@@ -69,25 +45,36 @@ export default memo(function ModeSwitcher({ currentMode, isSpecialMode, leaderbo
             transition={{ duration: 0.15, ease: 'easeOut' }}
             className="absolute top-full left-0 mt-1.5 w-52 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg z-40 py-1.5 overflow-hidden max-h-[70vh] overflow-y-auto"
           >
-            {modeGroups.map((group, gi) => (
+            {groups.map((group, gi) => (
               <div key={group.label}>
                 {gi > 0 && <div className="border-t border-slate-100 dark:border-slate-700 my-1" />}
                 <p className="px-3 pt-2 pb-1 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">{group.label}</p>
                 {group.items.map(({ mode, label, icon: Icon }) => {
                   const isActive = currentMode === mode;
                   return (
-                    <button
-                      key={mode}
-                      onClick={() => { onSwitchMode(mode); onToggle(); }}
-                      className={`w-full flex items-center gap-2 px-3 py-2 text-sm transition-colors duration-100 ${
-                        isActive
-                          ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 font-semibold'
-                          : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium'
-                      }`}
-                    >
-                      <Icon size={15} />
-                      {label}
-                    </button>
+                    <div key={mode} className="flex items-stretch">
+                      <button
+                        onClick={() => { onSwitchMode(mode); onToggle(); }}
+                        className={`flex-1 flex items-center gap-2 px-3 py-2 text-sm transition-colors duration-100 ${
+                          isActive
+                            ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 font-semibold'
+                            : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 font-medium'
+                        }`}
+                      >
+                        <Icon size={15} />
+                        {label}
+                      </button>
+                      {onAddModeCard && (
+                        <button
+                          onClick={() => { onAddModeCard(mode); onToggle(); }}
+                          title="질문 목록에 추가"
+                          aria-label={`${label}을(를) 질문 목록에 추가`}
+                          className="px-2.5 text-slate-300 dark:text-slate-600 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-600 transition-colors duration-100"
+                        >
+                          <Plus size={14} />
+                        </button>
+                      )}
+                    </div>
                   );
                 })}
               </div>

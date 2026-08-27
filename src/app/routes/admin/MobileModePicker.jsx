@@ -1,28 +1,13 @@
 import { motion } from 'framer-motion';
-import { BarChart3, MessageSquare, Ticket, Coffee, Trophy, X, Activity, UserCircle, Eye, Timer, Award } from 'lucide-react';
+import { X } from 'lucide-react';
+import { modeGroups } from '@/lib/modes';
 import BottomSheet from '@/components/ui/BottomSheet';
 
 /* ─── Mode Picker BottomSheet (grid layout, one-tap switch) ─── */
 export default function MobileModePicker({ open, onClose, currentMode, onSwitchMode, leaderboard }) {
-  const sections = [
-    { title: '수업 도구', modes: [
-      { mode: 'comprehension', label: '이해도 체크', icon: Activity },
-      { mode: 'quickSurvey', label: '빠른 설문', icon: BarChart3 },
-      { mode: 'discussion', label: '그룹 토론', icon: Timer },
-      { mode: 'randomPicker', label: '발표자 뽑기', icon: UserCircle },
-      { mode: 'focus', label: '집중!', icon: Eye },
-    ]},
-    { title: '게임 & 이벤트', modes: [
-      { mode: 'lottery', label: '추첨', icon: Ticket },
-
-    ]},
-    { title: '기타', modes: [
-      { mode: 'breakTime', label: '쉬는 시간', icon: Coffee },
-      { mode: 'qaBoard', label: 'Q&A 보드', icon: MessageSquare },
-      ...(leaderboard.length > 0 ? [{ mode: 'leaderboard', label: '리더보드', icon: Trophy }] : []),
-      { mode: 'awards', label: '시상식', icon: Award },
-    ]},
-  ];
+  // 목록은 lib/modes.js 한 곳에서 온다 — 데스크톱·발표 모드와 항목이 갈리지 않게.
+  const sections = modeGroups({ hasLeaderboard: leaderboard.length > 0 })
+    .map((g) => ({ title: g.label, modes: g.items }));
 
   const allModes = sections.flatMap(s => s.modes);
   const isSpecial = allModes.some(m => m.mode === currentMode);

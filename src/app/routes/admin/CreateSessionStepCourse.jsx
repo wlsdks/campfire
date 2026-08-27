@@ -16,7 +16,8 @@ export default function CreateSessionStepCourse({ courses, onSelectCourse, onNew
         <p className="text-slate-400 text-sm mt-1">강의를 선택하세요</p>
       </div>
 
-      <div className="space-y-2">
+      {/* 강의가 몇 개든 팝업 높이는 고정 — 목록만 안에서 스크롤된다 */}
+      <div className="space-y-2 max-h-[52dvh] overflow-y-auto overscroll-contain -mx-1 px-1">
         {courses.map((course) => (
           <button
             key={course.name}
@@ -36,6 +37,9 @@ export default function CreateSessionStepCourse({ courses, onSelectCourse, onNew
           </button>
         ))}
 
+      </div>
+
+      <div>
         <button
           onClick={onNewCourse}
           className="w-full flex items-center gap-3 p-3.5 rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-600 hover:border-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors duration-150 active:scale-[0.98] text-left"

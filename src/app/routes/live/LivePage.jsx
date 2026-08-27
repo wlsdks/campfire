@@ -2,13 +2,13 @@ import { lazy, Suspense, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSession } from '@/features/session/api/useSession';
+import { isSpecialMode } from '@/lib/modes';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 import { useTimer } from '@/features/timer/api/useTimer';
 import { useVotes } from '@/hooks/useVotes';
 import { useScores } from '@/features/quiz/api/useScores';
 import { useHandRaises } from '@/features/hand-raise/api/useHandRaises';
 import { useUrgentQuestions } from '@/features/questions/api/useUrgentQuestions';
-import { useGameResultPublisher } from '@/features/games/api/useGameResult';
 import VizRenderer from '@/features/visualization/components/VizRenderer';
 import ReactionOverlay from '@/features/reactions/components/ReactionOverlay';
 import ChatBubbleOverlay from '@/features/reactions/components/ChatBubbleOverlay';
@@ -26,6 +26,7 @@ import DrumrollOverlay from '@/components/ui/DrumrollOverlay';
 import LiveParticipation from './LiveParticipation';
 
 const Lottery = lazy(() => import('@/features/games/components/Lottery'));
+const ScratchCard = lazy(() => import('@/features/games/components/ScratchCard'));
 const BreakTimer = lazy(() => import('@/features/games/components/BreakTimer'));
 const Leaderboard = lazy(() => import('@/features/quiz/components/Leaderboard'));
 const ClassQABoard = lazy(() => import('@/features/class-questions/components/ClassQABoard'));
@@ -65,17 +66,17 @@ export default function LivePage() {
   // drawParticipants: onlineList enriched with ticket data for weighted lottery.
   // 추첨 모드에서만 계산 — 그 외엔 scores 변경마다 300명 재계산하던 비용 제거.
   const drawParticipants = useMemo(
-    () => currentMode === 'lottery'
+    () => currentMode === 'lottery' || currentMode === 'scratchCard'
       ? onlineList.map((p) => ({ ...p, ...scores[p.id], tickets: scores[p.id]?.tickets || 0 }))
       : [],
     [onlineList, scores, currentMode]
   );
 
-  // 게임 결과 발행 — winner-mapping 로직은 공유 훅에 일원화(4개 라우트 복제 제거)
-  const { handleGameResult } = useGameResultPublisher(sessionId, onlineList, drawParticipants);
+  // 결과 발행은 하지 않는다 — 전자칠판은 보기 전용이고, 당첨자 기록은 강사 화면 한 곳에서만
+  // 발행한다(두 화면이 각자 발행하면 학생 폰에 서로 다른 당첨자가 뜬다).
 
   // Stable per-game callbacks (avoid re-creating on every render)
-  const isGameMode = ['lottery', 'combinedRanking', 'breakTime', 'leaderboard', 'qaBoard', 'qaRanking', 'joinShow', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
+  const isGameMode = isSpecialMode(currentMode);
   const isEnded = session?.status === 'ended';
   const hasActiveQuestion = ['poll', 'quiz'].includes(currentMode) && currentQId && question;
 
@@ -172,7 +173,11 @@ export default function LivePage() {
               >
                 <Suspense fallback={<GameFallback />}>
                   {currentMode === 'lottery' && (
-                    <Lottery participants={drawParticipants} onResult={(names) => handleGameResult(names, 'lottery')} presenter />
+                    <Lottery participants={drawParticipants} presenter sessionId={sessionId} role="view" />
+                  )}
+                  {/* 전자칠판은 조작하지 않는다 — 강사 화면의 판을 그대로 비추는 보기 전용 */}
+                  {currentMode === 'scratchCard' && (
+                    <ScratchCard sessionId={sessionId} role="view" presenter />
                   )}
                   {currentMode === 'breakTime' && <BreakTimer sessionId={sessionId} />}
                   {currentMode === 'leaderboard' && <div className="w-full max-w-2xl mx-auto [&_.max-w-xl]:max-w-2xl"><Leaderboard entries={leaderboard} maxShow={10} title="실시간 리더보드" /></div>}
@@ -180,7 +185,7 @@ export default function LivePage() {
                   {currentMode === 'qaRanking' && <QARanking sessionId={sessionId} />}
                   {currentMode === 'joinShow' && <JoinShow sessionId={sessionId} />}
                   {currentMode === 'awards' && <AwardsCeremony assignmentId={session?.activeAssignmentId} readOnly />}
-                  {currentMode === 'randomPicker' && <RandomPicker participants={onlineList} onResult={(w) => handleGameResult(w, 'randomPicker')} />}
+                  {currentMode === 'randomPicker' && <RandomPicker participants={onlineList} sessionId={sessionId} role="view" />}
                   {currentMode === 'comprehension' && <ComprehensionPresenter sessionId={sessionId} />}
                   {currentMode === 'quickSurvey' && <SurveyPresenter sessionId={sessionId} />}
                   {currentMode === 'discussion' && <DiscussionPresenter sessionId={sessionId} />}

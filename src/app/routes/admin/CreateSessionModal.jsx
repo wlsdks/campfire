@@ -7,10 +7,13 @@ import Modal from '@/components/ui/Modal';
 import CreateSessionStepCourse from './CreateSessionStepCourse';
 import CreateSessionStepNewCourse from './CreateSessionStepNewCourse';
 import CreateSessionStepConfirm from './CreateSessionStepConfirm';
+import ModePreview from './ModePreview';
 import { useCourses } from '@/features/course/api/useCourses';
 
 export default function CreateSessionModal({ open, onClose, onCreated, sessions, adminUser }) {
-  const [step, setStep] = useState('course'); // 'course' | 'new-course' | 'confirm'
+  const [step, setStep] = useState('course'); // 'course' | 'new-course' | 'confirm' | 'preview'
+  // 어떤 모드를 미리보기 중인지. 미리보기는 세션에 붙지 않아 아무것도 저장되지 않는다.
+  const [previewMode, setPreviewMode] = useState(null);
   const [selectedCourse, setSelectedCourse] = useState('');
   const [selectedCourseId, setSelectedCourseId] = useState('');
   const [newCourseName, setNewCourseName] = useState('');
@@ -23,6 +26,8 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions,
   const [duplicateSourceId, setDuplicateSourceId] = useState('');
   // 기업 행사모드 — 켜면 입장 시 사번(직원번호) 필수
   const [requireEmployeeId, setRequireEmployeeId] = useState(false);
+  // 추첨 전용 모드 — 참여자 입장 없이 강사가 명단을 직접 넣어 추첨만 한다
+  const [drawOnly, setDrawOnly] = useState(false);
 
   const { courses: dbCourses, createCourse } = useCourses(
     adminUser?.uid, adminUser?.role
@@ -95,6 +100,24 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions,
     setDuplicateEnabled(false);
     setDuplicateSourceId('');
     setRequireEmployeeId(false);
+    setDrawOnly(false);
+    setPreviewMode(null);
+  }
+
+  // 둘은 같이 켤 수 없다 — 기업 행사모드는 "입장할 때 사번을 받는" 설정인데
+  // 추첨 전용 모드에는 입장하는 사람 자체가 없다.
+  function handleToggleEmployeeId() {
+    setRequireEmployeeId((prev) => {
+      if (!prev) setDrawOnly(false);
+      return !prev;
+    });
+  }
+
+  function handleToggleDrawOnly() {
+    setDrawOnly((prev) => {
+      if (!prev) setRequireEmployeeId(false);
+      return !prev;
+    });
   }
 
   function handleToggleDuplicate() {
@@ -123,6 +146,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions,
         creatorId: adminUser?.uid || null,
         roundNumber,
         ...(requireEmployeeId ? { requireEmployeeId: true } : {}), // 기업 행사모드 — 사번 필수
+        ...(drawOnly ? { drawOnly: true } : {}), // 추첨 전용 — 명단 직접 입력
       };
 
       if (duplicateEnabled && duplicateSourceId) {
@@ -167,7 +191,7 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions,
   }
 
   return (
-    <Modal open={open} onClose={handleClose}>
+    <Modal open={open} onClose={handleClose} className={step === 'preview' ? 'sm:max-w-lg' : ''}>
       <AnimatePresence mode="wait">
         {step === 'course' && (
           <CreateSessionStepCourse
@@ -195,12 +219,18 @@ export default function CreateSessionModal({ open, onClose, onCreated, sessions,
             duplicateSourceId={duplicateSourceId}
             onSetDuplicateSourceId={setDuplicateSourceId}
             requireEmployeeId={requireEmployeeId}
-            onToggleEmployeeId={() => setRequireEmployeeId((v) => !v)}
+            onToggleEmployeeId={handleToggleEmployeeId}
+            drawOnly={drawOnly}
+            onToggleDrawOnly={handleToggleDrawOnly}
+            onPreviewMode={(mode) => { setPreviewMode(mode); setStep('preview'); }}
             error={error}
             creating={creating}
             onBack={handleReset}
             onCreate={handleCreate}
           />
+        )}
+        {step === 'preview' && (
+          <ModePreview mode={previewMode} onBack={() => setStep('confirm')} />
         )}
       </AnimatePresence>
     </Modal>

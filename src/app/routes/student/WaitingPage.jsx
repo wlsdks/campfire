@@ -97,8 +97,12 @@ function CopyableCode({ code }) {
   );
 }
 
+/** 당첨자를 학생 화면에 알리는 모드 — 추첨 계열과 발표자 뽑기. */
+const RESULT_MODES = ['lottery', 'scratchCard', 'randomPicker'];
+
 const GAME_MODES = {
   lottery: { label: '추첨 진행 중', icon: Ticket },
+  scratchCard: { label: '즉석복권 추첨 중', icon: Ticket },
   breakTime: { label: '쉬는 시간', icon: Coffee },
   qaBoard: { label: 'Q&A 보드 진행 중', icon: Users },
   randomPicker: { label: '발표자 뽑기 진행 중', icon: UserCircle },
@@ -111,26 +115,27 @@ export default memo(function WaitingPage({ sessionId, pendingEvent = null, cours
   const nickname = getNickname();
   const { isWinner, winnerNames, gameResult } = useGameResult(sessionId);
 
-  // 결과 표시 — 추첨(lottery)·발표자 뽑기(randomPicker) 공용. 모드 전환 잔재 노출 방지로 mode 일치 요구
+  // 결과 표시 — 추첨(lottery/scratchCard)·발표자 뽑기(randomPicker) 공용.
+  // 모드 전환 잔재 노출 방지로 mode 일치 요구.
   const isPickerResult = currentMode === 'randomPicker';
-  const showGameResult = gameResult && gameResult.mode === currentMode
-    && (currentMode === 'lottery' || currentMode === 'randomPicker');
+  const showsWinner = RESULT_MODES.includes(currentMode);
+  const showGameResult = gameResult && gameResult.mode === currentMode && showsWinner;
 
   // 당첨/지목 본인 풀스크린 연출 — 새 결과가 뜨는 순간 3.2초 + 진동, 이후 기존 인라인 카드로
-  const [winBlast, setWinBlast] = useState(null); // null | 'lottery' | 'randomPicker'
+  const [winBlast, setWinBlast] = useState(null); // null | RESULT_MODES 중 하나
   const lastResultRef = useRef(null);
   useEffect(() => {
     const key = gameResult?.at || gameResult?.timestamp || (gameResult ? JSON.stringify(gameResult.winners || []) : null);
     if (!key || key === lastResultRef.current) return;
     // key 기록은 당첨 확정 시에만 — gameResult가 isWinner 판정보다 먼저 도착하는 틱에서 소모 방지
-    if (isWinner && gameResult?.mode === currentMode && (currentMode === 'lottery' || currentMode === 'randomPicker')) {
+    if (isWinner && gameResult?.mode === currentMode && showsWinner) {
       lastResultRef.current = key;
       setWinBlast(currentMode);
       if ('vibrate' in navigator) navigator.vibrate([90, 40, 90, 40, 180]);
       const t = setTimeout(() => setWinBlast(null), 3200);
       return () => clearTimeout(t);
     }
-  }, [gameResult, isWinner, currentMode]);
+  }, [gameResult, isWinner, currentMode, showsWinner]);
 
   return (
     <div className="min-h-dvh bg-slate-50 dark:bg-slate-900 flex flex-col items-center justify-center p-4 pb-[calc(10rem+env(safe-area-inset-bottom))] pt-20">

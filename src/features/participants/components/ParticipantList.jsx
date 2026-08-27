@@ -28,7 +28,7 @@ export default memo(function ParticipantList({ participants, voteCounts }) {
               {/* 강사 전용 목록 — 사번 입력 시 닉네임 아래 표시(학생/전자칠판엔 미노출). */}
               <div className="flex-1 min-w-0 leading-tight">
                 <span className="truncate block">{p.nickname}</span>
-                {p.employeeId && (
+                {p.employeeId && p.employeeId !== p.nickname && (
                   <span className="text-[11px] text-slate-400 dark:text-slate-500 tabular-nums">사번 {p.employeeId}</span>
                 )}
               </div>

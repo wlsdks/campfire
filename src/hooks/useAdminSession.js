@@ -1,7 +1,9 @@
 import { useState, useCallback, useMemo, useRef } from 'react';
-import { ref, update, serverTimestamp } from 'firebase/database';
+import { ref, set, update, serverTimestamp } from 'firebase/database';
 import { db } from '@/lib/firebase';
 import { logger } from '@/lib/logger';
+import { generateQuestionId } from '@/lib/utils';
+import { MODE_CARD_TYPE, modeLabel } from '@/lib/modes';
 import { useSession } from '@/features/session/api/useSession';
 import { useParticipants } from '@/features/participants/api/useParticipants';
 import { useScores } from '@/features/quiz/api/useScores';
@@ -97,6 +99,25 @@ export function useAdminSession() {
     [onlineList, scores]
   );
 
+  /**
+   * 모드 카드를 질문 목록 끝에 추가한다.
+   * 수업 흐름을 미리 짜두고 순서대로 누르기 위한 것 — 진행 중에 메뉴를 뒤지지 않아도 된다.
+   */
+  const addModeCard = useCallback(async (mode) => {
+    if (!sessionId || effectiveReadOnly) return;
+    const label = modeLabel(mode);
+    if (!label) return;
+    const existing = Object.values(session?.questions || {});
+    const order = existing.length > 0 ? Math.max(...existing.map((q) => q.order || 0)) + 1 : 1;
+    try {
+      await set(ref(db, `sessions/${sessionId}/questions/${generateQuestionId()}`), {
+        type: MODE_CARD_TYPE, mode, title: label, order,
+      });
+    } catch (err) {
+      logger.error('모드 카드 추가 실패:', err);
+    }
+  }, [sessionId, effectiveReadOnly, session?.questions]);
+
   // Navigation
   const handleLogin = useCallback(() => { setAdminUser(getAdminUser()); }, []);
   const handleSelectSession = useCallback((id, isReadOnly) => { setSessionId(id); setReadOnly(isReadOnly); setUrlParams({ s: id }); }, []);
@@ -145,8 +166,8 @@ export function useAdminSession() {
       const updates = mode === 'leaderboard'
         ? { currentMode: mode }
         : { currentMode: mode, currentQuestion: null };
-      // 추첨 모드 진입 시 이전 결과 클리어
-      if (mode === 'lottery') updates.gameResult = null;
+      // 추첨 계열 진입 시 이전 결과 클리어 — 직전 판의 당첨자가 학생 폰에 다시 뜨지 않게
+      if (mode === 'lottery' || mode === 'scratchCard') updates.gameResult = null;
       await update(ref(db, `sessions/${sessionId}`), updates);
     } catch (err) {
       logger.error('Mode switch failed:', err);
@@ -218,7 +239,7 @@ export function useAdminSession() {
     pendingAdmins, pendingCount, approveAdmin, rejectAdmin,
     // Participants & scores
     participants, onlineList, count, scores, leaderboard, totalTickets, resetScores,
-    voteCounts, drawParticipants, studentUrl, questionProgress,
+    voteCounts, drawParticipants, studentUrl, questionProgress, addModeCard,
     // Timer
     timerRunning, endTime, duration, startTimer, stopTimer,
     // Speed quiz

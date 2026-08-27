@@ -14,6 +14,7 @@ import ChatPanel from '@/features/chat/components/ChatPanel';
 import BottomSheet from '@/components/ui/BottomSheet';
 import MobileModePicker from './MobileModePicker';
 import MobileParticipantsTab from './MobileParticipantsTab';
+import { isSpecialMode as isSpecialModeKey } from '@/lib/modes';
 
 const TABS = [
   { key: 'progress', label: '진행', icon: Play },
@@ -130,7 +131,7 @@ export default function MobileAdminView({ s }) {
   const [modesOpen, setModesOpen] = useState(false);
 
   const currentMode = s.session?.currentMode;
-  const isSpecialMode = ['lottery', 'combinedRanking', 'breakTime', 'leaderboard', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
+  const isSpecialMode = isSpecialModeKey(currentMode);
 
   const onNewChatMsg = s.handleNewChatMessage;
   const handleNewChatMessage = useCallback(() => {
@@ -204,8 +205,8 @@ export default function MobileAdminView({ s }) {
           {activeTab === 'participants' && (
             <motion.div key="participants" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }} transition={{ type: 'spring', stiffness: 320, damping: 28 }}
               className="h-full overflow-y-auto overscroll-contain scrollbar-hide">
-              <MobileParticipantsTab sessionId={s.sessionId} onlineList={s.onlineList} count={s.count}
-                studentUrl={s.studentUrl} />
+              <MobileParticipantsTab sessionId={s.sessionId} session={s.session} onlineList={s.onlineList} count={s.count}
+                participants={s.participants} studentUrl={s.studentUrl} />
             </motion.div>
           )}
 

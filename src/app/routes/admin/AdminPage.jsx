@@ -16,6 +16,7 @@ import ChatPanel from '@/features/chat/components/ChatPanel';
 import { useGameResultPublisher } from '@/features/games/api/useGameResult';
 import AdminSessionHeader from './AdminSessionHeader';
 import RightSidebar from './RightSidebar';
+import { isSpecialMode as isSpecialModeKey } from '@/lib/modes';
 import PresentationView, { PresentRevealControls } from './PresentationView';
 import ModeSwitcher from './ModeSwitcher';
 import TabletDrawers from './TabletDrawers';
@@ -75,7 +76,7 @@ export default function AdminPage() {
 
 
   const currentMode = s.session?.currentMode;
-  const isSpecialMode = ['lottery', 'combinedRanking', 'breakTime', 'leaderboard', 'qaBoard', 'awards', 'randomPicker', 'comprehension', 'quickSurvey', 'discussion', 'focus'].includes(currentMode);
+  const isSpecialMode = isSpecialModeKey(currentMode);
 
   if (s.presentMode) {
     return (
@@ -95,7 +96,7 @@ export default function AdminPage() {
         onViewQuestion={s.handleViewQuestion} adminUid={s.adminUser?.uid}
         speedQuizActive={s.speedQuizActive} onStartSpeedQuiz={s.startSpeedQuiz} onEndSpeedQuiz={s.endSpeedQuiz} speedQuizCount={s.speedQuizCount}
         modeButton={!s.effectiveReadOnly ? (
-          <ModeSwitcher currentMode={currentMode} isSpecialMode={isSpecialMode} totalTickets={s.totalTickets}
+          <ModeSwitcher currentMode={currentMode} isSpecialMode={isSpecialMode} totalTickets={s.totalTickets} onAddModeCard={s.addModeCard}
             leaderboard={s.leaderboard} modeOpen={s.modeOpen} onToggle={s.handleModeToggle} onSwitchMode={s.switchMode} />
         ) : null}
       />

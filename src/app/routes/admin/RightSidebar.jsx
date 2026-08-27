@@ -1,8 +1,9 @@
 import { useState, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, ChevronDown, Copy, Check, Monitor } from 'lucide-react';
+import { Users, ChevronDown, Copy, Check, Monitor, Ticket, ListPlus } from 'lucide-react';
 import ParticipantList from '@/features/participants/components/ParticipantList';
 import EventStats from '@/features/participants/components/EventStats';
+import RosterModal from '@/features/participants/components/RosterModal';
 import QRCode from '@/components/ui/QRCode';
 import Leaderboard from '@/features/quiz/components/Leaderboard';
 import InstructorCommHub from './InstructorCommHub';
@@ -46,9 +47,12 @@ function RightPanelAccordion({ title, count, defaultOpen = false, children }) {
   );
 }
 
-function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard, voteCounts, studentUrl, courseId }) {
+function ActiveRightSidebar({ session, sessionId, count, participants, onlineList, leaderboard, voteCounts, studentUrl, courseId }) {
   const [copied, setCopied] = useState(false);
   const [liveCopied, setLiveCopied] = useState(false);
+  const [rosterOpen, setRosterOpen] = useState(false);
+  // 추첨 전용 모드 — 입장하는 참여자가 없다. 초대 QR 대신 명단 입력이 그 자리를 대신한다.
+  const drawOnly = !!session?.drawOnly;
 
   async function copyStudentLink() {
     try {
@@ -80,10 +84,32 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
   return (
     <>
       <div className="flex items-center gap-2">
-        <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+        {drawOnly ? (
+          <Ticket size={16} className="text-slate-400" />
+        ) : (
+          <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+        )}
         <motion.span key={count} initial={{ scale: 1.15 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 400, damping: 22 }} className="text-slate-900 dark:text-slate-100 font-bold text-2xl tabular-nums tracking-tight inline-block">{count}</motion.span>
-        <span className="text-slate-500 dark:text-slate-400 text-xs">명 접속 중</span>
+        <span className="text-slate-500 dark:text-slate-400 text-xs">{drawOnly ? '명 추첨 대상' : '명 접속 중'}</span>
       </div>
+
+      {drawOnly && (
+        <div className="space-y-2">
+          <Button onClick={() => setRosterOpen(true)} variant="primary" size="sm" className="w-full">
+            <ListPlus size={15} />
+            명단 관리
+          </Button>
+          <p className="text-slate-400 text-xs leading-relaxed">
+            이름과 사번을 직접 입력하거나 엑셀에서 붙여넣어 추첨 대상을 만듭니다.
+          </p>
+          <RosterModal
+            open={rosterOpen}
+            onClose={() => setRosterOpen(false)}
+            sessionId={sessionId}
+            participants={participants}
+          />
+        </div>
+      )}
 
       {/* 기업 행사모드: 사번 등록 통계 */}
       {session?.requireEmployeeId && <EventStats participants={onlineList} count={count} variant="sidebar" />}
@@ -120,22 +146,29 @@ function ActiveRightSidebar({ session, sessionId, count, onlineList, leaderboard
         onlineList={onlineList}
         voteCounts={voteCounts}
         courseId={courseId}
+        peopleLabel={drawOnly ? '명단' : '참여자'}
       />
 
-      {/* QR */}
+      {/* QR — 추첨 전용 모드에서는 입장할 학생이 없으므로 숨긴다. 전자칠판 링크는 추첨 화면용으로 남긴다. */}
       <div className="pt-2">
-        <div className="flex justify-center">
-          <QRCode url={studentUrl} size={160} />
-        </div>
-        <Button onClick={copyStudentLink} variant="secondary" size="sm" className="w-full mt-3">
-          {copied ? <Check size={16} /> : <Copy size={16} />}
-          {copied ? '링크 복사됨' : '초대 링크 복사'}
-        </Button>
-        <Button onClick={copyLiveUrl} variant="secondary" size="sm" className="w-full mt-2">
+        {!drawOnly && (
+          <>
+            <div className="flex justify-center">
+              <QRCode url={studentUrl} size={160} />
+            </div>
+            <Button onClick={copyStudentLink} variant="secondary" size="sm" className="w-full mt-3">
+              {copied ? <Check size={16} /> : <Copy size={16} />}
+              {copied ? '링크 복사됨' : '초대 링크 복사'}
+            </Button>
+          </>
+        )}
+        <Button onClick={copyLiveUrl} variant="secondary" size="sm" className={`w-full ${drawOnly ? '' : 'mt-2'}`}>
           {liveCopied ? <Check size={14} /> : <Monitor size={14} />}
           {liveCopied ? '링크 복사됨' : '전자칠판 링크 복사'}
         </Button>
-        <p className="text-slate-400 text-xs mt-2 text-center break-all leading-relaxed">{studentUrl}</p>
+        {!drawOnly && (
+          <p className="text-slate-400 text-xs mt-2 text-center break-all leading-relaxed">{studentUrl}</p>
+        )}
       </div>
     </>
   );
@@ -216,6 +249,7 @@ export default memo(function RightSidebar({
       session={session}
       sessionId={sessionId}
       count={count}
+      participants={participants}
       onlineList={onlineList}
       leaderboard={leaderboard}
       voteCounts={voteCounts}

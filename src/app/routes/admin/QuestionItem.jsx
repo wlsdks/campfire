@@ -6,6 +6,7 @@ import { GripVertical, BookmarkPlus, Check, Copy, MessageSquare, Pencil, Play, S
 import Badge from '@/components/ui/Badge';
 import { isQuizQuestion } from '@/lib/quiz';
 import { QUESTION_TYPES } from '@/lib/question-types';
+import { MODE_CARD_TYPE, SPECIAL_MODES } from '@/lib/modes';
 
 const primaryBtnClass = 'p-2 sm:p-2.5 lg:p-1.5 rounded-lg sm:rounded-md bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 text-white transition-colors duration-150 active:scale-90';
 const stopBtnClass = 'p-2 sm:p-2.5 lg:p-1.5 rounded-lg sm:rounded-md bg-slate-200 dark:bg-slate-600 text-slate-500 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-500 transition-colors duration-150 active:scale-90';
@@ -33,13 +34,19 @@ function ActionButton({ onClick, className, children, 'aria-label': ariaLabel, f
 /** Shared question item UI — used both sortable (desktop) and static (mobile/readOnly). */
 export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView, onActivate, onReveal, onRevealAnswer, onShowLeaderboard, onClearActive, onEdit, onDuplicate, onDelete, onReset, onSaveToLibrary, isPersistent = false, onTogglePersistent, isDragging = false, dragProps = {} }) {
   const hasVotes = Object.keys(q?.votes || {}).length > 0;
-  const qType = QUESTION_TYPES.find((t) => t.value === q.type);
+  // 모드 카드는 질문이 아니라 화면 전환 항목이다 — 라벨·아이콘을 모드 목록에서 가져온다
+  const isModeCard = q.type === MODE_CARD_TYPE;
+  const modeMeta = isModeCard ? SPECIAL_MODES.find((m) => m.mode === q.mode) : null;
+  const qType = isModeCard
+    ? { label: modeMeta ? `${modeMeta.label} 화면` : '화면 전환', icon: modeMeta?.icon }
+    : QUESTION_TYPES.find((t) => t.value === q.type);
   const Icon = qType?.icon || MessageSquare;
   const isActive = currentQuestion === qId;
-  const isQuiz = isQuizQuestion(q);
+  const isQuiz = !isModeCard && isQuizQuestion(q);
   const hasAnswer = !isQuiz && q.correctAnswer;
   const hasReveal = isQuiz || hasAnswer;
   const isAiJudge = q.type === 'aiJudge';
+  // 모드 카드는 답변·정답·보관함 개념이 없다 — 해당 버튼을 감춘다
   const handleReveal = () => isQuiz ? onReveal?.(qId) : onRevealAnswer?.(qId);
   const stopDrag = (e) => e.stopPropagation();
 
@@ -88,9 +95,11 @@ export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView,
         {!readOnly && (
           <div className="hidden sm:flex gap-1 shrink-0" onPointerDown={stopDrag}>
             {!isActive ? (
-              <Tooltip label="질문 활성화"><ActionButton onClick={() => onActivate(qId)} className={primaryBtnClass} aria-label="질문 활성화">
-                <Play size={12} />
-              </ActionButton></Tooltip>
+              <Tooltip label={isModeCard ? '이 화면으로 전환' : '질문 활성화'}>
+                <ActionButton onClick={() => onActivate(qId)} className={primaryBtnClass} aria-label={isModeCard ? '이 화면으로 전환' : '질문 활성화'}>
+                  <Play size={12} />
+                </ActionButton>
+              </Tooltip>
             ) : (
               <>
                 {hasReveal && !q.revealedAt && (
@@ -123,12 +132,12 @@ export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView,
                 </button>
               </Tooltip>
             )}
-            {onSaveToLibrary && (
+            {onSaveToLibrary && !isModeCard && (
               <Tooltip label="보관함에 저장"><button onClick={() => onSaveToLibrary(qId)} className="p-1.5 rounded-md text-slate-400 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="보관함에 저장">
                 <BookmarkPlus size={12} />
               </button></Tooltip>
             )}
-            {onEdit && (
+            {onEdit && !isModeCard && (
               <Tooltip label="질문 수정"><button onClick={() => onEdit(qId)} className="p-1.5 rounded-md text-slate-400 dark:text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-600 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150 active:scale-90" aria-label="질문 수정">
                 <Pencil size={12} />
               </button></Tooltip>
@@ -153,7 +162,7 @@ export function QuestionItemContent({ qId, q, currentQuestion, readOnly, onView,
         <div className="flex gap-2 mt-3 sm:hidden">
           {!isActive ? (
             <>
-              <ActionButton onClick={() => onActivate(qId)} className={`flex-1 flex items-center justify-center gap-1.5 min-h-[48px] rounded-xl text-sm font-semibold active:scale-[0.96] ${primaryBtnClass}`} aria-label="질문 활성화">
+              <ActionButton onClick={() => onActivate(qId)} className={`flex-1 flex items-center justify-center gap-1.5 min-h-[48px] rounded-xl text-sm font-semibold active:scale-[0.96] ${primaryBtnClass}`} aria-label={isModeCard ? '이 화면으로 전환' : '질문 활성화'}>
                 <Play size={16} /> 시작
               </ActionButton>
               {onEdit && (

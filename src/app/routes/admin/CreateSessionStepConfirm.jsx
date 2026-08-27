@@ -1,6 +1,49 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { AlertCircle, Copy, Plus, Loader2, IdCard } from 'lucide-react';
+import { AlertCircle, Copy, Plus, Loader2, IdCard, Ticket, Eye } from 'lucide-react';
 import Button from '@/components/ui/Button';
+
+/**
+ * 세션 옵션 토글 한 줄 — 아이콘 + 제목/설명 + 스위치. 옵션이 늘어도 모양이 갈리지 않게 한 곳에 둔다.
+ * onPreview가 있으면 '설명 보기'가 붙는다. 토글 영역과 겹치지 않게 스위치 아래 줄에 둔다.
+ */
+function ModeToggle({ icon: Icon, title, description, on, onToggle, onPreview }) {
+  return (
+    <div
+      className={`rounded-xl border transition-colors duration-150 ${
+        on
+          ? 'border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-700'
+          : 'border-slate-100 dark:border-slate-700 hover:border-slate-200'
+      }`}
+    >
+      <button
+        onClick={onToggle}
+        role="switch"
+        aria-checked={on}
+        className="w-full flex items-center gap-3 p-3 text-left active:scale-[0.98] transition-transform duration-150"
+      >
+        <Icon size={16} className={on ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400'} />
+        <div className="flex-1">
+          <p className={`text-sm font-medium ${on ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500'}`}>
+            {title}
+          </p>
+          <p className="text-xs text-slate-400">{description}</p>
+        </div>
+        <div className={`w-9 h-5 rounded-full transition-colors relative shrink-0 ${on ? 'bg-slate-900 dark:bg-slate-100' : 'bg-slate-200 dark:bg-slate-600'}`}>
+          <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-all ${on ? 'left-4' : 'left-0.5'}`} />
+        </div>
+      </button>
+      {onPreview && (
+        <button
+          onClick={onPreview}
+          className="w-full flex items-center justify-center gap-1 px-3 pb-2.5 -mt-1 text-xs font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors duration-150"
+        >
+          <Eye size={12} />
+          설명 보기
+        </button>
+      )}
+    </div>
+  );
+}
 
 export default function CreateSessionStepConfirm({
   selectedCourse,
@@ -13,6 +56,9 @@ export default function CreateSessionStepConfirm({
   onSetDuplicateSourceId,
   requireEmployeeId,
   onToggleEmployeeId,
+  drawOnly,
+  onToggleDrawOnly,
+  onPreviewMode,
   error,
   creating,
   onBack,
@@ -59,48 +105,37 @@ export default function CreateSessionStepConfirm({
         </div>
       </div>
 
-      {/* 기업 행사모드 — 켜면 학생 입장 시 사번(직원번호) 필수 입력 */}
-      <button
-        onClick={onToggleEmployeeId}
-        className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-colors duration-150 active:scale-[0.98] text-left ${
-          requireEmployeeId
-            ? 'border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-700'
-            : 'border-slate-100 dark:border-slate-700 hover:border-slate-200'
-        }`}
-      >
-        <IdCard size={16} className={requireEmployeeId ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400'} />
-        <div className="flex-1">
-          <p className={`text-sm font-medium ${requireEmployeeId ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500'}`}>
-            기업 행사모드
-          </p>
-          <p className="text-xs text-slate-400">입장 시 사번(직원번호)을 필수로 받습니다</p>
-        </div>
-        <div className={`w-9 h-5 rounded-full transition-colors relative shrink-0 ${requireEmployeeId ? 'bg-slate-900 dark:bg-slate-100' : 'bg-slate-200 dark:bg-slate-600'}`}>
-          <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-all ${requireEmployeeId ? 'left-4' : 'left-0.5'}`} />
-        </div>
-      </button>
+      <div className="space-y-2">
+        {/* 기업 행사모드 — 켜면 학생 입장 시 사번(직원번호) 필수 입력 */}
+        <ModeToggle
+          icon={IdCard}
+          title="기업 행사모드"
+          description="입장 시 사번(직원번호)을 필수로 받습니다"
+          on={requireEmployeeId}
+          onToggle={onToggleEmployeeId}
+          onPreview={() => onPreviewMode('requireEmployeeId')}
+        />
+
+        {/* 추첨 전용 모드 — 참여자 입장이 없는 행사용. 명단은 강사가 직접 넣는다 */}
+        <ModeToggle
+          icon={Ticket}
+          title="추첨 전용 모드"
+          description="참여자 입장 없이, 명단을 직접 입력해 추첨만 진행합니다"
+          on={drawOnly}
+          onToggle={onToggleDrawOnly}
+          onPreview={() => onPreviewMode('drawOnly')}
+        />
+      </div>
 
       {previousRounds.length > 0 && (
         <div className="space-y-3">
-          <button
-            onClick={onToggleDuplicate}
-            className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-colors duration-150 active:scale-[0.98] text-left ${
-              duplicateEnabled
-                ? 'border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-700'
-                : 'border-slate-100 dark:border-slate-700 hover:border-slate-200'
-            }`}
-          >
-            <Copy size={16} className={duplicateEnabled ? 'text-slate-700' : 'text-slate-400'} />
-            <div className="flex-1">
-              <p className={`text-sm font-medium ${duplicateEnabled ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500'}`}>
-                이전 차수 복제
-              </p>
-              <p className="text-xs text-slate-400">질문 목록을 복사하여 새 클래스에 추가합니다</p>
-            </div>
-            <div className={`w-9 h-5 rounded-full transition-colors relative ${duplicateEnabled ? 'bg-slate-900 dark:bg-slate-100' : 'bg-slate-200 dark:bg-slate-600'}`}>
-              <div className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transition-all ${duplicateEnabled ? 'left-4' : 'left-0.5'}`} />
-            </div>
-          </button>
+          <ModeToggle
+            icon={Copy}
+            title="이전 차수 복제"
+            description="질문 목록을 복사하여 새 클래스에 추가합니다"
+            on={duplicateEnabled}
+            onToggle={onToggleDuplicate}
+          />
 
           <AnimatePresence>
             {duplicateEnabled && (

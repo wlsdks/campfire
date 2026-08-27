@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { AlertCircle } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { QUIZ_DEFAULTS } from '@/lib/quiz';
+import { safeEmbedUrl, embedRejectMessage } from '@/lib/embed';
 import { QUESTION_TYPES } from '@/lib/question-types';
 import ImageUpload from '@/components/ui/ImageUpload';
 import MultiImageUpload from '@/components/ui/MultiImageUpload';
@@ -40,6 +41,7 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
   const [hideTitle, setHideTitle] = useState(initialData?.hideTitle || false);
   const [slideImages, setSlideImages] = useState(initialData?.slideImages || []);
   const [modelAnswer, setModelAnswer] = useState(initialData?.modelAnswer || '');
+  const [embedUrl, setEmbedUrl] = useState(initialData?.embedUrl || '');
   const [localError, setLocalError] = useState(null);
 
   const isChoiceLike = type === 'choice' || type === 'quiz';
@@ -49,6 +51,7 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
   const isHintQuiz = type === 'hintQuiz';
   const isSubjective = type === 'subjective';
   const isShortAnswer = type === 'shortAnswer';
+  const isWebEmbed = type === 'webEmbed';
 
   async function handleAdd() {
     if (!title.trim()) { setLocalError('질문 내용을 입력해주세요.'); return; }
@@ -65,9 +68,17 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
     if (isHintQuiz && hints.filter(h => h.trim()).length === 0) { setLocalError('최소 1개의 힌트가 필요합니다.'); return; }
     if (type === 'imageSlide' && slideImages.length === 0) { setLocalError('최소 1장의 이미지가 필요합니다.'); return; }
     if (isSubjective && !modelAnswer.trim()) { setLocalError('모범답안을 입력해주세요. AI 채점 기준이 됩니다.'); return; }
+    // 주소는 저장 전에 정규화한다. 스킴 없는 입력은 https로 읽고, 위험한 스킴과 앱 자신은 막는다.
+    let safeEmbed = '';
+    if (isWebEmbed) {
+      const { url, reason } = safeEmbedUrl(embedUrl);
+      if (!url) { setLocalError(embedRejectMessage(reason)); return; }
+      safeEmbed = url;
+    }
     setLocalError(null);
     const submitData = { type, title, options: cleanOptions, correctAnswer, points, event, betting, hideTitle };
     if (imageUrl) submitData.imageUrl = imageUrl;
+    if (isWebEmbed) submitData.embedUrl = safeEmbed;
     if (isSubjective) submitData.modelAnswer = modelAnswer.trim();
     if (isMysteryBox) {
       submitData.mysteryItems = mysteryItems.split('\n').map(s => s.trim()).filter(Boolean);
@@ -149,9 +160,27 @@ export default function QuestionForm({ onSubmit, onCancel, error, initialData })
         </button>
       </div>
 
-      {/* 이미지 첨부 */}
+      {/* 이미지 첨부 (웹페이지 유형은 주소 입력이 그 자리를 대신한다) */}
       <div className="pt-2">
-        {type === 'imageSlide' ? (
+        {isWebEmbed ? (
+          <div className="space-y-1.5">
+            <label htmlFor="question-embed-url" className="text-sm font-medium text-slate-700 dark:text-slate-200">
+              웹페이지 주소
+            </label>
+            <input
+              id="question-embed-url"
+              type="url"
+              inputMode="url"
+              value={embedUrl}
+              onChange={(e) => setEmbedUrl(e.target.value)}
+              placeholder="example.com/docs"
+              className={INPUT}
+            />
+            <p className="text-xs text-slate-400 leading-relaxed">
+              발표 화면 안에서 그대로 엽니다. 임베드를 허용하지 않는 사이트는 새 창으로 열도록 안내합니다.
+            </p>
+          </div>
+        ) : type === 'imageSlide' ? (
           <MultiImageUpload images={slideImages} onChange={setSlideImages} />
         ) : (
           <ImageUpload value={imageUrl} onChange={setImageUrl} />

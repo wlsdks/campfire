@@ -17,6 +17,18 @@ import {
 
 let sessionId;
 
+const ADMIN = { uid: 'e2e_admin_master', username: 'test_master', displayName: '테스트 강사', role: 'master' };
+
+/** 강사 화면을 로그인 없이 연다(sessionStorage 주입). */
+async function openAdmin(page, baseURL, sid) {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto(`${baseURL}/admin`);
+  await page.evaluate((u) => sessionStorage.setItem('pinggo_admin', JSON.stringify(u)), ADMIN);
+  await page.goto(`${baseURL}/admin?s=${sid}`);
+  await page.getByText('불러오는 중').waitFor({ state: 'detached', timeout: 15000 }).catch(() => {});
+  await waitForSync(page, 3000);
+}
+
 /** Seed participants for game testing. */
 async function seedParticipants(sid, count = 6) {
   const names = ['김민수', '이서연', '박지훈', '최수진', '정현우', '강다은', '조은비', '윤태호'];
@@ -58,42 +70,53 @@ test.describe('게임 모드 — 복권 (Lottery)', () => {
     await cleanupTestSession(sessionId);
   });
 
-  test('복권 화면 렌더링 + 추첨 인원 선택', async ({ page }) => {
+  test('전자칠판은 보기 전용 — 조작은 강사 화면에서만', async ({ page }) => {
     await page.goto(`/live?s=${sessionId}`);
     await waitForSync(page, 4000);
 
-    // Should show lottery UI
+    // 전자칠판에서 추첨을 돌리면 관객이 보는 결과와 강사가 부르는 결과가 갈린다.
+    // 조작 수단은 강사 화면에만 있어야 한다.
+    await expect(page.getByText('강사 화면을 그대로 보여주는 중입니다')).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText('당첨자 수')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /제비뽑기|보상 추첨/ })).toHaveCount(0);
+  });
+
+  test('강사 화면에 추첨 조작이 있다', async ({ page, baseURL }) => {
+    await openAdmin(page, baseURL, sessionId);
     await expect(page.getByText('당첨자 수')).toBeVisible({ timeout: 10000 });
     await expect(page.getByRole('button', { name: /제비뽑기|보상 추첨/ })).toBeVisible();
   });
 
-  test('복권 추첨 → 당첨자 카드 표시', async ({ page }) => {
-    await page.goto(`/live?s=${sessionId}`);
-    await waitForSync(page, 4000);
+  test('강사 화면에서 추첨 → 전자칠판에 같은 당첨자가 뜬다', async ({ page, context, baseURL }) => {
+    test.setTimeout(90_000);
+    const live = await context.newPage();
+    await live.goto(`${baseURL}/live?s=${sessionId}`);
+    await waitForSync(live, 3000);
 
-    const drawBtn = page.getByRole('button', { name: /제비뽑기|보상 추첨/ });
-    await expect(drawBtn).toBeVisible({ timeout: 10000 });
-    await drawBtn.click();
+    await openAdmin(page, baseURL, sessionId);
+    await page.getByRole('button', { name: /제비뽑기|보상 추첨|다시 추첨/ }).click();
 
-    // 순차 dramatic reveal — 당첨자 카드(#1 당첨) 표시
-    await expect(page.getByText(/#1 당첨/)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(/#1 당첨/)).toBeVisible({ timeout: 15000 });
+    await expect(live.getByText(/#1 당첨/)).toBeVisible({ timeout: 15000 });
+
+    const adminWinner = (await page.locator('.bg-slate-900.rounded-2xl').first().innerText()).split('\n')[0];
+    const liveWinner = (await live.locator('.bg-slate-900.rounded-2xl').first().innerText()).split('\n')[0];
+    expect(liveWinner).toBe(adminWinner);
+    await live.close();
   });
 
-  test('복권 다중 추첨 (3명)', async ({ page }) => {
-    await page.goto(`/live?s=${sessionId}`);
-    await waitForSync(page, 4000);
+  test('복권 다중 추첨 (3명)', async ({ page, baseURL }) => {
+    test.setTimeout(90_000);
+    await openAdmin(page, baseURL, sessionId);
 
-    // Increase count to 3
     const plusBtn = page.getByLabel('당첨자 수 증가');
     await expect(plusBtn).toBeVisible({ timeout: 10000 });
     await plusBtn.click();
     await plusBtn.click();
 
-    const drawBtn = page.getByRole('button', { name: /제비뽑기|보상 추첨|다시 추첨/ });
-    await drawBtn.click();
-
-    // 순차 dramatic reveal — 한 명씩 ~3초 → 3명이면 ~10초+. 첫 당첨자만 확정 검증(다중 카운트 추첨 동작 확인)
-    await expect(page.getByText(/#1 당첨/)).toBeVisible({ timeout: 15000 });
+    await page.getByRole('button', { name: /제비뽑기|보상 추첨|다시 추첨/ }).click();
+    // 순차 dramatic reveal — 한 명씩 ~3초. 첫 당첨자만 확정 검증
+    await expect(page.getByText(/#1 당첨/)).toBeVisible({ timeout: 20000 });
   });
 });
 
