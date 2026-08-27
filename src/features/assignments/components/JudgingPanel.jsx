@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Play, AlertCircle, Loader2 } from 'lucide-react';
+import { AI_ENABLED, AI_DISABLED_MESSAGE } from '@/lib/gemini/client';
 import { isGeminiReady } from '@/lib/judging/gemini';
 import { useJudging } from '@/features/assignments/api/useJudging';
 import { useAssignmentActions } from '@/features/assignments/api/useAssignments';
@@ -11,6 +13,17 @@ import Button from '@/components/ui/Button';
 export default function JudgingPanel({ assignmentId, submissionCount, passThreshold = 3 }) {
   const { startJudging, isJudging, progress, abort } = useJudging(assignmentId);
   const { updateAssignment } = useAssignmentActions();
+  // 이 패널은 심사 실패를 화면에 표시하지 않는다(useJudging이 Firebase의 judgeError에만 남김).
+  // AI 중단 안내만이라도 클릭 즉시 보이도록 로컬 상태로 잡는다.
+  const [notice, setNotice] = useState('');
+
+  function handleStart() {
+    if (!AI_ENABLED) {
+      setNotice(AI_DISABLED_MESSAGE);
+      return;
+    }
+    startJudging();
+  }
 
   function handleThresholdChange(v) {
     const next = Math.max(1, Math.min(7, Number(v) || 3));
@@ -63,7 +76,7 @@ export default function JudgingPanel({ assignmentId, submissionCount, passThresh
     <div className="space-y-4">
       <div className="flex items-center gap-2">
         <Button
-          onClick={startJudging}
+          onClick={handleStart}
           variant="primary"
           size="sm"
           disabled={submissionCount === 0}
@@ -72,6 +85,13 @@ export default function JudgingPanel({ assignmentId, submissionCount, passThresh
           심사 시작 ({submissionCount}건)
         </Button>
       </div>
+
+      {notice && (
+        <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+          <AlertCircle size={12} className="text-amber-500 shrink-0" />
+          {notice}
+        </p>
+      )}
 
       {/* 합격 기준 — 심사 전후 모두 변경 가능. 변경 시 합격/불합격 표시가 즉시 반영됨. */}
       <div className="pt-3 border-t border-slate-100 dark:border-slate-700 space-y-2">
