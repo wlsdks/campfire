@@ -41,7 +41,9 @@
 | **클래스 대시보드** | 강의별 그룹, 세션 생성/복제, 참여율 차트 |
 | **질문 관리** | 추가/수정/삭제/드래그 정렬, 보관함 재사용 |
 | **키보드 단축키** | ← → (이동), Space (다음), R (정답), L (리더보드), Esc (대기) |
-| **게임 모드** | 추첨(Lottery), 발표자 뽑기, 쉬는 시간 타이머, 접속 현황 |
+| **게임 모드** | 추첨, 즉석복권, 발표자 뽑기, 쉬는 시간 타이머, 접속 현황 등 14종 |
+| **발표 모드** | 전체화면(Fullscreen API) + 화면 꺼짐 방지(Wake Lock), 이미지·웹페이지 슬라이드 |
+| **추첨 전용 모드** | 참여자 입장 없이 명단만 넣어 추첨. 엑셀 붙여넣기로 명단 등록 |
 | **수업 기록** | 참여율·정답률 통계, 어려웠던 질문 분석, CSV 내보내기 |
 | **스태프 관리** | 스태프 계정 초대, 역할 분담 |
 | **세션 기록** | 질문별 응답 히스토리, 학생 리포트 |
@@ -51,6 +53,8 @@
 - `/live?s={sessionId}` — 프로젝터·전자칠판용 대형 화면
 - 뒷자리에서도 보이는 큰 글자, 높은 대비
 - 실시간 막대 상승, 워드클라우드 형성, 리액션 버블
+- **보기 전용.** 추첨은 강사 화면에서만 조작하고 전자칠판은 그 진행을 그대로 비춘다
+  (두 화면이 각자 돌리면 관객이 보는 결과와 강사가 부르는 결과가 갈리기 때문)
 
 ### 🤖 AI 도구 (Gemini 기반)
 
@@ -235,19 +239,26 @@ firebase deploy --only hosting
 sessions/{sessionId}
 ├── info              # 세션 메타 (title, courseName, createdAt)
 ├── currentQuestion   # 활성 질문 ID
-├── currentMode       # poll | quiz | leaderboard | waiting | game
+├── currentMode       # poll | quiz | waiting | 특수 모드 14종 (src/lib/modes.js)
+├── drawOnly          # 추첨 전용 모드 — 참여자 입장 차단
+├── requireEmployeeId # 기업 행사모드 — 입장 시 사번 필수
 ├── questions/{qId}
-│   ├── type          # choice | ox | wordcloud | qna | quiz | ...
+│   ├── type          # 17종 (src/lib/question-types.js)
 │   ├── title
 │   ├── options[]
 │   ├── correctAnswer
+│   ├── slideImages[] # imageSlide — 최대 10장
+│   ├── embedUrl      # webEmbed — http/https만 (DB 규칙에서 검증)
 │   ├── activatedAt, revealedAt, awardedAt
 │   └── votes/{participantId}  # { nickname, value, timestamp }
 ├── participants/{pid}
+│   ├── nickname, employeeId, online
+│   └── source        # 'manual' = 강사가 명단으로 넣은 사람 (입장한 참여자와 구분)
 ├── scores/{pid}      # 퀴즈 점수, 연속 정답, 업적
 ├── reactions, handRaises, urgentQuestions, classQuestions
 ├── chat, staffChat
-└── game state (lottery, breakTimer, randomPicker, joinShow)
+├── gameState         # 추첨 진행 상태 — 전자칠판이 이걸 보고 따라 그린다
+└── gameResult        # 당첨자 발표 — 학생 폰 알림용
 
 assignments/{assignmentId}
 ├── title, description, status, aiJudging

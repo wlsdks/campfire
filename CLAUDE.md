@@ -23,8 +23,10 @@ src/
     questions/      → useUrgentQuestions, AIQuestionGenerator
     class-questions/→ ClassQAPanel, ClassQABoard, QARanking (학생 Q&A)
     hand-raise/     → useHandRaises, HandRaiseList
-    visualization/  → BarChart, OXBattle, WordCloud, QACards, VizRenderer
-    games/          → Lottery, BreakTimer, RandomPicker, JoinShow (4개 — Phase 1 정리)
+    visualization/  → BarChart, OXBattle, WordCloud, QACards, ImageSlidePresenter,
+                      WebEmbedPresenter(웹페이지 슬라이드), VizRenderer
+    games/          → Lottery, ScratchCard(즉석복권), RandomPicker, BreakTimer, JoinShow
+                      + useGameMirror(전자칠판 동기화), DrawDisplayToggle(이름/사번 보기)
     timer/          → useTimer, TimerRing, TimerCountdown (서버 시간 동기화)
     reactions/      → useReactions, ReactionBar, ReactionOverlay, ChatBubbleOverlay
     quiz/           → useScores, QuizResult, Leaderboard, useSpeedQuiz
@@ -36,6 +38,8 @@ src/
     report/         → ClassInsightCard, LearningReportCard, useEngagementData
   hooks/            → Cross-feature shared hooks only
   lib/              → firebase.js, design-tokens.js, utils
+                      modes.js(특수 모드 단일 출처), question-types.js(질문 유형 단일 출처)
+                      embed.js(웹 임베드 정책), roster.js·scratch.js(추첨 전용 모드)
   assets/lottie/    → Lottie JSON files
   styles/           → index.css (Tailwind + globals)
 ```
